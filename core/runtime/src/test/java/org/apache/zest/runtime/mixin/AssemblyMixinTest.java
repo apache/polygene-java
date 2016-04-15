@@ -60,11 +60,11 @@ public class AssemblyMixinTest
     public void testAssemblyMixinsEntity()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         FooEntity entity = uow.newEntity( FooEntity.class, "123" );
         uow.complete();
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
         Foo foo = uow.get( Foo.class, "123" );
 
         try

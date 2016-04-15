@@ -46,7 +46,7 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     implements Assembler
 {
     @Structure
-    protected UnitOfWorkFactory uowf;
+    protected UnitOfWorkFactory unitOfWorkFactory;
 
     @Structure
     protected TransientBuilderFactory transientBuilderFactory;
@@ -96,11 +96,11 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     public void tearDown()
         throws Exception
     {
-        if( uowf != null && uowf.isUnitOfWorkActive() )
+        if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive() )
         {
-            while( uowf.isUnitOfWorkActive() )
+            while( unitOfWorkFactory.isUnitOfWorkActive() )
             {
-                UnitOfWork uow = uowf.currentUnitOfWork();
+                UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );

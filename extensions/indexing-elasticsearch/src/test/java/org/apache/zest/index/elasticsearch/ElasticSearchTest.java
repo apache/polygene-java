@@ -162,7 +162,7 @@ public class ElasticSearchTest
     {
         String title = "Foo Bar Bazar!";
 
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         EntityBuilder<Author> authorBuilder = uow.newEntityBuilder( Author.class );
         Author author = authorBuilder.instance();
@@ -202,7 +202,7 @@ public class ElasticSearchTest
 
         uow.complete();
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
 
         QueryBuilder<Post> queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class );
         Query<Post> query = uow.newQuery( queryBuilder );

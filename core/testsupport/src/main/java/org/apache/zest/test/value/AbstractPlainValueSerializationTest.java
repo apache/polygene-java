@@ -22,9 +22,19 @@ package org.apache.zest.test.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.usecase.UsecaseBuilder;
+import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueSerialization;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
+import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -48,6 +58,17 @@ public abstract class AbstractPlainValueSerializationTest
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
+
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        module.values( Regression142Type.class );
+        module.entities( Regression142Type.class );
+
+        module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
+    }
 
     @Test
     public void givenCharacterValueWhenSerializingAndDeserializingExpectEquals()
@@ -225,4 +246,63 @@ public abstract class AbstractPlainValueSerializationTest
         EntityReference deserialized = valueSerialization.deserialize( module, EntityReference.class, serialized );
         assertThat( deserialized, equalTo( EntityReference.parseEntityReference( "ABCD-1234" ) ) );
     }
+
+    @Test
+    public void zest142RegressionTest()
+        throws Exception
+    {
+        ValueSerialization serialization = serviceFinder.findService( ValueSerialization.class )
+            .get();
+
+        Regression142Type value;
+        {
+            ValueBuilder<Regression142Type> builder = valueBuilderFactory.newValueBuilder( Regression142Type.class );
+            builder.prototype().price().set( 23.45 );
+            builder.prototype().testenum().set( Regression142Enum.B );
+            value = builder.newInstance();
+            String serialized = serialization.serialize( value );
+            System.out.println( serialized ); // ok
+            value = serialization.deserialize( module, Regression142Type.class, serialized ); // ok
+        }
+        {
+            String valueId = "abcdefg";
+            {
+                try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ))
+                {
+                    EntityBuilder<Regression142Type> builder = uow.newEntityBuilder( Regression142Type.class, valueId );
+                    builder.instance().price().set( 45.67 );
+                    builder.instance().testenum().set( Regression142Enum.A );
+                    value = builder.newInstance();
+                    System.out.println( value.testenum().get() );
+                    uow.complete();
+                }
+                catch( Exception e_ )
+                {
+                    e_.printStackTrace();
+                }
+            }
+            {
+                try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ))
+                {
+                    value = uow.get( Regression142Type.class, valueId );
+                    System.out.println( value.price().get() );
+                    System.out.println( value.testenum().get() ); // FAIL
+                }
+            }
+        }
+    }
+
+
+    private enum Regression142Enum
+    {
+        A, B, C, D
+    }
+
+    interface Regression142Type
+    {
+        Property<Double> price();
+
+        Property<Regression142Enum> testenum();
+    }
+
 }

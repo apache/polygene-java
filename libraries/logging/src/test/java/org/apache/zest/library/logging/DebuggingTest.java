@@ -62,7 +62,7 @@ public class DebuggingTest
     @Test
     public void whenCallingMethodThenExpectDebugEntityCreated()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             // There is no Query capability available for Libraries, since that sits in Extensions.

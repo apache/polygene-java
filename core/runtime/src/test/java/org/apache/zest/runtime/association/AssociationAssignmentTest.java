@@ -56,7 +56,7 @@ public class AssociationAssignmentTest extends AbstractZestTest
     public void givenAssignmentOfAssociationAtCreationWhenDereferencingAssocationExpectCorrectValue()
         throws Exception
     {
-        UnitOfWork work = uowf.newUnitOfWork();
+        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         TheAssociatedType entity1 = work.newEntity( TheAssociatedType.class );
         EntityBuilder<TheMainType> builder = work.newEntityBuilder( TheMainType.class );
         builder.instance().assoc().set( entity1 );
@@ -67,7 +67,7 @@ public class AssociationAssignmentTest extends AbstractZestTest
         assertThat(id1, notNullValue());
         assertThat(id2, notNullValue());
 
-        work = uowf.newUnitOfWork();
+        work = unitOfWorkFactory.newUnitOfWork();
         TheMainType entity3 = work.get(TheMainType.class, id2 );
         TheAssociatedType entity4 = entity3.assoc().get();
         assertThat( entity4.identity().get(), equalTo(id1));

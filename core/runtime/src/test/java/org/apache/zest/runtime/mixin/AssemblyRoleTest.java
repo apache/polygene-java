@@ -69,11 +69,11 @@ public class AssemblyRoleTest
     public void testAssemblyMixinsEntity()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         uow.newEntity( FooEntity.class, "123" );
         uow.complete();
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
         Foo foo = uow.get( Foo.class, "123" );
 
         try

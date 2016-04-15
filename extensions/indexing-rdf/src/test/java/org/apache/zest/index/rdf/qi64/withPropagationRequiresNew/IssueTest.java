@@ -53,12 +53,12 @@ public class IssueTest
         String id = newZestAccount();
 
         // Make sure there's no unit of work
-        assertFalse( uowf.isUnitOfWorkActive() );
+        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        assertFalse( uowf.isUnitOfWorkActive() );
+        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
     }
 
     @Test
@@ -69,14 +69,14 @@ public class IssueTest
         String id = newZestAccount();
 
         // Make sure there's no unit of work
-        assertFalse( uowf.isUnitOfWorkActive() );
+        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
 
-        UnitOfWork parentUnitOfWork = uowf.newUnitOfWork();
+        UnitOfWork parentUnitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        UnitOfWork currentUnitOfWork = uowf.currentUnitOfWork();
+        UnitOfWork currentUnitOfWork = unitOfWorkFactory.currentUnitOfWork();
         assertEquals( parentUnitOfWork, currentUnitOfWork );
 
         assertTrue( currentUnitOfWork.isOpen() );

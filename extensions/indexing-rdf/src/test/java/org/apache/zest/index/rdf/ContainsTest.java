@@ -144,7 +144,7 @@ public class ContainsTest extends AbstractZestTest
             string
             )
       );
-      return this.uowf.currentUnitOfWork().newQuery( builder ).find();
+      return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
 
    }
 
@@ -168,17 +168,17 @@ public class ContainsTest extends AbstractZestTest
             )
          );
 
-      return this.uowf.currentUnitOfWork().newQuery( builder);
+      return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder);
    }
 
    private ExampleEntity performContainsStringTest(Set<String> entityStrings, String queryableString) throws Exception
    {
-      UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
+      UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
       String[] entityStringsArray = new String[entityStrings.size()];
       ContainsAllTest.createEntityWithStrings(creatingUOW, this.valueBuilderFactory, entityStrings.toArray(entityStringsArray));
       creatingUOW.complete();
 
-      UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
+      UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
       try
       {
          ExampleEntity entity = this.findEntity(queryableString);
@@ -192,12 +192,12 @@ public class ContainsTest extends AbstractZestTest
 
    private ExampleEntity performContainsStringValueTest(Set<String> entityStrings, String queryableString) throws Exception
    {
-      UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
+      UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
       String[] entityStringsArray = new String[entityStrings.size()];
       ContainsAllTest.createEntityWithComplexValues(creatingUOW, this.valueBuilderFactory, entityStrings.toArray(entityStringsArray));
       creatingUOW.complete();
 
-      UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
+      UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
       try
       {
          ExampleEntity entity = this.findEntityBasedOnValueString(queryableString);

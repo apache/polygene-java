@@ -62,7 +62,7 @@ public class EntityToValueTest
     public void whenConvertingEntityToValueExpectCorrectValues()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity entity = setupPersonEntities( uow );
@@ -87,7 +87,7 @@ public class EntityToValueTest
     public void givenUnqualifiedValueWhenConvertingEntityExpectCorrectMapping()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
@@ -112,7 +112,7 @@ public class EntityToValueTest
     public void givenUnqualifiedValue2WhenConvertingEntityExpectCorrectMapping()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
@@ -137,7 +137,7 @@ public class EntityToValueTest
     public void givenQualifiedValueNotFromSameInterfaceWhenConvertingEntityExpectNonOptionalException()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity niclas = setupPersonEntities( uow );
@@ -158,7 +158,7 @@ public class EntityToValueTest
     public void whenConvertingEntityToValueUsingPrototypeOpportunityExpectCorrectValues()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity entity = setupPersonEntities( uow );

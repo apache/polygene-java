@@ -58,12 +58,12 @@ public class Qi382Test extends AbstractZestTest
     public void givenCreationOfTwoEntitiesWhenAssigningOneToOtherExpectCompletionToSucceed()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork() )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             Car car = unitOfWork.newEntity( Car.class, "Ferrari" );
             unitOfWork.complete();
         }
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork() )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             Car car = unitOfWork.get( Car.class, "Ferrari" );
             assertThat( car, notNullValue() );

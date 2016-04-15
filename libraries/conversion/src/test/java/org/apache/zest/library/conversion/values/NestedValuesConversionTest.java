@@ -56,7 +56,7 @@ public class NestedValuesConversionTest
     public void testNestedValuesConversion()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             FooEntity fooEntity = createFooEntity( uow, "Test nested values conversion" );

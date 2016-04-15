@@ -55,7 +55,7 @@ public class AlarmProxyTest extends AbstractZestTest
     public void givenAlarmPointWhenActivateExpectActivationEvent()
         throws Exception
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
 // START SNIPPET: documentation

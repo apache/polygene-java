@@ -44,7 +44,7 @@ public class NonQueryableTest
     @Test
     public void whenQuerableIsFalseOnPropertyThenExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             QueryBuilder<Abc> builder = queryBuilderFactory.newQueryBuilder( Abc.class );
@@ -65,7 +65,7 @@ public class NonQueryableTest
     @Test
     public void testQueryIterable()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             queryBuilderFactory.newQueryBuilder( Abc2.class );

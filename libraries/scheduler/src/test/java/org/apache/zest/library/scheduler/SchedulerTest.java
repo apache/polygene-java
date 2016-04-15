@@ -74,14 +74,14 @@ public class SchedulerTest
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "testTask" );
         String taskId;
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             FooTask task = createFooTask( uow, "TestTask", BAZAR );
             taskId = task.identity().get();
             task.run();
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             FooTask task = uow.get( FooTask.class, taskId );
             assertThat( task.runCounter().get(), equalTo( 1 ) );
@@ -97,7 +97,7 @@ public class SchedulerTest
         DateTime start = new DateTime();
         String taskIdentity;
         long sleepMillis;
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             Scheduler scheduler = serviceFinder.findService( Scheduler.class ).get();
 
@@ -118,7 +118,7 @@ public class SchedulerTest
             .until( taskOutput( taskIdentity ), equalTo( 1 ) );
 
         //noinspection unused
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             Timeline timeline = serviceFinder.findService( Timeline.class ).get();
             DateTime now = new DateTime();
@@ -154,7 +154,7 @@ public class SchedulerTest
         Schedule schedule2;
         Schedule schedule3;
         Schedule schedule4;
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             FooTask task = createFooTask( uow, usecase.name(), BAZAR );
             taskIdentity = task.identity().get();
@@ -170,7 +170,7 @@ public class SchedulerTest
             .atMost( 6, SECONDS )
             .until( taskOutput( taskIdentity ), equalTo( 4 ) );
 
-        try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             schedule1 = uow.get( schedule1 );
             schedule2 = uow.get( schedule2 );
@@ -194,7 +194,7 @@ public class SchedulerTest
     private Callable<Integer> taskOutput( final String taskIdentity )
     {
         return () -> {
-            try( UnitOfWork uow = uowf.newUnitOfWork() )
+            try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
             {
                 FooTask task = uow.get( FooTask.class, taskIdentity );
                 Integer count = task.runCounter().get();

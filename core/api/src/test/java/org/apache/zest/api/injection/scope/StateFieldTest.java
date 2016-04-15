@@ -52,7 +52,7 @@ public class StateFieldTest
     public void givenEntityWithFieldPropertiesWhenUpdatedThenReturnCorrect()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity charles = unitOfWork.newEntity( PersonEntity.class );
@@ -73,7 +73,7 @@ public class StateFieldTest
 
             unitOfWork.complete();
 
-            unitOfWork = uowf.newUnitOfWork();
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
             charles = unitOfWork.get( charles );
             daniel = unitOfWork.get( daniel );

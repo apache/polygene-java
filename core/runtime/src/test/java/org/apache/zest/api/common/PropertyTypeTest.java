@@ -55,7 +55,7 @@ public class PropertyTypeTest
     public void givenEntityWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );

@@ -48,7 +48,7 @@ public class GenericConcernTest
     @Test
     public void testNestedUnitOfWork()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         Some some = transientBuilderFactory.newTransient( Some.class );
         some.doStuff();
         uow.discard();

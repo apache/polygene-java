@@ -52,7 +52,7 @@ public class UnitOfWorkFactoryTest
     public void testUnitOfWork()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         // Create product
         EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder( ProductEntity.class );

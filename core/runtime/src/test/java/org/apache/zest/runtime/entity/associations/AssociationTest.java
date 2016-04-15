@@ -58,7 +58,7 @@ public class AssociationTest
     @Test
     public void testAssociation()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         try
         {

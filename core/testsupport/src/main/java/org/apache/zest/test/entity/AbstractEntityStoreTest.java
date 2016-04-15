@@ -153,14 +153,14 @@ public abstract class AbstractEntityStoreTest
     public void whenNewEntityThenCanFindEntityAndCorrectValues()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             TestEntity instance = createEntity( unitOfWork );
             unitOfWork.complete();
 
             // Find entity
-            unitOfWork = uowf.newUnitOfWork();
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             instance = unitOfWork.get( instance );
 
             // Check state
@@ -274,19 +274,19 @@ public abstract class AbstractEntityStoreTest
     public void whenRemovedEntityThenCannotFindEntity()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
         String identity = newInstance.identity().get();
         unitOfWork.complete();
 
         // Remove entity
-        unitOfWork = uowf.newUnitOfWork();
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity instance = unitOfWork.get( newInstance );
         unitOfWork.remove( instance );
         unitOfWork.complete();
 
         // Find entity
-        unitOfWork = uowf.newUnitOfWork();
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             unitOfWork.get( TestEntity.class, identity );
@@ -309,21 +309,21 @@ public abstract class AbstractEntityStoreTest
         TestEntity testEntity;
         String version;
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version ) );
@@ -339,14 +339,14 @@ public abstract class AbstractEntityStoreTest
         TestEntity testEntity;
         String version;
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
             version = spi.entityStateOf( testEntity ).version();
@@ -354,7 +354,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
@@ -370,14 +370,14 @@ public abstract class AbstractEntityStoreTest
         TestEntity testEntity;
         String version;
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.manyAssociation().add( 0, testEntity );
             version = spi.entityStateOf( testEntity ).version();
@@ -385,7 +385,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork.complete();
         }
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
@@ -400,7 +400,7 @@ public abstract class AbstractEntityStoreTest
     {
         TestEntity testEntity;
         {
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -412,7 +412,7 @@ public abstract class AbstractEntityStoreTest
         String version;
         {
             // Start working with Entity in one UoW
-            unitOfWork1 = uowf.newUnitOfWork();
+            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             version = spi.entityStateOf( testEntity1 ).version();
             if( version.isEmpty() )
@@ -425,7 +425,7 @@ public abstract class AbstractEntityStoreTest
         }
         {
             // Start working with same Entity in another UoW, and complete it
-            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             TestEntity testEntity2 = unitOfWork.get( testEntity );
             assertThat( "version is correct", spi.entityStateOf( testEntity1 ).version(), equalTo( version ) );
             testEntity2.name().set( "B" );
@@ -445,7 +445,7 @@ public abstract class AbstractEntityStoreTest
         }
         {
             // Check values
-            unitOfWork1 = uowf.newUnitOfWork();
+            unitOfWork1 = unitOfWorkFactory.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
             assertThat( "version is incorrect", spi.entityStateOf( testEntity1 ).version(),
@@ -458,19 +458,19 @@ public abstract class AbstractEntityStoreTest
     public void givenEntityStoredLoadedChangedWhenUnitOfWorkDiscardsThenDontStoreState()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             String identity = createEntity( unitOfWork ).identity().get();
             unitOfWork.complete();
 
-            unitOfWork = uowf.newUnitOfWork();
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             TestEntity entity = unitOfWork.get( TestEntity.class, identity );
             assertThat( entity.intValue().get(), is( 42 ) );
             entity.intValue().set( 23 );
             unitOfWork.discard();
 
-            unitOfWork = uowf.newUnitOfWork();
+            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             entity = unitOfWork.get( TestEntity.class, identity );
             assertThat( entity.intValue().get(), is( 42 ) );
         }

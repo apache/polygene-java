@@ -192,7 +192,7 @@ public class HasUoWFileTest
         File attachedFile;
 
         // Test discarded creation
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Creation Rollback" );
             attachedFile = entity.attachedFile();
@@ -200,7 +200,7 @@ public class HasUoWFileTest
         assertFalse( "File still exists after discarded creation UoW", attachedFile.exists() );
 
         // Test completed creation
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Creation" );
             attachedFile = entity.attachedFile();
@@ -218,7 +218,7 @@ public class HasUoWFileTest
         File attachedFile;
 
         // Create new
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Modification" );
             entityId = entity.identity().get();
@@ -227,14 +227,14 @@ public class HasUoWFileTest
         }
 
         // Testing discarded modification
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             testService.modifyFile( entityId );
         }
         assertTrue( "File content after discarded modification was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
 
         // Testing completed modification
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             testService.modifyFile( entityId );
             uow.complete();
@@ -251,7 +251,7 @@ public class HasUoWFileTest
         File attachedFile;
 
         // Create new
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Deletion" );
             entityId = entity.identity().get();
@@ -260,7 +260,7 @@ public class HasUoWFileTest
         }
 
         // Testing discarded deletion
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = uow.get( TestedEntity.class, entityId );
             uow.remove( entity );
@@ -268,7 +268,7 @@ public class HasUoWFileTest
         assertTrue( "File do not exists after discarded deletion", attachedFile.exists() );
 
         // Testing completed deletion
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = uow.get( TestedEntity.class, entityId );
             uow.remove( entity );
@@ -285,7 +285,7 @@ public class HasUoWFileTest
         final String entityId;
 
         // Create new
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
             entityId = entity.identity().get();
@@ -296,11 +296,11 @@ public class HasUoWFileTest
         UnitOfWork uow, uow2;
         TestedEntity entity;
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
 
-        uow2 = uowf.newUnitOfWork();
+        uow2 = unitOfWorkFactory.newUnitOfWork();
         entity = uow2.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
 
@@ -325,7 +325,7 @@ public class HasUoWFileTest
         File attachedFile;
 
         // Create new
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
             entityId = entity.identity().get();

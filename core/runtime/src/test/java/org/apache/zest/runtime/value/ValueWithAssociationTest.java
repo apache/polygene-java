@@ -66,7 +66,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
         String identity1;
         String identity2;
         DualFaced value;
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
             builder1.instance().name().set( "Niclas" );
@@ -86,7 +86,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
             uow.complete();
         }
 
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             DualFaced entity = uow.get( DualFaced.class, identity2 );
             AssociationStateHolder holder = spi.stateOf( (EntityComposite) entity );
@@ -119,13 +119,13 @@ public class ValueWithAssociationTest extends AbstractZestTest
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
 
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             uow.toEntity( DualFaced.class, value );
             uow.complete();
         }
 
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             DualFaced entity = uow.get( DualFaced.class, "1234" );
             assertThat( entity.identity().get(), equalTo( "1234" ) );
@@ -140,7 +140,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
     {
         String identity1;
         String identity2;
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
             builder1.instance().name().set( "Niclas" );
@@ -170,7 +170,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
         vb2.prototype().namedSimples().put( "paul", simpleValue );
         DualFaced dualValue = vb2.newInstance();
 
-        try (UnitOfWork uow = uowf.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             DualFaced dualEntity = uow.toEntity( DualFaced.class, dualValue );
             // The root entity is expected to have changed value,

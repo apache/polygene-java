@@ -98,7 +98,7 @@ public class EntitySerializerTest
     void createDummyData()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );

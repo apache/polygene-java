@@ -95,7 +95,7 @@ public class ReindexerTest
 
         // ----> Create data and wipe index
 
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         EntityBuilder<MyEntity> eBuilder = uow.newEntityBuilder( MyEntity.class );
         MyEntity e = eBuilder.instance();
@@ -112,7 +112,7 @@ public class ReindexerTest
 
         serviceFinder.findService( ReindexerService.class ).get().reindex(); // Reindex
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
 
         QueryBuilder<MyEntity> qBuilder = queryBuilderFactory.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );

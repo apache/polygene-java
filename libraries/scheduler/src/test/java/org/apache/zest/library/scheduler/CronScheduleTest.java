@@ -48,7 +48,7 @@ public class CronScheduleTest extends AbstractZestTest
         throws Exception
     {
 
-        UnitOfWork work = uowf.newUnitOfWork();
+        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<Task> builder1 = work.newEntityBuilder( Task.class );
         builder1.instance().name().set( "abc" );
         Task task = builder1.newInstance();

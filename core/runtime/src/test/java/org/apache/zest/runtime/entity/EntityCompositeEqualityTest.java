@@ -50,7 +50,7 @@ public class EntityCompositeEqualityTest
         throws Exception
     {
         super.setUp();
-        unitOfWork = this.uowf.newUnitOfWork();
+        unitOfWork = this.unitOfWorkFactory.newUnitOfWork();
         myCompositeBuilder = unitOfWork.newEntityBuilder( MyComposite.class );
     }
 

@@ -46,7 +46,7 @@ public class Qi383Test extends AbstractZestTest
     public void givenUnitOfWorkInProgressWhenAddingSameEntityTwiceExpectException()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork() )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             unitOfWork.newEntity( Car.class, "Ferrari" );
             unitOfWork.newEntity( Car.class, "Ford" );

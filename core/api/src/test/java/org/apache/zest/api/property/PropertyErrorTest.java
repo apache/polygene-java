@@ -46,7 +46,7 @@ public class PropertyErrorTest
     public void givenEntityWithNonOptionPropertyWhenInstantiatedThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity person = unitOfWork.newEntity( PersonEntity.class );

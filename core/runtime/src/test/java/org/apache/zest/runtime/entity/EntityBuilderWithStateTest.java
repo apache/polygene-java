@@ -61,7 +61,7 @@ public class EntityBuilderWithStateTest
         throws UnitOfWorkCompletionException
     {
         final String associatedIdentity;
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             EntityBuilder<SomeEntity> builder = uow.newEntityBuilder( SomeEntity.class );
             builder.instance().prop().set( "Associated" );
@@ -69,7 +69,7 @@ public class EntityBuilderWithStateTest
             associatedIdentity = entity.identity().get();
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork() )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             SomeEntity entity = uow.newEntityBuilderWithState(
                 SomeEntity.class,

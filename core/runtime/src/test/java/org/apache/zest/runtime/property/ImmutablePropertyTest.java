@@ -86,7 +86,7 @@ public final class ImmutablePropertyTest
     @Test
     public final void testImmutableEntityProperty()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<LocationEntity> builder = uow.newEntityBuilder( LocationEntity.class );

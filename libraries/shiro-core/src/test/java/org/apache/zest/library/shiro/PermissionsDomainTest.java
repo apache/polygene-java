@@ -31,7 +31,6 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -136,7 +135,7 @@ public class PermissionsDomainTest
             throws UnitOfWorkCompletionException
     {
         // START SNIPPET: usage
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         User user = userFactory.createNewUser( "foo", "bar" );
         Role role = roleFactory.create( "role-one", "permission-one", "permission-two" );
@@ -146,7 +145,7 @@ public class PermissionsDomainTest
 
         // END SNIPPET: usage
         // START SNIPPET: usage
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
 
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.login( new UsernamePasswordToken( "foo", "bar" ) );

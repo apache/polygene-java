@@ -84,7 +84,7 @@ public class EntityCreationTest
     @Test
     public void doTestUseUowNewEntity()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         SomeEntity entity = uow.newEntity( SomeEntity.class );
         uow.discard();
     }
@@ -92,7 +92,7 @@ public class EntityCreationTest
     @Test
     public void doTestUseEntityBuilder()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<SomeEntity> builder = uow.newEntityBuilder( SomeEntity.class );
         SomeEntity entity = builder.newInstance();
         uow.discard();

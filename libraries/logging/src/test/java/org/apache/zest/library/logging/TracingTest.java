@@ -73,7 +73,7 @@ public class TracingTest
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
@@ -94,7 +94,7 @@ public class TracingTest
         SomeService2 sc = serviceFinder.findService( SomeService2.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
@@ -118,7 +118,7 @@ public class TracingTest
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 789, sc.doSomethingModeratelyImportant() );
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
@@ -157,7 +157,7 @@ public class TracingTest
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 753, sc.doSomethingInsanelyImportant() );
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??

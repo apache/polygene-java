@@ -117,7 +117,7 @@ public class PostgreSQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = uowf.newUnitOfWork(
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(
             UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
         );
         try

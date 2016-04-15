@@ -62,14 +62,14 @@ public class ValueInjectionDeserializationTest
             builder.prototype().data().set( "Niclas" );
             Some value = builder.newInstance();
 
-            uow = uowf.newUnitOfWork();
+            uow = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<Niclas> eb = uow.newEntityBuilder( Niclas.class );
             eb.instance().value().set( value );
             Niclas niclas1 = eb.newInstance();
             String id = niclas1.identity().get();
             uow.complete();
 
-            uow = uowf.newUnitOfWork();
+            uow = unitOfWorkFactory.newUnitOfWork();
             Niclas niclas2 = uow.get( Niclas.class, id );
             Some someValue = niclas2.value().get();
             Assert.assertEquals( someValue.data().get(), "Niclas" );

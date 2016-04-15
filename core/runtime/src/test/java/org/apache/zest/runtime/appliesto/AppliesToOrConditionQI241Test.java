@@ -58,7 +58,7 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcerns1()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         try
         {
@@ -77,7 +77,7 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcerns2()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         try
         {
@@ -96,7 +96,7 @@ public class AppliesToOrConditionQI241Test
     @Test
     public void testMultiConcernsBoth()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         try
         {

@@ -30,7 +30,6 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -123,7 +122,7 @@ public class PasswordDomainTest
             throws UnitOfWorkCompletionException
     {
 
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         UserFactory userFactory = serviceFinder.findService( UserFactory.class ).get();
         // START SNIPPET: usage
@@ -132,7 +131,7 @@ public class PasswordDomainTest
         // END SNIPPET: usage
         uow.complete();
 
-        uow = uowf.newUnitOfWork();
+        uow = unitOfWorkFactory.newUnitOfWork();
 
         // START SNIPPET: usage
         Subject currentUser = SecurityUtils.getSubject();

@@ -61,7 +61,7 @@ public class ConfigurationTest
     public void whenConfiguredThenSayHelloWorks()
         throws Exception
     {
-        UnitOfWork unit = uowf.newUnitOfWork();
+        UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
         EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
             .identity() );
         HelloWorldConfiguration config = entityBuilder.instance();
@@ -87,7 +87,7 @@ public class ConfigurationTest
         HelloWorldConfiguration config;
 
         {
-            UnitOfWork unit = uowf.newUnitOfWork();
+            UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
                 .identity() );
             config = entityBuilder.instance();
@@ -100,7 +100,7 @@ public class ConfigurationTest
         assertThat( "result is correct", service.get().sayHello(), equalTo( "Hello World" ) );
 
         {
-            UnitOfWork unit = uowf.newUnitOfWork();
+            UnitOfWork unit = unitOfWorkFactory.newUnitOfWork();
             config = unit.get( config );
             config.phrase().set( "Hey" );
             config.name().set( "Universe" );

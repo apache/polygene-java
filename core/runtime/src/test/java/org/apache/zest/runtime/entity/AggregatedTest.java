@@ -60,7 +60,7 @@ public class AggregatedTest
         CompanyEntity companyEntity;
         PersonEntity personEntity, personEntity2;
         EmployeeEntity employeeEntity, employeeEntity2;
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Creation" ) ) )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Creation" ) ) )
         {
             {
                 EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -106,7 +106,7 @@ public class AggregatedTest
             unitOfWork.complete();
         }
 
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Removal" ) ) )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Removal" ) ) )
         {
             companyEntity = unitOfWork.get( companyEntity );
             unitOfWork.remove( companyEntity );
@@ -114,7 +114,7 @@ public class AggregatedTest
             unitOfWork.complete();
         }
 
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "No 1st employee" ) ) )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "No 1st employee" ) ) )
         {
             unitOfWork.get( employeeEntity );
             fail( "Should not work" );
@@ -124,7 +124,7 @@ public class AggregatedTest
             // Expected
         }
 
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "No 2nd employee" ) ) )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "No 2nd employee" ) ) )
         {
             unitOfWork.get( employeeEntity2 );
             fail( "Should not work" );
@@ -134,7 +134,7 @@ public class AggregatedTest
             // Expected
         }
 
-        try( UnitOfWork unitOfWork = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Persons not removed" ) ) )
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Persons not removed" ) ) )
         {
             unitOfWork.get( personEntity );
             unitOfWork.get( personEntity2 );

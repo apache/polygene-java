@@ -69,14 +69,14 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         super.setUp();
-        uowf.newUnitOfWork();
+        unitOfWorkFactory.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         if( uow != null )
         {
             uow.discard();
@@ -329,7 +329,7 @@ public class SimpleAlarmModelTest
 
     private AlarmPoint createAlarm( String name )
     {
-        UnitOfWork uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class );
         builder.instance().category().set( createCategory( "SimpleModelTest" ) );
         AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
@@ -348,7 +348,7 @@ public class SimpleAlarmModelTest
 
     private AlarmPoint getAlarm( String identity )
     {
-        UnitOfWork uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         return uow.get( AlarmPoint.class, identity );
     }
 

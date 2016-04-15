@@ -24,7 +24,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
@@ -33,7 +32,6 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -59,7 +57,7 @@ public class ZestSPITest
     public void givenEntityWhenGettingStateThenGetCorrectState()
         throws Exception
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity testEntity;
         try
         {
@@ -78,7 +76,7 @@ public class ZestSPITest
             unitOfWork.discard();
         }
 
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             testEntity = uow.get( testEntity );

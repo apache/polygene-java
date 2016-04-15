@@ -43,7 +43,7 @@ public class HelloTest4 extends AbstractZestTest
     @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<Hello> builder = uow.newEntityBuilder( Hello.class, "123" );
@@ -51,7 +51,7 @@ public class HelloTest4 extends AbstractZestTest
             builder.instanceFor( Hello.State.class ).name().set( "World" );
             builder.newInstance();
             uow.complete();
-            uow = uowf.newUnitOfWork();
+            uow = unitOfWorkFactory.newUnitOfWork();
             Hello underTest = uow.get( Hello.class, "123" );
             String result = underTest.say();
             uow.complete();

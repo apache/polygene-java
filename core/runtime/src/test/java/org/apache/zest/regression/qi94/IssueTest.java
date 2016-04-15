@@ -46,7 +46,7 @@ public class IssueTest
     @Test
     public void entityBuilderAssociationTypeIsNotNull()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );

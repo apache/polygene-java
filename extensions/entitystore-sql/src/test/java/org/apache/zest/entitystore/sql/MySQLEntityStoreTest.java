@@ -91,7 +91,7 @@ public class MySQLEntityStoreTest
         {
             return;
         }
-        UnitOfWork uow = this.uowf.newUnitOfWork(
+        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork(
             UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
         );
         try

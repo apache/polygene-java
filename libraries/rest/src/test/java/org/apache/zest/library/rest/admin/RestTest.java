@@ -98,7 +98,7 @@ public class RestTest
         throws Exception
     {
         super.setUp();
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, "P2" );
@@ -149,7 +149,7 @@ public class RestTest
         properties.put( "firstname", "Jack" );
         properties.put( "lastname", "Doe" );
         restTester.putEntity( "P1", properties );
-        UnitOfWork work = uowf.newUnitOfWork();
+        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity entity = work.get( PersonEntity.class, "P1" );
@@ -169,7 +169,7 @@ public class RestTest
     {
         RestTester restTester = objectFactory.newObject( RestTester.class );
         restTester.deleteEntity( "P1" );
-        UnitOfWork work = uowf.newUnitOfWork();
+        UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
             PersonEntity entity = null;

@@ -56,7 +56,7 @@ public class LifecycleTest
     public void whenEntityHasLifecycleWhenInstantiatedThenInvokeCreate()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
@@ -75,7 +75,7 @@ public class LifecycleTest
     public void whenEntityHasLifecycleWhenRemovedThenInvokeRemove()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );

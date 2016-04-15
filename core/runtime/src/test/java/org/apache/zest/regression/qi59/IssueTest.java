@@ -48,7 +48,7 @@ public class IssueTest
     @Test
     public void givenEntityWithConstrainedPropertyWhenInvalidPropertyValueSetThenThrowException()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         try
         {
@@ -68,7 +68,7 @@ public class IssueTest
     @Test
     public void givenEntityWithComplexConstrainedPropertyWhenInvalidPropertyValueSetThenThrowException()
     {
-        UnitOfWork uow = uowf.newUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
 
         try
         {
