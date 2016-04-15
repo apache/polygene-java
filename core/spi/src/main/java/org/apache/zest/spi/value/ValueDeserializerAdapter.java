@@ -291,6 +291,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 String string = scanner.next();
                 return (T) deserializeBase64Serialized( module, string );
             }
+            else if( type.isEnum() )
+            {
+                Scanner scanner = new Scanner( input, UTF_8 ).useDelimiter( "\\A" );
+                if( !scanner.hasNext() )
+                {
+                    return String.class.equals( type ) ? (T) "" : null;
+                }
+                String string = scanner.next();
+                return (T) Enum.valueOf( (Class) type, string );
+            }
             else // Complex ValueType
             {
                 InputType adaptedInput = adaptInput( module, input );
