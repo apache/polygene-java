@@ -212,7 +212,6 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
             store.setDataDir( dataDir );
             store.setTripleIndexes( tripleIndexes );
             store.setForceSync( forceSync );
-            System.err.println( "NICLASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
             repo.initialize();
             isNotInitialized = false;
         }
