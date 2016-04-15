@@ -38,6 +38,7 @@ public class DomainLayerWriter
                 "    {\n" +
                 "        createModule( layer, CrudModule.class );\n" +
                 "        createModule( layer, OrderModule.class );   // This is a simple sample that you typically remove.\n" +
+                "        createModule( layer, SecurityModule.class );   // This is a simple sample that you typically remove.\n" +
                 "        return layer;\n" +
                 "    }\n" +
                 "\n" +

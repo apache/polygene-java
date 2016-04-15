@@ -44,6 +44,7 @@ public class SecurityModuleWriter
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
                 "        throws AssemblyException\n" +
                 "    {\n" +
+                "        module.withDefaultUnitOfWorkFactory();\n" +
                 "        module.services( SecurityRepository.class )\n" +
                 "            .withMixins( HardcodedSecurityRepositoryMixin.class )\n" +
                 "            .visibleIn( Visibility.application )\n" +

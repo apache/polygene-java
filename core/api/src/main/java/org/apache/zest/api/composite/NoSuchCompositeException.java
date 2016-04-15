@@ -25,13 +25,15 @@ public class NoSuchCompositeException
 
     private final String compositeType;
     private final String moduleName;
+    private final String visibleTypes;
 
-    protected NoSuchCompositeException( String metaType, String compositeType, String moduleName )
+    protected NoSuchCompositeException( String metaType, String compositeType, String moduleName, String visibleTypes )
     {
         super( "Could not find any visible " + metaType + " of type [" + compositeType + "] in module [" +
-               moduleName + "]." );
+               moduleName + "].\n" + visibleTypes );
         this.compositeType = compositeType;
         this.moduleName = moduleName;
+        this.visibleTypes = visibleTypes;
     }
 
     public String compositeType()
@@ -42,5 +44,10 @@ public class NoSuchCompositeException
     public String moduleName()
     {
         return moduleName;
+    }
+
+    public String visibleTypes()
+    {
+        return visibleTypes;
     }
 }

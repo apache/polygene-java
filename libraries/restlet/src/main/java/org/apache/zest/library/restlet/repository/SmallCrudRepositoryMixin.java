@@ -31,7 +31,7 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
@@ -92,7 +92,7 @@ public class SmallCrudRepositoryMixin<T extends Identity>
             T entity = uow.get( entityType, id );
             uow.remove( entity );
         }
-        catch( NoSuchEntityException | EntityTypeNotFoundException e )
+        catch( NoSuchEntityException | NoSuchEntityTypeException e )
         {
             throw new IllegalArgumentException( "Entity  '" + idOrName + "' doesn't exist." );
         }

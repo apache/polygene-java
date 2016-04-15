@@ -42,7 +42,7 @@ import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.entitystore.sql.internal.DatabaseSQLService;
@@ -382,7 +382,7 @@ public class SQLEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw EntityTypeNotFoundException.create( type, module );
+                throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();

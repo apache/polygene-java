@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
@@ -155,7 +156,7 @@ public interface EntityToValue
             ValueDescriptor valueDescriptor = module.descriptor().valueDescriptor( valueType.getName() );
             if( valueDescriptor == null )
             {
-                throw new NoSuchValueException( valueType.getName(), module.name() );
+                throw new NoSuchValueException( valueType.getName(), module.name(), module.typeLookup() );
             }
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
 //            Iterable<? extends PropertyDescriptor> properties = valueDescriptor.state().properties();

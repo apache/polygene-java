@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007-2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,27 +13,28 @@
  * limitations under the License.
  *
  */
-package org.apache.zest.api.value;
+package org.apache.zest.api.unitofwork;
 
 import java.util.stream.Collectors;
 import org.apache.zest.api.composite.NoSuchCompositeException;
 import org.apache.zest.api.structure.TypeLookup;
 
 /**
- * Thrown when no visible value of the requested type is found.
+ * Zest exception to be thrown in case that an entity composite
+ * was not found during a lookup call.
  */
-public class NoSuchValueException
+public class NoSuchEntityTypeException
     extends NoSuchCompositeException
 {
-    public NoSuchValueException( String valueType, String moduleName, TypeLookup typeLookup )
+    public NoSuchEntityTypeException( String typeName, String moduleName, TypeLookup typeLookup )
     {
-        super( "ValueComposite", valueType, moduleName, formatVisibleTypes(typeLookup) );
+        super( "EntityComposite", typeName, moduleName, formatVisibleTypes( typeLookup ) );
     }
 
     private static String formatVisibleTypes( TypeLookup typeLookup )
     {
-        return typeLookup.allValues()
-            .map(descriptor -> descriptor.primaryType().getName())
-            .collect( Collectors.joining( "\n", "Visible value types are:\n", "" ) );
+        return typeLookup.allEntities()
+            .map( descriptor -> descriptor.primaryType().getName() )
+            .collect( Collectors.joining( "\n", "Visible entity types are:\n", "" ) );
     }
 }

@@ -38,7 +38,7 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
@@ -186,7 +186,7 @@ public class ValueToEntityMixin
         EntityDescriptor eDesc = module.entityDescriptor( entityType.getName() );
         if( eDesc == null )
         {
-            throw EntityTypeNotFoundException.create( entityType.getName(), module );
+            throw new NoSuchEntityTypeException( entityType.getName(), module.name(), module.typeLookup() );
         }
 
         ValueComposite vComposite = (ValueComposite) value;

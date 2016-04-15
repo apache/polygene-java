@@ -48,7 +48,7 @@ import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.type.MapType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
@@ -243,7 +243,7 @@ public class PreferencesEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw EntityTypeNotFoundException.create( type, module );
+                throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();

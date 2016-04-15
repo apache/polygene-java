@@ -24,7 +24,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
@@ -89,7 +89,7 @@ public class PrivateEntityUnitOfWorkTest
             unitOfWork.newEntity( ProductEntity.class );
             fail( "Should not be able to create product here" );
         }
-        catch( EntityTypeNotFoundException e )
+        catch( NoSuchEntityTypeException e )
         {
             // Ok
             ProductCatalog catalog = unitOfWork.newEntity( ProductCatalog.class, "1" );

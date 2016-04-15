@@ -29,7 +29,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
@@ -124,7 +124,7 @@ public class EntityVisibilityTest
         service.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingBesideModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -138,35 +138,35 @@ public class EntityVisibilityTest
         service.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingBelowLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingBelowModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingAboveLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromServiceWhenAccessingAboveModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -263,7 +263,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -299,7 +299,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -317,7 +317,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -335,7 +335,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -353,7 +353,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -371,7 +371,7 @@ public class EntityVisibilityTest
         }
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -424,7 +424,7 @@ public class EntityVisibilityTest
         value.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingBesideModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -438,35 +438,35 @@ public class EntityVisibilityTest
         value.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingBelowLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingBelowModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingAboveLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromValueWhenAccessingAboveModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -508,7 +508,7 @@ public class EntityVisibilityTest
         transientt.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingBesideModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -522,35 +522,35 @@ public class EntityVisibilityTest
         transientt.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingBelowLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingBelowModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingAboveLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromTransientWhenAccessingAboveModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -592,7 +592,7 @@ public class EntityVisibilityTest
         object.besideLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingBesideModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
@@ -606,35 +606,35 @@ public class EntityVisibilityTest
         object.belowApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingBelowLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingBelowModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowModuleVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveApplicationVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingAboveLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveLayerVisible();
     }
 
-    @Test( expected = EntityTypeNotFoundException.class )
+    @Test( expected = NoSuchEntityTypeException.class )
     public void givenFromObjectWhenAccessingAboveModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );

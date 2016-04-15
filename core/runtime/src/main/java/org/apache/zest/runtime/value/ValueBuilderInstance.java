@@ -13,6 +13,7 @@
  */
 package org.apache.zest.runtime.value;
 
+import java.util.stream.Collectors;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.Composite;
@@ -73,7 +74,7 @@ public final class ValueBuilderInstance<T>
 
         if( valueModel == null )
         {
-            throw new NoSuchValueException( valueType.getName(), currentModule.name() );
+            throw new NoSuchValueException( valueType.getName(), currentModule.name(), currentModule.typeLookup() );
         }
         return new ValueBuilderWithPrototype<>( valueModel, currentModule, prototype() ).newInstance();
     }

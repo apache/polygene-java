@@ -50,8 +50,8 @@ import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -161,45 +161,47 @@ public class ModuleUnitOfWork
 
     @Override
     public <T> T newEntity( Class<T> type )
-        throws EntityTypeNotFoundException, LifecycleException
+        throws NoSuchEntityTypeException, LifecycleException
     {
         return newEntity( type, null );
     }
 
     @Override
     public <T> T newEntity( Class<T> type, String identity )
-        throws EntityTypeNotFoundException, LifecycleException
+        throws NoSuchEntityTypeException, LifecycleException
     {
         return newEntityBuilder( type, identity ).newInstance();
     }
 
     @Override
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
-        throws EntityTypeNotFoundException
+        throws NoSuchEntityTypeException
     {
         return newEntityBuilder( type, null );
     }
 
     @Override
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
-        throws EntityTypeNotFoundException
+        throws NoSuchEntityTypeException
     {
         EntityDescriptor model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw EntityTypeNotFoundException.create( type.getName(), module );
+            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
         }
 
-        EntityStore entityStore = ( (ModuleSpi) model.module().instance() ).entityStore();
+        ModuleDescriptor modelModule = model.module();
+        EntityStore entityStore = ( (ModuleSpi) modelModule.instance() ).entityStore();
 
         // Generate id if necessary
         if( identity == null )
         {
-            IdentityGenerator idGen = ( (ModuleSpi) model.module().instance() ).identityGenerator();
+            IdentityGenerator idGen = ( (ModuleSpi) modelModule.instance() ).identityGenerator();
             if( idGen == null )
             {
-                throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
+                throw new NoSuchServiceException( IdentityGenerator.class.getName(), modelModule
+                    .name(), modelModule.typeLookup() );
             }
             identity = idGen.generate( model.types().findFirst().orElse( null ) );
         }
@@ -220,7 +222,7 @@ public class ModuleUnitOfWork
         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
     )
-        throws EntityTypeNotFoundException
+        throws NoSuchEntityTypeException
     {
         return newEntityBuilderWithState( type, null,
                                           propertyFunction,
@@ -237,7 +239,7 @@ public class ModuleUnitOfWork
         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
     )
-        throws EntityTypeNotFoundException
+        throws NoSuchEntityTypeException
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
@@ -248,10 +250,11 @@ public class ModuleUnitOfWork
 
         if( model == null )
         {
-            throw EntityTypeNotFoundException.create( type.getName(), module );
+            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
         }
 
-        ModuleSpi moduleSpi = (ModuleSpi) model.module().instance();
+        ModuleDescriptor modelModule = model.module();
+        ModuleSpi moduleSpi = (ModuleSpi) modelModule.instance();
         EntityStore entityStore = moduleSpi.entityStore();
 
         FunctionStateResolver stateResolver = new FunctionStateResolver(
@@ -271,7 +274,8 @@ public class ModuleUnitOfWork
                 IdentityGenerator idGen = moduleSpi.identityGenerator();
                 if( idGen == null )
                 {
-                    throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
+                    String typeName = IdentityGenerator.class.getName();
+                    throw new NoSuchServiceException( typeName, modelModule.name(), modelModule.typeLookup() );
                 }
                 identity = idGen.generate( model.types().findFirst().orElse( null ) );
             }
@@ -286,13 +290,13 @@ public class ModuleUnitOfWork
 
     @Override
     public <T> T get( Class<T> type, String identity )
-        throws EntityTypeNotFoundException, NoSuchEntityException
+        throws NoSuchEntityTypeException, NoSuchEntityException
     {
         Iterable<? extends EntityDescriptor> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {
-            throw EntityTypeNotFoundException.create( type.getName(), module );
+            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
         }
 
         return uow.get( parseEntityReference( identity ), this, models, type );
@@ -301,7 +305,7 @@ public class ModuleUnitOfWork
     @Override
     @SuppressWarnings( "unchecked" )
     public <T> T get( T entity )
-        throws EntityTypeNotFoundException
+        throws NoSuchEntityTypeException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );

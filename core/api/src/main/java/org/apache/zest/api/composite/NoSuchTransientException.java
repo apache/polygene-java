@@ -16,13 +16,23 @@
 
 package org.apache.zest.api.composite;
 
+import java.util.stream.Collectors;
+import org.apache.zest.api.structure.TypeLookup;
+
 /**
  * This exception is thrown if client code tries to create a non-existing TransientComposite type.
  */
 public class NoSuchTransientException extends NoSuchCompositeException
 {
-    public NoSuchTransientException( String typeName, String moduleName )
+    public NoSuchTransientException( String typeName, String moduleName, TypeLookup typeLookup )
     {
-        super( "TransientComposite", typeName, moduleName );
+        super( "TransientComposite", typeName, moduleName, formatVisibleTypes( typeLookup ) );
+    }
+
+    private static String formatVisibleTypes( TypeLookup typeLookup )
+    {
+        return typeLookup.allTransients()
+            .map(descriptor -> descriptor.primaryType().getName())
+            .collect( Collectors.joining( "\n", "Visible transient types are:\n", "" ) );
     }
 }

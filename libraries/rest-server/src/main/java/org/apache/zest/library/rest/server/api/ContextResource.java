@@ -37,8 +37,7 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
@@ -210,7 +209,7 @@ public class ContextResource
             current().select( composite );
             return composite;
         }
-        catch( EntityTypeNotFoundException | NoSuchEntityException e )
+        catch( NoSuchEntityTypeException | NoSuchEntityException e )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }

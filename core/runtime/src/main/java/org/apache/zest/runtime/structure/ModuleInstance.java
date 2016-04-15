@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
@@ -199,7 +200,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchTransientException( mixinType.getName(), name() );
+            throw new NoSuchTransientException( mixinType.getName(), name(), typeLookup );
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
@@ -240,7 +241,7 @@ public class ModuleInstance
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name() );
+            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
         }
 
         StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
@@ -264,7 +265,7 @@ public class ModuleInstance
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name() );
+            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
         }
 
         StateResolver stateResolver = new FunctionStateResolver(
@@ -321,7 +322,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchValueException( valueType.getName(), name() );
+            throw new NoSuchValueException( valueType.getName(), name(), typeLookup );
         }
 
         return new ValueBuilderWithPrototype<>( model, this, prototype );
@@ -336,7 +337,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name() );
+            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
         }
 
         try
@@ -369,7 +370,7 @@ public class ModuleInstance
         ModelDescriptor serviceModel = typeLookup.lookupServiceModel( serviceType );
         if( serviceModel == null )
         {
-            throw new NoSuchServiceException( serviceType.getTypeName(), name() );
+            throw new NoSuchServiceException( serviceType.getTypeName(), name(),typeLookup );
         }
         return findServiceReferenceInstance( serviceModel );
     }

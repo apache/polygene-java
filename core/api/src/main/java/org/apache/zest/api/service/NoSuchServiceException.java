@@ -16,15 +16,26 @@
 
 package org.apache.zest.api.service;
 
+import java.util.stream.Collectors;
+import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.NoSuchCompositeException;
+import org.apache.zest.api.structure.TypeLookup;
 
 /**
  * Thrown when no visible service of the requested type is found.
  */
 public class NoSuchServiceException extends NoSuchCompositeException
 {
-    public NoSuchServiceException( String typeName, String moduleName )
+    public NoSuchServiceException( String typeName, String moduleName, TypeLookup typeLookup )
     {
-        super( "ServiceComposite", typeName, moduleName );
+        super( "ServiceComposite", typeName, moduleName, formatVisibleTypes( typeLookup ) );
+    }
+
+    private static String formatVisibleTypes( TypeLookup typeLookup )
+    {
+        return typeLookup.allServices()
+            .map( descriptor -> ( CompositeDescriptor) descriptor )
+            .map(descriptor -> descriptor.primaryType().getName())
+            .collect( Collectors.joining( "\n", "Visible service types are:\n", "" ) );
     }
 }

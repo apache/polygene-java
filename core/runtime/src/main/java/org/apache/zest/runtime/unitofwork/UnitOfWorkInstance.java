@@ -39,7 +39,7 @@ import org.apache.zest.api.metrics.MetricsTimerFactory;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
@@ -132,7 +132,7 @@ public final class UnitOfWorkInstance
                       Iterable<? extends EntityDescriptor> potentialModels,
                       Class<T> mixinType
     )
-        throws EntityTypeNotFoundException, NoSuchEntityException
+        throws NoSuchEntityTypeException, NoSuchEntityException
     {
         checkOpen();
 
@@ -173,7 +173,7 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    throw EntityTypeNotFoundException.create( mixinType.getName(), module );
+                    throw new NoSuchEntityTypeException( mixinType.getName(), module.name(), module.typeLookup() );
                 }
             }
             // Create instance

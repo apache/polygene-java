@@ -60,4 +60,6 @@ public interface Module
 
 
     UnitOfWorkFactory unitOfWorkFactory();
+
+    TypeLookup typeLookup();
 }

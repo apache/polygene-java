@@ -127,12 +127,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new Entity
      *
-     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      * @throws LifecycleException          if the entity cannot be created
      */
     <T> T newEntity( Class<T> type )
-        throws EntityTypeNotFoundException, AmbiguousTypeException, LifecycleException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException, LifecycleException;
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite
@@ -145,12 +145,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new Entity
      *
-     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      * @throws LifecycleException          if the entity cannot be created
      */
     <T> T newEntity( Class<T> type, @Optional String identity )
-        throws EntityTypeNotFoundException, AmbiguousTypeException, LifecycleException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException, LifecycleException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -162,11 +162,11 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new EntityBuilder
      *
-     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
-        throws EntityTypeNotFoundException, AmbiguousTypeException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -179,11 +179,11 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new EntityBuilder
      *
-     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type, @Optional String identity )
-        throws EntityTypeNotFoundException, AmbiguousTypeException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
@@ -201,7 +201,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new EntityBuilder starting with the given state
      *
-     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type,
@@ -210,7 +210,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
                                                     Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
     )
-        throws EntityTypeNotFoundException, AmbiguousTypeException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
@@ -229,7 +229,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new EntityBuilder starting with the given state
      *
-     * @throws EntityTypeNotFoundException If no mixins implements the given type
+     * @throws NoSuchEntityTypeException If no mixins implements the given type
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, @Optional String identity,
@@ -238,7 +238,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
                                                     Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
     )
-        throws EntityTypeNotFoundException, AmbiguousTypeException;
+        throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
      * Find an Entity of the given mixin type with the give identity. This
@@ -249,11 +249,11 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return the entity
      *
-     * @throws EntityTypeNotFoundException if no entity type could be found
+     * @throws NoSuchEntityTypeException if no entity type could be found
      * @throws NoSuchEntityException       if the entity could not be found
      */
     <T> T get( Class<T> type, String identity )
-        throws EntityTypeNotFoundException, NoSuchEntityException;
+        throws NoSuchEntityTypeException, NoSuchEntityException;
 
     /**
      * If you have a reference to an Entity from another
@@ -264,10 +264,10 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return an Entity from this UnitOfWork
      *
-     * @throws EntityTypeNotFoundException if no entity type could be found
+     * @throws NoSuchEntityTypeException if no entity type could be found
      */
     <T> T get( T entity )
-        throws EntityTypeNotFoundException;
+        throws NoSuchEntityTypeException;
 
     /**
      * Remove the given Entity.

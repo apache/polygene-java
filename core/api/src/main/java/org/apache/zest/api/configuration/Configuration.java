@@ -32,7 +32,7 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.ServiceTags;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -237,7 +237,7 @@ public interface Configuration<T>
                 configuration = uow.get( serviceModel.<V>configurationType(), identity );
                 uow.pause();
             }
-            catch( NoSuchEntityException | EntityTypeNotFoundException e )
+            catch( NoSuchEntityException | NoSuchEntityTypeException e )
             {
                 return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
             }

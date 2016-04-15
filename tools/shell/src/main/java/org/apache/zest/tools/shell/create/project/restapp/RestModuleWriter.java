@@ -46,6 +46,7 @@ public class RestModuleWriter
                 "        module.objects( SimpleVerifier.class, SimpleEnroler.class);\n" +
                 "\n" +
                 "        new RestletCrudConnectivityAssembler().assemble( module );\n" +
+                "        module.values( EntryPoint.class );\n" +
                 "        module.values( /* add value types */   );\n" +
                 "        module.services(  /* add services */  );\n" +
                 "        return module;\n" +
