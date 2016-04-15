@@ -11,7 +11,7 @@
  * and limitations under the License.
 //////////////////////
 
-[[core-api-value,Object]]
+[[core-api-object,Objects]]
 = Objects =
 There are times when Apache Zest needs to interoperate with other systems, which
 does not have interfaces as their abstraction. Zest has a notion of

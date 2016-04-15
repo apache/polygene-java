@@ -22,6 +22,7 @@ package org.apache.zest.api.service;
 
 import java.util.stream.Collectors;
 import org.apache.zest.api.composite.CompositeDescriptor;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.NoSuchCompositeException;
 import org.apache.zest.api.structure.TypeLookup;
 
@@ -38,8 +39,16 @@ public class NoSuchServiceException extends NoSuchCompositeException
     private static String formatVisibleTypes( TypeLookup typeLookup )
     {
         return typeLookup.allServices()
-            .map( descriptor -> ( CompositeDescriptor) descriptor )
-            .map(descriptor -> descriptor.primaryType().getName())
+            .map( NoSuchServiceException::typeOf )
             .collect( Collectors.joining( "\n", "Visible service types are:\n", "" ) );
+    }
+
+    private static String typeOf( ModelDescriptor descriptor )
+    {
+        if( descriptor instanceof CompositeDescriptor )
+        {
+            return ( (CompositeDescriptor) descriptor ).primaryType().getName();
+        }
+        return descriptor.types().map( Class::getName ).collect( Collectors.joining( ",", "[", "]") );
     }
 }
