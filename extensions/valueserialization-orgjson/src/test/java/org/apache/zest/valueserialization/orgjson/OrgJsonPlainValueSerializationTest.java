@@ -33,6 +33,9 @@ public class OrgJsonPlainValueSerializationTest
         throws AssemblyException
     {
         new OrgJsonValueSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
+        super.assemble( module );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 }

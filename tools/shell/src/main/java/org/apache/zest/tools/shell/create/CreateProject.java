@@ -35,7 +35,7 @@ public class CreateProject extends AbstractCommand
     public void execute( String[] args, BufferedReader input, PrintWriter output )
         throws HelpNeededException
     {
-        if( args.length < 4 )
+        if( args.length != 4 )
         {
             throw new HelpNeededException();
         }
@@ -46,8 +46,8 @@ public class CreateProject extends AbstractCommand
         Map<String, String> props = FileUtils.readPropertiesResource( "templates/" + template + "/project.properties" );
         if( props == null )
         {
-            System.err.println( "Project Template " + template + " does not exist. " );
-            System.exit( 1 );
+            System.err.println( "Project Template " + template + " does not exist. \n\n" );
+            throw new HelpNeededException();
         }
         props.put( "project.dir", projectDir.getAbsolutePath() );
         props.put( "project.name", projectName);
@@ -70,7 +70,7 @@ public class CreateProject extends AbstractCommand
     @Override
     public String description()
     {
-        return "create project";
+        return "type name package\tCreates a new skeletal project in directory [name].";
     }
 
     @Override

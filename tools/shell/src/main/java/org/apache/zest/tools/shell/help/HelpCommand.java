@@ -42,7 +42,7 @@ public class HelpCommand extends AbstractCommand
     {
         for( Command command : commands )
         {
-            output.println( command.name() + "\t" + command.description() );
+            output.println( command.name() + " " + command.description() );
         }
     }
 

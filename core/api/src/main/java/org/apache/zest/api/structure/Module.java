@@ -19,21 +19,14 @@
  */
 package org.apache.zest.api.structure;
 
-import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 import org.apache.zest.api.composite.TransientBuilderFactory;
-import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.query.QueryBuilderFactory;
-import org.apache.zest.api.service.ImportedServiceDescriptor;
-import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.api.value.ValueDescriptor;
 
 /**
  * API for interacting with a Module. Instances
@@ -58,13 +51,44 @@ public interface Module
     ModuleDescriptor descriptor();
 
     /**
-     *
      * @return the Layer that the Module is declared in.
      */
     LayerDescriptor layer();
 
+    /** Returns the TypeLookup for the Module.
+     * TypeLookup handles all the types visible from within this Module.
+     *
+     * @return TypeLookup for this Module
+     */
+    TypeLookup typeLookup();
 
+    /** Returns the UnitOfWorkFactory for this Module.
+     *
+     * @return the UnitOfWorkFactory of this Module.
+     */
     UnitOfWorkFactory unitOfWorkFactory();
 
-    TypeLookup typeLookup();
+    /** Returns the ServiceFinder for this Module.
+     *
+     * @return the ServiceFinder for this Module.
+     */
+    ServiceFinder serviceFinder();
+
+    /** Returns the ValueBuilderFactory for this Module.
+     *
+     * @return the ValueBuilderFactory for this Module.
+     */
+    ValueBuilderFactory valueBuilderFactory();
+
+    /** Returns the TransientBuilderFactory for this Module.
+     *
+     * @return the TransientBuilderFactory for this Module.
+     */
+    TransientBuilderFactory transientBuilderFactory();
+
+    /** Returns the ObjectFactory for this Module.
+     *
+     * @return the ObjectFactory for this Module.
+     */
+    ObjectFactory objectFactory();
 }

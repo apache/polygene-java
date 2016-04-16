@@ -1,0 +1,16 @@
+
+dependencies {
+  compile project( ":model" )
+  compile project( ":rest" )
+
+  compile "org.apache.zest.core:org.apache.zest.core.spi:$zestVersion"
+  compile "org.apache.zest.core:org.apache.zest.core.bootstrap:$zestVersion"
+
+
+  compile "org.apache.zest.library:org.apache.zest.library.fileconfig:$zestVersion"
+  compile "org.apache.zest.library:org.apache.zest.library.restlet:$zestVersion"
+  compile "org.apache.zest.extension:org.apache.zest.extension.entitystore-file:$zestVersion"
+  compile "org.apache.zest.extension:org.apache.zest.extension.indexing-rdf:$zestVersion"
+  compile "org.apache.zest.extension:org.apache.zest.extension.valueserialization-jackson:$zestVersion"
+
+}

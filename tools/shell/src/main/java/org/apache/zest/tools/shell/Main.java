@@ -60,17 +60,29 @@ public class Main
         }
         else
         {
-            Command command = commands.get( args[ 0 ] );
-            if( command == null )
+            try
             {
-                System.err.println( "Command " + args[ 0 ] + " is unknown." );
-                System.err.println( "" );
+                executeCommand( args );
+            }
+            catch( HelpNeededException e )
+            {
                 commands.get( "help" ).execute( args, input(), error() );
             }
-            else
-            {
-                command.execute( args, input(), output() );
-            }
+        }
+    }
+
+    private void executeCommand( String[] args )
+    {
+        Command command = commands.get( args[ 0 ] );
+        if( command == null )
+        {
+            System.err.println( "Command " + args[ 0 ] + " is unknown." );
+            System.err.println( "" );
+            commands.get( "help" ).execute( args, input(), error() );
+        }
+        else
+        {
+            command.execute( args, input(), output() );
         }
     }
 

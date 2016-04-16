@@ -40,17 +40,20 @@ import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.NoSuchTransientException;
 import org.apache.zest.api.composite.TransientBuilder;
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.object.NoSuchObjectException;
 import org.apache.zest.api.object.ObjectDescriptor;
+import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.NoSuchServiceException;
+import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
@@ -61,6 +64,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
@@ -499,6 +503,30 @@ public class ModuleInstance
             }
         }
         return uowf;
+    }
+
+    @Override
+    public ServiceFinder serviceFinder()
+    {
+        return this;
+    }
+
+    @Override
+    public ValueBuilderFactory valueBuilderFactory()
+    {
+        return this;
+    }
+
+    @Override
+    public TransientBuilderFactory transientBuilderFactory()
+    {
+        return this;
+    }
+
+    @Override
+    public ObjectFactory objectFactory()
+    {
+        return this;
     }
 
     public IdentityGenerator identityGenerator()

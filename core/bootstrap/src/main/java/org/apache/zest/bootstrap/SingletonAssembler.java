@@ -22,8 +22,13 @@ package org.apache.zest.bootstrap;
 
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.activation.ActivationException;
+import org.apache.zest.api.composite.TransientBuilderFactory;
+import org.apache.zest.api.object.ObjectFactory;
+import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.api.value.ValueBuilderFactory;
 
 /**
  * Base class for Assembler that creates an Application
@@ -36,6 +41,12 @@ import org.apache.zest.api.structure.Module;
 public abstract class SingletonAssembler
     implements Assembler
 {
+    private final UnitOfWorkFactory unitOfWorkFactory;
+    private final ServiceFinder serviceFinder;
+    private final ValueBuilderFactory valueBuilderFactory;
+    private final TransientBuilderFactory transientBuilderFactory;
+    private final ObjectFactory objectFactory;
+
     private Energy4Java zest;
     private Application applicationInstance;
     private final Module moduleInstance;
@@ -81,6 +92,11 @@ public abstract class SingletonAssembler
 // START SNIPPET: actual
 
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
+        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
+        serviceFinder = moduleInstance.serviceFinder();
+        valueBuilderFactory = moduleInstance.valueBuilderFactory();
+        transientBuilderFactory = moduleInstance.transientBuilderFactory();
+        objectFactory = moduleInstance.objectFactory();
     }
 
     public final ZestAPI runtime()

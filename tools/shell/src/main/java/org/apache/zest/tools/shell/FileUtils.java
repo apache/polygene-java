@@ -23,7 +23,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +41,28 @@ public class FileUtils
 //            System.exit( 1 );   during testing, I am tired of deleting directory over and over again.
         }
         return dir;
+    }
+
+    public static boolean removeDir( File dir )
+    {
+        File[] files = dir.listFiles();
+        boolean success = true;
+        if( files != null )
+        {
+            for( File f : files )
+            {
+                if( f.isDirectory() )
+                {
+                    success = success && removeDir( f );
+                }
+                else
+                {
+                    success = success && f.delete();
+                }
+            }
+        }
+        success = success && dir.delete();
+        return success;
     }
 
     public static Map<String, String> readPropertiesResource( String resourceName )
@@ -77,11 +98,14 @@ public class FileUtils
     public static void copyFile( File srcFile, File dest )
         throws IOException
     {
-        byte[] buffer = new byte[100000];
-        try(BufferedInputStream in = new BufferedInputStream( new FileInputStream(srcFile) )){
-            try(BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( dest ) )){
+        byte[] buffer = new byte[ 100000 ];
+        try (BufferedInputStream in = new BufferedInputStream( new FileInputStream( srcFile ) ))
+        {
+            try (BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( dest ) ))
+            {
                 int bytes;
-                while( (bytes = in.read( buffer )) != -1 ){
+                while( ( bytes = in.read( buffer ) ) != -1 )
+                {
                     out.write( buffer, 0, bytes );
                 }
                 out.flush();

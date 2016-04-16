@@ -42,6 +42,9 @@ public class StaxPlainValueSerializationTest
         throws AssemblyException
     {
         new StaxValueSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
+        super.assemble( module );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 }
