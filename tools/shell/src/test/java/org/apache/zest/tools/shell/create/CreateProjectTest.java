@@ -60,7 +60,7 @@ public class CreateProjectTest
 
         assertThat( dest.exists(), equalTo( true ) );
         assertThat( new File(dest, "src/main/java/org/apache/zest/package.html").exists(), equalTo( true ) );
-        if( FileUtils.removeDir( dest ) )
+        if( ! FileUtils.removeDir( dest ) )
         {
             System.err.println( "Unable to remove file. Why???" );
         }
