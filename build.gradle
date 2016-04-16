@@ -97,6 +97,9 @@ rat {
         'manual/**/jquery*.js',
         // W3C XML Schemas - W3C Software License
         'samples/rental/src/main/resources/*.xsd',
+
+        // templates that will become the user's source files, should not have license headers
+        'tools/shell/src/etc/templates/**',
     ]
 }
 
