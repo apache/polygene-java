@@ -82,14 +82,14 @@ public class CleanStackTraceTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:122)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:128)" + separator +
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:141)" + separator +
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:79)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:118)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:124)" + separator +
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:141)" + separator +
+                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:79)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );
         }
