@@ -33,6 +33,8 @@ public class JacksonPlainValueSerializationTest
         throws AssemblyException
     {
         new JacksonValueSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
+        // START SNIPPET: assembly
         super.assemble( module );
     }
     // END SNIPPET: assembly

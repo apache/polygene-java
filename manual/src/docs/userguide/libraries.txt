@@ -115,6 +115,10 @@ include::../../../../libraries/rest-server/src/docs/rest-server.txt[]
 
 :leveloffset: 2
 
+include::../../../../libraries/restlet/src/docs/restlet.txt[]
+
+:leveloffset: 2
+
 include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
 
 :leveloffset: 2

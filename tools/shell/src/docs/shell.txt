@@ -1,0 +1,101 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[tools-shell,Command Line Shell]]
+= Zest Shell =
+If you have installed the Zest SDK, there is a +bin/zest+ command line script,
+which has sub-functions in it. This list of commands will slowly grow
+for various purposes of doing software development with Apache Zest.
+
+The current list of commands are;
+
+    * <<tools-shell-create-project>>
+
+[[tools-shell-create-project,Create Project Script]]
+== Create Project ==
+
+This command creates a brand new project, in current directory, with a name
+provided. There are more than one template of the type of project that one
+might want to create. Full list of types to follow below. The command
+takes at least 3 additional arguments;
+
+---------------------------
+zest create-project type name package
+---------------------------
+
+A directory called _name_ will be created in the current directory, and all
+the necessary structure for a Zest project using Gradle will be created.
+
+The exact layout of the project depends on the _type_ argument and currently the
+following types exists;
+
+    * <<tools-shell-create-project-null>> - Creates the build system and directory structure.
+    * <<tools-shell-create-project-singleton>> - Creates a small application around the +SingletonAssembler+
+    * <<tools-shell-create-project-default>> - Creates a 4 layer, Configuration, Infrastructure, Domain and Connectivity, command line application.
+    * <<tools-shell-create-project-restapp>> - Creates the same 4 layer application as _default_, but also sets it up as a Restful application, ready to deploy on a web application container.
+
+The _package_ defines the root package name to be used, e.g. +org.apache.zest.coolapp+. The +create-project+ program
+will create additional packages under this, according to its template.
+
+[[tools-shell-create-project-null,Create Null Project]]
+=== Create Null Project Template ===
+This templates only creates the build system for a single module application. No Java files or other no resources
+are created, and the developer has to set everything up from scratch.
+
+[[tools-shell-create-project-singleton,Create Singleton Project]]
+=== Create Singleton Project Template ===
+This template creates a so called Singleton application. That is an application with a single Layer and a single
+Module in that layer. In Zest, all applications must have at least one Layer, and at least one Module.
+
+This is useful for really small applications or demos, not expected to become large in the future. It is
+also currently required that the infrastructure is configuration free, otherwise it is not possible to set up.
+
+The template will configure the File EntityStore and RDF Indexing subsystems, hardcoded to the +zest/store+ and
++zest/index+ respectively in the current directory where the application is started. This may not be suitable, in
+which case you should look at the <<tools-shell-create-project-default>> template.
+
+[[tools-shell-create-project-default,Create Default Project]]
+=== Create Default Project Template ===
+This template sets up a 4 layer, Configuration, Infrastructure, Domain, Connectivity, command line application.
+
+The template includes a small sample domain model, +Order+, +OrderItem+, +Customer+, but there is no functionality
+added to it.
+
+A +SecuityRepository+ is also created, with a simple hardcoded implementation (+HardCodedSecurityRepositoryMixin+).
+
+[[tools-shell-create-project-restapp,Create Rest Application Project]]
+=== Create Rest Application Project Template ===
+This template sets up a 4 layer, Configuration, Infrastructure, Domain, Connectivity, restful application. This
+application will use the <<library-restlet>> to create a full web application, ready to deply on a servlet
+container, such as Tomcat or Jetty.
+
+The template includes a small sample domain model, +Order+, +OrderItem+, +Customer+, and have the CRUD operations
+for these already wired up to the restful +EndPoint+. Full HATEOAS is provided, so clients don't need to construct
+URLs, but simply follow links and use forms.
+
+The template also creates a simple SecurityRepository and attaches the mechanisms in the underlying Restlet
+implementation to do Authentication and Authorization (see SimpleEnroler and SimpleVerifier). There are two
+hardcoded users with two hardcoded roles.
+
+-----------
+# name     password     roles
+  user       123        user
+  admin     secret      admin
+-----------
+

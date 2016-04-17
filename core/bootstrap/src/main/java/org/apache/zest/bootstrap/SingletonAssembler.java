@@ -41,12 +41,6 @@ import org.apache.zest.api.value.ValueBuilderFactory;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private final UnitOfWorkFactory unitOfWorkFactory;
-    private final ServiceFinder serviceFinder;
-    private final ValueBuilderFactory valueBuilderFactory;
-    private final TransientBuilderFactory transientBuilderFactory;
-    private final ObjectFactory objectFactory;
-
     private Energy4Java zest;
     private Application applicationInstance;
     private final Module moduleInstance;
@@ -57,8 +51,8 @@ public abstract class SingletonAssembler
      * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
      * class.
      *
-     * @throws AssemblyException Either if the model can not be created from the disk, or some inconsistency in
-     *                           the programming model makes it impossible to create it.
+     * @throws AssemblyException   Either if the model can not be created from the disk, or some inconsistency in
+     *                             the programming model makes it impossible to create it.
      * @throws ActivationException If the automatic {@code activate()} method is throwing this Exception..
      */
     public SingletonAssembler()
@@ -66,15 +60,9 @@ public abstract class SingletonAssembler
     {
 // START SNIPPET: actual
         zest = new Energy4Java();
-        applicationInstance = zest.newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                return applicationFactory.newApplicationAssembly( SingletonAssembler.this );
-            }
-        } );
+        applicationInstance = zest.newApplication(
+            applicationFactory -> applicationFactory.newApplicationAssembly( SingletonAssembler.this )
+        );
 
         try
         {
@@ -92,11 +80,6 @@ public abstract class SingletonAssembler
 // START SNIPPET: actual
 
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
-        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
-        serviceFinder = moduleInstance.serviceFinder();
-        valueBuilderFactory = moduleInstance.valueBuilderFactory();
-        transientBuilderFactory = moduleInstance.transientBuilderFactory();
-        objectFactory = moduleInstance.objectFactory();
     }
 
     public final ZestAPI runtime()
@@ -117,5 +100,30 @@ public abstract class SingletonAssembler
     protected void beforeActivation( Application application )
         throws Exception
     {
+    }
+
+    protected UnitOfWorkFactory unitOfWorkFactory()
+    {
+        return moduleInstance.unitOfWorkFactory();
+    }
+
+    protected ServiceFinder serviceFinder()
+    {
+        return moduleInstance.serviceFinder();
+    }
+
+    protected ValueBuilderFactory valueBuilderFactory()
+    {
+        return moduleInstance.valueBuilderFactory();
+    }
+
+    protected TransientBuilderFactory transientBuilderFactory()
+    {
+        return moduleInstance.transientBuilderFactory();
+    }
+
+    protected ObjectFactory objectFactory()
+    {
+        return moduleInstance.objectFactory();
     }
 }

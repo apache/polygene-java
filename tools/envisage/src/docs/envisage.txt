@@ -34,7 +34,7 @@ tag=envisage
 ----
 
 As you can see, Envisage operates on the ApplicationModel, this means that you
-can easily embedd it in your own Applications too.
+can easily embed it in your own Applications too.
 
 Two gradle tasks runSample and runSchool are defined in this module as a
 shortcut to run the examples. See <<build-system>>.

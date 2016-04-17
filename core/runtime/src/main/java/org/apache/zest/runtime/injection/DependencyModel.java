@@ -35,6 +35,7 @@ import org.apache.zest.bootstrap.InvalidInjectionException;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
+import org.apache.zest.runtime.injection.provider.CachingInjectionProviderDecorator;
 import org.apache.zest.runtime.injection.provider.InjectionProviderException;
 import org.apache.zest.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.apache.zest.runtime.model.Binder;
@@ -316,7 +317,12 @@ public final class DependencyModel
 
     private boolean isServiceInjectionProvider()
     {
-        return ServiceInjectionProviderFactory.ServiceInjectionProvider.class.isAssignableFrom( injectionProvider.getClass() );
+
+        InjectionProvider provider = this.injectionProvider;
+        if( provider instanceof CachingInjectionProviderDecorator ){
+            provider = ((CachingInjectionProviderDecorator) provider ).decoratedProvider();
+        }
+        return ServiceInjectionProviderFactory.ServiceInjectionProvider.class.isAssignableFrom( provider.getClass() );
     }
 
     @SuppressWarnings( "unchecked" )

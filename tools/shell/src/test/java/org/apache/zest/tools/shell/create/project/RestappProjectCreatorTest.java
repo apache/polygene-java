@@ -110,7 +110,7 @@ public class RestAppProjectCreatorTest
         assertThat( new File( projectDir, "gradlew.bat" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "build.gradle" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "settings.gradle" ).exists(), equalTo( true ) );
-        if( FileUtils.removeDir( projectDir ) )
+        if( ! FileUtils.removeDir( projectDir ) )
         {
             System.err.println( "Unable to remove file. Why???" );
         }
