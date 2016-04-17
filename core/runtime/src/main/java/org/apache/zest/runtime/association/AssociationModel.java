@@ -26,14 +26,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.List;
-import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.api.constraint.ConstraintViolation;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.Aggregated;
 import org.apache.zest.api.entity.Queryable;
@@ -147,29 +144,13 @@ public final class AssociationModel
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        if( constraints != null )
-        {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value );
-            if( !violations.isEmpty() )
-            {
-                Stream<Class<?>> empty = Stream.empty();
-                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-            }
-        }
+        ValueConstraintsInstance.checkConstraints( value, constraints, accessor );
     }
 
     public void checkAssociationConstraints( Association<?> association )
         throws ConstraintViolationException
     {
-        if( associationConstraints != null )
-        {
-            List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
-            if( !violations.isEmpty() )
-            {
-                Stream<Class<?>> empty = Stream.empty();
-                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-            }
-        }
+        ValueConstraintsInstance.checkConstraints( association, associationConstraints, accessor );
     }
 
     @Override
@@ -223,15 +204,8 @@ public final class AssociationModel
         {
             return false;
         }
-
         AssociationModel that = (AssociationModel) o;
-
-        if( !accessor.equals( that.accessor ) )
-        {
-            return false;
-        }
-
-        return true;
+        return accessor.equals( that.accessor );
     }
 
     @Override

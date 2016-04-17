@@ -233,15 +233,7 @@ public class PropertyModel
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        if( constraints != null )
-        {
-            List<ConstraintViolation> violations = constraints.checkConstraints( value );
-            if( !violations.isEmpty() )
-            {
-                Stream<Class<?>> empty = Stream.empty();
-                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-            }
-        }
+        ValueConstraintsInstance.checkConstraints( value, constraints, accessor );
     }
 
     @Override

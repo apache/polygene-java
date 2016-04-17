@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.library.rdf.Rdfs;
 import org.apache.zest.library.rdf.ZestEntityType;

@@ -38,11 +38,9 @@ public final class CompositeMethodsModel
     implements VisitableHierarchy<Object, Object>, Dependencies
 {
     private final LinkedHashMap<Method, CompositeMethodModel> methods;
-    // TODO: With the large block disappearing, this member has no use. Other implications are also commented out for now.
     private final MixinsModel mixinsModel;
 
     public CompositeMethodsModel( MixinsModel mixinsModel )
-//    public CompositeMethodsModel()
     {
         methods = new LinkedHashMap<>();
         this.mixinsModel = mixinsModel;
@@ -52,7 +50,6 @@ public final class CompositeMethodsModel
     {
         Collection<CompositeMethodModel> compositeMethods = methods.values();
         return compositeMethods.stream().flatMap( Dependencies.DEPENDENCIES_FUNCTION );
-//        return Iterables.flattenIterables( map( , methods.values() ) );
     }
 
     // Context

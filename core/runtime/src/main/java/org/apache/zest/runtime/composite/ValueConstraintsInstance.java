@@ -21,11 +21,15 @@
 package org.apache.zest.runtime.composite;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.constraint.ConstraintViolation;
+import org.apache.zest.api.constraint.ConstraintViolationException;
 
 /**
  * JAVADOC
@@ -110,6 +114,19 @@ public final class ValueConstraintsInstance
         }
 
         return violations;
+    }
+
+    public static void checkConstraints( Object value, ValueConstraintsInstance constraintsInstance, AccessibleObject accessor )
+    {
+        if( constraintsInstance != null )
+        {
+            List<ConstraintViolation> violations = constraintsInstance.checkConstraints( value );
+            if( !violations.isEmpty() )
+            {
+                Stream<Class<?>> empty = Stream.empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
+            }
+        }
     }
 
     @SuppressWarnings( "AnnotationAsSuperInterface" )
