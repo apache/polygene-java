@@ -731,6 +731,7 @@ def srcDistFilesImages = copySpec {
   include 'samples/**'
   include 'tests/**'
   include 'tutorials/**'
+  include 'tools/shell/**'
   // Filtered, see below
   exclude 'settings.gradle'
   exclude 'gradle.properties'
