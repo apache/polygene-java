@@ -33,7 +33,7 @@ import static org.junit.Assert.assertThat;
 
 public class RestProjectCreatorTest
 {
-    private RestAppProjectCreator underTest = new RestAppProjectCreator();
+    private RestProjectCreator underTest = new RestProjectCreator();
 
     @Test
     public void givenCorrectInputWhenCreatedProjectExpectCompleteProjectCreated()

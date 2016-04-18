@@ -26,8 +26,6 @@ mainClassName = "org.apache.zest.tools.shell.Main"
 jar { manifest { name = "Apache Zest™ Command Line" } }
 
 dependencies {
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-
   testCompile libraries.junit
   testRuntime libraries.logback
 }

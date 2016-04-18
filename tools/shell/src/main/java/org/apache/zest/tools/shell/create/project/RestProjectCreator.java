@@ -48,7 +48,7 @@ import org.apache.zest.tools.shell.create.project.restapp.SimpleVerifierWriter;
 import org.apache.zest.tools.shell.create.project.common.StorageModuleWriter;
 import org.apache.zest.tools.shell.create.project.restapp.WebXmlWriter;
 
-public class RestAppProjectCreator extends AbstractProjectCreator
+public class RestProjectCreator extends AbstractProjectCreator
     implements ProjectCreator
 {
 
