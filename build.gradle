@@ -833,11 +833,9 @@ def libsImage = copySpec {
   }
 }
 
-def toolsImage = copySpec {
-  releaseApprovedProjects.collect { proj ->
-    from( "$projectDir/src/bin/**")
-    into( "bin/" )
-  }
+def binFoldersImage = copySpec {
+  from "tools/shell/src/bin/**"
+  into( "bin/" )
 }
 
 def binDistNoticesImage = copySpec {
@@ -852,8 +850,8 @@ def binDistImage = copySpec {
   with docsImage
   with reportsDistImage
   with runtimeDependenciesListImage
+  with binFoldersImage
   with libsImage
-  with toolsImage
 }
 
 task zipSources( type: Zip ) {

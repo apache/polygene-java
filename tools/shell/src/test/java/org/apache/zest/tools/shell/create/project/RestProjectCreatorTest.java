@@ -31,7 +31,7 @@ import static org.apache.zest.tools.shell.FileUtils.removeDir;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class RestAppProjectCreatorTest
+public class RestProjectCreatorTest
 {
     private RestAppProjectCreator underTest = new RestAppProjectCreator();
 
