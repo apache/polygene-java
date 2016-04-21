@@ -32,3 +32,22 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that the compile dependency does NOT include
 the `org.apache.zest.core.runtime` jar.
+
+== Custom AssemblyHelper ==
+BUT, there are super-rare cases, where a custom AssemblyHelper might be needed. One known use-case is tp introduce
+an alternative bytecode generation algorithm, either better than the one we have, or for a different system, such
+as Dalvik.
+
+To do this, add the +AssemblyHelper+ implementation instance as +metaInfo+ to the +ApplicationAssembly+
+
+We think this is so rare, that the +AssemblyHelper+ class will remain in the +core/runtime+ module and has not
+been promoted to the +core/bootstrap+ module. If you plan to use this feature, please contact the Zest development
+team at +dev@zest.apache.org+ to ensure we can make this a better supported, backed by real usecases.
+
+Fictitious example of using a hypothetical Dalvik capable classloader;
+
+[source,java]
+--------------
+source=core/runtime/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+tag=customAssemblyHelper
+--------------
