@@ -77,7 +77,11 @@ public class ApplicationWriter
             pw.println( "    protected LayeredApplicationAssembler createApplicationAssembler( String mode )" );
             pw.println( "        throws AssemblyException" );
             pw.println( "    {" );
-            pw.println( format("        return new %sApplicationAssembler( Application.Mode.valueOf( mode ) );", projectName) );
+            pw.println( "        if( mode != null )" );
+            pw.println( "        {" );
+            pw.println( format("            return new %sApplicationAssembler( Application.Mode.valueOf( mode ) );", projectName) );
+            pw.println( "        }" );
+            pw.println( format("        return new %sApplicationAssembler( Application.Mode.production );", projectName) );
             pw.println( "    }" );
             pw.println();
             pw.println( "    @Override" );

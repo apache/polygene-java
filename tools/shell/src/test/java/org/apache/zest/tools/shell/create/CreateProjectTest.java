@@ -59,7 +59,8 @@ public class CreateProjectTest
         new CreateProject().execute( new String[]{ "create-project", "null", "ZestTest", "org.apache.zest" }, null, null );
 
         assertThat( dest.exists(), equalTo( true ) );
-        assertThat( new File(dest, "src/main/java/org/apache/zest/package.html").exists(), equalTo( true ) );
+        File file = new File( dest, "src/main/java/org/apache/zest/package.html" );
+        assertThat( file.exists(), equalTo( true ) );
         if( ! FileUtils.removeDir( dest ) )
         {
             System.err.println( "Unable to remove file. Why???" );

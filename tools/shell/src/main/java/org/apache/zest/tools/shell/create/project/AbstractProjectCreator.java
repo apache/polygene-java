@@ -41,18 +41,9 @@ abstract class AbstractProjectCreator
     {
         File templateDir = new File( properties.get( "zest.home" ), properties.get( "template.dir" ) );
         copyFiles( templateDir, projectDir, properties.get( "root.package" ) );
-        Path gradlew = new File( projectDir, "gradlew" ).toPath();
-        try
-        {
-            Files.setPosixFilePermissions( gradlew, PosixFilePermissions.fromString( "rwxr-xr-x" ) );
-        }
-        catch( Exception e )
-        {
-            if( ! System.getProperty( "os.name" ).contains( "Windows" ))
-            {
-                throw new IOException( "Unable to set file permissions on " + gradlew.toString(), e );
-            }
-        }
+        File gradlewFile = new File( projectDir, "gradlew" );
+        Path gradlewPath = gradlewFile.toPath();
+        setGradlewPermissions( gradlewFile, gradlewPath );
     }
 
     private void copyFiles( File fromDir, File toDir, String rootpackage )
@@ -90,6 +81,25 @@ abstract class AbstractProjectCreator
                     File dest = new File( toDir, filename );
                     FileUtils.copyFile( f, dest );
                 }
+            }
+        }
+    }
+
+    private void setGradlewPermissions( File gradlewFile, Path gradlewPath )
+        throws IOException
+    {
+        try
+        {
+            if( gradlewFile.exists() )
+            {
+                Files.setPosixFilePermissions( gradlewPath, PosixFilePermissions.fromString( "rwxr-xr-x" ) );
+            }
+        }
+        catch( Exception e )
+        {
+            if( !System.getProperty( "os.name" ).contains( "Windows" ) )
+            {
+                throw new IOException( "Unable to set file permissions on " + gradlewPath.toString(), e );
             }
         }
     }

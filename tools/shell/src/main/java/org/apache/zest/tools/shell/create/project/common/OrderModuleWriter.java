@@ -61,6 +61,7 @@ public class OrderModuleWriter
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
                 "        throws AssemblyException\n" +
                 "    {\n" +
+                "        module.withDefaultUnitOfWorkFactory();\n" +
                 "        module.values( /* add value types */    );\n" +
                 "        module.entities( Customer.class, Order.class, OrderItem.class );\n" +
                 "        module.services( /* add services */    )\n" +

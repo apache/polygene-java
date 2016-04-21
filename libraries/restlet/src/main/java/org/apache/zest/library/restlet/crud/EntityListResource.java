@@ -23,6 +23,7 @@ package org.apache.zest.library.restlet.crud;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
@@ -70,7 +71,8 @@ public interface EntityListResource<T extends Identity> extends ServerResource<E
         {
             Property<Request> request = parameters.request();
             Reference base = request.get().getResourceRef();
-            String identity = identityManager.generate( EntityListResource.class, "list[" + parameters.entityType().get().getSimpleName() +"]" );
+            String name = "list[" + parameters.entityType().get().getSimpleName() + "]";
+            String identity = identityManager.generate( EntityListResource.class, name );
             ValueBuilder<EntityList> builder = vbf.newValueBuilder( EntityList.class );
             List<EntityRef> result = getEntityRefs( base );
             EntityList prototype = builder.prototype();
@@ -99,14 +101,22 @@ public interface EntityListResource<T extends Identity> extends ServerResource<E
             return resourceBuilder.createRestLink( name, base, Method.GET );
         }
 
+
+
+
+
+
+
         @SuppressWarnings( "unchecked" )
         private List<EntityRef> getEntityRefs( Reference base )
         {
             ArrayList result = new ArrayList<>();
-            Class<T> entityType = parameters.entityType().get();
+            Property<Class<T>> property = parameters.entityType();
+            Class<T> entityType = property.get();
             CrudRepository<T> repository = locator.find( entityType );
-            StreamSupport
-                .stream( repository.findAll().spliterator(), false )
+            Iterable<T> all = repository.findAll();
+            Stream<T> stream = StreamSupport.stream( all.spliterator(), false );
+            stream
                 .map( entity -> entity.identity().get() )
                 .map( identity -> resourceBuilder.createEntityRef( identity, base ) )
                 .forEach( result::add );

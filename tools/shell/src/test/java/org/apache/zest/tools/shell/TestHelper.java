@@ -29,12 +29,12 @@ public class TestHelper
         String cwd = new File( ".").getAbsolutePath();
         if( cwd.endsWith( "/java/." )) // IDEA default runner
         {
-            String zestHome = new File( new File(".").getAbsoluteFile(), "tools/shell/src" ).getAbsolutePath();
+            String zestHome = new File( new File(".").getAbsoluteFile(), "tools/shell/src/dist" ).getAbsolutePath();
             System.setProperty( "zest.home", zestHome );
         }
         if( cwd.endsWith( "tools/shell/." )) // Gradle build
         {
-            String zestHome = new File( new File(".").getAbsoluteFile(), "src" ).getAbsolutePath();
+            String zestHome = new File( new File(".").getAbsoluteFile(), "src/dist" ).getAbsolutePath();
             System.setProperty( "zest.home", zestHome );
         }
     }
