@@ -24,8 +24,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -98,6 +100,7 @@ public class FileUtils
     public static void copyFile( File srcFile, File dest )
         throws IOException
     {
+        System.out.println( "Creating " + dest.getAbsolutePath() );
         byte[] buffer = new byte[ 100000 ];
         try (BufferedInputStream in = new BufferedInputStream( new FileInputStream( srcFile ) ))
         {
@@ -111,5 +114,32 @@ public class FileUtils
                 out.flush();
             }
         }
+    }
+
+    public static PrintWriter createJavaClassPrintWriter( Map<String, String> properties,
+                                                          String module,
+                                                          String packagename,
+                                                          String classname
+    )
+        throws IOException
+    {
+        File projectDir = new File( properties.get( "project.dir" ) );
+        File packageDir = new File( projectDir, module + "/src/main/java/" + packagename );
+        if( !packageDir.exists() )
+        {
+            if( !packageDir.mkdirs() )
+            {
+                System.err.println( "Unable to create directory: " + packageDir.getAbsolutePath() );
+            }
+        }
+        final File destination = new File( packageDir, classname + ".java" );
+        return new PrintWriter( new FileWriter( destination ) ){
+            @Override
+            public void close()
+            {
+                super.close();
+                System.out.println("Creating " + destination );
+            }
+        };
     }
 }

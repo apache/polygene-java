@@ -40,9 +40,9 @@ import org.apache.zest.tools.shell.create.project.common.OrderWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityRepositoryWriter;
 import org.apache.zest.tools.shell.create.project.common.SerializationModuleWriter;
-import org.apache.zest.tools.shell.create.project.common.SettingsWriter;
 import org.apache.zest.tools.shell.create.project.common.StorageModuleWriter;
 import org.apache.zest.tools.shell.create.project.defaultp.ApplicationWriter;
+import org.apache.zest.tools.shell.create.project.defaultp.SettingsWriter;
 
 public class DefaultProjectCreator extends AbstractProjectCreator
     implements ProjectCreator

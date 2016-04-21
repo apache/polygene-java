@@ -2,7 +2,7 @@
 version = 1.0
 
 rootProject.ext {
-  zestVersion = @@version@@
+  zestVersion = @version@
 }
 
 allprojects() {
@@ -13,8 +13,8 @@ allprojects() {
   repositories {
     mavenLocal()
     mavenCentral()
+    maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
   }
-
 
   dependencies {
     compile "org.apache.zest.core:org.apache.zest.core.api:$zestVersion"

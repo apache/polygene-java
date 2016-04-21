@@ -20,11 +20,10 @@
 
 package org.apache.zest.tools.shell.create.project.singleton;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import org.apache.zest.tools.shell.FileUtils;
 
 import static java.lang.String.format;
 
@@ -99,7 +98,6 @@ public class SingletonApplicationAssemblerWriter
     {
         String packagename = properties.get( "root.package" ).replaceAll( "\\.", "/" );
         String classname = properties.get("project.name");
-        File projectDir = new File( properties.get( "project.dir" ) );
-        return new PrintWriter( new FileWriter( new File( projectDir, "src/main/java/" + packagename + classname + ".java" ) ) );
+        return FileUtils.createJavaClassPrintWriter( properties, "", packagename, classname );
     }
 }

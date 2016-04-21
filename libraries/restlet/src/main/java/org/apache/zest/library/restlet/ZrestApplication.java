@@ -85,9 +85,8 @@ public abstract class ZrestApplication extends org.restlet.Application
     public synchronized void start()
         throws Exception
     {
-        System.err.println( "HABBA!!!!!" );
         Series<Parameter> parameters = getContext().getParameters();
-        String mode = parameters.getFirstValue( "org.sensorsink.kooda.mode" );
+        String mode = parameters.getFirstValue( "org.apache.zest.runtime.mode" );
         createApplication( mode );
         zestApplication.activate();
         Module module = zestApplication.findModule( getConnectivityLayer(), getConnectivityModule() );

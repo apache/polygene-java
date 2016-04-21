@@ -22,6 +22,9 @@ package org.apache.zest.tools.shell.create.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Map;
 import org.apache.zest.tools.shell.FileUtils;
 
@@ -38,6 +41,18 @@ abstract class AbstractProjectCreator
     {
         File templateDir = new File( properties.get( "zest.home" ), properties.get( "template.dir" ) );
         copyFiles( templateDir, projectDir, properties.get( "root.package" ) );
+        Path gradlew = new File( projectDir, "gradlew" ).toPath();
+        try
+        {
+            Files.setPosixFilePermissions( gradlew, PosixFilePermissions.fromString( "rwxr-xr-x" ) );
+        }
+        catch( Exception e )
+        {
+            if( ! System.getProperty( "os.name" ).contains( "Windows" ))
+            {
+                throw new IOException( "Unable to set file permissions on " + gradlew.toString(), e );
+            }
+        }
     }
 
     private void copyFiles( File fromDir, File toDir, String rootpackage )

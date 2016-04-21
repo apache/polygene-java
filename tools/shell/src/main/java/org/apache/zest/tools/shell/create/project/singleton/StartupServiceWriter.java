@@ -20,11 +20,10 @@
 
 package org.apache.zest.tools.shell.create.project.singleton;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import org.apache.zest.tools.shell.FileUtils;
 
 public class StartupServiceWriter
 {
@@ -62,9 +61,8 @@ public class StartupServiceWriter
     private PrintWriter createPrinter( Map<String, String> properties )
         throws IOException
     {
-        String packagename = properties.get( "root.package" ).replaceAll( "\\.", "/" );
+        String packagename = properties.get( "root.package" ).replaceAll( "\\.", "/" ) + "/model/";
         String classname = "StartupService";
-        File projectDir = new File( properties.get( "project.dir" ) );
-        return new PrintWriter( new FileWriter( new File( projectDir, "src/main/java/" + packagename + classname + ".java" ) ) );
+        return FileUtils.createJavaClassPrintWriter( properties, "", packagename, classname );
     }
 }

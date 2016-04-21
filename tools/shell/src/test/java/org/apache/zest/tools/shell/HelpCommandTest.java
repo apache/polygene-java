@@ -18,24 +18,26 @@
  *
  */
 
-package org.apache.zest.tools.shell.create.project;
+package org.apache.zest.tools.shell;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import org.apache.zest.tools.shell.create.project.singleton.SettingsWriter;
-import org.apache.zest.tools.shell.create.project.singleton.SingletonApplicationAssemblerWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.zest.tools.shell.create.CreateProject;
+import org.apache.zest.tools.shell.help.HelpCommand;
+import org.junit.Test;
 
-public class SingletonProjectCreator extends AbstractProjectCreator
-    implements ProjectCreator
+public class HelpCommandTest
 {
-
-    @Override
-    public void create( String projectName, File projectDir, Map<String, String> properties )
-        throws IOException
-    {
-        super.create( projectName, projectDir, properties );    // creates the directory structures.
-        new SingletonApplicationAssemblerWriter().writeClass( properties );
-        new SettingsWriter().writeClass( properties );
+    @Test
+    public void givenTwoCommandsWhenExecutingHelpExpectExplanation(){
+        HelpCommand underTest = new HelpCommand();
+        List<Command> commands = Arrays.asList( underTest, new CreateProject() );
+        underTest.setCommands( commands );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(  );
+        PrintWriter pw = new PrintWriter( baos );
+        underTest.execute( null, null, pw );
+        System.out.println(baos.toString());
     }
 }

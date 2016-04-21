@@ -49,7 +49,7 @@ public class WebXmlWriter
                     "    <servlet-name>zestrest</servlet-name>\n" +
                     "    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>\n" +
                     "    <init-param>\n" +
-                    "      <param-name>org.sensorsink.kooda.mode</param-name>\n" +
+                    "      <param-name>org.apache.zest.runtime.mode</param-name>\n" +
                     "      <param-value>production</param-value>\n" +
                     "    </init-param>\n" +
                     "    <init-param>\n" +
@@ -79,7 +79,15 @@ public class WebXmlWriter
         throws IOException
     {
         File projectDir = new File( properties.get( "project.dir" ) );
-        return new PrintWriter( new FileWriter( new File( projectDir, "app/src/main/webapp/WEB-INF/web.xml" ) ) );
+        File destDir = new File( projectDir, "app/src/main/webapp/WEB-INF" );
+        if( !destDir.exists() )
+        {
+            if( !destDir.mkdirs() )
+            {
+                System.err.println( "Unable to create directory: " + destDir.getAbsolutePath() );
+            }
+        }
+        return new PrintWriter( new FileWriter( new File( destDir, "web.xml" ) ) );
     }
 }
 

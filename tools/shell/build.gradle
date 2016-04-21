@@ -23,7 +23,12 @@ apply plugin: 'application'
 description = "Command line tools for building Apache Zest™ applications."
 mainClassName = "org.apache.zest.tools.shell.Main"
 
-jar { manifest { name = "Apache Zest™ Command Line" } }
+jar {
+  manifest {
+    name = "Apache Zest™ Command Line"
+    attributes("Main-Class": mainClassName )
+  }
+}
 
 dependencies {
   testCompile libraries.junit

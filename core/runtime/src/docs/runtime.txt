@@ -48,6 +48,6 @@ Fictitious example of using a hypothetical Dalvik capable classloader;
 
 [source,java]
 --------------
-source=core/runtime/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/runtime/src/test/java/org/apache/zest/runtime/bootstrap/DocumentationSupport.java
 tag=customAssemblyHelper
 --------------

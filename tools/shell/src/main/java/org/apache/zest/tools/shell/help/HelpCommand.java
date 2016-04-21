@@ -32,7 +32,7 @@ public class HelpCommand extends AbstractCommand
     {
     }
 
-    public void setCommands( Iterable<Command> comands )
+    public void setCommands( Iterable<Command> commands )
     {
         this.commands = commands;
     }
@@ -42,19 +42,21 @@ public class HelpCommand extends AbstractCommand
     {
         for( Command command : commands )
         {
-            output.println( command.name() + " " + command.description() );
+            String text = command.name() + " " + command.description();
+            output.println( text );
+            output.flush();
         }
     }
 
     @Override
     public String description()
     {
-        return "help";
+        return "\t\t\t\t\tPrints this help text.";
     }
 
     @Override
     public String name()
     {
-        return "Prints this help text.";
+        return "help";
     }
 }

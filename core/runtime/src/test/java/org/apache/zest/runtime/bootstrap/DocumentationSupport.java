@@ -18,9 +18,14 @@
  *
  */
 
-package org.apache.zest.bootstrap;
+package org.apache.zest.runtime.bootstrap;
 
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.bootstrap.ApplicationAssembler;
+import org.apache.zest.bootstrap.ApplicationAssembly;
+import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.runtime.bootstrap.AssemblyHelper;
 import org.apache.zest.runtime.composite.FragmentClassLoader;
 

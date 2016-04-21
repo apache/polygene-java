@@ -42,7 +42,7 @@ import org.apache.zest.tools.shell.create.project.common.OrderModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityRepositoryWriter;
 import org.apache.zest.tools.shell.create.project.common.SerializationModuleWriter;
-import org.apache.zest.tools.shell.create.project.common.SettingsWriter;
+import org.apache.zest.tools.shell.create.project.restapp.SettingsWriter;
 import org.apache.zest.tools.shell.create.project.restapp.SimpleEnrolerWriter;
 import org.apache.zest.tools.shell.create.project.restapp.SimpleVerifierWriter;
 import org.apache.zest.tools.shell.create.project.common.StorageModuleWriter;

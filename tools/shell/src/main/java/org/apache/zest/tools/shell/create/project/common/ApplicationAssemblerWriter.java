@@ -20,11 +20,10 @@
 
 package org.apache.zest.tools.shell.create.project.common;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import org.apache.zest.tools.shell.FileUtils;
 
 public class ApplicationAssemblerWriter
 {
@@ -68,29 +67,29 @@ public class ApplicationAssemblerWriter
             pw.println( "\";" );
             pw.println( "    private static final String VERSION = \"1.0.alpha\";" );
             pw.println();
-            pw.print("    public ");
+            pw.print( "    public " );
             pw.print( projectName );
-            pw.println("ApplicationAssembler( Application.Mode mode )");
-            pw.println("    throws AssemblyException");
-            pw.println("    {");
-            pw.println("        super( NAME, VERSION, mode );");
-            pw.println("    }");
+            pw.println( "ApplicationAssembler( Application.Mode mode )" );
+            pw.println( "    throws AssemblyException" );
+            pw.println( "    {" );
+            pw.println( "        super( NAME, VERSION, mode );" );
+            pw.println( "    }" );
             pw.println();
-            pw.println("    @Override");
-            pw.println("    protected void assembleLayers( ApplicationAssembly assembly )");
-            pw.println("        throws AssemblyException");
-            pw.println("    {");
-            pw.println("        LayerAssembly configLayer = createLayer( ConfigurationLayer.class );");
-            pw.println("        ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();");
-            pw.println("        LayerAssembly domainLayer = createLayer( DomainLayer.class );");
-            pw.println("        Function<Application, Module> typeFinder = DomainLayer.typeFinder();");
-            pw.println("        LayerAssembly infraLayer = new InfrastructureLayer( configModule, typeFinder ).assemble( assembly.layer( InfrastructureLayer.NAME ) );");
-            pw.println("        LayerAssembly connectivityLayer = createLayer( ConnectivityLayer.class );");
-            pw.println("        connectivityLayer.uses( domainLayer );");
-            pw.println("        domainLayer.uses( infraLayer );");
-            pw.println("        infraLayer.uses( configLayer );");
-            pw.println("    }");
-            pw.println("}");
+            pw.println( "    @Override" );
+            pw.println( "    protected void assembleLayers( ApplicationAssembly assembly )" );
+            pw.println( "        throws AssemblyException" );
+            pw.println( "    {" );
+            pw.println( "        LayerAssembly configLayer = createLayer( ConfigurationLayer.class );" );
+            pw.println( "        ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();" );
+            pw.println( "        LayerAssembly domainLayer = createLayer( DomainLayer.class );" );
+            pw.println( "        Function<Application, Module> typeFinder = DomainLayer.typeFinder();" );
+            pw.println( "        LayerAssembly infraLayer = new InfrastructureLayer( configModule, typeFinder ).assemble( assembly.layer( InfrastructureLayer.NAME ) );" );
+            pw.println( "        LayerAssembly connectivityLayer = createLayer( ConnectivityLayer.class );" );
+            pw.println( "        connectivityLayer.uses( domainLayer );" );
+            pw.println( "        domainLayer.uses( infraLayer );" );
+            pw.println( "        infraLayer.uses( configLayer );" );
+            pw.println( "    }" );
+            pw.println( "}" );
         }
     }
 
@@ -99,7 +98,7 @@ public class ApplicationAssemblerWriter
     {
         String packagename = properties.get( "root.package" ).replaceAll( "\\.", "/" ) + "/bootstrap/";
         String classname = properties.get( "project.name" ) + "ApplicationAssembler";
-        File projectDir = new File( properties.get( "project.dir" ) );
-        return new PrintWriter( new FileWriter( new File( projectDir, "bootstrap/src/main/java/" + packagename + classname + ".java" ) ));
+
+        return FileUtils.createJavaClassPrintWriter( properties, "bootstrap", packagename, classname );
     }
 }

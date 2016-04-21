@@ -15,10 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Absolute path to this script, e.g. /home/user/bin/foo.sh
-ZESTSCRIPT=$(readlink -f "$0")
-# Absolute path this script is in, thus /home/user/bin
-ZESTPATH=$(dirname "$ZESTSCRIPT")
+# Capture current directory
+CWD=`pwd`
 
-java -Dzest.home=$ZESTPATH -jar org.apache.zest.tools.shell-@@version@@.jar "$@"
+# Goto directory where this script was started from.
+cd `dirname $0`
+# Up one level
+cd ..
+# Get the home directory of Zest
+ZESTPATH=`pwd`
 
+# Restore the current directory
+cd $CWD
+
+java -Dzest.home=$ZESTPATH -jar $ZESTPATH/libs/org.apache.zest.tool.shell-@version@.jar "$@"
