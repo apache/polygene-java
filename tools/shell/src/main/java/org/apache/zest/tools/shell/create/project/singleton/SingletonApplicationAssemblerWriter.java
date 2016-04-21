@@ -55,6 +55,7 @@ public class SingletonApplicationAssemblerWriter
                         "            public void assemble( ModuleAssembly module )\n" +
                         "                throws AssemblyException\n" +
                         "            {\n" +
+                        "                module.withDefaultUnitOfWorkFactory();\n" +
                         "                module.values( );\n" +
                         "                module.entities( );\n" +
                         "                module.services( StartupService.class );\n" +

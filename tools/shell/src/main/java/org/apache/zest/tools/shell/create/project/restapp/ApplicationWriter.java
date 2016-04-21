@@ -69,9 +69,9 @@ public class ApplicationWriter
             pw.println( "    @Override" );
             pw.println( "    protected void addRoutes( Router router )" );
             pw.println( "    {" );
-            pw.println( "        addResourcePath( \"orders\", Order.class, \"/orders/{order}/\", true, false );" );
-            pw.println( "        addResourcePath( \"customers\", Customer.class, \"/customer/{customer}/\", true, false );" );
-            pw.println( "    }" );
+            pw.println( "        addResourcePath( \"orders\", Order.class, \"/\" );" );
+            pw.println( "        addResourcePath( \"customers\", Customer.class, \"/\" );" );
+            pw.println( "    }\n" );
 
             pw.println( "    @Override" );
             pw.println( "    protected LayeredApplicationAssembler createApplicationAssembler( String mode )" );

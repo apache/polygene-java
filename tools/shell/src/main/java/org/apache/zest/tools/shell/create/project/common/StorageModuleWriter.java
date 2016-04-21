@@ -63,6 +63,7 @@ public class StorageModuleWriter
                 "        throws AssemblyException\n" +
                 "    {\n" +
                 "\n" +
+                "        module.withDefaultUnitOfWorkFactory();\n\n" +
                 "        new FileEntityStoreAssembler()\n" +
                 "            .visibleIn( Visibility.application  )\n" +
                 "            .withConfig( configModule, Visibility.application )\n" +
