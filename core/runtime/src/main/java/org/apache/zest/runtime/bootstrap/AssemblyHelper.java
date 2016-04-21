@@ -63,7 +63,7 @@ public class AssemblyHelper
         return new SideEffectModel( sideEffectClass, instantiationClass( sideEffectClass ) );
     }
 
-    private Class instantiationClass( Class fragmentClass )
+    protected Class instantiationClass( Class fragmentClass )
     {
         Class instantiationClass = fragmentClass;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
@@ -92,10 +92,15 @@ public class AssemblyHelper
         FragmentClassLoader cl = modifierClassLoaders.get( classLoader );
         if( cl == null )
         {
-            cl = new FragmentClassLoader( classLoader );
+            cl = instantiateFragmentClassLoader( classLoader );
             modifierClassLoaders.put( classLoader, cl );
         }
         return cl;
+    }
+
+    protected FragmentClassLoader instantiateFragmentClassLoader( ClassLoader classLoader )
+    {
+        return new FragmentClassLoader( classLoader );
     }
 
     public boolean appliesTo( Class<?> fragmentClass, Method method, Iterable<Class<?>> types, Class<?> mixinClass )

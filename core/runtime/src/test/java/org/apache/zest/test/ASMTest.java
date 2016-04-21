@@ -153,8 +153,9 @@ public class ASMTest
     public void fragmentClassLoaderGenerateClassTest()
         throws Exception
     {
+        FragmentClassLoader classLoader = new FragmentClassLoader( getClass().getClassLoader() );
         byte[] asm = generateClass();
-        byte[] cl = FragmentClassLoader.generateClass(
+        byte[] cl = classLoader.generateClass(
             QI256Test.TestTransient.TestTransientMixin.class.getName() + "_Stub",
             QI256Test.TestTransient.TestTransientMixin.class );
 

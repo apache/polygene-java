@@ -28,8 +28,10 @@ import org.apache.zest.api.service.importer.NewObjectImporter;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.functional.Iterables;
+import org.apache.zest.runtime.bootstrap.AssemblyHelper;
+import org.apache.zest.runtime.composite.FragmentClassLoader;
 
+@SuppressWarnings( "ALL" )
 public class DocumentationSupport
 {
 
@@ -437,6 +439,58 @@ public class DocumentationSupport
         {
         }
 
+    }
+
+    public static class DalvikAssembly
+    {
+        // START SNIPPET: customAssemblyHelper
+        private static Energy4Java zest;
+
+        private static Application application;
+
+        public static void main( String[] args )
+            throws Exception
+        {
+            // Create a Zest Runtime
+            zest = new Energy4Java();
+            application = zest.newApplication( new ApplicationAssembler()
+            {
+
+                @Override
+                public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )
+                    throws AssemblyException
+                {
+                    ApplicationAssembly assembly = appFactory.newApplicationAssembly();
+                    assembly.setMetaInfo( new DalvikAssemblyHelper() );
+                    // END SNIPPET: customAssemblyHelper
+                    // START SNIPPET: customAssemblyHelper
+                    return assembly;
+                }
+            } );
+            // activate the application
+            application.activate();
+        }
+
+
+        public static class DalvikAssemblyHelper extends AssemblyHelper
+        {
+            @Override
+            protected FragmentClassLoader instantiateFragmentClassLoader( ClassLoader parent )
+            {
+                return new DalvikFragmentClassLoader(parent);
+            }
+        }
+
+        public static class DalvikFragmentClassLoader extends FragmentClassLoader
+        {
+
+            public DalvikFragmentClassLoader( ClassLoader parent )
+            {
+                super( parent );
+            }
+
+        }
+        // END SNIPPET: customAssemblyHelper
     }
 
 }

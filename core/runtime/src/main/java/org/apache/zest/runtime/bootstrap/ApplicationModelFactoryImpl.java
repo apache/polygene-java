@@ -55,7 +55,7 @@ public final class ApplicationModelFactoryImpl
     public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException
     {
-        AssemblyHelper helper = new AssemblyHelper();
+        AssemblyHelper helper = createAssemblyHelper( assembly );
 
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
         ActivatorsModel<Application> applicationActivators = new ActivatorsModel<>( applicationAssembly.activators() );
@@ -119,6 +119,20 @@ public final class ApplicationModelFactoryImpl
         }
 
         return applicationModel;
+    }
+
+    private AssemblyHelper createAssemblyHelper( ApplicationAssembly assembly )
+    {
+        if( assembly instanceof ApplicationAssemblyImpl )
+        {
+            ApplicationAssemblyImpl impl = (ApplicationAssemblyImpl) assembly;
+            AssemblyHelper helper = impl.metaInfo().get( AssemblyHelper.class );
+            if( helper != null )
+            {
+                return helper;
+            }
+        }
+        return new AssemblyHelper();
     }
 
     private static class BindingVisitor

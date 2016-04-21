@@ -158,7 +158,7 @@ public class FragmentClassLoader
         return getClass().getClassLoader().loadClass( name );
     }
 
-    public static byte[] generateClass( String name, Class baseClass )
+    public byte[] generateClass( String name, Class baseClass )
         throws ClassNotFoundException
     {
         String classSlash = name.replace( '.', '/' );
