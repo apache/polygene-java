@@ -78,8 +78,8 @@ public class FileUtilsTest
     @Test
     public void readPropertiesResourceTest()
     {
-
-        Map<String, String> map = FileUtils.readPropertiesResource( "templates/restapp/project.properties" );
+        TestHelper.zetZestZome();
+        Map<String, String> map = FileUtils.readTemplateProperties( "restapp" );
         assertThat( map, notNullValue() );
         assertThat( map.get( "template.dir" ), equalTo( "etc/templates/restapp/files" ) );
     }

@@ -35,6 +35,7 @@ import org.apache.zest.tools.shell.create.project.common.HardCodedSecurityReposi
 import org.apache.zest.tools.shell.create.project.common.IndexingModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.InfrastructureLayerWriter;
 import org.apache.zest.tools.shell.create.project.common.OrderItemWriter;
+import org.apache.zest.tools.shell.create.project.common.OrderModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.OrderWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityModuleWriter;
 import org.apache.zest.tools.shell.create.project.common.SecurityRepositoryWriter;
@@ -42,14 +43,13 @@ import org.apache.zest.tools.shell.create.project.common.SerializationModuleWrit
 import org.apache.zest.tools.shell.create.project.common.StorageModuleWriter;
 import org.apache.zest.tools.shell.create.project.restapp.ApplicationWriter;
 import org.apache.zest.tools.shell.create.project.restapp.IndexHtmlWriter;
-import org.apache.zest.tools.shell.create.project.restapp.OrderModuleWriter;
 import org.apache.zest.tools.shell.create.project.restapp.RestModuleWriter;
 import org.apache.zest.tools.shell.create.project.restapp.SettingsWriter;
 import org.apache.zest.tools.shell.create.project.restapp.SimpleEnrolerWriter;
 import org.apache.zest.tools.shell.create.project.restapp.SimpleVerifierWriter;
 import org.apache.zest.tools.shell.create.project.restapp.WebXmlWriter;
 
-public class RestProjectCreator extends AbstractProjectCreator
+public class HeroesProjectCreator extends AbstractProjectCreator
     implements ProjectCreator
 {
 
@@ -78,11 +78,7 @@ public class RestProjectCreator extends AbstractProjectCreator
         new SecurityModuleWriter().writeClass( properties );
         new SecurityRepositoryWriter().writeClass( properties );
         new HardCodedSecurityRepositoryMixinWriter().writeClass( properties );
-        new OrderWriter().writeClass( properties );
-        new OrderItemWriter().writeClass( properties );
-        new CustomerWriter().writeClass( properties );
 
-        new OrderModuleWriter().writeClass( properties );
         new SettingsWriter().writeClass( properties );
         new IndexHtmlWriter().writeClass( properties );
         new WebXmlWriter().writeClass( properties );

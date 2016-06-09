@@ -39,10 +39,13 @@ public class IndexHtmlWriter
             pw.println(
                 String.format(
                     "<!DOCTYPE html>\n" +
-                    "<html><body>\n" +
-                    "<h1>Welcome to %s</h1>" +
+                    "<html>\n" +
+                    "<head>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "<h1>Welcome to %s</h1>\n" +
                     "</body></html>\n" +
-                    "<>\n", projectName )
+                    "\n", projectName )
             );
         }
     }

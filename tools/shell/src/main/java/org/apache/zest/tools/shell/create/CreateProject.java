@@ -43,7 +43,7 @@ public class CreateProject extends AbstractCommand
         String projectName = args[ 2 ];
         String rootPackage = args[ 3 ];
         File projectDir = FileUtils.createDir( projectName );
-        Map<String, String> props = FileUtils.readPropertiesResource( "templates/" + template + "/project.properties" );
+        Map<String, String> props = FileUtils.readTemplateProperties( template );
         if( props == null )
         {
             System.err.println( "Project Template " + template + " does not exist. \n\n" );
@@ -53,7 +53,6 @@ public class CreateProject extends AbstractCommand
         props.put( "project.name", projectName);
         props.put( "template", template);
         props.put( "root.package", rootPackage);
-        props.put( "zest.home", System.getProperty( "zest.home" ) );
         String classname = props.get( "creator.class" );
         try
         {

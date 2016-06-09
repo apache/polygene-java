@@ -1,0 +1,15 @@
+<h3>Top Heroes</h3>
+<div class="grid grid-pad">
+  <div *ngFor="#hero of heroes" class="col-1-4" (click)="gotoDetail(hero)">
+    <div class="module hero">
+      <h4>{{hero.name}}</h4>
+    </div>
+  </div>
+</div>
+
+
+<!-- 
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+-->

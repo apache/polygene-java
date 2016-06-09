@@ -67,11 +67,10 @@ public class FileUtils
         return success;
     }
 
-    public static Map<String, String> readPropertiesResource( String resourceName )
+    public static Map<String, String> readTemplateProperties( String templateName )
     {
-        ClassLoader cl = FileUtils.class.getClassLoader();
-        InputStream in = cl.getResourceAsStream( resourceName );
-        try
+        File propertiesFile = new File( zestHome(), "etc/templates/" + templateName + "/template.properties" );
+        try (InputStream in = new BufferedInputStream( new FileInputStream( propertiesFile ) ))
         {
             Properties properties = readProperties( in );
             Map<String, String> result = new HashMap<String, String>();
@@ -83,9 +82,9 @@ public class FileUtils
         }
         catch( Exception e )
         {
-            System.err.println( "Unable to read resource " + resourceName );
-            System.exit( 2 );
-            return null;
+            String message = "Unable to read template \'" + templateName + "\'.";
+            System.err.println( message );
+            throw new RuntimeException( message );
         }
     }
 
@@ -116,6 +115,12 @@ public class FileUtils
         }
     }
 
+    public static File zestHome()
+    {
+        String home = System.getProperty( "zest.home" );
+        return new File( home ).getAbsoluteFile();
+    }
+
     public static PrintWriter createJavaClassPrintWriter( Map<String, String> properties,
                                                           String module,
                                                           String packagename,
@@ -133,12 +138,13 @@ public class FileUtils
             }
         }
         final File destination = new File( packageDir, classname + ".java" );
-        return new PrintWriter( new FileWriter( destination ) ){
+        return new PrintWriter( new FileWriter( destination ) )
+        {
             @Override
             public void close()
             {
                 super.close();
-                System.out.println("Creating " + destination );
+                System.out.println( "Creating " + destination );
             }
         };
     }
