@@ -101,12 +101,6 @@ public interface EntityListResource<T extends Identity> extends ServerResource<E
             return resourceBuilder.createRestLink( name, base, Method.GET );
         }
 
-
-
-
-
-
-
         @SuppressWarnings( "unchecked" )
         private List<EntityRef> getEntityRefs( Reference base )
         {
