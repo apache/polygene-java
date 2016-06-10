@@ -1,0 +1,61 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+WARNING! This guide is written before the code, and may not work yet.
+
+[[quick-start,Quick Start Guide]]
+= Quick Start =
+If you want to test Apache Zest in the smallest amount of time possible,
+without getting bogged down by the details, you have come to the right
+place.
+
+== Quick Download / No Install ==
+The following procedure will download one JAR file, one script and put it
+on your PATH.
+
+=== Windows ===
+TBD.
+
+=== Linux / Mac OSX ===
+The assumption is that ==wget== is installed.
+
+[snippet,bash]
+----
+source=tools/shell/src/docs/use-boot.txt
+tag=boot-quick
+----
+
+The boot script will place the the ==zest== script and the accompanying
+jar file into the $HOME/bin directory, which should already be on your PATH.
+
+== Create a small Project ==
+
+[snippet,bash]
+----
+source=tools/shell/src/docs/use-boot.txt
+tag=create-singleton
+----
+
+== Create a complete Project ==
+
+[snippet,bash]
+----
+source=tools/shell/src/docs/use-boot.txt
+tag=create-ngheroes
+----

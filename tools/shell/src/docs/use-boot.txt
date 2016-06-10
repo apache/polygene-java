@@ -17,42 +17,30 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-:leveloffset: 1
+THIS FILE CONTAINS SNIPPETS for quick-start.txt and shell.txt. DO NOT INCLUDE IN DOCUMENTATION.
 
-[[intro,Introduction Section]]
-= Introduction =
 
-:leveloffset: 2
+START SNIPPET: boot-quick
+wget http://zest.apache.org/latest/shell/zest-boot
+sh zest-boot quick
+END SNIPPET: boot-quick
 
-include::../../../../tutorials/introduction/src/docs/highlights.txt[]
+START SNIPPET: boot-sdk
+wget http://zest.apache.org/latest/shell/zest-boot
+sh zest-boot sdk
+END SNIPPET: boot-sdk
 
-:leveloffset: 2
+START SNIPPET: create-singleton
+zest create-project singleton com.acme.quick quickstart
+cd quickstart
+./gradlew assemble
+./gradlew run
+END SNIPPET: create-singleton
 
-include::../../../../tools/shell/src/docs/quick-start.txt[]
-
-:leveloffset: 2
-
-include::../../../../tutorials/introduction/src/docs/background.txt[]
-
-:leveloffset: 2
-
-include::../../../../tutorials/introduction/src/docs/what-is-composite-oriented-programming.txt[]
-
-:leveloffset: 2
-
-// include::../../../../tutorials/introduction/src/docs/zest-cop.txt[]
-//
-// :leveloffset: 2
-
-include::../../../../tutorials/introduction/src/docs/whats-an-object.txt[]
-
-:leveloffset: 2
-
-include::../../../../tutorials/introduction/src/docs/state-modeling.txt[]
-
-:leveloffset: 2
-
-include::related.txt[]
-
-:leveloffset: 2
+START SNIPPET: create-ngheroes
+zest create-project ng-heroes com.acme.heroes heroes
+cd heroes
+./gradlew assemble
+./gradlew run
+END SNIPPET: create-ngheroes
 
