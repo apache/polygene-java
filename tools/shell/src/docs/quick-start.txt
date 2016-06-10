@@ -33,7 +33,7 @@ on your PATH.
 TBD.
 
 === Linux / Mac OSX ===
-The assumption is that ==wget== is installed.
+The assumption is that +wget+ is installed.
 
 [snippet,bash]
 ----
@@ -41,7 +41,7 @@ source=tools/shell/src/docs/use-boot.txt
 tag=boot-quick
 ----
 
-The boot script will place the the ==zest== script and the accompanying
+The boot script will place the the +zest+ script and the accompanying
 jar file into the $HOME/bin directory, which should already be on your PATH.
 
 == Create a small Project ==
