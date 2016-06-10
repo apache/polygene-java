@@ -22,7 +22,7 @@ THIS FILE CONTAINS SNIPPETS for quick-start.txt and shell.txt. DO NOT INCLUDE IN
 
 START SNIPPET: boot-quick
 wget http://zest.apache.org/latest/shell/zest-boot
-sh zest-boot quick
+sh zest-boot
 END SNIPPET: boot-quick
 
 START SNIPPET: boot-sdk
