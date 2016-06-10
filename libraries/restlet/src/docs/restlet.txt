@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[library-restlet, Rsstlet Library]]
+[[library-restlet, Restlet Library]]
 = Restlet Support =
 
 [devstatus]
