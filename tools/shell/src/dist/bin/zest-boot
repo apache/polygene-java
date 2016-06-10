@@ -27,10 +27,10 @@ if [ "$MYNAME" == "zest-boot" ] ; then
                 echo "You need either wget or curl installed to use this script."
                 exit 1
             else
-                curl --output $HOME/bin/zest $JAR_URL
+                curl --output $HOME/bin/ $JAR_URL
             fi
         else
-            wget --output-document=$HOME/bin/zest $HOME/bin/zest $JAR_URL
+            wget --output-document=$HOME/bin/ $HOME/bin/zest $JAR_URL
         fi
     fi
 else
