@@ -187,7 +187,7 @@ public interface ValueSerializer
         public Options()
         {
             this.options.put( INCLUDE_TYPE_INFO, "true" );
-            this.options.put( MAP_ENTRIES_AS_OBJECTS, "false" );
+            this.options.put( MAP_ENTRIES_AS_OBJECTS, "true" );
         }
 
         /**

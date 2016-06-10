@@ -109,12 +109,10 @@ public class UseDefaultsTest
         @UseDefaults( "123.45" )
         Property<Float> initializedFloatDefaultValue();
 
-// TODO: Seems that OrgJsonValueDeserializer has problem with arrays.
-//        @UseDefaults( "[\"abcde\"]" )
-//        Property<List<String>> initializedStringListDefultString();
+        @UseDefaults( "[\"abcde\"]" )
+        Property<List<String>> initializedStringListDefultString();
 
-// TODO: Seems that OrgJsonValueDeserializer has problem with arrays.
-//        @UseDefaults( "{\"abcd\" : 345 }" )
-//        Property<Map<String, Integer>> initializedMapDefaultValue();
+        @UseDefaults( "{\"abcd\" : 345 }" )
+        Property<Map<String, Integer>> initializedMapDefaultValue();
     }
 }

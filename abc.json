@@ -1,0 +1,86 @@
+{
+  "number": 42,
+  "string": "Foo\"Bar\"\nTest\t",
+  "foo": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$FooValue",
+    "bar": ""
+  },
+  "customFoo": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$CustomFooValue",
+    "custom": "",
+    "bar": ""
+  },
+  "customFooValue": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$CustomFooValue",
+    "custom": "",
+    "bar": ""
+  },
+  "stringIntMap": {
+    "foo": 42
+  },
+  "stringValueMap": {
+    "foo": {
+      "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$AnotherValue",
+      "val1": "Foo",
+      "val2": "Bar"
+    }
+  },
+  "anotherList": [
+    {
+      "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$AnotherValue",
+      "val1": "",
+      "val2": ""
+    }
+  ],
+  "specificCollection": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$SpecificCollection",
+    "genericList": [
+      "Some",
+      "String"
+    ]
+  },
+  "string2": "/Foo/bar",
+  "dateTime": "2020-03-04T13:24:35.000+01:00",
+  "localDate": "2016-06-10",
+  "localDateTime": "2016-06-10T17:44:23.716",
+  "entityReference": "12345",
+  "another": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$AnotherValue",
+    "val1": "Foo",
+    "val2": "Bar"
+  },
+  "serializable": "rO0ABXNyAFVvcmcuYXBhY2hlLnplc3QudGVzdC52YWx1ZS5BYnN0cmFjdFZhbHVlQ29tcG9zaXRlU2VyaWFsaXphdGlvblRlc3QkU2VyaWFsaXphYmxlT2JqZWN0AAAAAAAAAAECAAJJAAN2YWxMAANmb290ABJMamF2YS9sYW5nL1N0cmluZzt4cAAAACN0AANGb28=",
+  "fooValue": {
+    "_type": "org.apache.zest.test.value.AbstractValueCompositeSerializationTest$FooValue",
+    "bar": ""
+  },
+  "emptyString": "",
+  "stringList": [ ],
+  "anotherNull": null,
+  "testEnum": "somevalue",
+  "nullString": null,
+  "anotherListNull": null,
+  "anotherListEmpty": [ ],
+  "date": "2016-06-10T09:44:23.427Z",
+  "barAssociation": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-0",
+  "barEntityAssociation": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-1",
+  "barAssociationOptional": null,
+  "barManyAssociation": [
+    "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-2",
+    "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-3"
+  ],
+  "barEntityManyAssociation": [
+    "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-4",
+    "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-5"
+  ],
+  "barManyAssociationEmpty": [ ],
+  "barNamedAssociation": {
+    "bazar": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-6",
+    "cathedral": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-7"
+  },
+  "barEntityNamedAssociation": {
+    "bazar": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-8",
+    "cathedral": "6ca26469-9eb3-48fc-a4ae-a26cf73ded34-9"
+  },
+  "barNamedAssociationEmpty": {}
+}

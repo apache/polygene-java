@@ -22,6 +22,7 @@ package org.apache.zest.test.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -49,8 +50,10 @@ import static org.apache.zest.io.Inputs.text;
 import static org.apache.zest.io.Outputs.collection;
 import static org.apache.zest.io.Outputs.text;
 import static org.apache.zest.io.Transforms.map;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Assert that ValueSerialization behaviour on Collections and Maps is correct.
@@ -252,6 +255,29 @@ public class AbstractCollectionSerializationTest
         CollectionType collectionType = new CollectionType( List.class, valueType );
         List<SomeValue> value = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( valueCompositesList(), value );
+    }
+
+    @Test
+    public void givenHandCodedArrayWhenDeserializingListExpectPopulatedList()
+        throws Exception
+    {
+        ValueType valueType = ValueType.of( String.class );
+        CollectionType collectionType = new CollectionType( List.class, valueType );
+        List<String> value = valueSerialization.deserialize( module, collectionType, "[ \"abc\" ]" );
+        List<String> expected = Collections.singletonList( "abc" );
+        assertThat( value, equalTo( expected) );
+    }
+
+    @Test
+    public void givenHandCodedObejctWhenDeserializingMapExpectPopulatedMap()
+        throws Exception
+    {
+        ValueType keyType = ValueType.of( String.class );
+        ValueType valueType = ValueType.of( Integer.class );
+        MapType collectionType = new MapType( Map.class, keyType, valueType );
+        Map<String, Integer> value = valueSerialization.deserialize( module, collectionType, "{\"abcd\" : 345 }" );
+        Map<String, Integer> expected = Collections.singletonMap( "abcd", 345 );
+        assertThat( value, equalTo( expected) );
     }
 
     private ArrayList<Byte> byteCollection()

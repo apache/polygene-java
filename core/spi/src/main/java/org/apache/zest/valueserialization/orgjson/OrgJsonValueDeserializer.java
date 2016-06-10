@@ -29,6 +29,7 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -112,7 +113,7 @@ public class OrgJsonValueDeserializer
             return collection;
         }
         input.back();
-        for(; ; )
+        for( ; ; )
         {
             if( input.nextClean() == ',' )
             {
@@ -159,6 +160,7 @@ public class OrgJsonValueDeserializer
     {
         char c = input.nextClean();
         char q;
+        boolean objectStructure = false;
         if( c == 'n' ) // null?
         {
             /*
@@ -188,6 +190,11 @@ public class OrgJsonValueDeserializer
         {
             q = ']';
         }
+        else if( c == '{' )
+        {
+            objectStructure = true;
+            q = '}';
+        }
         else
         {
             throw input.syntaxError( "A JSONArray text must start with '['" );
@@ -197,8 +204,13 @@ public class OrgJsonValueDeserializer
             return map;
         }
         input.back();
+        if( input.nextClean() == '}' )
+        {
+            return map;
+        }
+        input.back();
 
-        for(; ; )
+        for( ; ; )
         {
             if( input.nextClean() == ',' )
             {
@@ -208,84 +220,17 @@ public class OrgJsonValueDeserializer
             {
                 input.back();
                 // Map entry!
-                if( input.nextClean() != '{' )
+                if( objectStructure )
                 {
-                    throw input.syntaxError( "A JSONObject text must begin with '{'" );
+                    parseMapEntry( input, keyDeserializer, valueDeserializer, map );
                 }
-
-                String objectKey;
-                K key = null;
-                V value = null;
-
-                boolean breakIteration = false;
-                while( !breakIteration )
+                else
                 {
-                    c = input.nextClean();
-                    switch( c )
+                    if( input.nextClean() != '{' )
                     {
-                    case 0:
-                        throw input.syntaxError( "A JSONObject text must end with '}'" );
-                    case '}':
-                        breakIteration = true;
-                        continue;
-                    default:
-                        input.back();
-                        objectKey = input.nextValue().toString();
+                        throw input.syntaxError( "A JSONObject text must begin with '{'" );
                     }
-
-                    /*
-                     * The key is followed by ':'. We will also tolerate '=' or '=>'.
-                     */
-                    c = input.nextClean();
-                    if( c == '=' )
-                    {
-                        if( input.next() != '>' )
-                        {
-                            input.back();
-                        }
-                    }
-                    else if( c != ':' )
-                    {
-                        throw input.syntaxError( "Expected a ':' after a key" );
-                    }
-
-                    if( "key".equals( objectKey ) )
-                    {
-                        key = keyDeserializer.apply( input );
-                    }
-                    else if( "value".equals( objectKey ) )
-                    {
-                        value = valueDeserializer.apply( input );
-                    }
-                    else
-                    {
-                        input.nextValue();
-                    }
-
-                    /*
-                     * Pairs are separated by ','. We will also tolerate ';'.
-                     */
-                    switch( input.nextClean() )
-                    {
-                    case ';':
-                    case ',':
-                        if( input.nextClean() == '}' )
-                        {
-                            breakIteration = true;
-                            continue;
-                        }
-                        input.back();
-                        continue;
-                    case '}':
-                        breakIteration = true;
-                        continue;
-                    default:
-                        throw input.syntaxError( "Expected a ',' or '}'" );
-                    }
-                }
-                if( key != null )
-                {
-                    map.put( key, value );
+                    parseNodeEntry( input, keyDeserializer, valueDeserializer, map );
                 }
             }
             c = input.nextClean();
@@ -301,6 +246,7 @@ public class OrgJsonValueDeserializer
                 break;
             case ']':
             case ')':
+            case '}':
                 if( q != c )
                 {
                     throw input.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
@@ -309,6 +255,109 @@ public class OrgJsonValueDeserializer
             default:
                 throw input.syntaxError( "Expected a ',' or ']'" );
             }
+        }
+    }
+
+    private <K, V> void parseMapEntry( JSONTokener input,
+                                       Function<JSONTokener, K> keyDeserializer,
+                                       Function<JSONTokener, V> valueDeserializer,
+                                       Map<K, V> map
+    )
+        throws JSONException
+    {
+        K key = keyDeserializer.apply( input );
+        char c = input.nextClean();
+        if( c != ':' )
+        {
+            throw input.syntaxError( "Expected a ':' after a key" );
+        }
+        V value = valueDeserializer.apply( input );
+        if( key != null )
+        {
+            map.put( key, value );
+        }
+    }
+
+    private <K, V> void parseNodeEntry( JSONTokener input,
+                                        Function<JSONTokener, K> keyDeserializer,
+                                        Function<JSONTokener, V> valueDeserializer,
+                                        Map<K, V> map
+    )
+        throws JSONException
+    {
+        char c;
+        String objectKey;
+        boolean breakIteration = false;
+        K key = null;
+        V value = null;
+        while( !breakIteration )
+        {
+            c = input.nextClean();
+            switch( c )
+            {
+            case 0:
+                throw input.syntaxError( "A JSONObject text must end with '}'" );
+            case '}':
+                breakIteration = true;
+                continue;
+            default:
+                input.back();
+                objectKey = input.nextValue().toString();
+            }
+
+            /*
+             * The key is followed by ':'. We will also tolerate '=' or '=>'.
+             */
+            c = input.nextClean();
+            if( c == '=' )
+            {
+                if( input.next() != '>' )
+                {
+                    input.back();
+                }
+            }
+            else if( c != ':' )
+            {
+                throw input.syntaxError( "Expected a ':' after a key" );
+            }
+
+            if( "key".equals( objectKey ) )
+            {
+                key = keyDeserializer.apply( input );
+            }
+            else if( "value".equals( objectKey ) )
+            {
+                value = valueDeserializer.apply( input );
+            }
+            else
+            {
+                input.nextValue();
+            }
+
+            /*
+             * Pairs are separated by ','. We will also tolerate ';'.
+             */
+            switch( input.nextClean() )
+            {
+            case ';':
+            case ',':
+                if( input.nextClean() == '}' )
+                {
+                    breakIteration = true;
+                    continue;
+                }
+                input.back();
+                continue;
+            case '}':
+                breakIteration = true;
+                continue;
+            default:
+                throw input.syntaxError( "Expected a ',' or '}'" );
+            }
+        }
+        if( key != null )
+        {
+            map.put( key, value );
         }
     }
 
