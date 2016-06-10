@@ -51,6 +51,13 @@ import java.lang.annotation.Target;
  * is not allowed.
  * </p>
  * <p>
+ * The <code>&#64;UseDefaults</code> annotation can also have a value in its declaration. This value is used,
+ * unless it is overridden in the assembly (see below). Java does not support generic types of annotation values,
+ * so it accepts String values, which are deserialized from JSON using the ValueSerialization SPI. This allows
+ * for (albeit somewhat tedious) any object type to have a default value declared on it. If the property type is
+ * String, then no value deserialization is done.
+ * </p>
+ * <p>
  * It is also possible to change the default values for Composites during the assembly. This is done by calling the
  * {@code org.apache.zest.bootstrap.ModuleAssembly#forMixin(Class)} method.
  * </p>
@@ -81,4 +88,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface UseDefaults
 {
+    String value() default "";
 }

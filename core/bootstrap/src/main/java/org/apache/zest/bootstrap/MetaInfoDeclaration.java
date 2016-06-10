@@ -144,18 +144,12 @@ public final class MetaInfoDeclaration
             try
             {
                 return Proxy.newProxyInstance( returnType.getClassLoader(), new Class[]{ returnType },
-                                               new InvocationHandler()
-                                               {
-                                                   @Override
-                                                   public Object invoke( Object o, Method method, Object[] objects )
-                                                       throws Throwable
+                                               ( o1, method1, objects1 ) -> {
+                                                   if( method1.getName().equals( "set" ) )
                                                    {
-                                                       if( method.getName().equals( "set" ) )
-                                                       {
-                                                           methodInfo.initialValue = objects[ 0 ];
-                                                       }
-                                                       return null;
+                                                       methodInfo.initialValue = objects1[ 0 ];
                                                    }
+                                                   return null;
                                                } );
             }
             catch( IllegalArgumentException e )

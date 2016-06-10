@@ -25,6 +25,9 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.bootstrap.TransientAssembly;
+import org.apache.zest.runtime.association.AssociationsModel;
+import org.apache.zest.runtime.association.ManyAssociationsModel;
+import org.apache.zest.runtime.association.NamedAssociationsModel;
 import org.apache.zest.runtime.composite.TransientModel;
 
 /**

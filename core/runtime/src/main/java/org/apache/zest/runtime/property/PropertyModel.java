@@ -38,12 +38,14 @@ import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.InvalidPropertyTypeException;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.util.Classes;
+import org.apache.zest.api.value.MissingValueSerializationException;
+import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
@@ -176,18 +178,44 @@ public class PropertyModel
         Object value = initialValue;
 
         // Check for @UseDefaults annotation
-        if( value == null && useDefaults )
+        if( useDefaults )
         {
-            if( valueType instanceof ValueCompositeType )
+            if( value == null || ( ( value instanceof String ) && ( (String) value ).length() == 0 ) )
             {
-                return module.instance().newValue( valueType().types().findFirst().orElse( null ) );
+                if( valueType instanceof ValueCompositeType )
+                {
+                    Class<?> propertyType = valueType().types().findFirst().orElse( null );
+                    value = module.instance().newValue( propertyType );
+                }
+                else
+                {
+                    value = DefaultValues.getDefaultValueOf( type );
+                }
             }
             else
             {
-                value = DefaultValues.getDefaultValueOf( type );
+                Class<?> propertyType = valueType().types().findFirst().orElse( null );
+                if( value instanceof String && !propertyType.equals( String.class ) )
+                {
+                    try
+                    {
+                        // here we could possibly deserialize json to other types...
+                        ValueDeserializer deserializer = module.instance()
+                            .serviceFinder()
+                            .findService( ValueDeserializer.class )
+                            .get();
+                        if( deserializer != null )
+                        {
+                            value = deserializer.deserialize( module, propertyType ).apply( (String) value );
+                        }
+                    }
+                    catch( NoSuchServiceException e )
+                    {
+                        throw new MissingValueSerializationException( "@UseDefaults with initialization value requires that there is a visible ValueDeserializer service available.", e);
+                    }
+                }
             }
         }
-
         return value;
     }
 

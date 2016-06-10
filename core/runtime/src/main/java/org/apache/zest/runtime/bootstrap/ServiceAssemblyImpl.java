@@ -35,6 +35,9 @@ import org.apache.zest.bootstrap.ServiceAssembly;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
+import org.apache.zest.runtime.association.AssociationsModel;
+import org.apache.zest.runtime.association.ManyAssociationsModel;
+import org.apache.zest.runtime.association.NamedAssociationsModel;
 import org.apache.zest.runtime.service.ServiceModel;
 import org.apache.zest.runtime.structure.ModuleModel;
 

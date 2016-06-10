@@ -39,6 +39,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.zest.api.association.Association;
+import org.apache.zest.api.association.GenericAssociationInfo;
+import org.apache.zest.api.association.ManyAssociation;
+import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
@@ -65,6 +69,12 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.runtime.association.AssociationModel;
+import org.apache.zest.runtime.association.AssociationsModel;
+import org.apache.zest.runtime.association.ManyAssociationModel;
+import org.apache.zest.runtime.association.ManyAssociationsModel;
+import org.apache.zest.runtime.association.NamedAssociationModel;
+import org.apache.zest.runtime.association.NamedAssociationsModel;
 import org.apache.zest.runtime.composite.AbstractConstraintModel;
 import org.apache.zest.runtime.composite.CompositeConstraintModel;
 import org.apache.zest.runtime.composite.CompositeMethodModel;
@@ -410,9 +420,7 @@ public abstract class CompositeAssemblyImpl
         } );
     }
 
-    protected void addStateFor( AccessibleObject accessor,
-                                List<Class<?>> constraintClasses
-    )
+    protected void addStateFor( AccessibleObject accessor, List<Class<?>> constraintClasses )
     {
         String stateName = QualifiedName.fromAccessor( accessor ).name();
 
@@ -421,11 +429,42 @@ public abstract class CompositeAssemblyImpl
             return; // Skip already registered names
         }
 
-        if( Property.class.isAssignableFrom( Classes.RAW_CLASS.apply( typeOf( accessor ) ) ) )
+        Class<?> accessorType = Classes.RAW_CLASS.apply( typeOf( accessor ) );
+        if( Property.class.isAssignableFrom( accessorType ) )
         {
             propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
             registeredStateNames.add( stateName );
         }
+        else if( Association.class.isAssignableFrom( accessorType ) )
+        {
+            associationsModel().addAssociation( newAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        }
+        else if( ManyAssociation.class.isAssignableFrom( accessorType ) )
+        {
+            manyAssociationsModel().addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        }
+        else if( NamedAssociation.class.isAssignableFrom( accessorType ) )
+        {
+            namedAssociationsModel().addNamedAssociation( newNamedAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        }
+    }
+
+    protected AssociationsModel associationsModel()
+    {
+        return null;
+    }
+
+    protected ManyAssociationsModel manyAssociationsModel()
+    {
+        return null;
+    }
+
+    protected NamedAssociationsModel namedAssociationsModel()
+    {
+        return null;
     }
 
     protected PropertyModel newPropertyModel( AccessibleObject accessor,
@@ -447,8 +486,13 @@ public abstract class CompositeAssemblyImpl
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        UseDefaults useDefaultsDeclaration = metaInfo.get( UseDefaults.class );
         Object initialValue = stateDeclarations.initialValueOf( accessor );
-        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.useDefaults( accessor );
+        if( initialValue == null && useDefaultsDeclaration != null )
+        {
+            initialValue = useDefaultsDeclaration.value();
+        }
+        boolean useDefaults = useDefaultsDeclaration != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         return new PropertyModel(
             accessor,
@@ -456,7 +500,8 @@ public abstract class CompositeAssemblyImpl
             useDefaults,
             valueConstraintsInstance,
             metaInfo,
-            initialValue );
+            initialValue
+        );
     }
 
     // Model
@@ -710,7 +755,9 @@ public abstract class CompositeAssemblyImpl
         }
     }
 
-    private void addSideEffectOrRepositionIfExists( List<SideEffectModel> sideEffectsFor, SideEffectModel sideEffectModel )
+    private void addSideEffectOrRepositionIfExists( List<SideEffectModel> sideEffectsFor,
+                                                    SideEffectModel sideEffectModel
+    )
     {
         // This add/remove is to allow reording of SideEffects.
         sideEffectsFor.remove( sideEffectModel );
@@ -794,5 +841,87 @@ public abstract class CompositeAssemblyImpl
         {
             return classHierarchy( clazz ).map( Classes.RAW_CLASS );
         }
+    }
+
+    public AssociationModel newAssociationModel( AccessibleObject accessor,
+                                                 List<Class<?>> constraintClasses
+    )
+    {
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
+
+        // Constraints for Association references
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the Association itself
+        valueConstraintsModel = constraintsFor( annotations.stream(), Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance associationValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            associationValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        return new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
+    }
+
+    public ManyAssociationModel newManyAssociationModel( AccessibleObject accessor,
+                                                         List<Class<?>> constraintClasses
+    )
+    {
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
+
+        // Constraints for entities in ManyAssociation
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the ManyAssociation itself
+        valueConstraintsModel = constraintsFor( annotations.stream(), ManyAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance manyValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            manyValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        return new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
+    }
+
+    public NamedAssociationModel newNamedAssociationModel( AccessibleObject accessor,
+                                                           List<Class<?>> constraintClasses
+    )
+    {
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
+
+        // Constraints for entities in NamedAssociation
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the NamedAssociation itself
+        valueConstraintsModel = constraintsFor( annotations.stream(), NamedAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance namedValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            namedValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        return new NamedAssociationModel( accessor, valueConstraintsInstance, namedValueConstraintsInstance, metaInfo );
     }
 }

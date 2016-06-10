@@ -188,12 +188,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return input -> deserialize( module, valueType, input );
     }
 
-//    @Override
-//    public final <T> BiFunction<ValueType, String, T> deserialize()
-//    {
-//        return this::deserialize;
-//    }
-
     @Override
     public final <T> T deserialize( ModuleDescriptor module, Class<?> type, String input )
         throws ValueSerializationException
@@ -270,7 +264,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         final Class<?> type = valueType.types().findFirst().orElse( null );
         // Plain ValueType
-        if( deserializers.get( type ) != null )
+        Function<Object, Object> deserializationFunction = deserializers.get( type );
+        if( deserializationFunction != null )
         {
             Scanner scanner = new Scanner( input, UTF_8 ).useDelimiter( "\\A" );
             if( !scanner.hasNext() )
@@ -278,7 +273,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 return String.class.equals( type ) ? (T) "" : null;
             }
             String string = scanner.next();
-            return (T) deserializers.get( type ).apply( string );
+            return (T) deserializationFunction.apply( string );
         }
         else // Array ValueType
             if( type.isArray() )
