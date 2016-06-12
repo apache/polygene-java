@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.Lifecycle;
 import org.apache.zest.api.mixin.Initializable;
 import org.apache.zest.api.util.Methods;
@@ -162,17 +161,14 @@ import static org.objectweb.asm.Type.getInternalName;
         String baseClassSlash = getInternalName( baseClass );
 
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
-        FieldVisitor fv;
-        MethodVisitor mv;
-        AnnotationVisitor av0;
 
         // Class definition start
         cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, new String[] { "org/apache/zest/api/composite/Composite" } );
 
         // Composite reference
         {
-            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null );
-            fv.visitEnd();
+            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null )
+                .visitEnd();
         }
 
         // Static Method references
@@ -182,9 +178,8 @@ import static org.objectweb.asm.Type.getInternalName;
             {
                 if( isOverloaded( method, baseClass ) )
                 {
-                    fv = cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
-                                        null );
-                    fv.visitEnd();
+                    cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null, null )
+                        .visitEnd();
                 }
             }
         }
@@ -195,7 +190,7 @@ import static org.objectweb.asm.Type.getInternalName;
             if( Modifier.isPublic( constructor.getModifiers() ) || Modifier.isProtected( constructor.getModifiers() ) )
             {
                 String desc = org.objectweb.asm.commons.Method.getMethod( constructor ).getDescriptor();
-                mv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
+                MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
                 mv.visitCode();
                 mv.visitVarInsn( ALOAD, 0 );
 
@@ -227,7 +222,7 @@ import static org.objectweb.asm.Type.getInternalName;
 
                 String[] exceptions = null;
                 {
-                    mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
+                    MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
                     if( isInternalZestMethod( method, baseClass ) )
                     {
                         // generate a NoOp method...
@@ -351,7 +346,7 @@ import static org.objectweb.asm.Type.getInternalName;
                 if( !Modifier.isAbstract( method.getModifiers() ) )
                 {
                     // Add method with _ as prefix
-                    mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
+                    MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
                     mv.visitCode();
                     mv.visitVarInsn( ALOAD, 0 );
 
@@ -383,7 +378,7 @@ import static org.objectweb.asm.Type.getInternalName;
 
         // Class initializer
         {
-            mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
+            MethodVisitor mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             Label l1 = new Label();
@@ -398,8 +393,7 @@ import static org.objectweb.asm.Type.getInternalName;
                 if( isOverloaded( method, baseClass ) )
                 {
                     method.setAccessible( true );
-                    Class methodClass;
-                    methodClass = method.getDeclaringClass();
+                    Class methodClass = method.getDeclaringClass();
 
                     midx++;
 
@@ -437,9 +431,7 @@ import static org.objectweb.asm.Type.getInternalName;
             mv.visitMaxs( 6, 1 );
             mv.visitEnd();
         }
-
         cw.visitEnd();
-
         return cw.toByteArray();
     }
 
