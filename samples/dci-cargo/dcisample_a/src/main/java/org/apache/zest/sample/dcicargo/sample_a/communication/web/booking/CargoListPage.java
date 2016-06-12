@@ -19,8 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.booking;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.wicket.Session;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
@@ -31,12 +32,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.RoutingStatus;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.color.ErrorColor;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.link.LinkPanel;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.prevnext.PrevNext;
+
+import static java.util.Date.from;
 
 /**
  * List of Cargos
@@ -49,7 +53,7 @@ public class CargoListPage extends BookingBasePage
         IModel<List<CargoDTO>> cargoList = new CommonQueries().cargoList();
 
         // Save current trackingIds in session (for prev/next buttons on details page)
-        ArrayList<String> ids = new ArrayList<String>();
+        ArrayList<String> ids = new ArrayList<>();
         for( CargoDTO cargo : cargoList.getObject() )
         {
             ids.add( cargo.trackingId().get().id().get() );
@@ -70,12 +74,11 @@ public class CargoListPage extends BookingBasePage
 
                 item.add( new Label( "origin", cargo.origin().get().getCode() ) );
 
-                item.add( new Label( "destination", cargo.routeSpecification().get().destination().get().getCode() ) );
+                RouteSpecification routeSpecification = cargo.routeSpecification().get();
+                item.add( new Label( "destination", routeSpecification.destination().get().getCode() ) );
 
-                item.add( new Label( "deadline", new Model<Date>( cargo.routeSpecification()
-                                                                      .get()
-                                                                      .arrivalDeadline()
-                                                                      .get() ) ) );
+                LocalDateTime deadlineTime = routeSpecification.arrivalDeadline().get().atStartOfDay().plusDays( 1 );
+                item.add( new Label( "deadline", new Model<>( from( deadlineTime.toInstant( ZoneOffset.UTC ) ) ) ) );
 
                 item.add( new Label( "routingStatus", routingStatus.toString() ).add( new ErrorColor( routingStatus == RoutingStatus.MISROUTED ) ) );
 
@@ -87,7 +90,7 @@ public class CargoListPage extends BookingBasePage
                 String customsLabel = delivery.transportStatus().get().name() + ( inCustoms ? " (CUSTOMS)" : "" );
                 item.add( new Label( "transportStatus", customsLabel ) );
 
-                IModel directed = new Model<String>( delivery.isMisdirected().get() ? "Misdirected" : "On track" );
+                IModel directed = new Model<>( delivery.isMisdirected().get() ? "Misdirected" : "On track" );
                 item.add( new Label( "deliveryStatus", directed ).add( new ErrorColor( delivery.isMisdirected()
                                                                                            .get() ) ) );
             }

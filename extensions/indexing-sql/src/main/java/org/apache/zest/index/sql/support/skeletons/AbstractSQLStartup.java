@@ -29,9 +29,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -291,7 +298,12 @@ public abstract class AbstractSQLStartup
         this._primitiveTypes.put( Long.class, dt.bigInt() );
         this._primitiveTypes.put( Float.class, dt.real() );
         this._primitiveTypes.put( Double.class, dt.doublePrecision() );
-        this._primitiveTypes.put( Date.class, dt.timeStamp( true ) );
+        this._primitiveTypes.put( LocalDate.class, dt.timeStamp( false ) );
+        this._primitiveTypes.put( LocalTime.class, dt.timeStamp( false ) );
+        this._primitiveTypes.put( LocalDateTime.class, dt.timeStamp( false ) );
+        this._primitiveTypes.put( ZonedDateTime.class, dt.timeStamp( true ) );
+        this._primitiveTypes.put( OffsetDateTime.class, dt.timeStamp( true ) );
+        this._primitiveTypes.put( Instant.class, dt.timeStamp( true ) );
         this._primitiveTypes.put( Character.class, dt.integer() );
         this._primitiveTypes.put( String.class, dt.sqlVarChar( 5000 ) );
         this._primitiveTypes.put( BigInteger.class, dt.decimal() );
@@ -305,7 +317,13 @@ public abstract class AbstractSQLStartup
         jdbcTypes.put( Long.class, Types.BIGINT );
         jdbcTypes.put( Float.class, Types.REAL );
         jdbcTypes.put( Double.class, Types.DOUBLE );
-        jdbcTypes.put( Date.class, Types.TIMESTAMP );
+        jdbcTypes.put( Instant.class, Types.TIMESTAMP );
+        jdbcTypes.put( LocalDate.class, Types.DATE );
+        jdbcTypes.put( LocalTime.class, Types.TIME );
+        jdbcTypes.put( ZonedDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE );
+        jdbcTypes.put( OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE );
+        jdbcTypes.put( Duration.class, Types.VARCHAR);
+        jdbcTypes.put( Period.class, Types.VARCHAR);
         jdbcTypes.put( Character.class, Types.INTEGER );
         jdbcTypes.put( String.class, Types.VARCHAR );
         jdbcTypes.put( BigInteger.class, Types.NUMERIC );
@@ -533,7 +551,7 @@ public abstract class AbstractSQLStartup
                             .addTableElement( d.createColumnDefinition( ENTITY_TABLE_IDENTITY_COLUMN_NAME, this._primitiveTypes
                                 .get( String.class ), false ) )
                             .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
-                                .get( Date.class ), false ) )
+                                .get( Instant.class ), false ) )
                             .addTableElement( d.createColumnDefinition( ENTITY_TABLE_VERSION_COLUMN_NAME, this._primitiveTypes
                                 .get( String.class ), false ) )
                             .addTableElement( d.createColumnDefinition( ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, this._primitiveTypes

@@ -19,7 +19,6 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage;
 
-import java.text.SimpleDateFormat;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location;
@@ -80,10 +79,10 @@ public interface Voyage
         {
             sb.append( "\n  (Leg " ).append( i ).append( ")" );
             sb.append( "  Departure " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( carrierMovement.departureTime().get() ) );
+            sb.append( carrierMovement.departureDate().get() );
             sb.append( " " ).append( carrierMovement.departureLocation().get() );
             sb.append( "   Arrival  " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( carrierMovement.arrivalTime().get() ) );
+            sb.append( carrierMovement.arrivalDate().get() );
             sb.append( " " ).append( carrierMovement.arrivalLocation().get() );
         }
     }

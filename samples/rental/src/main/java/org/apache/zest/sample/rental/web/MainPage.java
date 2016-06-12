@@ -21,7 +21,7 @@
 package org.apache.zest.sample.rental.web;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -44,7 +44,7 @@ public interface MainPage
     abstract class BodyContributorMixin
         implements MainPage
     {
-        private SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+        private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm" );
 
         @Service
         BookingPage bookingPage;
@@ -90,9 +90,9 @@ public interface MainPage
         {
 
             return " / " +
-                   sdf.format( period.startOfPeriod().get() ) +
+                   dateTimeFormatter.format( period.startOfPeriod().get() ) +
                    " - " +
-                   sdf.format( period.endOfPeriod().get() );
+                   dateTimeFormatter.format( period.endOfPeriod().get() );
         }
 
         private Element createElement( Document dom, String element )

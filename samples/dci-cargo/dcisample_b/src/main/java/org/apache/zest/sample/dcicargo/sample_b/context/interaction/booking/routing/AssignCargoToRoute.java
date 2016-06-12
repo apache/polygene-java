@@ -19,7 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.routing;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -41,8 +43,12 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * Assign Cargo to Route (subfunction use case)
@@ -54,13 +60,13 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class AssignCargoToRoute extends Context
 {
-    CargoInspectorRole cargoInspector;
+    private CargoInspectorRole cargoInspector;
 
-    RouteSpecification routeSpecification;
-    TransportStatus transportStatus;
-    HandlingEvent lastHandlingEvent;
+    private RouteSpecification routeSpecification;
+    private TransportStatus transportStatus;
+    private HandlingEvent lastHandlingEvent;
 
-    Itinerary itinerary;
+    private Itinerary itinerary;
 
     public AssignCargoToRoute( Cargo cargo, Itinerary itinerary )
     {
@@ -151,21 +157,18 @@ public class AssignCargoToRoute extends Context
                                                                                                .get() );
 
                     // Estimate carrier arrival time
-                    Date estimatedArrivalDate = carrierMovement.arrivalTime().get();
-                    if( c.lastHandlingEvent.completionTime().get().after( carrierMovement.departureTime().get() ) )
+                    LocalDate estimatedArrivalDate = carrierMovement.arrivalDate().get();
+                    if( c.lastHandlingEvent.completionDate().get().isAfter( carrierMovement.departureDate().get() ) )
                     {
-                        long start = carrierMovement.departureTime().get().getTime();
-                        long end = carrierMovement.arrivalTime().get().getTime();
-                        long duration = end - start;
-                        estimatedArrivalDate = new Date( c.lastHandlingEvent
-                                                             .completionTime()
-                                                             .get()
-                                                             .getTime() + duration );
+                        LocalDate start = carrierMovement.departureDate().get();
+                        LocalDate end = carrierMovement.arrivalDate().get();
+                        Duration duration = Duration.between( start, end );
+                        estimatedArrivalDate = c.lastHandlingEvent.completionDate().get().plus(duration);
                     }
 
                     nextHandlingEvent.handlingEventType().set( UNLOAD );
                     nextHandlingEvent.location().set( carrierMovement.arrivalLocation().get() );
-                    nextHandlingEvent.time().set( estimatedArrivalDate );
+                    nextHandlingEvent.date().set( estimatedArrivalDate );
                     nextHandlingEvent.voyage().set( c.lastHandlingEvent.voyage().get() );
                 }
                 else // IN_PORT
@@ -173,7 +176,7 @@ public class AssignCargoToRoute extends Context
                     // Re-routed cargo in port is expected to be loaded onto first carrier of new itinerary.
                     nextHandlingEvent.handlingEventType().set( LOAD );
                     nextHandlingEvent.location().set( c.itinerary.firstLeg().loadLocation().get() );
-                    nextHandlingEvent.time().set( c.itinerary.firstLeg().loadTime().get() );
+                    nextHandlingEvent.date().set( c.itinerary.firstLeg().loadDate().get() );
                     nextHandlingEvent.voyage().set( c.itinerary.firstLeg().voyage().get() );
                 }
 
@@ -181,7 +184,7 @@ public class AssignCargoToRoute extends Context
 
                 ValueBuilder<Delivery> deliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = deliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.lastHandlingEvent );
                 newDelivery.transportStatus().set( c.transportStatus );
                 newDelivery.isUnloadedAtDestination().set( false );

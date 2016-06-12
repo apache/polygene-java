@@ -22,10 +22,12 @@ package org.apache.zest.sample.rental.domain;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -55,13 +57,13 @@ public interface RentalShop
 
     Booking book( Customer customer, Car car, Period plannedPeriod );
 
-    void pickup( Booking booking, Date time );
+    void pickup( Booking booking, Instant time );
 
-    void returned( Booking booking, Date time );
+    void returned( Booking booking, Instant time );
 
-    void boughtCar( Car car, Date purchasedate );
+    void boughtCar( Car car, LocalDate purchasedate );
 
-    void soldCar( Car car, Date soldDate );
+    void soldCar( Car car, LocalDate soldDate );
 
     Car createCar( String category, String modelName, String licensePlate );
 
@@ -143,12 +145,11 @@ public interface RentalShop
 
         public Set<String> findAllCarModels()
         {
-            HashSet<String> result = new HashSet<String>();
-            for( Car car : state.carsOwned().toList() )
-            {
-                result.add( car.model().get() );
-            }
-            return result;
+            return state.carsOwned()
+                .toList()
+                .stream()
+                .map( car -> car.model().get() )
+                .collect( Collectors.toSet() );
         }
 
         public Booking book( Customer customer, Car car, Period plannedPeriod )
@@ -161,7 +162,7 @@ public interface RentalShop
                 MessageDigest md;
                 md = MessageDigest.getInstance( "MD5" );
                 md.update( instance.identity().get().getBytes() );
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 byte[] data = md.digest();
                 for( int i = 0; i < 4; i++ )
                 {
@@ -192,23 +193,23 @@ public interface RentalShop
             return booking;
         }
 
-        public void pickup( Booking booking, Date time )
+        public void pickup( Booking booking, Instant time )
         {
             booking.pickedupTime().set( time );
         }
 
-        public void returned( Booking booking, Date time )
+        public void returned( Booking booking, Instant time )
         {
             booking.returnedTime().set( time );
         }
 
-        public void boughtCar( Car car, Date purchaseDate )
+        public void boughtCar( Car car, LocalDate purchaseDate )
         {
             state.carsOwned().add( car );
             car.purchasedDate().set( purchaseDate );
         }
 
-        public void soldCar( Car car, Date soldDate )
+        public void soldCar( Car car, LocalDate soldDate )
         {
             state.carsOwned().remove( car );
             car.soldDate().set( soldDate );

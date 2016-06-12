@@ -19,8 +19,8 @@
  */
 package org.apache.zest.library.conversion.values;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.function.Predicate;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class ValueToEntityTest
         module.values( PersonValue4.class );
     }
 
-    private Date someBirthDate;
+    private LocalDate someBirthDate;
     private String ednaIdentity;
     private String zekeIdentity;
     private String fredIdentity;

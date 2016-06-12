@@ -19,9 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import org.joda.time.DateMidnight;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
@@ -57,7 +56,7 @@ public class BookNewCargo extends Context
     // Methodless Roles
     private Location origin;
     private Location destination;
-    private Date arrivalDeadline;
+    private LocalDate arrivalDeadline;
     private Itinerary itinerary;
 
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
@@ -65,7 +64,7 @@ public class BookNewCargo extends Context
     public BookNewCargo( Cargos cargos,
                          Location origin,
                          Location destination,
-                         Date arrivalDeadline
+                         LocalDate arrivalDeadline
     )
         throws Exception
     {
@@ -88,7 +87,7 @@ public class BookNewCargo extends Context
 
     // Constructor proxies for communication layer
 
-    public BookNewCargo( String originId, String destinationId, Date deadline )
+    public BookNewCargo( String originId, String destinationId, LocalDate deadline )
         throws Exception
     {
         this( loadEntity( CargosEntity.class, CargosEntity.CARGOS_ID ),
@@ -214,7 +213,7 @@ public class BookNewCargo extends Context
             public void changeDestination( Location newDestination )
             {
                 Location currentOrigin = cargo.routeSpecification().get().origin().get();
-                Date currentDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
+                LocalDate currentDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
 
                 RouteSpecification newRouteSpecification =
                     context.buildRouteSpecification( vbf, currentOrigin, newDestination, currentDeadline );
@@ -228,7 +227,7 @@ public class BookNewCargo extends Context
     }
 
     public RouteSpecification buildRouteSpecification(
-        ValueBuilderFactory vbf, Location origin, Location destination, Date deadline
+        ValueBuilderFactory vbf, Location origin, Location destination, LocalDate deadline
     )
     {
         if( origin == destination )
@@ -241,12 +240,11 @@ public class BookNewCargo extends Context
             throw new RouteException( "Arrival deadline cannot be null." );
         }
 
-        Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-        if( deadline.before( endOfToday ) )
+        if( !deadline.isAfter( LocalDate.now() ) )
         {
             throw new RouteException( "Arrival deadline is in the past or Today." +
-                                        "\nDeadline           " + deadline +
-                                        "\nToday (midnight)   " + endOfToday );
+                                      "\nDeadline           " + deadline +
+                                      "\nToday (midnight)   " + LocalDate.now().atStartOfDay().plusDays( 1 ) );
         }
 
         ValueBuilder<RouteSpecification> routeSpec = vbf.newValueBuilder( RouteSpecification.class );

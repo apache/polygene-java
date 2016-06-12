@@ -19,22 +19,16 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.bootstrap.test;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.ServiceFinder;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueBuilder;
@@ -57,12 +51,19 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.testing.ExpectedException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Base class for testing Context Interactions
@@ -81,32 +82,32 @@ public class TestApplication
 
     protected static RouteSpecificationFactoryService routeSpecFactory;
 
-    final protected static Date TODAY = new Date();
-    final protected static Date DAY1 = day( 1 );
-    final protected static Date DAY2 = day( 2 );
-    final protected static Date DAY3 = day( 3 );
-    final protected static Date DAY4 = day( 4 );
-    final protected static Date DAY5 = day( 5 );
-    final protected static Date DAY6 = day( 6 );
-    final protected static Date DAY7 = day( 7 );
-    final protected static Date DAY8 = day( 8 );
-    final protected static Date DAY9 = day( 9 );
-    final protected static Date DAY10 = day( 10 );
-    final protected static Date DAY11 = day( 11 );
-    final protected static Date DAY12 = day( 12 );
-    final protected static Date DAY13 = day( 13 );
-    final protected static Date DAY14 = day( 14 );
-    final protected static Date DAY15 = day( 15 );
-    final protected static Date DAY16 = day( 16 );
-    final protected static Date DAY17 = day( 17 );
-    final protected static Date DAY18 = day( 18 );
-    final protected static Date DAY19 = day( 19 );
-    final protected static Date DAY20 = day( 20 );
-    final protected static Date DAY21 = day( 21 );
-    final protected static Date DAY22 = day( 22 );
-    final protected static Date DAY23 = day( 23 );
-    final protected static Date DAY24 = day( 24 );
-    final protected static Date DAY25 = day( 25 );
+    final protected static LocalDate TODAY = LocalDate.now();
+    final protected static LocalDate DAY1 = day( 1 );
+    final protected static LocalDate DAY2 = day( 2 );
+    final protected static LocalDate DAY3 = day( 3 );
+    final protected static LocalDate DAY4 = day( 4 );
+    final protected static LocalDate DAY5 = day( 5 );
+    final protected static LocalDate DAY6 = day( 6 );
+    final protected static LocalDate DAY7 = day( 7 );
+    final protected static LocalDate DAY8 = day( 8 );
+    final protected static LocalDate DAY9 = day( 9 );
+    final protected static LocalDate DAY10 = day( 10 );
+    final protected static LocalDate DAY11 = day( 11 );
+    final protected static LocalDate DAY12 = day( 12 );
+    final protected static LocalDate DAY13 = day( 13 );
+    final protected static LocalDate DAY14 = day( 14 );
+    final protected static LocalDate DAY15 = day( 15 );
+    final protected static LocalDate DAY16 = day( 16 );
+    final protected static LocalDate DAY17 = day( 17 );
+    final protected static LocalDate DAY18 = day( 18 );
+    final protected static LocalDate DAY19 = day( 19 );
+    final protected static LocalDate DAY20 = day( 20 );
+    final protected static LocalDate DAY21 = day( 21 );
+    final protected static LocalDate DAY22 = day( 22 );
+    final protected static LocalDate DAY23 = day( 23 );
+    final protected static LocalDate DAY24 = day( 24 );
+    final protected static LocalDate DAY25 = day( 25 );
 
     protected static Voyage V201;
     protected static Voyage V202;
@@ -119,8 +120,8 @@ public class TestApplication
     final protected static boolean arrived = true;
     final protected static boolean directed = false;
     final protected static boolean misdirected = true;
-    final protected static Date unknownETA = null;
-    final protected static Date noSpecificDate = null;
+    final protected static LocalDate unknownETA = null;
+    final protected static LocalDate noSpecificDate = null;
     final protected static Integer leg1 = 0;
     final protected static Integer leg2 = 1;
     final protected static Integer leg3 = 2;
@@ -129,8 +130,8 @@ public class TestApplication
     final protected static Integer unknownLeg = 0;
     final protected static NextHandlingEvent unknownNextHandlingEvent = null;
 
-    protected Date deadline;
-    protected Date arrival;
+    protected LocalDate deadline;
+    protected LocalDate arrival;
     protected RouteSpecification routeSpec;
     protected RouteSpecification newRouteSpec;
     protected Delivery delivery;
@@ -327,7 +328,7 @@ public class TestApplication
 
     public void assertDelivery( HandlingEventType handlingEventType,
                                 Location location,
-                                Date completion,
+                                LocalDate completionDate,
                                 Voyage voyage,
 
                                 TransportStatus transportStatus,
@@ -335,12 +336,12 @@ public class TestApplication
 
                                 RoutingStatus routingStatus,
                                 Boolean isMisdirected,
-                                Date eta,
+                                LocalDate eta,
                                 Integer itineraryProgress,
 
                                 HandlingEventType nextHandlingEventType,
                                 Location nextLocation,
-                                Date nextTime,
+                                LocalDate nextTime,
                                 Voyage nextVoyage
     ) throws Exception
     {
@@ -348,14 +349,14 @@ public class TestApplication
 
         // Last handling event
         if (delivery.lastHandlingEvent().get() != null
-              || handlingEventType != null || location != null || completion != null || voyage != null)
+              || handlingEventType != null || location != null || completionDate != null || voyage != null)
         {
             assertThat( "lastHandlingEvent - handlingEventType",
                         delivery.lastHandlingEvent().get().handlingEventType().get(), is( equalTo( handlingEventType ) ) );
             assertThat( "lastHandlingEvent - location",
                         delivery.lastHandlingEvent().get().location().get(), is( equalTo( location ) ) );
-            assertThat( "lastHandlingEvent - completionTime",
-                        delivery.lastHandlingEvent().get().completionTime().get(), is( equalTo( completion ) ) );
+            assertThat( "lastHandlingEvent - completionDate",
+                        delivery.lastHandlingEvent().get().completionDate().get(), is( equalTo( completionDate ) ) );
             assertThat( "lastHandlingEvent - voyage",
                         delivery.lastHandlingEvent().get().voyage().get(), is( equalTo( voyage ) ) );
         }
@@ -392,17 +393,16 @@ public class TestApplication
                         delivery.nextHandlingEvent().get().location().get(), is( equalTo( nextLocation ) ) );
 
 
-            if (delivery.nextHandlingEvent().get().time().get() != null)
+            if ( delivery.nextHandlingEvent().get().date().get() != null)
             {
                 // Estimating a new carrier arrival time might be calculated a second
                 // after initial dates are set, so we skip the seconds
-                SimpleDateFormat parser = new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
-                String calculatedTime = parser.format( delivery.nextHandlingEvent().get().time().get() );
-                String expectedTime = parser.format( nextTime );
+                String calculatedTime = delivery.nextHandlingEvent().get().date().get().toString();
+                String expectedTime = nextTime.toString();
                 assertThat( "nextHandlingEvent - time", calculatedTime, is( equalTo( expectedTime ) ) );
             }
             else
-                assertThat( "nextHandlingEvent - time", delivery.nextHandlingEvent().get().time().get(), is( equalTo( nextTime ) ) );
+                assertThat( "nextHandlingEvent - time", delivery.nextHandlingEvent().get().date().get(), is( equalTo( nextTime ) ) );
 
             assertThat( "nextHandlingEvent - voyage",
                         delivery.nextHandlingEvent().get().voyage().get(), is( equalTo( nextVoyage ) ) );
@@ -412,7 +412,7 @@ public class TestApplication
 
     public void assertDelivery( HandlingEventType handlingEventType,
                                 Location location,
-                                Date completion,
+                                LocalDate completionDate,
                                 Voyage voyage,
 
                                 TransportStatus transportStatus,
@@ -420,18 +420,18 @@ public class TestApplication
 
                                 RoutingStatus routingStatus,
                                 Boolean isMisdirected,
-                                Date eta,
+                                LocalDate eta,
                                 Integer itineraryProgress,
 
                                 NextHandlingEvent noNextHandlingEvent
     ) throws Exception
     {
-        assertDelivery( handlingEventType, location, completion, voyage,
+        assertDelivery( handlingEventType, location, completionDate, voyage,
                         transportStatus, isUnloadedAtDestination, routingStatus, isMisdirected, eta,
                         itineraryProgress, null, null, null, null );
     }
 
-    public void assertRouteSpec( Location origin, Location destination, Date earliestDeparture, Date deadline )
+    public void assertRouteSpec( Location origin, Location destination, LocalDate earliestDeparture, LocalDate deadline )
     {
         newRouteSpec = cargo.routeSpecification().get();
 

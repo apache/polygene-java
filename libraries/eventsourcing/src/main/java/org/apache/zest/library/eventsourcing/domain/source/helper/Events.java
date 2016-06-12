@@ -21,7 +21,6 @@
 package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.apache.zest.api.util.Methods;
@@ -49,17 +48,6 @@ public class Events
     public static Iterable<DomainEventValue> events( UnitOfWorkDomainEventsValue... unitOfWorkDomainValues )
     {
         return events( Iterables.iterable( unitOfWorkDomainValues ) );
-    }
-
-    // Common specifications
-    public static Predicate<UnitOfWorkDomainEventsValue> afterDate( final Date afterDate )
-    {
-        return eventValue -> eventValue.timestamp().get() > afterDate.getTime();
-    }
-
-    public static Predicate<UnitOfWorkDomainEventsValue> beforeDate( final Date afterDate )
-    {
-        return eventValue -> eventValue.timestamp().get() < afterDate.getTime();
     }
 
     public static Predicate<UnitOfWorkDomainEventsValue> withUsecases( final String... names )

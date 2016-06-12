@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.communication.query.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.conversion.values.Unqualified;
@@ -39,7 +39,7 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.DTO;
 @Unqualified
 public interface HandlingEventDTO extends DTO
 {
-    Property<Date> completionTime();
+    Property<LocalDate> completionDate();
 
     Property<TrackingId> trackingId();
 

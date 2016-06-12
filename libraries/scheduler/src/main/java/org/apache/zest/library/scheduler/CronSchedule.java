@@ -20,6 +20,7 @@
 package org.apache.zest.library.scheduler;
 
 import java.lang.annotation.Retention;
+import java.time.Instant;
 import org.apache.zest.api.constraint.Constraint;
 import org.apache.zest.api.constraint.ConstraintDeclaration;
 import org.apache.zest.api.constraint.Constraints;
@@ -75,16 +76,18 @@ public interface CronSchedule
         }
 
         @Override
-        public long nextRun( long from )
+        public Instant nextRun( Instant from )
         {
-            long actualFrom = from;
-            long firstRun = start().get().getMillis();
-            if( firstRun > from )
+            Instant actualFrom = from;
+            Instant firstRun = start().get();
+            if( firstRun.isAfter(from ))
             {
                 actualFrom = firstRun;
             }
             // TODO:PM cron "next run" handling mismatch with the underlying cron library
-            Long nextRun = createCron().firstRunAfter( actualFrom + 1000 );
+            Instant nextRun = Instant.ofEpochMilli(
+                createCron().firstRunAfter( actualFrom.plusSeconds( 1 ).toEpochMilli())
+            );
             LOGGER.info( "CronSchedule::nextRun({}) is {}", from, firstRun );
             return nextRun;
         }

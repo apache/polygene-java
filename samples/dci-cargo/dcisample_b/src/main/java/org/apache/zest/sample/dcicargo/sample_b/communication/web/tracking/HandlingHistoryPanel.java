@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.communication.web.tracking;
 
-import java.util.Date;
+import java.time.ZoneOffset;
 import java.util.List;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
@@ -36,6 +36,8 @@ import org.apache.zest.sample.dcicargo.sample_b.communication.query.TrackingQuer
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.HandlingEventDTO;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.color.ErrorColor;
+
+import static java.util.Date.from;
 
 /**
  * Handling history
@@ -67,7 +69,9 @@ public class HandlingHistoryPanel extends Panel
                 item.add( new WebMarkupContainer( "onTrackIcon" ).add( new AttributeAppender( "src", iconName, "" ) ) );
 
                 // Date
-                item.add( new Label( "completion", new Model<Date>( event.completionTime().get() ) ) );
+                item.add( new Label( "completion", new Model<>(
+                    from( event.completionDate().get().atStartOfDay().toInstant( ZoneOffset.UTC ) ) )
+                ));
 
                 // Event description (data substitution in strings from HandlingHistoryPanel.properties)
                 ValueMap map = new ValueMap();
@@ -77,7 +81,7 @@ public class HandlingHistoryPanel extends Panel
                 {
                     map.put( "voyage", event.voyage().get().voyageNumber().get().number().get() );
                 }
-                IModel text = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) );
+                IModel text = new StringResourceModel( "handlingEvent.${type}", this, new Model<>( map ) );
                 item.add( new Label( "event", text )
                               .add( new ErrorColor( isLast && isMisdirected ) )
                               .setEscapeModelStrings( false ) );

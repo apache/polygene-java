@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -54,7 +54,7 @@ public class InspectUnhandledCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, LocalDate.now(), deadline = DAY24 );
         delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Claimed_CARGO" );
         trackingId = cargo.trackingId().get();

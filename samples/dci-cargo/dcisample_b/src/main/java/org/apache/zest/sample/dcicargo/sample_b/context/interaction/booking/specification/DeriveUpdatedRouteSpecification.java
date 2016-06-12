@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.specification;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -36,7 +36,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 
 /**
  * Derive Updated Route Specification (subfunction use case)
@@ -108,8 +110,8 @@ public class DeriveUpdatedRouteSpecification extends Context
 
             Location newOrigin;
             Location newDestination;
-            Date newEarliestDeparture;
-            Date newArrivalDeadline;
+            LocalDate newEarliestDeparture;
+            LocalDate newArrivalDeadline;
 
             public RouteSpecification getUpdatedRouteSpecification()
                 throws CannotCreateRouteSpecificationException, UnexpectedCarrierException
@@ -137,12 +139,12 @@ public class DeriveUpdatedRouteSpecification extends Context
                     }
 
                     newOrigin = carrierMovement.arrivalLocation().get();
-                    newEarliestDeparture = carrierMovement.arrivalTime().get();
+                    newEarliestDeparture = carrierMovement.arrivalDate().get();
                 }
                 else
                 {
                     newOrigin = c.lastHandlingEvent.location().get();
-                    newEarliestDeparture = c.lastHandlingEvent.completionTime().get();
+                    newEarliestDeparture = c.lastHandlingEvent.completionDate().get();
                 }
 
                 // Step 3 - Build and return new route specification

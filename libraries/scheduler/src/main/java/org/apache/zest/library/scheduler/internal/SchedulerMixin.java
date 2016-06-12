@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.scheduler.internal;
 
+import java.time.Instant;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -29,15 +30,14 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
+import org.apache.zest.library.scheduler.CronSchedule;
+import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.ScheduleFactory;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.SchedulerConfiguration;
 import org.apache.zest.library.scheduler.SchedulerService;
 import org.apache.zest.library.scheduler.SchedulesHandler;
 import org.apache.zest.library.scheduler.Task;
-import org.apache.zest.library.scheduler.CronSchedule;
-import org.apache.zest.library.scheduler.Schedule;
-import org.apache.zest.library.scheduler.ScheduleFactory;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,21 +64,16 @@ public class SchedulerMixin
     @This
     private Configuration<SchedulerConfiguration> config;
 
-    public SchedulerMixin()
-    {
-    }
-
     @Override
     public Schedule scheduleOnce( Task task, int initialSecondsDelay )
     {
-        long now = System.currentTimeMillis();
-        Schedule schedule = scheduleFactory.newOnceSchedule( task, new DateTime( now + initialSecondsDelay * 1000 ) );
+        Schedule schedule = scheduleFactory.newOnceSchedule( task, Instant.now().plusSeconds( initialSecondsDelay ) );
         saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleOnce( Task task, DateTime runAt )
+    public Schedule scheduleOnce( Task task, Instant runAt )
     {
         Schedule schedule = scheduleFactory.newOnceSchedule( task, runAt );
         saveAndDispatch( schedule );
@@ -88,14 +83,13 @@ public class SchedulerMixin
     @Override
     public Schedule scheduleCron( Task task, String cronExpression )
     {
-        DateTime now = new DateTime();
-        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, now );
+        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, Instant.now() );
         saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, DateTime start )
+    public Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, Instant start )
     {
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start );
         saveAndDispatch( schedule );
@@ -111,7 +105,7 @@ public class SchedulerMixin
     @Override
     public Schedule scheduleCron( Task task, String cronExpression, long initialDelay )
     {
-        DateTime start = new DateTime( System.currentTimeMillis() + initialDelay );
+        Instant start = Instant.now().plusMillis( initialDelay );
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start );
         saveAndDispatch( schedule );
         return schedule;
@@ -171,7 +165,8 @@ public class SchedulerMixin
             {
                 execution.dispatchForExecution( schedule );
             }
-        } catch( Exception e )
+        }
+        catch( Exception e )
         {
             e.printStackTrace();
         }

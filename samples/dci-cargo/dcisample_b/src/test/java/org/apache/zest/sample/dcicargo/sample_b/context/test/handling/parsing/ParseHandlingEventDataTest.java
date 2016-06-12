@@ -19,8 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.handling.parsing;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -39,8 +39,8 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.T
  */
 public class ParseHandlingEventDataTest extends TestApplication
 {
-    static ParseHandlingEventData handlingEventParser;
-    static String completionTime;
+    private static ParseHandlingEventData handlingEventParser;
+    private static String completionDate;
 
     @Before
     public void prepareTest()
@@ -52,13 +52,13 @@ public class ParseHandlingEventDataTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, LocalDate.now(), deadline = DAY24 );
         delivery = delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         trackingId = cargo.trackingId().get();
         trackingIdString = trackingId.id().get();
         cargo.itinerary().set( itinerary );
-        completionTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" ).format( new Date() );
+        completionDate = LocalDate.now().toString();
 
         // Start ParseHandlingEventData service
         ServiceReference<ParseHandlingEventData> ParseHandlingEventDataRef =
@@ -81,7 +81,7 @@ public class ParseHandlingEventDataTest extends TestApplication
         throws Exception
     {
         thrown.expect( ConstraintViolationException.class, "constraint \"not optional(param2)\", for value 'null'" );
-        handlingEventParser.parse( completionTime, null, "RECEIVE", "CNHKG", null );
+        handlingEventParser.parse( completionDate, null, "RECEIVE", "CNHKG", null );
     }
 
     // etc...
@@ -91,7 +91,7 @@ public class ParseHandlingEventDataTest extends TestApplication
         throws Exception
     {
         // No voyage number string is ok
-        handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", null );
+        handlingEventParser.parse( completionDate, trackingIdString, "RECEIVE", "CNHKG", null );
     }
 
     // Empty
@@ -109,7 +109,7 @@ public class ParseHandlingEventDataTest extends TestApplication
         throws Exception
     {
         // Empty voyage number string is ok
-        handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", " " );
+        handlingEventParser.parse( completionDate, trackingIdString, "RECEIVE", "CNHKG", " " );
     }
 
     // Basic type conversion
@@ -128,7 +128,7 @@ public class ParseHandlingEventDataTest extends TestApplication
         throws Exception
     {
         thrown.expect( InvalidHandlingEventDataException.class, "No enum const" );
-        handlingEventParser.parse( completionTime, trackingIdString, "HAND_OVER", "CNHKG", null );
+        handlingEventParser.parse( completionDate, trackingIdString, "HAND_OVER", "CNHKG", null );
     }
 
     // Successful parsing
@@ -137,6 +137,6 @@ public class ParseHandlingEventDataTest extends TestApplication
     public void success_Parsing()
         throws Exception
     {
-        handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", null );
+        handlingEventParser.parse( completionDate, trackingIdString, "RECEIVE", "CNHKG", null );
     }
 }

@@ -19,8 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Immutable;
@@ -35,9 +34,9 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.DTO;
 @Mixins( ParsedHandlingEventData.Mixin.class )
 public interface ParsedHandlingEventData extends DTO
 {
-    Property<Date> registrationTime();
+    Property<LocalDate> registrationDate();
 
-    Property<Date> completionTime();
+    Property<LocalDate> completionDate();
 
     Property<String> trackingIdString();
 
@@ -61,18 +60,14 @@ public interface ParsedHandlingEventData extends DTO
                 voyage = voyageNumberString().get();
             }
 
-            SimpleDateFormat date = new SimpleDateFormat( "yyyy-MM-dd" );
-
-            StringBuilder builder = new StringBuilder( "\nPARSED HANDLING EVENT DATA -----------------" ).
-                append( "\n  Tracking id string           " ).append( trackingIdString().get() ).
-                append( "\n  Handling Event Type string   " ).append( handlingEventType().get().name() ).
-                append( "\n  UnLocode string              " ).append( unLocodeString().get() ).
-                append( "\n  Completed string             " ).append( date.format( completionTime().get() ) ).
-                append( "\n  Registered string            " ).append( date.format( registrationTime().get() ) ).
-                append( "\n  Voyage string                " ).append( voyage ).
-                append( "\n--------------------------------------------\n" );
-
-            return builder.toString();
+            return "\nPARSED HANDLING EVENT DATA -----------------" +
+                   "\n  Tracking id string           " + trackingIdString().get() +
+                   "\n  Handling Event Type string   " + handlingEventType().get().name() +
+                   "\n  UnLocode string              " + unLocodeString().get() +
+                   "\n  Completed string             " + completionDate().get() +
+                   "\n  Registered string            " + registrationDate().get() +
+                   "\n  Voyage string                " + voyage +
+                   "\n--------------------------------------------\n";
         }
     }
 }

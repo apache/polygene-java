@@ -20,14 +20,14 @@
 
 package org.apache.zest.sample.rental.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 
 public interface Period
     extends ValueComposite
 {
-    Property<Date> startOfPeriod();
+    Property<LocalDate> startOfPeriod();
 
-    Property<Date> endOfPeriod();
+    Property<LocalDate> endOfPeriod();
 }

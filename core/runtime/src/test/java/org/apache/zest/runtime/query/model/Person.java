@@ -19,7 +19,7 @@
  */
 package org.apache.zest.runtime.query.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.apache.zest.api.association.Association;
@@ -50,7 +50,7 @@ public interface Person
     Property<String> email();
 
     @Optional
-    Property<Map<Date, String>> datesToRemember();
+    Property<Map<LocalDate, String>> datesToRemember();
 
     @Optional
     Property<List<String>> tags();

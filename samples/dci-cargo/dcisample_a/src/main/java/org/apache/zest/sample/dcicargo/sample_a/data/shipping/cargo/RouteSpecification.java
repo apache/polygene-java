@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -53,7 +53,7 @@ public interface RouteSpecification
 
     Association<Location> destination();
 
-    Property<Date> arrivalDeadline();
+    Property<LocalDate> arrivalDeadline();
 
     // Can we accept to have this "intelligent" logic here?
     // DCI Data is supposed to be dumb, but it's really convenient to have this logic here,
@@ -69,7 +69,7 @@ public interface RouteSpecification
                    !itinerary.legs().get().isEmpty() &&
                    origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
                    destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
-                   arrivalDeadline().get().after( itinerary.finalArrivalDate() );
+                   arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() );
         }
     }
 }

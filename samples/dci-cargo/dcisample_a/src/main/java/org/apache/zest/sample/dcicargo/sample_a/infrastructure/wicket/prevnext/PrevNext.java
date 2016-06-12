@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.prevnext;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,14 +46,14 @@ public class PrevNext extends Panel
         private static final long serialVersionUID = 1L;
     };
 
-    public static void registerIds( Session session, ArrayList<String> ids )
+    public static void registerIds( Session session, List<String> ids )
     {
         if( ids == null || ids.isEmpty() )
         {
             throw new RuntimeException( "Please register a list of ids." );
         }
 
-        session.setMetaData( PREV_NEXT_PANEL_KEY, ids );
+        session.setMetaData( PREV_NEXT_PANEL_KEY, (Serializable) ids );
         session.bind();
     }
 

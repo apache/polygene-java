@@ -24,7 +24,7 @@
         http://zest.apache.org/schemas/2008/dev-status/1/dev-status.xsd">
   <status>
     <!--none,early,beta,stable,mature-->
-    <codebase>beta</codebase>
+    <codebase>early</codebase>
 
     <!-- none, brief, good, complete -->
     <documentation>good</documentation>

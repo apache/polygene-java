@@ -19,7 +19,6 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.booking;
 
-import java.util.Date;
 import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
@@ -44,6 +43,9 @@ import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.color.Corr
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.color.ErrorColor;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.link.LinkPanel;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.prevnext.PrevNext;
+
+import static java.time.ZoneOffset.UTC;
+import static java.util.Date.from;
 
 /**
  * Cargo details - an overview of all data available about a cargo.
@@ -142,14 +144,15 @@ public class CargoDetailsPage extends BookingBasePage
                     Leg leg = item.getModelObject();
 
                     item.add( new Label( "loadLocation", leg.loadLocation().get().getCode() ) );
-                    item.add( new Label( "loadTime", new Model<Date>( leg.loadTime().get() ) ) );
+                    item.add( new Label( "loadDate", new Model<>( from( leg.loadDate().get().atStartOfDay().toInstant( UTC ) ) ) ) );
                     item.add( new Label( "voyage", leg.voyage().get().voyageNumber().get().number().get() ) );
 
                     Boolean isMisrouted = routingStatus == RoutingStatus.MISROUTED && item.getIndex() == ( getList().size() - 1 );
-                    item.add( new Label( "unloadLocation", leg.unloadLocation().get().getCode() )
-                                  .add( new ErrorColor( isMisrouted ) ) );
+                    item.add( new Label( "unloadLocation",
+                                         leg.unloadLocation().get().getCode() ).add( new ErrorColor( isMisrouted ) ) );
 
-                    item.add( new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) ) );
+                    item.add( new Label( "unloadDate",
+                                         new Model<>( from( leg.unloadDate().get().atStartOfDay().toInstant( UTC ) ) ) ) );
                 }
             } );
         }

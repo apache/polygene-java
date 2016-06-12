@@ -21,16 +21,16 @@ package org.apache.zest.test.value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.structure.Module;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -92,8 +92,7 @@ public abstract class AbstractValueCompositeSerializationTest
     public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        try
+        try(UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             SomeValue some = buildSomeValue();
 
@@ -103,25 +102,18 @@ public abstract class AbstractValueCompositeSerializationTest
             String stateString = output.toString( "UTF-8" );
 
             // Deserialize using Module API
+            System.out.println(stateString);
             SomeValue some2 = moduleInstance.newValueFromSerializedState( SomeValue.class, stateString );
-
-            assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
-            assertThat( "Same value", some, equalTo( some2 ) );
-            assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
-            assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
-            assertThat( "Same JSON value explicit", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
 
             assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
             assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
             assertThat( "Nested Entities", some2.barAssociation().get().cathedral().get(), equalTo( "bazar in barAssociation" ) );
-        }
-        catch( Exception ex )
-        {
-            throw ex;
-        }
-        finally
-        {
-            uow.discard();
+
+            assertThat( "Same value", some, equalTo( some2 ) );
+            assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
+            assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
+            assertThat( "Same JSON value explicit", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
+            assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
         }
     }
 
@@ -151,13 +143,11 @@ public abstract class AbstractValueCompositeSerializationTest
         // proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
         proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );
-        proto.number().set( 42L );
-        proto.date().set( new Date() );
-        // We specify the TimeZone explicitely here so that serialized/deserialized is equals
-        // See https://github.com/JodaOrg/joda-time/issues/106
-        proto.dateTime().set( new DateTime( "2020-03-04T13:24:35", DateTimeZone.forOffsetHours( 1 ) ) );
-        proto.localDate().set( new LocalDate() );
-        proto.localDateTime().set( new LocalDateTime() );
+        proto.number().set( 43L );
+        proto.localTime().set( LocalTime.now() );
+        proto.dateTime().set( OffsetDateTime.of( 2020, 3, 4, 13, 24, 35, 0, ZoneOffset.ofHours( 1 ) ) );
+        proto.localDate().set( LocalDate.now() );
+        proto.localDateTime().set( LocalDateTime.now() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.stringIntMap().get().put( "foo", 42 );
 
@@ -240,9 +230,9 @@ public abstract class AbstractValueCompositeSerializationTest
         @UseDefaults
         Property<Long> number();
 
-        Property<Date> date();
+        Property<LocalTime> localTime();
 
-        Property<DateTime> dateTime();
+        Property<OffsetDateTime> dateTime();
 
         Property<LocalDate> localDate();
 
@@ -437,3 +427,5 @@ public abstract class AbstractValueCompositeSerializationTest
         }
     }
 }
+
+

@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Structure;
@@ -37,8 +37,8 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 @Mixins( HandlingEvents.Mixin.class )
 public interface HandlingEvents
 {
-    HandlingEvent createHandlingEvent( Date registrationTime,
-                                       Date completionTime,
+    HandlingEvent createHandlingEvent( LocalDate registrationDate,
+                                       LocalDate completionDate,
                                        TrackingId trackingId,
                                        HandlingEventType handlingEventType,
                                        Location location,
@@ -52,8 +52,8 @@ public interface HandlingEvents
         @Structure
         UnitOfWorkFactory uowf;
 
-        public HandlingEvent createHandlingEvent( Date registrationTime,
-                                                  Date completionTime,
+        public HandlingEvent createHandlingEvent( LocalDate registrationDate,
+                                                  LocalDate completionDate,
                                                   TrackingId trackingId,
                                                   HandlingEventType handlingEventType,
                                                   Location location,
@@ -73,8 +73,8 @@ public interface HandlingEvents
 
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<HandlingEvent> handlingEventBuilder = uow.newEntityBuilder( HandlingEvent.class );
-            handlingEventBuilder.instance().registrationTime().set( registrationTime );
-            handlingEventBuilder.instance().completionTime().set( completionTime );
+            handlingEventBuilder.instance().registrationDate().set( registrationDate );
+            handlingEventBuilder.instance().completionDate().set( completionDate );
             handlingEventBuilder.instance().trackingId().set( trackingId );
             handlingEventBuilder.instance().handlingEventType().set( handlingEventType );
             handlingEventBuilder.instance().location().set( location );

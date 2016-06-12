@@ -19,11 +19,10 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap.sampledata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import org.joda.time.LocalDate;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
@@ -68,33 +67,33 @@ public abstract class BaseData
         return unlocode.newInstance();
     }
 
-    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
+    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, LocalDate depDate, LocalDate arrDate )
     {
         ValueBuilder<CarrierMovement> carrierMovement = module.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
         carrierMovement.prototype().arrivalLocation().set( arrLoc );
-        carrierMovement.prototype().departureTime().set( depTime );
-        carrierMovement.prototype().arrivalTime().set( arrTime );
+        carrierMovement.prototype().departureDate().set( depDate );
+        carrierMovement.prototype().arrivalDate().set( arrDate );
         return carrierMovement.newInstance();
     }
 
     protected Schedule schedule( CarrierMovement... carrierMovements )
     {
         ValueBuilder<Schedule> schedule = module.newValueBuilder( Schedule.class );
-        List<CarrierMovement> cm = new ArrayList<CarrierMovement>();
+        List<CarrierMovement> cm = new ArrayList<>();
         cm.addAll( Arrays.asList( carrierMovements ) );
         schedule.prototype().carrierMovements().set( cm );
         return schedule.newInstance();
     }
 
-    protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
+    protected Leg leg( Voyage voyage, Location load, Location unload, LocalDate loadDate, LocalDate unloadDate )
     {
         ValueBuilder<Leg> leg = module.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
         leg.prototype().loadLocation().set( load );
         leg.prototype().unloadLocation().set( unload );
-        leg.prototype().loadTime().set( loadTime );
-        leg.prototype().unloadTime().set( unloadTime );
+        leg.prototype().loadDate().set( loadDate );
+        leg.prototype().unloadDate().set( unloadDate );
         return leg.newInstance();
     }
 
@@ -107,7 +106,7 @@ public abstract class BaseData
         return itinerary.newInstance();
     }
 
-    protected RouteSpecification routeSpecification( Location origin, Location destination, Date deadline )
+    protected RouteSpecification routeSpecification( Location origin, Location destination, LocalDate deadline )
     {
         ValueBuilder<RouteSpecification> routeSpec = module.newValueBuilder( RouteSpecification.class );
         routeSpec.prototype().origin().set( origin );
@@ -116,8 +115,8 @@ public abstract class BaseData
         return routeSpec.newInstance();
     }
 
-    protected static Date day( int days )
+    protected static LocalDate day( int days )
     {
-        return LocalDate.now().plusDays( days ).toDate();
+        return LocalDate.now().plusDays( days );
     }
 }

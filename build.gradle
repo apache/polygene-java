@@ -164,7 +164,6 @@ allprojects {
     options.noTimestamp = true
     options.links = [
       'http://docs.oracle.com/javase/7/docs/api/',
-      'http://www.joda.org/joda-time/apidocs/',
       'http://www.json.org/javadoc/',
       'http://junit.org/javadoc/latest/'
     ]

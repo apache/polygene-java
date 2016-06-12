@@ -19,13 +19,12 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap.sampledata;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.injection.scope.Service;
@@ -79,7 +78,7 @@ public interface SampleDataService
 
     }
 
-    public abstract class Mixin
+    abstract class Mixin
         implements SampleDataService
     {
         @Structure
@@ -114,7 +113,7 @@ public interface SampleDataService
                 {
                     String trackingId = cargo.trackingId().get().id().get();
                     ExpectedHandlingEvent nextEvent;
-                    Date time;
+                    LocalDate date;
                     String port;
                     String voyage;
                     HandlingEventType type;
@@ -133,7 +132,7 @@ public interface SampleDataService
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
                         port = nextEvent.location().get().getCode();
-                        Date mockTime = new Date();
+                        LocalDate mockTime = LocalDate.now();
                         new RegisterHandlingEvent( mockTime, mockTime, trackingId, "RECEIVE", port, null ).register();
                     }
 
@@ -141,38 +140,38 @@ public interface SampleDataService
                     if( i > 13 )
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         port = nextEvent.location().get().getCode();
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        new RegisterHandlingEvent( time, time, trackingId, "LOAD", port, voyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "LOAD", port, voyage ).register();
                     }
 
                     // UNLOAD
                     if( i > 14 )
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         port = nextEvent.location().get().getCode();
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        new RegisterHandlingEvent( time, time, trackingId, "UNLOAD", port, voyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "UNLOAD", port, voyage ).register();
                     }
 
                     // Cargo is now in port
                     nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
-                    time = nextEvent.time().get();
+                    date = nextEvent.date().get();
                     port = nextEvent.location().get().getCode();
                     type = nextEvent.handlingEventType().get();
 
                     // MISDIRECTED: Unexpected customs handling before reaching destination
                     if( i == 16 )
                     {
-                        new RegisterHandlingEvent( time, time, trackingId, "CUSTOMS", port, null ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "CUSTOMS", port, null ).register();
                     }
 
                     // MISDIRECTED: Unexpected claim before reaching destination
                     if( i == 17 )
                     {
-                        new RegisterHandlingEvent( time, time, trackingId, "CLAIM", port, null ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "CLAIM", port, null ).register();
                     }
 
                     // MISDIRECTED: LOAD in wrong port
@@ -180,7 +179,7 @@ public interface SampleDataService
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        new RegisterHandlingEvent( time, time, trackingId, "LOAD", wrongPort, voyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "LOAD", wrongPort, voyage ).register();
                     }
 
                     // MISDIRECTED: LOAD onto wrong carrier
@@ -188,7 +187,7 @@ public interface SampleDataService
                     {
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
-                        new RegisterHandlingEvent( time, time, trackingId, "LOAD", port, wrongVoyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "LOAD", port, wrongVoyage ).register();
                     }
 
                     // MISDIRECTED: LOAD onto wrong carrier in wrong port
@@ -197,7 +196,7 @@ public interface SampleDataService
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
-                        new RegisterHandlingEvent( time, time, trackingId, "LOAD", wrongPort, wrongVoyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "LOAD", wrongPort, wrongVoyage ).register();
                     }
 
                     // MISDIRECTED: UNLOAD in wrong port
@@ -205,7 +204,7 @@ public interface SampleDataService
                     {
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        new RegisterHandlingEvent( time, time, trackingId, "UNLOAD", wrongPort, voyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "UNLOAD", wrongPort, voyage ).register();
                     }
 
                     // MISDIRECTED: UNLOAD from wrong carrier
@@ -213,7 +212,7 @@ public interface SampleDataService
                     {
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
-                        new RegisterHandlingEvent( time, time, trackingId, "UNLOAD", port, wrongVoyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "UNLOAD", port, wrongVoyage ).register();
                     }
 
                     // MISDIRECTED: UNLOAD from wrong carrier in wrong port
@@ -222,7 +221,7 @@ public interface SampleDataService
                         String wrongPort = port.equals( "USDAL" ) ? "USCHI" : "USDAL";
                         voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
                         String wrongVoyage = voyage.equals( "V100S" ) ? "V200T" : "V100S";
-                        new RegisterHandlingEvent( time, time, trackingId, "UNLOAD", wrongPort, wrongVoyage ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "UNLOAD", wrongPort, wrongVoyage ).register();
                     }
 
                     // Complete all LOAD/UNLOADS
@@ -231,10 +230,10 @@ public interface SampleDataService
                         do
                         {
                             voyage = nextEvent.voyage().get().voyageNumber().get().number().get();
-                            new RegisterHandlingEvent( time, time, trackingId, type.name(), port, voyage ).register();
+                            new RegisterHandlingEvent( date, date, trackingId, type.name(), port, voyage ).register();
 
                             nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
-                            time = nextEvent.time().get();
+                            date = nextEvent.date().get();
                             port = nextEvent.location().get().getCode();
                             type = nextEvent.handlingEventType().get();
                         }
@@ -244,7 +243,7 @@ public interface SampleDataService
                     // CLAIM at destination - this ends the life cycle of the cargo delivery
                     if( i == 25 )
                     {
-                        new RegisterHandlingEvent( time, time, trackingId, "CLAIM", port, null ).register();
+                        new RegisterHandlingEvent( date, date, trackingId, "CLAIM", port, null ).register();
                     }
 
                     // Add more cases if needed...
@@ -285,7 +284,7 @@ public interface SampleDataService
             Location origin;
             Location destination;
             Random random = new Random();
-            Date deadline;
+            LocalDate deadline;
             String uuid;
             String id;
             try
@@ -301,9 +300,7 @@ public interface SampleDataService
                     }
                     while( destination.equals( origin ) );
 
-                    deadline = new LocalDate().plusDays( 15 + random.nextInt( 10 ) )
-                        .toDateTime( new LocalTime() )
-                        .toDate();
+                    deadline = LocalDate.now().plusDays( 15 + random.nextInt( 10 ) );
 
                     // Build sortable random tracking ids
                     uuid = UUID.randomUUID().toString().toUpperCase();

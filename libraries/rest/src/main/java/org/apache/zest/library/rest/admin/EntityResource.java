@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +69,8 @@ import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import static java.time.Instant.ofEpochMilli;
+
 public class EntityResource
     extends ServerResource
 {
@@ -84,6 +86,7 @@ public class EntityResource
 
     @Uses
     private EntityStateSerializer entitySerializer;
+
     private String identity;
 
     public EntityResource()
@@ -140,10 +143,10 @@ public class EntityResource
             EntityState entityState = getEntityState( uow );
 
             // Check modification date
-            Date lastModified = getRequest().getConditions().getModifiedSince();
+            java.util.Date lastModified = getRequest().getConditions().getModifiedSince();
             if( lastModified != null )
             {
-                if( lastModified.getTime() / 1000 == entityState.lastModified() / 1000 )
+                if( lastModified.toInstant().getEpochSecond() == ofEpochMilli( entityState.lastModified()).getEpochSecond() )
                 {
                     throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
                 }
@@ -190,7 +193,7 @@ public class EntityResource
 
     private Representation entityHeaders( Representation representation, EntityState entityState )
     {
-        representation.setModificationDate( new Date( entityState.lastModified() ) );
+        representation.setModificationDate( new java.util.Date( entityState.lastModified() ) );
         representation.setTag( new Tag( "" + entityState.version() ) );
         representation.setCharacterSet( CharacterSet.UTF_8 );
         representation.setLanguages( Collections.singletonList( Language.ENGLISH ) );

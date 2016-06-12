@@ -23,7 +23,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,17 +69,6 @@ import static java.lang.String.format;
 public class RdfQueryParserImpl
     implements RdfQueryParser
 {
-    private static final ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
-    {
-        @Override
-        protected DateFormat initialValue()
-        {
-            SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
-            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-            return dateFormat;
-        }
-    };
-
     private static final Map<Class<? extends ComparisonPredicate>, String> OPERATORS;
     private static final Set<Character> RESERVED_CHARS;
 
@@ -555,16 +543,11 @@ public class RdfQueryParserImpl
         {
             return null;
         }
-
-        if( value instanceof Date )
-        {
-            return ISO8601_UTC.get().format( (Date) value );
-        }
-        else if( value instanceof EntityComposite )
+        if( value instanceof EntityComposite )
         {
             return "urn:zest:entity:" + value.toString();
         }
-        else if( value instanceof Variable )
+        if( value instanceof Variable )
         {
             Object realValue = variables.get( ( (Variable) value ).variableName() );
 

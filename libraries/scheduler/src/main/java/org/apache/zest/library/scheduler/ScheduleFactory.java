@@ -19,11 +19,12 @@
  */
 package org.apache.zest.library.scheduler;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.library.scheduler.defaults.DefaultScheduleFactoryMixin;
-import org.joda.time.DateTime;
 import org.apache.zest.api.mixin.Mixins;
 
 import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;
@@ -33,8 +34,8 @@ import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propa
 public interface ScheduleFactory
 {
     @UnitOfWorkPropagation( MANDATORY)
-    Schedule newCronSchedule( Task task, String cronExpression, DateTime start );
+    Schedule newCronSchedule( Task task, String cronExpression, Instant start );
 
     @UnitOfWorkPropagation( MANDATORY)
-    Schedule newOnceSchedule( Task task, DateTime runAt );
+    Schedule newOnceSchedule( Task task, Instant runAt );
 }

@@ -19,9 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.pathfinder_a.internal;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.apache.zest.sample.dcicargo.pathfinder_a.api.GraphTraversalService;
@@ -33,8 +33,6 @@ public class GraphTraversalServiceImpl
 {
     private GraphDAO dao;
     private Random random;
-    private static final long ONE_MIN_MS = 1000 * 60;
-    private static final long ONE_DAY_MS = ONE_MIN_MS * 60 * 24;
 
     public GraphTraversalServiceImpl( GraphDAO dao )
     {
@@ -44,23 +42,23 @@ public class GraphTraversalServiceImpl
 
     public List<TransitPath> findShortestPath( String originUnLocode, String destinationUnLocode )
     {
-        Date date = nextDate( new Date() );
+        LocalDate date = nextDate( LocalDate.now());
 
         List<String> allVertices = dao.listLocations();
         allVertices.remove( originUnLocode );
         allVertices.remove( destinationUnLocode );
 
         final int candidateCount = getRandomNumberOfCandidates();
-        final List<TransitPath> candidates = new ArrayList<TransitPath>( candidateCount );
+        final List<TransitPath> candidates = new ArrayList<>( candidateCount );
 
         for( int i = 0; i < candidateCount; i++ )
         {
             allVertices = getRandomChunkOfLocations( allVertices );
-            final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>( allVertices.size() - 1 );
+            final List<TransitEdge> transitEdges = new ArrayList<>( allVertices.size() - 1 );
             final String firstLegTo = allVertices.get( 0 );
 
-            Date fromDate = nextDate( date );
-            Date toDate = nextDate( fromDate );
+            LocalDate fromDate = nextDate( date );
+            LocalDate toDate = nextDate( fromDate );
             date = nextDate( toDate );
 
             transitEdges.add( new TransitEdge(
@@ -90,9 +88,9 @@ public class GraphTraversalServiceImpl
         return candidates;
     }
 
-    private Date nextDate( Date date )
+    private LocalDate nextDate( LocalDate date )
     {
-        return new Date( date.getTime() + ONE_DAY_MS + ( random.nextInt( 1000 ) - 500 ) * ONE_MIN_MS );
+        return date.plusDays( 1 );
     }
 
     private int getRandomNumberOfCandidates()

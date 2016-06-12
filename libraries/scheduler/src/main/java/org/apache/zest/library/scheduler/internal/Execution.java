@@ -20,6 +20,8 @@
 
 package org.apache.zest.library.scheduler.internal;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -131,16 +133,14 @@ public interface Execution
 
         private boolean isTime( ScheduleTime scheduleTime )
         {
-            long now = System.currentTimeMillis();
-            return scheduleTime.nextTime() <= now;
+            return scheduleTime.nextTime().isBefore( Instant.now() );
         }
 
         private void waitFor( ScheduleTime scheduleTime )
             throws InterruptedException
         {
-            long now = System.currentTimeMillis();
-            long waitingTime = scheduleTime.nextTime() - now;
-            waitFor( waitingTime );
+            Duration waitingTime = Duration.between( Instant.now(), scheduleTime.nextTime() );
+            waitFor( waitingTime.toMillis() );
         }
 
         private void waitFor( long waitingTime )
@@ -164,14 +164,12 @@ public interface Execution
         @Override
         public void updateNextTime( ScheduleTime oldScheduleTime )
         {
-            long now = System.currentTimeMillis();
-
             try (UnitOfWork uow = uowf.newUnitOfWork()) // This will discard() the UoW when block is exited. We are only doing reads, so fine.
             {
                 submitTaskForExecution( oldScheduleTime );
                 Schedule schedule = uow.get( Schedule.class, oldScheduleTime.scheduleIdentity() );
-                long nextTime = schedule.nextRun( now );
-                if( nextTime != Long.MIN_VALUE )
+                Instant nextTime = schedule.nextRun( Instant.now() );
+                if( nextTime.isAfter( Instant.MIN ) )
                 {
                     ScheduleTime newScheduleTime = new ScheduleTime( oldScheduleTime.scheduleIdentity(), nextTime );
                     synchronized( lock )
@@ -205,15 +203,15 @@ public interface Execution
         @Override
         public void dispatchForExecution( Schedule schedule )
         {
-            long now = System.currentTimeMillis();
-            long nextRun = schedule.nextRun( now );
-            if( nextRun > 0 )
+            Instant nextRun = schedule.nextRun( Instant.now() );
+            if( nextRun.equals( Instant.MIN ) )
             {
-                synchronized( lock )
-                {
-                    timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
-                    lock.notifyAll();
-                }
+                return;
+            }
+            synchronized( lock )
+            {
+                timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
+                lock.notifyAll();
             }
         }
 

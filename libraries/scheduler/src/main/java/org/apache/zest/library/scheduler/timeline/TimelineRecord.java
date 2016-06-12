@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.scheduler.timeline;
 
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.Queryable;
@@ -44,7 +45,7 @@ public interface TimelineRecord
     /**
      * @return Timestamp of this record
      */
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     /**
      * @return Name of the associated {@link org.apache.zest.library.scheduler.Task}

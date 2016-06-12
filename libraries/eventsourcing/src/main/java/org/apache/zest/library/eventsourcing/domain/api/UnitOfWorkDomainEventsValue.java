@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.eventsourcing.domain.api;
 
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
@@ -44,7 +45,7 @@ public interface UnitOfWorkDomainEventsValue
     Property<String> usecase();
 
     // When the event occurred
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     // Who performed the event. Taken from CurrentUser service.
     @Optional

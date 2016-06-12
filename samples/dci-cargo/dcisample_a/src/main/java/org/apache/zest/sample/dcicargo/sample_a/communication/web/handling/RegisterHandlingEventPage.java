@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.handling;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -27,7 +28,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.joda.time.LocalDate;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.HandlingQueries;
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.BasePage;
@@ -58,7 +58,7 @@ public class RegisterHandlingEventPage extends BasePage
     private final class RegisterHandlingEventForm extends AbstractForm<Void>
     {
         // Set by Wicket property resolvers:
-        private Date completion;
+        private LocalDate completionDate;
         private String trackingId, unLocode, voyageNumber, eventType;
 
         private String lastSubmittedData;
@@ -68,8 +68,8 @@ public class RegisterHandlingEventPage extends BasePage
             final FeedbackPanel feedback = new FeedbackPanel( "feedback" );
             add( feedback.setOutputMarkupId( true ) );
 
-            final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker( "completion", "Completion", this );
-            completionDateInput.earliestDate( new LocalDate() );
+            final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker( "completionDate", "Completion", this );
+            completionDateInput.earliestDate( LocalDate.now() );
 
             HandlingQueries fetch = new HandlingQueries();
             add( completionDateInput.setLabel( Model.of( "Completion" ) ) );
@@ -93,7 +93,7 @@ public class RegisterHandlingEventPage extends BasePage
 
                         // Perform use case
                         new RegisterHandlingEvent(
-                            new Date(), completion, trackingId, eventType, unLocode, voyageNumber ).register();
+                            LocalDate.now(), completionDate, trackingId, eventType, unLocode, voyageNumber ).register();
 
                         // We could redirect to Details, but it's more fun to update details in a separate
                         // window to follow the successive handling event registrations you make...
@@ -131,7 +131,7 @@ public class RegisterHandlingEventPage extends BasePage
 
         private boolean sameDataIsSubmitted()
         {
-            String submittedData = completion.toString() + trackingId + unLocode + voyageNumber + eventType;
+            String submittedData = completionDate.toString() + trackingId + unLocode + voyageNumber + eventType;
 
             if( submittedData.equals( lastSubmittedData ) )
             {

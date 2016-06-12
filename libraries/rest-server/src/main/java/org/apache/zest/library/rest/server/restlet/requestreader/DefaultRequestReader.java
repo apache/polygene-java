@@ -21,8 +21,14 @@ package org.apache.zest.library.rest.server.restlet.requestreader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
@@ -35,7 +41,6 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
@@ -455,9 +460,33 @@ public class DefaultRequestReader
                     arg = Boolean.valueOf( argString );
                 }
             }
-            else if( Date.class.isAssignableFrom( parameterType ) )
+            else if( LocalDate.class.isAssignableFrom( parameterType ) )
             {
-                arg = Dates.fromString( argString );
+                arg = LocalDate.parse( argString );
+            }
+            else if( LocalDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = LocalDateTime.parse( argString );
+            }
+            else if( ZonedDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = ZonedDateTime.parse( argString );
+            }
+            else if( OffsetDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = OffsetDateTime.parse( argString );
+            }
+            else if( Instant.class.isAssignableFrom( parameterType ) )
+            {
+                arg = Instant.parse( argString );
+            }
+            else if( Duration.class.isAssignableFrom( parameterType ) )
+            {
+                arg = Duration.parse( argString );
+            }
+            else if( Period.class.isAssignableFrom( parameterType ) )
+            {
+                arg = Period.parse( argString );
             }
             else if( parameterType.isInterface() )
             {

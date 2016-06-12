@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
@@ -93,7 +94,7 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinera
 public interface Delivery
     extends ValueComposite
 {
-    Property<Date> timestamp();
+    Property<Instant> timestamp();
 
     /* (types:)
      * RECEIVE
@@ -128,7 +129,7 @@ public interface Delivery
     Property<Boolean> isMisdirected();
 
     @Optional
-    Property<Date> eta();
+    Property<LocalDate> eta();
 
     // Index of earliest uncompleted Itinerary Leg - bumped up after each unload (except at destination)
     @UseDefaults

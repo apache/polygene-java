@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.rest.server.api;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -35,20 +35,20 @@ import org.restlet.resource.ResourceException;
 /**
  * JAVADOC
  */
-public class ResourceValidity
+class ResourceValidity
 {
-    EntityComposite entity;
+    private EntityComposite entity;
     private final ZestSPI spi;
     private Request request;
 
-    public ResourceValidity( EntityComposite entity, ZestSPI spi, Request request )
+    ResourceValidity( EntityComposite entity, ZestSPI spi, Request request )
     {
         this.entity = entity;
         this.spi = spi;
         this.request = request;
     }
 
-    public void updateEntity( UnitOfWork current )
+    void updateEntity( UnitOfWork current )
     {
         try
         {
@@ -61,43 +61,45 @@ public class ResourceValidity
         }
     }
 
-    public void updateResponse( Response response )
+    void updateResponse( Response response )
     {
         if( entity != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( state.lastModified() );
             Tag tag = new Tag( state.identity().identity() + "/" + state.version() );
-            response.getEntity().setModificationDate( lastModified );
+            response.getEntity().setModificationDate( new java.util.Date( state.lastModified() ) );
             response.getEntity().setTag( tag );
         }
     }
 
-    public void checkRequest()
+    void checkRequest()
         throws ResourceException
     {
         // Check command rules
-        Date modificationDate = request.getConditions().getUnmodifiedSince();
-        if( modificationDate != null )
+        Instant unmodifiedSince = request.getConditions().getUnmodifiedSince().toInstant();
+        EntityState state = spi.entityStateOf( entity );
+        Instant lastModified = cutoffMillis( state.lastModified() );
+        if( unmodifiedSince != null )
         {
-            EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
-            if( lastModified.after( modificationDate ) )
+            if( lastModified.isAfter( unmodifiedSince ) )
             {
                 throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
         }
 
         // Check query rules
-        modificationDate = request.getConditions().getModifiedSince();
-        if( modificationDate != null )
+        Instant modifiedSince = request.getConditions().getModifiedSince().toInstant();
+        if( modifiedSince != null )
         {
-            EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
-            if( !lastModified.after( modificationDate ) )
+            if( !lastModified.isAfter( modifiedSince ) )
             {
                 throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
             }
         }
+    }
+
+    private Instant cutoffMillis( long time )
+    {
+        return Instant.ofEpochMilli( time / 1000 * 1000 );
     }
 }

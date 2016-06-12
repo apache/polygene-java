@@ -20,7 +20,7 @@
 
 package org.apache.zest.sample.rental.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
@@ -39,9 +39,9 @@ public interface Booking
 
     @Optional
         // if not set, the pickup has not occurred yet.
-    Property<Date> pickedupTime();
+    Property<Instant> pickedupTime();
 
     @Optional
         // if not set, the return has not occurred yet.
-    Property<Date> returnedTime();
+    Property<Instant> returnedTime();
 }

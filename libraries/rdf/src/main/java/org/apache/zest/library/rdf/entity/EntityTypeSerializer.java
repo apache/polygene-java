@@ -21,16 +21,20 @@
 package org.apache.zest.library.rdf.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.library.rdf.Rdfs;
 import org.apache.zest.library.rdf.ZestEntityType;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -58,10 +62,14 @@ public class EntityTypeSerializer
         dataTypes.put( Double.class.getName(), XMLSchema.DOUBLE );
         dataTypes.put( Long.class.getName(), XMLSchema.LONG );
         dataTypes.put( Short.class.getName(), XMLSchema.SHORT );
-        dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
-        dataTypes.put( DateTime.class.getName(), XMLSchema.DATETIME );
+        dataTypes.put( Instant.class.getName(), XMLSchema.LONG );
+        dataTypes.put( OffsetDateTime.class.getName(), XMLSchema.DATETIME );
+        dataTypes.put( ZonedDateTime.class.getName(), XMLSchema.DATETIME );
         dataTypes.put( LocalDateTime.class.getName(), XMLSchema.DATETIME );
         dataTypes.put( LocalDate.class.getName(), XMLSchema.DATE );
+        dataTypes.put( LocalTime.class.getName(), XMLSchema.TIME );
+        dataTypes.put( Duration.class.getName(), XMLSchema.DURATION );
+        dataTypes.put( Period.class.getName(), XMLSchema.DURATION );
     }
 
     public Iterable<Statement> serialize( final EntityDescriptor entityDescriptor )
@@ -73,10 +81,10 @@ public class EntityTypeSerializer
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add( entityTypeUri, ZestEntityType.TYPE, values.createLiteral( entityDescriptor.types()
-                                                                                 .findFirst()
-                                                                                 .get()
-                                                                                 .toString() ) );
+        graph.add( entityTypeUri,
+                   ZestEntityType.TYPE,
+                   values.createLiteral( entityDescriptor.types().findFirst().get().toString() )
+        );
         graph.add( entityTypeUri, ZestEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );

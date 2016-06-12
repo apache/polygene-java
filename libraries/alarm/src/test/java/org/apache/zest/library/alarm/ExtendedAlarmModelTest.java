@@ -19,7 +19,7 @@
  */
 package org.apache.zest.library.alarm;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
@@ -972,7 +972,7 @@ public class ExtendedAlarmModelTest
         ValueBuilder<AlarmStatus> builder = valueBuilderFactory.newValueBuilder( AlarmStatus.class );
         AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
         statePrototype.name().set( status );
-        statePrototype.creationDate().set( new Date() );
+        statePrototype.creationDate().set( Instant.now() );
         return builder.newInstance();
     }
 }

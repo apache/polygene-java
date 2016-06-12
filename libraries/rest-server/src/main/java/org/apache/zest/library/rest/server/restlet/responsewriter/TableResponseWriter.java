@@ -24,20 +24,17 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONWriter;
 import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.library.rest.common.table.Cell;
 import org.apache.zest.library.rest.common.table.Column;
 import org.apache.zest.library.rest.common.table.Row;
 import org.apache.zest.library.rest.common.table.Table;
+import org.json.JSONException;
+import org.json.JSONWriter;
 import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
@@ -129,21 +126,21 @@ public class TableResponseWriter extends AbstractResponseWriter
                                             .get()
                                             .equals( Table.DATETIME ) && value != null )
                                     {
-                                        value = Dates.toUtcString( (Date) value );
+                                        value = value.toString();
                                     }
                                     else if( columnList.get( idx )
                                                  .columnType()
                                                  .get()
                                                  .equals( Table.DATE ) && value != null )
                                     {
-                                        value = new SimpleDateFormat( "yyyy-MM-dd" ).format( (Date) value );
+                                        value = value.toString();
                                     }
                                     else if( columnList.get( idx )
                                                  .columnType()
                                                  .get()
                                                  .equals( Table.TIME_OF_DAY ) && value != null )
                                     {
-                                        value = new SimpleDateFormat( "HH:mm:ss" ).format( (Date) value );
+                                        value = value.toString();
                                     }
 
                                     if( value != null )

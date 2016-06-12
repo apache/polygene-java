@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Iterator;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -73,7 +74,7 @@ public class BuildDeliverySnapshot extends Context
 
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
-    public BuildDeliverySnapshot( RouteSpecification routeSpecification )
+    BuildDeliverySnapshot( RouteSpecification routeSpecification )
     {
         // Deviation 2a
         if( routeSpecification.origin().get() == routeSpecification.destination().get() )
@@ -82,11 +83,11 @@ public class BuildDeliverySnapshot extends Context
         }
 
         // Deviation 2b
-        if( routeSpecification.arrivalDeadline().get().before( new Date() ) )
+        if( !routeSpecification.arrivalDeadline().get().isAfter( LocalDate.now() ) )
         {
             throw new RouteException( "Arrival deadline is in the past or Today." +
                                         "\nDeadline " + routeSpecification.arrivalDeadline().get() +
-                                        "\nToday    " + new Date() );
+                                        "\nToday    " + LocalDate.now() );
         }
 
         factory = rolePlayer( FactoryRole.class, routeSpecification );
@@ -94,7 +95,7 @@ public class BuildDeliverySnapshot extends Context
         handlingEvent = null;
     }
 
-    public BuildDeliverySnapshot( Cargo cargo )
+    BuildDeliverySnapshot( Cargo cargo )
     {
         factory = rolePlayer( FactoryRole.class, cargo.routeSpecification().get() );
         itinerary = rolePlayer( ItineraryRole.class, cargo.itinerary().get() );
@@ -157,7 +158,7 @@ public class BuildDeliverySnapshot extends Context
                 // Build delivery snapshot object
                 deliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 context.newDeliverySnapshot = deliveryBuilder.prototype();
-                context.newDeliverySnapshot.timestamp().set( new Date() );
+                context.newDeliverySnapshot.timestamp().set( Instant.now() );
 
                 // Deviation 2c: Cargo is not routed yet
                 if( context.itinerary == null )
@@ -419,7 +420,7 @@ public class BuildDeliverySnapshot extends Context
     {
         void setContext( BuildDeliverySnapshot context );
 
-        Date eta();
+        LocalDate eta();
 
         boolean expectsOrigin( Location location );
 
@@ -442,9 +443,9 @@ public class BuildDeliverySnapshot extends Context
             @This
             Itinerary itinerary;
 
-            public Date eta()
+            public LocalDate eta()
             {
-                return itinerary.lastLeg().unloadTime().get();
+                return itinerary.lastLeg().unloadDate().get();
             }
 
             // Route expectations ----------------------------------------------------
@@ -492,8 +493,10 @@ public class BuildDeliverySnapshot extends Context
             {
                 // After RECEIVE, expect LOAD location and voyage of first itinerary leg
                 final Leg firstLeg = itinerary.legs().get().iterator().next();
-                return buildEvent( HandlingEventType.LOAD, firstLeg.loadLocation().get(), firstLeg.loadTime()
-                    .get(), firstLeg.voyage().get() );
+                return buildEvent( HandlingEventType.LOAD,
+                                   firstLeg.loadLocation().get(),
+                                   firstLeg.loadDate().get(),
+                                   firstLeg.voyage().get() );
             }
 
             public ExpectedHandlingEvent expectedEventAfterLoadAt( Location lastLoadLocation )
@@ -503,8 +506,10 @@ public class BuildDeliverySnapshot extends Context
                 {
                     if( leg.loadLocation().get().equals( lastLoadLocation ) )
                     {
-                        return buildEvent( HandlingEventType.UNLOAD, leg.unloadLocation().get(), leg.unloadTime()
-                            .get(), leg.voyage().get() );
+                        return buildEvent( HandlingEventType.UNLOAD,
+                                           leg.unloadLocation().get(),
+                                           leg.unloadDate().get(),
+                                           leg.voyage().get() );
                     }
                 }
                 return null;
@@ -525,14 +530,18 @@ public class BuildDeliverySnapshot extends Context
                             // Cargo has not arrived yet (uncompleted legs in itinerary)
                             // We expect it to be loaded onto some Carrier
                             final Leg nextLeg = it.next();
-                            return buildEvent( HandlingEventType.LOAD, nextLeg.loadLocation().get(), nextLeg.loadTime()
-                                .get(), nextLeg.voyage().get() );
+                            return buildEvent(
+                                HandlingEventType.LOAD,
+                                nextLeg.loadLocation().get(),
+                                nextLeg.loadDate().get(),
+                                nextLeg.voyage().get()
+                            );
                         }
                         else
                         {
                             // Cargo has arrived (no more legs in itinerary)
                             // We expect it to be claimed by the customer
-                            return buildEvent( HandlingEventType.CLAIM, leg.unloadLocation().get(), leg.unloadTime()
+                            return buildEvent( HandlingEventType.CLAIM, leg.unloadLocation().get(), leg.unloadDate()
                                 .get(), null );
                         }
                     }
@@ -544,14 +553,14 @@ public class BuildDeliverySnapshot extends Context
 
             private ExpectedHandlingEvent buildEvent( HandlingEventType eventType,
                                                       Location location,
-                                                      Date time,
+                                                      LocalDate date,
                                                       Voyage voyage
             )
             {
                 ValueBuilder<ExpectedHandlingEvent> builder = vbf.newValueBuilder( ExpectedHandlingEvent.class );
                 builder.prototype().handlingEventType().set( eventType );
                 builder.prototype().location().set( location );
-                builder.prototype().time().set( time );
+                builder.prototype().date().set( date );
                 builder.prototype().voyage().set( voyage );
                 return builder.newInstance();
             }

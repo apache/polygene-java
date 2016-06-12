@@ -23,8 +23,7 @@ package org.apache.zest.library.circuitbreaker.jmx;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.text.DateFormat;
-import java.util.Date;
+import java.time.Instant;
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
@@ -98,15 +97,15 @@ public class CircuitBreakerJMX
    @Override
    public String getTrippedOn()
    {
-      Date trippedOn = circuitBreaker.trippedOn();
-      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
+      Instant trippedOn = circuitBreaker.trippedOn();
+      return trippedOn == null ? "" : trippedOn.toString();
    }
 
    @Override
    public String getEnableOn()
    {
-      Date trippedOn = circuitBreaker.enabledOn();
-      return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
+      Instant trippedOn = circuitBreaker.enabledOn();
+      return trippedOn == null ? "" : trippedOn.toString();
    }
 
    @Override

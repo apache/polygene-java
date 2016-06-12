@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.booking;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,7 +30,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.joda.time.LocalDate;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -60,7 +60,7 @@ public class BookNewCargoPage extends BookingBasePage
     {
         // Set by Wicket property resolvers:
         private String origin, destination;
-        private Date deadline;
+        private LocalDate deadline;
 
         public BookNewCargoForm()
         {
@@ -110,7 +110,7 @@ public class BookNewCargoPage extends BookingBasePage
 
             // Deadline
             final DateTextFieldWithPicker deadlineField = new DateTextFieldWithPicker( "deadline", "Arrival deadline", this );
-            deadlineField.earliestDate( new LocalDate().plusDays( 1 ) );
+            deadlineField.earliestDate( LocalDate.now().plusDays( 1 ) );
 
             final ComponentFeedbackPanel deadlineFeedback = new ComponentFeedbackPanel(
                 "deadlineFeedback", deadlineField );

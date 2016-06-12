@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.forum.context.view;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.property.Numbers;
@@ -33,12 +33,12 @@ import org.apache.zest.sample.forum.data.entity.User;
 /**
  * TODO
  */
-public class ViewPost
+class ViewPost
     implements ResourceIndex<Post>
 {
-    PostView viewPost = new PostView();
-    ReplyTopic replyTopic = new ReplyTopic();
-    Poster poster = new Poster();
+    private PostView viewPost = new PostView();
+    private ReplyTopic replyTopic = new ReplyTopic();
+    private Poster poster = new Poster();
 
     public ViewPost bind( @Uses Topic topic, @Uses Post post, @Uses User user )
     {
@@ -59,18 +59,18 @@ public class ViewPost
         return replyTopic.reply( message, viewPost );
     }
 
-    protected class ReplyTopic
+    private class ReplyTopic
         extends Role<Topic>
     {
         @Structure
         UnitOfWorkFactory uowf;
 
-        public Post reply( String message, PostView viewPost )
+        Post reply( String message, PostView viewPost )
         {
             Post post = uowf.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
             post.createdBy().set( poster.self() );
-            post.createdOn().set( new Date( uowf.currentUnitOfWork().currentTime() ) );
+            post.createdOn().set( Instant.ofEpochMilli( uowf.currentUnitOfWork().currentTime()) );
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );
@@ -80,12 +80,12 @@ public class ViewPost
         }
     }
 
-    protected class PostView
+    private class PostView
         extends Role<Post>
     {
     }
 
-    protected class Poster
+    private class Poster
         extends Role<User>
     {
     }

@@ -19,8 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.support;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
@@ -85,7 +85,7 @@ public interface ApplicationEvents
         public void cargoWasHandled( HandlingEvent registeredHandlingEvent )
         {
             id = registeredHandlingEvent.trackingId().get().id().get();
-            time = parseDate( registeredHandlingEvent.completionTime().get() );
+            time = parseDate( registeredHandlingEvent.completionDate().get() );
             type = registeredHandlingEvent.handlingEventType().get().name();
             unloc = registeredHandlingEvent.location().get().getCode();
             loc = registeredHandlingEvent.location().get().name().get();
@@ -121,7 +121,7 @@ public interface ApplicationEvents
 
         public void receivedHandlingEventRegistrationAttempt( RegisterHandlingEventAttemptDTO attempt )
         {
-            time = parseDate( attempt.completionTime().get() );
+            time = parseDate( attempt.completionDate().get() );
             id = parse( attempt.trackingIdString().get() );
             type = parse( attempt.eventTypeString().get() );
             unloc = parse( attempt.unLocodeString().get() );
@@ -146,9 +146,9 @@ public interface ApplicationEvents
             return str == null ? "null" : str;
         }
 
-        private String parseDate( Date date )
+        private String parseDate( LocalDate date )
         {
-            return date == null ? "null" : new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ).format( date );
+            return date == null ? "null" : DateTimeFormatter.ISO_DATE.format( date );
         }
     }
 }

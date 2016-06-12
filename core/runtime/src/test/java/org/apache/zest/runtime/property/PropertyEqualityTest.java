@@ -21,26 +21,25 @@ package org.apache.zest.runtime.property;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
-import org.apache.zest.api.value.ValueBuilderFactory;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.junit.Test;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Test;
 
+import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -60,7 +59,7 @@ public class PropertyEqualityTest
         module.values( PrimitivesValue.class, Some.class, AnotherSome.class, Other.class );
     }
 
-    public enum AnEnum
+    private enum AnEnum
     {
 
         BAZAR, CATHEDRAL
@@ -101,9 +100,9 @@ public class PropertyEqualityTest
 
         Property<BigDecimal> bigDecimalProperty();
 
-        Property<Date> dateProperty();
+        Property<Instant> instantProperty();
 
-        Property<DateTime> dateTimeProperty();
+        Property<ZonedDateTime> dateTimeProperty();
 
         Property<LocalDate> localDateProperty();
 
@@ -127,7 +126,7 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfTheSameTypeWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
-        Some some = buildSomeValue(valueBuilderFactory);
+        Some some = buildSomeValue( valueBuilderFactory );
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
@@ -152,7 +151,8 @@ public class PropertyEqualityTest
 
         PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
         ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
-        PropertyDescriptor primitiveCharPropDesc = primitiveDescriptor.state().findPropertyModelByName( "characterProperty" );
+        PropertyDescriptor primitiveCharPropDesc = primitiveDescriptor.state()
+            .findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors equal",
                     someCharPropDesc,
@@ -297,7 +297,7 @@ public class PropertyEqualityTest
         return primitive;
     }
 
-    public static PrimitivesValue buildPrimitivesValueWithDifferentState( ValueBuilderFactory vbf )
+    private static PrimitivesValue buildPrimitivesValueWithDifferentState( ValueBuilderFactory vbf )
     {
         PrimitivesValue primitive;
         {
@@ -317,10 +317,12 @@ public class PropertyEqualityTest
         return primitive;
     }
 
-    public static Some buildSomeValue(ValueBuilderFactory vbf)
+    public static Some buildSomeValue( ValueBuilderFactory vbf )
     {
         Some some;
         {
+            ZonedDateTime refDate = ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC );
+
             ValueBuilder<Some> builder = vbf.newValueBuilder( Some.class );
             builder.prototype().characterProperty().set( 'q' );
             builder.prototype().stringProperty().set( "foo" );
@@ -334,10 +336,10 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.BAZAR );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "42" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "42.23" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2020-03-04" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+            builder.prototype().instantProperty().set( refDate.toInstant() );
+            builder.prototype().dateTimeProperty().set( refDate );
+            builder.prototype().localDateProperty().set( LocalDate.of( 2020, 3, 4 ) );
+            builder.prototype().localDateTimeProperty().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) );
             some = builder.newInstance();
         }
         return some;
@@ -347,6 +349,7 @@ public class PropertyEqualityTest
     {
         Some some;
         {
+            ZonedDateTime refDate = ZonedDateTime.of( 2030, 2, 8, 9, 9, 9, 0, UTC );
             ValueBuilder<Some> builder = vbf.newValueBuilder( Some.class );
             builder.prototype().characterProperty().set( 'i' );
             builder.prototype().stringProperty().set( "bar" );
@@ -360,10 +363,10 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.CATHEDRAL );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "23" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "23.42" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2030-02-08" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2030-02-08T09:09:09", UTC ) );
+            builder.prototype().instantProperty().set( refDate.toInstant() );
+            builder.prototype().dateTimeProperty().set( refDate );
+            builder.prototype().localDateProperty().set( LocalDate.of( 2030, 2, 8 ) );
+            builder.prototype().localDateTimeProperty().set( LocalDateTime.of( 2030, 2, 8, 9, 9, 9 ) );
             some = builder.newInstance();
         }
         return some;
@@ -373,6 +376,7 @@ public class PropertyEqualityTest
     {
         AnotherSome anotherSome;
         {
+            ZonedDateTime refDate = ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC );
             ValueBuilder<AnotherSome> builder = vbf.newValueBuilder( AnotherSome.class );
             builder.prototype().characterProperty().set( 'q' );
             builder.prototype().stringProperty().set( "foo" );
@@ -386,10 +390,10 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.BAZAR );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "42" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "42.23" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2020-03-04" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+            builder.prototype().instantProperty().set( refDate.toInstant() );
+            builder.prototype().dateTimeProperty().set( refDate );
+            builder.prototype().localDateProperty().set( refDate.toLocalDate() );
+            builder.prototype().localDateTimeProperty().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) );
             anotherSome = builder.newInstance();
         }
         return anotherSome;
@@ -412,10 +416,11 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.CATHEDRAL );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "23" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "23.42" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2030-02-08" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2030-02-08T09:09:09", UTC ) );
+            ZonedDateTime refDate = ZonedDateTime.of( 2030, 2, 8, 9, 9, 9, 0, UTC );
+            builder.prototype().instantProperty().set( refDate.toInstant() );
+            builder.prototype().dateTimeProperty().set( refDate );
+            builder.prototype().localDateProperty().set( LocalDate.of( 2030, 2, 8 ) );
+            builder.prototype().localDateTimeProperty().set( LocalDateTime.of( 2030, 2, 8, 9, 9, 9 ) );
             anotherSome = builder.newInstance();
         }
         return anotherSome;

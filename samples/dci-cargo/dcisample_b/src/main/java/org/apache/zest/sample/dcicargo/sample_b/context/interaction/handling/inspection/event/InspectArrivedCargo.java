@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -36,7 +36,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CLAIM;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
@@ -48,16 +50,16 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectArrivedCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent arrivalEvent;
-    Location arrivalLocation;
+    private HandlingEvent arrivalEvent;
+    private Location arrivalLocation;
 
-    RouteSpecification routeSpecification;
-    Location destination;
+    private RouteSpecification routeSpecification;
+    private Location destination;
 
-    Itinerary itinerary;
-    Integer itineraryProgressIndex;
+    private Itinerary itinerary;
+    private Integer itineraryProgressIndex;
 
     public InspectArrivedCargo( Cargo cargo, HandlingEvent handlingEvent )
     {
@@ -112,7 +114,7 @@ public class InspectArrivedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.arrivalEvent );
                 newDelivery.transportStatus().set( IN_PORT );
 
@@ -146,7 +148,7 @@ public class InspectArrivedCargo extends Context
                 ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
                 nextHandlingEvent.prototype().handlingEventType().set( CLAIM );
                 nextHandlingEvent.prototype().location().set( c.arrivalLocation );
-                nextHandlingEvent.prototype().time().set( c.arrivalEvent.completionTime().get() );
+                nextHandlingEvent.prototype().date().set( c.arrivalEvent.completionDate().get() );
                 nextHandlingEvent.prototype().voyage().set( null );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
 

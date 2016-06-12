@@ -20,9 +20,9 @@
 
 package org.apache.zest.sample.rental.domain.dev;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Random;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -44,12 +44,16 @@ public interface InitialData
     abstract class Mixin
         implements DataInitializer
     {
+        private static final Random random = new Random();
+
         @Structure
         UnitOfWorkFactory uowf;
+
         @Structure
         ValueBuilderFactory vbf;
-        private ArrayList<Customer> customers = new ArrayList<Customer>();
-        private ArrayList<Car> cars = new ArrayList<Car>();
+
+        private ArrayList<Customer> customers = new ArrayList<>();
+        private ArrayList<Car> cars = new ArrayList<>();
 
         public void initialize()
             throws Exception
@@ -108,22 +112,12 @@ public interface InitialData
 
         private Period createRandomPeriod()
         {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime( new Date() );
-            cal.add( Calendar.DATE, Math.abs( (int) ( Math.random() * 5.0 ) ) );
-            cal.set( Calendar.HOUR_OF_DAY, 15 );
-            cal.set( Calendar.MINUTE, 0 );
-            cal.set( Calendar.SECOND, 0 );
-            Date earliestPickup = cal.getTime();
+            LocalDate start = LocalDate.now().plusDays( random.nextInt( 5));
+            LocalDate end = start.plusDays( random.nextInt(30));
 
-            cal.add( Calendar.DATE, Math.abs( (int) ( Math.random() * 30.0 ) ) );
-            cal.set( Calendar.HOUR_OF_DAY, 12 );
-            cal.set( Calendar.MINUTE, 0 );
-            cal.set( Calendar.SECOND, 0 );
-            Date latestReturn = cal.getTime();
             ValueBuilder<Period> builder = vbf.newValueBuilder( Period.class );
-            builder.prototype().startOfPeriod().set( earliestPickup );
-            builder.prototype().endOfPeriod().set( latestReturn );
+            builder.prototype().startOfPeriod().set( start );
+            builder.prototype().endOfPeriod().set( end );
             return builder.newInstance();
         }
 
@@ -143,56 +137,61 @@ public interface InitialData
         {
             Car car;
             car = shop.createCar( "SUV", "Volvo XC90", "WHO 7878" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "BMW X5", "WIT 23" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "Volvo XC90", "WHO 7879" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "Volvo XC90", "WHO 7880" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "BMW X5", "WIT 24" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "BMW X5", "WIT 25" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "BMW X5", "WIT 26" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "SUV", "BMW X5", "WIT 27" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 40" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 41" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 42" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 43" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 44" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Compact", "Mini Cooper S", "WMY 45" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Sedan", "BMW 318i", "WRY 900" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Sedan", "BMW 318i", "WRY 901" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
             car = shop.createCar( "Sedan", "BMW 318i", "WRY 902" );
-            shop.boughtCar( car, new Date() );
+            shop.boughtCar( car, randomPastDate() );
             cars.add( car );
+        }
+
+        private LocalDate randomPastDate()
+        {
+            return LocalDate.now().minusDays( random.nextInt( 700 ) );
         }
 
         private RentalShop createShop( UnitOfWork uow )

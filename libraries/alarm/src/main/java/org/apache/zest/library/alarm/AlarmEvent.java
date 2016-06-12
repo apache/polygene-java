@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.alarm;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.apache.zest.api.injection.scope.Service;
@@ -64,7 +64,7 @@ public interface AlarmEvent
      *
      * @return the timestamp when this event occurred.
      */
-    Property<Date> eventTime();
+    Property<Instant> eventTime();
 
     /**
      * Returns the Name of the event.

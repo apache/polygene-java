@@ -24,8 +24,15 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -39,14 +46,10 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.api.value.ValueSerializer;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 /**
  * Adapter for pull-parsing capable ValueSerializers.
@@ -83,7 +86,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     implements ValueSerializer
 {
 
-    public static interface ComplexSerializer<T, OutputType>
+    public interface ComplexSerializer<T, OutputType>
     {
         void serialize( Options options, T object, OutputType output )
             throws Exception;
@@ -128,25 +131,29 @@ public abstract class ValueSerializerAdapter<OutputType>
     public ValueSerializerAdapter()
     {
         // Primitive Value types
-        registerSerializer( String.class, ValueSerializerAdapter.<Object, String>identitySerializer() );
-        registerSerializer( Character.class, ValueSerializerAdapter.<Object, Character>identitySerializer() );
-        registerSerializer( Boolean.class, ValueSerializerAdapter.<Object, Boolean>identitySerializer() );
-        registerSerializer( Integer.class, ValueSerializerAdapter.<Object, Integer>identitySerializer() );
-        registerSerializer( Long.class, ValueSerializerAdapter.<Object, Long>identitySerializer() );
-        registerSerializer( Short.class, ValueSerializerAdapter.<Object, Short>identitySerializer() );
-        registerSerializer( Byte.class, ValueSerializerAdapter.<Object, Byte>identitySerializer() );
-        registerSerializer( Float.class, ValueSerializerAdapter.<Object, Float>identitySerializer() );
-        registerSerializer( Double.class, ValueSerializerAdapter.<Object, Double>identitySerializer() );
+        registerSerializer( String.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Character.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Boolean.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Integer.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Long.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Short.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Byte.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Float.class, ValueSerializerAdapter.identitySerializer() );
+        registerSerializer( Double.class, ValueSerializerAdapter.identitySerializer() );
 
         // Number types
         registerSerializer( BigDecimal.class, ( options, bigDecimal ) -> bigDecimal.toString() );
         registerSerializer( BigInteger.class, ( options, bigInteger ) -> bigInteger.toString() );
 
         // Date types
-        registerSerializer( Date.class, ( options, date ) -> Dates.toUtcString( date ) );
-        registerSerializer( DateTime.class, ( options, date ) -> date.toString() );
+        registerSerializer( Instant.class, ( options, date ) -> date.toString() );
+        registerSerializer( Duration.class, ( options, date ) -> date.toString() );
+        registerSerializer( Period.class, ( options, date ) -> date.toString() );
+        registerSerializer( ZonedDateTime.class, ( options, date ) -> date.toString() );
+        registerSerializer( OffsetDateTime.class, ( options, date ) -> date.toString() );
         registerSerializer( LocalDateTime.class, ( options, date ) -> date.toString() );
         registerSerializer( LocalDate.class, ( options, date ) -> date.toString() );
+        registerSerializer( LocalTime.class, ( options, date ) -> date.toString() );
 
         // Other supported types
         registerSerializer( EntityReference.class, ( options, ref ) -> ref.toString() );
@@ -155,7 +162,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     @Override
     public final <T> Function<T, String> serialize()
     {
-        return object -> serialize( object );
+        return this::serialize;
     }
 
     @Override

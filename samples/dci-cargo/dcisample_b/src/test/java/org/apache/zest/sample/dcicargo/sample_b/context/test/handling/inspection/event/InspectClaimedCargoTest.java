@@ -19,14 +19,14 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
+import java.time.LocalDate;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectClaimedCargo;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
@@ -52,7 +52,7 @@ public class InspectClaimedCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, LocalDate.now(),deadline = DAY24 );
         delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Claimed_CARGO" );
         trackingId = cargo.trackingId().get();

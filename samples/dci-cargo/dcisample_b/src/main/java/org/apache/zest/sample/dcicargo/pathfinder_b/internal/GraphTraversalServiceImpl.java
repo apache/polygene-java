@@ -20,9 +20,9 @@
 package org.apache.zest.sample.dcicargo.pathfinder_b.internal;
 
 import java.rmi.RemoteException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.apache.zest.sample.dcicargo.pathfinder_b.api.GraphTraversalService;
@@ -42,7 +42,7 @@ public class GraphTraversalServiceImpl
     }
 
     // Combine existing voyages to create a route.
-    public List<TransitPath> findShortestPath( final Date departureDate,
+    public List<TransitPath> findShortestPath( final LocalDate departureDate,
                                                final String originUnLocode,
                                                final String destinationUnLocode
     )
@@ -56,7 +56,7 @@ public class GraphTraversalServiceImpl
         do
         {
             String expectedDeparture = originUnLocode;
-            Date lastArrivalTime = departureDate;
+            LocalDate lastArrivalTime = departureDate;
 
             // Transit edges (itinerary legs)
             final List<TransitEdge> routeEdges = new ArrayList<TransitEdge>();
@@ -81,13 +81,13 @@ public class GraphTraversalServiceImpl
 
                     final String departure = voyageEdge.getFromUnLocode();
                     final String arrival = voyageEdge.getToUnLocode();
-                    final Date departureTime = voyageEdge.getFromDate();
-                    final Date arrivalTime = voyageEdge.getToDate();
+                    final LocalDate departureTime = voyageEdge.getFromDate();
+                    final LocalDate arrivalTime = voyageEdge.getToDate();
 
                     boolean expectsDeparture = departure.equals( expectedDeparture );
                     boolean uniqueDeparture = !oldDepartures.contains( departure );
                     boolean uniqueArrival = !oldDepartures.contains( arrival );
-                    boolean afterLastArrivalTime = departureTime.after( lastArrivalTime );
+                    boolean afterLastArrivalTime = departureTime.isAfter( lastArrivalTime );
 
                     if( expectsDeparture && uniqueDeparture && uniqueArrival && afterLastArrivalTime )
                     {

@@ -22,10 +22,8 @@ package org.apache.zest.library.eventsourcing.application.replay;
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -35,6 +33,8 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.library.eventsourcing.application.api.ApplicationEvent;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public interface ApplicationEventPlayerService
         @Structure
         ZestAPI api;
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern( "EEE MMM dd HH:mm:ss zzz yyyy" );
 
         @Override
         public void playEvent( ApplicationEvent applicationEvent, Object object )
@@ -122,7 +122,7 @@ public interface ApplicationEventPlayerService
             } else if (parameterType.equals( Integer.class ) || parameterType.equals( Integer.TYPE ))
             {
                 return ((Number) value).intValue();
-            } else if (parameterType.equals( Date.class ))
+            } else if (parameterType.equals( Instant.class ))
             {
                 return dateFormat.parse( (String) value );
             } else if (ValueComposite.class.isAssignableFrom( parameterType ))

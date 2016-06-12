@@ -23,7 +23,6 @@ jar { manifest { name = "Apache Zest™ Core API"}}
 dependencies {
 
   compile project( ':org.apache.zest.core:org.apache.zest.core.io' )
-  compile libraries.jodatime
 
   testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
   testCompile project( ':org.apache.zest.libraries:org.apache.zest.library.constraints' )

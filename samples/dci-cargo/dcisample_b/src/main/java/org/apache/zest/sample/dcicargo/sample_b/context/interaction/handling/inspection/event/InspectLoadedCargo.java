@@ -19,7 +19,10 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Random;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -65,16 +68,16 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectLoadedCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent loadEvent;
-    Location loadLocation;
-    Voyage voyage;
+    private HandlingEvent loadEvent;
+    private Location loadLocation;
+    private Voyage voyage;
 
-    RouteSpecification routeSpecification;
-    Itinerary itinerary;
-    Integer itineraryProgressIndex;
-    RoutingStatus oldRoutingStatus;
+    private RouteSpecification routeSpecification;
+    private Itinerary itinerary;
+    private Integer itineraryProgressIndex;
+    private RoutingStatus oldRoutingStatus;
 
     public InspectLoadedCargo( Cargo cargo, HandlingEvent handlingEvent )
     {
@@ -126,7 +129,7 @@ public class InspectLoadedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.loadEvent );
                 newDelivery.transportStatus().set( ONBOARD_CARRIER );
                 newDelivery.isUnloadedAtDestination().set( false );
@@ -146,20 +149,20 @@ public class InspectLoadedCargo extends Context
                 }
 
                 // Estimate carrier arrival time
-                Date estimatedArrivalDate = carrierMovement.arrivalTime().get();
-                if( c.loadEvent.completionTime().get().after( carrierMovement.departureTime().get() ) )
+                LocalDate estimatedArrivalDate = carrierMovement.arrivalDate().get();
+                if( c.loadEvent.completionDate().get().isAfter( carrierMovement.departureDate().get() ) )
                 {
-                    long start = carrierMovement.departureTime().get().getTime();
-                    long end = carrierMovement.arrivalTime().get().getTime();
-                    long duration = end - start;
-                    estimatedArrivalDate = new Date( c.loadEvent.completionTime().get().getTime() + duration );
+                    LocalDate start = carrierMovement.departureDate().get();
+                    LocalDate end = carrierMovement.arrivalDate().get();
+                    Period duration = Period.between( start, end );
+                    estimatedArrivalDate = c.loadEvent.completionDate().get().plus( duration );
                     // ... We could notify cargo owner if we already now know that we will miss the next ship
                 }
 
                 ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
                 nextHandlingEvent.prototype().handlingEventType().set( UNLOAD );
                 nextHandlingEvent.prototype().location().set( carrierMovement.arrivalLocation().get() );
-                nextHandlingEvent.prototype().time().set( estimatedArrivalDate );
+                nextHandlingEvent.prototype().date().set( estimatedArrivalDate );
                 nextHandlingEvent.prototype().voyage().set( c.voyage );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
 
@@ -205,8 +208,8 @@ public class InspectLoadedCargo extends Context
                     cargo.delivery().set( newDeliveryBuilder.newInstance() );
                     throw new CargoMisdirectedException( c.loadEvent, "Itinerary expected load in "
                                                                       + plannedCarrierMovement.loadLocation()
-                        .get()
-                        .getString() );
+                                                                          .get()
+                                                                          .getString() );
                 }
 
                 // Unexpected carrier
@@ -222,14 +225,14 @@ public class InspectLoadedCargo extends Context
                     {
                         throw new CargoMisdirectedException( c.loadEvent, c.itinerary, "Cargo is heading to expected arrival location "
                                                                                        + plannedCarrierMovement.unloadLocation()
-                            .get() + " but on unexpected voyage "
+                                                                                           .get() + " but on unexpected voyage "
                                                                                        + c.voyage
-                            .toString() + ". Notify shipper to unload unexpected cargo in next port." );
+                                                                                           .toString() + ". Notify shipper to unload unexpected cargo in next port." );
                     }
 
                     throw new CargoMisdirectedException( c.loadEvent, c.itinerary, "Itinerary expected load onto voyage "
                                                                                    + plannedCarrierMovement.voyage()
-                        .get() );
+                                                                                       .get() );
                 }
 
                 // Unexpected carrier destination
@@ -239,7 +242,7 @@ public class InspectLoadedCargo extends Context
                     cargo.delivery().set( newDeliveryBuilder.newInstance() );
                     throw new CargoMisdirectedException( c.loadEvent, "Itinerary expects voyage " + c.voyage.toString()
                                                                       + " to arrive in " + plannedCarrierMovement.unloadLocation()
-                        .get() + " but carrier is now going to "
+                                                                          .get() + " but carrier is now going to "
                                                                       + carrierMovement.arrivalLocation().get() );
                 }
 

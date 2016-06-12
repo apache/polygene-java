@@ -19,9 +19,9 @@
  */
 package org.apache.zest.library.alarm;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -408,7 +408,7 @@ public interface ExtendedAlarmModelService
             ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
             AlarmStatus.State prototype = builder.prototypeFor(AlarmStatus.State.class);
             prototype.name().set( status );
-            prototype.creationDate().set( new Date() );
+            prototype.creationDate().set( Instant.now() );
             return builder.newInstance();
         }
 
@@ -421,7 +421,7 @@ public interface ExtendedAlarmModelService
             ValueBuilder<AlarmEvent> builder = vbf.newValueBuilder( AlarmEvent.class );
             AlarmEvent prototype = builder.prototype();
             prototype.alarmIdentity().set( alarmId.identity().get() );
-            prototype.eventTime().set( new Date() );
+            prototype.eventTime().set( Instant.now() );
             prototype.newStatus().set( newStatus );
             prototype.oldStatus().set( oldStatus );
             prototype.systemName().set( eventSystemName );

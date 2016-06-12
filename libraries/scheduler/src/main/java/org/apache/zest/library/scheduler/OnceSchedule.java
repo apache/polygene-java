@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.scheduler;
 
+import java.time.Instant;
 import org.apache.zest.api.mixin.Mixins;
 
 @Mixins( OnceSchedule.OnceScheduleMixin.class )
@@ -44,15 +45,15 @@ public interface OnceSchedule
         }
 
         @Override
-        public long nextRun( long from )
+        public Instant nextRun( Instant from )
         {
             if( done().get() )
             {
-                return Long.MIN_VALUE;
+                return Instant.MIN;
             }
             done().set( true );
-            long runAt = start().get().getMillis();
-            if( runAt >= from )
+            Instant runAt = start().get();
+            if( runAt.isAfter( from ) )
             {
                 return runAt;
             }

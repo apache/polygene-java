@@ -22,19 +22,18 @@ package org.apache.zest.test.indexing;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.apache.zest.api.query.NotQueryableException;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.grammar.OrderBy;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.indexing.model.Account;
@@ -46,12 +45,10 @@ import org.apache.zest.test.indexing.model.Male;
 import org.apache.zest.test.indexing.model.Nameable;
 import org.apache.zest.test.indexing.model.Person;
 import org.apache.zest.test.indexing.model.QueryParam;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.joda.time.DateTimeZone.UTC;
-import static org.joda.time.DateTimeZone.forID;
-import static org.junit.Assert.assertThat;
+import static java.time.ZoneOffset.UTC;
 import static org.apache.zest.api.query.QueryExpressions.and;
 import static org.apache.zest.api.query.QueryExpressions.contains;
 import static org.apache.zest.api.query.QueryExpressions.containsName;
@@ -70,6 +67,9 @@ import static org.apache.zest.api.query.QueryExpressions.orderBy;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.apache.zest.test.indexing.NameableAssert.verifyUnorderedResults;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Abstract satisfiedBy with tests for simple queries against Index/Query engines.
@@ -79,7 +79,7 @@ public abstract class AbstractQueryTest
 {
     @Structure
     Module moduleInstance;
-
+    private ZonedDateTime refDate;
 
     @Test
     public void showNetwork()
@@ -117,7 +117,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script03: " + query );
-        verifyUnorderedResults( query,  "Felix", "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
+        verifyUnorderedResults( query, "Felix", "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
     }
 
@@ -152,10 +152,10 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother()
-            .get()
-            .placeOfBirth()
-            .get()
-            .name(), "Kuala Lumpur" ) )
+                                                                     .get()
+                                                                     .placeOfBirth()
+                                                                     .get()
+                                                                     .name(), "Kuala Lumpur" ) )
         );
         System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
@@ -441,10 +441,10 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.personalWebsite()
-            .get()
-            .protocol()
-            .get()
-            .value(), "http" ) )
+                                                                     .get()
+                                                                     .protocol()
+                                                                     .get()
+                                                                     .value(), "http" ) )
         );
         System.out.println( "*** script29: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
@@ -573,8 +573,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        refDate = ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, UTC );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            eq( person.dateValue(), new DateTime( "2010-03-04T13:24:35", UTC ).toDate() ) ) );
+            eq( person.instantValue(), refDate.toInstant() ) ) );
         System.out.println( "*** script40_Date: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -586,7 +587,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.dateValue(), new DateTime( "2010-03-04T13:24:35", UTC ).toDate() ) ) );
+            ne( person.instantValue(), refDate.toInstant() ) ) );
         System.out.println( "*** script41_Date: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -597,8 +598,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime cetTime = ZonedDateTime.of( 2010, 3, 4, 14, 24, 35, 0, ZoneId.of( "CET" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.dateValue(), new DateTime( "2010-03-04T14:24:35", forID( "CET" ) ).toDate() ) ) );
+            ne( person.instantValue(), cetTime.toInstant() ) ) );
         System.out.println( "*** script42_Date: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -609,9 +611,11 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime start = ZonedDateTime.of( 2005, 3, 4, 13, 24, 35, 0, UTC );
+        ZonedDateTime end = ZonedDateTime.of( 2015, 3, 4, 13, 24, 35, 0, UTC );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            and( gt( person.dateValue(), new DateTime( "2005-03-04T13:24:35", UTC ).toDate() ),
-                 lt( person.dateValue(), new DateTime( "2015-03-04T13:24:35", UTC ).toDate() ) ) ) );
+            and( gt( person.instantValue(), start.toInstant() ),
+                 lt( person.instantValue(), end.toInstant() ) ) ) );
         System.out.println( "*** script43_Date: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -622,8 +626,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime time = ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, UTC );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            eq( person.dateTimeValue(), new DateTime( "2010-03-04T13:24:35", UTC ) ) ) );
+            eq( person.dateTimeValue(), time ) ) );
         System.out.println( "*** script40_DateTime: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -634,8 +639,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime time = ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, UTC );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.dateTimeValue(), new DateTime( "2010-03-04T13:24:35", UTC ) ) ) );
+            ne( person.dateTimeValue(), time ) ) );
         System.out.println( "*** script41_DateTime: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -646,8 +652,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime time = ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, ZoneId.of( "CET" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.dateTimeValue(), new DateTime( "2010-03-04T14:24:35", forID( "CET" ) ) ) ) );
+            ne( person.dateTimeValue(), time ) ) );
         System.out.println( "*** script42_DateTime: " + query );
 
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
@@ -658,9 +665,11 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime start = ZonedDateTime.of( 2005, 3, 4, 13, 24, 35, 0, UTC );
+        ZonedDateTime end = ZonedDateTime.of( 2015, 3, 4, 13, 24, 35, 0, UTC );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            and( gt( person.dateTimeValue(), new DateTime( "2005-03-04T13:24:35", UTC ) ),
-                 lt( person.dateTimeValue(), new DateTime( "2015-03-04T13:24:35", UTC ) ) ) ) );
+            and( gt( person.dateTimeValue(), start ),
+                 lt( person.dateTimeValue(), end ) ) ) );
         System.out.println( "*** script43_DateTime: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -672,7 +681,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            eq( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", UTC ) ) ) );
+            eq( person.localDateTimeValue(), LocalDateTime.of( 2010, 3, 4, 13, 23, 0 ) ) ) );
         System.out.println( "*** script40_LocalDateTime: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -684,7 +693,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", UTC ) ) ) );
+            ne( person.localDateTimeValue(), LocalDateTime.of( 2010, 3, 4, 13, 23, 0 ) ) ) );
         System.out.println( "*** script41_LocalDateTime: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -695,8 +704,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        ZonedDateTime time = ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, ZoneId.of( "CET" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", forID( "CET" ) ) ) ) );
+            ne( person.localDateTimeValue(), time.toLocalDateTime() ) ) );
         System.out.println( "*** script42_LocalDateTime: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -707,9 +717,11 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        LocalDateTime start = ZonedDateTime.of( 2005, 3, 4, 13, 24, 35, 0, UTC ).toLocalDateTime();
+        LocalDateTime end = ZonedDateTime.of( 2015, 3, 4, 13, 24, 35, 0, UTC ).toLocalDateTime();
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            and( gt( person.localDateTimeValue(), new LocalDateTime( "2005-03-04T13:24:35", UTC ) ),
-                 lt( person.localDateTimeValue(), new LocalDateTime( "2015-03-04T13:24:35", UTC ) ) ) ) );
+            and( gt( person.localDateTimeValue(), start ),
+                 lt( person.localDateTimeValue(), end ) ) ) );
         System.out.println( "*** script43_LocalDateTime: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -721,7 +733,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            eq( person.localDateValue(), new LocalDate( "2010-03-04", UTC ) ) ) );
+            eq( person.localDateValue(), LocalDate.of( 2010,3,4 ) ) ) );
         System.out.println( "*** script40_LocalDate: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -733,7 +745,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.localDateValue(), new LocalDate( "2010-03-04", UTC ) ) ) );
+            ne( person.localDateValue(), LocalDate.of( 2010,3,4 ) ) ) );
         System.out.println( "*** script41_LocalDate: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -744,8 +756,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        LocalDate time = ZonedDateTime.of(2010,3,4,13,24,35,0, ZoneId.of("CET")).toLocalDate();
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.localDateValue(), new LocalDate( "2010-03-04", forID( "CET" ) ) ) ) );
+            ne( person.localDateValue(), time ) ) );
         System.out.println( "*** script42_LocalDate: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -756,9 +769,11 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
+        LocalDate start = ZonedDateTime.of(2010,3,4,13,24,35,0,UTC).toLocalDate();
+        LocalDate end = ZonedDateTime.of(2010,3,4,13,24,35,0,UTC).toLocalDate();
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            and( gt( person.localDateValue(), new LocalDate( "2005-03-04", UTC ) ),
-                 lt( person.localDateValue(), new LocalDate( "2015-03-04", UTC ) ) ) ) );
+            and( gt( person.localDateValue(), start),
+                 lt( person.localDateValue(), end ) ) ) );
         System.out.println( "*** script43_LocalDate: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );

@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -119,7 +119,7 @@ public class InspectCargoInCustoms extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.customsEvent );
                 newDelivery.transportStatus().set( IN_PORT );
                 newDelivery.isUnloadedAtDestination().set( false );

@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -430,7 +430,7 @@ public class InspectLoadedCargoTest extends TestApplication
 
         Leg currentCarrierMovement = itinerary.leg( delivery.itineraryProgressIndex().get() );
         assertThat( currentCarrierMovement.unloadLocation().get(), is( equalTo( DALLAS ) ) );
-        assertThat( currentCarrierMovement.unloadTime().get(), is( equalTo( DAY8 ) ) );
+        assertThat( currentCarrierMovement.unloadDate().get(), is( equalTo( DAY8 ) ) );
         assertThat( currentCarrierMovement.voyage().get(), is( equalTo( V202 ) ) );
 
         assertDelivery( LOAD, NEWYORK, DAY7, V202,
@@ -446,7 +446,7 @@ public class InspectLoadedCargoTest extends TestApplication
         success_Load();
 
         // Risk zone destination
-        routeSpec = routeSpecFactory.build( HANGZHOU, ROTTERDAM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HANGZHOU, ROTTERDAM, LocalDate.now(),deadline = DAY24 );
         delivery = delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Naive" );
         trackingId = cargo.trackingId().get();

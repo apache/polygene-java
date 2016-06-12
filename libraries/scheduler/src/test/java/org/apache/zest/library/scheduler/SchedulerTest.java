@@ -19,6 +19,8 @@
  */
 package org.apache.zest.library.scheduler;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.concurrent.Callable;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -29,8 +31,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.scheduler.bootstrap.SchedulerAssembler;
 import org.apache.zest.library.scheduler.timeline.Timeline;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,7 @@ public class SchedulerTest
         throws UnitOfWorkCompletionException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "TestMinutely" );
-        DateTime start = new DateTime();
+        ZonedDateTime start = ZonedDateTime.now();
         String taskIdentity;
         long sleepMillis;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
@@ -104,13 +104,13 @@ public class SchedulerTest
             FooTask task = createFooTask( uow, usecase.name(), BAZAR );
             taskIdentity = task.identity().get();
 
-            DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
+            ZonedDateTime expectedRun = start.withNano( 0 ).withSecond( 0 ).plusMinutes( 1 );
             scheduler.scheduleCron( task, "@minutely" );
 
             uow.complete();
 
-            sleepMillis = new Interval( start, expectedRun ).toDurationMillis();
-            LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
+            sleepMillis = Duration.between( start, expectedRun ).toMillis();
+            LOGGER.info( "Task scheduled on {} to be run at {}", start.toLocalTime(), expectedRun.toLocalTime() );
         }
 
         await( usecase.name() )
@@ -121,22 +121,22 @@ public class SchedulerTest
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase ) )
         {
             Timeline timeline = serviceFinder.findService( Timeline.class ).get();
-            DateTime now = new DateTime();
+            ZonedDateTime now =  ZonedDateTime.now();
 
             // Queries returning past records
             assertThat( count( timeline.getLastRecords( 5 ) ),
                         is( 2L ) );
-            assertThat( count( timeline.getRecords( start.getMillis(), now.getMillis() ) ),
+            assertThat( count( timeline.getRecords( start.toInstant(), now.toInstant() ) ),
                         is( 2L ) );
 
             // Queries returning future records
             assertThat( count( timeline.getNextRecords( 4 ) ),
                         is( 4L ) );
-            assertThat( count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ),
+            assertThat( count( timeline.getRecords( now.plusNanos( 100000000L ), now.plusMinutes( 5 )) ),
                         is( 5L ) );
 
             // Queries returning mixed past and future records
-            assertThat( count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ),
+            assertThat( count( timeline.getRecords( start, now.plusMinutes( 5 ) ) ),
                         is( 7L ) );
         }
     }

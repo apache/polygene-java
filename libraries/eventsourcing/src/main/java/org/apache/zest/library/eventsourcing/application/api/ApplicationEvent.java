@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.eventsourcing.application.api;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
@@ -50,7 +50,7 @@ public interface ApplicationEvent
     Property<String> name();
 
     // When the event was created
-    Property<Date> on();
+    Property<Instant> on();
 
     // Method parameters as JSON
     Property<String> parameters();

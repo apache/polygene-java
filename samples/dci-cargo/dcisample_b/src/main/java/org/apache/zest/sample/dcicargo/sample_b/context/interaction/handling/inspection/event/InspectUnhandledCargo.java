@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -100,7 +100,7 @@ public class InspectUnhandledCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( null );
                 newDelivery.transportStatus().set( NOT_RECEIVED );
                 newDelivery.isUnloadedAtDestination().set( false );
@@ -132,7 +132,7 @@ public class InspectUnhandledCargo extends Context
                 ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
                 nextHandlingEvent.prototype().handlingEventType().set( RECEIVE );
                 nextHandlingEvent.prototype().location().set( cargo.origin().get() );
-                nextHandlingEvent.prototype().time().set( null );
+                nextHandlingEvent.prototype().date().set( null );
                 nextHandlingEvent.prototype().voyage().set( null );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
 

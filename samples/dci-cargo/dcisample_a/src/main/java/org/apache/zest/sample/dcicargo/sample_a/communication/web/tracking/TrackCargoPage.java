@@ -19,8 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.tracking;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -62,7 +61,9 @@ public class TrackCargoPage extends BasePage
     private final class TrackingForm extends AbstractForm<Void>
     {
         private String trackingId;
-        private String selectedTrackingId; // Set by Wicket property resolver
+
+        @SuppressWarnings( "unused" )   // Set by Wicket property resolver
+        private String selectedTrackingId;
 
         private TextField<String> trackingIdInput;
         private SelectorInForm selectedTrackingIdSelector;
@@ -73,7 +74,7 @@ public class TrackCargoPage extends BasePage
         private TrackingForm()
         {
             // Manual input
-            trackingIdInput = new TextField<String>( "trackingId", new PropertyModel<String>( this, "trackingId" ) );
+            trackingIdInput = new TextField<>( "trackingId", new PropertyModel<String>( this, "trackingId" ) );
             add( trackingIdInput.setRequired( true ).setOutputMarkupId( true ) );
 
             // Submit button
@@ -134,7 +135,7 @@ public class TrackCargoPage extends BasePage
 
         private class StatusFragment extends Fragment
         {
-            public StatusFragment( IModel<CargoDTO> cargoModel, Boolean visible )
+            StatusFragment( IModel<CargoDTO> cargoModel, Boolean visible )
             {
                 super( "status", "statusFragment", TrackingForm.this );
                 setVisible( visible );
@@ -164,12 +165,12 @@ public class TrackCargoPage extends BasePage
                     map.put( "location", cargo.origin().get().getString() );
                 }
                 add( new Label( "transportStatus", new StringResourceModel(
-                    "transportStatus.${status}", this, new Model<ValueMap>( map ) ) ) );
+                    "transportStatus.${status}", this, new Model<>( map ) ) ) );
 
                 // ETA ----------------------------------------------------------------------
                 String destination = cargo.routeSpecification().get().destination().get().getString();
-                Date eta = cargo.delivery().get().eta().get();
-                String etaString = eta == null ? "?" : new SimpleDateFormat( "yyyy-MM-dd" ).format( eta );
+                LocalDate eta = cargo.delivery().get().eta().get();
+                String etaString = eta == null ? "?" : eta.toString();
                 add( new Label( "eta", new StringResourceModel(
                     "eta", this, null, Model.of( destination ), Model.of( etaString ) ) ) );
 

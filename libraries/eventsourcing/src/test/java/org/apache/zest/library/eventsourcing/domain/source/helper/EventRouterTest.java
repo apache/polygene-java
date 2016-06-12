@@ -20,6 +20,7 @@
 package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
@@ -67,7 +68,7 @@ public class EventRouterTest
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test2" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test3" ) );
             builder.prototype().version().set( "1.0" );
-            builder.prototype().timestamp().set( System.currentTimeMillis() );
+            builder.prototype().timestamp().set( Instant.now() );
             builder.prototype().usecase().set( "Test" );
             list.add( builder.newInstance() );
         }
@@ -77,7 +78,7 @@ public class EventRouterTest
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test5" ) );
             builder.prototype().events().get().add( newDomainEvent( assembler, "Test6" ) );
             builder.prototype().version().set( "1.0" );
-            builder.prototype().timestamp().set( System.currentTimeMillis() );
+            builder.prototype().timestamp().set( Instant.now() );
             builder.prototype().usecase().set( "Test2" );
             list.add( builder.newInstance() );
         }

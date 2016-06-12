@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.alarm;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.apache.zest.api.common.Optional;
@@ -62,7 +62,7 @@ public interface AlarmStatus extends ValueComposite
          * @return the timestamp of when the state was created.
          */
         @Optional
-        Property<Date> creationDate();
+        Property<Instant> creationDate();
 
         /**
          * Returns the Name of the AlarmStatus.
@@ -103,7 +103,7 @@ public interface AlarmStatus extends ValueComposite
         {
             if( state.creationDate().get() == null )
             {
-                state.creationDate().set( new Date() );
+                state.creationDate().set( Instant.now() );
             }
         }
     }

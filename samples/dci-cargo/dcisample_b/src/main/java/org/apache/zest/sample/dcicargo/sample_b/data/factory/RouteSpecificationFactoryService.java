@@ -19,8 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.factory;
 
-import java.util.Date;
-import org.joda.time.DateMidnight;
+import java.time.LocalDate;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -44,7 +43,7 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location
 public interface RouteSpecificationFactoryService
     extends ServiceComposite
 {
-    RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
+    RouteSpecification build( Location origin, Location destination, LocalDate earliestDeparture, LocalDate deadline )
         throws CannotCreateRouteSpecificationException;
 
     abstract class Mixin
@@ -53,7 +52,11 @@ public interface RouteSpecificationFactoryService
         @Structure
         ValueBuilderFactory vbf;
 
-        public RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
+        public RouteSpecification build( Location origin,
+                                         Location destination,
+                                         LocalDate earliestDeparture,
+                                         LocalDate deadline
+        )
             throws CannotCreateRouteSpecificationException
         {
             if( origin == destination )
@@ -61,15 +64,15 @@ public interface RouteSpecificationFactoryService
                 throw new CannotCreateRouteSpecificationException( "Origin location can't be same as destination location." );
             }
 
-            Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-            if( deadline.before( endOfToday ) )
+            if( !deadline.isAfter( LocalDate.now() ) )
             {
-                throw new CannotCreateRouteSpecificationException( "Arrival deadline is in the past or Today." +
-                                                                   "\nDeadline           " + deadline +
-                                                                   "\nToday (midnight)   " + endOfToday );
+                throw new CannotCreateRouteSpecificationException(
+                    "Arrival deadline is in the past or Today." +
+                    "\nDeadline           " + deadline +
+                    "\nToday (midnight)   " + LocalDate.now().atStartOfDay().plusDays( 1 ) );
             }
 
-            if( deadline.before( earliestDeparture ) )
+            if( !deadline.isAfter( earliestDeparture ) )
             {
                 throw new CannotCreateRouteSpecificationException( "Deadline can't be before departure:" +
                                                                    "\nDeparture   " + earliestDeparture +

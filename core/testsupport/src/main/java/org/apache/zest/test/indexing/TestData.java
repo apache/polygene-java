@@ -21,6 +21,9 @@ package org.apache.zest.test.indexing;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -39,11 +42,8 @@ import org.apache.zest.test.indexing.model.Person;
 import org.apache.zest.test.indexing.model.Protocol;
 import org.apache.zest.test.indexing.model.QueryParam;
 import org.apache.zest.test.indexing.model.URL;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
-import static org.joda.time.DateTimeZone.UTC;
+import static java.time.ZoneOffset.UTC;
 
 /**
  * Utility class to populate Index/Query tests data.
@@ -176,10 +176,10 @@ public class TestData
                 joeDoe.address().set( address );
                 joeDoe.bigInteger().set( new BigInteger( "23232323232323232323232323" ) );
                 joeDoe.bigDecimal().set( new BigDecimal( "23.4276931348623157e+309" ) );
-                joeDoe.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-                joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-                joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
-                joeDoe.localDateValue().set( new LocalDate( "2020-03-04" ) );
+                joeDoe.instantValue().set( ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC ).toInstant() );
+                joeDoe.dateTimeValue().set( ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC ) );
+                joeDoe.localDateTimeValue().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) );
+                joeDoe.localDateValue().set( LocalDate.of( 2020, 3, 4 ) );
                 NameableAssert.trace( joeDoe );
             }
 
@@ -201,10 +201,10 @@ public class TestData
                 jackDoe.address().set( address );
                 jackDoe.bigInteger().set( new BigInteger( "42424242424242424242424242" ) );
                 jackDoe.bigDecimal().set( new BigDecimal( "42.2376931348623157e+309" ) );
-                jackDoe.dateValue().set( new DateTime( "2010-03-04T13:24:35", UTC ).toDate() );
-                jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
-                jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );
-                jackDoe.localDateValue().set( new LocalDate( "2010-03-04" ) );
+                jackDoe.instantValue().set( ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, UTC ).toInstant() );
+                jackDoe.dateTimeValue().set( ZonedDateTime.of( 2010, 3, 4, 13, 24, 35, 0, UTC ) );
+                jackDoe.localDateTimeValue().set( LocalDateTime.of( 2010, 3, 4, 13, 23, 0 ) );
+                jackDoe.localDateValue().set( LocalDate.of( 2010, 3, 4 ) );
 
                 ValueBuilder<URL> urlBuilder = module.newValueBuilder( URL.class );
                 ValueBuilder<Protocol> protocolBuilder = module.newValueBuilder( Protocol.class );

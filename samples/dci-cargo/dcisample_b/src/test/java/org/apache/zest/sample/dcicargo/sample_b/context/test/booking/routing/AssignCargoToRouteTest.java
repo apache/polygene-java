@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.booking.routing;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -49,7 +49,7 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class AssignCargoToRouteTest extends TestApplication
 {
-    static Itinerary itinerary2;
+    private static Itinerary itinerary2;
     private HandlingEventAggregateRoot HANDLING_EVENTS;
 
     @Before
@@ -62,7 +62,7 @@ public class AssignCargoToRouteTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, LocalDate.now(), deadline = DAY24 );
         delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         trackingId = cargo.trackingId().get();

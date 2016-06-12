@@ -20,11 +20,10 @@
 package org.apache.zest.sample.dcicargo.sample_b.context.service.routing;
 
 import java.rmi.RemoteException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import org.joda.time.LocalDate;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -80,7 +79,7 @@ public interface RoutingService
         public List<Itinerary> fetchRoutesForSpecification( RouteSpecification routeSpecification )
             throws FoundNoRoutesException
         {
-            final Date departureDate = routeSpecification.earliestDeparture().get();
+            final LocalDate departureDate = routeSpecification.earliestDeparture().get();
             final Location origin = routeSpecification.origin().get();
             final Location destination = routeSpecification.destination().get();
 
@@ -113,7 +112,7 @@ public interface RoutingService
             if( itineraries.size() == 0 )
             {
                 throw new FoundNoRoutesException( destination.name().get(),
-                                                  new LocalDate( routeSpecification.arrivalDeadline().get() ) );
+                                                  routeSpecification.arrivalDeadline().get());
             }
 
             return itineraries;
@@ -141,8 +140,8 @@ public interface RoutingService
             leg.prototype().voyage().set( uow.get( Voyage.class, edge.getVoyageNumber() ) );
             leg.prototype().loadLocation().set( uow.get( Location.class, edge.getFromUnLocode() ) );
             leg.prototype().unloadLocation().set( uow.get( Location.class, edge.getToUnLocode() ) );
-            leg.prototype().loadTime().set( edge.getFromDate() );
-            leg.prototype().unloadTime().set( edge.getToDate() );
+            leg.prototype().loadDate().set( edge.getFromDate() );
+            leg.prototype().unloadDate().set( edge.getToDate() );
 
             return leg.newInstance();
         }

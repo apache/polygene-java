@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -49,10 +49,10 @@ import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.Ha
 public class RegisterHandlingEventTest
       extends TestApplication
 {
-    Date time;
-    String trackId;
-    String msg;
-    private Date arrival;
+    private LocalDate date;
+    private String trackId;
+    private String msg;
+    private LocalDate arrival;
     private Cargo cargo;
     private TrackingId trackingId;
     private Cargos CARGOS;
@@ -84,7 +84,7 @@ public class RegisterHandlingEventTest
                    arrival = day( 16 ) )
         );
         new BookNewCargo( cargo, itinerary ).assignCargoToRoute();
-        time = day( 1 );
+        date = day( 1 );
         trackId = trackingId.id().get();
     }
 
@@ -93,62 +93,62 @@ public class RegisterHandlingEventTest
     @Test
     public void deviation_2a_MissingRegistrationTime() throws Exception
     {
-        msg = register( null, time, trackId, "RECEIVE", "CNHKG", null );
+        msg = register( null, date, trackId, "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Registration time was null. All parameters have to be passed." ) ) );
     }
     @Test
     public void deviation_2a_MissingCompletionTime() throws Exception
     {
-        msg = register( time, null, trackId, "RECEIVE", "CNHKG", null );
+        msg = register( date, null, trackId, "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Completion time was null. All parameters have to be passed." ) ) );
     }
 
     @Test
     public void deviation_2a_MissingTrackingId() throws Exception
     {
-        msg = register( time, time, null, "RECEIVE", "CNHKG", null );
+        msg = register( date, date, null, "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Tracking id was null. All parameters have to be passed." ) ) );
     }
 
     @Test
     public void deviation_2a_EmptyTrackingId() throws Exception
     {
-        msg = register( time, time, "", "RECEIVE", "CNHKG", null );
+        msg = register( date, date, "", "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Tracking id cannot be empty." ) ) );
     }
 
     @Test
     public void deviation_2a_MissingEventType() throws Exception
     {
-        msg = register( time, time, trackId, null, "CNHKG", null );
+        msg = register( date, date, trackId, null, "CNHKG", null );
         assertThat( msg, is( equalTo( "Event type was null. All parameters have to be passed." ) ) );
     }
 
     @Test
     public void deviation_2a_EmptyEventType() throws Exception
     {
-        msg = register( time, time, trackId, "", "CNHKG", null );
+        msg = register( date, date, trackId, "", "CNHKG", null );
         assertThat( msg, is( equalTo( "Event type cannot be empty." ) ) );
     }
 
     @Test
     public void deviation_2a_MissingUnlocode() throws Exception
     {
-        msg = register( time, time, trackId, "RECEIVE", null, null );
+        msg = register( date, date, trackId, "RECEIVE", null, null );
         assertThat( msg, is( equalTo( "UnLocode was null. All parameters have to be passed." ) ) );
     }
 
     @Test
     public void deviation_2a_EmptyUnlocode() throws Exception
     {
-        msg = register( time, time, trackId, "RECEIVE", "", null );
+        msg = register( date, date, trackId, "RECEIVE", "", null );
         assertThat( msg, is( equalTo( "UnLocode cannot be empty." ) ) );
     }
 
     @Test
     public void step_2_CompleteData__Receive_in_Hong_Kong() throws Exception
     {
-        new RegisterHandlingEvent( time, time, trackId, "RECEIVE", "CNHKG", null ).register();
+        new RegisterHandlingEvent( date, date, trackId, "RECEIVE", "CNHKG", null ).register();
     }
 
 
@@ -157,7 +157,7 @@ public class RegisterHandlingEventTest
     @Test
     public void deviation_3a_HandlingTypeNotRecognized() throws Exception
     {
-        msg = register( time, time, trackId, "RECEIPT", "CNHKG", null );
+        msg = register( date, date, trackId, "RECEIPT", "CNHKG", null );
         assertThat( msg, is( equalTo(
               "'RECEIPT' is not a valid handling event type. Valid types are: [RECEIVE, LOAD, UNLOAD, CUSTOMS, CLAIM]" ) ) );
     }
@@ -165,7 +165,7 @@ public class RegisterHandlingEventTest
     @Test
     public void deviation_3b_NoCargoWithTrackingId() throws Exception
     {
-        msg = register( time, time, "XXX", "RECEIVE", "CNHKG", null );
+        msg = register( date, date, "XXX", "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Found no cargo with tracking id 'XXX'." ) ) );
     }
 
@@ -175,42 +175,42 @@ public class RegisterHandlingEventTest
         TrackingId nonRoutedTrackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).createCargo( "NonRoutedCargo" );
         String nonRouted = nonRoutedTrackingId.id().get();
 
-        msg = register( time, time, nonRouted, "RECEIVE", "CNHKG", null );
+        msg = register( date, date, nonRouted, "RECEIVE", "CNHKG", null );
         assertThat( msg, is( equalTo( "Can't create handling event for non-routed cargo '" + nonRouted + "'." ) ) );
     }
 
     @Test
     public void deviation_3d_NoLocationWithUnlocode() throws Exception
     {
-        msg = register( time, time, trackId, "RECEIVE", "ZZZZZ", null );
+        msg = register( date, date, trackId, "RECEIVE", "ZZZZZ", null );
         assertThat( msg, is( equalTo( "Unknown location: ZZZZZ" ) ) );
     }
 
     @Test
     public void deviation_3e_1a_MissingVoyageNumber() throws Exception
     {
-        msg = register( time, time, trackId, "LOAD", "CNHKG", null );
+        msg = register( date, date, trackId, "LOAD", "CNHKG", null );
         assertThat( msg, is( equalTo( "Handling event LOAD requires a voyage. No voyage number submitted." ) ) );
     }
 
     @Test
     public void deviation_3e_1b_MissingVoyage() throws Exception
     {
-        msg = register( time, time, trackId, "LOAD", "CNHKG", "V600S" );
+        msg = register( date, date, trackId, "LOAD", "CNHKG", "V600S" );
         assertThat( msg, is( equalTo( "Found no voyage with voyage number 'V600S'." ) ) );
     }
 
     @Test
     public void deviation_3f_SkipVoyageNumberSilentlyWhenProhibited() throws Exception
     {
-        new RegisterHandlingEvent( time, time, trackId, "RECEIVE", "CNHKG", "V100S" ).register();
+        new RegisterHandlingEvent( date, date, trackId, "RECEIVE", "CNHKG", "V100S" ).register();
         assertThat( cargo.delivery().get().currentVoyage().get(), is( equalTo( null ) ) );
     }
 
     @Test
     public void step_3_to_5_ValidRegistration__Load_in_Hong_Kong() throws Exception
     {
-        new RegisterHandlingEvent( time, time, trackId, "LOAD", "CNHKG", "V100S" ).register();
+        new RegisterHandlingEvent( date, date, trackId, "LOAD", "CNHKG", "V100S" ).register();
 
         Delivery delivery = cargo.delivery().get();
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
@@ -226,8 +226,8 @@ public class RegisterHandlingEventTest
     }
 
 
-    private String register( Date registrationTime,
-                             Date completionTime,
+    private String register( LocalDate registrationDate,
+                             LocalDate completionDate,
                              String trackingIdString,
                              String eventTypeString,
                              String unLocodeString,
@@ -235,8 +235,8 @@ public class RegisterHandlingEventTest
     {
         try
         {
-            new RegisterHandlingEvent( registrationTime,
-                                       completionTime,
+            new RegisterHandlingEvent( registrationDate,
+                                       completionDate,
                                        trackingIdString,
                                        eventTypeString,
                                        unLocodeString,
