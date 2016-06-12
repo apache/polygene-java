@@ -30,6 +30,13 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.schema.SchemaField;
+import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Uses;
+import org.apache.zest.index.solr.EmbeddedSolrService;
+import org.apache.zest.index.solr.SolrQueryService;
+import org.apache.zest.library.rdf.entity.EntityStateSerializer;
+import org.apache.zest.spi.entity.EntityState;
+import org.apache.zest.spi.entity.EntityStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,13 +48,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.URIImpl;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.index.solr.EmbeddedSolrService;
-import org.apache.zest.index.solr.SolrQueryService;
-import org.apache.zest.library.rdf.entity.EntityStateSerializer;
-import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.entity.EntityStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * JAVADOC
  */
 public abstract class SolrEntityIndexerMixin
-        implements SolrQueryService
+    implements SolrQueryService
 {
     @Service
     private EmbeddedSolrService solr;
@@ -78,7 +78,8 @@ public abstract class SolrEntityIndexerMixin
         try
         {
             indexedFields = solrCore.getSchema().getFields();
-        } finally
+        }
+        finally
         {
             solrCore.close();
         }
@@ -108,12 +109,16 @@ public abstract class SolrEntityIndexerMixin
                         if( entityState.status().equals( EntityStatus.REMOVED ) )
                         {
                             if( deleted == null )
+                            {
                                 deleted = new ArrayList<>();
+                            }
                             deleted.add( entityState.identity().identity() );
-                        } else if( entityState.status().equals( EntityStatus.UPDATED ) )
+                        }
+                        else if( entityState.status().equals( EntityStatus.UPDATED ) )
                         {
                             added.add( indexEntityState( entityState ) );
-                        } else if( entityState.status().equals( EntityStatus.NEW ) )
+                        }
+                        else if( entityState.status().equals( EntityStatus.NEW ) )
                         {
                             added.add( indexEntityState( entityState ) );
                         }
@@ -122,17 +127,23 @@ public abstract class SolrEntityIndexerMixin
 
                 // Send changes to Solr
                 if( deleted != null )
+                {
                     server.deleteById( deleted );
+                }
                 if( !added.isEmpty() )
+                {
                     server.add( added );
-            } finally
+                }
+            }
+            finally
             {
                 if( server != null )
                 {
                     server.commit( false, false );
                 }
             }
-        } catch( Throwable e )
+        }
+        catch( Throwable e )
         {
             logger.error( "Could not update Solr", e );
             //TODO What shall we do with the exception?
@@ -140,7 +151,7 @@ public abstract class SolrEntityIndexerMixin
     }
 
     private SolrInputDocument indexEntityState( final EntityState entityState )
-            throws IOException, SolrServerException, JSONException
+        throws IOException, SolrServerException, JSONException
     {
         Graph graph = new GraphImpl();
         stateSerializer.serialize( entityState, false, graph );
@@ -148,7 +159,7 @@ public abstract class SolrEntityIndexerMixin
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
         input.addField( "type", entityState.entityDescriptor().types().findFirst().get().getName() );
-        input.addField( "lastModified", entityState.lastModified() );
+        input.addField( "lastModified", new java.util.Date( entityState.lastModified() ) );
 
         for( Statement statement : graph )
         {
@@ -164,22 +175,26 @@ public abstract class SolrEntityIndexerMixin
                         {
                             JSONArray array = new JSONArray( value );
                             indexJson( input, array );
-                        } else if( value.charAt( 0 ) == '{' )
+                        }
+                        else if( value.charAt( 0 ) == '{' )
                         {
                             JSONObject object = new JSONObject( value );
                             indexJson( input, object );
                         }
-                    } else
+                    }
+                    else
                     {
                         input.addField( field.getName(), value );
                     }
-                } else if( statement.getObject() instanceof URI && !"type".equals( field.getName() ) )
+                }
+                else if( statement.getObject() instanceof URI && !"type".equals( field.getName() ) )
                 {
                     String value = statement.getObject().stringValue();
                     value = value.substring( value.lastIndexOf( ':' ) + 1, value.length() );
                     String name = field.getName();
                     input.addField( name, value );
-                } else if( statement.getObject() instanceof BNode )
+                }
+                else if( statement.getObject() instanceof BNode )
                 {
                     Resource resource = (Resource) statement.getObject();
                     URIImpl uri = new URIImpl( "http://www.w3.org/1999/02/22-rdf-syntax-ns#li" );
@@ -194,20 +209,23 @@ public abstract class SolrEntityIndexerMixin
                     }
                 }
             }
-
         }
 
         return input;
     }
 
-    private void indexJson( SolrInputDocument input, Object object ) throws JSONException
+    private void indexJson( SolrInputDocument input, Object object )
+        throws JSONException
     {
         if( object instanceof JSONArray )
         {
             JSONArray array = (JSONArray) object;
             for( int i = 0; i < array.length(); i++ )
+            {
                 indexJson( input, array.get( i ) );
-        } else
+            }
+        }
+        else
         {
             JSONObject jsonObject = (JSONObject) object;
             Iterator keys = jsonObject.keys();
@@ -218,7 +236,8 @@ public abstract class SolrEntityIndexerMixin
                 if( value instanceof JSONObject || value instanceof JSONArray )
                 {
                     indexJson( input, value );
-                } else
+                }
+                else
                 {
                     SchemaField field = indexedFields.get( name.toString() );
                     if( field != null )

@@ -83,7 +83,7 @@ public class SolrQueryServiceTest
         TestEntity test = uow.newEntity( TestEntity.class );
         test.name().set( "Hello World" );
         uow.complete();
-        Thread.sleep( 40 );
+        Thread.sleep( 140 );
     }
 
     @Test
@@ -91,13 +91,14 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException
     {
         // Search for it
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        Query<TestEntity> query = uow.newQuery( queryBuilderFactory.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ) );
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            Query<TestEntity> query = uow.newQuery( queryBuilderFactory.newQueryBuilder( TestEntity.class )
+                                                        .where( SolrExpressions.search( "hello" ) ) );
 
-        TestEntity test = query.find();
-        Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
-
-        uow.discard();
+            TestEntity test = query.find();
+            Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
+        }
     }
 
     @Test
