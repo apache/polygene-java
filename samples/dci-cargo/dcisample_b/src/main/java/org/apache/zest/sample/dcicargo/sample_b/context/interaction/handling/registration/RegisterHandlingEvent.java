@@ -35,7 +35,6 @@ import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.reg
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.registration.exception.UnknownLocationException;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.registration.exception.UnknownVoyageException;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.HandlingEventEntity;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.HandlingEventFactory;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.exception.CannotCreateHandlingEventException;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
@@ -79,13 +78,13 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class RegisterHandlingEvent extends Context
 {
-    EventRegistrarRole eventRegistrar;
+    private EventRegistrarRole eventRegistrar;
 
-    ParsedHandlingEventData eventData;
-    HandlingEventType eventType;
-    String trackingIdString;
-    String unLocodeString;
-    String voyageNumberString;
+    private ParsedHandlingEventData eventData;
+    private HandlingEventType eventType;
+    private String trackingIdString;
+    private String unLocodeString;
+    private String voyageNumberString;
 
     public RegisterHandlingEvent( ParsedHandlingEventData parsedEventData )
     {
@@ -171,14 +170,14 @@ public class RegisterHandlingEvent extends Context
 
                 if( c.eventType.equals( RECEIVE ) || c.eventType.equals( CUSTOMS ) || c.eventType.equals( CLAIM ) )
                 {
-                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                    QueryBuilder<HandlingEvent> qb = qbf.newQueryBuilder( HandlingEvent.class )
                         .where(
                             and(
                                 eq( templateFor( HandlingEvent.class ).trackingId().get().id(), c.trackingIdString ),
                                 eq( templateFor( HandlingEvent.class ).handlingEventType(), c.eventType )
                             )
                         );
-                    Query<HandlingEventEntity> duplicates = uowf.currentUnitOfWork().newQuery( qb );
+                    Query<HandlingEvent> duplicates = uowf.currentUnitOfWork().newQuery( qb );
                     if( duplicates.count() > 0 )
                     {
                         throw new DuplicateEventException( c.eventData );
@@ -190,14 +189,14 @@ public class RegisterHandlingEvent extends Context
                 if( !c.eventType.equals( CLAIM ) )
                 {
                     HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
-                    QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                    QueryBuilder<HandlingEvent> qb = qbf.newQueryBuilder( HandlingEvent.class )
                         .where(
                             and(
                                 eq( eventTemplate.trackingId().get().id(), c.trackingIdString ),
                                 eq( eventTemplate.handlingEventType(), CLAIM )
                             )
                         );
-                    Query<HandlingEventEntity> alreadyClaimed = uowf.currentUnitOfWork().newQuery( qb );
+                    Query<HandlingEvent> alreadyClaimed = uowf.currentUnitOfWork().newQuery( qb );
                     if( alreadyClaimed.count() > 0 )
                     {
                         throw new AlreadyClaimedException( c.eventData );

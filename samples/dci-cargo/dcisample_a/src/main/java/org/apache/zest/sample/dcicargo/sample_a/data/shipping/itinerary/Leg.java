@@ -35,7 +35,6 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  * All properties are mandatory and immutable.
  */
 public interface Leg
-    extends ValueComposite
 {
     Association<Location> loadLocation();
 

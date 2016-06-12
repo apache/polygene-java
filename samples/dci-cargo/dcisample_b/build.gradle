@@ -26,7 +26,6 @@ dependencies {
 
   compile project( ':org.apache.zest.core:org.apache.zest.core.bootstrap' )
   compile project( ':org.apache.zest.libraries:org.apache.zest.library.constraints' )
-  compile project( ':org.apache.zest.libraries:org.apache.zest.library.conversion' )
   compile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
   compile project( ':org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf' )
   compile project( ':org.apache.zest.tools:org.apache.zest.tool.envisage' )

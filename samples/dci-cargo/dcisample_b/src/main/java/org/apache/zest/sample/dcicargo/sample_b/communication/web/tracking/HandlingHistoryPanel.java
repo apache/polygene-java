@@ -33,8 +33,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.TrackingQueries;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.HandlingEventDTO;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.color.ErrorColor;
 
 import static java.util.Date.from;
@@ -49,18 +49,18 @@ import static java.util.Date.from;
 @StatelessComponent
 public class HandlingHistoryPanel extends Panel
 {
-    public HandlingHistoryPanel( String id, final IModel<CargoDTO> cargoModel, String trackingId )
+    public HandlingHistoryPanel( String id, final IModel<Cargo> cargoModel, String trackingId )
     {
         super( id );
 
-        IModel<List<HandlingEventDTO>> handlingEventsModel = new TrackingQueries().events( trackingId );
+        IModel<List<HandlingEvent>> handlingEventsModel = new TrackingQueries().events( trackingId );
 
-        add( new ListView<HandlingEventDTO>( "handlingEvents", handlingEventsModel )
+        add( new ListView<HandlingEvent>( "handlingEvents", handlingEventsModel )
         {
             @Override
-            protected void populateItem( ListItem<HandlingEventDTO> item )
+            protected void populateItem( ListItem<HandlingEvent> item )
             {
-                HandlingEventDTO event = item.getModelObject();
+                HandlingEvent event = item.getModelObject();
                 Boolean isLast = item.getIndex() == getList().size() - 1;
                 Boolean isMisdirected = cargoModel.getObject().delivery().get().isMisdirected().get();
 

@@ -36,6 +36,8 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 @Mixins( Cargos.Mixin.class )
 public interface Cargos
 {
+    String CARGOS_ID = "Cargos_id";
+
     Cargo createCargo( RouteSpecification routeSpecification, Delivery delivery, @Optional String id );
 
     class Mixin

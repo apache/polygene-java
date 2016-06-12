@@ -21,7 +21,7 @@ package org.apache.zest.sample.dcicargo.sample_b.infrastructure.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.query.Query;
 
 /**
@@ -30,7 +30,7 @@ import org.apache.zest.api.query.Query;
  * Callback Wicket model that holds a Zest Query object that can be called when needed to
  * retrieve fresh data.
  */
-public abstract class QueryModel<T, U extends EntityComposite>
+public abstract class QueryModel<T extends Identity>
     extends ReadOnlyModel<List<T>>
 {
     private Class<T> dtoClass;
@@ -49,7 +49,7 @@ public abstract class QueryModel<T, U extends EntityComposite>
         }
 
         dtoList = new ArrayList<T>();
-        for( U entity : getQuery() )
+        for( T entity : getQuery() )
         {
             dtoList.add( getValue( entity ) );
         }
@@ -58,11 +58,12 @@ public abstract class QueryModel<T, U extends EntityComposite>
     }
 
     // Callback to retrieve the (unserializable) Zest Query object
-    public abstract Query<U> getQuery();
+    public abstract Query<T> getQuery();
 
-    public T getValue( U entity )
+    public T getValue( T entity )
     {
-        return valueConverter.convert( dtoClass, entity );
+        Class<T> dtoClass = this.dtoClass;
+        return uowf.currentUnitOfWork().toValue( dtoClass, entity );
     }
 
     public void detach()

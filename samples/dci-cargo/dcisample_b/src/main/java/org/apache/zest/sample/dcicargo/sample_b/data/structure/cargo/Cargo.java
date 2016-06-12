@@ -21,6 +21,7 @@ package org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo;
 
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
@@ -39,7 +40,7 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.tracking.Tracking
  * {@link Itinerary}            Description of chosen route (optional)
  * {@link Delivery}             Snapshot of the current delivery status (automatically created by the system)
  */
-public interface Cargo
+public interface Cargo extends Identity
 {
     @Immutable
     Property<TrackingId> trackingId();

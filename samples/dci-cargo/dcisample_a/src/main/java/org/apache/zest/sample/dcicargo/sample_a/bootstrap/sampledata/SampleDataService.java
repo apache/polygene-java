@@ -20,7 +20,6 @@
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap.sampledata;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,8 +40,8 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling.RegisterHandlingEvent;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.ExpectedHandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
@@ -65,8 +64,7 @@ public interface SampleDataService
     void insertSampleData()
             throws Exception;
 
-    class Activator
-            extends ActivatorAdapter<ServiceReference<SampleDataService>>
+    class Activator extends ActivatorAdapter<ServiceReference<SampleDataService>>
     {
 
         @Override
@@ -268,14 +266,14 @@ public interface SampleDataService
             Usecase usecase = UsecaseBuilder.newUsecase( "### Populate Random Cargos ###" );
             UnitOfWork uow = uowf.newUnitOfWork( usecase );
 
-            CargosEntity cargos = uow.get( CargosEntity.class, CargosEntity.CARGOS_ID );
+            Cargos cargos = uow.get( Cargos.class, Cargos.CARGOS_ID );
 
             QueryBuilder<Location> qb = qbf.newQueryBuilder( Location.class );
             Query<Location> allLocations = uow.newQuery( qb );
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index
-            final List<Location> locationList = new ArrayList<Location>();
+            final List<Location> locationList = new ArrayList<>();
             for( Location location : allLocations )
             {
                 locationList.add( location );

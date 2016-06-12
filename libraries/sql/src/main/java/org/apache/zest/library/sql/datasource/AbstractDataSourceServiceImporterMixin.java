@@ -38,7 +38,6 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
-import org.apache.zest.library.conversion.values.EntityToValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
 
-    private final Map<String, DataSourceConfigurationValue> configs = new HashMap<>();
+    private final Map<String, DataSourceConfiguration> configs = new HashMap<>();
 
     private final Map<String, PooledDataSourceType> pools = new HashMap<>();
 
@@ -56,9 +55,6 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     @Structure
     protected UnitOfWorkFactory uowf;
-
-    @Service
-    private EntityToValue entityToValue;
 
     @Override
     public final void passivateDataSourceService()
@@ -81,7 +77,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
             try {
 
-                DataSourceConfigurationValue config = getConfiguration( importedServiceDescriptor.identity() );
+                DataSourceConfiguration config = getConfiguration( importedServiceDescriptor.identity() );
                 if ( !config.enabled().get() ) {
                     // Not started
                     throw new ServiceImporterException( "DataSource not enabled" );
@@ -126,16 +122,16 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         }
     }
 
-    private DataSourceConfigurationValue getConfiguration( String identity )
+    private DataSourceConfiguration getConfiguration( String identity )
             throws InstantiationException
     {
-        DataSourceConfigurationValue config = configs.get( identity );
+        DataSourceConfiguration config = configs.get( identity );
         if ( config == null ) {
             UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
 
             try {
                 DataSourceConfiguration configEntity = uow.get( DataSourceConfiguration.class, identity );
-                config = entityToValue.convert( DataSourceConfigurationValue.class, configEntity );
+                config = uow.toValue( DataSourceConfiguration.class, configEntity );
             } catch ( NoSuchEntityException e ) {
                 EntityBuilder<DataSourceConfiguration> configBuilder = uow.newEntityBuilder( DataSourceConfiguration.class, identity );
 
@@ -154,7 +150,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                 }
 
                 DataSourceConfiguration configEntity = configBuilder.newInstance();
-                config = entityToValue.convert( DataSourceConfigurationValue.class, configEntity );
+                config = uow.toValue( DataSourceConfiguration.class, configEntity );
 
                 // save
                 try {
@@ -176,19 +172,16 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
     @Override
     public final boolean isAvailable( DataSource instance )
     {
-        if ( pools.containsValue( instance ) ) {
+        if ( pools.containsValue( instance ) )
+        {
             CircuitBreaker circuitBreaker = circuitBreakers.get( instance );
-            if ( circuitBreaker != null ) {
-                return circuitBreaker.isOn();
-            } else {
-                return true;
-            }
+            return circuitBreaker == null || circuitBreaker.isOn();
         } else {
             return false;
         }
     }
 
-    protected abstract PooledDataSourceType setupDataSourcePool( DataSourceConfigurationValue configuration )
+    protected abstract PooledDataSourceType setupDataSourcePool( DataSourceConfiguration configuration )
             throws Exception;
 
     protected abstract void passivateDataSourcePool( PooledDataSourceType dataSourcePool )

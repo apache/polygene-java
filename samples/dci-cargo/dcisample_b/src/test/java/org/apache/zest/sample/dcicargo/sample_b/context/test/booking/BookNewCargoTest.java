@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.booking;
 
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -26,7 +27,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.BookNewCargo;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.CargoEntity;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.exception.CannotCreateCargoException;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.exception.CannotCreateRouteSpecificationException;
 
@@ -105,7 +105,7 @@ public class BookNewCargoTest extends TestApplication
         deviation_2b_DeadlineTomorrowIsOkay();
         UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        cargo = uow.get( Cargo.class, trackingId.id().get() );
         assertThat( cargo.routeSpecification().get().origin().get(), is( equalTo( HONGKONG ) ) );
         assertThat( cargo.routeSpecification().get().destination().get(), is( equalTo( STOCKHOLM ) ) );
         assertThat( cargo.routeSpecification().get().arrivalDeadline().get(), is( equalTo( DAY24 ) ) );
@@ -118,7 +118,7 @@ public class BookNewCargoTest extends TestApplication
         step_2_CanCreateRouteSpecification();
         UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        cargo = uow.get( Cargo.class, trackingId.id().get() );
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
                         NOT_ROUTED, directed, unknownETA, unknownLeg,
@@ -141,7 +141,7 @@ public class BookNewCargoTest extends TestApplication
         deviation_4a_TrackingIdTooShort();
         UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "yes" );
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        cargo = uow.get( Cargo.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "yes" ) ) );
     }
 
@@ -161,7 +161,7 @@ public class BookNewCargoTest extends TestApplication
         deviation_4a_TrackingIdTooLong();
         UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "123456789012345678901234567890" );
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        cargo = uow.get( Cargo.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "123456789012345678901234567890" ) ) );
     }
 
@@ -206,7 +206,7 @@ public class BookNewCargoTest extends TestApplication
         step_4_CanAutoCreateTrackingIdFromNull();
         UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "ABC" );
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        cargo = uow.get( Cargo.class, trackingId.id().get() );
 
         assertThat( cargo.trackingId().get(), is( equalTo( trackingId ) ) );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "ABC" ) ) );

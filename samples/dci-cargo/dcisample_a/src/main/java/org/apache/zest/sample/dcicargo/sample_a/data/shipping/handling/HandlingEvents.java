@@ -37,6 +37,8 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 @Mixins( HandlingEvents.Mixin.class )
 public interface HandlingEvents
 {
+    String HANDLING_EVENTS_ID = "Handling_events_id";
+
     HandlingEvent createHandlingEvent( LocalDate registrationDate,
                                        LocalDate completionDate,
                                        TrackingId trackingId,

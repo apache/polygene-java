@@ -24,8 +24,7 @@ import java.util.List;
 import org.apache.wicket.model.IModel;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargoEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.EntityModel;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.Queries;
@@ -43,20 +42,20 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
  */
 public class CommonQueries extends Queries
 {
-    public IModel<CargoDTO> cargo( String trackingId )
+    public IModel<Cargo> cargo( String trackingId )
     {
-        return EntityModel.of( CargoEntity.class, trackingId, CargoDTO.class );
+        return EntityModel.of( Cargo.class, trackingId, Cargo.class );
     }
 
-    public IModel<List<CargoDTO>> cargoList()
+    public IModel<List<Cargo>> cargoList()
     {
-        return new QueryModel<CargoDTO, CargoEntity>( CargoDTO.class )
+        return new QueryModel<Cargo>( Cargo.class )
         {
-            public Query<CargoEntity> getQuery()
+            public Query<Cargo> getQuery()
             {
-                QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder( CargoEntity.class );
+                QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class );
                 return uowf.currentUnitOfWork().newQuery( qb )
-                    .orderBy( orderBy( templateFor( CargoEntity.class ).trackingId().get().id() ) );
+                    .orderBy( orderBy( templateFor( Cargo.class ).trackingId().get().id() ) );
             }
         };
     }

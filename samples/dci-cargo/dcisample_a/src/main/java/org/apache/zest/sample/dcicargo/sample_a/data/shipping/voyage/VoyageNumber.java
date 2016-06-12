@@ -28,7 +28,6 @@ import org.apache.zest.api.value.ValueComposite;
  * Voyage number is mandatory and immutable.
  */
 public interface VoyageNumber
-    extends ValueComposite
 {
     Property<String> number();
 }

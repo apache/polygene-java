@@ -31,7 +31,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.RoutingStatus;
@@ -50,22 +50,22 @@ public class CargoListPage extends BookingBasePage
 {
     public CargoListPage()
     {
-        IModel<List<CargoDTO>> cargoList = new CommonQueries().cargoList();
+        IModel<List<Cargo>> cargoList = new CommonQueries().cargoList();
 
         // Save current trackingIds in session (for prev/next buttons on details page)
         ArrayList<String> ids = new ArrayList<>();
-        for( CargoDTO cargo : cargoList.getObject() )
+        for( Cargo cargo : cargoList.getObject() )
         {
             ids.add( cargo.trackingId().get().id().get() );
         }
         PrevNext.registerIds( Session.get(), ids );
 
-        add( new ListView<CargoDTO>( "list", cargoList )
+        add( new ListView<Cargo>( "list", cargoList )
         {
             @Override
-            protected void populateItem( ListItem<CargoDTO> item )
+            protected void populateItem( ListItem<Cargo> item )
             {
-                CargoDTO cargo = item.getModelObject();
+                Cargo cargo = item.getModelObject();
                 String trackingId = cargo.trackingId().get().id().get();
                 Delivery delivery = cargo.delivery().get();
                 RoutingStatus routingStatus = cargo.delivery().get().routingStatus().get();

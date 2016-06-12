@@ -24,7 +24,7 @@ import java.util.Properties;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.library.sql.datasource.AbstractDataSourceServiceImporterMixin;
-import org.apache.zest.library.sql.datasource.DataSourceConfigurationValue;
+import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
 import org.apache.zest.library.sql.datasource.DataSourceServiceImporterActivation;
 
 /**
@@ -43,7 +43,7 @@ public class BoneCPDataSourceServiceImporter
     {
 
         @Override
-        protected BoneCPDataSource setupDataSourcePool( DataSourceConfigurationValue config )
+        protected BoneCPDataSource setupDataSourcePool( DataSourceConfiguration config )
                 throws Exception
         {
             BoneCPDataSource pool = new BoneCPDataSource();

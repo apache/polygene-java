@@ -68,7 +68,6 @@ public interface BookingQueries
             {
                 modelList.add( JSONModel.of( itinerary ) );
             }
-
             return modelList;
         }
     }

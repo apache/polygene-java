@@ -25,9 +25,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryExpressions;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.HandlingEventDTO;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargoEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.Queries;
@@ -44,15 +41,15 @@ public class TrackingQueries extends Queries
 {
     public List<String> routedCargos()
     {
-        Cargo cargoEntity = templateFor( CargoEntity.class );
+        Cargo cargoEntity = templateFor( Cargo.class );
 
-        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder( CargoEntity.class )
+        QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class )
             .where( isNotNull( cargoEntity.itinerary() ) );
-        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery( qb )
+        Query<Cargo> cargos = uowf.currentUnitOfWork().newQuery( qb )
             .orderBy( orderBy( cargoEntity.trackingId().get().id() ) );
 
         List<String> cargoList = new ArrayList<String>();
-        for( CargoEntity cargo : cargos )
+        for( Cargo cargo : cargos )
         {
             cargoList.add( cargo.trackingId().get().id().get() );
         }
@@ -60,17 +57,19 @@ public class TrackingQueries extends Queries
         return cargoList;
     }
 
-    public IModel<List<HandlingEventDTO>> events( final String trackingIdString )
+    public IModel<List<HandlingEvent>> events( final String trackingIdString )
     {
-        return new QueryModel<HandlingEventDTO, HandlingEventEntity>( HandlingEventDTO.class )
+        return new QueryModel<HandlingEvent>( HandlingEvent.class )
         {
-            public Query<HandlingEventEntity> getQuery()
+            public Query<HandlingEvent> getQuery()
             {
                 HandlingEvent eventTemplate = templateFor( HandlingEvent.class );
 
-                QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
+                QueryBuilder<HandlingEvent> qb = qbf.newQueryBuilder( HandlingEvent.class )
                     .where( QueryExpressions.eq( eventTemplate.trackingId().get().id(), trackingIdString ) );
-                return uowf.currentUnitOfWork().newQuery( qb )
+                return uowf
+                    .currentUnitOfWork()
+                    .newQuery( qb )
                     .orderBy( orderBy( eventTemplate.completionDate() ) );
             }
         };

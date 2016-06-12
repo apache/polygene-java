@@ -27,7 +27,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType;
@@ -41,7 +41,7 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location
 @StatelessComponent
 public class NextHandlingEventPanel extends Panel
 {
-    public NextHandlingEventPanel( String id, IModel<CargoDTO> cargoModel )
+    public NextHandlingEventPanel( String id, IModel<Cargo> cargoModel )
     {
         super( id );
 
@@ -50,7 +50,7 @@ public class NextHandlingEventPanel extends Panel
             "nextEvent.${nextEvent}", this, new Model<ValueMap>( map ) ) );
         add( label );
 
-        CargoDTO cargo = cargoModel.getObject();
+        Cargo cargo = cargoModel.getObject();
         Location destination = cargo.routeSpecification().get().destination().get();
 
         if( cargo.itinerary().get() == null )

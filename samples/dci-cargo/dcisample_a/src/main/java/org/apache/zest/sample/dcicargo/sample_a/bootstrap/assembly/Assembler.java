@@ -41,10 +41,6 @@ import org.apache.zest.sample.dcicargo.sample_a.bootstrap.DCISampleApplication_a
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.sampledata.BaseDataService;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.sampledata.SampleDataService;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.BookingQueries;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.HandlingEventDTO;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.LocationDTO;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.VoyageDTO;
 import org.apache.zest.sample.dcicargo.sample_a.context.rolemap.CargoRoleMap;
 import org.apache.zest.sample.dcicargo.sample_a.context.rolemap.CargosRoleMap;
 import org.apache.zest.sample.dcicargo.sample_a.context.rolemap.HandlingEventRoleMap;
@@ -54,17 +50,18 @@ import org.apache.zest.sample.dcicargo.sample_a.context.rolemap.RouteSpecificati
 import org.apache.zest.sample.dcicargo.sample_a.context.support.ApplicationEvents;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RegisterHandlingEventAttemptDTO;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RoutingService;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.LocationEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.VoyageEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.ExpectedHandlingEvent;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Leg;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.UnLocode;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.VoyageNumber;
-import org.apache.zest.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -173,18 +170,14 @@ public class Assembler
                 BookingQueries.class )
             .visibleIn( application );
 
-        queryModule
-            .values(
-                CargoDTO.class,
-                LocationDTO.class,
-                HandlingEventDTO.class,
-                VoyageDTO.class );
+        queryModule.services( UuidIdentityGeneratorService.class );
 
-        queryModule
-            .addServices(
-                EntityToDTOService.class,
-                OrgJsonValueSerializationService.class )
-            .visibleIn( application );
+        queryModule.values(
+            Cargo.class,
+            Location.class,
+            HandlingEvent.class,
+            Voyage.class
+        );
     }
 
     private void assembleContextLayer( LayerAssembly contextLayer )
@@ -192,20 +185,18 @@ public class Assembler
     {
         // Role-playing entities
         ModuleAssembly entityRoleModule = contextLayer.module( "CONTEXT-EntityRole" );
-        entityRoleModule
-            .entities(
-                CargoRoleMap.class,
-                CargosRoleMap.class,
-                HandlingEventRoleMap.class,
-                HandlingEventsRoleMap.class )
+        entityRoleModule.entities( CargoRoleMap.class,
+                                   CargosRoleMap.class,
+                                   HandlingEventRoleMap.class,
+                                   HandlingEventsRoleMap.class )
             .visibleIn( application );
 
         // Non-role-playing entities
         ModuleAssembly entityNonRoleModule = contextLayer.module( "CONTEXT-EntityNonRole" );
         entityNonRoleModule
             .entities(
-                LocationEntity.class,
-                VoyageEntity.class )
+                Location.class,
+                Voyage.class )
             .visibleIn( application );
 
         // Role-playing values
@@ -254,15 +245,8 @@ public class Assembler
         serializationModule
             .services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON )
-            .setMetaInfo( new Function<Application, Module>()
-        {
-            @Override
-            public Module apply( Application application )
-            {
-                return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
-            }
-        } )
-        .visibleIn( application );
+            .setMetaInfo( (Function<Application, Module>) application1 -> application1.findModule( "CONTEXT", "CONTEXT-ContextSupport" ) )
+            .visibleIn( application );
 
         ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule

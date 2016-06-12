@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -67,7 +66,7 @@ public class RegisterHandlingEventTest
     @Before
     public void beforeEachTest() throws Exception {
         UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
-        CARGOS = uow.get(Cargos.class,  CargosEntity.CARGOS_ID );
+        CARGOS = uow.get(Cargos.class,  Cargos.CARGOS_ID );
         HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         NEWYORK = uow.get( Location.class, USNYC.code().get() );

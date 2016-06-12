@@ -33,7 +33,6 @@ import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.reg
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.registration.exception.UnknownVoyageException;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
 import org.apache.zest.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.HandlingEventEntity;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.junit.Before;
 import org.junit.Test;
@@ -203,7 +202,7 @@ public class RegisterHandlingEventTest extends TestApplication
 
         // Delete handling events from memory
         tempUow = uowf.newUnitOfWork();
-        Query<HandlingEventEntity> events = tempUow.newQuery( qbf.newQueryBuilder( HandlingEventEntity.class ) );
+        Query<HandlingEvent> events = tempUow.newQuery( qbf.newQueryBuilder( HandlingEvent.class ) );
         for( HandlingEvent event : events )
         {
             tempUow.remove( event );

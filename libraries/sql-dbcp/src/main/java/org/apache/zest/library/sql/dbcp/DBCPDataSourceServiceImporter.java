@@ -26,7 +26,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.library.sql.datasource.AbstractDataSourceServiceImporterMixin;
-import org.apache.zest.library.sql.datasource.DataSourceConfigurationValue;
+import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
 import org.apache.zest.library.sql.datasource.DataSourceServiceImporterActivation;
 
 @Mixins( DBCPDataSourceServiceImporter.Mixin.class )
@@ -40,7 +40,7 @@ public interface DBCPDataSourceServiceImporter
     {
 
         @Override
-        protected BasicDataSource setupDataSourcePool( DataSourceConfigurationValue config )
+        protected BasicDataSource setupDataSourcePool( DataSourceConfiguration config )
                 throws Exception
         {
             BasicDataSource pool = new BasicDataSource();

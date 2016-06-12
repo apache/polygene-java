@@ -24,8 +24,6 @@ import java.time.ZoneOffset;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
@@ -35,6 +33,7 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.RoutingSt
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.TransportStatus;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvents;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
@@ -109,7 +108,7 @@ public class BuildDeliverySnapshotTest
         V400S = uow.get( Voyage.class, "V400S" );
         V500S = uow.get( Voyage.class, "V500S" );
 
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).createCargo( "ABC" );
         cargo = uow.get( Cargo.class, trackingId.id().get() );
 
@@ -172,7 +171,7 @@ public class BuildDeliverySnapshotTest
 
         UnitOfWork uow = uowf.currentUnitOfWork();
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, day( 20 ) );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         Delivery delivery = new BuildDeliverySnapshot( routeSpec ).get();
         CARGOS.createCargo( routeSpec, delivery, "ABCD" );
 
@@ -296,7 +295,7 @@ public class BuildDeliverySnapshotTest
         deviation_3a_CargoHasNoHandlingHistory();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         // Unexpected receipt in Shanghai
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, HandlingEventType.RECEIVE, SHANGHAI, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -323,7 +322,7 @@ public class BuildDeliverySnapshotTest
         deviation_4a_RECEIVE_1a_UnexpectedPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         // Expected receipt in Hong Kong
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, HandlingEventType.RECEIVE, HONGKONG, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -347,7 +346,7 @@ public class BuildDeliverySnapshotTest
         deviation_4a_RECEIVE_1b_ExpectedPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         // Unexpected load in Tokyo
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, TOKYO, V100S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -370,7 +369,7 @@ public class BuildDeliverySnapshotTest
         deviation_4b_LOAD_2a_UnexpectedPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         // Expected load in Hong Kong
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V100S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -395,7 +394,7 @@ public class BuildDeliverySnapshotTest
         deviation_4b_LOAD_2b_ExpectedPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         // Load onto unexpected voyage
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V400S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -418,7 +417,7 @@ public class BuildDeliverySnapshotTest
         deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // The system doesn't currently check if handling events happen in the right order, so
         // a cargo can now suddenly load in New York, even though it hasn't got there yet.
@@ -447,7 +446,7 @@ public class BuildDeliverySnapshotTest
         deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Unexpected unload in Tokyo
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 5 ), day( 5 ), trackingId, UNLOAD, TOKYO, V100S );
@@ -541,7 +540,7 @@ public class BuildDeliverySnapshotTest
         deviation_4c_UNLOAD_1a_UnexpectedPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Unload at midpoint location of itinerary
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 8 ), day( 8 ), trackingId, UNLOAD, HAMBURG, V400S );
@@ -568,7 +567,7 @@ public class BuildDeliverySnapshotTest
         deviation_4c_UNLOAD_1b_ExpectedMidpointLocation();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Unload at destination
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, UNLOAD, STOCKHOLM, V500S );
@@ -597,7 +596,7 @@ public class BuildDeliverySnapshotTest
         deviation_4c_UNLOAD_1c_Destination();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Cargo was handled by the customs authorities
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CUSTOMS, STOCKHOLM, null );
@@ -624,7 +623,7 @@ public class BuildDeliverySnapshotTest
         deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Cargo was claimed but not at destination location
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 16 ), trackingId, CLAIM, HELSINKI, null );
@@ -651,7 +650,7 @@ public class BuildDeliverySnapshotTest
         deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort();
 
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
         // Cargo was claimed by customer at destination location
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CLAIM, STOCKHOLM, null );
