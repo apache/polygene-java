@@ -29,8 +29,8 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvents;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.UnLocode;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
@@ -139,8 +139,8 @@ public interface BaseDataService
                 ) );
 
                 // Cargo and HandlingEvent factories
-                CargosEntity CARGOS = uow.newEntity( CargosEntity.class, CargosEntity.CARGOS_ID );
-                uow.newEntity( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+                Cargos CARGOS = uow.newEntity( Cargos.class, Cargos.CARGOS_ID );
+                uow.newEntity( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
 
                 logger.debug( "BASIC DATA CREATED" );
                 uow.complete();

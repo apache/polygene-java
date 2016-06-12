@@ -19,14 +19,13 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.rolemap;
 
+import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargoEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 
 /**
  * Cargo Role Map
  */
-public interface CargoRoleMap
-    extends CargoEntity,
-            BookNewCargo.RoutingFacadeRole
+public interface CargoRoleMap extends BookNewCargo.RoutingFacadeRole, EntityComposite, Cargo
 {
 }

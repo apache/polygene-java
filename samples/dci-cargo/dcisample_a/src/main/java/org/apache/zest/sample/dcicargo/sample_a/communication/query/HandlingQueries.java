@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargoEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.Queries;
@@ -54,11 +54,11 @@ public class HandlingQueries extends Queries
 
     public List<String> cargoIds()
     {
-        QueryBuilder<CargoEntity> qb = qbf.newQueryBuilder( CargoEntity.class );
-        Query<CargoEntity> cargos = uowf.currentUnitOfWork().newQuery( qb )
-            .orderBy( orderBy( templateFor( CargoEntity.class ).trackingId().get().id() ) );
-        List<String> cargoList = new ArrayList<String>();
-        for( CargoEntity cargo : cargos )
+        QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class );
+        Query<Cargo> cargos = uowf.currentUnitOfWork().newQuery( qb )
+            .orderBy( orderBy( templateFor( Cargo.class ).trackingId().get().id() ) );
+        List<String> cargoList = new ArrayList<>();
+        for( Cargo cargo : cargos )
         {
             cargoList.add( cargo.trackingId().get().id().get() );
         }
@@ -67,7 +67,7 @@ public class HandlingQueries extends Queries
 
     public List<String> eventTypes()
     {
-        List<String> eventTypes = new ArrayList<String>();
+        List<String> eventTypes = new ArrayList<>();
         for( HandlingEventType eventType : HandlingEventType.values() )
         {
             eventTypes.add( eventType.name() );

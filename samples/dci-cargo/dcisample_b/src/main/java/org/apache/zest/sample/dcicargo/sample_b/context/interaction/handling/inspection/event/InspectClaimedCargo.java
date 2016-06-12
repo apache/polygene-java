@@ -51,14 +51,14 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectClaimedCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent claimEvent;
-    Location claimLocation;
+    private HandlingEvent claimEvent;
+    private Location claimLocation;
 
-    RouteSpecification routeSpecification;
-    Itinerary itinerary;
-    Integer itineraryProgressIndex;
+    private RouteSpecification routeSpecification;
+    private Itinerary itinerary;
+    private Integer itineraryProgressIndex;
 
     public InspectClaimedCargo( Cargo cargo, HandlingEvent handlingEvent )
     {

@@ -31,7 +31,6 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
  * All properties are mandatory and immutable.
  */
 public interface CarrierMovement
-    extends ValueComposite
 {
     Association<Location> departureLocation();
 

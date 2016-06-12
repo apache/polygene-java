@@ -25,7 +25,6 @@ jar { manifest { name = "Apache Zest™ Library - SQL" }}
 dependencies {
   compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
   compile(project(":org.apache.zest.libraries:org.apache.zest.library.circuitbreaker"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.conversion"))
   compile(project(":org.apache.zest.libraries:org.apache.zest.library.jmx"))
   compile libraries.slf4j_api
 

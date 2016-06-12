@@ -29,9 +29,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.FoundNoRoutesException;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RoutingService;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargoEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.LocationEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
@@ -90,7 +87,7 @@ public class BookNewCargo extends Context
     public BookNewCargo( String originId, String destinationId, LocalDate deadline )
         throws Exception
     {
-        this( loadEntity( CargosEntity.class, CargosEntity.CARGOS_ID ),
+        this( loadEntity( Cargos.class, Cargos.CARGOS_ID ),
               loadEntity( Location.class, originId ),
               loadEntity( Location.class, destinationId ),
               deadline );
@@ -98,7 +95,7 @@ public class BookNewCargo extends Context
 
     public BookNewCargo( String trackingIdString )
     {
-        this( loadEntity( CargoEntity.class, trackingIdString ) );
+        this( loadEntity( Cargo.class, trackingIdString ) );
     }
 
     public BookNewCargo( String trackingIdString, Itinerary itinerary )
@@ -120,7 +117,7 @@ public class BookNewCargo extends Context
 
     public void changeDestination( String destination )
     {
-        routingFacade.changeDestination( loadEntity( LocationEntity.class, destination ) );
+        routingFacade.changeDestination( loadEntity( Location.class, destination ) );
     }
 
     public List<Itinerary> routeCandidates()

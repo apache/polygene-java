@@ -29,7 +29,6 @@ import org.apache.zest.api.value.ValueComposite;
  * List of carrier movements is mandatory and immutable.
  */
 public interface Schedule
-    extends ValueComposite
 {
     Property<List<CarrierMovement>> carrierMovements();
 }

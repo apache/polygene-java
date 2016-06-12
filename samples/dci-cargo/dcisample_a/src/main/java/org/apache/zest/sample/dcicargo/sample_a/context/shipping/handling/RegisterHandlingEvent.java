@@ -20,7 +20,6 @@
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
@@ -30,7 +29,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.ApplicationEvents;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RegisterHandlingEventAttemptDTO;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvent;
@@ -41,7 +39,7 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity.HANDLING_EVENTS_ID;
+import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvents.HANDLING_EVENTS_ID;
 
 /**
  * Register new handling event use case.
@@ -71,7 +69,7 @@ public class RegisterHandlingEvent extends Context
                                   String voyageNumberString
     )
     {
-        handlingEventFactory = rolePlayer( HandlingEventFactoryRole.class, HandlingEventsEntity.class, HANDLING_EVENTS_ID );
+        handlingEventFactory = rolePlayer( HandlingEventFactoryRole.class, HandlingEvents.class, HANDLING_EVENTS_ID );
 
         this.registrationDate = registrationDate;
         this.completionDate = completionDate;

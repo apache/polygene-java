@@ -47,15 +47,15 @@ import org.apache.zest.sample.dcicargo.sample_a.context.rolemap.RouteSpecificati
 import org.apache.zest.sample.dcicargo.sample_a.context.support.ApplicationEvents;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RegisterHandlingEventAttemptDTO;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.RoutingService;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.LocationEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.VoyageEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.ExpectedHandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Leg;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.UnLocode;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.VoyageNumber;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
@@ -164,8 +164,8 @@ public class TestAssembler
         ModuleAssembly entityModule = domainLayer.module( "DOMAIN-Entity" ).withDefaultUnitOfWorkFactory();
         entityModule
             .entities(
-                LocationEntity.class,
-                VoyageEntity.class )
+                Location.class,
+                Voyage.class )
             .visibleIn( application );
 
         // Non-role-playing values
@@ -191,14 +191,7 @@ public class TestAssembler
         serializationModule
             .services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON )
-            .setMetaInfo( new Function<Application, Module>()
-            {
-                @Override
-                public Module apply( Application application )
-                {
-                    return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
-                }
-            } )
+            .setMetaInfo( (Function<Application, Module>) application1 -> application1.findModule( "CONTEXT", "CONTEXT-ContextSupport" ) )
             .visibleIn( application );
 
         ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" )

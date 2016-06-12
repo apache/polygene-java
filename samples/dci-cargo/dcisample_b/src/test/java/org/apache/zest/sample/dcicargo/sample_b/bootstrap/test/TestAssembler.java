@@ -45,19 +45,19 @@ import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.CargoRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.CargosRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.HandlingEventsRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.service.routing.RoutingService;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.HandlingEventEntity;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.LocationEntity;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.VoyageEntity;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.RouteSpecificationFactoryService;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.RouteSpecification;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Leg;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.UnLocode;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.tracking.TrackingId;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
@@ -140,9 +140,9 @@ public class TestAssembler
         // Non-role-playing entities
         roleMapModule
             .entities(
-                HandlingEventEntity.class,
-                LocationEntity.class,
-                VoyageEntity.class )
+                HandlingEvent.class,
+                Location.class,
+                Voyage.class )
             .visibleIn( application );
 
         ModuleAssembly interactionModule = contextLayer.module( "CONTEXT-Interaction" ).withDefaultUnitOfWorkFactory();

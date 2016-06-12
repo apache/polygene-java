@@ -20,7 +20,6 @@
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.handling;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -106,8 +105,8 @@ public class RegisterHandlingEventPage extends BasePage
                         {
                             map.put( "voyage", voyageNumber );
                         }
-                        String msg = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) )
-                            .getObject();
+                        String msg = new StringResourceModel(
+                            "handlingEvent.${type}", this, new Model<>( map ) ).getObject();
 
                         feedback.info( "Registered handling event for cargo '" + trackingId + "': " + msg );
                         target.add( feedback );

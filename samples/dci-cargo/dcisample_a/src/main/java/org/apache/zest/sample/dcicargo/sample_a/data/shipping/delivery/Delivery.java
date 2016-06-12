@@ -77,7 +77,6 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  * The life cycle of a cargo ends when the cargo is claimed by the customer.
  */
 public interface Delivery
-    extends ValueComposite
 {
     Property<Instant> timestamp();
 

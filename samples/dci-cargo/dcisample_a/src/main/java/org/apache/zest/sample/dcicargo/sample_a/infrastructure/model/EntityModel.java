@@ -20,43 +20,45 @@
 package org.apache.zest.sample.dcicargo.sample_a.infrastructure.model;
 
 import org.apache.wicket.model.IModel;
-import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.sample.dcicargo.sample_a.infrastructure.conversion.DTO;
 
 /**
  * Javadoc
  */
-public class EntityModel<T extends DTO, U extends EntityComposite>
+public class EntityModel<T extends Identity>
     extends ReadOnlyModel<T>
 {
-    private Class<U> entityClass;
+    private Class<T> entityClass;
     private String identity;
     private Class<T> dtoClass;
 
     private transient T dtoComposite;
 
-    public EntityModel( Class<U> entityClass, String identity, Class<T> dtoClass )
+    @Structure
+    private UnitOfWorkFactory uowf;
+
+    public EntityModel( Class<T> entityClass, String identity, Class<T> dtoClass )
     {
         this.entityClass = entityClass;
         this.identity = identity;
         this.dtoClass = dtoClass;
     }
 
-    public static <T extends DTO, U extends EntityComposite> IModel<T> of(
-        Class<U> entityClass, String identity, Class<T> dtoClass
-    )
+    public static <T extends Identity> IModel<T> of( Class<T> entityClass, String identity, Class<T> dtoClass )
     {
-        return new EntityModel<T, U>( entityClass, identity, dtoClass );
+        return new EntityModel<>( entityClass, identity, dtoClass );
     }
 
     public T getObject()
     {
         if( dtoComposite == null && identity != null )
         {
-            dtoComposite = valueConverter.convert( dtoClass, loadEntity() );
+            dtoComposite = uowf.currentUnitOfWork().toValue( dtoClass, loadEntity() );
         }
         return dtoComposite;
     }
@@ -66,9 +68,9 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
         dtoComposite = null;
     }
 
-    private U loadEntity()
+    private T loadEntity()
     {
-        U entity = module.unitOfWorkFactory().currentUnitOfWork().get( entityClass, identity );
+        T entity = module.unitOfWorkFactory().currentUnitOfWork().get( entityClass, identity );
         if( entity == null )
         {
             Usecase usecase = module.unitOfWorkFactory().currentUnitOfWork().usecase();

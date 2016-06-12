@@ -28,9 +28,9 @@ import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.CommonQueries;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.routing.RegisterNewDestination;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.form.AbstractForm;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.form.SelectorInForm;
 
@@ -54,7 +54,7 @@ public class ChangeDestinationPage extends BookingBasePage
         public CargoEditForm( final String trackingId )
         {
             CommonQueries fetch = new CommonQueries();
-            CargoDTO cargo = fetch.cargo( trackingId ).getObject();
+            Cargo cargo = fetch.cargo( trackingId ).getObject();
             List<String> locations = fetch.unLocodes();
 
             origin = cargo.routeSpecification().get().origin().get().getCode();

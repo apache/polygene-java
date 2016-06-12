@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion;
 
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.value.ValueComposite;
 
@@ -32,6 +33,6 @@ import org.apache.zest.api.value.ValueComposite;
  * assigned in the EntityToDTOService.
  */
 @Immutable
-public interface DTO extends ValueComposite
+public interface DTO extends ValueComposite, Identity
 {
 }

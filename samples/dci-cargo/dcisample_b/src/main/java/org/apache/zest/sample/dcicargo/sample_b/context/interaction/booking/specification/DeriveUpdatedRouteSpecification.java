@@ -51,12 +51,12 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.T
  */
 public class DeriveUpdatedRouteSpecification extends Context
 {
-    CargoInspectorRole cargoInspector;
+    private CargoInspectorRole cargoInspector;
 
-    RouteSpecification routeSpecification;
-    TransportStatus transportStatus;
-    HandlingEvent lastHandlingEvent;
-    Location newDestination;
+    private RouteSpecification routeSpecification;
+    private TransportStatus transportStatus;
+    private HandlingEvent lastHandlingEvent;
+    private Location newDestination;
 
     public DeriveUpdatedRouteSpecification( Cargo cargo )
     {

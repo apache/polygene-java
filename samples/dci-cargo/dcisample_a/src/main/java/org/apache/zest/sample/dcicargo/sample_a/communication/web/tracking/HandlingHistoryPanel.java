@@ -32,8 +32,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.TrackingQueries;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.HandlingEventDTO;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.color.ErrorColor;
 
 /**
@@ -44,18 +44,18 @@ import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.color.Erro
 @StatelessComponent
 public class HandlingHistoryPanel extends Panel
 {
-    public HandlingHistoryPanel( String id, final IModel<CargoDTO> cargoModel, String trackingId )
+    public HandlingHistoryPanel( String id, final IModel<Cargo> cargoModel, String trackingId )
     {
         super( id );
 
-        IModel<List<HandlingEventDTO>> handlingEventsModel = new TrackingQueries().events( trackingId );
+        IModel<List<HandlingEvent>> handlingEventsModel = new TrackingQueries().events( trackingId );
 
-        add( new ListView<HandlingEventDTO>( "handlingEvents", handlingEventsModel )
+        add( new ListView<HandlingEvent>( "handlingEvents", handlingEventsModel )
         {
             @Override
-            protected void populateItem( ListItem<HandlingEventDTO> item )
+            protected void populateItem( ListItem<HandlingEvent> item )
             {
-                HandlingEventDTO event = item.getModelObject();
+                HandlingEvent event = item.getModelObject();
                 Boolean isLast = item.getIndex() == getList().size() - 1;
                 Boolean isMisdirected = cargoModel.getObject().delivery().get().isMisdirected().get();
 
@@ -74,7 +74,7 @@ public class HandlingHistoryPanel extends Panel
                 {
                     map.put( "voyage", event.voyage().get().voyageNumber().get().number().get() );
                 }
-                IModel text = new StringResourceModel( "handlingEvent.${type}", this, new Model<ValueMap>( map ) );
+                IModel text = new StringResourceModel( "handlingEvent.${type}", this, new Model<>( map ) );
                 item.add( new Label( "event", text )
                               .add( new ErrorColor( isLast && isMisdirected ) )
                               .setEscapeModelStrings( false ) );

@@ -32,9 +32,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.tracking.HandlingHistoryPanel;
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.tracking.NextHandlingEventPanel;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.RoutingStatus;
@@ -62,8 +62,8 @@ public class CargoDetailsPage extends BookingBasePage
     {
         super( new PageParameters().set( 0, trackingId ) );
 
-        IModel<CargoDTO> cargoModel = new CommonQueries().cargo( trackingId );
-        CargoDTO cargo = cargoModel.getObject();
+        IModel<Cargo> cargoModel = new CommonQueries().cargo( trackingId );
+        Cargo cargo = cargoModel.getObject();
         Delivery delivery = cargo.delivery().get();
         RouteSpecification routeSpecification = cargo.routeSpecification().get();
         final RoutingStatus routingStatus = delivery.routingStatus().get();
@@ -123,7 +123,7 @@ public class CargoDetailsPage extends BookingBasePage
 
     private class ItineraryFragment extends Fragment
     {
-        public ItineraryFragment( final IModel<CargoDTO> cargoModel, final RoutingStatus routingStatus )
+        public ItineraryFragment( final IModel<Cargo> cargoModel, final RoutingStatus routingStatus )
         {
             super( "itinerary", "itineraryFragment", CargoDetailsPage.this );
 

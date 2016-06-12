@@ -28,8 +28,8 @@ import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.zest.sample.dcicargo.sample_a.communication.query.CommonQueries;
-import org.apache.zest.sample.dcicargo.sample_a.communication.query.dto.CargoDTO;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.form.AbstractForm;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.form.SelectorInForm;
 
@@ -53,7 +53,7 @@ public class ChangeDestinationPage extends BookingBasePage
         public CargoEditForm( final String trackingId )
         {
             CommonQueries fetch = new CommonQueries();
-            CargoDTO cargo = fetch.cargo( trackingId ).getObject();
+            Cargo cargo = fetch.cargo( trackingId ).getObject();
             List<String> locations = fetch.unLocodes();
 
             origin = cargo.origin().get().getCode();

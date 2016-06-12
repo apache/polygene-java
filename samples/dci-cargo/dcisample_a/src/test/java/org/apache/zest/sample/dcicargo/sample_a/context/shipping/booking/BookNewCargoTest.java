@@ -26,7 +26,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.FoundNoRoutesException;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -73,7 +72,7 @@ public class BookNewCargoTest
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, HONGKONG, day( 17 ) ).book();
     }
 
@@ -84,7 +83,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( -1 ) ).book();
     }
 
@@ -95,7 +94,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 0 ) ).book();
     }
 
@@ -106,7 +105,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 1 ) ).book();
     }
 
@@ -117,7 +116,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         // Create cargo with valid input from customer
         TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).book();
 
@@ -164,7 +163,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 1 ) ).book();
         Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
@@ -179,7 +178,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
 
         // Create valid cargo
         TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 30 ) ).book();
@@ -211,7 +210,7 @@ public class BookNewCargoTest
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
 
         // Create valid cargo
         LocalDate deadline = day( 30 );

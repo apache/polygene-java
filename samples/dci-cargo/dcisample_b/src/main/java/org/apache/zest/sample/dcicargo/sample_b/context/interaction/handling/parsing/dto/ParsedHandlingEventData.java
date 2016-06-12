@@ -32,7 +32,7 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.DTO;
  */
 @Immutable
 @Mixins( ParsedHandlingEventData.Mixin.class )
-public interface ParsedHandlingEventData extends DTO
+public interface ParsedHandlingEventData
 {
     Property<LocalDate> registrationDate();
 

@@ -41,10 +41,6 @@ import org.apache.zest.sample.dcicargo.sample_b.bootstrap.DCISampleApplication_b
 import org.apache.zest.sample.dcicargo.sample_b.bootstrap.sampledata.BaseDataService;
 import org.apache.zest.sample.dcicargo.sample_b.bootstrap.sampledata.SampleDataService;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.BookingQueries;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.HandlingEventDTO;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.LocationDTO;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.VoyageDTO;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.ProcessHandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.ParseHandlingEventData;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
@@ -52,21 +48,21 @@ import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.CargoRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.CargosRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.rolemap.HandlingEventsRoleMap;
 import org.apache.zest.sample.dcicargo.sample_b.context.service.routing.RoutingService;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.HandlingEventEntity;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.LocationEntity;
-import org.apache.zest.sample.dcicargo.sample_b.data.entity.VoyageEntity;
 import org.apache.zest.sample.dcicargo.sample_b.data.factory.RouteSpecificationFactoryService;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.RouteSpecification;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Leg;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.UnLocode;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.tracking.TrackingId;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
-import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -171,20 +167,14 @@ public class Assembler
         ModuleAssembly queryModule = communicationLayer.module( "COMMUNICATION-Query" );
         queryModule
             .values(
-                CargoDTO.class,
-                LocationDTO.class,
-                HandlingEventDTO.class,
-                VoyageDTO.class );
+                Cargo.class,
+                Location.class,
+                HandlingEvent.class,
+                Voyage.class );
 
         queryModule
             .transients(
                 BookingQueries.class )
-            .visibleIn( application );
-
-        queryModule
-            .addServices(
-                EntityToDTOService.class,
-                OrgJsonValueSerializationService.class )
             .visibleIn( application );
     }
 
@@ -202,9 +192,9 @@ public class Assembler
         ModuleAssembly roleMapCandidatesModule = contextLayer.module( "CONTEXT-RoleMapCandidates" );
         roleMapCandidatesModule
             .entities(
-                HandlingEventEntity.class,
-                LocationEntity.class,
-                VoyageEntity.class )
+                HandlingEvent.class,
+                Location.class,
+                Voyage.class )
             .visibleIn( application );
 
         roleMapCandidatesModule

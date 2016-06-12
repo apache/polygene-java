@@ -22,6 +22,7 @@ package org.apache.zest.sample.dcicargo.sample_b.data.structure.handling;
 import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
@@ -54,13 +55,13 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
  */
 @Immutable
 @Mixins( HandlingEvent.Mixin.class )
-public interface HandlingEvent
+public interface HandlingEvent extends Identity
 {
-    Property<LocalDate> registrationDate();
+    Property<TrackingId> trackingId();
 
     Property<LocalDate> completionDate();
 
-    Property<TrackingId> trackingId();
+    Property<LocalDate> registrationDate();
 
     Property<HandlingEventType> handlingEventType();
 

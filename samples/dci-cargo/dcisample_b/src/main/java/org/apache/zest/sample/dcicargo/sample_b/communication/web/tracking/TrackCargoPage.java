@@ -38,8 +38,8 @@ import org.apache.wicket.util.value.ValueMap;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.CommonQueries;
 import org.apache.zest.sample.dcicargo.sample_b.communication.query.TrackingQueries;
-import org.apache.zest.sample.dcicargo.sample_b.communication.query.dto.CargoDTO;
 import org.apache.zest.sample.dcicargo.sample_b.communication.web.BasePage;
+import org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.form.AbstractForm;
@@ -114,7 +114,7 @@ public class TrackCargoPage extends BasePage
         {
             try
             {
-                IModel<CargoDTO> cargoModel = new CommonQueries().cargo( trackingId );
+                IModel<Cargo> cargoModel = new CommonQueries().cargo( trackingId );
                 statusFragment = (Fragment) statusFragment.replaceWith( new StatusFragment( cargoModel, false ) );
                 target.add( feedback, trackingIdInput, selectedTrackingIdSelector, statusFragment.setVisible( true ) );
             }
@@ -135,12 +135,12 @@ public class TrackCargoPage extends BasePage
 
         private class StatusFragment extends Fragment
         {
-            public StatusFragment( IModel<CargoDTO> cargoModel, Boolean visible )
+            public StatusFragment( IModel<Cargo> cargoModel, Boolean visible )
             {
                 super( "status", "statusFragment", TrackingForm.this );
                 setVisible( visible );
 
-                CargoDTO cargo = cargoModel.getObject();
+                Cargo cargo = cargoModel.getObject();
 
                 // Status ----------------------------------------------------------------------
                 ValueMap map = new ValueMap();

@@ -34,7 +34,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinera
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
 
@@ -47,12 +49,13 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectUnhandledCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent noEvent;
+    private HandlingEvent noEvent;
 
-    RouteSpecification routeSpecification;
-    Itinerary itinerary;
+    private RouteSpecification routeSpecification;
+
+    private Itinerary itinerary;
 
     public InspectUnhandledCargo( Cargo cargo )
     {

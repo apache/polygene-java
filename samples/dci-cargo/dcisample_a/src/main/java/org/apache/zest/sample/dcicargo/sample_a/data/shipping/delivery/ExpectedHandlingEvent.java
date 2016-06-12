@@ -33,7 +33,6 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  * is expected to be handled next.
  */
 public interface ExpectedHandlingEvent
-    extends ValueComposite
 {
     Property<HandlingEventType> handlingEventType();
 

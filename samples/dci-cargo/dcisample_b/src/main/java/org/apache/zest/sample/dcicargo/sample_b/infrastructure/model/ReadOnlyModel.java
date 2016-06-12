@@ -25,7 +25,6 @@ import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
 
 /**
  * ReadOnlyModel
@@ -37,7 +36,6 @@ public abstract class ReadOnlyModel<T>
 {
     private static final long serialVersionUID = 1L;
 
-    static protected EntityToDTOService valueConverter;
     static protected ZestAPI api;
     static protected ServiceFinder serviceFinder;
     static protected UnitOfWorkFactory uowf;
@@ -67,14 +65,12 @@ public abstract class ReadOnlyModel<T>
     }
 
     public static void prepareModelBaseClass( Module m,
-                                              ZestAPI api,
-                                              EntityToDTOService entityToDTO
+                                              ZestAPI api
     )
     {
         uowf = m.unitOfWorkFactory();
         serviceFinder = m;
         vbf = m;
         ReadOnlyModel.api = api;
-        valueConverter = entityToDTO;
     }
 }

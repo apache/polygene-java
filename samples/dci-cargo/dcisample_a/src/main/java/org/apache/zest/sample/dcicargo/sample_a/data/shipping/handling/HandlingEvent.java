@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -46,7 +47,7 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  * {@link HandlingEventType#CLAIM} or {@link HandlingEventType#CUSTOMS}.
  * (Handling event type is mandatory).
  */
-public interface HandlingEvent
+public interface HandlingEvent extends Identity
 {
     @Immutable
     Property<LocalDate> registrationDate();

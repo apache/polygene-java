@@ -20,14 +20,13 @@
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling;
 
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvents;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking.BuildDeliverySnapshot;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -66,7 +65,7 @@ public class InspectCargoTest
     {
         uowf = module.unitOfWorkFactory();
         UnitOfWork uow = uowf.currentUnitOfWork();
-        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        Cargos CARGOS = uow.get( Cargos.class, Cargos.CARGOS_ID );
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         SHANGHAI = uow.get( Location.class, CNSHA.code().get() );
         STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
@@ -95,7 +94,7 @@ public class InspectCargoTest
     {
         // Create misdirected handling event for cargo (receipt in Shanghai is unexpected)
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 0 ), day( 0 ), trackingId, HandlingEventType.RECEIVE, SHANGHAI, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
         cargo.delivery().set( delivery );
@@ -112,7 +111,7 @@ public class InspectCargoTest
         throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 15 ), day( 15 ), trackingId, HandlingEventType.UNLOAD, STOCKHOLM, V300A );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
         cargo.delivery().set( delivery );
@@ -130,7 +129,7 @@ public class InspectCargoTest
     {
         logger.info( "  Handling cargo 'ABC' (unloaded in Dallas):" );
         UnitOfWork uow = uowf.currentUnitOfWork();
-        HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
+        HandlingEvents HANDLING_EVENTS = uow.get( HandlingEvents.class, HandlingEvents.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 12 ), day( 12 ), trackingId, HandlingEventType.UNLOAD, DALLAS, V200T );
         cargo.delivery().set( new BuildDeliverySnapshot( cargo, handlingEvent ).get() );
         assertThat( cargo.delivery().get().isMisdirected().get(), is( equalTo( false ) ) );

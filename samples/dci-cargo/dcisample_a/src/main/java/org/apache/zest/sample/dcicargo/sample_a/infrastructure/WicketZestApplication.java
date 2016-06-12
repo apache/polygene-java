@@ -39,7 +39,6 @@ import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.Queries;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.model.ReadOnlyModel;
@@ -72,9 +71,6 @@ public class WicketZestApplication
 
     @Structure
     protected ZestAPI api;
-
-    @Service
-    protected EntityToDTOService valueConverter;
 
     /**
      * Zest Assembler
@@ -133,7 +129,7 @@ public class WicketZestApplication
 
         Context.prepareContextBaseClass( uowf );
         BaseWebPage.prepareBaseWebPageClass( tbf );
-        ReadOnlyModel.prepareModelBaseClass( zestModule, api, valueConverter );
+        ReadOnlyModel.prepareModelBaseClass( zestModule, api );
         Queries.prepareQueriesBaseClass( uowf, qbf );
 
         wicketInit();

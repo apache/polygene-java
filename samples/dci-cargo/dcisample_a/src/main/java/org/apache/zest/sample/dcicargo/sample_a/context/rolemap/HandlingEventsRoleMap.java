@@ -19,14 +19,14 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.rolemap;
 
+import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling.RegisterHandlingEvent;
-import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
+import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEvents;
 
 /**
  * Handling Events Role Map
  */
-public interface HandlingEventsRoleMap
-    extends HandlingEventsEntity,
-            RegisterHandlingEvent.HandlingEventFactoryRole
+public interface HandlingEventsRoleMap extends RegisterHandlingEvent.HandlingEventFactoryRole,
+                                               EntityComposite, HandlingEvents
 {
 }
