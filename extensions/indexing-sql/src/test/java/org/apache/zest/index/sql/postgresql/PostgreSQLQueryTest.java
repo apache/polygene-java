@@ -158,9 +158,9 @@ public class PostgreSQLQueryTest
     @Test
     @Ignore( "NeSpecification is not supported by SQL Indexing" )
     @Override
-    public void script41_Date()
+    public void script41_Instant()
     {
-        super.script41_Date();
+        super.script41_Instant();
     }
 
     @Test
@@ -190,9 +190,9 @@ public class PostgreSQLQueryTest
     @Test
     @Ignore( "NeSpecification is not supported by SQL Indexing" )
     @Override
-    public void script42_Date()
+    public void script42_Instant()
     {
-        super.script42_Date();
+        super.script42_Instant();
     }
 
     @Test
