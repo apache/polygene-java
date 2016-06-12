@@ -144,7 +144,7 @@ public class FragmentClassLoader
                     }
                 }
             }
-//  To Allow JDK classes to be composed.
+            //  To Allow JDK classes to be composed.
             if( name.startsWith( "java." ) )
             {
                 name = "zest." + name;
@@ -183,8 +183,8 @@ public class FragmentClassLoader
             {
                 if( isOverridden( method, baseClass ) )
                 {
-                    cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
-                                   null ).visitEnd();
+                    cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null, null )
+                        .visitEnd();
                     hasProxyMethods = true;
                 }
             }
@@ -196,9 +196,9 @@ public class FragmentClassLoader
             if( Modifier.isPublic( constructor.getModifiers() ) || Modifier.isProtected( constructor.getModifiers() ) )
             {
                 String desc = org.objectweb.asm.commons.Method.getMethod( constructor ).getDescriptor();
-                MethodVisitor cmv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
-                cmv.visitCode();
-                cmv.visitVarInsn( ALOAD, 0 );
+                MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
 
                 int idx = 1;
                 for( Class aClass : constructor.getParameterTypes() )
@@ -224,13 +224,13 @@ public class FragmentClassLoader
                     {
                         opcode = ALOAD;
                     }
-                    cmv.visitVarInsn( opcode, idx++ );
+                    mv.visitVarInsn( opcode, idx++ );
                 }
 
-                cmv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, "<init>", desc, false );
-                cmv.visitInsn( RETURN );
-                cmv.visitMaxs( idx, idx );
-                cmv.visitEnd();
+                mv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, "<init>", desc, false );
+                mv.visitInsn( RETURN );
+                mv.visitMaxs( idx, idx );
+                mv.visitEnd();
             }
         }
 
@@ -374,8 +374,7 @@ public class FragmentClassLoader
                     if( !Modifier.isAbstract( method.getModifiers() ) )
                     {
                         // Add method with _ as prefix
-                        MethodVisitor mv;
-                        mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
+                        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "_" + method.getName(), desc, null, exceptions );
                         mv.visitCode();
                         mv.visitVarInsn( ALOAD, 0 );
 
@@ -407,8 +406,7 @@ public class FragmentClassLoader
 
             // Class initializer
             {
-                MethodVisitor mv;
-                mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
+                MethodVisitor mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
                 mv.visitCode();
                 Label l0 = new Label();
                 Label l1 = new Label();

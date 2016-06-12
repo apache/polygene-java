@@ -63,7 +63,9 @@ public class ReindexerTest
         new RdfNativeSesameStoreAssembler().assemble( module );
 
         // Reindexer
+        // START SNIPPET: assembly
         module.services( ReindexerService.class );
+        // END SNIPPET: assembly
 
         // Configuration
         ModuleAssembly config = module.layer().module( "config" );
@@ -110,7 +112,10 @@ public class ReindexerTest
 
         // ----> Reindex and assert data
 
-        serviceFinder.findService( ReindexerService.class ).get().reindex(); // Reindex
+        // START SNIPPET: usage
+        Reindexer reindexer = serviceFinder.findService( Reindexer.class ).get();
+        reindexer.reindex();
+        // END SNIPPET: usage
 
         uow = unitOfWorkFactory.newUnitOfWork();
 
