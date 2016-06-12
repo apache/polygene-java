@@ -22,7 +22,6 @@ package org.apache.zest.index.solr.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -149,7 +148,7 @@ public abstract class SolrEntityIndexerMixin
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
         input.addField( "type", entityState.entityDescriptor().types().findFirst().get().getName() );
-        input.addField( "lastModified", new Date( entityState.lastModified() ) );
+        input.addField( "lastModified", entityState.lastModified() );
 
         for( Statement statement : graph )
         {

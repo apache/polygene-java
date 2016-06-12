@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
@@ -78,7 +79,7 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 public interface Delivery
     extends ValueComposite
 {
-    Property<Date> timestamp();
+    Property<Instant> timestamp();
 
     /*
    * NOT_ROUTED
@@ -122,7 +123,7 @@ public interface Delivery
     Association<Voyage> currentVoyage();
 
     @Optional
-    Property<Date> eta();
+    Property<LocalDate> eta();
 
     @UseDefaults
     Property<Boolean> isUnloadedAtDestination();

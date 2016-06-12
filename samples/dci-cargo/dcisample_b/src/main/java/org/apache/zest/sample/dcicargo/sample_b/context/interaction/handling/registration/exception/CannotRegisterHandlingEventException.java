@@ -19,8 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.registration.exception;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 
@@ -43,7 +44,7 @@ public class CannotRegisterHandlingEventException extends Exception
         super();
         this.parsedHandlingEventData = parsedHandlingEventData;
 
-        time = parseDate( parsedHandlingEventData.completionTime().get() );
+        time = parseDate( parsedHandlingEventData.completionDate().get() );
         id = parse( parsedHandlingEventData.trackingIdString().get() );
         type = parse( parsedHandlingEventData.handlingEventType().get().name() );
         unloc = parse( parsedHandlingEventData.unLocodeString().get() );
@@ -60,8 +61,8 @@ public class CannotRegisterHandlingEventException extends Exception
         return str == null ? "null" : str;
     }
 
-    private String parseDate( Date date )
+    private String parseDate( LocalDate date )
     {
-        return date == null ? "null" : new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ).format( date );
+        return date == null ? "null" : date.toString();
     }
 }

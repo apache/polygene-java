@@ -20,7 +20,10 @@
 package org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.form;
 
 import com.google.code.joliratools.StatelessAjaxEventBehavior;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -35,9 +38,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+
+import static java.util.Date.from;
 
 /**
  * DateTextFieldWithPicker
@@ -50,18 +52,18 @@ public class DateTextFieldWithPicker extends DateTextField
     DatePicker datePicker;
 
     // Configurable widget options
-    LocalDate earliestDate;
-    LocalDate selectedDate;
+    private LocalDate earliestDate;
+    private LocalDate selectedDate;
 
-    final static String YUI_DATE_FORMAT = "MM/dd/yyyy";
+    private final static DateTimeFormatter YUI_DATE_FORMAT = DateTimeFormatter.ofPattern( "MM/dd/yyyy" );
 
     public DateTextFieldWithPicker( String id, String label, Component model )
     {
 //      this( id, new PropertyModel<Date>( model, id ), new StyleDateConverter( "S-", true ) );
-        this( id, label, new PropertyModel<Date>( model, id ), new PatternDateConverter( "yyyy-MM-dd", true ) );
+        this( id, label, new PropertyModel<>( model, id ), new PatternDateConverter( "yyyy-MM-dd", true ) );
     }
 
-    public DateTextFieldWithPicker( String id, String label, IModel<Date> model, DateConverter converter )
+    public DateTextFieldWithPicker( String id, String label, IModel<java.util.Date> model, DateConverter converter )
     {
         super( id, model, converter );
 
@@ -189,8 +191,7 @@ public class DateTextFieldWithPicker extends DateTextField
 
         // Input field validation - date should be _after_ minimumDate (not the same)
         LocalDate minimumDate = newEarliestDate.minusDays( 1 );
-        Date convertedMinimumDate = new DateTime( minimumDate.toDateTime( new LocalTime() ) ).toDate();
-        add( DateValidator.minimum( convertedMinimumDate ) );
+        add( DateValidator.minimum( from( minimumDate.atTime( LocalTime.now() ).toInstant( ZoneOffset.UTC ) ) ) );
 
         return this;
     }
@@ -213,17 +214,17 @@ public class DateTextFieldWithPicker extends DateTextField
     {
         if( selectedDate != null )
         {
-            return selectedDate.toString( YUI_DATE_FORMAT );
+            return YUI_DATE_FORMAT.format( selectedDate );
         }
 
         // Select today or earliest date (if later) as default
         return earliestDate == null ?
-               new LocalDate().toString( YUI_DATE_FORMAT ) :
-               earliestDate.toString( YUI_DATE_FORMAT );
+               YUI_DATE_FORMAT.format( LocalDate.now() ) :
+               YUI_DATE_FORMAT.format( earliestDate );
     }
 
     private String getEarliestDateStr()
     {
-        return earliestDate == null ? "" : earliestDate.toString( YUI_DATE_FORMAT );
+        return earliestDate == null ? "" : YUI_DATE_FORMAT.format( earliestDate );
     }
 }

@@ -19,11 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
@@ -51,9 +49,9 @@ public interface Itinerary
 
     Leg lastLeg();
 
-    Date eta();
+    LocalDate eta();
 
-    int days();
+    long days();
 
     String print();
 
@@ -80,16 +78,16 @@ public interface Itinerary
             return legs().get().get( legs().get().size() - 1 );
         }
 
-        public Date eta()
+        public LocalDate eta()
         {
-            return lastLeg().unloadTime().get();
+            return lastLeg().unloadDate().get();
         }
 
-        public int days()
+        public long days()
         {
-            Date dep = firstLeg().loadTime().get();
-            Date arr = lastLeg().unloadTime().get();
-            return Days.daysBetween( new LocalDate( dep ), new LocalDate( arr ) ).getDays();
+            LocalDate dep = firstLeg().loadDate().get();
+            LocalDate arr = lastLeg().unloadDate().get();
+            return Duration.between( dep, arr ).toDays();
         }
 
         public String print()
@@ -106,11 +104,11 @@ public interface Itinerary
         {
             sb.append( "\n  Leg " ).append( i );
             sb.append( "  Load " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( leg.loadTime().get() ) );
+            sb.append( leg.loadDate().get() );
             sb.append( " " ).append( leg.loadLocation().get() );
             sb.append( "   " ).append( leg.voyage().get() );
             sb.append( "   Unload " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( leg.unloadTime().get() ) );
+            sb.append( leg.unloadDate().get() );
             sb.append( " " ).append( leg.unloadLocation().get() );
         }
     }

@@ -19,6 +19,7 @@
  */
 package org.apache.zest.spi.entity;
 
+import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;

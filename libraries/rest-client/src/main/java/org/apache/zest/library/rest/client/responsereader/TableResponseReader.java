@@ -20,17 +20,17 @@
 
 package org.apache.zest.library.rest.client.responsereader;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.library.rest.client.spi.ResponseReader;
 import org.apache.zest.library.rest.common.table.Table;
 import org.apache.zest.library.rest.common.table.TableBuilder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -78,20 +78,20 @@ public class TableResponseReader
                   String formatted = cell.optString("f");
 
                   if (cols.getJSONObject( j ).getString( "type" ).equals("datetime") && value != null)
-                     value = Dates.fromString( value.toString() );
+                     value = ZonedDateTime.parse( value.toString() );
                   else if (cols.getJSONObject( j ).getString( "type" ).equals("date") && value != null)
                      try
                      {
-                        value = new SimpleDateFormat( "yyyy-MM-dd").parse( value.toString() );
-                     } catch (ParseException e)
+                        value = DateTimeFormatter.ofPattern( "yyyy-MM-dd").parse( value.toString() );
+                     } catch (DateTimeParseException e)
                      {
                         throw new ResourceException(e);
                      }
                   else if (cols.getJSONObject( j ).getString( "type" ).equals("timeofday") && value != null)
                      try
                      {
-                        value = new SimpleDateFormat( "HH:mm:ss").parse( value.toString() );
-                     } catch (ParseException e)
+                        value = DateTimeFormatter.ofPattern(  "HH:mm:ss").parse( value.toString() );
+                     } catch (DateTimeParseException e)
                      {
                         throw new ResourceException(e);
                      }

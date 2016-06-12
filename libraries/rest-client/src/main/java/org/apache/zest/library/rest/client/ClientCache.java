@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.rest.client;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,123 +30,120 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Tag;
 
+import static java.util.Date.from;
+
 /**
  * Cache for the ContextResourceClient. This is primarily used to keep track of ETags and lastmodified timestamps for now.
  */
 public class ClientCache
 {
-   Map<String, CacheInfo> identityToTimestamp = new HashMap<String, CacheInfo>( );
-   Map<String, String> pathToIdentity = new HashMap<String, String>( );
+    private Map<String, CacheInfo> identityToTimestamp = new HashMap<>();
+    private Map<String, String> pathToIdentity = new HashMap<>();
 
-   public void updateCache( Response response)
-   {
-      if (response.getRequest().getMethod().equals( Method.DELETE ))
-      {
-         String path = getIdentityPath( response.getRequest().getResourceRef() );
-         String id = pathToIdentity.get( path );
-         if (id != null)
-         {
-            // Clear anything related to this id from cache
-            identityToTimestamp.remove( id );
-            Iterator<Map.Entry<String, String>> paths = pathToIdentity.entrySet().iterator();
-            while (paths.hasNext())
+    public void updateCache( Response response )
+    {
+        if( response.getRequest().getMethod().equals( Method.DELETE ) )
+        {
+            String path = getIdentityPath( response.getRequest().getResourceRef() );
+            String id = pathToIdentity.get( path );
+            if( id != null )
             {
-               Map.Entry<String, String> entry = paths.next();
-               if (entry.getValue().equals( id ))
-                  paths.remove();
+                // Clear anything related to this id from cache
+                identityToTimestamp.remove( id );
+                Iterator<Map.Entry<String, String>> paths = pathToIdentity.entrySet().iterator();
+                while( paths.hasNext() )
+                {
+                    Map.Entry<String, String> entry = paths.next();
+                    if( entry.getValue().equals( id ) )
+                    {
+                        paths.remove();
+                    }
+                }
             }
-         }
-      } else if (response.getRequest().getMethod().equals( Method.PUT ) || response.getRequest().getMethod().equals( Method.POST ))
-      {
-         Tag tag = response.getEntity().getTag();
-         if (tag != null)
-         {
-            Reference ref = response.getRequest().getResourceRef().clone();
+        }
+        else if( response.getRequest().getMethod().equals( Method.PUT ) || response.getRequest()
+            .getMethod()
+            .equals( Method.POST ) )
+        {
+            Tag tag = response.getEntity().getTag();
+            if( tag != null )
+            {
+                Reference ref = response.getRequest().getResourceRef().clone();
 
-            CacheInfo value = new CacheInfo( response.getEntity().getModificationDate(), tag, ref );
-            identityToTimestamp.put( value.getEntity(), value );
+                CacheInfo value = new CacheInfo( response.getEntity().getModificationDate().toInstant(), tag);
+                identityToTimestamp.put( value.getEntity(), value );
 
-            String path = getIdentityPath( ref );
+                String path = getIdentityPath( ref );
 
-            pathToIdentity.put( path, value.getEntity() );
+                pathToIdentity.put( path, value.getEntity() );
 
 //            LoggerFactory.getLogger( ClientCache.class ).info( "Update:"+value.getEntity()+" ("+ref.toString()+") -> "+value.getLastModified() );
-         }
-      } else
-      {
-          // TODO GET caching goes here
-      }
-   }
+            }
+        }
+        else
+        {
+            // TODO GET caching goes here
+            System.out.println("Caching of GET is not implemented...");
+        }
+    }
 
-   public void updateQueryConditions( Request request)
-   {
-      String identity = pathToIdentity.get( getIdentityPath( request.getResourceRef() ));
-      if (identity != null)
-      {
-         CacheInfo cacheInfo = identityToTimestamp.get( identity );
-         if (cacheInfo != null)
-         {
+    public void updateQueryConditions( Request request )
+    {
+        String identity = pathToIdentity.get( getIdentityPath( request.getResourceRef() ) );
+        if( identity != null )
+        {
+            CacheInfo cacheInfo = identityToTimestamp.get( identity );
+            if( cacheInfo != null )
+            {
 //            LoggerFactory.getLogger( ClientCache.class ).info( "Send:  "+cacheInfo.getEntity()+" ("+request.getMethod().getName()+":"+request.getResourceRef()+") -> "+cacheInfo.getLastModified() );
-            request.getConditions().setModifiedSince( cacheInfo.getLastModified() );
-         }
-      }
-   }
+                request.getConditions().setModifiedSince( from( cacheInfo.getLastModified() ) );
+            }
+        }
+    }
 
-   public void updateCommandConditions( Request request)
-   {
-      String identity = pathToIdentity.get( getIdentityPath( request.getResourceRef() ));
-      if (identity != null)
-      {
-         CacheInfo cacheInfo = identityToTimestamp.get( identity );
-         if (cacheInfo != null)
-         {
+    public void updateCommandConditions( Request request )
+    {
+        String identity = pathToIdentity.get( getIdentityPath( request.getResourceRef() ) );
+        if( identity != null )
+        {
+            CacheInfo cacheInfo = identityToTimestamp.get( identity );
+            if( cacheInfo != null )
+            {
 //            LoggerFactory.getLogger( ClientCache.class ).info( "Send:  "+cacheInfo.getEntity()+" ("+request.getMethod().getName()+":"+request.getResourceRef()+") -> "+cacheInfo.getLastModified() );
-            request.getConditions().setUnmodifiedSince( cacheInfo.getLastModified() );
-         }
-      }
-   }
+                request.getConditions().setUnmodifiedSince( from( cacheInfo.getLastModified() ) );
+            }
+        }
+    }
 
-   private String getIdentityPath( Reference ref )
-   {
-      String path = ref.getPath();
-      if (!path.endsWith( "/" ))
-         path = path.substring( 0, path.lastIndexOf('/' )+1);
-      return path;
-   }
+    private String getIdentityPath( Reference ref )
+    {
+        String path = ref.getPath();
+        if( !path.endsWith( "/" ) )
+        {
+            path = path.substring( 0, path.lastIndexOf( '/' ) + 1 );
+        }
+        return path;
+    }
 
-   static class CacheInfo
-   {
-      private Reference ref;
-      private Date lastModified;
-      private Tag tag;
-      private String entity;
+    private static class CacheInfo
+    {
+        private Instant lastModified;
+        private String entity;
 
-      CacheInfo( Date lastModified, Tag tag, Reference ref )
-      {
-         this.lastModified = lastModified;
-         this.tag = tag;
-         this.ref = ref;
-         entity = tag.getName().split( "/" )[0];
-      }
+        CacheInfo( Instant lastModified, Tag tag )
+        {
+            this.lastModified = lastModified;
+            entity = tag.getName().split( "/" )[ 0 ];
+        }
 
-      public Reference getRef()
-      {
-         return ref;
-      }
+        Instant getLastModified()
+        {
+            return lastModified;
+        }
 
-      public Date getLastModified()
-      {
-         return lastModified;
-      }
-
-      public Tag getTag()
-      {
-         return tag;
-      }
-
-      public String getEntity()
-      {
-         return entity;
-      }
-   }
+        String getEntity()
+        {
+            return entity;
+        }
+    }
 }

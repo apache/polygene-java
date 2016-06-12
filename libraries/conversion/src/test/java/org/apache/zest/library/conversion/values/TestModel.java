@@ -19,10 +19,12 @@
  */
 package org.apache.zest.library.conversion.values;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.TimeZone;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
@@ -34,27 +36,26 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueComposite;
 
+import static java.time.ZoneOffset.UTC;
+
 /**
  * Test Model.
  */
 final class TestModel
 {
-    static PersonEntity createPerson( UnitOfWork uow, String firstName, String lastName, Date birthTime )
+    static PersonEntity createPerson( UnitOfWork uow, String firstName, String lastName, LocalDate birthDate )
     {
         EntityBuilder<PersonEntity> builder = uow.newEntityBuilder( PersonEntity.class, "id:" + firstName );
         PersonState state = builder.instanceFor( PersonState.class );
         state.firstName().set( firstName );
         state.lastName().set( lastName );
-        state.dateOfBirth().set( birthTime );
+        state.dateOfBirth().set( birthDate );
         return builder.newInstance();
     }
 
-    static Date createBirthDate( int year, int month, int day )
+    static LocalDate createBirthDate( int year, int month, int day )
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        calendar.set( year, month - 1, day, 12, 0, 0 );
-        return calendar.getTime();
+        return LocalDate.of( year, month, day);
     }
 
     // START SNIPPET: state
@@ -65,7 +66,7 @@ final class TestModel
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<LocalDate> dateOfBirth();
 
     }
     // END SNIPPET: state
@@ -128,9 +129,8 @@ final class TestModel
         @Override
         public Integer age()
         {
-            long now = System.currentTimeMillis();
-            long birthdate = state.dateOfBirth().get().getTime();
-            return (int) ( ( now - birthdate ) / 1000 / 3600 / 24 / 365.25 );
+            Duration age = Duration.between( state.dateOfBirth().get(), Instant.now() );
+            return (int) age.toDays()/365;
         }
 
         // START SNIPPET: entity
@@ -147,7 +147,7 @@ final class TestModel
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<LocalDate> dateOfBirth();
 
         @Optional
         Property<String> spouse();
@@ -167,7 +167,7 @@ final class TestModel
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<LocalDate> dateOfBirth();
 
         @Optional
         Property<String> spouse();
@@ -186,7 +186,7 @@ final class TestModel
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<LocalDate> dateOfBirth();
 
         @Optional
         Property<String> spouse();

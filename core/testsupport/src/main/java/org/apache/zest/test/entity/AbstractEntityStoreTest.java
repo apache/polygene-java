@@ -21,17 +21,13 @@ package org.apache.zest.test.entity;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.junit.After;
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -40,7 +36,9 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -52,11 +50,13 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.After;
+import org.junit.Test;
 
+import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -72,6 +72,7 @@ public abstract class AbstractEntityStoreTest
 
     @Structure
     private Module moduleInstance;
+    private ZonedDateTime refDate = ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -96,7 +97,7 @@ public abstract class AbstractEntityStoreTest
     {
         // Create entity
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-        builder.instance().dateValue().set( new Date() );
+        builder.instance().instantValue().set( Instant.now() );
         TestEntity instance = builder.newInstance();
 
         instance.name().set( "Test" );
@@ -107,10 +108,10 @@ public abstract class AbstractEntityStoreTest
         instance.booleanValue().set( Boolean.TRUE );
         instance.bigIntegerValue().set( new BigInteger( "42" ) );
         instance.bigDecimalValue().set( new BigDecimal( "42" ) );
-        instance.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-        instance.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-        instance.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
-        instance.localDateValue().set( new LocalDate( "2020-03-04" ) );
+        instance.instantValue().set( refDate.toInstant() );
+        instance.dateTimeValue().set( refDate );
+        instance.localDateTimeValue().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 00 ) );
+        instance.localDateValue().set( LocalDate.of( 2020, 3, 4 ) );
         instance.association().set( instance );
 
         ValueBuilder<Tjabba> valueBuilder4 = moduleInstance.newValueBuilder( Tjabba.class );
@@ -192,21 +193,21 @@ public abstract class AbstractEntityStoreTest
                         instance.bigDecimalValue().get(),
                         equalTo( new BigDecimal( "42" ) ) );
 
-            assertThat( "property 'dateValue' has correct value",
-                        instance.dateValue().get(),
-                        equalTo( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() ) );
+            assertThat( "property 'instantValue' has correct value",
+                        instance.instantValue().get(),
+                        equalTo( refDate.toInstant() ) );
 
             assertThat( "property 'dateTimeValue' has correct value",
                         instance.dateTimeValue().get(),
-                        equalTo( new DateTime( "2020-03-04T13:24:35", UTC ) ) );
+                        equalTo( refDate ) );
 
             assertThat( "property 'localDateTimeValue' has correct value",
                         instance.localDateTimeValue().get(),
-                        equalTo( new LocalDateTime( "2020-03-04T13:23:00", UTC ) ) );
+                        equalTo( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) ) );
 
             assertThat( "property 'localDateValue' has correct value",
                         instance.localDateValue().get(),
-                        equalTo( new LocalDate( "2020-03-04" ) ) );
+                        equalTo( LocalDate.of( 2020, 3, 4 ) ) );
 
             assertThat( "property 'name' has correct value",
                         instance.name().get(),
@@ -506,10 +507,10 @@ public abstract class AbstractEntityStoreTest
         Property<BigDecimal> bigDecimalValue();
 
         @Optional
-        Property<Date> dateValue();
+        Property<Instant> instantValue();
 
         @Optional
-        Property<DateTime> dateTimeValue();
+        Property<ZonedDateTime> dateTimeValue();
 
         @Optional
         Property<LocalDateTime> localDateTimeValue();
@@ -580,7 +581,6 @@ public abstract class AbstractEntityStoreTest
     public interface TestValue2
         extends ValueComposite
     {
-
         Property<String> stringValue();
 
         Property<Tjabba> anotherValue();
@@ -588,8 +588,6 @@ public abstract class AbstractEntityStoreTest
 
     public enum TestEnum
     {
-
         VALUE1, VALUE2, VALUE3
     }
-
 }

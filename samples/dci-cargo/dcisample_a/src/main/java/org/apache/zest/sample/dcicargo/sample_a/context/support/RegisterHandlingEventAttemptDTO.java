@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.support;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
@@ -32,10 +32,10 @@ import org.apache.zest.sample.dcicargo.sample_a.infrastructure.conversion.DTO;
 public interface RegisterHandlingEventAttemptDTO extends DTO
 {
     @Optional
-    Property<Date> registrationTime();
+    Property<LocalDate> registrationDate();
 
     @Optional
-    Property<Date> completionTime();
+    Property<LocalDate> completionDate();
 
     @Optional
     Property<String> trackingIdString();

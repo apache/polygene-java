@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
@@ -38,11 +39,11 @@ public interface Leg
 {
     Association<Location> loadLocation();
 
-    Property<Date> loadTime();
+    Property<LocalDate> loadDate();
 
     Association<Voyage> voyage();
 
-    Property<Date> unloadTime();
+    Property<LocalDate> unloadDate();
 
     Association<Location> unloadLocation();
 }

@@ -19,12 +19,11 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.context.support.FoundNoRoutesException;
 import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
@@ -37,10 +36,13 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.delivery.Transport
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test of Book New Cargo use case.
@@ -51,10 +53,10 @@ import static org.junit.Assert.*;
  * Test method names describe the test purpose. The prefix refers to the step in the use case.
  */
 public class BookNewCargoTest
-      extends TestApplication
+    extends TestApplication
 {
 
-    private static final Date TODAY = new Date();
+    private static final LocalDate TODAY = LocalDate.now();
     private UnitOfWorkFactory uowf;
 
     @Before
@@ -66,7 +68,8 @@ public class BookNewCargoTest
     }
 
     @Test( expected = RouteException.class )
-    public void deviation2a_OriginAndDestinationSame() throws Exception
+    public void deviation2a_OriginAndDestinationSame()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -75,7 +78,8 @@ public class BookNewCargoTest
     }
 
     @Test( expected = RouteException.class )
-    public void deviation_2b_1_DeadlineInThePastNotAccepted() throws Exception
+    public void deviation_2b_1_DeadlineInThePastNotAccepted()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -85,7 +89,8 @@ public class BookNewCargoTest
     }
 
     @Test( expected = RouteException.class )
-    public void deviation_2b_2_DeadlineTodayIsTooEarly() throws Exception
+    public void deviation_2b_2_DeadlineTodayIsTooEarly()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -95,7 +100,8 @@ public class BookNewCargoTest
     }
 
     @Test
-    public void deviation_2b_3_DeadlineTomorrowIsOkay() throws Exception
+    public void deviation_2b_3_DeadlineTomorrowIsOkay()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -105,7 +111,8 @@ public class BookNewCargoTest
     }
 
     @Test
-    public void step_2_CreateNewCargo() throws Exception
+    public void step_2_CreateNewCargo()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -124,16 +131,22 @@ public class BookNewCargoTest
         // Test route specification
         assertThat( cargo.routeSpecification().get().destination().get(), is( equalTo( STOCKHOLM ) ) );
         // day(17) here is calculated a few milliseconds after initial day(17), so it will be later...
-        assertThat( cargo.routeSpecification().get().arrivalDeadline().get(),  equalTo( day( 17 )  ));
+        assertThat( cargo.routeSpecification().get().arrivalDeadline().get(), equalTo( day( 17 ) ) );
 
         // (Itinerary is not assigned yet)
 
         // Test derived delivery snapshot
         Delivery delivery = cargo.delivery().get();
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
+        assertThat( delivery.timestamp()
+                        .get()
+                        .isAfter( TODAY.atStartOfDay()
+                                      .toInstant( ZoneOffset.UTC ) ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
         assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
@@ -145,7 +158,8 @@ public class BookNewCargoTest
     }
 
     @Test( expected = FoundNoRoutesException.class )
-    public void deviation_3a_NoRoutesCanBeThatFast() throws Exception
+    public void deviation_3a_NoRoutesCanBeThatFast()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -159,7 +173,8 @@ public class BookNewCargoTest
     }
 
     @Test
-    public void step_3_CalculatePossibleRoutes() throws Exception
+    public void step_3_CalculatePossibleRoutes()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -174,7 +189,7 @@ public class BookNewCargoTest
         List<Itinerary> routeCandidates = new BookNewCargo( cargo ).routeCandidates();
 
         // Check possible routes
-        for (Itinerary itinerary : routeCandidates)
+        for( Itinerary itinerary : routeCandidates )
         {
             assertThat( "First load location equals origin location.",
                         itinerary.firstLeg().loadLocation().get(),
@@ -183,13 +198,15 @@ public class BookNewCargoTest
                         itinerary.lastLeg().unloadLocation().get(),
                         is( equalTo( cargo.routeSpecification().get().destination().get() ) ) );
             assertThat( "Cargo will be delivered in time.",
-                        itinerary.finalArrivalDate().before( cargo.routeSpecification().get().arrivalDeadline().get() ),
+                        itinerary.finalArrivalDate()
+                            .isBefore( cargo.routeSpecification().get().arrivalDeadline().get() ),
                         is( equalTo( true ) ) );
         }
     }
 
     @Test
-    public void step_5_AssignCargoToRoute() throws Exception
+    public void step_5_AssignCargoToRoute()
+        throws Exception
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
@@ -197,7 +214,7 @@ public class BookNewCargoTest
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
 
         // Create valid cargo
-        Date deadline = day( 30 );
+        LocalDate deadline = day( 30 );
         TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline ).book();
         Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
@@ -219,6 +236,6 @@ public class BookNewCargoTest
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
 
         // ETA (= Unload time of last Leg) is before Deadline (set in previous test)
-        assertTrue( delivery.eta().get().before( deadline ) );
+        assertTrue( delivery.eta().get().isBefore( deadline ) );
     }
 }

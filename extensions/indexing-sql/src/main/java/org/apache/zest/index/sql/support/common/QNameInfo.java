@@ -21,9 +21,16 @@ package org.apache.zest.index.sql.support.common;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.QualifiedName;
@@ -109,7 +116,14 @@ public final class QNameInfo
                 Number.class.isAssignableFrom( finalClass )//
                 || Boolean.class.isAssignableFrom( finalClass ) //
                 || Character.class.isAssignableFrom( finalClass ) //
-                || Date.class.isAssignableFrom( finalClass ) //
+                || LocalDate.class.isAssignableFrom( finalClass ) //
+                || LocalTime.class.isAssignableFrom( finalClass ) //
+                || LocalDateTime.class.isAssignableFrom( finalClass ) //
+                || ZonedDateTime.class.isAssignableFrom( finalClass ) //
+                || OffsetDateTime.class.isAssignableFrom( finalClass ) //
+                || Instant.class.isAssignableFrom( finalClass ) //
+                || Duration.class.isAssignableFrom( finalClass ) //
+                || Period.class.isAssignableFrom( finalClass ) //
                 || Enum.class.isAssignableFrom( finalClass ) //
                 || String.class.isAssignableFrom( finalClass )//
                 ;

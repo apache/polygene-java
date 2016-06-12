@@ -19,8 +19,8 @@
  */
 package org.apache.zest.library.scheduler;
 
+import java.time.Instant;
 import org.apache.zest.library.scheduler.internal.Schedules;
-import org.joda.time.DateTime;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
@@ -73,7 +73,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleOnce( Task task, DateTime runAt );
+    Schedule scheduleOnce( Task task, Instant runAt );
 
     /**
      * Schedule a Task using a CronExpression.
@@ -108,7 +108,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, DateTime start );
+    Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, Instant start );
 
     /** Schedules a custom Schedule.
      *

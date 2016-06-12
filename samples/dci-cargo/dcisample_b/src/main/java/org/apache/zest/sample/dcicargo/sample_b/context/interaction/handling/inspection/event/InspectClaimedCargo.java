@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -34,7 +34,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CLAIM;
 
@@ -108,7 +110,7 @@ public class InspectClaimedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.claimEvent );
                 newDelivery.transportStatus().set( CLAIMED );
                 newDelivery.isUnloadedAtDestination().set( false ); // Why not true if claimed in final destination?

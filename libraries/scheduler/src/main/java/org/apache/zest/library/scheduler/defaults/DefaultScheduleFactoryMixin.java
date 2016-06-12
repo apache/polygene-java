@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.scheduler.defaults;
 
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -32,7 +33,6 @@ import org.apache.zest.library.scheduler.ScheduleFactory;
 import org.apache.zest.library.scheduler.SchedulerService;
 import org.apache.zest.library.scheduler.Task;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,18 +51,18 @@ public class DefaultScheduleFactoryMixin
     private UuidIdentityGeneratorService uuid;
 
     @Override
-    public CronSchedule newCronSchedule( Task task, String cronExpression, DateTime start )
+    public CronSchedule newCronSchedule( Task task, String cronExpression, Instant start )
     {
         return newPersistentCronSchedule( task, cronExpression, start );
     }
 
     @Override
-    public Schedule newOnceSchedule( Task task, DateTime runAt )
+    public Schedule newOnceSchedule( Task task, Instant runAt )
     {
         return newPersistentOnceSchedule( task, runAt );
     }
 
-    private CronSchedule newPersistentCronSchedule( Task task, String cronExpression, DateTime start )
+    private CronSchedule newPersistentCronSchedule( Task task, String cronExpression, Instant start )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<CronSchedule> builder = uow.newEntityBuilder( CronSchedule.class );
@@ -76,7 +76,7 @@ public class DefaultScheduleFactoryMixin
         return schedule;
     }
 
-    private Schedule newPersistentOnceSchedule( Task task, DateTime runAt )
+    private Schedule newPersistentOnceSchedule( Task task, Instant runAt )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<OnceSchedule> builder = uow.newEntityBuilder( OnceSchedule.class );

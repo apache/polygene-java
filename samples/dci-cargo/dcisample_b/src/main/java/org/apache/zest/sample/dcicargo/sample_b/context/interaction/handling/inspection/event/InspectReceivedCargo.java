@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -38,7 +38,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
@@ -52,17 +54,17 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectReceivedCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent previousEvent;
+    private HandlingEvent previousEvent;
 
-    HandlingEvent receiveEvent;
-    Location receiveLocation;
-    Voyage voyage;
+    private HandlingEvent receiveEvent;
+    private Location receiveLocation;
+    private Voyage voyage;
 
-    RouteSpecification routeSpecification;
-    Itinerary itinerary;
-    Integer itineraryProgressIndex;
+    private RouteSpecification routeSpecification;
+    private Itinerary itinerary;
+    private Integer itineraryProgressIndex;
 
     public InspectReceivedCargo( Cargo cargo, HandlingEvent handlingEvent )
     {
@@ -123,7 +125,7 @@ public class InspectReceivedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.receiveEvent );
                 newDelivery.transportStatus().set( IN_PORT );
                 newDelivery.isUnloadedAtDestination().set( false );
@@ -155,8 +157,8 @@ public class InspectReceivedCargo extends Context
                         cargo.delivery().set( newDeliveryBuilder.newInstance() );
                         throw new CargoMisdirectedException( c.receiveEvent, "Itinerary expected receipt in "
                                                                              + firstLeg.loadLocation()
-                            .get()
-                            .getString() );
+                                                                                 .get()
+                                                                                 .getString() );
                     }
 
                     newDelivery.isMisdirected().set( false );
@@ -167,7 +169,7 @@ public class InspectReceivedCargo extends Context
                     ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
                     nextHandlingEvent.prototype().handlingEventType().set( LOAD );
                     nextHandlingEvent.prototype().location().set( firstLeg.loadLocation().get() );
-                    nextHandlingEvent.prototype().time().set( firstLeg.loadTime().get() );
+                    nextHandlingEvent.prototype().date().set( firstLeg.loadDate().get() );
                     nextHandlingEvent.prototype().voyage().set( firstLeg.voyage().get() );
                     newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
                 }

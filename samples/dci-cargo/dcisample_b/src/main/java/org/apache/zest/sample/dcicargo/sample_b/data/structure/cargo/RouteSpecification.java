@@ -19,8 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.structure.cargo;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -60,9 +59,9 @@ public interface RouteSpecification
 
     Association<Location> destination();
 
-    Property<Date> earliestDeparture();
+    Property<LocalDate> earliestDeparture();
 
-    Property<Date> arrivalDeadline();
+    Property<LocalDate> arrivalDeadline();
 
     // Side-effects free and UI agnostic convenience methods
     boolean isSatisfiedBy( Itinerary itinerary );
@@ -77,25 +76,21 @@ public interface RouteSpecification
             return itinerary != null &&
                    !itinerary.legs().get().isEmpty() &&
                    origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
-                   earliestDeparture().get().before( itinerary.firstLeg().loadTime().get() ) &&
+                   earliestDeparture().get().isBefore( itinerary.firstLeg().loadDate().get() ) &&
                    destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
-                   arrivalDeadline().get().after( itinerary.eta() );
+                   arrivalDeadline().get().isAfter( itinerary.eta() );
         }
 
         public String print()
         {
-            StringBuilder sb = new StringBuilder(
-                "\nROUTE SPECIFICATION ------------" ).
-                append( "\n  Origin               " ).append( origin().get() ).
-                append( "\n  Destination          " ).append( destination().get() ).
-                append( "\n  Earliest departure   " )
-                .append( new SimpleDateFormat( "yyyy-MM-dd" ).format( earliestDeparture().get() ) )
-                .
-                    append( "\n  Arrival deadline     " )
-                .append( new SimpleDateFormat( "yyyy-MM-dd" ).format( arrivalDeadline().get() ) )
-                .
-                    append( "\n--------------------------------" );
-            return sb.toString();
+            return "\nROUTE SPECIFICATION ------------" +
+                   "\n  Origin               " + origin().get() +
+                   "\n  Destination          " + destination().get() +
+                   "\n  Earliest departure   " +
+                   earliestDeparture().get() +
+                   "\n  Arrival deadline     " +
+                   arrivalDeadline().get() +
+                   "\n--------------------------------";
         }
     }
 }

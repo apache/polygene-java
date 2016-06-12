@@ -19,13 +19,15 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.constraints.annotation.NotEmpty;
+
+import static java.time.ZoneOffset.UTC;
 
 /**
  * An itinerary is a description of a planned route for a cargo.
@@ -46,9 +48,9 @@ public interface Itinerary
 
     Leg lastLeg();
 
-    Date finalArrivalDate();
+    LocalDate finalArrivalDate();
 
-    int days();
+    long days();
 
     public abstract class Mixin
         implements Itinerary
@@ -73,21 +75,21 @@ public interface Itinerary
             return legs().get().get( legs().get().size() - 1 );
         }
 
-        public Date finalArrivalDate()
+        public LocalDate finalArrivalDate()
         {
             if( lastLeg() == null )
             {
-                return new Date( new Date( Long.MAX_VALUE ).getTime() );
+                return LocalDate.MAX;
             }
 
-            return new Date( lastLeg().unloadTime().get().getTime() );
+            return lastLeg().unloadDate().get();
         }
 
-        public int days()
+        public long days()
         {
-            Date dep = firstLeg().loadTime().get();
-            Date arr = lastLeg().unloadTime().get();
-            return Days.daysBetween( new LocalDate( dep ), new LocalDate( arr ) ).getDays();
+            LocalDate dep = firstLeg().loadDate().get();
+            LocalDate arr = lastLeg().unloadDate().get();
+            return Duration.between(dep, arr).toDays();
         }
     }
 }

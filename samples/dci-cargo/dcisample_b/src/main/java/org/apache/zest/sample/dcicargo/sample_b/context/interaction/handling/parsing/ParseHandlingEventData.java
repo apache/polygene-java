@@ -19,9 +19,10 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -70,7 +71,7 @@ public interface ParseHandlingEventData
 
         static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
 
-        Date completionTime;
+        LocalDate completionDate;
         HandlingEventType handlingEventType;
 
         public ParsedHandlingEventData parse( String completionStr,
@@ -85,9 +86,9 @@ public interface ParseHandlingEventData
 
             try
             {
-                completionTime = new SimpleDateFormat( ISO_8601_FORMAT ).parse( completionStr.trim() );
+                completionDate = LocalDate.parse( completionStr.trim(), DateTimeFormatter.ISO_LOCAL_DATE );
             }
-            catch( ParseException e )
+            catch( DateTimeParseException e )
             {
                 throw new InvalidHandlingEventDataException(
                     "Invalid date format: '" + completionStr + "' must be on ISO 8601 format " + ISO_8601_FORMAT );
@@ -105,8 +106,8 @@ public interface ParseHandlingEventData
             // Step 4 - Collect parsed handling event data
 
             ValueBuilder<ParsedHandlingEventData> parsedData = vbf.newValueBuilder( ParsedHandlingEventData.class );
-            parsedData.prototype().registrationTime().set( new Date() );
-            parsedData.prototype().completionTime().set( completionTime );
+            parsedData.prototype().registrationDate().set( LocalDate.now() );
+            parsedData.prototype().completionDate().set( completionDate );
             parsedData.prototype().trackingIdString().set( trackingIdStr );
             parsedData.prototype().handlingEventType().set( handlingEventType );
             parsedData.prototype().unLocodeString().set( unLocodeStr );

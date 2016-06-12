@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.scheduler.timeline;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 
@@ -69,6 +70,6 @@ public interface Timeline
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
 // START SNIPPET: timeline
-    Iterable<TimelineRecord> getRecords( long from, long to );
+    Iterable<TimelineRecord> getRecords( Instant from, Instant to );
 }
 // END SNIPPET: timeline

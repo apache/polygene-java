@@ -275,7 +275,7 @@ public class InspectReceivedCargoTest extends TestApplication
         // Itinerary calculations
         NextHandlingEvent nextLoad = cargo.delivery().get().nextHandlingEvent().get();
         assertThat( nextLoad.location().get(), is( equalTo( itinerary.firstLeg().loadLocation().get() ) ) );
-        assertThat( nextLoad.time().get(), is( equalTo( itinerary.firstLeg().loadTime().get() ) ) );
+        assertThat( nextLoad.date().get(), is( equalTo( itinerary.firstLeg().loadDate().get() ) ) );
         assertThat( nextLoad.voyage().get(), is( equalTo( itinerary.firstLeg().voyage().get() ) ) );
 
         assertDelivery( RECEIVE, HONGKONG, DAY1, noVoyage,

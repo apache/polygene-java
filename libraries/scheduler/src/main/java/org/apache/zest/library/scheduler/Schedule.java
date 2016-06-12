@@ -19,13 +19,13 @@
  */
 package org.apache.zest.library.scheduler;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.library.scheduler.Task;
-import org.joda.time.DateTime;
 
 /**
  * Represent the scheduling of a {@link Task}.
@@ -42,7 +42,7 @@ public interface Schedule extends EntityComposite
      * @return The property containing the first time this Schedule will be run.
      */
     @Immutable
-    Property<DateTime> start();
+    Property<Instant> start();
 
     /** Returns true if the Schedule has been cancelled.
      *
@@ -120,7 +120,7 @@ public interface Schedule extends EntityComposite
      *
      * @return The exact absolute time when this Schedule is to be run next time, or -1 if never
      */
-    long nextRun( long from );
+    Instant nextRun( Instant from );
 
     /**
      * Return a representation of the Schedule in a human understandable format.

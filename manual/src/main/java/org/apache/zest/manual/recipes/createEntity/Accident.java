@@ -19,15 +19,15 @@
  */
 package org.apache.zest.manual.recipes.createEntity;
 
+import java.time.LocalDate;
 import org.apache.zest.api.property.Property;
-import java.util.Date;
 
 // START SNIPPET: entity
 public interface Accident
 {
     Property<String> description();
-    Property<Date> occured();
-    Property<Date> repaired();
+    Property<LocalDate> occured();
+    Property<LocalDate> repaired();
 }
 
 // END SNIPPET: entity

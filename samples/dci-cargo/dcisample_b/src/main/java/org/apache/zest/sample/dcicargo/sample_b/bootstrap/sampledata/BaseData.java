@@ -19,10 +19,13 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.bootstrap.sampledata;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
@@ -45,6 +48,7 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
  */
 public abstract class BaseData
 {
+    private static Random random = new Random();
     protected UnLocode AUMEL;
     protected UnLocode CNHGH;
     protected UnLocode CNHKG;
@@ -73,13 +77,13 @@ public abstract class BaseData
         return unlocode.newInstance();
     }
 
-    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
+    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, LocalDate depDate, LocalDate arrDate )
     {
         ValueBuilder<CarrierMovement> carrierMovement = vbf.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
         carrierMovement.prototype().arrivalLocation().set( arrLoc );
-        carrierMovement.prototype().departureTime().set( depTime );
-        carrierMovement.prototype().arrivalTime().set( arrTime );
+        carrierMovement.prototype().departureDate().set( depDate );
+        carrierMovement.prototype().arrivalDate().set( arrDate );
         return carrierMovement.newInstance();
     }
 
@@ -92,14 +96,14 @@ public abstract class BaseData
         return schedule.newInstance();
     }
 
-    protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
+    protected Leg leg( Voyage voyage, Location load, Location unload, LocalDate loadDate, LocalDate unloadDate )
     {
         ValueBuilder<Leg> leg = vbf.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
         leg.prototype().loadLocation().set( load );
         leg.prototype().unloadLocation().set( unload );
-        leg.prototype().loadTime().set( loadTime );
-        leg.prototype().unloadTime().set( unloadTime );
+        leg.prototype().loadDate().set( loadDate );
+        leg.prototype().unloadDate().set( unloadDate );
         return leg.newInstance();
     }
 
@@ -118,13 +122,13 @@ public abstract class BaseData
         Boolean isUnloadedAtDestination,
         RoutingStatus routingStatus,
         Boolean isMisdirected,
-        Date eta,
+        LocalDate eta,
         Integer itineraryProgressIndex,
         NextHandlingEvent nextHandlingEvent
     )
     {
         ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
-        delivery.prototype().timestamp().set( new Date() );
+        delivery.prototype().timestamp().set( Instant.now() );
         delivery.prototype().lastHandlingEvent().set( lastHandlingEvent );
         delivery.prototype().transportStatus().set( transportStatus );
         delivery.prototype().isUnloadedAtDestination().set( isUnloadedAtDestination );
@@ -137,14 +141,14 @@ public abstract class BaseData
     }
 
     // Delivery with only mandatory values
-    protected Delivery delivery( Date date,
+    protected Delivery delivery( LocalDate date,
                                  TransportStatus transportStatus,
                                  RoutingStatus routingStatus,
                                  Integer itineraryProgressIndex
     )
     {
         ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
-        delivery.prototype().timestamp().set( date );
+        delivery.prototype().timestamp().set( date.atStartOfDay().toInstant( ZoneOffset.UTC ) );
         delivery.prototype().transportStatus().set( transportStatus );
         delivery.prototype().routingStatus().set( routingStatus );
         delivery.prototype().itineraryProgressIndex().set( itineraryProgressIndex );
@@ -153,20 +157,20 @@ public abstract class BaseData
 
     protected NextHandlingEvent nextHandlingEvent( HandlingEventType handlingEventType,
                                                    Location location,
-                                                   Date time,
+                                                   LocalDate time,
                                                    Voyage voyage
     )
     {
         ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
         nextHandlingEvent.prototype().handlingEventType().set( handlingEventType );
         nextHandlingEvent.prototype().location().set( location );
-        nextHandlingEvent.prototype().time().set( time );
+        nextHandlingEvent.prototype().date().set( time );
         nextHandlingEvent.prototype().voyage().set( voyage );
         return nextHandlingEvent.newInstance();
     }
 
-    protected ParsedHandlingEventData parsedHandlingEventData( Date registrationTime,
-                                                               Date completionTime,
+    protected ParsedHandlingEventData parsedHandlingEventData( LocalDate registrationDate,
+                                                               LocalDate completionDate,
                                                                String trackingIdString,
                                                                HandlingEventType handlingEventType,
                                                                String unLocodeString,
@@ -175,8 +179,8 @@ public abstract class BaseData
         throws Exception
     {
         ValueBuilder<ParsedHandlingEventData> attempt = vbf.newValueBuilder( ParsedHandlingEventData.class );
-        attempt.prototype().registrationTime().set( registrationTime );
-        attempt.prototype().completionTime().set( completionTime );
+        attempt.prototype().registrationDate().set( registrationDate );
+        attempt.prototype().completionDate().set( completionDate );
         attempt.prototype().trackingIdString().set( trackingIdString );
         attempt.prototype().handlingEventType().set( handlingEventType );
         attempt.prototype().unLocodeString().set( unLocodeString );
@@ -185,10 +189,8 @@ public abstract class BaseData
         return attempt.newInstance();
     }
 
-    protected static Date day( int days )
+    protected static LocalDate day( int days )
     {
-        Date today = new Date();
-        long aDay = 24 * 60 * 60 * 1000;
-        return new Date( today.getTime() + days * aDay );
+        return LocalDate.now().plusDays( days );
     }
 }

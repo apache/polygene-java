@@ -20,7 +20,7 @@
 
 package org.apache.zest.sample.rental.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
@@ -39,10 +39,10 @@ public interface Car
     Association<CarCategory> category();
 
     @Optional
-    Property<Date> purchasedDate();
+    Property<LocalDate> purchasedDate();
 
     @Optional
-    Property<Date> soldDate();
+    Property<LocalDate> soldDate();
 
     Booking currentBooking();
 

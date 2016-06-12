@@ -20,7 +20,6 @@
 package org.apache.zest.sample.dcicargo.pathfinder_b.api;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,11 +63,11 @@ public final class TransitPath implements Serializable
     {
         sb.append( "\n  Leg " ).append( i );
         sb.append( "  Load " );
-        sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( edge.getFromDate() ) );
+        sb.append( edge.getFromDate() );
         sb.append( " " ).append( edge.getFromUnLocode() );
         sb.append( "   " ).append( edge.getVoyageNumber() );
         sb.append( "   Unload " );
-        sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( edge.getToDate() ) );
+        sb.append( edge.getToDate() );
         sb.append( " " ).append( edge.getToUnLocode() );
     }
 }

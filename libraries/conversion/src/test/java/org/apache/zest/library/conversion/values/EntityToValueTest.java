@@ -19,7 +19,8 @@
  */
 package org.apache.zest.library.conversion.values;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -209,7 +210,7 @@ public class EntityToValueTest
     {
         String firstName = "Niclas";
         String lastName = "Hedhman";
-        Date birthTime = createBirthDate( 1964, 9, 25 );
+        LocalDate birthTime = createBirthDate( 1964, 9, 25 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
@@ -217,7 +218,7 @@ public class EntityToValueTest
     {
         String firstName = "Lis";
         String lastName = "Gazi";
-        Date birthTime = createBirthDate( 1976, 2, 19 );
+        LocalDate birthTime = createBirthDate( 1976, 2, 19 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
@@ -225,7 +226,7 @@ public class EntityToValueTest
     {
         String firstName = "Eric";
         String lastName = "Hedman";
-        Date birthTime = createBirthDate( 2004, 4, 8 );
+        LocalDate birthTime = createBirthDate( 2004, 4, 8 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 }

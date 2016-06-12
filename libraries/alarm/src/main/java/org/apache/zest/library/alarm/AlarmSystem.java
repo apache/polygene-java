@@ -20,8 +20,8 @@
 
 package org.apache.zest.library.alarm;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -226,7 +226,7 @@ public interface AlarmSystem
             ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
             AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
             statePrototype.name().set( status );
-            statePrototype.creationDate().set( new Date() );
+            statePrototype.creationDate().set( Instant.now() );
             return builder.newInstance();
         }
 

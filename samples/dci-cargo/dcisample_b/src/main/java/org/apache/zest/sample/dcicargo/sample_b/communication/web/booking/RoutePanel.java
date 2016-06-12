@@ -19,7 +19,6 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.communication.web.booking;
 
-import java.util.Date;
 import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -37,6 +36,9 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.routing.AssignCargoToRoute;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Leg;
+
+import static java.time.ZoneOffset.UTC;
+import static java.util.Date.from;
 
 /**
  * Route Panel
@@ -81,9 +83,11 @@ public class RoutePanel extends Panel
                 Leg leg = item.getModelObject();
                 item.add( new Label( "voyage", leg.voyage().get().toString() ),
                           new Label( "loadLocation", leg.loadLocation().get().getCode() ),
-                          new Label( "loadTime", new Model<Date>( leg.loadTime().get() ) ),
+                          new Label( "loadDate",
+                                     new Model<>( from( leg.loadDate().get().atStartOfDay().toInstant( UTC ) ) ) ),
                           new Label( "unloadLocation", leg.unloadLocation().get().getCode() ),
-                          new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) )
+                          new Label( "unloadDate",
+                                     new Model<>( from( leg.unloadDate().get().atStartOfDay().toInstant( UTC ) ) ) )
                 );
             }
         } );

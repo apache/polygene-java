@@ -19,7 +19,6 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.communication.web.tracking;
 
-import java.text.SimpleDateFormat;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.basic.Label;
@@ -88,9 +87,9 @@ public class NextHandlingEventPanel extends Panel
         map.put( "expectedEvent", nextEvent.handlingEventType().get().name() );
         map.put( "location", nextEvent.location().get().getString() );
 
-        if( nextEvent.time() != null )
+        if( nextEvent.date() != null )
         {
-            map.put( "time", new SimpleDateFormat( "yyyy-MM-dd" ).format( nextEvent.time().get() ) );
+            map.put( "time", nextEvent.date().get().toString() );
         }
 
         if( nextEvent.voyage().get() != null )

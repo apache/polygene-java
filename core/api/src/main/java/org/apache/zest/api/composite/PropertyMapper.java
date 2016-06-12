@@ -28,9 +28,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +47,6 @@ import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueComposite;
 
 /**
@@ -63,7 +68,13 @@ public final class PropertyMapper
         STRATEGY.put( Character.class, new CharMapper() );
         STRATEGY.put( Float.class, new FloatMapper() );
         STRATEGY.put( Double.class, new DoubleMapper() );
-        STRATEGY.put( Date.class, new DateMapper() );
+        STRATEGY.put( LocalDate.class, new LocalDateMapper() );
+        STRATEGY.put( LocalDateTime.class, new LocalDateTimeMapper() );
+        STRATEGY.put( ZonedDateTime.class, new ZonedDateTimeMapper() );
+        STRATEGY.put( OffsetDateTime.class, new OffsetDateTimeMapper() );
+        STRATEGY.put( Instant.class, new InstantMapper() );
+        STRATEGY.put( Duration.class, new DurationMapper() );
+        STRATEGY.put( Period.class, new PeriodMapper() );
         STRATEGY.put( Boolean.class, new BooleanMapper() );
         STRATEGY.put( BigDecimal.class, new BigDecimalMapper() );
         STRATEGY.put( BigInteger.class, new BigIntegerMapper() );
@@ -140,7 +151,7 @@ public final class PropertyMapper
             {
                 strategy = STRATEGY.get( type );
             }
-            if( strategy == null  ) // If null, try with the ValueComposite Mapper...
+            if( strategy == null ) // If null, try with the ValueComposite Mapper...
             {
                 strategy = STRATEGY.get( ValueComposite.class );
             }
@@ -446,13 +457,73 @@ public final class PropertyMapper
         }
     }
 
-    private static class DateMapper
+    private static class LocalDateMapper
         implements MappingStrategy
     {
         @Override
         public Object map( Composite composite, Type type, String value )
         {
-            return Dates.fromString( value.trim() );
+            return LocalDate.parse( value.trim() );
+        }
+    }
+
+    private static class LocalDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return LocalDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class ZonedDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return ZonedDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class OffsetDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return OffsetDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class InstantMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Instant.parse( value.trim() );
+        }
+    }
+
+    private static class DurationMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Duration.parse( value.trim() );
+        }
+    }
+
+    private static class PeriodMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Period.parse( value.trim() );
         }
     }
 
@@ -463,7 +534,10 @@ public final class PropertyMapper
         @SuppressWarnings( "unchecked" )
         public Object map( Composite composite, Type type, String value )
         {
-            return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).module().instance().newValueFromSerializedState( (Class<Object>) type, value );
+            return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
+                .module()
+                .instance()
+                .newValueFromSerializedState( (Class<Object>) type, value );
         }
     }
 
@@ -471,7 +545,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings( { "raw", "unchecked" } )
         public Object map( final Composite composite, Type type, String value )
         {
             final Class arrayType = ( (Class) type ).getComponentType();
@@ -502,7 +576,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings( { "raw", "unchecked" } )
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
@@ -523,7 +597,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings( { "raw", "unchecked" } )
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
@@ -544,7 +618,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings( { "raw", "unchecked" } )
         public Object map( final Composite composite, Type generictype, String value )
         {
             ParameterizedType type = (ParameterizedType) generictype;

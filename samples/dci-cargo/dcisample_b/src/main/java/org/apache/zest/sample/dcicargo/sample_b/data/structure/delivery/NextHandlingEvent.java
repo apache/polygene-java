@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.property.Property;
@@ -49,7 +49,7 @@ public interface NextHandlingEvent
     Association<Location> location();
 
     @Optional
-    Property<Date> time();
+    Property<LocalDate> date();
 
     @Optional
     Association<Voyage> voyage();

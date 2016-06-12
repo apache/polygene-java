@@ -19,8 +19,9 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -53,8 +54,8 @@ public class RegisterHandlingEvent extends Context
 
     private HandlingEventFactoryRole handlingEventFactory;
 
-    private Date registrationTime;
-    private Date completionTime;
+    private LocalDate registrationDate;
+    private LocalDate completionDate;
     private String trackingIdString;
     private String eventTypeString;
     private String unLocodeString;
@@ -62,8 +63,8 @@ public class RegisterHandlingEvent extends Context
 
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
-    public RegisterHandlingEvent( Date registrationTime,
-                                  Date completionTime,
+    public RegisterHandlingEvent( LocalDate registrationDate,
+                                  LocalDate completionDate,
                                   String trackingIdString,
                                   String eventTypeString,
                                   String unLocodeString,
@@ -72,8 +73,8 @@ public class RegisterHandlingEvent extends Context
     {
         handlingEventFactory = rolePlayer( HandlingEventFactoryRole.class, HandlingEventsEntity.class, HANDLING_EVENTS_ID );
 
-        this.registrationTime = registrationTime;
-        this.completionTime = completionTime;
+        this.registrationDate = registrationDate;
+        this.completionDate = completionDate;
         this.trackingIdString = trackingIdString;
         this.eventTypeString = eventTypeString;
         this.unLocodeString = unLocodeString;
@@ -119,7 +120,7 @@ public class RegisterHandlingEvent extends Context
                 // Step 1: Publish event stating that registration attempt has been received.
                 applicationEvents.receivedHandlingEventRegistrationAttempt( registrationAttempt );
 
-                HandlingEvent handlingEvent = null;
+                HandlingEvent handlingEvent;
                 try
                 {
                     // Step 2: Verify existing data
@@ -130,7 +131,12 @@ public class RegisterHandlingEvent extends Context
 
                     // Step 4: Create and save handling event
                     handlingEvent = handlingEvents.createHandlingEvent(
-                        context.registrationTime, context.completionTime, trackingId, handlingEventType, location, voyage );
+                        context.registrationDate,
+                        context.completionDate,
+                        trackingId,
+                        handlingEventType,
+                        location,
+                        voyage );
                 }
                 catch( IllegalArgumentException e )
                 {
@@ -150,8 +156,8 @@ public class RegisterHandlingEvent extends Context
             {
                 ValueBuilder<RegisterHandlingEventAttemptDTO> builder =
                     vbf.newValueBuilder( RegisterHandlingEventAttemptDTO.class );
-                builder.prototype().registrationTime().set( context.registrationTime );
-                builder.prototype().completionTime().set( context.completionTime );
+                builder.prototype().registrationDate().set( context.registrationDate );
+                builder.prototype().completionDate().set( context.completionDate );
                 builder.prototype().trackingIdString().set( context.trackingIdString );
                 builder.prototype().eventTypeString().set( context.eventTypeString );
                 builder.prototype().unLocodeString().set( context.unLocodeString );
@@ -161,11 +167,11 @@ public class RegisterHandlingEvent extends Context
 
             private void verifyExistingData()
             {
-                if( context.registrationTime == null )
+                if( context.registrationDate == null )
                 {
                     throw new IllegalArgumentException( "Registration time was null. All parameters have to be passed." );
                 }
-                if( context.completionTime == null )
+                if( context.completionDate == null )
                 {
                     throw new IllegalArgumentException( "Completion time was null. All parameters have to be passed." );
                 }

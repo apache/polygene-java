@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.value.ValueBuilder;
@@ -40,7 +40,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
-import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
@@ -52,17 +54,17 @@ import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.H
  */
 public class InspectUnloadedCargo extends Context
 {
-    DeliveryInspectorRole deliveryInspector;
+    private DeliveryInspectorRole deliveryInspector;
 
-    HandlingEvent unloadEvent;
-    Location unloadLocation;
-    Voyage voyage;
+    private HandlingEvent unloadEvent;
+    private Location unloadLocation;
+    private Voyage voyage;
 
-    RouteSpecification routeSpecification;
-    Location destination;
-    Itinerary itinerary;
-    Integer itineraryProgressIndex;
-    boolean wasMisdirected;
+    private RouteSpecification routeSpecification;
+    private Location destination;
+    private Itinerary itinerary;
+    private Integer itineraryProgressIndex;
+    private boolean wasMisdirected;
 
     public InspectUnloadedCargo( Cargo cargo, HandlingEvent handlingEvent )
     {
@@ -119,7 +121,7 @@ public class InspectUnloadedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.unloadEvent );
                 newDelivery.transportStatus().set( IN_PORT );
                 newDelivery.isUnloadedAtDestination().set( false );
@@ -203,7 +205,7 @@ public class InspectUnloadedCargo extends Context
                 ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
                 nextHandlingEvent.prototype().handlingEventType().set( LOAD );
                 nextHandlingEvent.prototype().location().set( nextCarrierMovement.loadLocation().get() );
-                nextHandlingEvent.prototype().time().set( nextCarrierMovement.loadTime().get() );
+                nextHandlingEvent.prototype().date().set( nextCarrierMovement.loadDate().get() );
                 nextHandlingEvent.prototype().voyage().set( nextCarrierMovement.voyage().get() );
                 newDelivery.nextHandlingEvent().set( nextHandlingEvent.newInstance() );
 

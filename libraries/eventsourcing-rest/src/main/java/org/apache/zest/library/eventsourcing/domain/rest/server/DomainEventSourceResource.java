@@ -23,7 +23,6 @@ package org.apache.zest.library.eventsourcing.domain.rest.server;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.service.qualifier.Tagged;
@@ -38,11 +37,17 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.ext.atom.*;
+import org.restlet.ext.atom.Content;
+import org.restlet.ext.atom.Entry;
+import org.restlet.ext.atom.Feed;
+import org.restlet.ext.atom.Link;
+import org.restlet.ext.atom.Relation;
+import org.restlet.ext.atom.Text;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 
+import static java.util.Date.from;
 import static org.apache.zest.functional.Iterables.iterable;
 
 /**
@@ -187,13 +192,14 @@ public class DomainEventSourceResource
         }
 */
 
-        Date lastModified = null;
+        java.util.Date lastModified = null;
         for (UnitOfWorkDomainEventsValue eventsValue : eventsValues)
         {
             Entry entry = new Entry();
             entry.setTitle( new Text( eventsValue.usecase().get() + "(" + eventsValue.user().get() + ")" ) );
-            entry.setPublished( new Date( eventsValue.timestamp().get() ) );
-            entry.setModificationDate( lastModified = new Date( eventsValue.timestamp().get() ) );
+            entry.setPublished( from( eventsValue.timestamp().get() ) );
+            lastModified = from( eventsValue.timestamp().get() );
+            entry.setModificationDate( lastModified );
             entry.setId( Long.toString( startEvent + 1 ) );
             startEvent++;
             Content content = new Content();

@@ -20,7 +20,6 @@ package org.apache.zest.library.appbrowser;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;

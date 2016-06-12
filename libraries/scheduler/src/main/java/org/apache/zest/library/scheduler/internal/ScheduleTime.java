@@ -19,22 +19,23 @@
  */
 package org.apache.zest.library.scheduler.internal;
 
+import java.time.Instant;
 import org.apache.zest.api.util.NullArgumentException;
 
 public final class ScheduleTime
     implements Comparable<ScheduleTime>
 {
     private final String scheduleIdentity;
-    private final long nextTime;
+    private final Instant nextTime;
 
-    public ScheduleTime( String scheduleIdentity, long nextTime )
+    public ScheduleTime( String scheduleIdentity, Instant nextTime )
     {
         NullArgumentException.validateNotEmpty( "scheduleIdentity", scheduleIdentity );
         this.scheduleIdentity = scheduleIdentity;
         this.nextTime = nextTime;
     }
 
-    public long nextTime()
+    public Instant nextTime()
     {
         return nextTime;
     }
@@ -52,7 +53,7 @@ public final class ScheduleTime
             return 0;
         }
 
-        if( this.nextTime < another.nextTime )
+        if( this.nextTime.isBefore(another.nextTime) )
         {
             return -1;
         }

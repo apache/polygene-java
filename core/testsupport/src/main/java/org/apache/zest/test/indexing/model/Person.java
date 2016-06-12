@@ -21,11 +21,11 @@ package org.apache.zest.test.indexing.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Map;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -86,10 +86,10 @@ public interface Person
     Property<BigDecimal> bigDecimal();
 
     @Optional
-    Property<Date> dateValue();
+    Property<Instant> instantValue();
 
     @Optional
-    Property<DateTime> dateTimeValue();
+    Property<ZonedDateTime> dateTimeValue();
 
     @Optional
     Property<LocalDateTime> localDateTimeValue();

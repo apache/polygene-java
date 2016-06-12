@@ -21,10 +21,9 @@
 package org.apache.zest.library.eventsourcing.application.source.helper;
 
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import org.apache.zest.api.util.Methods;
 import org.apache.zest.functional.Iterables;
@@ -43,14 +42,14 @@ public class ApplicationEvents
 {
     public static Iterable<ApplicationEvent> events( Iterable<TransactionApplicationEvents> transactions )
     {
-        List<Iterable<ApplicationEvent>> events = new ArrayList<Iterable<ApplicationEvent>>();
+        List<Iterable<ApplicationEvent>> events = new ArrayList<>();
         for (TransactionApplicationEvents transactionDomain : transactions)
         {
             events.add( transactionDomain.events().get() );
         }
 
         Iterable<ApplicationEvent>[] iterables = (Iterable<ApplicationEvent>[]) new Iterable[events.size()];
-        return Iterables.flatten( events.<Iterable<ApplicationEvent>>toArray( iterables ) );
+        return Iterables.flatten( events.toArray( iterables ) );
     }
 
     public static Iterable<ApplicationEvent> events( TransactionApplicationEvents... transactionDomains )
@@ -120,57 +119,31 @@ public class ApplicationEvents
 //        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
-    public static Predicate<ApplicationEvent> afterDate( final Date afterDate )
+    public static Predicate<ApplicationEvent> afterDate( final Instant afterDate )
     {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
-            {
-                return event.on().get().after( afterDate );
-            }
-        };
+        return event -> event.on().get().isAfter( afterDate );
     }
 
-    public static Predicate<ApplicationEvent> beforeDate( final Date beforeDate )
+    public static Predicate<ApplicationEvent> beforeDate( final Instant beforeDate )
     {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
-            {
-                return event.on().get().before( beforeDate );
-            }
-        };
+        return event -> event.on().get().isBefore( beforeDate );
     }
 
     public static Predicate<ApplicationEvent> withUsecases( final String... names )
     {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
+        return event -> {
+            for (String name : names)
             {
-                for (String name : names)
-                {
-                    if (event.usecase().get().equals( name ))
-                        return true;
-                }
-                return false;
+                if (event.usecase().get().equals( name ))
+                    return true;
             }
+            return false;
         };
     }
 
     public static Predicate<ApplicationEvent> paramIs( final String name, final String value )
     {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
-            {
-                return ApplicationEventParameters.getParameter( event, name ).equals( value );
-            }
-        };
+        return event -> ApplicationEventParameters.getParameter( event, name ).equals( value );
     }
 
     public static Output<TransactionApplicationEvents, ApplicationEventReplayException> playEvents( final ApplicationEventPlayer player, final Object eventHandler )

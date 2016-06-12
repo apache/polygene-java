@@ -19,7 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
@@ -57,9 +58,9 @@ public class BookNewCargo extends Context
 
     private Location origin;
     private Location destination;
-    private Date arrivalDeadline;
+    private LocalDate arrivalDeadline;
 
-    public BookNewCargo( CargoFactory cargoFactory, Location origin, Location destination, Date arrivalDeadline )
+    public BookNewCargo( CargoFactory cargoFactory, Location origin, Location destination, LocalDate arrivalDeadline )
         throws Exception
     {
         bookingSystem = rolePlayer( BookingSystemRole.class, cargoFactory );
@@ -68,7 +69,7 @@ public class BookNewCargo extends Context
         this.arrivalDeadline = arrivalDeadline;
     }
 
-    public BookNewCargo( String originId, String destinationId, Date deadline )
+    public BookNewCargo( String originId, String destinationId, LocalDate deadline )
         throws Exception
     {
         this( loadEntity( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID ),
@@ -110,14 +111,14 @@ public class BookNewCargo extends Context
             public TrackingId createCargo( String trackingIdString )
                 throws Exception
             {
-                Date earliestDeparture = new Date();
+                LocalDate earliestDeparture = LocalDate.now();
                 RouteSpecification routeSpec = routeSpecFactory.build( c.origin,
                                                                        c.destination,
                                                                        earliestDeparture,
                                                                        c.arrivalDeadline );
 
                 ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
-                delivery.prototype().timestamp().set( new Date() );
+                delivery.prototype().timestamp().set( Instant.now() );
                 delivery.prototype().transportStatus().set( TransportStatus.NOT_RECEIVED );
                 delivery.prototype().routingStatus().set( RoutingStatus.NOT_ROUTED );
 

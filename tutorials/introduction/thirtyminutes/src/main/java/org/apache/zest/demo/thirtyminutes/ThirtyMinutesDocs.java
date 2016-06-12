@@ -21,8 +21,8 @@ package org.apache.zest.demo.thirtyminutes;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.zest.api.common.Optional;
@@ -103,10 +103,7 @@ public class ThirtyMinutesDocs
 // START SNIPPET: 7
         QueryBuilder<Order> builder = queryBuilderFactory.newQueryBuilder( Order.class );
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime( new Date() );
-        cal.roll( Calendar.DAY_OF_MONTH, -90 );
-        Date last90days = cal.getTime();
+        LocalDate last90days = LocalDate.now().minusDays( 90 );
         Order template = templateFor( Order.class );
         builder.where( gt( template.createdDate(), last90days ) );
         Query<Order> query = uow.newQuery(builder);
@@ -125,10 +122,7 @@ public class ThirtyMinutesDocs
 // START SNIPPET: 8
         QueryBuilder<HasCustomer> builder = queryBuilderFactory.newQueryBuilder( HasCustomer.class );
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime( new Date() );
-        cal.roll( Calendar.MONTH, -1 );
-        Date lastMonth = cal.getTime();
+        LocalDate lastMonth = LocalDate.now().minusMonths( 1 );
         Order template1 = templateFor( Order.class );
         builder.where( gt( template1.createdDate(), lastMonth ) );
         Query<HasCustomer> query = uow.newQuery(builder);
@@ -149,7 +143,7 @@ public class ThirtyMinutesDocs
 
         void completed();
 
-        Property<Date> createdDate();
+        Property<LocalDate> createdDate();
     }
 
 

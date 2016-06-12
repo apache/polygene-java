@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -62,7 +62,7 @@ public class InspectUnloadedCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, LocalDate.now(), deadline = DAY24 );
         delivery = delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Unloaded_CARGO" );
         trackingId = cargo.trackingId().get();
@@ -334,7 +334,7 @@ public class InspectUnloadedCargoTest extends TestApplication
         // Itinerary should have progressed to leg 5
         Leg nextCarrierMovement = itinerary.leg( cargo.delivery().get().itineraryProgressIndex().get() );
         assertThat( nextCarrierMovement.loadLocation().get(), is( equalTo( ROTTERDAM ) ) );
-        assertThat( nextCarrierMovement.loadTime().get(), is( equalTo( DAY20 ) ) );
+        assertThat( nextCarrierMovement.loadDate().get(), is( equalTo( DAY20 ) ) );
         assertThat( nextCarrierMovement.voyage().get(), is( equalTo( V203 ) ) );
 
         assertDelivery( UNLOAD, ROTTERDAM, DAY17, V202,

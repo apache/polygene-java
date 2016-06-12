@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.registration.exception;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 
 /**
@@ -27,9 +27,9 @@ import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.par
  */
 public final class ChronologicalException extends CannotRegisterHandlingEventException
 {
-    Date lastCompletionTime;
+    private LocalDate lastCompletionTime;
 
-    public ChronologicalException( ParsedHandlingEventData parsedHandlingEventData, Date lastCompletionTime )
+    public ChronologicalException( ParsedHandlingEventData parsedHandlingEventData, LocalDate lastCompletionTime )
     {
         super( parsedHandlingEventData );
         this.lastCompletionTime = lastCompletionTime;

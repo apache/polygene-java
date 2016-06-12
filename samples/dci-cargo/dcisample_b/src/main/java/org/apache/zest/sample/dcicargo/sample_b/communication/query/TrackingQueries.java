@@ -71,7 +71,7 @@ public class TrackingQueries extends Queries
                 QueryBuilder<HandlingEventEntity> qb = qbf.newQueryBuilder( HandlingEventEntity.class )
                     .where( QueryExpressions.eq( eventTemplate.trackingId().get().id(), trackingIdString ) );
                 return uowf.currentUnitOfWork().newQuery( qb )
-                    .orderBy( orderBy( eventTemplate.completionTime() ) );
+                    .orderBy( orderBy( eventTemplate.completionDate() ) );
             }
         };
     }

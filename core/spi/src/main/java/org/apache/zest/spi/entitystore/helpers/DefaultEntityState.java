@@ -61,10 +61,10 @@ public final class DefaultEntityState
               identity,
               EntityStatus.NEW,
               entityDescriptor,
-              new HashMap<QualifiedName, Object>(),
-              new HashMap<QualifiedName, EntityReference>(),
-              new HashMap<QualifiedName, List<EntityReference>>(),
-              new HashMap<QualifiedName, Map<String, EntityReference>>() );
+              new HashMap<>(),
+              new HashMap<>(),
+              new HashMap<>(),
+              new HashMap<>() );
     }
 
     public DefaultEntityState( String version,

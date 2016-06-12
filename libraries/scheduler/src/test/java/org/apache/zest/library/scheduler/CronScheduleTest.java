@@ -20,16 +20,16 @@
 
 package org.apache.zest.library.scheduler;
 
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class CronScheduleTest extends AbstractZestTest
@@ -53,16 +53,16 @@ public class CronScheduleTest extends AbstractZestTest
         builder1.instance().name().set( "abc" );
         Task task = builder1.newInstance();
         EntityBuilder<CronSchedule> builder = work.newEntityBuilder( CronSchedule.class );
-        builder.instance().start().set( DateTime.now() );
+        builder.instance().start().set( Instant.now() );
         builder.instance().task().set( task );
         builder.instance().cronExpression().set( "*/15 * * * * *" );
         CronSchedule schedule = builder.newInstance();
-        long nextRun = schedule.nextRun( System.currentTimeMillis() );
+        Instant nextRun = schedule.nextRun( Instant.now());
         for( int i = 0; i < 1000; i++ )
         {
-            long previousRun = nextRun;
+            Instant previousRun = nextRun;
             nextRun = schedule.nextRun( previousRun ); 
-            assertThat( "nextRun( previousRun + 1s ) @" + i, nextRun, is( previousRun + 15000 ) );
+            assertThat( "nextRun( previousRun + 1s ) @" + i, nextRun, equalTo( previousRun.plusSeconds( 15 )) );
         }
         work.discard();
     }

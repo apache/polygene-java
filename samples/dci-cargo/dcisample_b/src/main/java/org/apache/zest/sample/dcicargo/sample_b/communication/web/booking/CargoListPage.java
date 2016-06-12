@@ -19,8 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.communication.web.booking;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.wicket.Session;
 import org.apache.wicket.devutils.stateless.StatelessComponent;
@@ -40,6 +40,8 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.color.Erro
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.link.LinkPanel;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.prevnext.PrevNext;
 
+import static java.time.ZoneOffset.UTC;
+import static java.util.Date.from;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.UNKNOWN;
 import static org.apache.zest.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CUSTOMS;
 
@@ -74,7 +76,7 @@ public class CargoListPage extends BookingBasePage
                 // Route specification
                 RouteSpecification routeSpec = cargo.routeSpecification().get();
                 String destination = routeSpec.destination().get().getCode();
-                Date deadline = routeSpec.arrivalDeadline().get();
+                LocalDate deadline = routeSpec.arrivalDeadline().get();
 
                 // Routing status
                 Delivery delivery = cargo.delivery().get();
@@ -98,9 +100,11 @@ public class CargoListPage extends BookingBasePage
 
                 item.add( new Label( "destination", destination ) );
 
-                item.add( new Label( "deadline", new Model<Date>( deadline ) ) );
+                item.add( new Label( "deadline",
+                                     new Model<>( from( deadline.atStartOfDay().plusDays( 1 ).toInstant( UTC ) ) ) ) );
 
-                item.add( new Label( "routingStatus", routingStatus.toString() ).add( new ErrorColor( isMisrouted ) ) );
+                item.add( new Label( "routingStatus",
+                                     routingStatus.toString() ).add( new ErrorColor( isMisrouted ) ) );
 
                 String customsLabel = transportStatus.name() + ( inCustoms ? " (CUSTOMS)" : "" );
                 item.add( new Label( "transportStatus", customsLabel ).add( new ErrorColor( isHiJacked ) ) );

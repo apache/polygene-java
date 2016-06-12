@@ -24,11 +24,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,14 +51,10 @@ import org.apache.zest.api.type.MapType;
 import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 import static org.apache.zest.functional.Iterables.empty;
 
@@ -80,8 +83,8 @@ import static org.apache.zest.functional.Iterables.empty;
  * <li>BigInteger and BigDecimal depends on {@link org.apache.zest.api.value.ValueSerializer.Options};</li>
  * <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
  * <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
- * <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#LocalDateTime(java.lang.Object)} accept as {@literal instant};</li>
- * <li>LocalDate (JodaTime) as whatever {@link LocalDate#LocalDate(java.lang.Object)} accept as {@literal instant};</li>
+ * <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#parse} accept as {@literal instant};</li>
+ * <li>LocalDate (JodaTime) as whatever {@link LocalDate#parse} accept as {@literal instant};</li>
  * </ul>
  *
  * @param <InputType>     Implementor pull-parser type
@@ -157,10 +160,14 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( BigInteger.class, input -> new BigInteger( input.toString() ) );
 
         // Date types
-        registerDeserializer( Date.class, input -> Dates.fromString( input.toString() ) );
-        registerDeserializer( DateTime.class, input -> DateTime.parse( input.toString() ) );
-        registerDeserializer( LocalDateTime.class, LocalDateTime::new );
-        registerDeserializer( LocalDate.class, LocalDate::new );
+        registerDeserializer( Instant.class, input -> Instant.parse( input.toString() ) );
+        registerDeserializer( ZonedDateTime.class, input -> ZonedDateTime.parse( input.toString() ) );
+        registerDeserializer( OffsetDateTime.class, input -> OffsetDateTime.parse( input.toString() ) );
+        registerDeserializer( LocalDateTime.class, input -> LocalDateTime.parse( input.toString() ) );
+        registerDeserializer( LocalDate.class, input -> LocalDate.parse( input.toString() ));
+        registerDeserializer( LocalTime.class, input -> LocalTime.parse( input.toString() ));
+        registerDeserializer( Duration.class, input -> Duration.parse( input.toString() ));
+        registerDeserializer( Period.class, input -> Period.parse( input.toString() ));
 
         // Other supported types
         registerDeserializer( EntityReference.class, input -> EntityReference.parseEntityReference( input.toString() ) );

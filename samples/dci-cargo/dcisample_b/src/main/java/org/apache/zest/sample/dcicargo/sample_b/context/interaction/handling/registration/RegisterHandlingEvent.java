@@ -208,8 +208,8 @@ public class RegisterHandlingEvent extends Context
 
                 try
                 {
-                    return eventFactory.createHandlingEvent( c.eventData.registrationTime().get(),
-                                                             c.eventData.completionTime().get(),
+                    return eventFactory.createHandlingEvent( c.eventData.registrationDate().get(),
+                                                             c.eventData.completionDate().get(),
                                                              trackingId,
                                                              c.eventData.handlingEventType().get(),
                                                              location,

@@ -24,7 +24,6 @@ import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -72,10 +71,10 @@ public interface PostgreSQLTypeHelper
                         (Character) primitive
                     }, 0 );
                 }
-                else if( primitive instanceof Date )
-                {
-                    primitive = new Timestamp( ( (Date) primitive ).getTime() );
-                }
+//                else if( primitive instanceof Date )
+//                {
+//                    primitive = new Timestamp( ( (Date) primitive ).getTime() );
+//                }
                 else if( primitive instanceof Byte )
                 {
                     primitive = (short) (Byte) primitive;

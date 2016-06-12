@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.eventsourcing.application.factory;
 
+import java.time.Instant;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -37,8 +38,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.library.eventsourcing.application.api.ApplicationEvent;
 import org.apache.zest.library.eventsourcing.domain.spi.CurrentUser;
-
-import java.util.Date;
 
 /**
  * DomainEventValue factory
@@ -77,7 +76,7 @@ public interface ApplicationEventFactoryService
 
             ApplicationEvent prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.on().set( new Date() );
+            prototype.on().set( Instant.now() );
 
             prototype.identity().set( idGenerator.generate( ApplicationEvent.class ) );
 

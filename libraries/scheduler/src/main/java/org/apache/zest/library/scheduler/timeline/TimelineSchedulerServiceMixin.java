@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.scheduler.timeline;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -93,7 +94,7 @@ public abstract class TimelineSchedulerServiceMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( long from, long to )
+    public Iterable<TimelineRecord> getRecords( Instant from, Instant to )
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
 

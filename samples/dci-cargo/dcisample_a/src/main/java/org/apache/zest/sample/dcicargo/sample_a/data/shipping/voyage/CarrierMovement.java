@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
@@ -37,7 +37,7 @@ public interface CarrierMovement
 
     Association<Location> arrivalLocation();
 
-    Property<Date> departureTime();
+    Property<LocalDate> departureDate();
 
-    Property<Date> arrivalTime();
+    Property<LocalDate> arrivalDate();
 }

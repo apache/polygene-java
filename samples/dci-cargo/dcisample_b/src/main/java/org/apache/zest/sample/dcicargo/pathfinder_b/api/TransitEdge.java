@@ -20,7 +20,7 @@
 package org.apache.zest.sample.dcicargo.pathfinder_b.api;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Represents an edge in a path through a graph,
@@ -32,23 +32,23 @@ public final class TransitEdge implements Serializable
     private final String voyageNumber;
     private final String fromUnLocode;
     private final String toUnLocode;
-    private final Date fromDate;
-    private final Date toDate;
+    private final LocalDate fromDate;
+    private final LocalDate toDate;
 
     /**
      * Constructor.
      *
-     * @param voyageNumber
-     * @param fromUnLocode
-     * @param toUnLocode
-     * @param fromDate
-     * @param toDate
+     * @param voyageNumber The voyage number
+     * @param fromUnLocode The UNLO code of the originating port
+     * @param toUnLocode  The UNLO code of the destination port
+     * @param fromDate The starting date of the voyage
+     * @param toDate The last day of the voyage
      */
     public TransitEdge( final String voyageNumber,
                         final String fromUnLocode,
                         final String toUnLocode,
-                        final Date fromDate,
-                        final Date toDate
+                        final LocalDate fromDate,
+                        final LocalDate toDate
     )
     {
         this.voyageNumber = voyageNumber;
@@ -73,12 +73,12 @@ public final class TransitEdge implements Serializable
         return toUnLocode;
     }
 
-    public Date getFromDate()
+    public LocalDate getFromDate()
     {
         return fromDate;
     }
 
-    public Date getToDate()
+    public LocalDate getToDate()
     {
         return toDate;
     }

@@ -19,11 +19,10 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Before;
-import org.junit.Test;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.apache.zest.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
@@ -39,10 +38,19 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingE
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.*;
+import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.CLAIM;
+import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.CUSTOMS;
+import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.LOAD;
+import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.UNLOAD;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of the Build Delivery Snapshot subfunction use case.
@@ -56,9 +64,9 @@ import static org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling.Ha
  * FIXME: Test methods call each other to allow ordered execution, ie. tests are not indepedants !
  */
 public class BuildDeliverySnapshotTest
-      extends TestApplication
+    extends TestApplication
 {
-    final Date TODAY = new Date();
+    private final LocalDate TODAY = LocalDate.now();
 
     private Location HONGKONG;
     private Location STOCKHOLM;
@@ -110,36 +118,40 @@ public class BuildDeliverySnapshotTest
             leg( V200T, NEWYORK, DALLAS, day( 9 ), day( 12 ) ),
             leg( V300A, DALLAS, STOCKHOLM, day( 13 ), day( 16 ) )
         );
-
-
     }
 
     // DERIVE WITH ROUTE SPECIFICATION ==============================================================================
 
     @Test( expected = RouteException.class )
-    public void deviation_2a_InvalidRouteSpecification_sameLocations() throws Exception
+    public void deviation_2a_InvalidRouteSpecification_sameLocations()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, HONGKONG, day( 20 ) );
         new BuildDeliverySnapshot( routeSpec ).get();
     }
 
     @Test( expected = RouteException.class )
-    public void deviation_2b_InvalidRouteSpecification_tooEarlyDeadline() throws Exception
+    public void deviation_2b_InvalidRouteSpecification_tooEarlyDeadline()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, TODAY );
         new BuildDeliverySnapshot( routeSpec ).get();
     }
 
     @Test
-    public void deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification() throws Exception
+    public void deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, day( 20 ) );
         Delivery delivery = new BuildDeliverySnapshot( routeSpec ).get();
 
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
+        assertThat( delivery.timestamp().get().isAfter( TODAY.atStartOfDay().toInstant( ZoneOffset.UTC ) ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
         assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
@@ -150,11 +162,11 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
     }
 
-
     // DERIVE WITH NON-ROUTED CARGO ==============================================================================
 
     @Test
-    public void deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo() throws Exception
+    public void deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo()
+        throws Exception
     {
         deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification();
 
@@ -162,13 +174,14 @@ public class BuildDeliverySnapshotTest
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, day( 20 ) );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         Delivery delivery = new BuildDeliverySnapshot( routeSpec ).get();
-        Cargo cargo = CARGOS.createCargo( routeSpec, delivery, "ABCD" );
+        CARGOS.createCargo( routeSpec, delivery, "ABCD" );
 
         // Same as previous test (just build from cargo instead)
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
+        assertThat( delivery.timestamp().get().isAfter( TODAY.atStartOfDay().toInstant( ZoneOffset.UTC ) ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(),
+                    is( equalTo( HandlingEventType.RECEIVE ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
         assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
@@ -179,11 +192,11 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
     }
 
-
     // DERIVE WITH ROUTE SPECIFICATION + ITINERARY (Routed cargo) ==============================================
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_wrongOrigin() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_wrongOrigin()
+        throws Exception
     {
         deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo();
 
@@ -205,7 +218,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_wrongDestination() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_wrongDestination()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_wrongOrigin();
 
@@ -220,7 +234,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_missedDeadline() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_missedDeadline()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_wrongDestination();
 
@@ -230,17 +245,18 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo ).get();
 
         // Route specification not satisfied by itinerary
-        assertFalse( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
+        assertFalse( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
     }
 
     @Test
-    public void deviation_3a_CargoHasNoHandlingHistory() throws Exception
+    public void deviation_3a_CargoHasNoHandlingHistory()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_missedDeadline();
 
-        Date arrival = day( 16 );
-        Date deadline = day( 20 );
+        LocalDate arrival = day( 16 );
+        LocalDate deadline = day( 20 );
         // Itinerary will satisfy route specification
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, deadline );
         cargo.routeSpecification().set( routeSpec );
@@ -249,12 +265,18 @@ public class BuildDeliverySnapshotTest
         // Route specification satisfied by itinerary
         assertThat( itinerary.firstLeg().loadLocation().get(), is( equalTo( routeSpec.origin().get() ) ) );
         assertThat( itinerary.lastLeg().unloadLocation().get(), is( equalTo( routeSpec.destination().get() ) ) );
-        assertTrue( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
+        assertTrue( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
 
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
+        assertThat( delivery.timestamp()
+                        .get()
+                        .isAfter( TODAY.atStartOfDay()
+                                      .toInstant( ZoneOffset.UTC ) ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
         assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
@@ -265,11 +287,11 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
     }
 
-
     // DERIVE WITH ROUTE SPECIFICATION + ITINERARY + LAST HANDLING EVENT ============================================
 
     @Test
-    public void deviation_4a_RECEIVE_1a_UnexpectedPort() throws Exception
+    public void deviation_4a_RECEIVE_1a_UnexpectedPort()
+        throws Exception
     {
         deviation_3a_CargoHasNoHandlingHistory();
 
@@ -295,7 +317,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4a_RECEIVE_1b_ExpectedPort() throws Exception
+    public void deviation_4a_RECEIVE_1b_ExpectedPort()
+        throws Exception
     {
         deviation_4a_RECEIVE_1a_UnexpectedPort();
 
@@ -317,9 +340,9 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
     }
 
-
     @Test
-    public void deviation_4b_LOAD_2a_UnexpectedPort() throws Exception
+    public void deviation_4b_LOAD_2a_UnexpectedPort()
+        throws Exception
     {
         deviation_4a_RECEIVE_1b_ExpectedPort();
 
@@ -341,7 +364,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4b_LOAD_2b_ExpectedPort() throws Exception
+    public void deviation_4b_LOAD_2b_ExpectedPort()
+        throws Exception
     {
         deviation_4b_LOAD_2a_UnexpectedPort();
 
@@ -365,7 +389,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary() throws Exception
+    public void deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary()
+        throws Exception
     {
         deviation_4b_LOAD_2b_ExpectedPort();
 
@@ -387,7 +412,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary() throws Exception
+    public void deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary()
+        throws Exception
     {
         deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary();
 
@@ -414,9 +440,9 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V200T ) ) );
     }
 
-
     @Test
-    public void deviation_4c_UNLOAD_1a_UnexpectedPort() throws Exception
+    public void deviation_4c_UNLOAD_1a_UnexpectedPort()
+        throws Exception
     {
         deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary();
 
@@ -455,7 +481,7 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
 
         // Old planned arrival time is still satisfying new deadline
-        assertTrue( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
+        assertTrue( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
 
         // We don't know what's next before a new itinerary has been chosen
         assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
@@ -474,10 +500,10 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
 
         // New itinerary that satisfy the new route specification. New origin departure from Tokyo.
-        Date arrival= day( 19 );
+        LocalDate arrival = day( 19 );
         itinerary = itinerary(
-              leg( V400S, TOKYO, HAMBURG, day( 9 ), day( 16 ) ),
-              leg( V500S, HAMBURG, STOCKHOLM, day( 17 ), arrival  )
+            leg( V400S, TOKYO, HAMBURG, day( 9 ), day( 16 ) ),
+            leg( V500S, HAMBURG, STOCKHOLM, day( 17 ), arrival )
         );
 
         // Customer reroutes cargo. This is a possible step in the cargo booking process.
@@ -509,7 +535,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4c_UNLOAD_1b_ExpectedMidpointLocation() throws Exception
+    public void deviation_4c_UNLOAD_1b_ExpectedMidpointLocation()
+        throws Exception
     {
         deviation_4c_UNLOAD_1a_UnexpectedPort();
 
@@ -535,7 +562,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4c_UNLOAD_1c_Destination() throws Exception
+    public void deviation_4c_UNLOAD_1c_Destination()
+        throws Exception
     {
         deviation_4c_UNLOAD_1b_ExpectedMidpointLocation();
 
@@ -562,9 +590,9 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
     }
 
-
     @Test
-    public void deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort() throws Exception
+    public void deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort()
+        throws Exception
     {
         deviation_4c_UNLOAD_1c_Destination();
 
@@ -589,9 +617,9 @@ public class BuildDeliverySnapshotTest
         assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
     }
 
-
     @Test
-    public void deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort() throws Exception
+    public void deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort()
+        throws Exception
     {
         deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort();
 
@@ -617,7 +645,8 @@ public class BuildDeliverySnapshotTest
     }
 
     @Test
-    public void deviation_4e_CLAIM_1b_CargoIsInDestinationPort() throws Exception
+    public void deviation_4e_CLAIM_1b_CargoIsInDestinationPort()
+        throws Exception
     {
         deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort();
 

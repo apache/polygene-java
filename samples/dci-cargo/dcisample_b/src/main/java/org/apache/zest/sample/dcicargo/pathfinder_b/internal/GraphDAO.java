@@ -19,10 +19,10 @@
  */
 package org.apache.zest.sample.dcicargo.pathfinder_b.internal;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.apache.zest.sample.dcicargo.pathfinder_b.api.TransitEdge;
@@ -30,42 +30,36 @@ import org.apache.zest.sample.dcicargo.pathfinder_b.api.TransitPath;
 
 public class GraphDAO
 {
+    private List<TransitPath> voyages = new ArrayList<>();
 
-    private static final Random random = new Random();
-    private static final long ONE_MIN_MS = 1000 * 60;
-    private static final long ONE_HOUR_MS = ONE_MIN_MS * 60;
-    private static final long ONE_DAY_MS = ONE_HOUR_MS * 24;
-
-    private List<TransitPath> voyages = new ArrayList<TransitPath>();
-
-    public List<String> listLocations()
+    private List<String> listLocations()
     {
-        return new ArrayList<String>( Arrays.asList(
+        return new ArrayList<>( Arrays.asList(
             "CNHKG", "AUMEL", "SESTO", "FIHEL", "USCHI", "JNTKO", "DEHAM", "CNSHA", "NLRTM", "SEGOT", "CNHGH", "SOMGQ", "USNYC", "USDAL"
         ) );
     }
 
-    public List<TransitPath> voyages()
+    List<TransitPath> voyages()
     {
         if( voyages.size() > 0 )
         {
             return voyages;
         }
 
-        Date departureDate = new Date();
+        LocalDate departureDate = LocalDate.now();
         for( int i = 0; i < 50; i++ )
         {
             List<String> locations = getRandomChunkOfLocations( listLocations() );
-            final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>( locations.size() - 1 );
+            final List<TransitEdge> transitEdges = new ArrayList<>( locations.size() - 1 );
             final String voyageNumber = "V" + ( 101 + i );
 
             // Origin and destination of voyage schedule
             String from = locations.remove( 0 );
             String destination = locations.remove( 0 );
 
-            Date date = nextDate( departureDate );
-            Date fromDate;
-            Date toDate;
+            LocalDate date = nextDate( departureDate );
+            LocalDate fromDate;
+            LocalDate toDate;
 
             // Carrier movements
             for( final String to : locations )
@@ -90,9 +84,9 @@ public class GraphDAO
         return voyages;
     }
 
-    private Date nextDate( Date date )
+    private LocalDate nextDate( LocalDate date )
     {
-        return new Date( date.getTime() + ONE_DAY_MS + ( random.nextInt( 1000 ) - 500 ) * ONE_MIN_MS );
+        return date.plusDays(1);
     }
 
     private List<String> getRandomChunkOfLocations( List<String> allLocations )

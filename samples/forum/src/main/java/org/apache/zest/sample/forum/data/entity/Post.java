@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.forum.data.entity;
 
-import java.util.Date;
+import java.time.Instant;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
@@ -50,5 +50,5 @@ public interface Post
 
     Property<User> createdBy();
 
-    Property<Date> createdOn();
+    Property<Instant> createdOn();
 }

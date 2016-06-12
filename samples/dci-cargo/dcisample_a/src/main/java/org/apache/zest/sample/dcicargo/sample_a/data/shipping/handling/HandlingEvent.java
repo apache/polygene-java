@@ -19,7 +19,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.data.shipping.handling;
 
-import java.util.Date;
+import java.time.LocalDate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
@@ -49,10 +49,10 @@ import org.apache.zest.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 public interface HandlingEvent
 {
     @Immutable
-    Property<Date> registrationTime();
+    Property<LocalDate> registrationDate();
 
     @Immutable
-    Property<Date> completionTime();
+    Property<LocalDate> completionDate();
 
     @Immutable
     Property<TrackingId> trackingId();

@@ -207,8 +207,8 @@ public class JacksonValueDeserializer
         }
         if( token != JsonToken.START_OBJECT )
         {
-            throw new ValueSerializationException( "Expected an object start at "
-                                                   + input.getCurrentLocation().toString() );
+            String message = "Expected an object start at " + input.getCurrentLocation().toString();
+            throw new ValueSerializationException( message );
         }
         return (ObjectNode) input.readValueAsTree();
     }

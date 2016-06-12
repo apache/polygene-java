@@ -19,7 +19,6 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap;
 
-import java.util.Date;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.datetime.PatternDateConverter;
@@ -44,20 +43,21 @@ public class DCISampleApplication_a
 {
     public void wicketInit()
     {
-        // Tabs and SEO urls
+        // Tabs and SEO urls.
         mountPages();
 
-        // Show/hide Ajax debugging
+        // Show/hide Ajax debugging.
         getDebugSettings().setDevelopmentUtilitiesEnabled( true );
 
-        // Check that components are stateless when required
+        // Check that components are stateless when required.
         getComponentPostOnBeforeRenderListeners().add( new StatelessChecker() );
 
-        // Show/hide wicket tags in html code
+        // Show/hide wicket tags in html code.
         getMarkupSettings().setStripWicketTags( true );
 
         // Default date format (we don't care for now about the hour of the day)
-        ( (ConverterLocator) getConverterLocator() ).set( Date.class, new PatternDateConverter( "yyyy-MM-dd", true ) );
+        ( (ConverterLocator) getConverterLocator() ).set( java.util.Date.class,
+                                                          new PatternDateConverter( "yyyy-MM-dd", true ) );
     }
 
     private void mountPages()

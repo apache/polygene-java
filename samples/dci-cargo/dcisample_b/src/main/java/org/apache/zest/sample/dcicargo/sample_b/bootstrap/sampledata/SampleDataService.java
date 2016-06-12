@@ -19,8 +19,8 @@
  */
 package org.apache.zest.sample.dcicargo.sample_b.bootstrap.sampledata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -57,9 +57,6 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinera
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +144,7 @@ public interface SampleDataService
                     routeSpec.print();
 
                     NextHandlingEvent nextEvent = null;
-                    Date time = null;
+                    LocalDate date = null;
                     String port = null;
                     String voyageNumber = null;
                     Voyage voyage;
@@ -182,8 +179,7 @@ public interface SampleDataService
                         }
 
                         final RouteSpecification unsatisfiedRouteSpec =
-                            routeSpecFactory.build( origin, badDest, new Date(), new DateTime().plusDays( 25 )
-                                .toDate() );
+                            routeSpecFactory.build( origin, badDest, LocalDate.now(), LocalDate.now().plusDays( 25 ) );
                         cargo.routeSpecification().set( unsatisfiedRouteSpec );
 
                         new InspectUnhandledCargo( cargo ).inspect();
@@ -194,7 +190,7 @@ public interface SampleDataService
                     {
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
                         port = nextEvent.location().get().getCode();
-                        final Date mockTime = new Date();
+                        final LocalDate mockTime = LocalDate.now();
                         registerEvent( mockTime, mockTime, trackingId, RECEIVE, port, null );
                     }
 
@@ -202,7 +198,7 @@ public interface SampleDataService
                     if( i == 15 )
                     {
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         port = nextEvent.location().get().getCode();
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
 
@@ -247,21 +243,21 @@ public interface SampleDataService
                         }
                         while( wrongVoyage == null && depth++ < 10 );
 
-                        registerEvent( time, time, trackingId, LOAD, port, wrongVoyage );
+                        registerEvent( date, date, trackingId, LOAD, port, wrongVoyage );
                     }
 
                     // LOAD
                     if( i > 15 )
                     {
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         port = nextEvent.location().get().getCode();
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        registerEvent( time, time, trackingId, LOAD, port, voyageNumber );
+                        registerEvent( date, date, trackingId, LOAD, port, voyageNumber );
 
                         // Cargo is now on board carrier
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         type = nextEvent.handlingEventType().get();
                         port = nextEvent.location().get().getCode();
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
@@ -282,21 +278,21 @@ public interface SampleDataService
                                 break;
                             }
                         }
-                        registerEvent( time, time, trackingId, UNLOAD, wrongPort, voyageNumber );
+                        registerEvent( date, date, trackingId, UNLOAD, wrongPort, voyageNumber );
                     }
 
                     // UNLOAD
                     if( i > 17 )
                     {
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         port = nextEvent.location().get().getCode();
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
-                        registerEvent( time, time, trackingId, UNLOAD, port, voyageNumber );
+                        registerEvent( date, date, trackingId, UNLOAD, port, voyageNumber );
 
                         // Cargo is now in midpoint location
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                        time = nextEvent.time().get();
+                        date = nextEvent.date().get();
                         type = nextEvent.handlingEventType().get();
                         port = nextEvent.location().get().getCode();
                     }
@@ -304,13 +300,13 @@ public interface SampleDataService
                     // CUSTOMS: Customs handling in midpoint location (doesn't affect misdirection status)
                     if( i == 19 )
                     {
-                        registerEvent( time, time, trackingId, CUSTOMS, port, null );
+                        registerEvent( date, date, trackingId, CUSTOMS, port, null );
                     }
 
                     // MISDIRECT: Unexpected claim before reaching destination
                     if( i == 20 )
                     {
-                        registerEvent( time, time, trackingId, CLAIM, port, null );
+                        registerEvent( date, date, trackingId, CLAIM, port, null );
                     }
 
                     // Complete all LOAD/UNLOADS
@@ -320,10 +316,10 @@ public interface SampleDataService
                         {
                             //noinspection ConstantConditions
                             voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
-                            registerEvent( time, time, trackingId, type, port, voyageNumber );
+                            registerEvent( date, date, trackingId, type, port, voyageNumber );
 
                             nextEvent = cargo.delivery().get().nextHandlingEvent().get();
-                            time = nextEvent.time().get();
+                            date = nextEvent.date().get();
                             port = nextEvent.location().get().getCode();
                             type = nextEvent.handlingEventType().get();
                         }
@@ -333,7 +329,7 @@ public interface SampleDataService
                     // CLAIM at destination - this ends the life cycle of the cargo delivery
                     if( i == 22 )
                     {
-                        registerEvent( time, time, trackingId, CLAIM, port, null );
+                        registerEvent( date, date, trackingId, CLAIM, port, null );
                     }
 
                     // Add more cases if needed...
@@ -372,7 +368,7 @@ public interface SampleDataService
             Location origin;
             Location destination;
             Random random = new Random();
-            Date deadline;
+            LocalDate deadline;
             String uuid;
             String id;
             try
@@ -388,9 +384,7 @@ public interface SampleDataService
                     }
                     while( destination.equals( origin ) );
 
-                    deadline = new LocalDate().plusDays( 35 + random.nextInt( 10 ) )
-                        .toDateTime( new LocalTime() )
-                        .toDate();
+                    deadline = LocalDate.now().plusDays( 35 + random.nextInt( 10 ) );
 
                     // Build sortable random tracking ids
                     uuid = UUID.randomUUID().toString().toUpperCase();
@@ -407,8 +401,8 @@ public interface SampleDataService
             }
         }
 
-        private void registerEvent( Date registrationTime,
-                                    Date completionTime,
+        private void registerEvent( LocalDate registrationDate,
+                                    LocalDate completionDate,
                                     String trackingIdString,
                                     HandlingEventType handlingEventType,
                                     String unLocodeString,
@@ -417,8 +411,8 @@ public interface SampleDataService
             throws Exception
         {
             ValueBuilder<ParsedHandlingEventData> event = vbf.newValueBuilder( ParsedHandlingEventData.class );
-            event.prototype().registrationTime().set( registrationTime );
-            event.prototype().completionTime().set( completionTime );
+            event.prototype().registrationDate().set( registrationDate );
+            event.prototype().completionDate().set( completionDate );
             event.prototype().trackingIdString().set( trackingIdString );
             event.prototype().handlingEventType().set( handlingEventType );
             event.prototype().unLocodeString().set( unLocodeString );
