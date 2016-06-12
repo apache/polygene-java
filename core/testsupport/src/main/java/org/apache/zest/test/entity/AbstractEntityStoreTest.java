@@ -21,9 +21,12 @@ package org.apache.zest.test.entity;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -112,6 +115,12 @@ public abstract class AbstractEntityStoreTest
         instance.dateTimeValue().set( refDate );
         instance.localDateTimeValue().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 00 ) );
         instance.localDateValue().set( LocalDate.of( 2020, 3, 4 ) );
+        instance.localTimeValue().set( LocalTime.of( 19, 20, 21 ) );
+
+        instance.duractionValue().set( Duration.between( LocalDateTime.of( 2010, 1, 2, 19, 20, 21 ),
+                                                         LocalDateTime.of( 2010, 1, 2, 20, 21, 22 ) ) );
+        instance.periodValue().set( Period.between( LocalDate.of( 2005, 12, 21 ), LocalDate.of( 2007, 1, 23 ) ) );
+
         instance.association().set( instance );
 
         ValueBuilder<Tjabba> valueBuilder4 = moduleInstance.newValueBuilder( Tjabba.class );
@@ -208,6 +217,18 @@ public abstract class AbstractEntityStoreTest
             assertThat( "property 'localDateValue' has correct value",
                         instance.localDateValue().get(),
                         equalTo( LocalDate.of( 2020, 3, 4 ) ) );
+
+            assertThat( "property 'localTimeValue' has correct value",
+                        instance.localTimeValue().get(),
+                        equalTo( LocalTime.of( 19, 20, 21 ) ) );
+
+            assertThat( "property 'periodValue' has correct value",
+                        instance.periodValue().get(),
+                        equalTo( Period.of( 1, 1, 2 ) ) );
+
+            assertThat( "property 'durationValue' has correct value",
+                        instance.duractionValue().get(),
+                        equalTo( Duration.ofSeconds( 3661 ) ) );
 
             assertThat( "property 'name' has correct value",
                         instance.name().get(),
@@ -517,6 +538,15 @@ public abstract class AbstractEntityStoreTest
 
         @Optional
         Property<LocalDate> localDateValue();
+
+        @Optional
+        Property<LocalTime> localTimeValue();
+
+        @Optional
+        Property<Period> periodValue();
+
+        @Optional
+        Property<Duration> duractionValue();
 
         @Optional
         Property<String> name();
