@@ -24,7 +24,6 @@ import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
-import org.apache.zest.library.sql.datasource.DataSourceConfigurationValue;
 
 public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
@@ -35,7 +34,7 @@ public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( DataSourceConfigurationValue.class ).visibleIn( Visibility.module );
+        module.values( DataSourceConfiguration.class ).visibleIn( Visibility.module );
         if( hasConfig() )
         {
             configModule().entities( DataSourceConfiguration.class ).visibleIn( configVisibility() );
