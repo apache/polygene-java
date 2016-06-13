@@ -29,6 +29,7 @@ def dnsJavaVersion = '2.1.7'
 def ehcacheVersion = '2.10.0'
 def elasticsearchVersion = '1.6.0'
 def freemarkerVersion = '2.3.22'
+def geodeVersion = '1.0.0-incubating.M2'
 def groovyVersion = '2.4.3'
 def h2Version = '1.4.187'
 def hazelcastVersion = '3.5'
@@ -193,6 +194,7 @@ rootProject.ext {
           jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
+          geode: "org.apache.geode:geode-core:$geodeVersion",
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
           jclouds_core: "org.apache.jclouds:jclouds-core:$jcloudsVersion",

@@ -265,6 +265,7 @@ allprojects {
         candidate.license = 'BSD 3-Clause'
       }
       if( candidate.group == 'org.apache.httpcomponents'
+          || candidate.group == 'net.java.dev.jna'
           || candidate.group == 'jdbm'
           || candidate.group == 'org.osgi'
           || candidate.group.startsWith( 'org.restlet' ) ) {

@@ -73,6 +73,10 @@ include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/entitystore-geode/src/docs/es-geode.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/entitystore-hazelcast/src/docs/es-hazelcast.txt[]
 
 :leveloffset: 2
