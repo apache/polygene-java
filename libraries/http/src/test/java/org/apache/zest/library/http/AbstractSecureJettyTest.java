@@ -26,15 +26,14 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,10 +44,8 @@ import org.junit.BeforeClass;
  * Use HttpClient in order to easily use different {@link SSLContext}s between server and client.
  */
 public abstract class AbstractSecureJettyTest
-        extends AbstractJettyTest
+    extends AbstractJettyTest
 {
-
-    private static final String HTTPS = "https";
     protected static final int HTTPS_PORT = 8441;
     protected static final String KS_PASSWORD = "changeit";
     protected static final String CLIENT_KEYSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-client-cert.jceks";
@@ -57,39 +54,39 @@ public abstract class AbstractSecureJettyTest
     protected static final File SERVER_KEYSTORE_FILE = new File( SERVER_KEYSTORE_PATH );
     protected static final String TRUSTSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-ca.jceks";
     protected static final File TRUSTSTORE_FILE = new File( TRUSTSTORE_PATH );
+
     // These two clients use a HostnameVerifier that don't do any check, don't do this in production code
-    protected HttpClient trustHttpClient;
-    protected HttpClient mutualHttpClient;
+    protected CloseableHttpClient trustHttpClient;
+    protected CloseableHttpClient mutualHttpClient;
 
     @Before
     public void beforeSecure()
-            throws GeneralSecurityException, IOException
+        throws GeneralSecurityException, IOException
     {
         // Trust HTTP Client
-        KeyStore truststore = KeyStore.getInstance( "JCEKS" );
-        truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
-
-        AllowAllHostnameVerifier verifier = new AllowAllHostnameVerifier();
-
-        DefaultHttpClient trustClient = new DefaultHttpClient();
-        SSLSocketFactory trustSslFactory = new SSLSocketFactory( truststore );
-        trustSslFactory.setHostnameVerifier( verifier );
-        SchemeRegistry trustSchemeRegistry = trustClient.getConnectionManager().getSchemeRegistry();
-        trustSchemeRegistry.unregister( HTTPS );
-        trustSchemeRegistry.register( new Scheme( HTTPS, HTTPS_PORT, trustSslFactory ) );
-        trustHttpClient = trustClient;
-
+        trustHttpClient = HttpClients.custom()
+                                     .setSSLHostnameVerifier( NoopHostnameVerifier.INSTANCE )
+                                     .setSSLContext( buildTrustSSLContext() )
+                                     .build();
         // Mutual HTTP Client
-        KeyStore keystore = KeyStore.getInstance( "JCEKS" );
-        keystore.load( new FileInputStream( CLIENT_KEYSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        mutualHttpClient = HttpClients.custom()
+                                      .setSSLHostnameVerifier( NoopHostnameVerifier.INSTANCE )
+                                      .setSSLContext( buildMutualSSLContext() )
+                                      .build();
+    }
 
-        DefaultHttpClient mutualClient = new DefaultHttpClient();
-        SSLSocketFactory mutualSslFactory = new SSLSocketFactory( keystore, KS_PASSWORD, truststore );
-        mutualSslFactory.setHostnameVerifier( verifier );
-        SchemeRegistry mutualSchemeRegistry = mutualClient.getConnectionManager().getSchemeRegistry();
-        mutualSchemeRegistry.unregister( HTTPS );
-        mutualSchemeRegistry.register( new Scheme( HTTPS, HTTPS_PORT, mutualSslFactory ) );
-        mutualHttpClient = mutualClient;
+    @After
+    public void afterSecure()
+        throws IOException
+    {
+        if( trustHttpClient != null )
+        {
+            trustHttpClient.close();
+        }
+        if( mutualHttpClient != null )
+        {
+            mutualHttpClient.close();
+        }
     }
 
     private static HostnameVerifier defaultHostnameVerifier;
@@ -97,26 +94,19 @@ public abstract class AbstractSecureJettyTest
 
     @BeforeClass
     public static void beforeSecureClass()
-            throws IOException, GeneralSecurityException
+        throws IOException, GeneralSecurityException
     {
         defaultHostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
         defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
         HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier()
         {
-
+            @Override
             public boolean verify( String string, SSLSession ssls )
             {
                 return true;
             }
-
         } );
-        KeyStore truststore = KeyStore.getInstance( "JCEKS" );
-        truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
-        SSLContext sslCtx = SSLContext.getInstance( "TLS" );
-        TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( getX509Algorithm() );
-        caTrustManagerFactory.init( truststore );
-        sslCtx.init( null, caTrustManagerFactory.getTrustManagers(), null );
-        HttpsURLConnection.setDefaultSSLSocketFactory( sslCtx.getSocketFactory() );
+        HttpsURLConnection.setDefaultSSLSocketFactory( buildTrustSSLContext().getSocketFactory() );
     }
 
     @AfterClass
@@ -131,4 +121,41 @@ public abstract class AbstractSecureJettyTest
         return System.getProperty( "java.vendor" ).contains( "IBM" ) ? "IbmX509" : "SunX509";
     }
 
+    private static SSLContext buildTrustSSLContext()
+        throws IOException, GeneralSecurityException
+    {
+        SSLContext sslCtx = SSLContext.getInstance( "TLS" );
+        TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( getX509Algorithm() );
+        caTrustManagerFactory.init( loadTrustStore() );
+        sslCtx.init( null, caTrustManagerFactory.getTrustManagers(), null );
+        return sslCtx;
+    }
+
+    private static SSLContext buildMutualSSLContext()
+        throws IOException, GeneralSecurityException
+    {
+        SSLContext sslCtx = SSLContext.getInstance( "TLS" );
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance( getX509Algorithm() );
+        keyManagerFactory.init( loadKeyStore(), KS_PASSWORD.toCharArray() );
+        TrustManagerFactory caTrustManagerFactory = TrustManagerFactory.getInstance( getX509Algorithm() );
+        caTrustManagerFactory.init( loadTrustStore() );
+        sslCtx.init( keyManagerFactory.getKeyManagers(), caTrustManagerFactory.getTrustManagers(), null );
+        return sslCtx;
+    }
+
+    private static KeyStore loadTrustStore()
+        throws IOException, GeneralSecurityException
+    {
+        KeyStore truststore = KeyStore.getInstance( "JCEKS" );
+        truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        return truststore;
+    }
+
+    private static KeyStore loadKeyStore()
+        throws IOException, GeneralSecurityException
+    {
+        KeyStore keystore = KeyStore.getInstance( "JCEKS" );
+        keystore.load( new FileInputStream( CLIENT_KEYSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        return keystore;
+    }
 }

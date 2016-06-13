@@ -20,7 +20,7 @@
 package org.apache.zest.library.http;
 
 import java.io.IOException;
-import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLHandshakeException;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
@@ -65,37 +65,23 @@ public class SecureJettyServiceTest
         // END SNIPPET: assemblyssl
     }
 
-    @Test
+    @Test( expected = NoHttpResponseException.class )
     // This test exists for demonstration purpose only, it do not test usefull things but it's on purpose
     public void testNoSSL()
         throws IOException
     {
-        try
-        {
-            HttpGet get = new HttpGet( "http://127.0.0.1:8441/hello" );
-            defaultHttpClient.execute( get );
-            fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
-        }
-        catch( NoHttpResponseException ex )
-        {
-            // Expected
-        }
+        HttpGet get = new HttpGet( "http://127.0.0.1:8441/hello" );
+        defaultHttpClient.execute( get );
+        fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
     }
 
-    @Test
-    // This test exists for demonstration purpose only, it do not test usefull things but it's on purpose
+    @Test( expected = SSLHandshakeException.class )
+    // This test exists for demonstration purpose only, it do not test useful things but it's on purpose
     public void testNoTruststore()
         throws IOException
     {
-        try
-        {
-            defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ) );
-            fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
-        }
-        catch( SSLPeerUnverifiedException ex )
-        {
-            // Expected
-        }
+        defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ) );
+        fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
     }
 
     @Test

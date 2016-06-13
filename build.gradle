@@ -37,7 +37,7 @@ buildscript {
   }
   dependencies {
     classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.1.2'
-    classpath 'gradle.plugin.org.nosphere.honker:honker-gradle:0.2.1'
+    classpath 'gradle.plugin.org.nosphere.honker:honker-gradle:0.2.2'
     classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
   }
 }
@@ -266,6 +266,7 @@ allprojects {
       }
       if( candidate.group == 'org.apache.httpcomponents'
           || candidate.group == 'net.java.dev.jna'
+          || candidate.group == 'lucene'
           || candidate.group == 'jdbm'
           || candidate.group == 'org.osgi'
           || candidate.group.startsWith( 'org.restlet' ) ) {

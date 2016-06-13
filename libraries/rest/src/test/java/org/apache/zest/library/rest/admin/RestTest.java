@@ -20,16 +20,22 @@
 
 package org.apache.zest.library.rest.admin;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -130,12 +136,12 @@ public class RestTest extends AbstractZestTest
         // System.out.println( rdf.replaceAll( "\n", "\\\\n" ).replaceAll( "\"", "\\\\\"" ) );
         assertThat( "Incorrect RDF produced", rdf, anyOf(
             // Open JDK 8 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // Sun JDK 6 / Oracle JDK 7 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // IBM JDK 6 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
     }
 
     @Test
@@ -213,105 +219,66 @@ public class RestTest extends AbstractZestTest
         public String getEntity( String identity )
             throws IOException
         {
-            HttpClient client = new HttpClient();
-            GetMethod method = new GetMethod( "http://localhost:8182/entity/" + identity + ".rdf" );
-            method.addRequestHeader( "Accept", "application/rdf+xml" );
-            try
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpGet method = new HttpGet( "http://localhost:8182/entity/" + identity + ".rdf" );
+            method.addHeader( "Accept", "application/rdf+xml" );
+            try( CloseableHttpResponse response = client.execute( method ) )
             {
-                int status = client.executeMethod( method );
-                if( status != 200 )
+                if( response.getStatusLine().getStatusCode() != 200 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
-                        .getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status: " + response.getStatusLine() );
                 }
-                InputStream input = method.getResponseBodyAsStream();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                copyStream( input, baos );
-                return baos.toString( "UTF-8" );
-            }
-            finally
-            {
-                method.releaseConnection();
+                return EntityUtils.toString( response.getEntity(), StandardCharsets.UTF_8 );
             }
         }
 
         public void putEntity( String identity, Map<String, String> params )
             throws IOException
         {
-            HttpClient client = new HttpClient();
-            PostMethod method = new PostMethod( "http://localhost:8182/entity/" + identity );
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost method = new HttpPost( "http://localhost:8182/entity/" + identity );
+            List<NameValuePair> parameters = new ArrayList<>();
             for( Map.Entry<String, String> entry : params.entrySet() )
             {
-                method.addParameter( entry.getKey(), entry.getValue() );
+                parameters.add( new BasicNameValuePair( entry.getKey(), entry.getValue() ) );
             }
-            try
+            method.setEntity( new UrlEncodedFormEntity( parameters ) );
+            try( CloseableHttpResponse response = client.execute( method ) )
             {
-                int status = client.executeMethod( method );
-                if( status != 205 )
+                if( response.getStatusLine().getStatusCode() != 205 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
-                        .getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status: " + response.getStatusLine() );
                 }
-            }
-            finally
-            {
-                method.releaseConnection();
             }
         }
 
         public void deleteEntity( String identity )
             throws IOException
         {
-            HttpClient client = new HttpClient();
-            DeleteMethod method = new DeleteMethod( "http://localhost:8182/entity/" + identity );
-            try
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpDelete method = new HttpDelete( "http://localhost:8182/entity/" + identity );
+            try( CloseableHttpResponse response = client.execute( method ) )
             {
-                int status = client.executeMethod( method );
-                if( status != 204 )
+                if( response.getStatusLine().getStatusCode() != 204 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
-                        .getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status: " + response.getStatusLine() );
                 }
-            }
-            finally
-            {
-                method.releaseConnection();
             }
         }
 
         public String getEntities()
             throws IOException
         {
-            HttpClient client = new HttpClient();
-            GetMethod method = new GetMethod( "http://localhost:8182/entity.rdf" );
-            method.addRequestHeader( "Accept", "application/rdf+xml" );
-            try
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpGet method = new HttpGet( "http://localhost:8182/entity.rdf" );
+            method.addHeader( "Accept", "application/rdf+xml" );
+            try( CloseableHttpResponse response = client.execute( method ) )
             {
-                int status = client.executeMethod( method );
-                if( status != 200 )
+                if( response.getStatusLine().getStatusCode() != 200 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
-                        .getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status: " + response.getStatusLine() );
                 }
-                InputStream input = method.getResponseBodyAsStream();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                copyStream( input, baos );
-                return baos.toString( "UTF-8" );
-            }
-            finally
-            {
-                method.releaseConnection();
-            }
-        }
-
-        private void copyStream( InputStream in, OutputStream baos )
-            throws IOException
-        {
-            int data = in.read();
-            while( data != -1 )
-            {
-                baos.write( data );
-                data = in.read();
+                return EntityUtils.toString( response.getEntity(), StandardCharsets.UTF_8 );
             }
         }
     }

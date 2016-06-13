@@ -24,28 +24,27 @@ import java.security.GeneralSecurityException;
 import java.security.Security;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import org.apache.zest.test.AbstractZestTest;
 
 public abstract class AbstractJettyTest
-        extends AbstractZestTest
+    extends AbstractZestTest
 {
-
     protected static final int HTTP_PORT = 8041;
-    protected HttpClient defaultHttpClient;
+    protected CloseableHttpClient defaultHttpClient;
     protected ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>()
     {
-
+        @Override
         public String handleResponse( HttpResponse hr )
-                throws ClientProtocolException, IOException
+            throws IOException
         {
             return EntityUtils.toString( hr.getEntity(), "UTF-8" );
         }
@@ -61,10 +60,19 @@ public abstract class AbstractJettyTest
 
     @Before
     public void before()
-            throws GeneralSecurityException, IOException
+        throws GeneralSecurityException, IOException
     {
         // Default HTTP Client
-        defaultHttpClient = new DefaultHttpClient();
+        defaultHttpClient = HttpClients.createDefault();
     }
 
+    @After
+    public void after()
+        throws IOException
+    {
+        if( defaultHttpClient != null )
+        {
+            defaultHttpClient.close();
+        }
+    }
 }

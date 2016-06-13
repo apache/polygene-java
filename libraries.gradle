@@ -19,69 +19,64 @@
  */
 
 // Versions of Dependencies;
-def asmVersion = '5.0.4'
+def asmVersion = '5.1'
 def bonecpVersion = '0.8.0.RELEASE'
-def bouncyVersion = '1.52'
+def bouncyVersion = '1.54'
 def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
 def commonsLangVersion = '2.6' // Should be moved to commons-lang3
-def derbyVersion = '10.11.1.1'
+def derbyVersion = '10.12.1.1'
 def dnsJavaVersion = '2.1.7'
-def ehcacheVersion = '2.10.0'
-def elasticsearchVersion = '1.6.0'
-def freemarkerVersion = '2.3.22'
+def ehcacheVersion = '2.10.2.2.21' // 3.x exists
+def elasticsearchVersion = '1.7.5' // 2.x exists
+def freemarkerVersion = '2.3.24-incubating'
 def geodeVersion = '1.0.0-incubating.M2'
-def groovyVersion = '2.4.3'
-def h2Version = '1.4.187'
-def hazelcastVersion = '3.5'
-def httpClientVersion = '4.2.2' // 4.3.4 exists
-def jacksonVersion = '2.5.4'
-def javascriptVersion = '1.7.7'
+def groovyVersion = '2.4.7'
+def h2Version = '1.4.192'
+def hazelcastVersion = '3.6.3'
+def httpClientVersion = '4.5.2'
+def jacksonVersion = '2.7.5'
+def javascriptVersion = '1.7.7.1'
 def javasqlgeneratorVersion = '0.3.2'
-def jcloudsVersion = '1.9.0'
+def jcloudsVersion = '1.9.2'
 def jdbmVersion = '2.4'
-def jedisVersion = '2.7.2'
-def jettyVersion = '9.2.11.v20150529' // 9.3.x Tests fail!
-def jgoodiesLooksVersion = '2.5.3'
-def jodaMoneyVersion = '0.10.0'
+def jedisVersion = '2.8.1'
+def jettyVersion = '9.2.17.v20160517' // 9.3.x Tests fail!
+def jgoodiesLooksVersion = '2.7.0'
 def jtaVersion = '1.1'
 def leveldbVersion = '0.7'
 def leveldbJniVersion = '1.8'
-def liquibaseVersion = '3.4.0'
+def liquibaseVersion = '3.5.1'
 def logbackVersion = '1.1.3'
-def mongodbVersion = '2.13.2' // 3.0.x Fails to compile!
-def mysqlVersion = '5.1.35'
+def mongodbVersion = '2.14.2' // 3.0.x Fails to compile!
+def mysqlVersion = '5.1.39' // 6.x exists
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 Fails to compile! - 5.0.0 exists
-def pdfboxVersion = '1.8.5'
-def postgresqlVersion = '9.4-1201-jdbc41'
-def prefuseVersion = '0.21'
-def restletVersion = '2.3.4'
-def rdfVersion = '2.7.9'
+def pdfboxVersion = '1.8.12' // 2.x exists
+def postgresqlVersion = '9.4.1208'
+def prefuseVersion = '1.0.1'
+def restletVersion = '2.3.7'
+def rdfVersion = '2.7.16' // 2.8.x change query results!! 4.x exists
 def riakVersion = '1.4.4' // 2.0.x Fails to compile!
-def scalaVersion = '2.11.6'
+def scalaVersion = '2.11.8'
 def servletVersion = '3.1.0'
-def shiroVersion = '1.2.3'
+def shiroVersion = '1.2.4' // 1.2.5 exists but has wrong POM
 def skedVersion = '2.1'
-def slf4jVersion = '1.7.12'
-def solrVersion = "1.4.1" // 4.8.1 Fails to compile!
-def springVersion = '4.1.7.RELEASE'
-def spymemcachedVersion = '2.12.0'
-def sqliteVersion = '3.8.10.1'
+def slf4jVersion = '1.7.21'
+def solrVersion = "1.4.1" // 4.x Fails to compile!
+def springVersion = '4.3.0.RELEASE'
+def spymemcachedVersion = '2.12.1'
+def sqliteVersion = '3.8.11.2'
 def velocityVersion = '1.7'
-def wicketVersion = '1.5.8' // 6.15.0 Samples fails to compile!
+def wicketVersion = '1.5.8' // 6.x Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.4.1'
-def yammerMetricsVersion = '2.2.0'
+def yammerMetricsVersion = '2.2.0' // 3.x exists, relocated to io.dropwizard
 
-def antVersion = '1.9.5'
-def awaitilityVersion = '1.6.3'
-def easyMockVersion = '3.3.1'
-def jmockVersion = '2.8.1'
-def junitVersion = '4.11'
+def antVersion = '1.9.7'
+def awaitilityVersion = '1.7.0'
+def easyMockVersion = '3.4'
+def junitVersion = '4.12'
 def mockitoVersion = '1.10.19'
-def testNgVersion = '6.9.4'
-def restAssuredVersion= '2.4.1'
-def xmlunitVersion = '1.6'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -191,7 +186,6 @@ rootProject.ext {
 
           // Library & Extension dependencies
           jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
-          jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
           geode: "org.apache.geode:geode-core:$geodeVersion",
@@ -235,12 +229,8 @@ rootProject.ext {
           junit: "junit:junit:$junitVersion",
           awaitility: "com.jayway.awaitility:awaitility:$awaitilityVersion",
           easymock: "org.easymock:easymock:$easyMockVersion",
-          jmock: "org.jmock:jmock:$jmockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",
-          rest_assured: "com.jayway.restassured:rest-assured:$restAssuredVersion",
-          testng: "org.testng:testng:$testNgVersion",
-          xmlunit: "xmlunit:xmlunit:$xmlunitVersion",
-          
+
           // Tests dependencies
           derby: "org.apache.derby:derby:$derbyVersion",
           derbyclient: "org.apache.derby:derbyclient:$derbyVersion",
