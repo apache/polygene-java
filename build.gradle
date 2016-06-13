@@ -617,8 +617,8 @@ def licenseHeader( flavour ) {
 task generateBinDistGoOfflineHelpers {
   def goOfflineGradleFile = file( 'build/go-offline-helpers/go-offline.gradle' )
   def goOfflinePomFile = file( 'build/go-offline-helpers/go-offline.pom')
-  outputs.files goOfflineGradleFile
-  outputs.files goOfflinePomFile
+  outputs.file goOfflineGradleFile
+  outputs.file goOfflinePomFile
   doLast {
 
     def goOfflineGradle = licenseHeader( 'java' )

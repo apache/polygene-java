@@ -81,7 +81,7 @@ public interface BuildVersion
       }
     }
     makeVersionClassTask.getInputs().files(project.sourceSets.main.getAllSource())
-    makeVersionClassTask.getOutputs().files(generatedSrcDir)
+    makeVersionClassTask.getOutputs().file(generatedSrcDir)
     if( project.getBuildFile() != null && project.getBuildFile().exists() )
     {
       makeVersionClassTask.getInputs().files(project.getBuildFile())

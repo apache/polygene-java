@@ -53,9 +53,9 @@ class AsciidocBuildInfo implements Plugin<Project>
         // Declare inputs/outputs
         if( project.getBuildFile() != null && project.getBuildFile().exists() )
         {
-            makeAsciidocBuildInfoTask.getInputs().files(project.getBuildFile())
+            makeAsciidocBuildInfoTask.getInputs().file(project.getBuildFile())
         }
-        makeAsciidocBuildInfoTask.getOutputs().files( buildInfoDir )
+        makeAsciidocBuildInfoTask.getOutputs().file( buildInfoDir )
     }
 
 }
