@@ -55,13 +55,13 @@ will create additional packages under this, according to its template.
 
 [[tools-shell-create-project-null,Create Null Project]]
 === Create Null Project Template ===
-This templates only creates the build system for a single module application. No Java files or other no resources
+This templates only creates the build system for a single module application. Neither Java files nor other resources
 are created, and the developer has to set everything up from scratch.
 
 [[tools-shell-create-project-singleton,Create Singleton Project]]
 === Create Singleton Project Template ===
 This template creates a so called Singleton application. That is an application with a single Layer and a single
-Module in that layer. In Zest, all applications must have at least one Layer, and at least one Module.
+Module in that layer. In Zest, all applications must have at least one Layer and one Module.
 
 This is useful for really small applications or demos, not expected to become large in the future. It is
 also currently required that the infrastructure is configuration free, otherwise it is not possible to set up.
@@ -77,12 +77,12 @@ This template sets up a 4 layer, Configuration, Infrastructure, Domain, Connecti
 The template includes a small sample domain model, +Order+, +OrderItem+, +Customer+, but there is no functionality
 added to it.
 
-A +SecuityRepository+ is also created, with a simple hardcoded implementation (+HardCodedSecurityRepositoryMixin+).
+A +SecurityRepository+ is also created, with a simple hardcoded implementation (+HardCodedSecurityRepositoryMixin+).
 
 [[tools-shell-create-project-restapp,Create Rest Application Project]]
 === Create Rest Application Project Template ===
 This template sets up a 4 layer, Configuration, Infrastructure, Domain, Connectivity, restful application. This
-application will use the <<library-restlet>> to create a full web application, ready to deply on a servlet
+application will use the <<library-restlet>> to create a full web application, ready to deploy on a servlet
 container, such as Tomcat or Jetty.
 
 The template includes a small sample domain model, +Order+, +OrderItem+, +Customer+, and have the CRUD operations

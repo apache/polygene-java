@@ -17,30 +17,27 @@
  *
  *
  */
-package org.apache.zest.library.sql.assembly;
+package org.apache.zest.entitystore.geode;
 
 import org.apache.zest.api.common.Visibility;
-import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
+import org.apache.zest.entitystore.geode.assembly.GeodeEntityStoreAssembler;
+import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.test.cache.AbstractEntityStoreWithCacheTest;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
-    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
+public class GeodeEntityStoreWithCacheTest
+        extends AbstractEntityStoreWithCacheTest
 {
-    public static String DEFAULT_DATASOURCE_SERVICE_IDENTITY = "datasource-service";
-
     @Override
-    public final void assemble( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble( ModuleAssembly module )
+            throws AssemblyException
     {
-        module.values( DataSourceConfiguration.class ).visibleIn( Visibility.module );
-        if( hasConfig() )
-        {
-            configModule().entities( DataSourceConfiguration.class ).visibleIn( configVisibility() );
-        }
-        onAssemble( module, identity() == null ? DEFAULT_DATASOURCE_SERVICE_IDENTITY : identity(), visibility() );
+        super.assemble( module );
+        ModuleAssembly config = module.layer().module( "config" );
+        new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+        new GeodeEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
-
-    protected abstract void onAssemble( ModuleAssembly module, String identity, Visibility visibility );
 }

@@ -17,15 +17,13 @@
  *
  *
  */
-package org.apache.zest.library.sql.datasource;
-
-import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+package org.apache.zest.entitystore.geode;
 
 /**
- * Configuration Entity for a DataSource.
+ * Geode Topology.
  */
-public interface DataSourceConfiguration
-        extends Identity, Composite, DataSourceConfigurationState
+public enum GeodeTopology
 {
+    EMBEDDED,
+    CLIENT_SERVER;
 }

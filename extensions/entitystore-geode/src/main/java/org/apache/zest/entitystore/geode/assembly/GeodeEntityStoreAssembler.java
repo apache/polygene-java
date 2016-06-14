@@ -17,30 +17,35 @@
  *
  *
  */
-package org.apache.zest.library.sql.assembly;
+package org.apache.zest.entitystore.geode.assembly;
 
-import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
+import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.geode.GeodeConfiguration;
+import org.apache.zest.entitystore.geode.GeodeEntityStoreService;
+import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
-public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
-    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
+/**
+ * Assembler for the Geode EntityStore.
+ */
+public class GeodeEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<GeodeEntityStoreAssembler>
 {
-    public static String DEFAULT_DATASOURCE_SERVICE_IDENTITY = "datasource-service";
-
     @Override
-    public final void assemble( ModuleAssembly module )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( DataSourceConfiguration.class ).visibleIn( Visibility.module );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( GeodeEntityStoreService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
         if( hasConfig() )
         {
-            configModule().entities( DataSourceConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( GeodeConfiguration.class ).visibleIn( configVisibility() );
         }
-        onAssemble( module, identity() == null ? DEFAULT_DATASOURCE_SERVICE_IDENTITY : identity(), visibility() );
     }
-
-    protected abstract void onAssemble( ModuleAssembly module, String identity, Visibility visibility );
 }
