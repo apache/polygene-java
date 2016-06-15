@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.TransientComposite;
@@ -37,6 +38,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.metrics.yammer.YammerMetricsAssembler;
 import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.util.RetryRule;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -44,6 +46,8 @@ import static org.junit.Assert.assertTrue;
 
 public class MetricsTest extends AbstractZestTest
 {
+    @ClassRule public static RetryRule retry = new RetryRule();
+
     private PrintStream reportOut;
     private ByteArrayOutputStream result;
     private YammerMetricsAssembler assembler;
