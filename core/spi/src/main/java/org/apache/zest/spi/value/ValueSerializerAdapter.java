@@ -172,19 +172,10 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
-    @Deprecated
-    public final <T> Function<T, String> serialize( final boolean includeTypeInfo )
-    {
-        return object -> serialize(
-            includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-            object );
-    }
-
-    @Override
     public final String serialize( Object object )
         throws ValueSerializationException
     {
-        return serialize( new Options(), object );
+        return serialize( new Options(true), object );
     }
 
     @Override
@@ -208,19 +199,10 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
-    @Deprecated
-    public final String serialize( Object object, boolean includeTypeInfo )
-        throws ValueSerializationException
-    {
-        return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-                          object );
-    }
-
-    @Override
     public final void serialize( Object object, OutputStream output )
         throws ValueSerializationException
     {
-        serialize( new Options(), object, output );
+        serialize( new Options(true), object, output );
     }
 
     @Override
@@ -239,15 +221,6 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             throw new ValueSerializationException( "Could not serialize value", ex );
         }
-    }
-
-    @Override
-    @Deprecated
-    public final void serialize( Object object, OutputStream output, boolean includeTypeInfo )
-        throws ValueSerializationException
-    {
-        serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-                   object, output );
     }
 
     private void serializeRoot( Options options, Object object, OutputStream output )
@@ -345,7 +318,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         onObjectStart( output );
 
         //noinspection ConstantConditions
-        if( options.getBoolean( Options.INCLUDE_TYPE_INFO ) && !rootPass )
+        if( options.includeTypeInfo && !rootPass )
         {
             onFieldStart( output, "_type" );
             onValueStart( output );

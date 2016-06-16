@@ -22,6 +22,7 @@ package org.apache.zest.valueserialization.jackson;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -135,58 +136,30 @@ public class JacksonValueDeserializer
     )
         throws Exception
     {
-        JsonToken token = input.getCurrentToken();
-        if( token == JsonToken.VALUE_NULL )
+        JsonToken currentToken = input.getCurrentToken();
+        if( currentToken == JsonToken.VALUE_NULL )
         {
             return null;
         }
-        if( token != JsonToken.START_ARRAY )
+        if( currentToken != JsonToken.START_OBJECT )
         {
-            token = input.nextToken();
+            currentToken = input.nextToken();
         }
-        if( token == JsonToken.VALUE_NULL )
+        if( currentToken == JsonToken.VALUE_NULL )
         {
             return null;
         }
-        if( token != JsonToken.START_ARRAY )
+        if( currentToken != JsonToken.START_OBJECT )
         {
             throw new ValueSerializationException( "Expected an array start at "
                                                    + input.getCurrentLocation().toString() );
         }
-        JsonToken currentToken = input.nextToken();
-        while( currentToken != JsonToken.END_ARRAY )
+        currentToken = input.nextToken(); // Take the object start
+        while( currentToken != JsonToken.END_OBJECT )
         {
-            if( currentToken != JsonToken.START_OBJECT )
-            {
-                throw new ValueSerializationException( "Expected an object start at "
-                                                       + input.getCurrentLocation().toString() );
-            }
-            currentToken = input.nextToken();
-            K key = null;
-            V value = null;
-            while( currentToken != JsonToken.END_OBJECT )
-            {
-                String objectKey = input.getCurrentName();
-                input.nextToken();
-                if( "key".equals( objectKey ) )
-                {
-                    key = keyDeserializer.apply( input );
-                }
-                else if( "value".equals( objectKey ) )
-                {
-                    value = valueDeserializer.apply( input );
-                }
-                else
-                {
-                    //input.nextToken();
-                    input.skipChildren();
-                }
-                currentToken = input.nextToken();
-            }
-            if( key != null )
-            {
-                map.put( key, value );
-            }
+            K key = keyDeserializer.apply( input );
+            V value = valueDeserializer.apply( input );
+            map.put( key, value );
             currentToken = input.nextToken();
         }
         return map;

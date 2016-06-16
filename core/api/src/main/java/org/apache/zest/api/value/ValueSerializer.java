@@ -57,10 +57,14 @@ import org.apache.zest.api.composite.AmbiguousTypeException;
  *     <li>Double or double,</li>
  *     <li>BigInteger,</li>
  *     <li>BigDecimal,</li>
- *     <li>Date,</li>
- *     <li>DateTime (JodaTime),</li>
- *     <li>LocalDateTime (JodaTime),</li>
- *     <li>LocalDate (JodaTime).</li>
+ *     <li>ZonedDateTime</li>
+ *     <li>OffsetDateTime</li>
+ *     <li>LocalDateTime</li>
+ *     <li>LocalDate</li>
+ *     <li>LocalTime</li>
+ *     <li>Duration</li>
+ *     <li>Period</li>
+ *     <li>Instant</li>
  * </ul>
  * <p>
  *     Values of unknown types and all arrays are considered as {@link java.io.Serializable} and by so are serialized to
@@ -93,16 +97,6 @@ public interface ValueSerializer
     <T> Function<T, String> serialize( Options options );
 
     /**
-     * Factory method for a serialize function.
-     *
-     * @param <T> the parametrized function input type
-     * @param includeTypeInfo if type information should be included in the output
-     * @return a serialization function.
-     */
-    @Deprecated
-    <T> Function<T, String> serialize( boolean includeTypeInfo );
-
-    /**
      * Serialize the state of a value with type information.
      *
      * @param object an Object to serialize
@@ -121,18 +115,6 @@ public interface ValueSerializer
      * @throws ValueSerializationException if the Value serialization failed
      */
     String serialize( Options options, Object object )
-        throws ValueSerializationException;
-
-    /**
-     * Serialize the state of a value.
-     *
-     * @param object an Object to serialize
-     * @param includeTypeInfo if type information should be included in the output
-     * @return the state
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    @Deprecated
-    String serialize( Object object, boolean includeTypeInfo )
         throws ValueSerializationException;
 
     /**
@@ -157,159 +139,14 @@ public interface ValueSerializer
         throws ValueSerializationException;
 
     /**
-     * Serialize the state of a value.
-     *
-     * @param object an Object to serialize
-     * @param output that will be used as output
-     * @param includeTypeInfo if type information should be included in the output
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    @Deprecated
-    void serialize( Object object, OutputStream output, boolean includeTypeInfo )
-        throws ValueSerializationException;
-
-    /**
      * Serialization options.
      */
     final class Options
     {
-        /**
-         * Boolean flag to include type information.
-         * Default to TRUE.
-         */
-        public static final String INCLUDE_TYPE_INFO = "includeTypeInfo";
-        private final Map<String, String> options = new HashMap<>();
+        public final boolean includeTypeInfo;
 
-        /**
-         * Create new default ValueSerializer Options.
-         */
-        public Options()
-        {
-            this.options.put( INCLUDE_TYPE_INFO, "true" );
-        }
-
-        /**
-         * Set {@link #INCLUDE_TYPE_INFO} option to TRUE.
-         * @return This
-         */
-        public Options withTypeInfo()
-        {
-            return put( INCLUDE_TYPE_INFO, true );
-        }
-
-        /**
-         * Set {@link #INCLUDE_TYPE_INFO} option to FALSE.
-         * @return This
-         */
-        public Options withoutTypeInfo()
-        {
-            return put( INCLUDE_TYPE_INFO, false );
-        }
-
-        /**
-         * Get Boolean option value.
-         * @param option The option
-         * @return The boolean value of the option, or null if absent
-         */
-        public Boolean getBoolean( String option )
-        {
-            if( !options.containsKey( option ) )
-            {
-                return null;
-            }
-            return Boolean.valueOf( options.get( option ) );
-        }
-
-        /**
-         * Get Integer option value.
-         * @param option The option
-         * @return The integer value of the option, or null if absent
-         */
-        public Integer getInteger( String option )
-        {
-            if( !options.containsKey( option ) )
-            {
-                return null;
-            }
-            return Integer.valueOf( options.get( option ) );
-        }
-
-        /**
-         * Get String option value.
-         * @param option The option
-         * @return The string value of the option, or null if absent
-         */
-        public String getString( String option )
-        {
-            return options.get( option );
-        }
-
-        /**
-         * Put an option String value.
-         * @param option The option
-         * @param value The value
-         * @return This Options instance
-         */
-        public Options put( String option, String value )
-        {
-            if( value == null )
-            {
-                return remove( option );
-            }
-            options.put( option, value );
-            return this;
-        }
-
-        /**
-         * Put an option boolean value.
-         * @param option The option
-         * @param value The value
-         * @return This Options instance
-         */
-        public Options put( String option, Boolean value )
-        {
-            if( value == null )
-            {
-                return remove( option );
-            }
-            options.put( option, Boolean.toString( value ) );
-            return this;
-        }
-
-        /**
-         * Put an option Integer value.
-         * @param option The option
-         * @param value The value
-         * @return This Options instance
-         */
-        public Options put( String option, Integer value )
-        {
-            if( value == null )
-            {
-                return remove( option );
-            }
-            options.put( option, value.toString() );
-            return this;
-        }
-
-        /**
-         * Remove an option value.
-         * @param option The option
-         * @return This Options instance
-         */
-        public Options remove( String option )
-        {
-            options.remove( option );
-            return this;
-        }
-
-        /**
-         * Get all defined options as a Map.
-         * @return All defined options in a new Map
-         */
-        public Map<String, String> toMap()
-        {
-            return new HashMap<>( options );
+        public Options( boolean includeTypeInfo ){
+            this.includeTypeInfo = includeTypeInfo;
         }
     }
 }

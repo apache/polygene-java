@@ -21,19 +21,18 @@ package org.apache.zest.test.value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -44,9 +43,11 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
@@ -55,6 +56,9 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -79,7 +83,9 @@ public abstract class AbstractValueCompositeSerializationTest
         throws AssemblyException
     {
         module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
-                       SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
+                       SpecificCollection.class, /* SpecificValue.class, GenericValue.class, */
+                       ComplexKey.class
+        );
 
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
         module.entities( BarEntity.class );
@@ -89,10 +95,28 @@ public abstract class AbstractValueCompositeSerializationTest
     protected ValueSerialization valueSerialization;
 
     @Test
+    public void givenComplexKeyWhenDeserializingExpectSuccess()
+        throws Exception
+    {
+        Map<String, Map<Duration, Period>> map1 = new HashMap<>();
+        Map<Duration, Period> map2 = new HashMap<>();
+        map2.put( Duration.of( 1000, ChronoUnit.MILLIS ), Period.of( 1, 2, 3 ) );
+        map1.put( "habba", map2 );
+        ValueBuilder<ComplexKey> builder = valueBuilderFactory.newValueBuilder( ComplexKey.class );
+        builder.prototype().durations().set( map1 );
+        ComplexKey underTest = builder.newInstance();
+
+        String serialized = valueSerialization.serialize( underTest );
+        assertThat( serialized, equalTo( "{\"durations\":{\"habba\":{\"PT1S\":\"P1Y2M3D\"}}}" ) );
+        ComplexKey result = moduleInstance.newValueFromSerializedState( ComplexKey.class, serialized );
+        assertThat( result, equalTo( underTest ) );
+    }
+
+    @Test
     public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        try(UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
+        try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             SomeValue some = buildSomeValue();
 
@@ -102,12 +126,15 @@ public abstract class AbstractValueCompositeSerializationTest
             String stateString = output.toString( "UTF-8" );
 
             // Deserialize using Module API
-            System.out.println(stateString);
+            System.out.println( stateString );
             SomeValue some2 = moduleInstance.newValueFromSerializedState( SomeValue.class, stateString );
 
             assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
             assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
-            assertThat( "Nested Entities", some2.barAssociation().get().cathedral().get(), equalTo( "bazar in barAssociation" ) );
+            assertThat( "Nested Entities", some2.barAssociation()
+                .get()
+                .cathedral()
+                .get(), equalTo( "bazar in barAssociation" ) );
 
             assertThat( "Same value", some, equalTo( some2 ) );
             assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
@@ -189,7 +216,8 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.barNamedAssociation().put( "bazar", buildBarEntity( "bazar in barNamedAssociation" ) );
         proto.barNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barNamedAssociation" ) );
         proto.barEntityNamedAssociation().put( "bazar", buildBarEntity( "bazar in barEntityNamedAssociation" ) );
-        proto.barEntityNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barEntityNamedAssociation" ) );
+        proto.barEntityNamedAssociation()
+            .put( "cathedral", buildBarEntity( "cathedral in barEntityNamedAssociation" ) );
 
         return builder.newInstance();
     }
@@ -394,6 +422,12 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface BarEntity
         extends Bar, EntityComposite
     {
+    }
+
+    public interface ComplexKey
+    {
+        @UseDefaults
+        Property<Map<String, Map<Duration, Period>>> durations();
     }
 
     public static class SerializableObject

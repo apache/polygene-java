@@ -80,13 +80,10 @@ import static org.apache.zest.functional.Iterables.empty;
  * </p>
  * <ul>
  * <li>BigInteger and BigDecimal depends on {@link org.apache.zest.api.value.ValueSerializer.Options};</li>
- * <li>ZonedDateTime as a ISO-8601 String with optional timezone name;</li>
- * <li>OffsetDateTime as a ISO-8601 String with optional timezone offset;</li>
- * <li>LocalDateTime as whatever {@link LocalDateTime#parse} accept as {@literal instant};</li>
- * <li>LocalDate as whatever {@link LocalDate#parse} accept as {@literal instant};</li>
- * <li>LocalTime as whatever {@link LocalTime#parse} accept as {@literal instant};</li>
- * <li>Duration as a ISO-8601 String representing a {@link java.time.Duration}</li>
- * <li>Period as a ISO-8601 String representing a {@link java.time.Period}</li>
+ * <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
+ * <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
+ * <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#parse} accept as {@literal instant};</li>
+ * <li>LocalDate (JodaTime) as whatever {@link LocalDate#parse} accept as {@literal instant};</li>
  * </ul>
  *
  * @param <InputType>     Implementor pull-parser type
