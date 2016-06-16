@@ -19,6 +19,15 @@
  */
 package org.apache.zest.runtime.value;
 
+import java.time.Duration;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.test.value.AbstractValueCompositeSerializationTest;
 import org.junit.Test;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.value.ValueComposite;
@@ -55,7 +64,7 @@ public class ValueEqualityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( PrimitivesValue.class, Some.class, AnotherSome.class, Other.class );
+        module.values( PrimitivesValue.class, Some.class, AnotherSome.class, Other.class, ComplexKey.class );
     }
 
     //
@@ -238,4 +247,36 @@ public class ValueEqualityTest
                     some.hashCode(),
                     not( equalTo( anotherSome.hashCode() ) ) );
     }
+
+    @Test
+    public void givenComplexKeyWhenEqualityCheckExpectEqual()
+        throws Exception
+    {
+        Map<String, Map<Duration, Period>> map3 = new HashMap<>();
+        Map<Duration, Period> map4 = new HashMap<>();
+        map4.put( Duration.of( 1000, ChronoUnit.MILLIS ), Period.of( 1, 2, 3 ) );
+        map3.put( "habba", map4 );
+        ValueBuilder<ComplexKey> builder1 = valueBuilderFactory.newValueBuilder( ComplexKey.class );
+        builder1.prototype().durations().set( map3 );
+        ComplexKey key1 = builder1.newInstance();
+
+        Map<String, Map<Duration, Period>> map1 = new HashMap<>();
+        Map<Duration, Period> map2 = new HashMap<>();
+        map2.put( Duration.of( 1000, ChronoUnit.MILLIS ), Period.of( 1, 2, 3 ) );
+        map1.put( "habba", map2 );
+        ValueBuilder<ComplexKey> builder2 = valueBuilderFactory.newValueBuilder( ComplexKey.class );
+        builder2.prototype().durations().set( map1 );
+        ComplexKey key2 = builder2.newInstance();
+
+        assertThat( key1, equalTo( key2 ) );
+    }
+
+    public interface ComplexKey
+    {
+        @UseDefaults
+        Property<Map<String, Map<Duration, Period>>> durations();
+    }
+
+
+
 }
