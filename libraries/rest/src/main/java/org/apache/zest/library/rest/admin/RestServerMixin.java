@@ -20,7 +20,9 @@
 
 package org.apache.zest.library.rest.admin;
 
+import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
@@ -31,14 +33,19 @@ public abstract class RestServerMixin
     @Structure
     private Module module;
 
+    @This
+    private Configuration<RestServerConfiguration> configuration;
+
     private Component component;
 
     @Override
     public void startServer()
         throws Exception
     {
+        configuration.refresh();
+
         component = new Component();
-        component.getServers().add( Protocol.HTTP, 8182 );
+        component.getServers().add( Protocol.HTTP, configuration.get().port().get() );
         RestApplication application = module.newObject( RestApplication.class, component.getContext() );
         component.getDefaultHost().attach( application );
         component.start();

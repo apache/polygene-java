@@ -21,6 +21,7 @@
 package org.apache.zest.library.rest.admin;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Service;
@@ -50,10 +52,10 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,6 +67,19 @@ import static org.junit.Assert.assertThat;
 
 public class RestTest extends AbstractZestTest
 {
+    private static final int ADMIN_PORT;
+
+    static
+    {
+        try
+        {
+            ADMIN_PORT = FreePortFinder.findFreePortOnLoopback();
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
+    }
 
     @Override
     protected ApplicationDescriptor newApplication()
@@ -90,11 +105,15 @@ public class RestTest extends AbstractZestTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        ModuleAssembly config = module.layer().module( "config" );
+        new EntityTestAssembler().assemble( config );
+        config.configurations( RestServerConfiguration.class ).visibleIn( Visibility.layer );
+        config.forMixin( RestServerConfiguration.class ).declareDefaults().port().set( ADMIN_PORT );
+
         module.objects( RestTest.class, RestTester.class );
         module.entities( PersonEntity.class );
         module.services( RestServerComposite.class ).instantiateOnStartup();
-        module.services( MemoryEntityStoreService.class ).identifiedBy( "store" );
-        module.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Override
@@ -220,7 +239,7 @@ public class RestTest extends AbstractZestTest
             throws IOException
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpGet method = new HttpGet( "http://localhost:8182/entity/" + identity + ".rdf" );
+            HttpGet method = new HttpGet( "http://localhost:" + ADMIN_PORT + "/entity/" + identity + ".rdf" );
             method.addHeader( "Accept", "application/rdf+xml" );
             try( CloseableHttpResponse response = client.execute( method ) )
             {
@@ -236,7 +255,7 @@ public class RestTest extends AbstractZestTest
             throws IOException
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost method = new HttpPost( "http://localhost:8182/entity/" + identity );
+            HttpPost method = new HttpPost( "http://localhost:" + ADMIN_PORT + "/entity/" + identity );
             List<NameValuePair> parameters = new ArrayList<>();
             for( Map.Entry<String, String> entry : params.entrySet() )
             {
@@ -256,7 +275,7 @@ public class RestTest extends AbstractZestTest
             throws IOException
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpDelete method = new HttpDelete( "http://localhost:8182/entity/" + identity );
+            HttpDelete method = new HttpDelete( "http://localhost:" + ADMIN_PORT + "/entity/" + identity );
             try( CloseableHttpResponse response = client.execute( method ) )
             {
                 if( response.getStatusLine().getStatusCode() != 204 )
@@ -270,7 +289,7 @@ public class RestTest extends AbstractZestTest
             throws IOException
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpGet method = new HttpGet( "http://localhost:8182/entity.rdf" );
+            HttpGet method = new HttpGet( "http://localhost:" + ADMIN_PORT + "/entity.rdf" );
             method.addHeader( "Accept", "application/rdf+xml" );
             try( CloseableHttpResponse response = client.execute( method ) )
             {
