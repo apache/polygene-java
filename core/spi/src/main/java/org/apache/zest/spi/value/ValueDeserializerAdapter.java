@@ -48,7 +48,6 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.type.MapType;
-import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueBuilder;
@@ -81,10 +80,13 @@ import static org.apache.zest.functional.Iterables.empty;
  * </p>
  * <ul>
  * <li>BigInteger and BigDecimal depends on {@link org.apache.zest.api.value.ValueSerializer.Options};</li>
- * <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
- * <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
- * <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#parse} accept as {@literal instant};</li>
- * <li>LocalDate (JodaTime) as whatever {@link LocalDate#parse} accept as {@literal instant};</li>
+ * <li>ZonedDateTime as a ISO-8601 String with optional timezone name;</li>
+ * <li>OffsetDateTime as a ISO-8601 String with optional timezone offset;</li>
+ * <li>LocalDateTime as whatever {@link LocalDateTime#parse} accept as {@literal instant};</li>
+ * <li>LocalDate as whatever {@link LocalDate#parse} accept as {@literal instant};</li>
+ * <li>LocalTime as whatever {@link LocalTime#parse} accept as {@literal instant};</li>
+ * <li>Duration as a ISO-8601 String representing a {@link java.time.Duration}</li>
+ * <li>Period as a ISO-8601 String representing a {@link java.time.Period}</li>
  * </ul>
  *
  * @param <InputType>     Implementor pull-parser type
@@ -552,7 +554,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                         module,
                         inputNode,
                         namedAssociationName,
-                        buildDeserializeInputNodeFunction( module, MapType.of( String.class, EntityReference.class, Serialization.Variant.object ) ) );
+                        buildDeserializeInputNodeFunction( module, MapType.of( String.class, EntityReference.class ) ) );
                     stateMap.put( namedAssociationName, value );
                 }
             }
@@ -620,15 +622,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 else // Explicit Map
                     if( MapType.class.isAssignableFrom( valueType.getClass() ) )
                     {
-                        MapType mapType = (MapType) valueType;
-                        if( mapType.variant().equals( Serialization.Variant.entry ) )
-                        {
-                            return (T) deserializeNodeEntryMap( module, (MapType) valueType, inputNode );
-                        }
-                        else
-                        {
-                            return (T) deserializeNodeObjectMap( module, (MapType) valueType, inputNode );
-                        }
+                        return (T) deserializeNodeObjectMap( module, (MapType) valueType, inputNode );
                     }
                     else // Enum
                         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
@@ -713,18 +707,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                                   this.<T>buildDeserializeInputNodeFunction( module, collectionType.collectedType() ),
                                   collection );
         return collection;
-    }
-
-    private <K, V> Map<K, V> deserializeNodeEntryMap( ModuleDescriptor module, MapType mapType, InputNodeType inputNode )
-        throws Exception
-    {
-        Map<K, V> map = new HashMap<>();
-        putArrayNodeInMap( module,
-                           inputNode,
-                           this.<K>buildDeserializeInputNodeFunction( module, mapType.keyType() ),
-                           this.<V>buildDeserializeInputNodeFunction( module, mapType.valueType() ),
-                           map );
-        return map;
     }
 
     private <V> Map<String, V> deserializeNodeObjectMap( ModuleDescriptor module, MapType mapType, InputNodeType inputNode )
@@ -963,14 +945,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                                                           InputNodeType inputNode,
                                                           Function<InputNodeType, T> deserializer,
                                                           Collection<T> collection
-    )
-        throws Exception;
-
-    protected abstract <K, V> void putArrayNodeInMap( ModuleDescriptor module,
-                                                      InputNodeType inputNode,
-                                                      Function<InputNodeType, K> keyDeserializer,
-                                                      Function<InputNodeType, V> valueDeserializer,
-                                                      Map<K, V> map
     )
         throws Exception;
 

@@ -28,17 +28,20 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.MethodDescriptor;
+import org.apache.zest.api.property.IllegalTypeException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
-import org.apache.zest.spi.module.ModuleSpi;
+
+import static org.apache.zest.api.property.IllegalTypeException.checkProhibited;
 
 /**
  * JAVADOC
@@ -67,6 +70,7 @@ public final class CompositeMethodModel
                                  MixinsModel mixinsModel
     )
     {
+        validateMethod( method );
         this.method = method;
         mixins = mixinsModel;
         concerns = concernsModel;
@@ -82,6 +86,20 @@ public final class CompositeMethodModel
         this.method.setAccessible( true );
 //        instancePool = new SynchronizedCompositeMethodInstancePool();
     }
+
+    private void validateMethod( Method method )
+    {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for( Class type : parameterTypes )
+        {
+            if( checkProhibited( type ) )
+            {
+                throw new IllegalTypeException( "In method " + method.getName() + " of " + mixins + " has a argument type " + type
+                    .getName() + ". This is a prohibited type in Apache Zest." );
+            }
+        }
+    }
+
 
     // Model
 
@@ -100,7 +118,16 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( concerns, sideEffects ).filter( e -> e != null ).flatMap( Dependencies::dependencies );
+        return Stream.of( concerns, sideEffects )
+            .filter( e -> e != null )
+            .flatMap( new Function<Dependencies, Stream<DependencyModel>>()
+            {
+                @Override
+                public Stream<DependencyModel> apply( Dependencies dependencies )
+                {
+                    return dependencies.dependencies();
+                }
+            } );
 //        return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
 //                                                              sideEffects != null ? sideEffects.dependencies() : null ) ) );
     }

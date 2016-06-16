@@ -464,43 +464,6 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
-                                             Object inputNode,
-                                             Function<Object, K> keyDeserializer,
-                                             Function<Object, V> valueDeserializer,
-                                             Map<K, V> map
-    )
-        throws Exception
-    {
-        if( JSONObject.NULL.equals( inputNode ) )
-        {
-            return;
-        }
-        if( !( inputNode instanceof JSONArray ) )
-        {
-            throw new ValueSerializationException( "Expected an array but got " + inputNode );
-        }
-        JSONArray array = (JSONArray) inputNode;
-        for( int idx = 0; idx < array.length(); idx++ )
-        {
-            Object item = array.get( idx );
-            if( !( item instanceof JSONObject ) )
-            {
-                throw new ValueSerializationException( "Expected an object but got " + inputNode );
-            }
-            JSONObject object = (JSONObject) item;
-            Object keyNode = object.get( "key" );
-            Object valueNode = object.get( "value" );
-            K key = keyDeserializer.apply( keyNode );
-            V value = valueDeserializer.apply( valueNode );
-            if( key != null )
-            {
-                map.put( key, value );
-            }
-        }
-    }
-
-    @Override
     protected <V> void putObjectNodeInMap( ModuleDescriptor module,
                                            Object inputNode,
                                            Function<Object, V> valueDeserializer,

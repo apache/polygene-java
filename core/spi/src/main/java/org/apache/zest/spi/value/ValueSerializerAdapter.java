@@ -86,7 +86,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     implements ValueSerializer
 {
 
-    public interface ComplexSerializer<T, OutputType>
+    interface ComplexSerializer<T, OutputType>
     {
         void serialize( Options options, T object, OutputType output )
             throws Exception;
@@ -349,7 +349,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             onFieldStart( output, "_type" );
             onValueStart( output );
-            onValue( output, descriptor.valueType().types().findFirst().get().getName());
+            onValue( output, descriptor.valueType().types().findFirst().get().getName() );
             onValueEnd( output );
             onFieldEnd( output );
         }
@@ -369,7 +369,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 throw new ValueSerializationException( "Unable to serialize property " + persistentProperty, e );
             }
         } );
-        descriptor.valueType().associations().forEach(associationDescriptor ->        {
+        descriptor.valueType().associations().forEach( associationDescriptor -> {
             Association<?> association = state.associationFor( associationDescriptor.accessor() );
             try
             {
@@ -413,7 +413,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             {
                 throw new ValueSerializationException( "Unable to serialize manyassociation " + associationDescriptor, e );
             }
-        });
+        } );
         descriptor.valueType().namedAssociations().forEach( associationDescriptor -> {
             NamedAssociation<?> namedAssociation = state.namedAssociationFor( associationDescriptor.accessor() );
             try
@@ -470,42 +470,16 @@ public abstract class ValueSerializerAdapter<OutputType>
         @SuppressWarnings( "unchecked" )
         Map<Object, Object> map = (Map<Object, Object>) object;
         //noinspection ConstantConditions
-        if( options.getBoolean( Options.MAP_ENTRIES_AS_OBJECTS ) )
+        onObjectStart( output );
+        for( Map.Entry<Object, Object> entry : map.entrySet() )
         {
-            onObjectStart( output );
-            for( Map.Entry<Object, Object> entry : map.entrySet() )
-            {
-                onFieldStart( output, entry.getKey().toString() );
-                onValueStart( output );
-                doSerialize( options, entry.getValue(), output, false );
-                onValueEnd( output );
-                onFieldEnd( output );
-            }
-            onObjectEnd( output );
+            onFieldStart( output, entry.getKey().toString() );
+            onValueStart( output );
+            doSerialize( options, entry.getValue(), output, false );
+            onValueEnd( output );
+            onFieldEnd( output );
         }
-        else
-        {
-            onArrayStart( output );
-            for( Map.Entry<Object, Object> entry : map.entrySet() )
-            {
-                onObjectStart( output );
-
-                onFieldStart( output, "key" );
-                onValueStart( output );
-                onValue( output, entry.getKey().toString() );
-                onValueEnd( output );
-                onFieldEnd( output );
-
-                onFieldStart( output, "value" );
-                onValueStart( output );
-                doSerialize( options, entry.getValue(), output, false );
-                onValueEnd( output );
-                onFieldEnd( output );
-
-                onObjectEnd( output );
-            }
-            onArrayEnd( output );
-        }
+        onObjectEnd( output );
     }
 
     private void serializeBase64Serializable( Object object, OutputType output )

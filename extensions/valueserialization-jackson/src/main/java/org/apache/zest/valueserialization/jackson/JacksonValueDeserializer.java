@@ -312,41 +312,6 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
-                                             JsonNode inputNode,
-                                             Function<JsonNode, K> keyDeserializer,
-                                             Function<JsonNode, V> valueDeserializer,
-                                             Map<K, V> map
-    )
-        throws Exception
-    {
-        if( isNullOrMissing( inputNode ) )
-        {
-            return;
-        }
-        if( !inputNode.isArray() )
-        {
-            throw new ValueSerializationException( "Expected an array but got " + inputNode );
-        }
-        ArrayNode array = (ArrayNode) inputNode;
-        for( JsonNode item : array )
-        {
-            if( !item.isObject() )
-            {
-                throw new ValueSerializationException( "Expected an object but got " + inputNode );
-            }
-            JsonNode keyNode = item.get( "key" );
-            JsonNode valueNode = item.get( "value" );
-            K key = keyDeserializer.apply( keyNode );
-            V value = valueDeserializer.apply( valueNode );
-            if( key != null )
-            {
-                map.put( key, value );
-            }
-        }
-    }
-
-    @Override
     protected <V> void putObjectNodeInMap( ModuleDescriptor module,
                                            JsonNode inputNode,
                                            Function<JsonNode, V> valueDeserializer,

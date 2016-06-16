@@ -33,7 +33,6 @@ public final class MapType
 
     private ValueType keyType;
     private ValueType valueType;
-    private final Serialization.Variant variant;
 
     public static boolean isMap( Type type )
     {
@@ -46,22 +45,11 @@ public final class MapType
         return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ) );
     }
 
-    public static MapType of( Class<?> keyType, Class<?> valueType, Serialization.Variant variant )
-    {
-        return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ), variant );
-    }
-
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
-    {
-        this( type, keyType, valueType, Serialization.Variant.entry );
-    }
-
-    public MapType( Class<?> type, ValueType keyType, ValueType valueType, Serialization.Variant variant )
     {
         super( type );
         this.keyType = keyType;
         this.valueType = valueType;
-        this.variant = variant;
         if( !isMap( type ) )
         {
             throw new IllegalArgumentException( type + " is not a Map." );
@@ -76,11 +64,6 @@ public final class MapType
     public ValueType valueType()
     {
         return valueType;
-    }
-
-    public Serialization.Variant variant()
-    {
-        return variant;
     }
 
     @Override

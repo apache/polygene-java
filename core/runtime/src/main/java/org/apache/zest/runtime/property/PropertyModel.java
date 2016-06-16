@@ -35,12 +35,12 @@ import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.Queryable;
 import org.apache.zest.api.property.DefaultValues;
 import org.apache.zest.api.property.GenericPropertyInfo;
+import org.apache.zest.api.property.IllegalTypeException;
 import org.apache.zest.api.property.InvalidPropertyTypeException;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.util.Classes;
@@ -54,6 +54,8 @@ import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 import org.apache.zest.runtime.types.ValueTypeFactory;
 
+import static org.apache.zest.api.property.IllegalTypeException.checkProhibited;
+
 //import static org.apache.zest.functional.Iterables.empty;
 //import static org.apache.zest.functional.Iterables.first;
 
@@ -65,6 +67,8 @@ import org.apache.zest.runtime.types.ValueTypeFactory;
 public class PropertyModel
     implements PropertyDescriptor, PropertyInfo, Binder, Visitable<PropertyModel>
 {
+    private static boolean disallowProhibited = Boolean.getBoolean("zest.property.types.allow.prohibited");
+
     private Type type;
 
     private transient AccessibleObject accessor; // Interface accessor
@@ -106,6 +110,10 @@ public class PropertyModel
         this.immutable = immutable;
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.propertyTypeOf( accessor );
+        if( PropertyModel.disallowProhibited && checkProhibited(type) )
+        {
+            throw new IllegalTypeException( type + "is not allowed as a Property type" );
+        }
         this.accessor = accessor;
         qualifiedName = QualifiedName.fromAccessor( accessor );
 
@@ -226,28 +234,12 @@ public class PropertyModel
         ValueTypeFactory factory = ValueTypeFactory.instance();
         Class<?> declaringClass = ( (Member) accessor() ).getDeclaringClass();
         Class<?> mainType = resolution.model().types().findFirst().orElse( null );
-        Serialization.Variant variant = findVariant();
-        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module(), variant );
+        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module());
         builderInfo = new BuilderPropertyInfo();
         if( type instanceof TypeVariable )
         {
             type = Classes.resolveTypeVariable( (TypeVariable) type, declaringClass, mainType );
         }
-    }
-
-    private Serialization.Variant findVariant()
-    {
-        Serialization serialization = metaInfo.get( Serialization.class );
-        Serialization.Variant variant = null;
-        if( serialization != null )
-        {
-            variant = serialization.value();
-        }
-        if( variant == null )
-        {
-            variant = Serialization.Variant.entry;
-        }
-        return variant;
     }
 
     @Override

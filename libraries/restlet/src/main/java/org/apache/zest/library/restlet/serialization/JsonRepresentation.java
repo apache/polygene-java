@@ -42,7 +42,7 @@ import org.restlet.representation.Representation;
 public class JsonRepresentation<T> extends OutputRepresentation
 {
 
-    private static final ValueSerializer.Options OPTIONS_NO_TYPE = new ValueSerializer.Options().withoutTypeInfo().withMapEntriesAsObjects();
+    private static final ValueSerializer.Options OPTIONS_NO_TYPE = new ValueSerializer.Options().withoutTypeInfo();
 
     @Structure
     private ZestSPI spi;

@@ -404,35 +404,6 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
-                                             Node inputNode,
-                                             Function<Node, K> keyDeserializer,
-                                             Function<Node, V> valueDeserializer, Map<K, V> map
-    )
-        throws Exception
-    {
-        if( inputNode == null )
-        {
-            return;
-        }
-        if( !"array".equals( inputNode.getLocalName() ) )
-        {
-            throw new ValueSerializationException( "Expected an <array/> but got " + inputNode );
-        }
-        NodeList entriesNodes = inputNode.getChildNodes();
-        for( int idx = 0; idx < entriesNodes.getLength(); idx++ )
-        {
-            Node entryNode = entriesNodes.item( idx );
-            K key = getObjectFieldValue( module, entryNode, "key", keyDeserializer );
-            V value = getObjectFieldValue( module, entryNode, "value", valueDeserializer );
-            if( key != null )
-            {
-                map.put( key, value );
-            }
-        }
-    }
-
-    @Override
     protected <V> void putObjectNodeInMap( ModuleDescriptor module,
                                            Node inputNode,
                                            Function<Node, V> valueDeserializer,
