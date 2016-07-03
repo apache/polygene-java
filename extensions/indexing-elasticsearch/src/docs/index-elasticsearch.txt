@@ -38,6 +38,11 @@ Three modes of operation are supported:
 - on-filesystem ;
 - clustered.
 
+In any case, Lucene hard limits apply.
+See the https://lucene.apache.org/core/6_1_0/core/org/apache/lucene/codecs/lucene60/package-summary.html#Limitations[Lucene File Format]
+documentation about maximum index size and document count.
+Moreover, each field cannot be larger than 32766 bytes in its serialized form.
+
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Embedded: in Memory or on FileSystem ==
