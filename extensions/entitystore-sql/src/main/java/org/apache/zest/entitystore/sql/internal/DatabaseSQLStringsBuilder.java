@@ -20,6 +20,7 @@
 package org.apache.zest.entitystore.sql.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.zest.api.injection.scope.This;
 import org.slf4j.Logger;
@@ -97,13 +98,22 @@ public interface DatabaseSQLStringsBuilder
             this.schemaName = this._state.schemaName().get();
 
             this.schemaCreationSQLs = this.toString( this.createSchemaStatements( this.vendor ) );
-            LOGGER.trace( "SQL for schema creation: {}", this.schemaCreationSQLs );
+            if( LOGGER.isTraceEnabled() )
+            {
+                LOGGER.trace( "SQL for schema creation: {}", Arrays.asList( this.schemaCreationSQLs ) );
+            }
 
             this.indexCreationSQLs = this.toString( this.createIndicesStatements( this.vendor ) );
-            LOGGER.trace( "SQL for index creation: {}", this.indexCreationSQLs );
+            if( LOGGER.isTraceEnabled() )
+            {
+                LOGGER.trace( "SQL for index creation: {}", Arrays.asList( this.indexCreationSQLs ) );
+            }
 
             this.tableCreationSQLs = this.toString( this.createTableStatements( this.vendor ) );
-            LOGGER.trace( "SQL for table creation: {}", this.tableCreationSQLs );
+            if( LOGGER.isTraceEnabled() )
+            {
+                LOGGER.trace( "SQL for table creation: {}", Arrays.asList( this.tableCreationSQLs ) );
+            }
 
             this.selectAllEntitiesSQL = this.vendor.toString( this.createSelectAllEntitiesStatement( this.vendor ) );
             LOGGER.trace( "SQL for select all entities: {}", this.selectAllEntitiesSQL );
