@@ -22,6 +22,7 @@ package org.apache.zest.library.rest.server.restlet.freemarker;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.Version;
 import org.apache.zest.api.value.ValueComposite;
 
 /**
@@ -30,6 +31,11 @@ import org.apache.zest.api.value.ValueComposite;
 public class ValueCompositeObjectWrapper
     extends DefaultObjectWrapper
 {
+    public ValueCompositeObjectWrapper( Version freemarkerVersion )
+    {
+        super( freemarkerVersion );
+    }
+
     @Override
     public TemplateModel wrap( Object obj )
         throws TemplateModelException

@@ -20,6 +20,8 @@
 
 package org.apache.zest.library.rest.server.assembler;
 
+import freemarker.template.Configuration;
+import freemarker.template.Version;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 import java.util.function.Predicate;
@@ -71,11 +73,12 @@ public class RestServerAssembler
             throw new AssemblyException( "Could not load velocity properties", e );
         }
 
-        freemarker.template.Configuration cfg = new freemarker.template.Configuration();
+        Version freemarkerVersion = Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS;
+        Configuration cfg = new Configuration( freemarkerVersion );
         cfg.setClassForTemplateLoading( AbstractResponseWriter.class, "" );
-        cfg.setObjectWrapper( new ValueCompositeObjectWrapper() );
+        cfg.setObjectWrapper( new ValueCompositeObjectWrapper( freemarkerVersion ) );
 
-        module.importedServices( freemarker.template.Configuration.class ).setMetaInfo( cfg );
+        module.importedServices( Configuration.class ).setMetaInfo( cfg );
 
         module.importedServices( MetadataService.class );
 
