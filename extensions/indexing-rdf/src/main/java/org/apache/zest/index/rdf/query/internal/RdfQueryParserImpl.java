@@ -74,7 +74,6 @@ public class RdfQueryParserImpl
 
     private final Namespaces namespaces = new Namespaces();
     private final Triples triples = new Triples( namespaces );
-    private final ZestSPI spi;
     private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
@@ -93,9 +92,8 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public RdfQueryParserImpl( ZestSPI spi, ValueSerializer valueSerializer )
+    public RdfQueryParserImpl( ValueSerializer valueSerializer )
     {
-        this.spi = spi;
         this.valueSerializer = valueSerializer;
     }
 

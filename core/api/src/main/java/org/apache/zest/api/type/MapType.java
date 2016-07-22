@@ -30,7 +30,6 @@ import org.apache.zest.api.util.Classes;
 public final class MapType
     extends ValueType
 {
-
     private ValueType keyType;
     private ValueType valueType;
 

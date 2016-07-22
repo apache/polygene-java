@@ -20,9 +20,7 @@
 
 package org.apache.zest.index.rdf.query;
 
-import org.openrdf.query.QueryLanguage;
 import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.qualifier.Tagged;
@@ -30,7 +28,7 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.index.rdf.UnsupportedLanguageException;
 import org.apache.zest.index.rdf.query.internal.RdfQueryParserImpl;
-import org.apache.zest.spi.ZestSPI;
+import org.openrdf.query.QueryLanguage;
 
 @Mixins( RdfQueryParserFactory.RdfQueryParserFactoryMixin.class )
 public interface RdfQueryParserFactory
@@ -41,8 +39,6 @@ public interface RdfQueryParserFactory
     abstract class RdfQueryParserFactoryMixin
         implements RdfQueryParserFactory
     {
-        @Structure
-        private ZestSPI spi;
         @Service
         @Tagged( ValueSerialization.Formats.JSON )
         private ValueSerializer valueSerializer;
@@ -52,7 +48,7 @@ public interface RdfQueryParserFactory
         {
             if( language.equals( QueryLanguage.SPARQL ) )
             {
-                return new RdfQueryParserImpl( spi, valueSerializer );
+                return new RdfQueryParserImpl( valueSerializer );
             }
             throw new UnsupportedLanguageException( language );
         }
