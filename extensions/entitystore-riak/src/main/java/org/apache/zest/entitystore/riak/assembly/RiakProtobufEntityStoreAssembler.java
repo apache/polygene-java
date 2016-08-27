@@ -17,19 +17,22 @@
  *
  *
  */
-package org.apache.zest.entitystore.riak;
+package org.apache.zest.entitystore.riak.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.riak.RiakMapEntityStoreService;
+import org.apache.zest.entitystore.riak.RiakProtobufEntityStoreConfiguration;
+import org.apache.zest.entitystore.riak.RiakProtobufMapEntityStoreMixin;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Riak Protobuf EntityStore assembly.
  */
-public class RiakProtobufMapEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<RiakProtobufMapEntityStoreAssembler>
+public class RiakProtobufEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<RiakProtobufEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )

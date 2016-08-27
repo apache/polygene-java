@@ -17,33 +17,35 @@
  *
  *
  */
-package org.apache.zest.entitystore.leveldb;
+package org.apache.zest.entitystore.redis.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.redis.RedisEntityStoreConfiguration;
+import org.apache.zest.entitystore.redis.RedisMapEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
- * LevelDB EntityStore assembly.
+ * Redis EntityStore assembly.
  */
-public class LevelDBEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<LevelDBEntityStoreAssembler>
+public class RedisEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<RedisEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class );
-        ServiceDeclaration service = module.services( LevelDBEntityStoreService.class ).visibleIn( visibility() );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( RedisMapEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {
-            configModule().entities( LevelDBEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( RedisEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

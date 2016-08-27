@@ -66,13 +66,18 @@ module.exports = generators.Base.extend(
                             'Hazelcast',
                             'JClouds',
                             'Jdbm',
-                            'LevelDb',
+                            'LevelDB',
                             'Memory',
                             'MongoDb',
                             'Preferences',
                             'Redis',
-                            'Riak',
-                            'SQL'
+                            'RiakHttp',
+                            'RiakProtobuf',
+                            'MySQL',
+                            'PostgresSQL',
+                            'SQLite',
+                            'H2SQL',
+                            'DerbySQL'
                         ],
                         message: 'Which entity store do you want to use?'
                     },

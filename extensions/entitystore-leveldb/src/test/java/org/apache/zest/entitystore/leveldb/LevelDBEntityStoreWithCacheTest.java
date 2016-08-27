@@ -22,6 +22,7 @@ package org.apache.zest.entitystore.leveldb;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.leveldb.assembly.LevelDBEntityStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.cache.AbstractEntityStoreWithCacheTest;

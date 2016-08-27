@@ -17,37 +17,35 @@
  *
  *
  */
-package org.apache.zest.entitystore.riak;
+package org.apache.zest.entitystore.leveldb.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.leveldb.LevelDBEntityStoreConfiguration;
+import org.apache.zest.entitystore.leveldb.LevelDBEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
- * Riak Http EntityStore assembly.
+ * LevelDB EntityStore assembly.
  */
-public class RiakHttpMapEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<RiakHttpMapEntityStoreAssembler>
+public class LevelDBEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<LevelDBEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class ).
-            visibleIn( visibility() );
-        ServiceDeclaration service = module.services( RiakMapEntityStoreService.class ).
-            withMixins( RiakHttpMapEntityStoreMixin.class ).
-            visibleIn( visibility() );
+        module.services( UuidIdentityGeneratorService.class );
+        ServiceDeclaration service = module.services( LevelDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {
-            configModule().entities( RiakHttpEntityStoreConfiguration.class ).
-                visibleIn( configVisibility() );
+            configModule().entities( LevelDBEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

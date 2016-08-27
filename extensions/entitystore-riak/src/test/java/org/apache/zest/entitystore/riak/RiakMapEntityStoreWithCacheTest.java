@@ -21,6 +21,7 @@ package org.apache.zest.entitystore.riak;
 
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.bucket.Bucket;
+import org.apache.zest.entitystore.riak.assembly.RiakProtobufEntityStoreAssembler;
 import org.junit.BeforeClass;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -48,7 +49,7 @@ public class RiakMapEntityStoreWithCacheTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
-        new RiakProtobufMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new RiakProtobufEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 
     private IRiakClient riakClient;

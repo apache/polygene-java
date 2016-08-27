@@ -19,6 +19,7 @@
  */
 package org.apache.zest.entitystore.redis;
 
+import org.apache.zest.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.junit.BeforeClass;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -51,7 +52,7 @@ public class RedisMapEntityStoreTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RedisMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
     private JedisPool jedisPool;
