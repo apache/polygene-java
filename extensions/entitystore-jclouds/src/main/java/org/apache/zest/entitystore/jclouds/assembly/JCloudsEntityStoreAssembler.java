@@ -18,16 +18,18 @@
  *
  */
 
-package org.apache.zest.entitystore.jclouds;
+package org.apache.zest.entitystore.jclouds.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.jclouds.JCloudsMapEntityStoreConfiguration;
+import org.apache.zest.entitystore.jclouds.JCloudsMapEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
-public class JCloudsMapEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<JCloudsMapEntityStoreAssembler>
+public class JCloudsEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<JCloudsEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )

@@ -61,18 +61,18 @@ module.exports = generators.Base.extend(
                         type: 'list',
                         name: 'entitystore',
                         choices: [
-                            'file',
-                            'geode',
-                            'hazelcast',
-                            'jclouds',
-                            'jdbm',
-                            'leveldb',
-                            'in-memory',
-                            'mongodb',
-                            'preferences',
-                            'redis',
-                            'riak',
-                            'sql'
+                            'File',
+                            'Geode',
+                            'Hazelcast',
+                            'JClouds',
+                            'JDBM',
+                            'LevelDB',
+                            'Memory',
+                            'MongoDB',
+                            'Preferences',
+                            'Redis',
+                            'Riak',
+                            'SQL'
                         ],
                         message: 'Which entity store do you want to use?'
                     },
@@ -80,10 +80,10 @@ module.exports = generators.Base.extend(
                         type: 'list',
                         name: 'indexing',
                         choices: [
-                            'rdf',
-                            'elasticsearch',
-                            'solr',
-                            'sql'
+                            'Rdf',
+                            'ElasticSearch',
+                            'Solr',
+                            'SQL'
                         ],
                         message: 'Which caching system do you want to use?'
                     },
@@ -101,9 +101,9 @@ module.exports = generators.Base.extend(
                         type: 'list',
                         name: 'serialization',
                         choices: [
-                            'jackson',
-                            'stax',
-                            'org.json'
+                            'Jackson',
+                            'Stax',
+                            'OrgJson'
                         ],
                         message: 'Which indexing system do you want to use?'
                     },
@@ -132,10 +132,6 @@ module.exports = generators.Base.extend(
                         zest = answers;
                         zest.javaPackageDir = zest.packagename.replace( '.', '/' );
                         zest.singletonApp = false;
-                        zest.entitystore = firstUpper( zest.entitystore );
-                        zest.indexing = firstUpper( zest.indexing );
-                        zest.caching = firstUpper( zest.caching );
-                        zest.serialization = firstUpper( zest.serialization );
                         if( hasFeature( 'sample (heroes) web application' ) )
                         {
                             zest.features.push( 'rest api' );

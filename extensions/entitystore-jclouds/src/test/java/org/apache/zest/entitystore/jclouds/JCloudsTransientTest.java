@@ -23,6 +23,7 @@ package org.apache.zest.entitystore.jclouds;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
@@ -40,7 +41,7 @@ public class JCloudsTransientTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new JCloudsMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
     }
 
