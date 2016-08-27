@@ -35,6 +35,9 @@ allprojects() {
     mavenLocal()
     mavenCentral()
     maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
+<% if( zest.entitystore == 'Jdbm' ) { -%>
+    maven { name 'clojure-repo'; url 'http://clojars.org/repo/' }
+<% } -%>
   }
 
   dependencies {
