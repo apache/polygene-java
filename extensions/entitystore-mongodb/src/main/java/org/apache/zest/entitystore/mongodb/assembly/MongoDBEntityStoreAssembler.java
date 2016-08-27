@@ -17,16 +17,18 @@
  *
  *
  */
-package org.apache.zest.entitystore.mongodb;
+package org.apache.zest.entitystore.mongodb.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.mongodb.MongoEntityStoreConfiguration;
+import org.apache.zest.entitystore.mongodb.MongoMapEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
-public class MongoMapEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<MongoMapEntityStoreAssembler>
+public class MongoDBEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<MongoDBEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )

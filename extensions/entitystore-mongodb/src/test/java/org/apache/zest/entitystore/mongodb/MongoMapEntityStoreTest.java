@@ -20,6 +20,7 @@
 package org.apache.zest.entitystore.mongodb;
 
 import com.mongodb.Mongo;
+import org.apache.zest.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.junit.BeforeClass;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -57,7 +58,7 @@ public class MongoMapEntityStoreTest
         new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
-        new MongoMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
 
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();

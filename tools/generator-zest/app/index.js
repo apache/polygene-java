@@ -68,7 +68,7 @@ module.exports = generators.Base.extend(
                             'Jdbm',
                             'LevelDB',
                             'Memory',
-                            'MongoDb',
+                            'MongoDB',
                             'Preferences',
                             'Redis',
                             'RiakHttp',
