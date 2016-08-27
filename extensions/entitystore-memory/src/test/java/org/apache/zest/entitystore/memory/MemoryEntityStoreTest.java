@@ -21,6 +21,7 @@ package org.apache.zest.entitystore.memory;
 
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 

@@ -17,19 +17,20 @@
  *
  *
  */
-package org.apache.zest.entitystore.memory;
+package org.apache.zest.entitystore.memory.assembly;
 
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Assemble an in-memory EntityStore.
  */
 public class MemoryEntityStoreAssembler
-    extends Assemblers.VisibilityIdentity<MemoryEntityStoreAssembler>
+    extends Assemblers.VisibilityIdentityConfig<MemoryEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
