@@ -26,9 +26,11 @@ dependencies {
 
 
   compile "org.apache.zest.library:org.apache.zest.library.fileconfig:$zestVersion"
+<% if( hasFeature( 'rest api' ) ) { %>
   compile "org.apache.zest.library:org.apache.zest.library.restlet:$zestVersion"
-  compile "org.apache.zest.extension:org.apache.zest.extension.entitystore-file:$zestVersion"
-  compile "org.apache.zest.extension:org.apache.zest.extension.indexing-rdf:$zestVersion"
-  compile "org.apache.zest.extension:org.apache.zest.extension.valueserialization-jackson:$zestVersion"
+<% } %>
+  compile "org.apache.zest.extension:org.apache.zest.extension.entitystore-<%= zest.entitystore.toLowerCase() %>:$zestVersion"
+  compile "org.apache.zest.extension:org.apache.zest.extension.indexing-<%= zest.indexing.toLowerCase() %>:$zestVersion"
+  compile "org.apache.zest.extension:org.apache.zest.extension.valueserialization-<%= zest.serialization.toLowerCase() %>:$zestVersion"
 
 }

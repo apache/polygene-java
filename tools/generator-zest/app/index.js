@@ -155,18 +155,7 @@ module.exports = generators.Base.extend(
 
             copyZestBootstrap( this, "infrastructure", "FileConfigurationModule", true );
 
-            copyZestBootstrap( this, "infrastructure", "FileStorageModule", hasEntityStore( 'File' ) );
-            copyZestBootstrap( this, "infrastructure", "GeodeStorageModule", hasEntityStore( 'Geode' ) );
-            copyZestBootstrap( this, "infrastructure", "HazelcastStorageModule", hasEntityStore( 'Hazelcast' ) );
-            copyZestBootstrap( this, "infrastructure", "JCloudsStorageModule", hasEntityStore( 'Jclouds' ) );
-            copyZestBootstrap( this, "infrastructure", "JdbmStorageModule", hasEntityStore( 'Jdbm' ) );
-            copyZestBootstrap( this, "infrastructure", "LevelDbStorageModule", hasEntityStore( 'Leveldb' ) );
-            copyZestBootstrap( this, "infrastructure", "InMemoryStorageModule", hasEntityStore( 'Memory' ) );
-            copyZestBootstrap( this, "infrastructure", "MongoDbStorageModule", hasEntityStore( 'Mongodb' ) );
-            copyZestBootstrap( this, "infrastructure", "PreferencesStorageModule", hasEntityStore( 'Preferences' ) );
-            copyZestBootstrap( this, "infrastructure", "RedisStorageModule", hasEntityStore( 'Redis' ) );
-            copyZestBootstrap( this, "infrastructure", "RiakStorageModule", hasEntityStore( 'Riak' ) );
-            copyZestBootstrap( this, "infrastructure", "SqlStorageModule", hasEntityStore( 'Sql' ) );
+            copyEntityStore( this, zest.entitystore );
 
             copyZestBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
             copyZestBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
@@ -193,14 +182,14 @@ module.exports = generators.Base.extend(
 
             copyRestFeature( this, hasFeature( 'rest api' ) );
 
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradle-app.tmpl' ), this.destinationPath( 'app/build.gradle' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradle-bootstrap.tmpl' ), this.destinationPath( 'bootstrap/build.gradle' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradle-model.tmpl' ), this.destinationPath( 'model/build.gradle' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradle-rest.tmpl' ), this.destinationPath( 'rest/build.gradle' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradle-root.tmpl' ), this.destinationPath( 'build.gradle' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/settings.tmpl' ), this.destinationPath( 'settings.gradle' ), {projectName: zest.name} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradlew.tmpl' ), this.destinationPath( 'gradlew' ), {} );
-            this.fs.copyTpl( this.templatePath( 'buildtool/gradlew-bat.tmpl' ), this.destinationPath( 'gradlew.bat' ), {} );
+            copyTemplate( this, 'buildtool/gradle-app.tmpl', 'app/build.gradle' );
+            copyTemplate( this, 'buildtool/gradle-bootstrap.tmpl', 'bootstrap/build.gradle' );
+            copyTemplate( this, 'buildtool/gradle-model.tmpl', 'model/build.gradle' );
+            copyTemplate( this, 'buildtool/gradle-rest.tmpl', 'rest/build.gradle' );
+            copyTemplate( this, 'buildtool/gradle-root.tmpl', 'build.gradle' );
+            copyTemplate( this, 'buildtool/settings.tmpl', 'settings.gradle' );
+            copyTemplate( this, 'buildtool/gradlew.tmpl', 'gradlew' );
+            copyTemplate( this, 'buildtool/gradlew-bat.tmpl', 'gradlew.bat' );
             this.fs.copy( this.templatePath( 'buildtool/gradle-wrapper.jar_' ), this.destinationPath( 'gradle/wrapper/gradle-wrapper.jar' ) );
             this.fs.copy( this.templatePath( 'buildtool/gradle-wrapper.properties_' ), this.destinationPath( 'gradle/wrapper/gradle-wrapper.properties' ) );
         }
@@ -215,6 +204,13 @@ function copyZestBootstrap( ctx, layer, moduleName, condition )
                       moduleName + '/bootstrap.tmpl',
                       'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/' + layer + '/' + moduleName + '.java' );
     }
+}
+
+function copyEntityStore( ctx, entityStoreName )
+{
+    copyTemplate( ctx,
+                  'StorageModule/bootstrap.tmpl',
+                  'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/infrastructure/' + entityStoreName + 'StorageModule.java' );
 }
 
 function copyZestApp( ctx, name, condition )

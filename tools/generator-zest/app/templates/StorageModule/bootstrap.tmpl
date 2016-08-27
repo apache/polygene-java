@@ -24,15 +24,15 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.entitystore.file.assembly.FileEntityStoreAssembler;
+import org.apache.zest.entitystore.<%- zest.entitystore.toLowerCase() %>.assembly.<%- zest.entitystore %>EntityStoreAssembler;
 
-public class FileStorageModule
+public class <%- zest.entitystore %>StorageModule
     implements ModuleAssembler
 {
-    public static final String NAME = "File Storage Module";
+    public static final String NAME = "<%- zest.entitystore %> Storage Module";
     private final ModuleAssembly configModule;
 
-    public FileStorageModule( ModuleAssembly configModule )
+    public <%- zest.entitystore %>StorageModule( ModuleAssembly configModule )
     {
         this.configModule = configModule;
     }
@@ -43,10 +43,10 @@ public class FileStorageModule
     {
         module.withDefaultUnitOfWorkFactory();
 
-        new FileEntityStoreAssembler()
+        new <%- zest.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )
-            .identifiedBy( "filestore" )
+            .identifiedBy( "<%- zest.entitystore %>store" )
             .assemble( module );
         return module;
     }
