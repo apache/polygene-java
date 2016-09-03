@@ -100,9 +100,14 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( concerns, sideEffects ).filter( e -> e != null ).flatMap( Dependencies::dependencies );
-//        return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
-//                                                              sideEffects != null ? sideEffects.dependencies() : null ) ) );
+        // For some unknown reason, the following lines can not be put into a single expression.
+        // This is possibly due to a compiler or JVM bug. The problem manifests itself in
+        // failure inside the AssociationToValueTest and possibly others.
+        // java.lang.invoke.LambdaConversionException: Invalid receiver type interface org.apache.zest.functional.VisitableHierarchy; not a subtype of implementation type interface org.apache.zest.runtime.injection.Dependencies
+        // Since it is a runtime bug, we should not change this in Java 8, but if the problem is gone in Java 9,
+        // we can collapse these into a single expression.
+        Stream<? extends Dependencies> deps = Stream.of( this.concerns, sideEffects );
+        return deps.filter( e -> e != null ).flatMap( Dependencies::dependencies );
     }
 
     // Context

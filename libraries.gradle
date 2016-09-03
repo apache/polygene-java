@@ -33,6 +33,7 @@ def geodeVersion = '1.0.0-incubating.M2'
 def groovyVersion = '2.4.7'
 def h2Version = '1.4.192'
 def hazelcastVersion = '3.6.3'
+def hamcrestVersion = '1.3'
 def httpClientVersion = '4.5.2'
 def jacksonVersion = '2.7.5'
 def javascriptVersion = '1.7.7.1'
@@ -227,6 +228,10 @@ rootProject.ext {
 
           // Testing
           junit: "junit:junit:$junitVersion",
+          hamcrest: [
+                  "org.hamcrest:hamcrest-core:$hamcrestVersion",
+                  "org.hamcrest:hamcrest-library:$hamcrestVersion"
+          ],
           awaitility: "com.jayway.awaitility:awaitility:$awaitilityVersion",
           easymock: "org.easymock:easymock:$easyMockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",

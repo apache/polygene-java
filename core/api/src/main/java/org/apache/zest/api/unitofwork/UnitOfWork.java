@@ -404,14 +404,15 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * <p>
      * All the referenced entities inside the association will be fetched from the underlying entity store,
-     * which is potentially very expensive operation.
+     * which is potentially very expensive operation. Each of the fetched entities will be passed to
+     * {@link #toValue(Class, Identity)}, and its associations will NOT be converted into values, but remain
+     * {@link EntityReference} values. Hence there is no problem with circular references.
      * </p>
      *
      * <p>
-     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
-     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     * as seen in the method signature, also be sub-type of {@link Identity}.
      * </p>
-
      *
      * @param association The association of entities to be converted into values.
      * @param <T>         The primary type of the association.
@@ -428,12 +429,14 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * <p>
      * All the referenced entities inside the association will be fetched from the underlying entity store,
      * which is potentially very expensive operation. However, any duplicate EntityReferences in the association
-     * will be dropped before the fetch occurs.
+     * will be dropped before the fetch occurs. Each of the fetched entities will be passed to
+     * {@link #toValue(Class, Identity)}, and its associations will NOT be converted into values, but remain
+     * {@link EntityReference} values. Hence there is no problem with circular references.
      * </p>
      *
      * <p>
-     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
-     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     * as seen in the method signature, also be sub-type of {@link Identity}.
      * </p>
      *
      * @param association The association of entities to be converted into values.
@@ -450,11 +453,13 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * <p>
      * A {@link NamedAssociation} is effectively a Map with a String key and an EntityReference as the value. The
-     * EntityReference is fetched from the entity store and converted into a value of the same type.
+     * EntityReference is fetched from the entity store and converted into a value of the same type.Each of the fetched
+     * entities will be passed to {@link #toValue(Class, Identity)}, and its associations will NOT be converted into
+     * values, but remain {@link EntityReference} values. Hence there is no problem with circular references.
      * </p>
      * <p>
-     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
-     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     * as seen in the method signature, also be sub-type of {@link Identity}.
      * </p>
      *
      * @param association The association of entities to be converted into values.

@@ -31,4 +31,5 @@ dependencies {
 
   testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
   testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" )
+  testCompile libraries.hamcrest
 }
