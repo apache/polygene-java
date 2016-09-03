@@ -23,11 +23,17 @@ package org.apache.zest.runtime.unitofwork;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
+import org.apache.zest.api.association.ManyAssociation;
+import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -103,6 +109,9 @@ public class ModuleUnitOfWork
 
     @Uses
     private UnitOfWorkInstance uow;
+
+    @Structure
+    private ZestAPI api;
 
     @Structure
     private ModuleDescriptor module;
@@ -441,6 +450,45 @@ public class ModuleUnitOfWork
         ValueBuilder<T> builder = module().instance().newValueBuilderWithState(
             primaryType, propertyFunction, assocationFunction, manyAssocFunction, namedAssocFunction );
         return builder.newInstance();
+    }
+
+    @Override
+    public <T extends Identity> Map<String, T> toValueMap( NamedAssociation<T> association )
+    {
+        @SuppressWarnings( "unchecked" )
+        Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
+
+        return association
+            .toMap()
+            .entrySet()
+            .stream()
+            .collect( Collectors.toMap( Map.Entry::getKey, entry -> toValue( primaryType, entry.getValue()) ) );
+    }
+
+    @Override
+    public <T extends Identity> List<T> toValueList( ManyAssociation<T> association )
+    {
+        @SuppressWarnings( "unchecked" )
+        Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
+
+        return association
+            .toList()
+            .stream()
+            .map( entity -> toValue( primaryType, entity ) )
+            .collect( Collectors.toList() );
+    }
+
+    @Override
+    public <T extends Identity> Set<T> toValueSet( ManyAssociation<T> association )
+    {
+        @SuppressWarnings( "unchecked" )
+        Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
+
+        return association
+            .toSet()
+            .stream()
+            .map( entity -> toValue( primaryType, entity ) )
+            .collect( Collectors.toSet() );
     }
 
     @Override

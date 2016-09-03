@@ -19,9 +19,13 @@
  */
 package org.apache.zest.api.unitofwork;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
+import org.apache.zest.api.association.ManyAssociation;
+import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -132,8 +136,8 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new Entity
      *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
-     * @throws AmbiguousTypeException      If several mixins implement the given type
-     * @throws LifecycleException          if the entity cannot be created
+     * @throws AmbiguousTypeException    If several mixins implement the given type
+     * @throws LifecycleException        if the entity cannot be created
      */
     <T> T newEntity( Class<T> type )
         throws NoSuchEntityTypeException, AmbiguousTypeException, LifecycleException;
@@ -150,8 +154,8 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new Entity
      *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
-     * @throws AmbiguousTypeException      If several mixins implement the given type
-     * @throws LifecycleException          if the entity cannot be created
+     * @throws AmbiguousTypeException    If several mixins implement the given type
+     * @throws LifecycleException        if the entity cannot be created
      */
     <T> T newEntity( Class<T> type, @Optional String identity )
         throws NoSuchEntityTypeException, AmbiguousTypeException, LifecycleException;
@@ -167,7 +171,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new EntityBuilder
      *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
-     * @throws AmbiguousTypeException      If several mixins implement the given type
+     * @throws AmbiguousTypeException    If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
         throws NoSuchEntityTypeException, AmbiguousTypeException;
@@ -184,7 +188,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new EntityBuilder
      *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
-     * @throws AmbiguousTypeException      If several mixins implement the given type
+     * @throws AmbiguousTypeException    If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type, @Optional String identity )
         throws NoSuchEntityTypeException, AmbiguousTypeException;
@@ -206,7 +210,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new EntityBuilder starting with the given state
      *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
-     * @throws AmbiguousTypeException      If several mixins implement the given type
+     * @throws AmbiguousTypeException    If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type,
                                                     Function<PropertyDescriptor, Object> propertyFunction,
@@ -234,7 +238,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return a new EntityBuilder starting with the given state
      *
      * @throws NoSuchEntityTypeException If no mixins implements the given type
-     * @throws AmbiguousTypeException      If several mixins implement the given type
+     * @throws AmbiguousTypeException    If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, @Optional String identity,
                                                     Function<PropertyDescriptor, Object> propertyFunction,
@@ -254,7 +258,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return the entity
      *
      * @throws NoSuchEntityTypeException if no entity type could be found
-     * @throws NoSuchEntityException       if the entity could not be found
+     * @throws NoSuchEntityException     if the entity could not be found
      */
     <T> T get( Class<T> type, String identity )
         throws NoSuchEntityTypeException, NoSuchEntityException;
@@ -394,6 +398,73 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return The Value
      */
     <T extends Identity> T toValue( Class<T> primaryType, T entityComposite );
+
+    /**
+     * Converts all the entities referenced in the ManyAssociation into a List of values of the same type.
+     *
+     * <p>
+     * All the referenced entities inside the association will be fetched from the underlying entity store,
+     * which is potentially very expensive operation.
+     * </p>
+     *
+     * <p>
+     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * </p>
+
+     *
+     * @param association The association of entities to be converted into values.
+     * @param <T>         The primary type of the association.
+     *
+     * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
+     *
+     * @see #toValue(Class, Identity)
+     */
+    <T extends Identity> List<T> toValueList( ManyAssociation<T> association );
+
+    /**
+     * Converts all the entities referenced in the ManyAssociation into a Set of values of the same type.
+     *
+     * <p>
+     * All the referenced entities inside the association will be fetched from the underlying entity store,
+     * which is potentially very expensive operation. However, any duplicate EntityReferences in the association
+     * will be dropped before the fetch occurs.
+     * </p>
+     *
+     * <p>
+     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * </p>
+     *
+     * @param association The association of entities to be converted into values.
+     * @param <T>         The primary type of the association.
+     *
+     * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
+     *
+     * @see #toValue(Class, Identity)
+     */
+    <T extends Identity> Set<T> toValueSet( ManyAssociation<T> association );
+
+    /**
+     * Converts the {@link NamedAssociation} into a Map with a String key and a ValueComposite as the value.
+     *
+     * <p>
+     * A {@link NamedAssociation} is effectively a Map with a String key and an EntityReference as the value. The
+     * EntityReference is fetched from the entity store and converted into a value of the same type.
+     * </p>
+     * <p>
+     *     For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
+     *     as seen in the method signature, also be sub-type of {@link Identity}.
+     * </p>
+     *
+     * @param association The association of entities to be converted into values.
+     * @param <T>         The primary type of the association.
+     *
+     * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
+     *
+     * @see #toValue(Class, Identity)
+     */
+    <T extends Identity> Map<String, T> toValueMap( NamedAssociation<T> association );
 
     /**
      * Converts the provided Value to an Entity of the same type.
