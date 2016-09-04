@@ -45,12 +45,12 @@ public class ClassScannerTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                // Find all classes starting from TestValue, but include only the ones that are named *Value
+                new DefaultUnitOfWorkAssembler().assemble( module );
 
+                // Find all classes starting from TestValue, but include only the ones that are named *Value
                 for( Class aClass : filter( matches( ".*Value" ), findClasses( TestValue.class ) ) )
                 {
                     module.values( aClass );
-                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             }
         };
