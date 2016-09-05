@@ -46,7 +46,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreAssembler;
+import org.apache.zest.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.index.rdf.indexing.RdfIndexingService;
 import org.apache.zest.index.rdf.query.SesameExpressions;
