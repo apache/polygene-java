@@ -35,6 +35,8 @@ import static org.apache.zest.library.http.Servlets.addServlets;
 import static org.apache.zest.library.http.Servlets.serve;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 
+// TODO Compilation fails with Java 9
+// TODO Move this to a separate source set that's enabled only when Java < 9
 public class VirtualHostJettyServiceTest
     extends AbstractJettyTest
 {

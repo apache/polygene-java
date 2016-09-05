@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
 
 @RunWith( Suite.class )
 @Suite.SuiteClasses( {
-    VirtualHostJettyServiceTest.class,
     JettyServiceTest.class,
     JettyJMXStatisticsTest.class,
     SecureJettyServiceTest.class,

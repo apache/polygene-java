@@ -22,11 +22,6 @@ description = "Apache Zest™ Http Library provides embedded Jetty for Apache Ze
 
 jar { manifest { name = "Apache Zest™ Library - Http" }}
 
-test {
-  systemProperties 'networkaddress.cache.ttl': '0'
-  systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
-}
-
 dependencies {
 
   compile( project( ":org.apache.zest.core:org.apache.zest.core.api" ) )
@@ -38,9 +33,39 @@ dependencies {
 
   testCompile( project( ":org.apache.zest.core:org.apache.zest.core.testsupport" ) )
   testCompile( libraries.http_client )
-  testCompile( libraries.dnsjava )
 
   testRuntime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
   testRuntime( libraries.logback )
 
+}
+
+// Do not run vhost tests on Java >= 9 because they use internal JDK apis
+if(JavaVersion.current() < JavaVersion.VERSION_1_9) {
+    sourceSets {
+        vhostTest {
+            java {
+                compileClasspath += main.output + test.output
+                runtimeClasspath += main.output + test.output
+                srcDir file('src/vhost-test/java')
+            }
+            resources {
+                srcDir file('src/vhost-test/resources')
+            }
+        }
+    }
+    configurations {
+        vhostTestCompile.extendsFrom testCompile
+        vhostTestRuntime.extendsFrom testRuntime
+    }
+    dependencies {
+        vhostTestCompile( libraries.dnsjava )
+    }
+    task vhostTest(type: Test) {
+        testClassesDir = sourceSets.vhostTest.output.classesDir
+        classpath = sourceSets.vhostTest.runtimeClasspath
+        systemProperties 'networkaddress.cache.ttl': '0'
+        systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
+    }
+    check.dependsOn vhostTest
+    vhostTest.mustRunAfter test
 }
