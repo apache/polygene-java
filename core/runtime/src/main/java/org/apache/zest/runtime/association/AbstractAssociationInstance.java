@@ -21,7 +21,6 @@ package org.apache.zest.runtime.association;
 
 import java.lang.reflect.Type;
 import java.util.function.BiFunction;
-import jdk.Exported;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
