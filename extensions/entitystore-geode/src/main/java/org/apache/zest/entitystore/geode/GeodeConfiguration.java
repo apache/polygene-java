@@ -73,9 +73,11 @@ public interface GeodeConfiguration
     /**
      * Geode Region Name.
      *
+     * Region names may only be alphanumeric and may contain hyphens or underscores.
+     *
      * @return Geode Region Name
      */
-    @UseDefaults( "zest:entitystore:region" )
+    @UseDefaults( "zest-entitystore-region" )
     Property<String> regionName();
 }
 // END SNIPPET: config
