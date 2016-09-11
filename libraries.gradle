@@ -28,43 +28,43 @@ def derbyVersion = '10.12.1.1'
 def dnsJavaVersion = '2.1.7'
 def ehcacheVersion = '2.10.2.2.21' // 3.x exists
 def elasticsearchVersion = '1.7.5' // 2.x exists
-def freemarkerVersion = '2.3.24-incubating'
+def freemarkerVersion = '2.3.25-incubating'
 def geodeVersion = '1.0.0-incubating.M2'
 def groovyVersion = '2.4.7'
 def h2Version = '1.4.192'
-def hazelcastVersion = '3.6.3'
+def hazelcastVersion = '3.7.1'
 def hamcrestVersion = '1.3'
 def httpClientVersion = '4.5.2'
-def jacksonVersion = '2.7.5'
+def jacksonVersion = '2.8.2'
 def javascriptVersion = '1.7.7.1'
 def javasqlgeneratorVersion = '0.3.2'
 def jcloudsVersion = '1.9.2'
 def jdbmVersion = '2.4'
-def jedisVersion = '2.8.1'
+def jedisVersion = '2.9.0'
 def jettyVersion = '9.2.17.v20160517' // 9.3.x Tests fail!
 def jgoodiesLooksVersion = '2.7.0'
 def jtaVersion = '1.1'
-def leveldbVersion = '0.7'
+def leveldbVersion = '0.9'
 def leveldbJniVersion = '1.8'
 def liquibaseVersion = '3.5.1'
-def logbackVersion = '1.1.3'
-def mongodbVersion = '2.14.2' // 3.0.x Fails to compile!
+def logbackVersion = '1.1.7'
+def mongodbVersion = '2.14.3' // 3.3.x Fails to compile!
 def mysqlVersion = '5.1.39' // 6.x exists
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 Fails to compile! - 5.0.0 exists
 def pdfboxVersion = '1.8.12' // 2.x exists
-def postgresqlVersion = '9.4.1208'
+def postgresqlVersion = '9.4.1210'
 def prefuseVersion = '1.0.1'
 def restletVersion = '2.3.7'
 def rdfVersion = '2.7.16' // 2.8.x change query results!! 4.x exists
 def riakVersion = '1.4.4' // 2.0.x Fails to compile!
 def scalaVersion = '2.11.8'
 def servletVersion = '3.1.0'
-def shiroVersion = '1.2.4' // 1.2.5 exists but has wrong POM
+def shiroVersion = '1.3.1'
 def skedVersion = '2.1'
 def slf4jVersion = '1.7.21'
 def solrVersion = "1.4.1" // 4.x Fails to compile!
-def springVersion = '4.3.0.RELEASE'
+def springVersion = '4.3.2.RELEASE'
 def spymemcachedVersion = '2.12.1'
 def sqliteVersion = '3.8.11.2'
 def velocityVersion = '1.7'
@@ -74,7 +74,7 @@ def woodstoxVersion = '4.4.1'
 def yammerMetricsVersion = '2.2.0' // 3.x exists, relocated to io.dropwizard
 
 def antVersion = '1.9.7'
-def awaitilityVersion = '1.7.0'
+def awaitilityVersion = '2.0.0'
 def easyMockVersion = '3.4'
 def junitVersion = '4.12'
 def mockitoVersion = '1.10.19'
@@ -232,7 +232,7 @@ rootProject.ext {
                   "org.hamcrest:hamcrest-core:$hamcrestVersion",
                   "org.hamcrest:hamcrest-library:$hamcrestVersion"
           ],
-          awaitility: "com.jayway.awaitility:awaitility:$awaitilityVersion",
+          awaitility: "org.awaitility:awaitility:$awaitilityVersion",
           easymock: "org.easymock:easymock:$easyMockVersion",
           mockito: "org.mockito:mockito-core:$mockitoVersion",
 

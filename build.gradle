@@ -145,7 +145,7 @@ allprojects {
   if( version == 'unspecified' ) {
     version = System.properties.version ?: "0"
   }
-  
+
   // UTF-8 For all compilations and javadocs
   // Deprecation warnings for all compilations
   // Unchecked warnings for non-test core compilations

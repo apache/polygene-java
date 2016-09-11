@@ -29,8 +29,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.jayway.awaitility.Awaitility.await;
-import static com.jayway.awaitility.Duration.ONE_SECOND;
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Duration.ONE_SECOND;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
