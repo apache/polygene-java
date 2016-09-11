@@ -36,8 +36,8 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.1'
-    classpath 'gradle.plugin.org.nosphere.honker:honker-gradle:0.2.2'
+    classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.2'
+    classpath 'gradle.plugin.org.nosphere.honker:honker-gradle:0.2.3'
     classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
   }
 }
