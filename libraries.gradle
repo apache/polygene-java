@@ -23,7 +23,7 @@ def asmVersion = '5.1'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.54'
 def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
-def commonsLangVersion = '2.6' // Should be moved to commons-lang3
+def commonsLangVersion = '3.4'
 def derbyVersion = '10.12.1.1'
 def dnsJavaVersion = '2.1.7'
 def ehcacheVersion = '2.10.2.2.21' // 3.x exists
@@ -208,7 +208,7 @@ rootProject.ext {
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
           velocity: "org.apache.velocity:velocity:$velocityVersion",
           commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
-          commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
+          commons_lang: "org.apache.commons:commons-lang3:$commonsLangVersion",
           servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
           http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
           woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",

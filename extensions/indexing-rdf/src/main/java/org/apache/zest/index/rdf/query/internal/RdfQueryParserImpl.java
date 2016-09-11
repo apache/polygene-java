@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.function.Predicate;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.query.grammar.AndPredicate;

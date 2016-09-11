@@ -35,7 +35,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
