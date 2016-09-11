@@ -143,7 +143,7 @@ public class AbstractJsonDateFormatTest
         throws Exception
     {
         CollectionType collectionType = new CollectionType( List.class, periodType );
-        List<ZonedDateTime> value = valueDeserializer.deserialize( module, collectionType, "[\"P3Y5M13D\"]" );
+        List<Period> value = valueDeserializer.deserialize( module, collectionType, "[\"P3Y5M13D\"]" );
         Period expected = Period.of( 3, 5, 13);
         assertThat( value.get( 0 ), equalTo( expected ) );
     }
