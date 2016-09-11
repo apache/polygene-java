@@ -22,7 +22,7 @@
 def asmVersion = '5.1'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.54'
-def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
+def commonsDbcpVersion = '2.1.1'
 def commonsLangVersion = '3.4'
 def derbyVersion = '10.12.1.1'
 def dnsJavaVersion = '2.1.7'
@@ -207,7 +207,7 @@ rootProject.ext {
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
           velocity: "org.apache.velocity:velocity:$velocityVersion",
-          commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
+          commons_dbcp: "org.apache.commons:commons-dbcp2:$commonsDbcpVersion",
           commons_lang: "org.apache.commons:commons-lang3:$commonsLangVersion",
           servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
           http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
