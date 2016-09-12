@@ -294,7 +294,9 @@ allprojects {
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.groovyDir.isDirectory() ||
       ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() || ext.testGroovyDir.isDirectory() )
   {
-    apply plugin: 'jacoco'
+    if( JavaVersion.current() < JavaVersion.VERSION_1_9 ) {
+      apply plugin: 'jacoco'
+    }
     apply plugin: 'osgi'
     apply plugin: VersionClass
     apply plugin: AsciidocBuildInfo
@@ -378,8 +380,10 @@ allprojects {
         }
       }
     }
-    jacoco {
-      toolVersion = '0.7.5.201505241946'
+    if(JavaVersion.current() < JavaVersion.VERSION_1_9 ) {
+      jacoco {
+        toolVersion = '0.7.5.201505241946'
+      }
     }
 
 //    // Create checkstyle report
@@ -480,6 +484,7 @@ dependencies {
 }
 // Generate a global code codeverage report
 task coverageReport {
+  enabled = JavaVersion.current() < JavaVersion.VERSION_1_9
   dependsOn subprojects*.test
   def outputPath = "build/reports/coverage"
   inputs.dir subprojects.collect { p -> "${p.buildDir.path}/jacoco" }
