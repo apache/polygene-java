@@ -14,56 +14,91 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 package org.apache.zest.entitystore.riak;
 
-import java.util.List;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.configuration.ConfigurationComposite;
 import org.apache.zest.api.property.Property;
 
+import java.util.List;
+
 /**
- * Configuration for RiakHttpEntityStoreService.
+ * Configuration for RiakEntityStoreService.
  */
 // START SNIPPET: config
-public interface RiakHttpEntityStoreConfiguration
-        extends ConfigurationComposite
+public interface RiakEntityStoreConfiguration extends ConfigurationComposite
 {
-
     /**
-     * List of Riak URLs.
+     * List of Riak Protocol Buffer hosts.
      *
-     * Defaulted to http://127.0.0.1:8098/riak if empty.
+     * Each entry can contain either an IP address / hostname
+     * or an IP address / hostname followed by a column and the host's port.
+     *
+     * Defaulted to 127.0.0.1 if empty.
+     *
+     * @return List of Riak nodes
      */
     @UseDefaults
-    Property<List<String>> urls();
+    Property<List<String>> hosts();
 
     /**
      * Riak Bucket where Entities state will be stored.
      *
      * Defaulted to "zest:entities".
+     *
+     * @return Riak bucket name
      */
-    @Optional
+    @UseDefaults( "zest:entities" )
     Property<String> bucket();
 
     /**
-     * Maximum total connections.
+     * Cluster execution attempts.
      *
-     * Defaulted to 50. Use 0 for infinite number of connections.
+     * @return Cluster execution attempts
+     */
+    @Optional
+    Property<Integer> clusterExecutionAttempts();
+
+    /**
+     * Minimum connections per node.
+     *
+     * @return Minimum connections per node
+     */
+    @Optional
+    Property<Integer> minConnections();
+
+    /**
+     * Maximum connections per node.
+     *
+     * @return Maximum connections per node
      */
     @Optional
     Property<Integer> maxConnections();
 
     /**
-     * The connection, socket read and pooled connection acquisition timeout in milliseconds.
+     * Block on maximum connections.
      *
-     * Defaulted to 0 (infinite).
+     * @return Block on maximum connections
      */
     @UseDefaults
-    Property<Integer> timeout();
+    Property<Boolean> blockOnMaxConnections();
 
+    /**
+     * Connection timeout.
+     *
+     * @return Connection timeout
+     */
+    @Optional
+    Property<Integer> connectionTimeout();
+
+    /**
+     * Idle timeout.
+     *
+     * @return idle timeout
+     */
+    @Optional
+    Property<Integer> idleTimeout();
 }
 // END SNIPPET: config

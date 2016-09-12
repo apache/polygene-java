@@ -1,50 +1,33 @@
-/*
- *  Licensed to the Apache Software Foundation (ASF) under one
- *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
- *  to you under the Apache License, Version 2.0 (the
- *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *
- */
 package org.apache.zest.entitystore.riak;
 
-import com.basho.riak.client.IRiakClient;
-import com.basho.riak.client.bucket.Bucket;
-import org.apache.zest.entitystore.riak.assembly.RiakProtobufEntityStoreAssembler;
-import org.junit.BeforeClass;
+import com.basho.riak.client.api.RiakClient;
+import com.basho.riak.client.api.commands.kv.DeleteValue;
+import com.basho.riak.client.api.commands.kv.ListKeys;
+import com.basho.riak.client.core.query.Location;
+import com.basho.riak.client.core.query.Namespace;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.BeforeClass;
 
 import static org.apache.zest.test.util.Assume.assumeConnectivity;
 
-public class RiakProtobufMapEntityStoreTest
-    extends AbstractEntityStoreTest
+public class RiakMapEntityStoreTest
+        extends AbstractEntityStoreTest
 {
     @BeforeClass
     public static void beforeRiakProtobufMapEntityStoreTests()
     {
         assumeConnectivity( "localhost", 8087 );
     }
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+            throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -52,15 +35,16 @@ public class RiakProtobufMapEntityStoreTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RiakProtobufEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
-    private IRiakClient riakClient;
+
+    private RiakClient riakClient;
     private String bucketKey;
 
     @Override
     public void setUp()
-        throws Exception
+            throws Exception
     {
         super.setUp();
         RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
@@ -70,13 +54,16 @@ public class RiakProtobufMapEntityStoreTest
 
     @Override
     public void tearDown()
-        throws Exception
+            throws Exception
     {
         // Riak don't expose bucket deletion in its API so we empty the Zest Entities bucket.
-        Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
-        for( String key : bucket.keys() )
+        Namespace namespace = new Namespace( bucketKey );
+        ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+        ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
+        for( Location location : listKeysResponse )
         {
-            bucket.delete( key ).execute();
+            DeleteValue delete = new DeleteValue.Builder( location ).build();
+            riakClient.execute( delete );
         }
         super.tearDown();
     }

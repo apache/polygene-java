@@ -19,16 +19,19 @@
  */
 package org.apache.zest.entitystore.riak;
 
-import com.basho.riak.client.IRiakClient;
-import com.basho.riak.client.bucket.Bucket;
-import org.apache.zest.entitystore.riak.assembly.RiakProtobufEntityStoreAssembler;
-import org.junit.BeforeClass;
+import com.basho.riak.client.api.RiakClient;
+import com.basho.riak.client.api.commands.kv.DeleteValue;
+import com.basho.riak.client.api.commands.kv.ListKeys;
+import com.basho.riak.client.core.query.Location;
+import com.basho.riak.client.core.query.Namespace;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.cache.AbstractEntityStoreWithCacheTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.BeforeClass;
 
 import static org.apache.zest.test.util.Assume.assumeConnectivity;
 
@@ -36,7 +39,7 @@ public class RiakMapEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
 {
     @BeforeClass
-    public static void beforeRiakProtobufMapEntityStoreTests()
+    public static void beforeRiakMapEntityStoreTests()
     {
         assumeConnectivity( "localhost", 8087 );
     }
@@ -49,10 +52,10 @@ public class RiakMapEntityStoreWithCacheTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
-        new RiakProtobufEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 
-    private IRiakClient riakClient;
+    private RiakClient riakClient;
     private String bucketKey;
 
     @Override
@@ -70,10 +73,13 @@ public class RiakMapEntityStoreWithCacheTest
         throws Exception
     {
         // Riak don't expose bucket deletion in its API so we empty the Zest Entities bucket.
-        Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
-        for( String key : bucket.keys() )
+        Namespace namespace = new Namespace( bucketKey );
+        ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+        ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
+        for( Location location : listKeysResponse )
         {
-            bucket.delete( key ).execute();
+            DeleteValue delete = new DeleteValue.Builder( location ).build();
+            riakClient.execute( delete );
         }
         super.tearDown();
     }

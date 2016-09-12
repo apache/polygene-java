@@ -27,44 +27,28 @@ source=extensions/entitystore-riak/dev-status.xml
 
 EntityStore service backed by a http://basho.com/[Riak] bucket.
 
-The EntityStore comes in two flavours: HTTP or ProtocolBuffer based. See the Riak documentation.
+The EntityStore only supports accessing Riak using protocol buffers.
+HTTP is not supported since the 2.x serie of the Riak Java client.
+See the Riak documentation.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Assembly ==
 
-Assembly is done using the provided Assemblers.
-
-For HTTP based Riak client:
+Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakHttpMapEntityStoreTest.java
-tag=assembly
-----
-
-For ProtocolBuffer based Riak client:
-
-[snippet,java]
-----
-source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakProtobufMapEntityStoreTest.java
+source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakMapEntityStoreTest.java
 tag=assembly
 ----
 
 == Configuration ==
 
-Here are the configuration properties for the HTTP based Riak client:
+Here are the available configuration properties:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakHttpEntityStoreConfiguration.java
-tag=config
-----
-
-Here are the configuration properties for the ProtocolBuffer based Riak client:
-
-[snippet,java]
-----
-source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakProtobufEntityStoreConfiguration.java
+source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakEntityStoreConfiguration.java
 tag=config
 ----
