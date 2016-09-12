@@ -99,7 +99,8 @@ rat {
         'manual/**/jquery*.js',
         // W3C XML Schemas - W3C Software License
         'samples/rental/src/main/resources/*.xsd',
-
+        // Zest Generator Heroes Templates - MIT
+        'tools/generator-zest/app/templates/Heroes/**',
         // templates that will become the user's source files, should not have license headers
         'tools/shell/src/dist/etc/templates/**',
     ]
