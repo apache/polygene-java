@@ -23,13 +23,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.sql.assembly.ExternalDataSourceAssembler;
 import org.apache.zest.library.sql.common.SQLUtil;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Test;
 
 public class ExternalDataSourceTest
         extends AbstractZestTest

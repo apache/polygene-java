@@ -19,15 +19,12 @@
  */
 package org.apache.zest.index.rdf.query.internal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.function.Predicate;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.zest.api.composite.Composite;

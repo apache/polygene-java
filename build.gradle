@@ -1020,7 +1020,7 @@ task checkReleaseSpec {
     def notReleasable = [:]
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({ it instanceof ProjectDependency }).each { dep ->
       def depNotReleaseApproved = releaseApprovedProjects.findAll { rp ->
-        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name 
+        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name
       }.isEmpty()
       if( depNotReleaseApproved )
       {
