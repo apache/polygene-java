@@ -20,7 +20,6 @@
 package org.apache.zest.index.elasticsearch.memory;
 
 import java.io.File;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -59,12 +58,12 @@ public class ESMemorySupport
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
         String identity = hasIdentity.identity().get();
-        Settings settings = ImmutableSettings.settingsBuilder().
-                put( "path.work", new File( fileConfig.temporaryDirectory(), identity ).getAbsolutePath() ).
+        Settings settings = Settings.settingsBuilder().
+                put( "path.work", new File( new File( fileConfig.temporaryDirectory(), identity ),  "work" ).getAbsolutePath() ).
+                put( "path.home", new File( new File( fileConfig.temporaryDirectory(), identity ), "home" ).getAbsolutePath() ).
                 put( "path.logs", new File( fileConfig.logDirectory(), identity ).getAbsolutePath() ).
                 put( "path.data", new File( fileConfig.dataDirectory(), identity ).getAbsolutePath() ).
                 put( "path.conf", new File( fileConfig.configurationDirectory(), identity ).getAbsolutePath() ).
-                put( "gateway.type", "none" ).
                 put( "http.enabled", false ).
                 put( "index.cache.type", "weak" ).
                 put( "index.store.type", "memory" ).

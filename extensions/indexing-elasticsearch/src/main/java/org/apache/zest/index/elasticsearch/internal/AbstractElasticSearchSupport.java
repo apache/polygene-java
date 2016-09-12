@@ -20,7 +20,7 @@
 package org.apache.zest.index.elasticsearch.internal;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.apache.zest.index.elasticsearch.ElasticSearchSupport;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public abstract class AbstractElasticSearchSupport
         if ( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().isExists() ) {
             // Create empty index
             LOGGER.info( "Will create '{}' index as it does not exists.", index );
-            ImmutableSettings.Builder indexSettings = ImmutableSettings.settingsBuilder().loadFromSource( XContentFactory.jsonBuilder().
+            Settings.Builder indexSettings = Settings.settingsBuilder().loadFromSource( XContentFactory.jsonBuilder().
                     startObject().
                     startObject( "analysis" ).
                     startObject( "analyzer" ).

@@ -20,11 +20,11 @@
 package org.apache.zest.index.elasticsearch;
 
 import java.util.Map;
-import org.elasticsearch.index.query.FilterBuilder;
 import org.apache.zest.api.query.grammar.ComparisonPredicate;
 import org.apache.zest.api.query.grammar.ContainsAllPredicate;
 import org.apache.zest.api.query.grammar.ContainsPredicate;
 import org.apache.zest.api.query.grammar.Variable;
+import org.elasticsearch.index.query.QueryBuilder;
 
 
 /* package */ final class ElasticSearchFinderSupport
@@ -52,11 +52,11 @@ import org.apache.zest.api.query.grammar.Variable;
     /* package */ static interface ComplexTypeSupport
     {
 
-        FilterBuilder comparison( ComparisonPredicate<?> spec, Map<String, Object> variables );
+        QueryBuilder comparison( ComparisonPredicate<?> spec, Map<String, Object> variables );
 
-        FilterBuilder contains( ContainsPredicate<?> spec, Map<String, Object> variables );
+        QueryBuilder contains( ContainsPredicate<?> spec, Map<String, Object> variables );
 
-        FilterBuilder containsAll( ContainsAllPredicate<?> spec, Map<String, Object> variables );
+        QueryBuilder containsAll( ContainsAllPredicate<?> spec, Map<String, Object> variables );
 
     }
 

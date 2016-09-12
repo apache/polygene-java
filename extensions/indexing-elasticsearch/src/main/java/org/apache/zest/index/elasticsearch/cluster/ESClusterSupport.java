@@ -20,13 +20,14 @@
 package org.apache.zest.index.elasticsearch.cluster;
 
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.index.elasticsearch.ElasticSearchClusterConfiguration;
 import org.apache.zest.index.elasticsearch.internal.AbstractElasticSearchSupport;
+
+import java.net.InetSocketAddress;
 
 public class ESClusterSupport
         extends AbstractElasticSearchSupport
@@ -52,19 +53,19 @@ public class ESClusterSupport
         String pingTimeout = config.pingTimeout().get() == null ? "5s" : config.pingTimeout().get();
         String samplerInterval = config.samplerInterval().get() == null ? "5s" : config.samplerInterval().get();
 
-        Settings settings = ImmutableSettings.settingsBuilder().
+        Settings settings = Settings.settingsBuilder().
                 put( "cluster.name", clusterName ).
                 put( "client.transport.sniff", clusterSniff ).
                 put( "client.transport.ignore_cluster_name", ignoreClusterName ).
                 put( "client.transport.ping_timeout", pingTimeout ).
                 put( "client.transport.nodes_sampler_interval", samplerInterval ).
                 build();
-        TransportClient transportClient = new TransportClient( settings );
+        TransportClient transportClient = TransportClient.builder().settings(settings).build();
         for ( String node : nodes ) {
             String[] split = node.split( ":" );
             String host = split[0];
             int port = Integer.valueOf( split[1] );
-            transportClient.addTransportAddress( new InetSocketTransportAddress( host, port ) );
+            transportClient.addTransportAddress( new InetSocketTransportAddress( new InetSocketAddress( host, port ) ) );
         }
 
         client = transportClient;
