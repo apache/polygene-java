@@ -27,7 +27,6 @@ apply plugin: 'scala'
 tasks.withType(ScalaCompile) {
     configure( scalaCompileOptions.forkOptions ) {
         memoryMaximumSize = '1g'
-        jvmArgs = [ '-XX:MaxPermSize=512m' ]
     }
 }
 
