@@ -294,6 +294,7 @@ allprojects {
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.groovyDir.isDirectory() ||
       ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() || ext.testGroovyDir.isDirectory() )
   {
+    // ZEST-175
     if( JavaVersion.current() < JavaVersion.VERSION_1_9 ) {
       apply plugin: 'jacoco'
     }
@@ -380,6 +381,7 @@ allprojects {
         }
       }
     }
+    // ZEST-175
     if(JavaVersion.current() < JavaVersion.VERSION_1_9 ) {
       jacoco {
         toolVersion = '0.7.5.201505241946'
@@ -484,6 +486,7 @@ dependencies {
 }
 // Generate a global code codeverage report
 task coverageReport {
+  // ZEST-175
   enabled = JavaVersion.current() < JavaVersion.VERSION_1_9
   dependsOn subprojects*.test
   def outputPath = "build/reports/coverage"

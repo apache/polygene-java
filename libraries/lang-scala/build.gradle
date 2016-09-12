@@ -28,6 +28,10 @@ tasks.withType(ScalaCompile) {
     configure( scalaCompileOptions.forkOptions ) {
         memoryMaximumSize = '1g'
     }
+    // ZEST-175
+    if( JavaVersion.current() >= JavaVersion.VERSION_1_9 ) {
+        enabled = false
+    }
 }
 
 dependencies {
