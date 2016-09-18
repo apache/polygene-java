@@ -26,7 +26,7 @@ def commonsDbcpVersion = '2.1.1'
 def commonsLangVersion = '3.4'
 def derbyVersion = '10.12.1.1'
 def dnsJavaVersion = '2.1.7'
-def ehcacheVersion = '2.10.2.2.21' // 3.x exists
+def ehcacheVersion = '3.1.2'
 def elasticsearchVersion = '2.4.0'
 def freemarkerVersion = '2.3.25-incubating'
 def geodeVersion = '1.0.0-incubating.M3'
@@ -187,7 +187,7 @@ rootProject.ext {
 
           // Library & Extension dependencies
           jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
-          ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
+          ehcache: "org.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
           geode: "org.apache.geode:geode-core:$geodeVersion",
           h2: "com.h2database:h2:$h2Version",

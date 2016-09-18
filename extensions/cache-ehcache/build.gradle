@@ -26,6 +26,7 @@ dependencies {
 
   compile(project(':org.apache.zest.core:org.apache.zest.core.spi'))
   compile(project(':org.apache.zest.core:org.apache.zest.core.bootstrap'))
+  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
   compile(libraries.ehcache)
 
   testCompile( project(':org.apache.zest.core:org.apache.zest.core.testsupport') )

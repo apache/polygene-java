@@ -20,51 +20,119 @@
 package org.apache.zest.cache.ehcache;
 
 import java.util.concurrent.ConcurrentHashMap;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
-import org.apache.zest.api.common.Optional;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.zest.api.configuration.Configuration;
+import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.cache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.CacheConfiguration;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.expiry.Duration;
+import org.ehcache.expiry.Expirations;
 
 public abstract class EhCachePoolMixin
     implements EhCachePoolService
 {
-
+    private static final long DEFAULT_HEAP_SIZE = 1024 * 1024;
     private final ConcurrentHashMap<String, EhCacheImpl<?>> caches = new ConcurrentHashMap<>();
-    @This @Optional
-    private Configuration<EhCacheConfiguration> config;
+
+    @This
+    private Identity identity;
+
+    @This
+    private Configuration<EhCacheConfiguration> configuration;
+
     private CacheManager cacheManager;
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    public void activateService()
+            throws Exception
+    {
+        cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+                .withDefaultDiskStoreThreadPool( cacheManagerThreadPoolName( "disk-store" ) )
+                .withDefaultEventListenersThreadPool( cacheManagerThreadPoolName( "event-listeners" ) )
+                .withDefaultWriteBehindThreadPool( cacheManagerThreadPoolName( "write-behind" ) )
+                .build();
+        cacheManager.init();
+    }
+
+    @Override
+    public void passivateService()
+            throws Exception
+    {
+        cacheManager.close();
+        cacheManager = null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
         // Note: Small bug in Ehcache; If the cache name is an empty String it will actually work until
         //       you try to remove the Cache instance from the CacheManager, at which point it is silently
-        //       ignored but not removed so there is an follow up problem of too much in the CacheManager.
+        //       ignored but not removed so there is a follow up problem of too much in the CacheManager.
         NullArgumentException.validateNotEmpty( "cacheId", cacheId );
-        EhCacheImpl<?> cache = caches.get( cacheId );
-        if( cache == null )
-        {
-            cache = createNewCache( cacheId, valueType );
-            caches.put( cacheId, cache );
-        }
+        EhCacheImpl<?> cache = caches.computeIfAbsent( cacheId, key -> createNewCache( cacheId, valueType ) );
         cache.incRefCount();
         return (Cache<T>) cache;
     }
 
     private <T> EhCacheImpl<T> createNewCache( String cacheId, Class<T> valueType )
     {
-        CacheConfiguration cc = createCacheConfiguration( cacheId );
+        configuration.refresh();
+        EhCacheConfiguration config = configuration.get();
 
-        // TODO: We also need all the other Configurations that are possible, like cacheLoaderFactoryConfiguration
-        net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache( cc );
-        cacheManager.addCache( cache );
+        ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+                .heap( config.heapSize().get(), MemoryUnit.valueOf( config.heapUnit().get() ) );
+        if( config.offHeapSize().get() != null )
+        {
+            poolsBuilder = poolsBuilder
+                    .offheap( config.offHeapSize().get(), MemoryUnit.valueOf( config.offHeapUnit().get() ) );
+        }
+        if( config.diskSize().get() != null )
+        {
+            poolsBuilder = poolsBuilder
+                    .disk( config.diskSize().get(), MemoryUnit.valueOf( config.diskUnit().get() ), config.diskPersistent().get() );
+        }
 
+        CacheConfigurationBuilder<String, T> configBuilder = CacheConfigurationBuilder
+                .newCacheConfigurationBuilder( String.class, valueType, poolsBuilder );
+        if( config.maxObjectSize().get() != null )
+        {
+            configBuilder = configBuilder
+                    .withSizeOfMaxObjectSize( config.maxObjectSize().get(), MemoryUnit.valueOf( config.maxObjectSizeUnit().get() ) );
+        }
+        if( config.maxObjectGraphDepth().get() != null )
+        {
+            configBuilder = configBuilder
+                    .withSizeOfMaxObjectGraph( config.maxObjectGraphDepth().get() );
+        }
+        switch( config.expiry().get() ) {
+            case "TIME_TO_IDLE":
+                configBuilder = configBuilder.withExpiry( Expirations.timeToIdleExpiration( Duration.of(
+                    config.expiryLength().get() == null ? -1L : config.expiryLength().get(),
+                    TimeUnit.valueOf( config.expiryTimeUnit().get() )
+                ) ) );
+                break;
+            case "TIME_TO_LIVE":
+                configBuilder = configBuilder.withExpiry( Expirations.timeToLiveExpiration( Duration.of(
+                    config.expiryLength().get() == null ? -1L : config.expiryLength().get(),
+                    TimeUnit.valueOf( config.expiryTimeUnit().get() )
+                ) ) );
+                break;
+            case "NONE":
+            default:
+                configBuilder = configBuilder.withExpiry( Expirations.noExpiration() );
+                break;
+        }
+        CacheConfiguration<String, T> cacheConfig = configBuilder.build();
+        org.ehcache.Cache<String,T> cache =  cacheManager.createCache( cacheId, cacheConfig );
         return new EhCacheImpl<>( cacheId, cache, valueType );
     }
 
@@ -80,139 +148,8 @@ public abstract class EhCachePoolMixin
         }
     }
 
-    @Override
-    public void activateService()
-        throws Exception
+    private String cacheManagerThreadPoolName( String name )
     {
-        net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
-        configureEhCache( configuration );
-        CacheConfiguration cc = createCacheConfiguration( "zest.ehcache.config.default" );
-        configuration.setDefaultCacheConfiguration( cc );
-        cacheManager = CacheManager.newInstance( configuration );
+        return identity.identity().getClass() + "-" + name;
     }
-
-    @Override
-    public void passivateService()
-        throws Exception
-    {
-        cacheManager.shutdown();
-    }
-
-    private void configureEhCache( net.sf.ehcache.config.Configuration configuration )
-    {
-        EhCacheConfiguration conf = config.get();
-        Boolean updateCheck = conf.updateCheck().get();
-        configuration.setUpdateCheck( updateCheck );
-        configuration.setDynamicConfig( true );
-        String monitoring = conf.monitoring().get().trim();
-        if( monitoring.length() > 0 )
-        {
-            configuration.setMonitoring( monitoring );
-        }
-        String name = conf.cacheManagerName().get();
-        if( name == null )
-        {
-            name = "Zest Cache Extension";
-        }
-        configuration.setName( name );
-        String diskStorePath = conf.diskStorePath().get();
-        if( diskStorePath.length() > 0 )
-        {
-            configuration.getDiskStoreConfiguration().path( diskStorePath );
-        }
-    }
-
-    private CacheConfiguration createCacheConfiguration( String cacheId )
-    {
-        EhCacheConfiguration conf = config.get();
-        Integer maxElementsInMemory = conf.maxElementsInMemory().get();
-        if( maxElementsInMemory <= 0 )
-        {
-            maxElementsInMemory = 10000;
-        }
-        CacheConfiguration cacheConfig = new CacheConfiguration( cacheId, maxElementsInMemory );
-        String transactionalMode = conf.transactionalMode().get();
-        if( transactionalMode.length() > 0 )
-        {
-            cacheConfig.transactionalMode( transactionalMode );
-        }
-
-        Long timeToLiveSeconds = conf.timeToLiveSeconds().get();
-        if( timeToLiveSeconds > 0 )
-        {
-            cacheConfig.timeToLiveSeconds( timeToLiveSeconds );
-        }
-
-        Long timeToIdleSeconds = conf.timeToIdleSeconds().get();
-        if( timeToIdleSeconds > 0 )
-        {
-            cacheConfig.timeToIdleSeconds( timeToIdleSeconds );
-        }
-
-        String name = conf.name().get();
-        if( name.length() > 0 )
-        {
-            cacheConfig.name( name );
-        }
-
-        String memoryStoreEvictionPolicy = conf.memoryStoreEvictionPolicy().get();
-        if( memoryStoreEvictionPolicy.length() > 0 )
-        {
-            cacheConfig.memoryStoreEvictionPolicy( memoryStoreEvictionPolicy );
-        }
-
-        Integer maxElementsOnDisk = conf.maxElementsOnDisk().get();
-        if( maxElementsOnDisk > 0 )
-        {
-            cacheConfig.maxElementsOnDisk( maxElementsOnDisk );
-        }
-
-        Boolean loggingEnabled = conf.loggingEnabled().get();
-        if( loggingEnabled != null )
-        {
-            cacheConfig.logging( loggingEnabled );
-        }
-
-        Boolean eternal = conf.eternal().get();
-        cacheConfig.eternal( eternal );
-
-        Integer diskSpoolBufferSizeMB = conf.diskSpoolBufferSizeMB().get();
-        if( diskSpoolBufferSizeMB > 0 )
-        {
-            cacheConfig.diskSpoolBufferSizeMB( diskSpoolBufferSizeMB );
-        }
-
-        Long diskExpiryThreadIntervalSeconds = conf.diskExpiryThreadIntervalSeconds().get();
-        if( diskExpiryThreadIntervalSeconds > 0 )
-        {
-            cacheConfig.diskExpiryThreadIntervalSeconds( diskExpiryThreadIntervalSeconds );
-        }
-
-        Integer diskAccessStripes = conf.diskAccessStripes().get();
-        if( diskAccessStripes > 0 )
-        {
-            cacheConfig.diskAccessStripes( diskAccessStripes );
-        }
-        Boolean clearOnFlush = conf.clearOnFlush().get();
-        if( clearOnFlush != null )
-        {
-            cacheConfig.clearOnFlush( clearOnFlush );
-        }
-
-        // Persistence Configuration
-        PersistenceConfiguration persistenceConfig = new PersistenceConfiguration();
-        Strategy strategy = conf.persistenceStrategy().get();
-        if( strategy == null )
-        {
-            persistenceConfig.strategy( Strategy.NONE );
-        }
-        else
-        {
-            persistenceConfig.strategy( strategy );
-        }
-        cacheConfig.persistence( persistenceConfig );
-
-        return cacheConfig;
-    }
-
 }

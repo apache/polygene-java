@@ -19,18 +19,17 @@
  */
 package org.apache.zest.cache.ehcache;
 
-import net.sf.ehcache.Element;
 import org.apache.zest.spi.cache.Cache;
 
 public class EhCacheImpl<T>
     implements Cache<T>
 {
     private int refCount;
-    private final net.sf.ehcache.Cache backingCache;
+    private final org.ehcache.Cache backingCache;
     private final Class<T> valueType;
     private final String id;
 
-    public EhCacheImpl( String cacheId, net.sf.ehcache.Cache cache, Class<T> valueType )
+    public EhCacheImpl( String cacheId, org.ehcache.Cache cache, Class<T> valueType )
     {
         this.id = cacheId;
         this.backingCache = cache;
@@ -40,18 +39,18 @@ public class EhCacheImpl<T>
     @Override
     public T get( String key )
     {
-        Element element = backingCache.get( key );
+        Object element = backingCache.get( key );
         if( element == null )
         {
             return null;
         }
-        return valueType.cast( element.getObjectValue() );
+        return valueType.cast( element );
     }
 
     @Override
     public T remove( String key )
     {
-        T old = valueType.cast( backingCache.get( key ).getObjectValue() );
+        T old = valueType.cast( backingCache.get( key ) );
         backingCache.remove( key );
         return old;
     }
@@ -59,14 +58,13 @@ public class EhCacheImpl<T>
     @Override
     public void put( String key, T value )
     {
-        Element element = new Element( key, value );
-        backingCache.put( element );
+        backingCache.put( key, value );
     }
 
     @Override
     public boolean exists( String key )
     {
-        return backingCache.isKeyInCache( key );
+        return backingCache.containsKey( key );
     }
 
     synchronized void decRefCount()
