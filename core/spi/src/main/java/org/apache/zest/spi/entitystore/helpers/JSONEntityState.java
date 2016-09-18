@@ -159,7 +159,7 @@ public final class JSONEntityState
         }
         catch( ValueSerializationException | JSONException e )
         {
-            throw new EntityStoreException( e );
+            throw new EntityStoreException( "Unable to set property " + stateName + " value " + newValue, e );
         }
     }
 
