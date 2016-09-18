@@ -28,6 +28,7 @@ import com.basho.riak.client.core.RiakNode;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.util.HostAndPort;
+import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -41,7 +42,18 @@ import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.Provider;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -67,16 +79,37 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
         RiakEntityStoreConfiguration config = configuration.get();
         String bucketName = config.bucket().get();
         List<String> hosts = config.hosts().get();
-        Integer clusterExecutionAttempts = config.clusterExecutionAttempts().get();
+
+        // Setup Riak Cluster Client
+        List<HostAndPort> hostsAndPorts = parseHosts( hosts );
+        RiakNode.Builder nodeBuilder = new RiakNode.Builder();
+        nodeBuilder = configureNodes( config, nodeBuilder );
+        nodeBuilder = configureAuthentication( config, nodeBuilder );
+        List<RiakNode> nodes = new ArrayList<>();
+        for( HostAndPort host : hostsAndPorts )
+        {
+            nodes.add( nodeBuilder.withRemoteAddress( host ).build() );
+        }
+        RiakCluster.Builder clusterBuilder = RiakCluster.builder( nodes );
+        clusterBuilder = configureCluster(config, clusterBuilder);
+
+        // Start Riak Cluster
+        RiakCluster cluster = clusterBuilder.build();
+        cluster.start();
+        namespace = new Namespace( bucketName );
+        riakClient = new RiakClient( cluster );
+
+        // Initialize Bucket
+        riakClient.execute( new StoreBucketProperties.Builder( namespace ).build() );
+    }
+
+    private RiakNode.Builder configureNodes( RiakEntityStoreConfiguration config, RiakNode.Builder nodeBuilder )
+    {
         Integer minConnections = config.minConnections().get();
         Integer maxConnections = config.maxConnections().get();
         Boolean blockOnMaxConnections = config.blockOnMaxConnections().get();
         Integer connectionTimeout = config.connectionTimeout().get();
         Integer idleTimeout = config.idleTimeout().get();
-
-        // Setup Riak Cluster Client
-        List<HostAndPort> hostsAndPorts = parseHosts( hosts );
-        RiakNode.Builder nodeBuilder = new RiakNode.Builder();
         if( minConnections != null )
         {
             nodeBuilder = nodeBuilder.withMinConnections( minConnections );
@@ -94,25 +127,73 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
         {
             nodeBuilder = nodeBuilder.withIdleTimeout( idleTimeout );
         }
-        List<RiakNode> nodes = new ArrayList<>();
-        for( HostAndPort host : hostsAndPorts )
+        return nodeBuilder;
+    }
+
+    private RiakNode.Builder configureAuthentication( RiakEntityStoreConfiguration config, RiakNode.Builder nodeBuilder )
+            throws IOException, GeneralSecurityException
+    {
+        String username = config.username().get();
+        String password = config.password().get();
+        String truststoreType = config.truststoreType().get();
+        String truststorePath = config.truststorePath().get();
+        String truststorePassword = config.truststorePassword().get();
+        String keystoreType = config.keystoreType().get();
+        String keystorePath = config.keystorePath().get();
+        String keystorePassword = config.keystorePassword().get();
+        String keyPassword = config.keyPassword().get();
+        if( username != null )
         {
-            nodes.add( nodeBuilder.withRemoteAddress( host ).build() );
+            // Eventually load BouncyCastle to support PKCS12
+            if( "PKCS12".equals( keystoreType ) || "PKCS12".equals( truststoreType ) )
+            {
+                Provider bc = Security.getProvider( "BC" );
+                if( bc == null )
+                {
+                    try
+                    {
+                        Class<?> bcType = Class.forName( "org.bouncycastle.jce.provider.BouncyCastleProvider" );
+                        Security.addProvider( (Provider) bcType.newInstance() );
+                    }
+                    catch( Exception ex )
+                    {
+                        throw new InvalidApplicationException( "Need to open a PKCS#12 but was unable to register BouncyCastle, check your classpath", ex );
+                    }
+                }
+            }
+            KeyStore truststore = loadStore( truststoreType, truststorePath, truststorePassword );
+            if( keystorePath != null )
+            {
+                KeyStore keyStore = loadStore( keystoreType, keystorePath, keystorePassword );
+                nodeBuilder = nodeBuilder.withAuth( username, password, truststore, keyStore, keyPassword );
+            }
+            else
+            {
+                nodeBuilder = nodeBuilder.withAuth( username, password, truststore );
+            }
         }
-        RiakCluster.Builder clusterBuilder = RiakCluster.builder( nodes );
+        return nodeBuilder;
+    }
+
+    private KeyStore loadStore( String type, String path, String password )
+        throws IOException, GeneralSecurityException
+    {
+        try( InputStream keystoreInput = new FileInputStream( new File( path ) ) )
+        {
+            KeyStore keyStore = KeyStore.getInstance( type );
+            keyStore.load( keystoreInput, password.toCharArray() );
+            return keyStore;
+        }
+    }
+
+    private RiakCluster.Builder configureCluster( RiakEntityStoreConfiguration config, RiakCluster.Builder clusterBuilder )
+    {
+        Integer clusterExecutionAttempts = config.clusterExecutionAttempts().get();
         if( clusterExecutionAttempts != null )
         {
             clusterBuilder = clusterBuilder.withExecutionAttempts( clusterExecutionAttempts );
         }
-
-        // Start Riak Cluster
-        RiakCluster cluster = clusterBuilder.build();
-        cluster.start();
-        namespace = new Namespace( bucketName );
-        riakClient = new RiakClient( cluster );
-
-        // Initialize Bucket
-        riakClient.execute( new StoreBucketProperties.Builder( namespace ).build() );
+        return clusterBuilder;
     }
 
     @Override

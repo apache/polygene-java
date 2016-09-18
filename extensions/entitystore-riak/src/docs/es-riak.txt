@@ -52,3 +52,9 @@ Here are the available configuration properties:
 source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakEntityStoreConfiguration.java
 tag=config
 ----
+
+All authentication related properties are optional.
+By default no authentication is used.
+As soon as you provide a `username`, authentication is set up.
+Please note that you should then at least provide `truststoreType`, `truststorePath` and `truststorePassword`.
+To use client certificate authentication, set `keystoreType`, `keystorePath`, `keystorePassword` and `keyPassword`.

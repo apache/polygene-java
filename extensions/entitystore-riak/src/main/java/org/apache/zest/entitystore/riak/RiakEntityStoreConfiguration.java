@@ -21,6 +21,7 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.configuration.ConfigurationComposite;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.library.constraints.annotation.OneOf;
 
 import java.util.List;
 
@@ -42,6 +43,80 @@ public interface RiakEntityStoreConfiguration extends ConfigurationComposite
      */
     @UseDefaults
     Property<List<String>> hosts();
+
+    /**
+     * User name to use for authentication.
+     *
+     * @return Authentication user name
+     */
+    @Optional
+    Property<String> username();
+
+    /**
+     * Password to use for authentication.
+     *
+     * @return Authentication password
+     */
+    @Optional
+    Property<String> password();
+
+    /**
+     * Type of the keystore used for server certificate authentication.
+     *
+     * @return Type of the keystore used for server certificate authentication
+     */
+    @Optional
+    @OneOf( { "PKCS12", "JCEKS", "JKS" } )
+    Property<String> truststoreType();
+
+    /**
+     * Path of the keystore used for server certificate authentication.
+     *
+     * @return Path of the keystore used for server certificate authentication
+     */
+    @Optional
+    Property<String> truststorePath();
+
+    /**
+     * Password of the keystore used for server certificate authentication.
+     *
+     * @return Password of the keystore used for server certificate authentication
+     */
+    @Optional
+    Property<String> truststorePassword();
+
+    /**
+     * Type of the keystore used for client certificate authentication.
+     *
+     * @return Type of the keystore used for client certificate authentication
+     */
+    @Optional
+    @OneOf( { "PKCS12", "JCEKS", "JKS" } )
+    Property<String> keystoreType();
+
+    /**
+     * Path of the keystore used for client certificate authentication.
+     *
+     * @return Path of the keystore used for client certificate authentication
+     */
+    @Optional
+    Property<String> keystorePath();
+
+    /**
+     * Password of the keystore used for client certificate authentication.
+     *
+     * @return Password of the keystore used for client certificate authentication
+     */
+    @Optional
+    Property<String> keystorePassword();
+
+    /**
+     * Password of the key used for client certificate authentication.
+     *
+     * @return Password of the key used for client certificate authentication
+     */
+    @Optional
+    Property<String> keyPassword();
 
     /**
      * Riak Bucket where Entities state will be stored.

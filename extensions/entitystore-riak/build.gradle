@@ -26,6 +26,7 @@ dependencies {
 
   compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
   compile( project( ":org.apache.zest.libraries:org.apache.zest.library.locking" ) )
+  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
   compile libraries.slf4j_api
   compile( libraries.riak )
 
