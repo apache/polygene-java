@@ -28,7 +28,7 @@ public interface MetricsHealthCheck extends Metric
     Result check()
         throws Exception;
 
-    public final class Result
+    final class Result
     {
         private final boolean healthy;
         private final String message;

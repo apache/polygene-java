@@ -58,13 +58,7 @@ public final class DefaultMetric
     @Override
     public Context start()
     {
-        return new Context()
-        {
-            @Override
-            public void stop()
-            {
-            }
-        };
+        return () -> {};
     }
 
     @Override

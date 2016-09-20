@@ -23,7 +23,7 @@ package org.apache.zest.api.metrics;
 /**
  * Metrics Provider SPI.
  * <p>
- * The Zest Runtime will automatically ook for a service that implements the MetricsProvider interdace
+ * The Zest Runtime will automatically look for a service that implements the MetricsProvider interface
  * and use it for internal Runtime metrics, such as the UnitOfWork measuring the time from creation to close.
  * </p>
  * <p>
@@ -31,7 +31,7 @@ package org.apache.zest.api.metrics;
  * will use the same MetricsProvider.
  * </p>
  * <p>
- * Note that the usual visibitlity rules applies, so you might have more than one MetricsProvider server,
+ * Note that the usual visibility rules applies, so you might have more than one MetricsProvider server,
  * perhaps per layer.
  * </p>
  */
@@ -40,7 +40,7 @@ public interface MetricsProvider
     /**
      * Creates a new factory instance.
      *
-     * The instanctiation is done by providing a Metric type, which is one of
+     * The instantiation is done by providing a Metric type, which is one of
      * <ul>
      * <li>{@link MetricsCounter}</li>
      * <li>{@link MetricsGauge}</li>

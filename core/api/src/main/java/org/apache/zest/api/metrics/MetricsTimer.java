@@ -33,7 +33,7 @@ public interface MetricsTimer extends Metric
     /**
      * Timer Metrics Context.
      */
-    public interface Context
+    interface Context
     {
         /**
          * Stop the Timer Metrics.
