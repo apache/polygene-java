@@ -64,7 +64,7 @@ import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus
 
 public final class UnitOfWorkInstance
 {
-    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>()
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> CURRENT = new ThreadLocal<Stack<UnitOfWorkInstance>>()
     {
         @Override
         protected Stack<UnitOfWorkInstance> initialValue()
@@ -72,43 +72,37 @@ public final class UnitOfWorkInstance
             return new Stack<>();
         }
     };
-    private MetricsTimer.Context metricsTimer;
 
     public static Stack<UnitOfWorkInstance> getCurrent()
     {
-        return current.get();
+        return CURRENT.get();
     }
 
+    private final HashMap<EntityReference, EntityInstance> instanceCache = new HashMap<>();
+    private final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork = new HashMap<>();
     private final ModuleSpi module;
-    private long currentTime;
-    private MetricsProvider metrics;
-    final HashMap<EntityReference, EntityInstance> instanceCache;
-    final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
+    private final Usecase usecase;
+    private final long currentTime;
+    private final MetricsProvider metrics;
 
     private boolean open;
-
     private boolean paused;
 
-    /**
-     * Lazy query builder factory.
-     */
-    private Usecase usecase;
-
+    private MetricsTimer.Context metricsTimer;
     private MetaInfo metaInfo;
-
     private List<UnitOfWorkCallback> callbacks;
 
     public UnitOfWorkInstance( ModuleSpi module, Usecase usecase, long currentTime, MetricsProvider metrics )
     {
         this.module = module;
-        this.currentTime = currentTime;
-        this.open = true;
-        instanceCache = new HashMap<>();
-        storeUnitOfWork = new HashMap<>();
-        getCurrent().push( this );
-        paused = false;
         this.usecase = usecase;
-        startCapture( metrics );
+        this.currentTime = currentTime;
+        this.metrics = metrics;
+
+        this.open = true;
+        getCurrent().push( this );
+        this.paused = false;
+        startCapture();
     }
 
     public long currentTime()
@@ -507,9 +501,8 @@ public final class UnitOfWorkInstance
         metricsTimer.stop();
     }
 
-    private void startCapture( MetricsProvider metrics )
+    private void startCapture()
     {
-        this.metrics = metrics;
         incrementCount();
         startTimer( metrics );
     }
