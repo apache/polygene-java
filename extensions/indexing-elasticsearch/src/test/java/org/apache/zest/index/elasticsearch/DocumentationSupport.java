@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
-import org.apache.zest.index.elasticsearch.assembly.ESMemoryIndexQueryAssembler;
 
 public class DocumentationSupport
     implements Assembler
@@ -37,10 +36,6 @@ public class DocumentationSupport
     {
         ModuleAssembly configModule = module;
         Visibility configVisibility = Visibility.module;
-
-        // START SNIPPET: memory
-        new ESMemoryIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
-        // END SNIPPET: memory
 
         // START SNIPPET: filesystem
         new ESFilesystemIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
