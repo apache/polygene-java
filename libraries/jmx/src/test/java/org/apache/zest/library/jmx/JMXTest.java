@@ -19,7 +19,6 @@
  */
 package org.apache.zest.library.jmx;
 
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
@@ -35,65 +34,73 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.test.util.JmxFixture;
+import org.junit.Test;
 
 /**
  * Start a simple server so that it can be accessed through JMX remotely.
  * Run this with -Dcom.sun.management.jmxremote so that the JVM starts the MBeanServer
  */
-public class JMXTest
+public class JMXTest extends AbstractZestTest
 {
+    @Override
+    public void assemble(ModuleAssembly module) throws AssemblyException
+    {
+        new EntityTestAssembler().assemble( module );
+        new DefaultUnitOfWorkAssembler().assemble( module );
 
-    public static void main( String[] args )
+        module.services( TestService.class, TestService2.class, TestService3.class ).instantiateOnStartup();
+        module.entities( TestConfiguration.class );
+
+        module.values( TestValue.class );
+
+        module.objects( TestObject.class );
+
+        // START SNIPPET: assembly
+        new JMXAssembler().assemble( module );
+        // END SNIPPET: assembly
+
+        // START SNIPPET: connector
+        module.services( JMXConnectorService.class ).instantiateOnStartup();
+        module.entities( JMXConnectorConfiguration.class );
+        module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
+        // END SNIPPET: connector
+    }
+
+    public static void main(String[] args )
         throws InterruptedException, ActivationException, AssemblyException
     {
-        /*
-         Logger logger = Logger.getLogger( "" );
-         logger.setLevel( Level.FINE );
-         Logger.getLogger("sun.rmi").setLevel( Level.WARNING );
-
-         ConsoleHandler consoleHandler = new ConsoleHandler();
-         consoleHandler.setLevel( Level.FINE );
-         logger.addHandler( consoleHandler );
-         */
-
         SingletonAssembler assembler = new SingletonAssembler()
         {
-            // START SNIPPET: assembly
-
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
-                // END SNIPPET: assembly
-                new EntityTestAssembler().assemble( module );
-
-                module.services( TestService.class, TestService2.class, TestService3.class ).instantiateOnStartup();
-                module.entities( TestConfiguration.class );
-
-                module.values( TestValue.class );
-
-                module.objects( TestObject.class );
-
-                // START SNIPPET: assembly
-                new JMXAssembler().assemble( module );
-
-                module.services( JMXConnectorService.class ).instantiateOnStartup();
-                module.entities( JMXConnectorConfiguration.class );
-                module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
+                new JMXTest().assemble(module);
             }
-            // END SNIPPET: assembly
 
         };
-
         // This allows user to connect using VisualVM/JConsole
         while ( true ) {
-            Thread.sleep( 10000 );
+            Thread.sleep( 10_000 );
         }
     }
 
+
+
     @Test
-    public void dummy()
+    public void servicesAndConfiguration()
     {
+        JmxFixture jmx = new JmxFixture("Zest:application=Application,layer=Layer 1,module=Module 1,class=Service,");
+        jmx.assertObjectPresent("service=TestService");
+        jmx.assertObjectPresent("service=TestService,name=Configuration");
+        jmx.assertObjectPresent("service=TestService2");
+        jmx.assertObjectPresent("service=TestService2,name=Configuration");
+        jmx.assertObjectPresent("service=TestService3");
+        jmx.assertObjectPresent("service=TestService3,name=Configuration");
     }
 
     public interface TestActivation
@@ -118,7 +125,7 @@ public class JMXTest
 
     @Mixins( TestService.Mixin.class )
     @Activators( TestActivator.class )
-    interface TestService
+    public interface TestService
             extends TestActivation, ServiceComposite
     {
 
@@ -140,7 +147,7 @@ public class JMXTest
 
     @Mixins( TestService2.Mixin.class )
     @Activators( TestActivator.class )
-    interface TestService2
+    public interface TestService2
             extends TestActivation, ServiceComposite
     {
 
@@ -162,7 +169,7 @@ public class JMXTest
 
     @Mixins( TestService3.Mixin.class )
     @Activators( TestActivator.class )
-    interface TestService3
+    public interface TestService3
             extends TestActivation, ServiceComposite
     {
 
@@ -182,7 +189,7 @@ public class JMXTest
 
     }
 
-    interface TestConfiguration
+    public interface TestConfiguration
             extends ConfigurationComposite
     {
 
@@ -194,14 +201,14 @@ public class JMXTest
 
     }
 
-    enum TestEnum
+    public enum TestEnum
     {
 
         Value1, Value2, Value3
 
     }
 
-    interface TestValue
+    public interface TestValue
             extends ValueComposite
     {
     }
