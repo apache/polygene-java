@@ -231,6 +231,7 @@ allprojects {
     testCompile( libraries.ant )
     testCompile( libraries.ant_junit )
     testCompile( libraries.junit )
+    testCompile( libraries.hamcrest )
     testRuntime( libraries.asm, libraries.asm_commons, libraries.asm_util )
     deployerJars( uploadWagon )
   }
