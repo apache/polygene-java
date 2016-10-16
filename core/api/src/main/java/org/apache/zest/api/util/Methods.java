@@ -22,6 +22,7 @@ package org.apache.zest.api.util;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -37,6 +38,10 @@ public class Methods
     public static final Function<Type, Stream<Method>> METHODS_OF = Classes.forTypes( type ->
         Stream.of( type ).map( Classes.RAW_CLASS ).flatMap( clazz -> Arrays.stream( clazz.getDeclaredMethods() ) )
     );
+
+    public static final BiFunction<Class<?>, String, Method> METHOD_NAMED = ( clazz, name ) ->
+        METHODS_OF.apply( clazz ).filter( Classes.memberNamed( name ) ).findFirst().orElse( null );
+
 
     public static Stream<Method> methodsOf( Type type )
     {
