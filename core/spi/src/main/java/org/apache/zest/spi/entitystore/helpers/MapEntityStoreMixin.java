@@ -22,6 +22,7 @@ package org.apache.zest.spi.entitystore.helpers;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -108,7 +109,7 @@ public class MapEntityStoreMixin
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
@@ -292,7 +293,7 @@ public class MapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, long lastModified )
+    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, Instant lastModified )
         throws EntityStoreException
     {
         try
@@ -303,7 +304,7 @@ public class MapEntityStoreMixin
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( state.entityDescriptor().types().findFirst().get().getName() ).
                 key( JSONKeys.VERSION ).value( version ).
-                key( JSONKeys.MODIFIED ).value( lastModified ).
+                key( JSONKeys.MODIFIED ).value( lastModified.toEpochMilli() ).
                 key( JSONKeys.PROPERTIES ).object();
             EntityDescriptor entityType = state.entityDescriptor();
             entityType.state().properties().forEach( persistentProperty -> {
@@ -387,7 +388,7 @@ public class MapEntityStoreMixin
             final EntityStatus[] status = { EntityStatus.LOADED };
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli(jsonObject.getLong( JSONKeys.MODIFIED ));
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct

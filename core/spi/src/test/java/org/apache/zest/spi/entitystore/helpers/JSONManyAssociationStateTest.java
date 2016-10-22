@@ -21,6 +21,7 @@ package org.apache.zest.spi.entitystore.helpers;
 
 import java.util.List;
 import java.util.function.Function;
+import org.apache.zest.api.time.SystemTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +52,7 @@ public class JSONManyAssociationStateTest
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           SystemTime.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,
@@ -77,7 +78,7 @@ public class JSONManyAssociationStateTest
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           SystemTime.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,

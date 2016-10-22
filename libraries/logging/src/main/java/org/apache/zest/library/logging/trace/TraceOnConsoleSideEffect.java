@@ -22,6 +22,8 @@ package org.apache.zest.library.logging.trace;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.Instant;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.library.logging.trace.service.TraceService;
@@ -36,23 +38,23 @@ public abstract class TraceOnConsoleSideEffect extends SideEffectOf<TraceService
     private static PrintStream OUT = System.err;
 
     @Override
-    public void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano )
+    public void traceSuccess(Class compositeType, Composite object, Method method, Object[] args, Object result, Instant entryTime, Duration duration )
     {
         StringBuffer buf = new StringBuffer();
-        buf.append( durationNano / 1000000 );
-        buf.append( " ms: " );
+        buf.append( duration );
+        buf.append( " : " );
         formatMethod( buf, object, compositeType, method, args );
         OUT.println( buf.toString() );
         OUT.println( result );
     }
 
     @Override
-    public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano )
+    public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, Instant entryTime, Duration duration )
     {
         StringBuffer buf = new StringBuffer();
         buf.append( "Exception: " );
-        buf.append( durationNano / 1000000 );
-        buf.append( " ms: " );
+        buf.append( duration );
+        buf.append( " : " );
         OUT.println( buf.toString() );
         t.printStackTrace( OUT );
     }

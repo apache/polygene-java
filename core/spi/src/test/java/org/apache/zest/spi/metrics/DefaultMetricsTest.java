@@ -20,7 +20,9 @@
 
 package org.apache.zest.spi.metrics;
 
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+import org.apache.zest.api.time.SystemTime;
 import org.junit.Test;
 import org.apache.zest.api.metrics.MetricsCounter;
 import org.apache.zest.api.metrics.MetricsCounterFactory;
@@ -55,12 +57,12 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsGaugeFactory factory = underTest.createFactory( MetricsGaugeFactory.class );
-        MetricsGauge<Long> test = factory.registerGauge( getClass(), "test", new MetricsGauge<Long>()
+        MetricsGauge<Instant> test = factory.registerGauge( getClass(), "test", new MetricsGauge<Instant>()
         {
             @Override
-            public Long value()
+            public Instant value()
             {
-                return System.currentTimeMillis();
+                return SystemTime.now();
             }
         } );
         assertNull( test.value() );

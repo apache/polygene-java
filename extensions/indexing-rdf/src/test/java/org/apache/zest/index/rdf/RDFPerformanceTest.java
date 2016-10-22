@@ -25,15 +25,19 @@ package org.apache.zest.index.rdf;
  */
 
 import java.io.File;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryExpressions;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -44,14 +48,12 @@ import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import org.junit.Rule;
-import org.apache.zest.test.util.DelTreeAfter;
 
 public class RDFPerformanceTest extends AbstractZestTest
 {
@@ -163,21 +165,21 @@ public class RDFPerformanceTest extends AbstractZestTest
 
     private void performTest( int howMany ) throws Exception
     {
-        long startTest = System.currentTimeMillis();
+        Instant startTest = SystemTime.now();
 
         UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
-        Long startingTime = System.currentTimeMillis();
+        Instant startingTime = SystemTime.now();
         List<ExampleEntity> entities = this.doCreate( howMany );
-        LOG.info( "Time to create " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to create " + howMany + " entities: " + Duration.between(startingTime, SystemTime.now() ) );
 
-        startingTime = System.currentTimeMillis();
+        startingTime = SystemTime.now();
         creatingUOW.complete();
-        LOG.info( "Time to complete creation uow (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to complete creation uow: " + Duration.between(startingTime, SystemTime.now() ) );
 
 
         List<ExampleEntity> entityList = this.doList( howMany );
 
-        startingTime = System.currentTimeMillis();
+        startingTime = SystemTime.now();
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
@@ -186,23 +188,21 @@ public class RDFPerformanceTest extends AbstractZestTest
             System.out.println(query.count());
         }
 
-        long endTest = System.currentTimeMillis();
-        LOG.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
+        Instant endTest = SystemTime.now();
+        LOG.info( "Time to query " + howMany + " entities: " + Duration.between(startTest, endTest) );
 
         UnitOfWork deletingUOW = this.unitOfWorkFactory.newUnitOfWork();
-        startingTime = System.currentTimeMillis();
+        startingTime = SystemTime.now();
         this.doRemoveAll( entityList );
 //      this.doRemove(200);
-        LOG.info( "Time to delete " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to delete " + howMany + " entities: " + Duration.between(startingTime, SystemTime.now() ) );
 
-        startingTime = System.currentTimeMillis();
+        startingTime = SystemTime.now();
         deletingUOW.complete();
 
-        endTest = System.currentTimeMillis();
-
-        LOG.info( "time to complete deletion uow (ms): " + (endTest - startingTime) );
-
-        LOG.info( "time to complete test (ms): " + (endTest - startTest) );
+        endTest = SystemTime.now();
+        LOG.info( "time to complete deletion uow: " + Duration.between(startingTime, endTest ) );
+        LOG.info( "time to complete test: " + Duration.between(startingTime, endTest ) );
 
     }
 

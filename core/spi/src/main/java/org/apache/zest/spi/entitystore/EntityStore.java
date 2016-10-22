@@ -19,6 +19,7 @@
  */
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.io.Input;
@@ -29,7 +30,7 @@ import org.apache.zest.spi.entity.EntityState;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime );
+    EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime );
 
     Input<EntityState, EntityStoreException> entityStates( ModuleDescriptor module );
 }

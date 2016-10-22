@@ -19,6 +19,8 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import org.apache.zest.api.time.SystemTime;
+
 /**
  * JSON keys for values in the stored data.
  */
@@ -41,7 +43,7 @@ public interface JSONKeys
      */
     String VERSION = "version";
     /**
-     * When entity was last modified according to System.currentTimeMillis().
+     * When entity was last modified according to {@link SystemTime#now()}
      */
     String MODIFIED = "modified";
     /**

@@ -22,6 +22,7 @@ package org.apache.zest.entitystore.jclouds;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.junit.AfterClass;
@@ -48,7 +49,7 @@ public class JCloudsFilesystemTest
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
         defaults.provider().set( "filesystem" );
         Map<String, String> props = new HashMap<String, String>();
-        props.put( FilesystemConstants.PROPERTY_BASEDIR, "build/tmp/" + getClass().getPackage().getName() + "/es-jclouds-" + System.currentTimeMillis() );
+        props.put( FilesystemConstants.PROPERTY_BASEDIR, "build/tmp/" + getClass().getPackage().getName() + "/es-jclouds-" + SystemTime.now().toEpochMilli() );
         defaults.properties().set( props );
     }
 

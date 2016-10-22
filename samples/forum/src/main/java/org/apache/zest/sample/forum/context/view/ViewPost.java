@@ -70,7 +70,7 @@ class ViewPost
             Post post = uowf.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
             post.createdBy().set( poster.self() );
-            post.createdOn().set( Instant.ofEpochMilli( uowf.currentUnitOfWork().currentTime()) );
+            post.createdOn().set( uowf.currentUnitOfWork().currentTime() );
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );

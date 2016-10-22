@@ -17,6 +17,9 @@
  */
 package org.apache.zest.test.performance.runtime.composite;
 
+import java.time.Duration;
+import java.time.Instant;
+import org.apache.zest.api.time.SystemTime;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.TransientBuilder;

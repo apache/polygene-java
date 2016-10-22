@@ -20,6 +20,7 @@
 
 package org.apache.zest.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public final class UnitOfWorkInstance
     private final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork = new HashMap<>();
     private final ModuleSpi module;
     private final Usecase usecase;
-    private final long currentTime;
+    private final Instant currentTime;
     private final MetricsProvider metrics;
 
     private boolean open;
@@ -92,7 +93,7 @@ public final class UnitOfWorkInstance
     private MetaInfo metaInfo;
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( ModuleSpi module, Usecase usecase, long currentTime, MetricsProvider metrics )
+    public UnitOfWorkInstance(ModuleSpi module, Usecase usecase, Instant currentTime, MetricsProvider metrics )
     {
         this.module = module;
         this.usecase = usecase;
@@ -105,7 +106,7 @@ public final class UnitOfWorkInstance
         startCapture();
     }
 
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }

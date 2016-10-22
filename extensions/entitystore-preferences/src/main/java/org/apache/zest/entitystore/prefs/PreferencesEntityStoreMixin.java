@@ -19,6 +19,7 @@
  */
 package org.apache.zest.entitystore.prefs;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -43,13 +44,14 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.type.MapType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
@@ -168,7 +170,7 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
     }
@@ -191,7 +193,7 @@ public class PreferencesEntityStoreMixin
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
                         final EntityStoreUnitOfWork uow =
-                            newUnitOfWork( module, visitUsecase, System.currentTimeMillis() );
+                            newUnitOfWork( module, visitUsecase, SystemTime.now() );
 
                         try
                         {
@@ -414,7 +416,7 @@ public class PreferencesEntityStoreMixin
             } );
 
             return new DefaultEntityState( entityPrefs.get( "version", "" ),
-                                           entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
+                                           Instant.ofEpochMilli(entityPrefs.getLong( "modified", unitOfWork.currentTime().toEpochMilli() )),
                                            identity,
                                            status,
                                            entityDescriptor,
@@ -499,7 +501,7 @@ public class PreferencesEntityStoreMixin
     protected void writeEntityState( DefaultEntityState state,
                                      Preferences entityPrefs,
                                      String identity,
-                                     long lastModified
+                                     Instant lastModified
     )
         throws EntityStoreException
     {
@@ -508,7 +510,7 @@ public class PreferencesEntityStoreMixin
             // Store into Preferences API
             entityPrefs.put( "type", state.entityDescriptor().types().findFirst().get().getName() );
             entityPrefs.put( "version", identity );
-            entityPrefs.putLong( "modified", lastModified );
+            entityPrefs.putLong( "modified", lastModified.toEpochMilli() );
 
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );

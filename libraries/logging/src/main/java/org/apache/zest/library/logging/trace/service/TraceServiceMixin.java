@@ -21,6 +21,8 @@
 package org.apache.zest.library.logging.trace.service;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.ZestAPI;
@@ -67,14 +69,14 @@ public class TraceServiceMixin
                               Method method,
                               Object[] args,
                               Object result,
-                              long entryTime,
-                              long durationNano
+                              Instant entryTime,
+                              Duration duration
     )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            createTraceRecord( uow, compositeType, object, method, args, entryTime, durationNano, null );
+            createTraceRecord( uow, compositeType, object, method, args, entryTime, duration, null );
             uow.complete();
         }
         catch( ConcurrentEntityModificationException e )
@@ -93,14 +95,14 @@ public class TraceServiceMixin
                                 Method method,
                                 Object[] args,
                                 Throwable t,
-                                long entryTime,
-                                long durationNano
+                                Instant entryTime,
+                                Duration duration
     )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            createTraceRecord( uow, compositeType, object, method, args, entryTime, durationNano, t );
+            createTraceRecord( uow, compositeType, object, method, args, entryTime, duration, t );
             uow.complete();
         }
         catch( ConcurrentEntityModificationException e )
@@ -118,8 +120,8 @@ public class TraceServiceMixin
                                     Composite object,
                                     Method method,
                                     Object[] args,
-                                    long entryTime,
-                                    long durationNano,
+                                    Instant entryTime,
+                                    Duration duration,
                                     Throwable exception
     )
     {
@@ -134,7 +136,7 @@ public class TraceServiceMixin
                     .orElse( null ), identity );
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
-            setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
+            setStandardStuff( compositeType, method, args, entryTime, duration, state, exception );
             state.source().set( source );
             EntityTraceRecordEntity etr = builder.newInstance();  // Record is created.
         }
@@ -143,7 +145,7 @@ public class TraceServiceMixin
             ServiceComposite service = (ServiceComposite) object;
             EntityBuilder<ServiceTraceRecordEntity> builder = uow.newEntityBuilder( ServiceTraceRecordEntity.class );
             ServiceTraceRecordEntity state = builder.instance();
-            setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
+            setStandardStuff( compositeType, method, args, entryTime, duration, state, exception );
             state.source().set( service.toString() );
             ServiceTraceRecordEntity str = builder.newInstance();  // Record is created.
         }
@@ -152,7 +154,7 @@ public class TraceServiceMixin
             EntityBuilder<CompositeTraceRecordEntity> builder = uow.newEntityBuilder( CompositeTraceRecordEntity.class );
             CompositeTraceRecordEntity state = builder.instance();
             state.source().set( object );
-            setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
+            setStandardStuff( compositeType, method, args, entryTime, duration, state, exception );
             CompositeTraceRecordEntity ctr = builder.newInstance();  // Record is created.
         }
     }
@@ -160,13 +162,13 @@ public class TraceServiceMixin
     private void setStandardStuff( Class compositeType,
                                    Method method,
                                    Object[] args,
-                                   long entryTime,
-                                   long durationNano,
+                                   Instant entryTime,
+                                   Duration duration,
                                    TraceRecord state,
                                    Throwable exception
     )
     {
-        state.duration().set( durationNano );
+        state.duration().set( duration );
         state.entryTime().set( entryTime );
         state.methodName().set( method.getName() );
         state.compositeTypeName().set( compositeType.getName() );

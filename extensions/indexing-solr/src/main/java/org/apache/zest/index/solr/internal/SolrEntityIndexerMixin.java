@@ -159,7 +159,7 @@ public abstract class SolrEntityIndexerMixin
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
         input.addField( "type", entityState.entityDescriptor().types().findFirst().get().getName() );
-        input.addField( "lastModified", new java.util.Date( entityState.lastModified() ) );
+        input.addField( "lastModified", java.util.Date.from( entityState.lastModified() ) );
 
         for( Statement statement : graph )
         {

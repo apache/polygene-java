@@ -21,6 +21,8 @@
 package org.apache.zest.library.rdf.entity;
 
 import java.io.PrintWriter;
+import java.time.Instant;
+import org.apache.zest.api.time.SystemTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -83,7 +85,7 @@ public class EntitySerializerTest
     {
         EntityReference entityReference = new EntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
-        long currentTime = System.currentTimeMillis();
+        Instant currentTime = SystemTime.now();
         EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, currentTime );
         EntityState entityState = unitOfWork.entityStateOf( module, entityReference );
 

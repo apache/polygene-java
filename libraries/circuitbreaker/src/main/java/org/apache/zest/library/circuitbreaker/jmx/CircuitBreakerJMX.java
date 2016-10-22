@@ -28,6 +28,7 @@ import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 
 /**
@@ -46,12 +47,13 @@ public class CircuitBreakerJMX
       this.circuitBreaker = circuitBreaker;
       circuitBreaker.addPropertyChangeListener(new PropertyChangeListener()
       {
-         long sequenceNr = System.currentTimeMillis();
+         long sequenceNr = SystemTime.now().toEpochMilli();
 
          @Override
          public void propertyChange(PropertyChangeEvent evt)
          {
-            Notification notification = new Notification(evt.getPropertyName(), mbeanObjectName, sequenceNr++, System.currentTimeMillis(), evt.getNewValue().toString());
+            long now = SystemTime.now().toEpochMilli();
+            Notification notification = new Notification(evt.getPropertyName(), mbeanObjectName, sequenceNr++, now, evt.getNewValue().toString());
             sendNotification(notification);
          }
       });

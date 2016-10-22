@@ -331,7 +331,7 @@ public abstract class AbstractSQLIndexing
         throws SQLException
     {
         ps.setString( startingIndex, state.identity().identity() );
-        ps.setTimestamp( startingIndex + 1, new Timestamp( state.lastModified() ) );
+        ps.setTimestamp( startingIndex + 1, Timestamp.from( state.lastModified() ) );
         ps.setString( startingIndex + 2, state.version() );
         ps.setString( startingIndex + 3, this._app.version() );
     }
@@ -1006,7 +1006,7 @@ public abstract class AbstractSQLIndexing
 
         // Update state
         ps.setString( 1, state.identity().identity() );
-        ps.setTimestamp( 2, new Timestamp( state.lastModified() ) );
+        ps.setTimestamp( 2, Timestamp.from( state.lastModified() ) );
         ps.setString( 3, state.version() );
         ps.setString( 4, this._app.version() );
         ps.setLong( 5, entityPK );

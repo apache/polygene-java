@@ -19,6 +19,7 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,7 +43,7 @@ public final class DefaultEntityState
     private EntityStatus status;
 
     private String version;
-    private long lastModified;
+    private Instant lastModified;
     private final EntityReference identity;
     private final EntityDescriptor entityDescriptor;
 
@@ -51,7 +52,7 @@ public final class DefaultEntityState
     private final Map<QualifiedName, List<EntityReference>> manyAssociations;
     private final Map<QualifiedName, Map<String, EntityReference>> namedAssociations;
 
-    public DefaultEntityState( long currentTime,
+    public DefaultEntityState( Instant currentTime,
                                EntityReference identity,
                                EntityDescriptor entityDescriptor
     )
@@ -68,7 +69,7 @@ public final class DefaultEntityState
     }
 
     public DefaultEntityState( String version,
-                               long lastModified,
+                               Instant lastModified,
                                EntityReference identity,
                                EntityStatus status,
                                EntityDescriptor entityDescriptor,
@@ -97,7 +98,7 @@ public final class DefaultEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return lastModified;
     }

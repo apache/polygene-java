@@ -21,6 +21,7 @@
 package org.apache.zest.library.logging.debug.records;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.property.Property;
 
@@ -32,7 +33,7 @@ public interface DebugRecord
 
     Property<String> threadName();
 
-    Property<Long> time();
+    Property<Instant> time();
 
     Property<List<Serializable>> parameters();
 }

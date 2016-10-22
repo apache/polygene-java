@@ -31,6 +31,7 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.util.Classes;
@@ -100,8 +101,9 @@ public interface ElasticSearchIndexer
             }
 
             EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
-                module, UsecaseBuilder.newUsecase( "Load associations for indexing" ),
-                System.currentTimeMillis()
+                    module,
+                    UsecaseBuilder.newUsecase( "Load associations for indexing" ),
+                    SystemTime.now()
             );
 
             // Bulk index request builder

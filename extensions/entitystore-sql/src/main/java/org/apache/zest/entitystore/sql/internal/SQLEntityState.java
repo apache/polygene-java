@@ -19,6 +19,7 @@
  */
 package org.apache.zest.entitystore.sql.internal;
 
+import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -33,11 +34,11 @@ public interface SQLEntityState
         extends EntityState
 {
 
-    public Long getEntityPK();
+    Long getEntityPK();
 
-    public Long getEntityOptimisticLock();
+    Long getEntityOptimisticLock();
 
-    public DefaultEntityState getDefaultEntityState();
+    DefaultEntityState getDefaultEntityState();
 
     @SuppressWarnings( "PublicInnerClass" )
     public final class DefaultSQLEntityState
@@ -129,7 +130,7 @@ public interface SQLEntityState
         }
 
         @Override
-        public long lastModified()
+        public Instant lastModified()
         {
             return state.lastModified();
         }

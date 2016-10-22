@@ -23,6 +23,7 @@ import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.time.SystemTime;
 
 /**
  * State holder for Entities.
@@ -52,9 +53,9 @@ public interface EntityState
      * If the underlying EntityStore does not support timestamping, then last modified
      * must always be set to the current time.
      * </p>
-     * @return last modified timestamp of the entity, as defined by System.currentTimeMillis()
+     * @return last modified timestamp of the entity, as defined by {@link SystemTime#now()}
      */
-    long lastModified();
+    Instant lastModified();
 
     /**
      * Remove the entity represented by this EntityState when the unit of work is completed.

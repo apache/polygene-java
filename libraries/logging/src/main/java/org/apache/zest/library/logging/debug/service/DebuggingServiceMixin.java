@@ -32,6 +32,7 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceComposite;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -166,7 +167,7 @@ public class DebuggingServiceMixin
 
     private void setStandardStuff( Composite composite, String message, DebugRecord state, List<Serializable> params )
     {
-        state.time().set( System.currentTimeMillis() );
+        state.time().set( SystemTime.now() );
         state.message().set( message );
         state.compositeTypeName().set( getCompositeName( composite ) );
         state.threadName().set( Thread.currentThread().getName() );

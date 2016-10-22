@@ -19,6 +19,7 @@
  */
 package org.apache.zest.api.unitofwork;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +105,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      */
     UnitOfWorkFactory unitOfWorkFactory();
 
-    long currentTime();
+    Instant currentTime();
 
     /**
      * Get the Usecase for this UnitOfWork

@@ -20,6 +20,7 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.structure.ModuleDescriptor;
@@ -33,7 +34,7 @@ public interface EntityStoreUnitOfWork
 {
     String identity();
 
-    long currentTime();
+    Instant currentTime();
 
     /**
      * Create new EntityState for a given identity.

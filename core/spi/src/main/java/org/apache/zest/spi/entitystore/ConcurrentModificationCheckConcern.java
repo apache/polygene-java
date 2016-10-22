@@ -20,6 +20,7 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.zest.api.ZestAPI;
@@ -53,7 +54,7 @@ public abstract class ConcurrentModificationCheckConcern
     private ZestAPI api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( module, usecase, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), currentTime );
@@ -64,7 +65,7 @@ public abstract class ConcurrentModificationCheckConcern
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private long currentTime;
+        private Instant currentTime;
 
         private HashSet<EntityState> loaded = new HashSet<>();
 
@@ -72,7 +73,7 @@ public abstract class ConcurrentModificationCheckConcern
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        long currentTime
+                                                        Instant currentTime
         )
         {
             this.uow = uow;
@@ -87,7 +88,7 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public long currentTime()
+        public Instant currentTime()
         {
             return uow.currentTime();
         }

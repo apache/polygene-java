@@ -20,6 +20,7 @@
 
 package org.apache.zest.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -136,7 +137,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return uow.currentTime();
     }

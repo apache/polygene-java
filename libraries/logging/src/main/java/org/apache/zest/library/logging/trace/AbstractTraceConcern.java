@@ -22,12 +22,15 @@ package org.apache.zest.library.logging.trace;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.Instant;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.library.logging.trace.service.TraceService;
 
 
@@ -51,19 +54,13 @@ public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     {
         boolean doTrace = traceService != null && doTrace();
         Object result;
-        long entryTime = 0;
-        long timeStamp = 0;
+        Instant entryTime = SystemTime.now();;
         try
         {
-            if( doTrace )
-            {
-                entryTime = System.currentTimeMillis();
-                timeStamp = System.nanoTime();
-            }
             result = next.invoke( proxy, method, args );
             if( doTrace )
             {
-                long duration = System.nanoTime() - timeStamp;
+                Duration duration = Duration.between(entryTime, SystemTime.now() );
                 traceService.traceSuccess( compositeType, api.dereference( thisComposite ), method, args, result, entryTime, duration );
             }
         }
@@ -71,7 +68,7 @@ public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
         {
             if( doTrace )
             {
-                long duration = System.nanoTime() - timeStamp;
+                Duration duration = Duration.between(entryTime, SystemTime.now() );
                 Composite object = api.dereference( thisComposite );
                 traceService.traceException( compositeType, object, method, args, t, entryTime, duration );
             }

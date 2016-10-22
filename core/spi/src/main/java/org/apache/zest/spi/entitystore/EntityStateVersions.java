@@ -20,6 +20,7 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,9 @@ import java.util.WeakHashMap;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Entity versions state.
@@ -43,7 +42,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, Instant currentTime )
         throws ConcurrentEntityStateModificationException;
 
     /**
@@ -74,7 +73,7 @@ public interface EntityStateVersions
 
         @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
-                                                                 long currentTime
+                                                                 Instant currentTime
         )
             throws ConcurrentEntityStateModificationException
         {

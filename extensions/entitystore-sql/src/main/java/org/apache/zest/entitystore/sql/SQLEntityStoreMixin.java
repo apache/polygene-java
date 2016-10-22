@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -270,7 +271,7 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( module, entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
     }
@@ -358,7 +359,7 @@ public class SQLEntityStoreMixin
             final EntityStatus[] status = { EntityStatus.LOADED };
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli(jsonObject.getLong( JSONKeys.MODIFIED ));
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct
@@ -552,7 +553,7 @@ public class SQLEntityStoreMixin
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( state.entityDescriptor().types().findFirst().get().getName() ).
                 key( JSONKeys.VERSION ).value( version ).
-                key( JSONKeys.MODIFIED ).value( state.lastModified() ).
+                key( JSONKeys.MODIFIED ).value( state.lastModified().toEpochMilli() ).
                 key( JSONKeys.PROPERTIES ).object();
 
             state.entityDescriptor().state().properties().forEach( persistentProperty -> {

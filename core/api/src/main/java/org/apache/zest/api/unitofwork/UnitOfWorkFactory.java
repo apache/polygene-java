@@ -19,7 +19,9 @@
  */
 package org.apache.zest.api.unitofwork;
 
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.usecase.Usecase;
 
 /**
@@ -33,7 +35,7 @@ public interface UnitOfWorkFactory
      * The UnitOfWork will use the default Usecase settings.
      * </p>
      * <p>
-     * Current time will be set to System.currentTimeMillis();
+     * Current time will be set to {@link SystemTime#now()}
      * </p>
      * @return a new UnitOfWork
      */
@@ -46,12 +48,12 @@ public interface UnitOfWorkFactory
      * </p>
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork( long currentTime );
+    UnitOfWork newUnitOfWork( Instant currentTime );
 
     /**
      * Create a new UnitOfWork for the given Usecase and associate it with the current thread.
      * <p>
-     * Current time will be set to System.currentTimeMillis();
+     * Current time will be set to {@link SystemTime#now()}
      * </p>
      * @param usecase the Usecase for this UnitOfWork
      *
@@ -66,7 +68,7 @@ public interface UnitOfWorkFactory
      *
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
+    UnitOfWork newUnitOfWork( Usecase usecase, Instant currentTime );
 
     /**
      * @return true if there is an active UnitOfWork associated with the executing thread

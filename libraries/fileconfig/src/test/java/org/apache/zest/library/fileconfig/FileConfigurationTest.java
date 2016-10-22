@@ -57,7 +57,7 @@ public class FileConfigurationTest
     public void testFileConfigurationOverride()
         throws IOException, ActivationException, AssemblyException
     {
-        File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "" + System.currentTimeMillis() );
+        File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "tmp" );
         final File confDir = testFile;
         final File dataDir = testFile;
         final File tempDir = testFile;

@@ -25,6 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -138,7 +139,7 @@ public class JSONMapEntityStoreMixin
     // EntityStore
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
@@ -158,7 +159,7 @@ public class JSONMapEntityStoreMixin
             state.put( JSONKeys.APPLICATION_VERSION, application.version() );
             state.put( JSONKeys.TYPE, entityDescriptor.types().findFirst().get().getName() );
             state.put( JSONKeys.VERSION, unitOfWork.identity() );
-            state.put( JSONKeys.MODIFIED, unitOfWork.currentTime() );
+            state.put( JSONKeys.MODIFIED, unitOfWork.currentTime().toEpochMilli() );
             state.put( JSONKeys.PROPERTIES, new JSONObject() );
             state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
@@ -406,14 +407,14 @@ public class JSONMapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    protected void writeEntityState( JSONEntityState state, Writer writer, String identity, long lastModified )
+    protected void writeEntityState( JSONEntityState state, Writer writer, String identity, Instant lastModified )
         throws EntityStoreException
     {
         try
         {
             JSONObject jsonState = state.state();
             jsonState.put( JSONKeys.VERSION, identity );
-            jsonState.put( JSONKeys.MODIFIED, lastModified );
+            jsonState.put( JSONKeys.MODIFIED, lastModified.toEpochMilli() );
             writer.append( jsonState.toString() );
         }
         catch( JSONException | IOException e )
@@ -431,7 +432,7 @@ public class JSONMapEntityStoreMixin
             EntityStatus status = EntityStatus.LOADED;
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli(jsonObject.getLong( JSONKeys.MODIFIED ));
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if NamedAssociation is supported
@@ -495,7 +496,7 @@ public class JSONMapEntityStoreMixin
         }
     }
 
-    private EntityState fetchCachedState( EntityReference identity, ModuleDescriptor module, long currentTime )
+    private EntityState fetchCachedState( EntityReference identity, ModuleDescriptor module, Instant currentTime )
     {
         CacheState cacheState = cache.get( identity.identity() );
         if( cacheState != null )
@@ -505,7 +506,8 @@ public class JSONMapEntityStoreMixin
             {
                 String type = data.getString( JSONKeys.TYPE );
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-                return new JSONEntityState( module, valueSerialization, data.getString( JSONKeys.VERSION ), data.getLong( JSONKeys.MODIFIED ), identity, EntityStatus.LOADED, entityDescriptor, data );
+                Instant lastModified = Instant.ofEpochMilli(data.getLong(JSONKeys.MODIFIED));
+                return new JSONEntityState( module, valueSerialization, data.getString( JSONKeys.VERSION ), lastModified, identity, EntityStatus.LOADED, entityDescriptor, data );
             }
             catch( JSONException e )
             {

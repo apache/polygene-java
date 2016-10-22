@@ -19,6 +19,7 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -59,13 +60,13 @@ public final class JSONEntityState
     private final EntityDescriptor entityDescriptor;
 
     private EntityStatus status;
-    private long lastModified;
+    private Instant lastModified;
     private JSONObject state;
 
     /* package */ JSONEntityState( ModuleDescriptor module,
                                    ValueSerialization valueSerialization,
                                    String version,
-                                   long lastModified,
+                                   Instant lastModified,
                                    EntityReference identity,
                                    EntityStatus status,
                                    EntityDescriptor entityDescriptor,
@@ -90,7 +91,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return lastModified;
     }
