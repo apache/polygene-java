@@ -132,7 +132,7 @@ public class RdfQueryParserImpl
         }
         else
         {
-            // Add type+identity triples last. This makes queries faster since the query engine can reduce the number
+            // Add type+reference triples last. This makes queries faster since the query engine can reduce the number
             // of triples to check faster
             triples.addDefaultTriples( resultType.getName() );
         }
@@ -149,7 +149,7 @@ public class RdfQueryParserImpl
         {
             query.append( format( "PREFIX %s: <%s> %n", namespaces.namespacePrefix( namespace ), namespace ) );
         }
-        query.append( "SELECT DISTINCT ?identity\n" );
+        query.append( "SELECT DISTINCT ?reference\n" );
         if( triples.hasTriples() )
         {
             query.append( "WHERE {\n" );

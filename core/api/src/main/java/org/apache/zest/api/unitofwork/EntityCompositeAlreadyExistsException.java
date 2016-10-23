@@ -22,7 +22,7 @@ package org.apache.zest.api.unitofwork;
 import org.apache.zest.api.entity.EntityReference;
 
 /**
- * If you try to create an EntityComposite whose identity already exists,
+ * If you try to create an EntityComposite whose reference already exists,
  * then this exception will be thrown.
  */
 public class EntityCompositeAlreadyExistsException
@@ -30,16 +30,16 @@ public class EntityCompositeAlreadyExistsException
 {
     private static final long serialVersionUID = -7297710939536508481L;
 
-    private final EntityReference identity;
+    private final EntityReference reference;
 
-    public EntityCompositeAlreadyExistsException( EntityReference identity )
+    public EntityCompositeAlreadyExistsException( EntityReference reference)
     {
-        super( "EntityComposite (" + identity + ") already exists." );
-        this.identity = identity;
+        super( "EntityComposite (" + reference + ") already exists." );
+        this.reference = reference;
     }
 
-    public EntityReference identity()
+    public EntityReference reference()
     {
-        return identity;
+        return reference;
     }
 }

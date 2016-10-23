@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -213,7 +214,7 @@ public interface AlarmSystem
         public AlarmPoint createAlarm( String name, AlarmCategory category )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class );
+            EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class, new StringIdentity( name ) );
             builder.instance().category().set( category );
             AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
             state.systemName().set( name );

@@ -24,6 +24,8 @@ import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricPredicate;
 import com.yammer.metrics.reporting.ConsoleReporter;
 import java.util.concurrent.TimeUnit;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
@@ -66,7 +68,7 @@ public class NoMetricsInstalledTest extends AbstractZestTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            Person p = uow.get( Person.class, "" + id );
+            Person p = uow.get( Person.class, new StringIdentity( "" + id ) );
         }
         finally
         {
@@ -81,7 +83,7 @@ public class NoMetricsInstalledTest extends AbstractZestTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            uow.newEntity( Person.class, "" + id );
+            uow.newEntity( Person.class, new StringIdentity( "" + id ) );
             uow.complete();
         }
         finally

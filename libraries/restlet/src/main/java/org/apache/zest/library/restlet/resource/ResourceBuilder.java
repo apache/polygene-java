@@ -22,7 +22,9 @@ package org.apache.zest.library.restlet.resource;
 
 import java.io.IOException;
 import java.util.Collections;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -46,13 +48,13 @@ import org.restlet.routing.Router;
 @Mixins( ResourceBuilder.Mixin.class )
 public interface ResourceBuilder
 {
-    EntityRef createEntityRef( String name, Reference base );
+    EntityRef createEntityRef(Identity name, Reference base );
 
-    EntityRef createEntityRef( String name, RestLink get, RestLink put, RestLink delete );
+    EntityRef createEntityRef( Identity name, RestLink get, RestLink put, RestLink delete );
 
-    RestLink createRestLink( String name, Reference base, Method method );
+    RestLink createRestLink( Identity name, Reference base, Method method );
 
-    RestLink createRestLink( String name, Reference base, Method method, String description );
+    RestLink createRestLink( Identity name, Reference base, Method method, String description );
 
     Command createCommand( Reference base );
 
@@ -60,9 +62,9 @@ public interface ResourceBuilder
 
     FormField createFormField( String name, String type );
 
-    <T extends Identity> Representation toRepresentation( Class<T> type, T composite );
+    <T extends HasIdentity> Representation toRepresentation(Class<T> type, T composite );
 
-    <T extends Identity> T toObject( Class<T> type, Representation representation )
+    <T extends HasIdentity> T toObject(Class<T> type, Representation representation )
         throws IOException;
 
     Route findRoute( String name, Router router );
@@ -83,16 +85,17 @@ public interface ResourceBuilder
             converter = new ZestConverter( objectFactory );
         }
 
-        public EntityRef createEntityRef( String identity, Reference base )
+        @Override
+        public EntityRef createEntityRef( Identity identity, Reference base )
         {
-            String name = identityManager.extractName( identity );
-            RestLink get = createRestLink( name, base, Method.GET );
-            RestLink put = createRestLink( name, base, Method.PUT );
-            RestLink delete = createRestLink( name, base, Method.DELETE );
-            return createEntityRef( name, get, put, delete );
+            RestLink get = createRestLink( identity, base, Method.GET );
+            RestLink put = createRestLink( identity, base, Method.PUT );
+            RestLink delete = createRestLink( identity, base, Method.DELETE );
+            return createEntityRef( identity, get, put, delete );
         }
 
-        public EntityRef createEntityRef( String identity, RestLink get, RestLink put, RestLink delete )
+        @Override
+        public EntityRef createEntityRef( Identity identity, RestLink get, RestLink put, RestLink delete )
         {
             ValueBuilder<EntityRef> refBuilder = vbf.newValueBuilder( EntityRef.class );
             EntityRef refPrototype = refBuilder.prototype();
@@ -103,9 +106,10 @@ public interface ResourceBuilder
             return refBuilder.newInstance();
         }
 
-        public RestLink createRestLink( String name, Reference base, Method method )
+        @Override
+        public RestLink createRestLink( Identity identity, Reference base, Method method )
         {
-            name = identityManager.extractName( name );
+            String name = identityManager.extractName( identity );
 
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
@@ -116,8 +120,9 @@ public interface ResourceBuilder
         }
 
         @Override
-        public RestLink createRestLink( String name, Reference base, Method method, String description )
+        public RestLink createRestLink( Identity identity, Reference base, Method method, String description )
         {
+            String name = identityManager.extractName( identity );
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
             prototype.path().set( base.toUri().resolve( name ).getPath() + "/" );
@@ -138,7 +143,7 @@ public interface ResourceBuilder
         public RestForm createNameForm( Reference base )
         {
             ValueBuilder<RestForm> builder = vbf.newValueBuilder( RestForm.class );
-            builder.prototype().link().set( createRestLink( "form", base, Method.POST ) );
+            builder.prototype().link().set( createRestLink( new StringIdentity( "form" ), base, Method.POST ) );
             builder.prototype().fields().set( Collections.singletonList( createFormField( "name", FormField.TEXT ) ) );
             return builder.newInstance();
         }
@@ -152,13 +157,13 @@ public interface ResourceBuilder
         }
 
         @Override
-        public <T extends Identity> Representation toRepresentation( Class<T> type, T composite )
+        public <T extends HasIdentity> Representation toRepresentation(Class<T> type, T composite )
         {
             return converter.toRepresentation( composite, new Variant(), null );
         }
 
         @Override
-        public <T extends Identity> T toObject( Class<T> type, Representation representation )
+        public <T extends HasIdentity> T toObject(Class<T> type, Representation representation )
             throws IOException
         {
             return converter.toObject( representation, type, null );

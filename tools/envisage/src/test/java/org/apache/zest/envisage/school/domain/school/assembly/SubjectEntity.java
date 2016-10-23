@@ -22,6 +22,7 @@ package org.apache.zest.envisage.school.domain.school.assembly;
 
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -63,7 +64,7 @@ public interface SubjectEntity
 
         Property<String> description();
 
-        Property<String> schoolId();
+        Property<Identity> schoolId();
 
         Association<School> school();
     }

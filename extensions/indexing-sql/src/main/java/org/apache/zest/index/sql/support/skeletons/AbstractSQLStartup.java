@@ -54,7 +54,7 @@ import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -1487,7 +1487,7 @@ public abstract class AbstractSQLStartup
     )
     {
         QualifiedName qName = pType.qualifiedName();
-        if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
+        if( !newQNames.contains( qName ) && !qName.name().equals( HasIdentity.class.getName() ) )
         {
             newQNames.add( qName );
             QNameInfo info = qNameInfos.get( qName );

@@ -21,11 +21,11 @@
 package org.apache.zest.library.restlet.crud;
 
 import java.util.List;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.restlet.Command;
 
-public interface EntityList extends Identity
+public interface EntityList extends HasIdentity
 {
     Property<List<EntityRef>> entities();
 

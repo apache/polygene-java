@@ -121,7 +121,6 @@ public class ActivationEventsTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.withDefaultUnitOfWorkFactory();
                 module.importedServices( TestService.class ).
                         setMetaInfo( new TestServiceInstance() ).
                         importOnStartup();

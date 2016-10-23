@@ -20,7 +20,9 @@
 package org.apache.zest.spi.uuid;
 
 import java.util.UUID;
-import org.apache.zest.api.entity.IdentityGenerator;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.identity.StringIdentity;
 
 /**
  * UUID based Identity generator mixin.
@@ -37,8 +39,8 @@ public class UuidIdentityGeneratorMixin
     }
 
     @Override
-    public String generate( Class<?> compositeType )
+    public Identity generate(Class<?> compositeType )
     {
-        return uuid + Integer.toHexString( count++ );
+        return new StringIdentity(uuid + Integer.toHexString( count++ ));
     }
 }

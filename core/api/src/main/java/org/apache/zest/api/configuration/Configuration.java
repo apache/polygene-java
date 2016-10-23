@@ -27,7 +27,8 @@ import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.PropertyMapper;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -56,12 +57,12 @@ import org.apache.zest.api.value.ValueSerialization;
  * where MyServiceConfiguration extends {@link ConfigurationComposite}, which itself is an ordinary
  * {@link org.apache.zest.api.entity.EntityComposite}. The Configuration implementation
  * will either locate an instance of the given Configuration type in the
- * persistent store using the identity of the Service, or create a new such instance
+ * persistent store using the reference of the Service, or create a new such instance
  * if one doesn't already exist.
  * </p>
  * <p>
  * If a new Configuration instance is created then it will be populated with properties
- * from the properties file whose filesystem name is the same as the identity (e.g. "MyService.properties").
+ * from the properties file whose filesystem name is the same as the reference (e.g. "MyService.properties").
  * If a service is not given a name via the {@code org.apache.zest.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
  * name will default to the FQCN of the ServiceComposite type.
  * </p>
@@ -174,6 +175,7 @@ public interface Configuration<T>
         @Service
         private Iterable<ServiceReference<ValueSerialization>> valueSerialization;
 
+
         public ConfigurationMixin()
         {
         }
@@ -235,25 +237,24 @@ public interface Configuration<T>
         {
             ServiceDescriptor serviceModel = api.serviceDescriptorFor( serviceComposite );
 
-            String identity = serviceComposite.identity().get();
             V configuration;
             try
             {
-                configuration = uow.get( serviceModel.<V>configurationType(), identity );
+                configuration = uow.get( serviceModel.<V>configurationType(), serviceComposite.identity().get() );
                 uow.pause();
             }
             catch( NoSuchEntityException | NoSuchEntityTypeException e )
             {
-                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel, serviceComposite.identity().get() );
             }
             return configuration;
         }
 
         @SuppressWarnings( "unchecked" )
-        private <V extends Identity> V initializeConfigurationInstance( ServiceComposite serviceComposite,
-                                                                        UnitOfWork uow,
-                                                                        ServiceDescriptor serviceModel,
-                                                                        String identity
+        private <V extends HasIdentity> V initializeConfigurationInstance(ServiceComposite serviceComposite,
+                                                                          UnitOfWork uow,
+                                                                          ServiceDescriptor serviceModel,
+                                                                          Identity identity
         )
             throws InstantiationException
         {
@@ -310,7 +311,7 @@ public interface Configuration<T>
         private <C, V> V tryLoadPropertiesFile( UnitOfWork buildUow,
                                                 Class<C> compositeType,
                                                 Class<V> configType,
-                                                String identity
+                                                Identity identity
         )
             throws InstantiationException
         {
@@ -345,39 +346,39 @@ public interface Configuration<T>
             return type.getResourceAsStream( resourceName );
         }
 
-        private <C, V extends Identity> V tryLoadJsonFile( UnitOfWork uow,
-                                                           Class<C> compositeType,
-                                                           Class<V> configType,
-                                                           String identity
+        private <C, V extends HasIdentity> V tryLoadJsonFile(UnitOfWork uow,
+                                                             Class<C> compositeType,
+                                                             Class<V> configType,
+                                                             Identity identity
         )
         {
             return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.JSON, ".json" );
         }
 
-        private <C, V extends Identity> V tryLoadYamlFile( UnitOfWork uow,
-                                                           Class<C> compositeType,
-                                                           Class<V> configType,
-                                                           String identity
+        private <C, V extends HasIdentity> V tryLoadYamlFile(UnitOfWork uow,
+                                                             Class<C> compositeType,
+                                                             Class<V> configType,
+                                                             Identity identity
         )
         {
             return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.YAML, ".yaml" );
         }
 
-        private <C, V extends Identity> V tryLoadXmlFile( UnitOfWork uow,
-                                                          Class<C> compositeType,
-                                                          Class<V> configType,
-                                                          String identity
+        private <C, V extends HasIdentity> V tryLoadXmlFile(UnitOfWork uow,
+                                                            Class<C> compositeType,
+                                                            Class<V> configType,
+                                                            Identity identity
         )
         {
             return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.XML, ".xml" );
         }
 
-        private <C, V extends Identity> V readConfig( UnitOfWork uow,
-                                                      Class<C> compositeType,
-                                                      Class<V> configType,
-                                                      String identity,
-                                                      String format,
-                                                      String extension
+        private <C, V extends HasIdentity> V readConfig(UnitOfWork uow,
+                                                        Class<C> compositeType,
+                                                        Class<V> configType,
+                                                        Identity identity,
+                                                        String format,
+                                                        String extension
         )
         {
             for( ServiceReference<ValueSerialization> serializerRef : valueSerialization )

@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.InitializationException;
@@ -51,11 +53,12 @@ public class RequestReaderDelegator
         throws InitializationException
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
+        Identity requestreaderdelegator = new StringIdentity("requestreaderdelegator");
 
         // Add custom readers first
         for( ServiceReference<RequestReader> requestReader : requestReaderReferences )
         {
-            if( !requestReader.identity().equals( "requestreaderdelegator" ) )
+            if( !requestReader.identity().equals(requestreaderdelegator) )
             {
                 logger.info( "Registered request reader:" + requestReader.identity() );
                 registerRequestReader( requestReader.get() );

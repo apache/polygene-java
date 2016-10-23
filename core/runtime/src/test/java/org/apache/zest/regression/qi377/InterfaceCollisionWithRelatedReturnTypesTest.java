@@ -19,11 +19,12 @@
  */
 package org.apache.zest.regression.qi377;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -52,12 +53,12 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToSetNameToTheCompany()
         throws UnitOfWorkCompletionException
     {
-        String identity;
+        Identity identity;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Company startUp = uow.newEntity( Company.class );
             startUp.name().set( "Acme" );
-            identity = ( (Identity) startUp ).identity().get();
+            identity = ((HasIdentity) startUp).identity().get();
             uow.complete();
         }
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -77,14 +78,14 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToSetLeadToTheCompany()
         throws UnitOfWorkCompletionException
     {
-        String identity;
+        Identity identity;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Company startUp = uow.newEntity( Company.class );
             Employee niclas = uow.newEntity( Employee.class );
 
             startUp.lead().set( niclas );
-            identity = ( (Identity) startUp ).identity().get();
+            identity = ((HasIdentity) startUp).identity().get();
 
             uow.complete();
         }

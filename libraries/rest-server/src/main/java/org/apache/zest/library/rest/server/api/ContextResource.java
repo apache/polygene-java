@@ -37,6 +37,7 @@ import org.apache.zest.api.constraint.ConstraintViolation;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.constraint.Name;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
@@ -204,12 +205,12 @@ public class ContextResource
         restlet.subResource( subResourceClass );
     }
 
-    protected <T> T select( Class<T> entityClass, String id )
+    protected <T> T select( Class<T> entityClass, Identity id )
         throws ResourceException
     {
         try
         {
-            T composite = uowf.currentUnitOfWork().get( entityClass, id );
+            T composite = uowf.currentUnitOfWork().get( entityClass,  id );
             current().select( composite );
             return composite;
         }
@@ -219,10 +220,10 @@ public class ContextResource
         }
     }
 
-    protected <T> T selectFromManyAssociation( ManyAssociation<T> manyAssociation, String id )
+    protected <T> T selectFromManyAssociation( ManyAssociation<T> manyAssociation, Identity id )
         throws ResourceException
     {
-        T entity = (T) uowf.currentUnitOfWork().get( Object.class, id );
+        T entity = (T) uowf.currentUnitOfWork().get( Object.class, id  );
         if( !manyAssociation.contains( entity ) )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -232,7 +233,7 @@ public class ContextResource
         return entity;
     }
 
-    protected <T> T selectFromNamedAssociation( NamedAssociation<T> namedAssociation, String id )
+    protected <T> T selectFromNamedAssociation( NamedAssociation<T> namedAssociation, Identity id )
         throws ResourceException
     {
         T entity = (T) uowf.currentUnitOfWork().get( Object.class, id );

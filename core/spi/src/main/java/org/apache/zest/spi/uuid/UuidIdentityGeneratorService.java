@@ -20,7 +20,7 @@
 
 package org.apache.zest.spi.uuid;
 
-import org.apache.zest.api.entity.IdentityGenerator;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 

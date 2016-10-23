@@ -21,7 +21,7 @@ package org.apache.zest.library.restlet;
 
 import java.util.logging.Level;
 import org.apache.zest.api.composite.TransientBuilderFactory;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
@@ -213,7 +213,7 @@ public abstract class ZrestApplication extends org.restlet.Application
     protected abstract void addRoutes( Router router );
 
     protected void addResourcePath( String name,
-                                    Class<? extends Identity> type,
+                                    Class<? extends HasIdentity> type,
                                     String basePath
     )
     {
@@ -221,7 +221,7 @@ public abstract class ZrestApplication extends org.restlet.Application
     }
 
     protected void addResourcePath( String name,
-                                    Class<? extends Identity> type,
+                                    Class<? extends HasIdentity> type,
                                     String basePath,
                                     boolean createLink,
                                     boolean rootRoute
@@ -240,8 +240,8 @@ public abstract class ZrestApplication extends org.restlet.Application
         router.attach( basePath + name + "/{id}/{invoke}", newZestRestlet( EntityResource.class, type ) );
     }
 
-    private <K extends Identity, T extends ServerResource<K>> Restlet newZestRestlet( Class<T> resourceClass,
-                                                                                      Class<K> entityClass
+    private <K extends HasIdentity, T extends ServerResource<K>> Restlet newZestRestlet(Class<T> resourceClass,
+                                                                                        Class<K> entityClass
     )
     {
 

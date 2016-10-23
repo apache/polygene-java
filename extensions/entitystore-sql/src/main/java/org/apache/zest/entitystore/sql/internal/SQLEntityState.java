@@ -118,9 +118,9 @@ public interface SQLEntityState
         }
 
         @Override
-        public EntityReference identity()
+        public EntityReference entityReference()
         {
-            return state.identity();
+            return state.entityReference();
         }
 
         @Override

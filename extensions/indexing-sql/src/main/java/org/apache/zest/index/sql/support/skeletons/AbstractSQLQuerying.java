@@ -35,7 +35,7 @@ import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.injection.scope.Uses;
@@ -989,7 +989,7 @@ public abstract class AbstractSQLQuerying
                     QualifiedName qName
                         = QualifiedName.fromAccessor( predicate.property().accessor() );
                     String columnName;
-                    if( qName.type().equals( Identity.class.getName() ) )
+                    if( qName.type().equals( HasIdentity.class.getName() ) )
                     {
                         columnName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
                     }
@@ -1485,7 +1485,7 @@ public abstract class AbstractSQLQuerying
                     Class<?> declaringType = ( (Member) ref.accessor() ).getDeclaringClass();
                     String colName;
                     Integer tableIdx;
-                    if( Identity.class.equals( declaringType ) )
+                    if( HasIdentity.class.equals( declaringType ) )
                     {
                         colName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
                         tableIdx = tableIndex - 1;
@@ -1547,7 +1547,7 @@ public abstract class AbstractSQLQuerying
         {
             QualifiedName qName = qNameStack.pop();
             PropertyFunction<?> ref = refStack.pop();
-            if( !qName.type().equals( Identity.class.getName() ) )
+            if( !qName.type().equals( HasIdentity.class.getName() ) )
             {
                 QNameInfo info = this._state.qNameInfos().get().get( qName );
                 if( info == null )

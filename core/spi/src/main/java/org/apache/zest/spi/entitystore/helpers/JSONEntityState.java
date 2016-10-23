@@ -23,6 +23,7 @@ import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
@@ -56,7 +57,7 @@ public final class JSONEntityState
     private final ModuleDescriptor module;
     private final ValueSerialization valueSerialization;
     private final String version;
-    private final EntityReference identity;
+    private final EntityReference reference;
     private final EntityDescriptor entityDescriptor;
 
     private EntityStatus status;
@@ -67,7 +68,7 @@ public final class JSONEntityState
                                    ValueSerialization valueSerialization,
                                    String version,
                                    Instant lastModified,
-                                   EntityReference identity,
+                                   EntityReference reference,
                                    EntityStatus status,
                                    EntityDescriptor entityDescriptor,
                                    JSONObject state
@@ -77,7 +78,7 @@ public final class JSONEntityState
         this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;
-        this.identity = identity;
+        this.reference = reference;
         this.status = status;
         this.entityDescriptor = entityDescriptor;
         this.state = state;
@@ -97,9 +98,9 @@ public final class JSONEntityState
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return identity;
+        return reference;
     }
 
     @Override
@@ -137,6 +138,10 @@ public final class JSONEntityState
             if( newValue == null || ValueType.isPrimitiveValue( newValue ) )
             {
                 jsonValue = newValue;
+            }
+            else if( ValueType.isIdentity( newValue ) )
+            {
+                jsonValue = newValue.toString();
             }
             else
             {
@@ -205,7 +210,7 @@ public final class JSONEntityState
             cloneStateIfGlobalStateLoaded();
             state.getJSONObject( JSONKeys.ASSOCIATIONS ).put( stateName.name(), newEntity == null
                                                                                 ? null
-                                                                                : newEntity.identity() );
+                                                                                : newEntity.identity().toString() );
             markUpdated();
         }
         catch( JSONException e )
@@ -286,7 +291,7 @@ public final class JSONEntityState
     @Override
     public String toString()
     {
-        return identity + "(" + state + ")";
+        return reference + "(" + state + ")";
     }
 
     public void markUpdated()

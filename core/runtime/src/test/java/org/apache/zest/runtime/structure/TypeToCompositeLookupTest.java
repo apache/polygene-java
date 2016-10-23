@@ -20,12 +20,13 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.Iterator;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.AmbiguousTypeException;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
@@ -51,9 +52,7 @@ public class TypeToCompositeLookupTest
 
     public interface Foo
     {
-
         String bar();
-
     }
 
     public static class BasicFooImpl
@@ -276,17 +275,17 @@ public class TypeToCompositeLookupTest
         assertEquals( CATHEDRAL, basicFoo.bar() );
         assertEquals( CATHEDRAL, foo.bar() );
 
-        String someOtherFooIdentity = ( (Identity) someOtherFoo ).identity().get();
-        String basicFooIdentity = ( (Identity) basicFoo ).identity().get();
-        String fooIdentity = ( (Identity) foo ).identity().get();
+        Identity someOtherFooIdentity = ((HasIdentity) someOtherFoo).identity().get();
+        Identity basicFooIdentity = ((HasIdentity) basicFoo).identity().get();
+        Identity fooIdentity = ((HasIdentity) foo).identity().get();
 
         uow.complete();
 
         uow = uowf.newUnitOfWork();
 
-        uow.get( SomeOtherFoo.class, someOtherFooIdentity );
+        uow.get( SomeOtherFoo.class,  someOtherFooIdentity );
         uow.get( BasicFoo.class, basicFooIdentity );
-        uow.get( Foo.class, fooIdentity );
+        uow.get( Foo.class,  fooIdentity );
 
         uow.discard();
     }
@@ -328,8 +327,8 @@ public class TypeToCompositeLookupTest
         // Specific Type used
         assertEquals( BAZAR, uow.newEntityBuilder( BasicFoo.class ).newInstance().bar() );
 
-        String someOtherFooIdentity = ( (Identity) someOtherFoo ).identity().get();
-        String basicFooIdentity = ( (Identity) basicFoo ).identity().get();
+        Identity someOtherFooIdentity = ((HasIdentity) someOtherFoo).identity().get();
+        Identity basicFooIdentity = ((HasIdentity) basicFoo).identity().get();
 
         uow.complete();
 

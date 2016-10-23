@@ -41,7 +41,7 @@ public class RedisEntityStoreAssembler
         ServiceDeclaration service = module.services( RedisMapEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

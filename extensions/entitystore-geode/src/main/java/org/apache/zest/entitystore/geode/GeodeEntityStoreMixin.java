@@ -149,7 +149,7 @@ public class GeodeEntityStoreMixin
     @Override
     public Reader get( EntityReference entityReference ) throws EntityStoreException
     {
-        String serializedState = region.get( entityReference.identity() );
+        String serializedState = region.get( entityReference.identity().toString() );
         if( serializedState == null )
         {
             throw new EntityNotFoundException( entityReference );
@@ -175,7 +175,7 @@ public class GeodeEntityStoreMixin
                             throws IOException
                     {
                         super.close();
-                        region.put( ref.identity(), toString() );
+                        region.put( ref.identity().toString(), toString() );
                     }
                 };
             }
@@ -191,7 +191,7 @@ public class GeodeEntityStoreMixin
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws EntityNotFoundException
             {
-                region.remove( ref.identity() );
+                region.remove( ref.identity().toString() );
             }
         } );
     }

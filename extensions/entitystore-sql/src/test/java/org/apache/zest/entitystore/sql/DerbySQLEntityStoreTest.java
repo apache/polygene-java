@@ -84,8 +84,7 @@ public class DerbySQLEntityStoreTest
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                               DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLConfiguration config = uow.get( SQLConfiguration.class, DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();

@@ -38,6 +38,7 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.Property;
@@ -298,7 +299,7 @@ public abstract class AbstractEntityStoreTest
     {
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         TestEntity newInstance = createEntity( unitOfWork );
-        String identity = newInstance.identity().get();
+        Identity identity = newInstance.identity().get();
         unitOfWork.complete();
 
         // Remove entity
@@ -483,7 +484,7 @@ public abstract class AbstractEntityStoreTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            String identity = createEntity( unitOfWork ).identity().get();
+            Identity identity = createEntity( unitOfWork ).identity().get();
             unitOfWork.complete();
 
             unitOfWork = unitOfWorkFactory.newUnitOfWork();

@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.rdf.entity;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -95,14 +96,14 @@ public class EntityTypeSerializerTest
             valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, "test1");
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, new StringIdentity( "test1") );
             TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, "test2");
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, new StringIdentity( "test2") );
             TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );

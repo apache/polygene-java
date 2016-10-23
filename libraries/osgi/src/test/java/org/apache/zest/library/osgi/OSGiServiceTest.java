@@ -60,7 +60,7 @@ public class OSGiServiceTest
             "org.apache.zest.library.osgi.OSGiServiceTest$MyService",
             "org.apache.zest.library.osgi.OSGiEnabledService",
             "org.apache.zest.api.service.ServiceComposite",
-            "org.apache.zest.api.entity.Identity",
+            "org.apache.zest.api.identity.HasIdentity",
             "org.apache.zest.api.composite.Composite"
         };
         verify( bundleContext ).registerService( expectedClasses, service, null );

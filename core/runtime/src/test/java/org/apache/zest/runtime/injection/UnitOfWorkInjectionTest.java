@@ -20,6 +20,7 @@
 
 package org.apache.zest.runtime.injection;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.State;
@@ -52,7 +53,7 @@ public class UnitOfWorkInjectionTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
         try
         {
-            Trial trial = uow.newEntity( Trial.class, "123" );
+            Trial trial = uow.newEntity( Trial.class, new StringIdentity( "123" ) );
             trial.doSomething();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork( usecase );

@@ -20,6 +20,7 @@
 
 package org.apache.zest.api.common;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -47,7 +48,7 @@ public class RemovalTest
         throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
+        EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, new StringIdentity( "123" ) );
         builder.instance().test().set( "habba" );
         TestEntity test = builder.newInstance();
         uow.remove( test );

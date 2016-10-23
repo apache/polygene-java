@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -76,13 +77,13 @@ public interface DummyDataService
                     valueBuilder.prototype().string().set( "Foo bar value" );
                     valueBuilder.prototype().map().set( new HashMap() );
 
-                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
+                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test1" ) );
                     builder.instance().name().set( "Foo bar" );
                     builder.instance().age().set( 42 );
                     builder.instance().value().set( valueBuilder.newInstance() );
                     TestEntity testEntity = builder.newInstance();
 
-                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
+                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test2" ) );
                     builder2.instance().name().set( "Xyzzy" );
                     builder2.instance().age().set( 12 );
                     builder2.instance().association().set( testEntity );
@@ -97,7 +98,7 @@ public interface DummyDataService
                 }
 
                 {
-                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, "test3" );
+                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, new StringIdentity( "test3" ) );
                     builder.instance().name().set( "Test3" );
                     builder.newInstance();
                 }

@@ -19,6 +19,8 @@
  */
 package org.apache.zest.regression.qi382;
 
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
@@ -45,6 +47,9 @@ import static org.junit.Assert.assertThat;
 public class Qi382Test extends AbstractZestTest
 {
 
+    public static final Identity FERRARI = new StringIdentity( "Ferrari" );
+    public static final Identity NICLAS = new StringIdentity( "Niclas" );
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -60,14 +65,14 @@ public class Qi382Test extends AbstractZestTest
     {
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            Car car = unitOfWork.newEntity( Car.class, "Ferrari" );
+            Car car = unitOfWork.newEntity( Car.class, FERRARI);
             unitOfWork.complete();
         }
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            Car car = unitOfWork.get( Car.class, "Ferrari" );
+            Car car = unitOfWork.get( Car.class, FERRARI);
             assertThat( car, notNullValue() );
-            Person p = unitOfWork.get( Person.class, "Niclas" );
+            Person p = unitOfWork.get( Person.class, NICLAS);
             assertThat( p, notNullValue() );
             assertThat( p.car().get(), equalTo( car ) );
         }
@@ -90,7 +95,7 @@ public class Qi382Test extends AbstractZestTest
                 throws LifecycleException
             {
                 UnitOfWork unitOfWork = uowf.currentUnitOfWork();
-                EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class, "Niclas" );
+                EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class, NICLAS);
                 builder.instance().car().set( me );
                 builder.newInstance();
             }

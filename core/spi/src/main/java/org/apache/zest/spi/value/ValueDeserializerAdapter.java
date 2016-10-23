@@ -44,6 +44,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
@@ -158,6 +160,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         // Number types
         registerDeserializer( BigDecimal.class, input -> new BigDecimal( input.toString() ) );
         registerDeserializer( BigInteger.class, input -> new BigInteger( input.toString() ) );
+        registerDeserializer( Identity.class, input -> StringIdentity.fromString( input.toString() ) );
 
         // Date types
         registerDeserializer( Instant.class, input -> Instant.parse( input.toString() ) );
@@ -269,7 +272,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T deserializeRoot( ModuleDescriptor module, ValueType valueType, InputStream input )
         throws Exception
     {
-        final Class<?> type = valueType.types().findFirst().orElse( null );
+        Class<?> type = valueType.types().findFirst().orElse( null );
+
+        if( Identity.class.isAssignableFrom( type ) )
+        {
+            type = Identity.class;
+        }
+
         // Plain ValueType
         Function<Object, Object> deserializationFunction = deserializers.get( type );
         if( deserializationFunction != null )

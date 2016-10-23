@@ -23,10 +23,10 @@ import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
+import org.apache.zest.api.identity.HasIdentity;
 import org.eclipse.jetty.server.Server;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
@@ -39,7 +39,7 @@ public class JettyMixin
     @This
     private Configuration<JettyConfiguration> configuration;
 
-    public JettyMixin( @This Identity meAsIdentity,
+    public JettyMixin( @This HasIdentity meAsIdentity,
                        @Service Server jettyServer,
                        @Service Iterable<ServiceReference<ServletContextListener>> contextListeners,
                        @Service Iterable<ServiceReference<Servlet>> servlets,

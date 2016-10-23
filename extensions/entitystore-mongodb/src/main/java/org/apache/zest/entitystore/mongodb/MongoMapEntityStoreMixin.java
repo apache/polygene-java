@@ -236,7 +236,7 @@ public class MongoMapEntityStoreMixin
                         DBObject bsonState = (DBObject) JSON.parse( jsonState );
 
                         BasicDBObject entity = new BasicDBObject();
-                        entity.put( IDENTITY_COLUMN, ref.identity() );
+                        entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
                         entities.insert( entity, writeConcern );
                     }
@@ -258,7 +258,7 @@ public class MongoMapEntityStoreMixin
                         DBObject bsonState = (DBObject) JSON.parse( toString() );
 
                         BasicDBObject entity = new BasicDBObject();
-                        entity.put( IDENTITY_COLUMN, ref.identity() );
+                        entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
                         entities.update( byIdentity( ref ), entity, false, false, writeConcern );
                     }
@@ -312,6 +312,6 @@ public class MongoMapEntityStoreMixin
 
     private DBObject byIdentity( EntityReference entityReference )
     {
-        return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity() );
+        return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity().toString() );
     }
 }

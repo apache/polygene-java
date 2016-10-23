@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
@@ -34,6 +33,8 @@ import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -78,8 +79,8 @@ import org.slf4j.LoggerFactory;
  *
  * <p>@see Preferences</p>
  * <p>
- * Associations are stored as the identity of the referenced Entity, ManyAssociations are stored as multi-line strings
- * (one identity per line), and NamedAssociations are stored as multi-line strings (one name on a line, identity on the
+ * Associations are stored as the reference of the referenced Entity, ManyAssociations are stored as multi-line strings
+ * (one reference per line), and NamedAssociations are stored as multi-line strings (one name on a line, reference on the
  * next line).
  * </p>
  * <p>Nested ValuesComposites, Collections and Maps are stored using available ValueSerialization service.</p>
@@ -105,13 +106,12 @@ public class PreferencesEntityStoreMixin
 
     private Preferences root;
 
-    protected String uuid;
-
-    private int count;
-
     public Logger logger;
 
     public ScheduledThreadPoolExecutor reloadExecutor;
+
+    @Service
+    private IdentityGenerator identityGenerator;
 
     @Override
     public void activateService()
@@ -120,7 +120,6 @@ public class PreferencesEntityStoreMixin
         root = getApplicationRoot();
         logger = LoggerFactory.getLogger( PreferencesEntityStoreService.class.getName() );
         logger.info( "Preferences store:" + root.absolutePath() );
-        uuid = UUID.randomUUID().toString() + "-";
 
         // Reload underlying store every 60 seconds
         reloadExecutor = new ScheduledThreadPoolExecutor( 1 );
@@ -217,27 +216,27 @@ public class PreferencesEntityStoreMixin
 
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                       EntityReference identity,
+                                       EntityReference reference,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), reference, entityDescriptor );
     }
 
     @Override
     public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork,
                                       ModuleDescriptor module,
-                                      EntityReference identity
+                                      EntityReference reference
     )
     {
         try
         {
-            if( !root.nodeExists( identity.identity() ) )
+            if( !root.nodeExists( reference.identity().toString() ) )
             {
-                throw new NoSuchEntityException( identity, UnknownType.class, unitOfWork.usecase() );
+                throw new NoSuchEntityException( reference, UnknownType.class, unitOfWork.usecase() );
             }
 
-            Preferences entityPrefs = root.node( identity.identity() );
+            Preferences entityPrefs = root.node( reference.identity().toString() );
 
             String type = entityPrefs.get( "type", null );
             EntityStatus status = EntityStatus.LOADED;
@@ -253,10 +252,10 @@ public class PreferencesEntityStoreMixin
             entityDescriptor.state().properties().forEach(
                 persistentPropertyDescriptor ->
                 {
-                    if( persistentPropertyDescriptor.qualifiedName().name().equals( "identity" ) )
+                    if( persistentPropertyDescriptor.qualifiedName().name().equals( "reference" ) )
                     {
-                        // Fake identity property
-                        properties.put( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
+                        // Fake reference property
+                        properties.put( persistentPropertyDescriptor.qualifiedName(), reference.identity().toString() );
                     }
                     else
                     {
@@ -417,7 +416,7 @@ public class PreferencesEntityStoreMixin
 
             return new DefaultEntityState( entityPrefs.get( "version", "" ),
                                            Instant.ofEpochMilli(entityPrefs.getLong( "modified", unitOfWork.currentTime().toEpochMilli() )),
-                                           identity,
+                                           reference,
                                            status,
                                            entityDescriptor,
                                            properties,
@@ -433,16 +432,16 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference reference )
     {
         try
         {
-            if( !root.nodeExists( identity.identity() ) )
+            if( !root.nodeExists( reference.identity().toString() ) )
             {
-                throw new NoSuchEntityException( identity, UnknownType.class, unitOfWork.usecase() );
+                throw new NoSuchEntityException( reference, UnknownType.class, unitOfWork.usecase() );
             }
 
-            Preferences entityPrefs = root.node( identity.identity() );
+            Preferences entityPrefs = root.node( reference.identity().toString() );
             return entityPrefs.get( "version", "" );
         }
         catch( BackingStoreException e )
@@ -469,17 +468,17 @@ public class PreferencesEntityStoreMixin
                             DefaultEntityState state = (DefaultEntityState) entityState;
                             if( state.status().equals( EntityStatus.NEW ) )
                             {
-                                Preferences entityPrefs = root.node( state.identity().identity() );
+                                Preferences entityPrefs = root.node( state.entityReference().identity().toString() );
                                 writeEntityState( state, entityPrefs, unitofwork.identity(), unitofwork.currentTime() );
                             }
                             else if( state.status().equals( EntityStatus.UPDATED ) )
                             {
-                                Preferences entityPrefs = root.node( state.identity().identity() );
+                                Preferences entityPrefs = root.node( state.entityReference().identity().toString() );
                                 writeEntityState( state, entityPrefs, unitofwork.identity(), unitofwork.currentTime() );
                             }
                             else if( state.status().equals( EntityStatus.REMOVED ) )
                             {
-                                root.node( state.identity().identity() ).removeNode();
+                                root.node( state.entityReference().identity().toString() ).removeNode();
                             }
                         }
                         root.flush();
@@ -500,7 +499,7 @@ public class PreferencesEntityStoreMixin
 
     protected void writeEntityState( DefaultEntityState state,
                                      Preferences entityPrefs,
-                                     String identity,
+                                     Identity identity,
                                      Instant lastModified
     )
         throws EntityStoreException
@@ -509,13 +508,13 @@ public class PreferencesEntityStoreMixin
         {
             // Store into Preferences API
             entityPrefs.put( "type", state.entityDescriptor().types().findFirst().get().getName() );
-            entityPrefs.put( "version", identity );
+            entityPrefs.put( "version", identity.toString() );
             entityPrefs.putLong( "modified", lastModified.toEpochMilli() );
 
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );
             state.entityDescriptor().state().properties()
-                .filter( property -> !property.qualifiedName().name().equals( "identity" ) )
+                .filter( property -> !property.qualifiedName().name().equals( "reference" ) )
                 .forEach( persistentProperty ->
                           {
                               Object value = state.properties().get( persistentProperty.qualifiedName() );
@@ -589,7 +588,7 @@ public class PreferencesEntityStoreMixin
                     }
                     else
                     {
-                        assocsPrefs.put( association.getKey().name(), association.getValue().identity() );
+                        assocsPrefs.put( association.getKey().name(), association.getValue().identity().toString() );
                     }
                 }
             }
@@ -608,7 +607,7 @@ public class PreferencesEntityStoreMixin
                         {
                             manyAssocs.append( "\n" );
                         }
-                        manyAssocs.append( entityReference.identity() );
+                        manyAssocs.append( entityReference.identity().toString() );
                     }
                     if( manyAssocs.length() > 0 )
                     {
@@ -631,7 +630,7 @@ public class PreferencesEntityStoreMixin
                         {
                             namedAssocs.append( "\n" );
                         }
-                        namedAssocs.append( namedRef.getKey() ).append( "\n" ).append( namedRef.getValue().identity() );
+                        namedAssocs.append( namedRef.getKey() ).append( "\n" ).append( namedRef.getValue().identity().toString() );
                     }
                     if( namedAssocs.length() > 0 )
                     {
@@ -646,9 +645,9 @@ public class PreferencesEntityStoreMixin
         }
     }
 
-    protected String newUnitOfWorkId()
+    protected Identity newUnitOfWorkId()
     {
-        return uuid + Integer.toHexString( count++ );
+        return identityGenerator.generate(EntityStore.class);
     }
 
     private interface NumberParser<T>

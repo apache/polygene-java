@@ -92,7 +92,7 @@ public class RedisMapEntityStoreMixin
         Jedis jedis = pool.getResource();
         try
         {
-            String jsonState = jedis.get( entityReference.identity() );
+            String jsonState = jedis.get( entityReference.identity().toString() );
             if( notFound( jsonState ) )
             {
                 throw new EntityNotFoundException( entityReference );
@@ -125,7 +125,7 @@ public class RedisMapEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            String statusCode = jedis.set( ref.identity(), toString(), "NX" );
+                            String statusCode = jedis.set( ref.identity().toString(), toString(), "NX" );
                             if( !"OK".equals( statusCode ) )
                             {
                                 throw new EntityAlreadyExistsException( ref );
@@ -145,7 +145,7 @@ public class RedisMapEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            String statusCode = jedis.set( ref.identity(), toString(), "XX" );
+                            String statusCode = jedis.set( ref.identity().toString(), toString(), "XX" );
                             if( !"OK".equals( statusCode ) )
                             {
                                 throw new EntityNotFoundException( ref );
@@ -158,12 +158,12 @@ public class RedisMapEntityStoreMixin
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws EntityNotFoundException
                 {
-                    String jsonState = jedis.get( ref.identity() );
+                    String jsonState = jedis.get( ref.identity().toString() );
                     if( notFound( jsonState ) )
                     {
                         throw new EntityNotFoundException( ref );
                     }
-                    jedis.del( ref.identity() );
+                    jedis.del( ref.identity().toString() );
                 }
             } );
         }

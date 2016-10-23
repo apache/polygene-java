@@ -19,18 +19,19 @@
  */
 package org.apache.zest.runtime.unitofwork;
 
-import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.LifecycleException;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.entity.EntityInstance;
 import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.module.ModuleSpi;
+
+import static org.apache.zest.api.identity.HasIdentity.IDENTITY_STATE_NAME;
 
 /**
  * Implementation of EntityBuilder. Maintains an instance of the entity which
@@ -39,33 +40,19 @@ import org.apache.zest.spi.module.ModuleSpi;
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
-    private static final QualifiedName IDENTITY_STATE_NAME;
-
     private final EntityModel model;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
-    private String identity;
+    private Identity identity;
 
     private final BuilderEntityState entityState;
     private final EntityInstance prototypeInstance;
-
-    static
-    {
-        try
-        {
-            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: EntityBuilderInstance" );
-        }
-    }
 
     public EntityBuilderInstance(
         EntityDescriptor model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
-        String identity
+        Identity identity
     )
     {
         this( model, uow, store, identity, null );
@@ -75,7 +62,7 @@ public final class EntityBuilderInstance<T>
         EntityDescriptor model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
-        String identity,
+        Identity identity,
         FunctionStateResolver stateResolver
     )
     {
@@ -83,7 +70,7 @@ public final class EntityBuilderInstance<T>
         this.uow = uow;
         this.store = store;
         this.identity = identity;
-        EntityReference reference = new EntityReference( identity );
+        EntityReference reference = EntityReference.create( identity );
         entityState = new BuilderEntityState( model, reference );
         this.model.initState( model.module(), entityState );
         if( stateResolver != null )
@@ -116,9 +103,9 @@ public final class EntityBuilderInstance<T>
     {
         checkValid();
 
-        // Figure out whether to use given or generated identity
-        String identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
-        EntityReference entityReference = EntityReference.parseEntityReference( identity );
+        // Figure out whether to use given or generated reference
+        Identity identity = (Identity) entityState.propertyValueOf( IDENTITY_STATE_NAME );
+        EntityReference entityReference = EntityReference.create( identity );
         EntityState newEntityState = model.newEntityState( store, entityReference );
 
         prototypeInstance.invokeCreate();

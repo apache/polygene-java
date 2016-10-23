@@ -20,6 +20,8 @@
 
 package org.apache.zest.api.unitofwork;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -48,7 +50,7 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
+            EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, new StringIdentity( "123" ) );
             builder.instance().test().set( "habba" );
             TestEntity test = builder.newInstance();
             uow.remove( test );

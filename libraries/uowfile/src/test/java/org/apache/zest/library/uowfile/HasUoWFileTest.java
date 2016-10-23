@@ -24,12 +24,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -67,7 +68,7 @@ public class HasUoWFileTest
     // START SNIPPET: uowfile
     public interface TestedEntity
         extends HasUoWFileLifecycle // END SNIPPET: entity
-        , Identity
+        , HasIdentity
     // START SNIPPET: entity
     {
         Property<String> name();
@@ -80,12 +81,12 @@ public class HasUoWFileTest
         implements UoWFileLocator
     {
         @This
-        private Identity meAsIdentity;
+        private HasIdentity meAsIdentity;
 
         @Override
         public File locateAttachedFile()
         {
-            return new File( baseTestDir, meAsIdentity.identity().get() );
+            return new File( baseTestDir, meAsIdentity.identity().get().toString() );
         }
     }
     // END SNIPPET: locator
@@ -94,12 +95,12 @@ public class HasUoWFileTest
     @Concerns( UnitOfWorkConcern.class )
     public interface TestService
     {
-        void modifyFile( String entityId )
+        void modifyFile( Identity entityId )
             throws IOException;
 
         @UnitOfWorkPropagation
         @UnitOfWorkRetry
-        void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
+        void modifyFileWithRetry( Identity entityId, long sleepBefore, long sleepAfter )
             throws IOException;
     }
 
@@ -110,14 +111,14 @@ public class HasUoWFileTest
         private UnitOfWorkFactory uowf;
 
         @Override
-        public void modifyFile( String entityId )
+        public void modifyFile( Identity entityId )
             throws IOException
         {
             modifyFileImmediatly( entityId );
         }
 
         @Override
-        public void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
+        public void modifyFileWithRetry( Identity entityId, long sleepBefore, long sleepAfter )
             throws IOException
         {
             LOGGER.info( "Waiting " + sleepBefore + "ms before file modification" );
@@ -147,7 +148,7 @@ public class HasUoWFileTest
             }
         }
 
-        private void modifyFileImmediatly( String entityId )
+        private void modifyFileImmediatly( Identity entityId )
             throws IOException
         {
             TestedEntity entity = uowf.currentUnitOfWork().get( TestedEntity.class, entityId );
@@ -214,7 +215,7 @@ public class HasUoWFileTest
         throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Modification ##########################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -247,7 +248,7 @@ public class HasUoWFileTest
         throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Deletion ##############################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -282,7 +283,7 @@ public class HasUoWFileTest
         throws IOException, UnitOfWorkCompletionException
     {
         LOGGER.info( "# Test Concurrent Modification ###############################################################" );
-        final String entityId;
+        final Identity entityId;
 
         // Create new
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -321,7 +322,7 @@ public class HasUoWFileTest
         throws IOException, UnitOfWorkCompletionException, InterruptedException
     {
         LOGGER.info( "# Test Retry #################################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -334,34 +335,26 @@ public class HasUoWFileTest
         }
 
         final List<Exception> ex = new ArrayList<>();
-        Thread t1 = new Thread( new Runnable()
+        Thread t1 = new Thread(() ->
         {
-            @Override
-            public void run()
+            try
             {
-                try
-                {
-                    testService.modifyFileWithRetry( entityId, 0, 3000 );
-                }
-                catch( Exception ex1 )
-                {
-                    ex.add( ex1 );
-                }
+                testService.modifyFileWithRetry( entityId, 0, 3000 );
+            }
+            catch( Exception ex1 )
+            {
+                ex.add( ex1 );
             }
         }, "job1" );
-        Thread t2 = new Thread( new Runnable()
+        Thread t2 = new Thread(() ->
         {
-            @Override
-            public void run()
+            try
             {
-                try
-                {
-                    testService.modifyFileWithRetry( entityId, 1000, 0 );
-                }
-                catch( Exception ex1 )
-                {
-                    ex.add( ex1 );
-                }
+                testService.modifyFileWithRetry( entityId, 1000, 0 );
+            }
+            catch( Exception ex1 )
+            {
+                ex.add( ex1 );
             }
         }, "job2" );
 

@@ -26,7 +26,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -120,7 +121,7 @@ public class AssociationToValueTest extends AbstractZestTest
         serviceFinder.findService( Runnable.class ).get().run();
     }
 
-    public interface Person extends Identity
+    public interface Person extends HasIdentity
     {
         ManyAssociation<Person> children();
 
@@ -154,7 +155,7 @@ public class AssociationToValueTest extends AbstractZestTest
         public Person findPersonByName( String name )
         {
             UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
-            return uow.toValue( Person.class, uow.get( Person.class, name ) );
+            return uow.toValue( Person.class, uow.get( Person.class, new StringIdentity( name ) ) );
         }
     }
 
@@ -209,7 +210,7 @@ public class AssociationToValueTest extends AbstractZestTest
         private Person createPerson( String name )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return uow.newEntity( Person.class, name );
+            return uow.newEntity( Person.class, new StringIdentity( name ) );
         }
     }
 }

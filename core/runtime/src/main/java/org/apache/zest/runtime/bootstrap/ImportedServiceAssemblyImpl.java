@@ -27,6 +27,8 @@ import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.importer.InstanceImporter;
 import org.apache.zest.api.structure.ModuleDescriptor;
@@ -69,10 +71,14 @@ public final class ImportedServiceAssemblyImpl
     {
         try
         {
-            String id = identity;
-            if( id == null )
+            Identity id;
+            if( identity == null )
             {
                 id = generateId( serviceModels, serviceType );
+            }
+            else
+            {
+                id = new StringIdentity( identity );
             }
 
             ImportedServiceModel serviceModel = new ImportedServiceModel( module,
@@ -93,11 +99,11 @@ public final class ImportedServiceAssemblyImpl
     }
 
     @SuppressWarnings( "raw" )
-    private String generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
+    private Identity generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
     {
-        // Find identity that is not yet used
+        // Find reference that is not yet used
         int idx = 0;
-        String id = serviceType.getSimpleName();
+        Identity id = new StringIdentity( serviceType.getSimpleName() );
         boolean invalid;
         do
         {
@@ -107,7 +113,7 @@ public final class ImportedServiceAssemblyImpl
                 if( serviceModel.identity().equals( id ) )
                 {
                     idx++;
-                    id = serviceType.getSimpleName() + "_" + idx;
+                    id = new StringIdentity( serviceType.getSimpleName() + "_" + idx );
                     invalid = true;
                     break;
                 }

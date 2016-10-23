@@ -21,6 +21,7 @@
 package org.apache.zest.index.elasticsearch;
 
 import java.io.File;
+import org.apache.zest.api.identity.HasIdentity;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.Aggregated;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -68,9 +68,8 @@ public class ElasticSearchTest
     }
 
     public interface Post
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> title();
 
         @UseDefaults
@@ -83,13 +82,11 @@ public class ElasticSearchTest
         @Aggregated
         @UseDefaults
         ManyAssociation<Comment> comments();
-
     }
 
     public interface Page
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> title();
 
         @UseDefaults
@@ -98,31 +95,24 @@ public class ElasticSearchTest
         Property<Tagline> tagline();
 
         Association<Author> author();
-
     }
 
     public interface Tagline
     {
-
         @UseDefaults
         Property<String> tags();
-
     }
 
     public interface Author
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> nickname();
-
     }
 
     public interface Comment
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> content();
-
     }
 
     @Override

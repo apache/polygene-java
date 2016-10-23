@@ -35,15 +35,16 @@ import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
-import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.entity.LifecycleException;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
@@ -86,7 +87,7 @@ import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.QueryBuilderSPI;
 import org.apache.zest.spi.query.QuerySource;
 
-import static org.apache.zest.api.entity.EntityReference.parseEntityReference;
+import static org.apache.zest.api.identity.HasIdentity.IDENTITY_STATE_NAME;
 
 /**
  * JAVADOC
@@ -94,20 +95,6 @@ import static org.apache.zest.api.entity.EntityReference.parseEntityReference;
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
-    private static final QualifiedName IDENTITY_STATE_NAME;
-
-    static
-    {
-        try
-        {
-            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ModuleUnitOfWork" );
-        }
-    }
-
     @Uses
     private UnitOfWorkInstance uow;
 
@@ -177,7 +164,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T> T newEntity( Class<T> type, String identity )
+    public <T> T newEntity( Class<T> type, Identity identity )
         throws NoSuchEntityTypeException, LifecycleException
     {
         return newEntityBuilder( type, identity ).newInstance();
@@ -191,7 +178,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
+    public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, Identity identity )
         throws NoSuchEntityTypeException
     {
         EntityDescriptor model = module.typeLookup().lookupEntityModel( type );
@@ -243,7 +230,7 @@ public class ModuleUnitOfWork
 
     @Override
     public <T> EntityBuilder<T> newEntityBuilderWithState(
-        Class<T> type, String identity,
+        Class<T> type, Identity identity,
         Function<PropertyDescriptor, Object> propertyFunction,
         Function<AssociationDescriptor, EntityReference> associationFunction,
         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
@@ -273,14 +260,14 @@ public class ModuleUnitOfWork
 
         if( identity == null )
         {
-            // Use identity from StateResolver if available
+            // Use reference from StateResolver if available
             PropertyModel identityModel = (PropertyModel) model
                 .state()
                 .findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
-            identity = (String) stateResolver.getPropertyState( identityModel );
-            if( identity == null )
+            String propertyState = (String) stateResolver.getPropertyState(identityModel);
+            if( propertyState == null )
             {
-                // Generate identity
+                // Generate reference
                 IdentityGenerator idGen = moduleSpi.identityGenerator();
                 if( idGen == null )
                 {
@@ -288,6 +275,10 @@ public class ModuleUnitOfWork
                     throw new NoSuchServiceException( typeName, modelModule.name(), modelModule.typeLookup() );
                 }
                 identity = idGen.generate( model.types().findFirst().orElse( null ) );
+            }
+            else
+            {
+                identity = new StringIdentity(propertyState);
             }
         }
 
@@ -299,7 +290,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T> T get( Class<T> type, String identity )
+    public <T> T get( Class<T> type, Identity identity )
         throws NoSuchEntityTypeException, NoSuchEntityException
     {
         Iterable<? extends EntityDescriptor> models = module.typeLookup().lookupEntityModels( type );
@@ -309,7 +300,7 @@ public class ModuleUnitOfWork
             throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
         }
 
-        return uow.get( parseEntityReference( identity ), this, models, type );
+        return uow.get( EntityReference.create( identity ), this, models, type );
     }
 
     @Override
@@ -321,7 +312,7 @@ public class ModuleUnitOfWork
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
         EntityDescriptor model = compositeInstance.entityModel();
         Class<T> type = (Class<T>) compositeInstance.types().findFirst().orElse( null );
-        return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
+        return uow.get( compositeInstance.reference(), this, Collections.singletonList( model ), type );
     }
 
     @Override
@@ -337,7 +328,7 @@ public class ModuleUnitOfWork
         if( compositeInstance.status() == EntityStatus.NEW )
         {
             compositeInstance.remove( this );
-            uow.remove( compositeInstance.identity() );
+            uow.remove( compositeInstance.reference() );
         }
         else if( compositeInstance.status() == EntityStatus.LOADED || compositeInstance.status() == EntityStatus.UPDATED )
         {
@@ -345,7 +336,7 @@ public class ModuleUnitOfWork
         }
         else
         {
-            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types(), usecase() );
+            throw new NoSuchEntityException( compositeInstance.reference(), compositeInstance.types(), usecase() );
         }
     }
 
@@ -440,7 +431,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends Identity> T toValue( Class<T> primaryType, T entityComposite )
+    public <T extends HasIdentity> T toValue(Class<T> primaryType, T entityComposite )
     {
         Function<PropertyDescriptor, Object> propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
         Function<AssociationDescriptor, EntityReference> assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
@@ -454,7 +445,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends Identity> Map<String, T> toValueMap( NamedAssociation<T> association )
+    public <T extends HasIdentity> Map<String, T> toValueMap(NamedAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -467,7 +458,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends Identity> List<T> toValueList( ManyAssociation<T> association )
+    public <T extends HasIdentity> List<T> toValueList(ManyAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -480,7 +471,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends Identity> Set<T> toValueSet( ManyAssociation<T> association )
+    public <T extends HasIdentity> Set<T> toValueSet(ManyAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -493,17 +484,16 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends Identity> T toEntity( Class<T> primaryType, T valueComposite )
+    public <T extends HasIdentity> T toEntity(Class<T> primaryType, T valueComposite )
     {
         Function<PropertyDescriptor, Object> propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
         Function<AssociationDescriptor, EntityReference> assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
 
-        String identity = valueComposite.identity().get();
         try
         {
-            T entity = get( primaryType, identity );
+            T entity = get( primaryType, valueComposite.identity().get() );
             // If successful, then this entity is to by modified.
             EntityInstance instance = EntityInstance.entityInstanceOf( (EntityComposite) entity );
             EntityState state = instance.entityState();
@@ -518,7 +508,7 @@ public class ModuleUnitOfWork
         catch( NoSuchEntityException e )
         {
             EntityBuilder<T> entityBuilder = newEntityBuilderWithState( primaryType,
-                                                                        identity,
+                                                                        valueComposite.identity().get(),
                                                                         propertyFunction,
                                                                         assocationFunction,
                                                                         manyAssocFunction,

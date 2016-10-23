@@ -41,7 +41,7 @@ public class LevelDBEntityStoreAssembler
         ServiceDeclaration service = module.services( LevelDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

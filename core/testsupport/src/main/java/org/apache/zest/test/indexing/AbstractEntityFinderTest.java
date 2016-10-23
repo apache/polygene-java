@@ -75,7 +75,7 @@ public abstract class AbstractEntityFinderTest
 
     private static final Integer NO_MAX_RESULTS = null;
 
-    private static final Map<String, Object> NO_VARIABLES = Collections.<String, Object>emptyMap();
+    private static final Map<String, Object> NO_VARIABLES = Collections.emptyMap();
 
     private static final String JACK = "Jack Doe";
 

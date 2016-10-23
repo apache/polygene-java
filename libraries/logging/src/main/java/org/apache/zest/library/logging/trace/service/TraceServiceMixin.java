@@ -128,12 +128,11 @@ public class TraceServiceMixin
         if( object instanceof EntityComposite )
         {
             EntityComposite entity = (EntityComposite) object;
-            String identity = entity.identity().get();
             EntityComposite source = (EntityComposite) uow.get(
                 ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity )
                     .types()
                     .findFirst()
-                    .orElse( null ), identity );
+                    .orElse( null ), entity.identity().get() );
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
             setStandardStuff( compositeType, method, args, entryTime, duration, state, exception );

@@ -22,14 +22,16 @@ package org.apache.zest.api.service;
 
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.StatefulCompositeDescriptor;
+import org.apache.zest.api.identity.Identifiable;
 
 /**
  * {@code ServiceDescriptor} provides meta informations of a service.
  */
 public interface ServiceDescriptor
-    extends CompositeDescriptor, IdentityDescriptor, StatefulCompositeDescriptor
+    extends CompositeDescriptor, StatefulCompositeDescriptor, Identifiable
 {
     boolean isInstantiateOnStartup();
 
     <T> Class<T> configurationType();
+
 }

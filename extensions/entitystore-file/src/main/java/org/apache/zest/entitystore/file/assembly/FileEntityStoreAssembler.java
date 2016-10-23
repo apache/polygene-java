@@ -38,7 +38,7 @@ public class FileEntityStoreAssembler
         ServiceDeclaration service = module.services( FileEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

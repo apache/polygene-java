@@ -40,7 +40,7 @@ import org.apache.zest.api.composite.AmbiguousTypeException;
  * </ul>
  * <p>
  *     Nested plain values, EntityReferences, Iterables, Maps, ValueComposites and EntityComposites are supported.
- *     EntityComposites and EntityReferences are serialized as their identity string.
+ *     EntityComposites and EntityReferences are serialized as their reference string.
  * </p>
  * <p>
  *     Plain values can be one of:

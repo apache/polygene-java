@@ -39,7 +39,7 @@ public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
         {
             configModule().entities( DataSourceConfiguration.class ).visibleIn( configVisibility() );
         }
-        onAssemble( module, identity() == null ? DEFAULT_DATASOURCE_SERVICE_IDENTITY : identity(), visibility() );
+        onAssemble( module, identity() == null ? DEFAULT_DATASOURCE_SERVICE_IDENTITY : identity().toString(), visibility() );
     }
 
     protected abstract void onAssemble( ModuleAssembly module, String identity, Visibility visibility );

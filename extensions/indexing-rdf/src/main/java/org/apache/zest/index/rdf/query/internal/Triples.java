@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.query.grammar.AssociationFunction;
 import org.apache.zest.api.query.grammar.ManyAssociationFunction;
 import org.apache.zest.api.query.grammar.PropertyFunction;
@@ -62,8 +62,8 @@ public class Triples
         triples.add(
             new Triple(
                 "?entity",
-                addNamespace( QualifiedName.fromClass( Identity.class, "identity" ).toNamespace() ) + ":identity",
-                "?identity",
+                addNamespace( QualifiedName.fromClass( HasIdentity.class, "identity" ).toNamespace() ) + ":identity",
+                "?reference",
                 false
             )
         );

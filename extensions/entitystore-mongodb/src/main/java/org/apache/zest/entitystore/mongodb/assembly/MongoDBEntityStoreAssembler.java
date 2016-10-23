@@ -38,7 +38,7 @@ public class MongoDBEntityStoreAssembler
         ServiceDeclaration service = module.services( MongoMapEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

@@ -34,6 +34,7 @@ import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryExpressions;
@@ -97,7 +98,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         List<ExampleEntity> entities = new ArrayList<ExampleEntity>();
         for (Integer x = 0; x < howMany; ++x)
         {
-            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
+            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, new StringIdentity( "entity" + x ) );
 
             for (ExampleEntity entity : entities)
             {
@@ -183,8 +184,9 @@ public class RDFPerformanceTest extends AbstractZestTest
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
+            ExampleEntity entity50 = uow.get(ExampleEntity.class, new StringIdentity( "entity50" ) );
             Query<ExampleEntity> query = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
-                    where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ));
+                    where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), entity50) ));
             System.out.println(query.count());
         }
 

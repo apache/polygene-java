@@ -57,9 +57,9 @@ public class EntityStateSerializer
     @Tagged( ValueSerialization.Formats.JSON )
     private ValueSerializer valueSerializer;
 
-    public URI createEntityURI( ValueFactory valueFactory, EntityReference identity )
+    public URI createEntityURI( ValueFactory valueFactory, EntityReference reference )
     {
-        return valueFactory.createURI( identity.toURI() );
+        return valueFactory.createURI( reference.toURI() );
     }
 
     public Iterable<Statement> serialize( final EntityState entityState )
@@ -82,8 +82,8 @@ public class EntityStateSerializer
     )
     {
         ValueFactory values = graph.getValueFactory();
-        EntityReference identity = entityState.identity();
-        URI entityUri = createEntityURI( values, identity );
+        EntityReference reference = entityState.entityReference();
+        URI entityUri = createEntityURI( values, reference );
 
         graph.add( entityUri,
                    Rdfs.TYPE,

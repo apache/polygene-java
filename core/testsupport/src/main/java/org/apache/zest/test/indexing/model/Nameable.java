@@ -19,12 +19,13 @@
  */
 package org.apache.zest.test.indexing.model;
 
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 
 /**
  * JAVADOC Add JavaDoc
  */
-public interface Nameable
+public interface Nameable extends HasIdentity
 {
     Property<String> name();
 }

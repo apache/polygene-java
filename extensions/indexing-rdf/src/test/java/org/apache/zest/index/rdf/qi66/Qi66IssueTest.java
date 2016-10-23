@@ -19,6 +19,7 @@
  */
 package org.apache.zest.index.rdf.qi66;
 
+import org.apache.zest.api.identity.Identity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -50,7 +51,7 @@ public class Qi66IssueTest
     public final void testCompleteAfterFind()
         throws Exception
     {
-        String accountIdentity = newZestAccount();
+        Identity accountIdentity = newZestAccount();
 
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
@@ -70,11 +71,11 @@ public class Qi66IssueTest
     /**
      * Creates a new Apache Zest account.
      *
-     * @return The identity of Zest account.
+     * @return The reference of Zest account.
      *
      * @throws UnitOfWorkCompletionException Thrown if creational fail.
      */
-    private String newZestAccount()
+    private Identity newZestAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
@@ -82,7 +83,7 @@ public class Qi66IssueTest
         AccountComposite accountComposite = entityBuilder.instance();
         accountComposite.name().set( ACCOUNT_NAME );
         accountComposite = entityBuilder.newInstance();
-        String accoutnIdentity = accountComposite.identity().get();
+        Identity accoutnIdentity = accountComposite.identity().get();
         work.complete();
 
         return accoutnIdentity;

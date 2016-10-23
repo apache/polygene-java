@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.functional.Iterables;
 
@@ -74,6 +75,11 @@ public class ValueType
             return isArrayOfPrimitiveValues( object );
         }
         return false;
+    }
+
+    public static boolean isIdentity( Object object )
+    {
+        return object instanceof Identity;
     }
 
     private static boolean isArrayOfPrimitiveValues( Object array )

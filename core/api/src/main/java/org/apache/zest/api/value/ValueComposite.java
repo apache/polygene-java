@@ -28,7 +28,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Immutable;
 
 /**
- * ValueComposites are Composites that has state, and equality is defined from its values and not any identity nor
+ * ValueComposites are Composites that has state, and equality is defined from its values and not any reference nor
  * instance references.
  *
  * <ul>

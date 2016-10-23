@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.common.InvalidApplicationException;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
@@ -47,7 +48,7 @@ import org.apache.zest.runtime.structure.ModuleModel;
 public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     implements ServiceAssembly
 {
-    String identity;
+    Identity identity;
     boolean instantiateOnStartup = false;
     List<Class<? extends Activator<?>>> activators = new ArrayList<>();
 
@@ -62,7 +63,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }

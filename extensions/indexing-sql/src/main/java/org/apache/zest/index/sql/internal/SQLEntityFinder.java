@@ -136,7 +136,7 @@ public class SQLEntityFinder
                         Integer i = 0;
                         while( rs.next() && ( maxResults == null || i < maxResults ) )
                         {
-                            resultList.add( new EntityReference( rs.getString( 1 ) ) );
+                            resultList.add( EntityReference.parseEntityReference( rs.getString( 1 ) ) );
                             ++i;
                         }
                     }
@@ -188,7 +188,7 @@ public class SQLEntityFinder
                     rs = ps.executeQuery();
                     if( rs.next() )
                     {
-                        result = new EntityReference( rs.getString( 1 ) );
+                        result = EntityReference.parseEntityReference( rs.getString( 1 ) );
                     }
                 }
                 finally

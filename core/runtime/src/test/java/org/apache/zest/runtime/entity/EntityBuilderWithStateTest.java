@@ -21,6 +21,7 @@ package org.apache.zest.runtime.entity;
 
 import java.util.Arrays;
 import java.util.Collections;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
@@ -29,7 +30,7 @@ import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -60,7 +61,7 @@ public class EntityBuilderWithStateTest
     public void test()
         throws UnitOfWorkCompletionException
     {
-        final String associatedIdentity;
+        final Identity associatedIdentity;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             EntityBuilder<SomeEntity> builder = uow.newEntityBuilder( SomeEntity.class );
@@ -83,14 +84,14 @@ public class EntityBuilderWithStateTest
                 descriptor -> {
                     if( "ass".equals( descriptor.qualifiedName().name() ) )
                     {
-                        return EntityReference.parseEntityReference( associatedIdentity );
+                        return EntityReference.create( associatedIdentity );
                     }
                     return null;
                 },
                 descriptor -> {
                     if( "manyAss".equals( descriptor.qualifiedName().name() ) )
                     {
-                        return Arrays.asList( EntityReference.parseEntityReference( associatedIdentity ) );
+                        return Arrays.asList( EntityReference.create( associatedIdentity ) );
                     }
                     return null;
                 },
@@ -99,7 +100,7 @@ public class EntityBuilderWithStateTest
                     {
                         return Collections.singletonMap(
                             "foo",
-                            EntityReference.parseEntityReference( associatedIdentity )
+                            EntityReference.create( associatedIdentity )
                         );
                     }
                     return null;
@@ -114,7 +115,7 @@ public class EntityBuilderWithStateTest
     }
 
     public interface SomeEntity
-        extends Identity
+        extends HasIdentity
     {
         Property<String> prop();
 

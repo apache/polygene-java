@@ -31,11 +31,11 @@ import org.apache.zest.api.time.SystemTime;
 public interface EntityState
 {
     /**
-     * Returns the identity of the entity that this EntityState represents.
+     * Returns the reference of the entity that this EntityState represents.
      *
-     * @return the identity of the entity that this EntityState represents.
+     * @return the reference of the entity that this EntityState represents.
      */
-    EntityReference identity();
+    EntityReference entityReference();
 
     /**
      * Version of the entity. This is managed by the EntityStore.

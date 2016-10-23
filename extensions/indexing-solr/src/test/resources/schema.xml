@@ -403,7 +403,7 @@ but may be good for SKUs.  Can insert dashes in the wrong place and still match.
             "encoder" - how to encode the following value into a playload
                float -> org.apache.lucene.analysis.payloads.FloatEncoder,
                integer -> o.a.l.a.p.IntegerEncoder
-               identity -> o.a.l.a.p.IdentityEncoder
+               reference -> o.a.l.a.p.IdentityEncoder
                    Fully Qualified class name implementing PayloadEncoder, Encoder must have a no arg constructor.
                 -->
                 <filter class="solr.DelimitedPayloadTokenFilterFactory" encoder="float"/>

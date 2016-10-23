@@ -67,7 +67,7 @@ class ResourceValidity
         if( entity != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Tag tag = new Tag( state.identity().identity() + "/" + state.version() );
+            Tag tag = new Tag( state.entityReference().identity() + "/" + state.version() );
             response.getEntity().setModificationDate( java.util.Date.from( state.lastModified() ) );
             response.getEntity().setTag( tag );
         }

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
@@ -57,7 +57,7 @@ import org.restlet.representation.Variant;
 import org.restlet.routing.Router;
 import org.restlet.security.User;
 
-public class ZestEntityRestlet<T extends Identity> extends Restlet
+public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
 {
     /**
      * Creates a new ZestEntityRestlet instance for the given resource and entity classes.
@@ -73,7 +73,7 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
      *
      * @return The ZestEntityRestlet instance
      */
-    public static <K extends Identity, T extends ServerResource<K>> Restlet newInstance(
+    public static <K extends HasIdentity, T extends ServerResource<K>> Restlet newInstance(
         Module module, Router router, Class<T> resourceClass, Class<K> entityClass
     )
     {

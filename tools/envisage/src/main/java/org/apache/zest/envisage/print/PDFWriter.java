@@ -308,7 +308,7 @@ public class PDFWriter
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- identity: " + descriptor.identity() );
+            writeString( "- reference: " + descriptor.identity() );
             writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
             writeString( "- startup: " + ( (ServiceDetailDescriptor) objectDesciptor ).descriptor()

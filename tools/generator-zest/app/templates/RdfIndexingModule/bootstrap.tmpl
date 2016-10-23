@@ -42,8 +42,6 @@ public class RdfIndexingModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
-
         configModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         new RdfNativeSesameStoreAssembler(Visibility.application, Visibility.module).assemble( module );
         return module;

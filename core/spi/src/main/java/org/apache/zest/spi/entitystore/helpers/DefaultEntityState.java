@@ -44,7 +44,7 @@ public final class DefaultEntityState
 
     private String version;
     private Instant lastModified;
-    private final EntityReference identity;
+    private final EntityReference reference;
     private final EntityDescriptor entityDescriptor;
 
     private final Map<QualifiedName, Object> properties;
@@ -53,13 +53,13 @@ public final class DefaultEntityState
     private final Map<QualifiedName, Map<String, EntityReference>> namedAssociations;
 
     public DefaultEntityState( Instant currentTime,
-                               EntityReference identity,
+                               EntityReference reference,
                                EntityDescriptor entityDescriptor
     )
     {
         this( "",
               currentTime,
-              identity,
+                reference,
               EntityStatus.NEW,
               entityDescriptor,
               new HashMap<>(),
@@ -70,7 +70,7 @@ public final class DefaultEntityState
 
     public DefaultEntityState( String version,
                                Instant lastModified,
-                               EntityReference identity,
+                               EntityReference reference,
                                EntityStatus status,
                                EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
@@ -81,7 +81,7 @@ public final class DefaultEntityState
     {
         this.version = version;
         this.lastModified = lastModified;
-        this.identity = identity;
+        this.reference = reference;
         this.status = status;
         this.entityDescriptor = entityDescriptor;
         this.properties = properties;
@@ -104,9 +104,9 @@ public final class DefaultEntityState
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return identity;
+        return reference;
     }
 
     @Override
@@ -241,7 +241,7 @@ public final class DefaultEntityState
     @Override
     public String toString()
     {
-        return identity + "("
+        return reference + "("
                + properties.size() + " properties, "
                + associations.size() + " associations, "
                + manyAssociations.size() + " many-associations, "

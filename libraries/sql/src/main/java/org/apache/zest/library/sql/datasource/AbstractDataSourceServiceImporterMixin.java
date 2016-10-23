@@ -27,7 +27,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.zest.api.composite.PropertyMapper;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
@@ -47,9 +48,9 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
 
-    private final Map<String, DataSourceConfiguration> configs = new HashMap<>();
+    private final Map<Identity, DataSourceConfiguration> configs = new HashMap<>();
 
-    private final Map<String, PooledDataSourceType> pools = new HashMap<>();
+    private final Map<Identity, PooledDataSourceType> pools = new HashMap<>();
 
     private final Map<DataSource, CircuitBreaker> circuitBreakers = new HashMap<>();
 
@@ -122,7 +123,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         }
     }
 
-    private DataSourceConfiguration getConfiguration( String identity )
+    private DataSourceConfiguration getConfiguration( Identity identity )
             throws InstantiationException
     {
         DataSourceConfiguration config = configs.get( identity );

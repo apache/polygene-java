@@ -65,7 +65,6 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
-import static org.apache.zest.api.entity.EntityReference.parseEntityReference;
 
 /**
  * JClouds implementation of MapEntityStore.
@@ -170,7 +169,7 @@ public class JCloudsMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        Blob blob = storeContext.getBlobStore().getBlob( container, entityReference.identity() );
+        Blob blob = storeContext.getBlobStore().getBlob( container, entityReference.identity().toString() );
         if( blob == null )
         {
             throw new EntityNotFoundException( entityReference );
@@ -226,7 +225,7 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                         {
                             super.close();
-                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                            Blob blob = blobStore.blobBuilder( ref.identity().toString() )
                                 .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
                                 .build();
                             blobStore.putBlob( container, blob );
@@ -238,7 +237,7 @@ public class JCloudsMapEntityStoreMixin
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                     throws IOException
                 {
-                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    if( !blobStore.blobExists( container, ref.identity().toString() ) )
                     {
                         throw new EntityNotFoundException( ref );
                     }
@@ -249,7 +248,7 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                         {
                             super.close();
-                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                            Blob blob = blobStore.blobBuilder( ref.identity().toString() )
                                 .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
                                 .build();
                             blobStore.putBlob( container, blob );
@@ -261,11 +260,11 @@ public class JCloudsMapEntityStoreMixin
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws EntityNotFoundException
                 {
-                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    if( !blobStore.blobExists( container, ref.identity().toString() ) )
                     {
                         throw new EntityNotFoundException( ref );
                     }
-                    blobStore.removeBlob( container, ref.identity() );
+                    blobStore.removeBlob( container, ref.identity().toString() );
                 }
             }
         );
@@ -292,7 +291,7 @@ public class JCloudsMapEntityStoreMixin
                                 Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
                                 if( payload == null )
                                 {
-                                    throw new EntityNotFoundException( parseEntityReference( stored.getName() ) );
+                                    throw new EntityNotFoundException( EntityReference.parseEntityReference( stored.getName() ) );
                                 }
                                 InputStream input = null;
                                 try

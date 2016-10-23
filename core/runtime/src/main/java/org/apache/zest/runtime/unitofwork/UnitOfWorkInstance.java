@@ -122,7 +122,7 @@ public final class UnitOfWorkInstance
         return uow;
     }
 
-    public <T> T get( EntityReference identity,
+    public <T> T get( EntityReference reference,
                       UnitOfWork uow,
                       Iterable<? extends EntityDescriptor> potentialModels,
                       Class<T> mixinType
@@ -131,7 +131,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        EntityInstance entityInstance = instanceCache.get( identity );
+        EntityInstance entityInstance = instanceCache.get( reference );
         if( entityInstance == null )
         {   // Not yet in cache
 
@@ -146,7 +146,7 @@ public final class UnitOfWorkInstance
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store );
                 try
                 {
-                    entityState = storeUow.entityStateOf( potentialModel.module(), identity );
+                    entityState = storeUow.entityStateOf( potentialModel.module(), reference );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -164,7 +164,7 @@ public final class UnitOfWorkInstance
                 // Check if state was found
                 if( entityState == null )
                 {
-                    throw new NoSuchEntityException( identity, mixinType, usecase );
+                    throw new NoSuchEntityException( reference, mixinType, usecase );
                 }
                 else
                 {
@@ -173,14 +173,14 @@ public final class UnitOfWorkInstance
             }
             // Create instance
             entityInstance = new EntityInstance( uow, model, entityState );
-            instanceCache.put( identity, entityInstance );
+            instanceCache.put( reference, entityInstance );
         }
         else
         {
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, mixinType, usecase );
+                throw new NoSuchEntityException( reference, mixinType, usecase );
             }
         }
 
@@ -228,7 +228,7 @@ public final class UnitOfWorkInstance
                             {
                                 prunedInstances = new ArrayList<>();
                             }
-                            prunedInstances.add( entityInstance.identity() );
+                            prunedInstances.add( entityInstance.reference() );
                         }
                     }
                     if( prunedInstances != null )
@@ -336,7 +336,7 @@ public final class UnitOfWorkInstance
 
     public void addEntity( EntityInstance instance )
     {
-        instanceCache.put( instance.identity(), instance );
+        instanceCache.put( instance.reference(), instance );
     }
 
     private List<StateCommitter> applyChanges()
@@ -364,7 +364,7 @@ public final class UnitOfWorkInstance
                     for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
                         instanceCache.values().stream()
-                            .filter( instance -> instance.identity().equals( modifiedEntityIdentity ) )
+                            .filter( instance -> instance.reference().equals( modifiedEntityIdentity ) )
                             .forEach( instance -> modifiedEntities.put( instance.<EntityComposite>proxy(), instance ) );
                     }
                     throw new ConcurrentEntityModificationException( modifiedEntities, usecase );

@@ -22,6 +22,7 @@ package org.apache.zest.library.rdf.entity;
 
 import java.io.PrintWriter;
 import java.time.Instant;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.time.SystemTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +84,7 @@ public class EntitySerializerTest
     public void testEntitySerializer()
         throws RDFHandlerException
     {
-        EntityReference entityReference = new EntityReference( "test2" );
+        EntityReference entityReference = EntityReference.parseEntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
         Instant currentTime = SystemTime.now();
         EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, currentTime );
@@ -110,14 +111,14 @@ public class EntitySerializerTest
             valueBuilder.prototype().test3().set( valueBuilder2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, "test1" );
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test1" ) );
             TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, "test2" );
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test2" ) );
             TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );

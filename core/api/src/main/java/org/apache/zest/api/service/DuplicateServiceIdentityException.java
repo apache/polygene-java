@@ -23,7 +23,7 @@ package org.apache.zest.api.service;
 import org.apache.zest.api.common.InvalidApplicationException;
 
 /**
- * Thrown when a duplicate service identity is detected.
+ * Thrown when a duplicate service reference is detected.
  */
 public class DuplicateServiceIdentityException
     extends InvalidApplicationException

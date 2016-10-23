@@ -21,6 +21,8 @@ package org.apache.zest.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -42,6 +44,8 @@ import org.apache.zest.runtime.query.model.values.ContactsValue;
  */
 class Network
 {
+    public static final Identity KUALALUMPUR = new StringIdentity( "kualalumpur" );
+    public static final Identity PENANG = new StringIdentity( "penang" );
     private static List<Domain> domains;
     private static List<Person> persons;
     private static List<Male> males;
@@ -52,12 +56,12 @@ class Network
     static void populate( final UnitOfWork uow, ValueBuilderFactory vbf )
         throws UnitOfWorkCompletionException
     {
-        domains = new ArrayList<Domain>();
-        persons = new ArrayList<Person>();
-        males = new ArrayList<Male>();
-        females = new ArrayList<Female>();
-        pets = new ArrayList<PetEntity>();
-        nameables = new ArrayList<Nameable>();
+        domains = new ArrayList<>();
+        persons = new ArrayList<>();
+        males = new ArrayList<>();
+        females = new ArrayList<>();
+        pets = new ArrayList<>();
+        nameables = new ArrayList<>();
 
         Domain gaming = uow.newEntity( Domain.class );
         setName( gaming, "Gaming" );
@@ -75,12 +79,12 @@ class Network
         setName( cars, "Cars" );
         cars.description().set( "Cars" );
 
-        City kualaLumpur = uow.newEntity( City.class, "kualalumpur" );
+        City kualaLumpur = uow.newEntity( City.class, KUALALUMPUR);
         setName( kualaLumpur, "Kuala Lumpur" );
         kualaLumpur.country().set( "Malaysia" );
         kualaLumpur.county().set( "Some Jaya" );
 
-        City penang = uow.newEntity( City.class, "penang" );
+        City penang = uow.newEntity( City.class, PENANG);
         setName( penang, "Penang" );
         penang.country().set( "Malaysia" );
         penang.county().set( "Some Other Jaya" );
@@ -92,7 +96,7 @@ class Network
         vivianSmith.interests().add( 0, gaming );
         vivianSmith.interests().add( 0, programming );
         vivianSmith.email().set( "viv@smith.edu" );
-        List<String> vivianTags = new ArrayList<String>();
+        List<String> vivianTags = new ArrayList<>();
         vivianTags.add( "Awesome" );
         vivianTags.add( "Pretty" );
         vivianTags.add( "Cool" );
@@ -103,7 +107,7 @@ class Network
         annDoe.placeOfBirth().set( kualaLumpur );
         annDoe.yearOfBirth().set( 1975 );
         annDoe.interests().add( 0, cooking );
-        List<String> annTags = new ArrayList<String>();
+        List<String> annTags = new ArrayList<>();
         annTags.add( "Conservative" );
         annTags.add( "Pretty" );
         annDoe.tags().set( annTags );
@@ -117,7 +121,7 @@ class Network
         joeDoe.interests().add( 0, programming );
         joeDoe.interests().add( 0, gaming );
         joeDoe.email().set( "joe@thedoes.net" );
-        List<String> joeTags = new ArrayList<String>();
+        List<String> joeTags = new ArrayList<>();
         joeTags.add( "Cool" );
         joeTags.add( "Hunk" );
         joeTags.add( "Awesome" );

@@ -57,7 +57,7 @@ public class MemoryEntityStoreTest
         {
             for( EntityState changedState : changedStates )
             {
-                System.out.println( changedState.status().name() + ":" + changedState.identity() );
+                System.out.println( changedState.status().name() + ":" + changedState.entityReference() );
             }
         }
     }

@@ -28,11 +28,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -94,17 +96,13 @@ public class MapEntityStoreMixin
     @Service
     private Migration migration;
 
-    //    @Uses
-//    private ServiceDescriptor descriptor;
-//
-    protected String uuid;
-    private int count;
+    @Service
+    private IdentityGenerator identityGenerator;
 
     @Override
     public void activateMapEntityStore()
         throws Exception
     {
-        uuid = UUID.randomUUID().toString() + "-";
     }
 
     // EntityStore
@@ -117,29 +115,29 @@ public class MapEntityStoreMixin
     // EntityStoreSPI
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                       EntityReference identity,
+                                       EntityReference reference,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), reference, entityDescriptor );
     }
 
     @Override
     public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork,
                                                    ModuleDescriptor module,
-                                                   EntityReference identity
+                                                   EntityReference reference
     )
     {
-        Reader in = mapEntityStore.get( identity );
+        Reader in = mapEntityStore.get( reference );
         return readEntityState( module, in );
     }
 
     @Override
     public synchronized String versionOf( EntityStoreUnitOfWork unitofwork,
-                                          EntityReference identity
+                                          EntityReference reference
     )
     {
-        Reader in = mapEntityStore.get( identity );
+        Reader in = mapEntityStore.get( reference );
         try
         {
             JSONObject jsonObject = new JSONObject( new JSONTokener( in ) );
@@ -169,21 +167,21 @@ public class MapEntityStoreMixin
                             DefaultEntityState state1 = (DefaultEntityState) entityState;
                             if( state1.status().equals( EntityStatus.NEW ) )
                             {
-                                try (Writer writer = changer.newEntity( state1.identity(), state1.entityDescriptor() ))
+                                try (Writer writer = changer.newEntity( state1.entityReference(), state1.entityDescriptor() ))
                                 {
-                                    writeEntityState( state1, writer, unitofwork.identity(), unitofwork.currentTime() );
+                                    writeEntityState( state1, writer, unitofwork.identity().toString(), unitofwork.currentTime() );
                                 }
                             }
                             else if( state1.status().equals( EntityStatus.UPDATED ) )
                             {
-                                try (Writer writer = changer.updateEntity( state1.identity(), state1.entityDescriptor() ))
+                                try (Writer writer = changer.updateEntity( state1.entityReference(), state1.entityDescriptor() ))
                                 {
-                                    writeEntityState( state1, writer, unitofwork.identity(), unitofwork.currentTime() );
+                                    writeEntityState( state1, writer, unitofwork.identity().toString(), unitofwork.currentTime() );
                                 }
                             }
                             else if( state1.status().equals( EntityStatus.REMOVED ) )
                             {
-                                changer.removeEntity( state1.identity(), state1.entityDescriptor() );
+                                changer.removeEntity( state1.entityReference(), state1.entityDescriptor() );
                             }
                         }
                     } );
@@ -279,7 +277,7 @@ public class MapEntityStoreMixin
             for( EntityState migratedEntity : migratedEntities )
             {
                 DefaultEntityState state = (DefaultEntityState) migratedEntity;
-                try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
+                try (Writer writer = changer.updateEntity( state.entityReference(), state.entityDescriptor() ))
                 {
                     writeEntityState( state, writer, state.version(), state.lastModified() );
                 }
@@ -288,19 +286,19 @@ public class MapEntityStoreMixin
         migratedEntities.clear();
     }
 
-    protected String newUnitOfWorkId()
+    protected Identity newUnitOfWorkId()
     {
-        return uuid + Integer.toHexString( count++ );
+        return identityGenerator.generate( EntityStore.class );
     }
 
-    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, Instant lastModified )
+    protected void writeEntityState(DefaultEntityState state, Writer writer, String version, Instant lastModified )
         throws EntityStoreException
     {
         try
         {
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
-                key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
+                key( JSONKeys.IDENTITY ).value( state.entityReference().identity() ).
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( state.entityDescriptor().types().findFirst().get().getName() ).
                 key( JSONKeys.VERSION ).value( version ).
@@ -389,7 +387,7 @@ public class MapEntityStoreMixin
 
             String version = jsonObject.getString( JSONKeys.VERSION );
             Instant modified = Instant.ofEpochMilli(jsonObject.getLong( JSONKeys.MODIFIED ));
-            String identity = jsonObject.getString( JSONKeys.IDENTITY );
+            Identity identity = new StringIdentity(jsonObject.getString( JSONKeys.IDENTITY ));
 
             // Check if version is correct
             String currentAppVersion = jsonObject.optString( JSONKeys.APPLICATION_VERSION, "0.0" );
@@ -517,7 +515,7 @@ public class MapEntityStoreMixin
 
             return new DefaultEntityState( version,
                                            modified,
-                                           EntityReference.parseEntityReference( identity ),
+                                           EntityReference.create(identity),
                                            status[ 0 ],
                                            entityDescriptor,
                                            properties,

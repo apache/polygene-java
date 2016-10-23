@@ -40,7 +40,7 @@ public interface EntityStateVersions
 {
     void forgetVersions( Iterable<EntityState> states );
 
-    void rememberVersion( EntityReference identity, String version );
+    void rememberVersion( EntityReference reference, String version );
 
     void checkForConcurrentModification( Iterable<EntityState> loaded, Instant currentTime )
         throws ConcurrentEntityStateModificationException;
@@ -61,14 +61,14 @@ public interface EntityStateVersions
         {
             for( EntityState state : states )
             {
-                versions.remove( state.identity() );
+                versions.remove( state.entityReference() );
             }
         }
 
         @Override
-        public synchronized void rememberVersion( EntityReference identity, String version )
+        public synchronized void rememberVersion( EntityReference reference, String version )
         {
-            versions.put( identity, version );
+            versions.put( reference, version );
         }
 
         @Override
@@ -85,11 +85,11 @@ public interface EntityStateVersions
                     continue;
                 }
 
-                String storeVersion = versions.get( entityState.identity() );
+                String storeVersion = versions.get( entityState.entityReference() );
                 if( storeVersion == null )
                 {
                     EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( entityState.entityDescriptor().module(), Usecase.DEFAULT, currentTime );
-                    storeVersion = unitOfWork.versionOf( entityState.identity() );
+                    storeVersion = unitOfWork.versionOf( entityState.entityReference() );
                     unitOfWork.discard();
                 }
 
@@ -99,7 +99,7 @@ public interface EntityStateVersions
                     {
                         changed = new ArrayList<>();
                     }
-                    changed.add( entityState.identity() );
+                    changed.add( entityState.entityReference() );
                 }
             }
 

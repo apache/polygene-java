@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.forum.rest.resource.forum;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.library.rest.server.api.ContextResource;
 import org.apache.zest.library.rest.server.api.ObjectSelection;
 import org.apache.zest.library.rest.server.api.SubResources;
@@ -36,7 +37,7 @@ public class ForumResource
     public void resource( String segment )
         throws ResourceException
     {
-        selectFromManyAssociation( ObjectSelection.current().get( Forum.class ).boards(), segment );
+        selectFromManyAssociation( ObjectSelection.current().get( Forum.class ).boards(), new StringIdentity( segment ) );
         subResource( BoardResource.class );
     }
 }

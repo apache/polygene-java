@@ -22,6 +22,7 @@ package org.apache.zest.dci.moneytransfer.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.dci.moneytransfer.domain.data.BalanceData;
@@ -124,9 +125,9 @@ public class PayBillsContext2
         private List<BalanceData> getCreditors()
         {
             // Creditor retrieval could be a use case in itself...
-            List<BalanceData> creditors = new ArrayList<BalanceData>();
-            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, "BakerAccount" ) );
-            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, "ButcherAccount" ) );
+            List<BalanceData> creditors = new ArrayList<>();
+            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, new StringIdentity( "BakerAccount" ) ) );
+            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, new StringIdentity( "ButcherAccount" ) ) );
             return creditors;
         }
 

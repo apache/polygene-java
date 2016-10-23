@@ -25,6 +25,7 @@ import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
+import org.apache.zest.api.identity.Identity;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
@@ -53,7 +54,7 @@ public abstract class AbstractJettyMixin
     implements HttpService, JettyActivation
 {
 
-    private final String identity;
+    private final Identity identity;
 
     private final Iterable<ServiceReference<ServletContextListener>> contextListeners;
 
@@ -65,11 +66,11 @@ public abstract class AbstractJettyMixin
 
     private Server server;
 
-    public AbstractJettyMixin( String identity, Server jettyServer,
-                               Iterable<ServiceReference<ServletContextListener>> contextListeners,
-                               Iterable<ServiceReference<Servlet>> servlets,
-                               Iterable<ServiceReference<Filter>> filters,
-                               MBeanServer mBeanServer )
+    public AbstractJettyMixin(Identity identity, Server jettyServer,
+                              Iterable<ServiceReference<ServletContextListener>> contextListeners,
+                              Iterable<ServiceReference<Servlet>> servlets,
+                              Iterable<ServiceReference<Filter>> filters,
+                              MBeanServer mBeanServer )
     {
         this.identity = identity;
         this.server = jettyServer;
@@ -109,7 +110,7 @@ public abstract class AbstractJettyMixin
                                                                 buildSecurityHandler(),
                                                                 new ServletHandler(),
                                                                 new ErrorHandler() );
-        root.setDisplayName( identity );
+        root.setDisplayName( identity.toString() );
         configureContext( root, configuration() );
 
         // Register ContextListeners, Servlets and Filters

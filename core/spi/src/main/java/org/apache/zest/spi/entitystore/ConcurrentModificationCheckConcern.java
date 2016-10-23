@@ -27,6 +27,7 @@ import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.ModuleDescriptor;
@@ -82,7 +83,7 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public String identity()
+        public Identity identity()
         {
             return uow.identity();
         }
@@ -186,7 +187,7 @@ public abstract class ConcurrentModificationCheckConcern
             try
             {
                 EntityState entityState = uow.entityStateOf( module, anIdentity );
-                versions.rememberVersion( entityState.identity(), entityState.version() );
+                versions.rememberVersion( entityState.entityReference(), entityState.version() );
                 loaded.add( entityState );
                 return entityState;
             }

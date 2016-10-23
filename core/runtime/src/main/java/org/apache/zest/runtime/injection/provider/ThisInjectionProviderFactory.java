@@ -97,7 +97,7 @@ public final class ThisInjectionProviderFactory
                 }
                 else
                 {
-                    interfaces = Iterables.toArray( Class.class, Iterables.<Class>cast( types ) );
+                    interfaces = Iterables.toArray( Class.class, Iterables.cast( types ) );
                     proxyClass = ProxyGenerator.createProxyClass( mainType.getClassLoader(), interfaces );
                 }
 

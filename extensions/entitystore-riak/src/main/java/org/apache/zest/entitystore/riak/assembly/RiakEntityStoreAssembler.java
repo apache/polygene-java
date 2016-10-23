@@ -42,7 +42,7 @@ public class RiakEntityStoreAssembler
                 visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

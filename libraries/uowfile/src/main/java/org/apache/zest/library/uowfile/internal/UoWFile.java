@@ -80,7 +80,7 @@ public class UoWFile
         {
             if( fileTag( original ) != originalIdentity )
             {
-                LOGGER.info( "Concurrent modification, original creation identity is {} and original apply identity is {}", originalIdentity, fileTag( original ) );
+                LOGGER.info( "Concurrent modification, original creation reference is {} and original apply reference is {}", originalIdentity, fileTag( original ) );
                 throw new ConcurrentUoWFileStateModificationException( this );
             }
             if( original.exists() )

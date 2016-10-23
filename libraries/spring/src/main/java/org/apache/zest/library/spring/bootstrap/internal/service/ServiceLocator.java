@@ -67,7 +67,7 @@ final class ServiceLocator
         else if( visited instanceof ServiceDescriptor )
         {
             ServiceDescriptor aDescriptor = (ServiceDescriptor) visited;
-            String identity = aDescriptor.identity();
+            String identity = aDescriptor.identity().toString();
             if( serviceId.equals( identity ) )
             {
                 layerName = tempLayerName;
@@ -97,7 +97,7 @@ final class ServiceLocator
         if( visited instanceof ImportedServiceDescriptor )
         {
             ImportedServiceDescriptor aDescriptor = (ImportedServiceDescriptor) visited;
-            String identity = aDescriptor.identity();
+            String identity = aDescriptor.identity().toString();
             if( serviceId.equals( identity ) )
             {
                 layerName = tempLayerName;
@@ -118,7 +118,7 @@ final class ServiceLocator
             Iterable<ServiceReference<Object>> serviceRefs = module.findServices( serviceType );
             for( ServiceReference<Object> serviceRef : serviceRefs )
             {
-                if( serviceId.equals( serviceRef.identity() ) )
+                if( serviceId.equals( serviceRef.identity().toString() ) )
                 {
                     return serviceRef;
                 }

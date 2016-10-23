@@ -20,7 +20,6 @@
 package org.apache.zest.runtime.service;
 
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,8 @@ import java.util.function.Predicate;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.service.ServiceDescriptor;
@@ -57,21 +57,7 @@ import static org.apache.zest.runtime.legacy.Specifications.translate;
 public final class ServiceModel extends CompositeModel
     implements ServiceDescriptor
 {
-    private static Method identityMethod;
-
-    static
-    {
-        try
-        {
-            identityMethod = Identity.class.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private final String identity;
+    private final Identity identity;
     private final boolean instantiateOnStartup;
     private final ActivatorsModel<?> activatorsModel;
     private final Class configurationType;
@@ -84,7 +70,7 @@ public final class ServiceModel extends CompositeModel
                          MixinsModel mixinsModel,
                          StateModel stateModel,
                          CompositeMethodsModel compositeMethodsModel,
-                         String identity,
+                         Identity identity,
                          boolean instantiateOnStartup
     )
     {
@@ -105,7 +91,7 @@ public final class ServiceModel extends CompositeModel
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }
@@ -151,7 +137,7 @@ public final class ServiceModel extends CompositeModel
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
         stateModel.properties().forEach( propertyModel -> {
             Object initialValue = propertyModel.initialValue( module );
-            if( propertyModel.accessor().equals( identityMethod ) )
+            if( propertyModel.accessor().equals( HasIdentity.IDENTITY_METHOD ) )
             {
                 initialValue = identity;
             }

@@ -29,7 +29,7 @@ public interface JSONKeys
     /**
      * Identity of the entity.
      */
-    String IDENTITY = "identity";
+    String IDENTITY = "reference";
     /**
      * Version of the application which last updated the entity.
      */

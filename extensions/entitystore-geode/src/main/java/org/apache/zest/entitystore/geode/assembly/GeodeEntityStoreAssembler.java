@@ -41,7 +41,7 @@ public class GeodeEntityStoreAssembler
         ServiceDeclaration service = module.services( GeodeEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

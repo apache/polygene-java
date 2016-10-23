@@ -23,6 +23,8 @@ package org.apache.zest.library.alarm;
 import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -36,14 +38,14 @@ import org.apache.zest.api.value.ValueComposite;
  */
 @Mixins( AlarmEvent.Mixin.class )
 public interface AlarmEvent
-    extends ValueComposite
+    extends ValueComposite, HasIdentity
 {
     /**
-     * Returns the identity of the AlarmPoint that generated the event.
+     * Returns the reference of the AlarmPoint that generated the event.
      *
      * @return the AlarmPoint causing this event.
      */
-    Property<String> alarmIdentity();
+    Property<Identity> identity();
 
     /**
      * Returns the AlarmStatus prior to the Event.
@@ -106,14 +108,14 @@ public interface AlarmEvent
         @Override
         public String name( Locale locale )
         {
-            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get(), locale );
+            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get().toString(), locale );
             return bundle.getString( systemName().get() );
         }
 
         @Override
         public String description( Locale locale )
         {
-            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get(), locale );
+            ResourceBundle bundle = ResourceBundle.getBundle( ((ServiceComposite) model).identity().get().toString(), locale );
             String eventDescriptionId = "EVENT_" + systemName().get().toUpperCase() + "_DESCRIPTION";
             return bundle.getString( eventDescriptionId );
         }

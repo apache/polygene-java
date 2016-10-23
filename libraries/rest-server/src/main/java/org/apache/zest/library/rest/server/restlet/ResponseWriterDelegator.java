@@ -23,6 +23,8 @@ package org.apache.zest.library.rest.server.restlet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.InitializationException;
@@ -48,11 +50,12 @@ public class ResponseWriterDelegator
         throws InitializationException
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
+        Identity responsewriterdelegator = new StringIdentity( "responsewriterdelegator" );
 
         // Add custom writers first
         for( ServiceReference<ResponseWriter> resultWriter : resultWriters )
         {
-            if( !resultWriter.identity().equals( "responsewriterdelegator" ) )
+            if( !resultWriter.identity().equals(responsewriterdelegator) )
             {
                 logger.info( "Registered result writer:" + resultWriter.identity() );
                 registerResultWriter( resultWriter.get() );

@@ -91,7 +91,7 @@ public class DataSourceConfigurationManagerServiceTest
                 new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );
 
                 {
-                    ModuleAssembly testModule = module.layer().module( "TestDS" ).withDefaultUnitOfWorkFactory();
+                    ModuleAssembly testModule = module.layer().module( "TestDS" );
 
                     // Create a specific DataSource that uses the "datasource" service to do the main work
                     new DataSourceAssembler().
@@ -109,7 +109,7 @@ public class DataSourceConfigurationManagerServiceTest
                 }
 
                 {
-                    ModuleAssembly testModule2 = module.layer().module( "TestDS2" ).withDefaultUnitOfWorkFactory();
+                    ModuleAssembly testModule2 = module.layer().module( "TestDS2" );
 
                     // Create another specific DataSource that uses the "datasource" service to do the main work
                     // Use DataSourceAssembler to assemble the DataSource.

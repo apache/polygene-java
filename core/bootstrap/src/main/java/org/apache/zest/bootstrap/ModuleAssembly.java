@@ -83,38 +83,6 @@ public interface ModuleAssembly
     ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators );
 
     /**
-     * Adds the default UnitOfWorkFactory to this Module.
-     * <p>
-     * In versions &lt;3.0, UnitOfWork was built into the Core Runtime, and couldn't be custom made. In 3.0, the
-     * UnitOfWorkFactory is a regular Service that the Module instance will look up on demand.
-     * </p>
-     * <p>
-     * Typically, this method should be called, and it should be called first in the Assembler, so that
-     * it is possible to add Concerns and SideEffects to the default implementation of either the
-     * {@link org.apache.zest.api.unitofwork.UnitOfWorkFactory} or the
-     * {@link org.apache.zest.api.unitofwork.UnitOfWork}.
-     * </p>
-     * <p>
-     * Internally, this method is the equivalent of;
-     * </p>
-     * <pre><code>
-     *     new DefaultUnitOfWorkAssembler().assemble( module );
-     * </code>
-     * </pre>
-     * <p>
-     * and the {@link DefaultUnitOfWorkAssembler} does the equivalent of
-     * </p>
-     * <pre><code>
-     *     module.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
-     *     module.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
-     * </code></pre>
-     * albeit those Mixins are in the Core Runtime and since Core Runtime is not a direct dependency of any
-     * other module, the classes are loaded with reflection. This may change in the future.
-     */
-    ModuleAssembly withDefaultUnitOfWorkFactory()
-        throws AssemblyException;
-
-    /**
      * Declare a list of TransientComposites for this Module. Use the TransientDeclaration that is returned to
      * declare further settings. Note that the TransientDeclaration works on all of the types specified.
      *

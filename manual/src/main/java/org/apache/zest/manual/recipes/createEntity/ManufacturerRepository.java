@@ -19,10 +19,12 @@
  */
 package org.apache.zest.manual.recipes.createEntity;
 
+import org.apache.zest.api.identity.Identity;
+
 // START SNIPPET: repo
 public interface ManufacturerRepository
 {
-    Manufacturer findByIdentity(String identity);
+    Manufacturer findByIdentity(Identity identity);
 
     Manufacturer findByName(String name);
 }

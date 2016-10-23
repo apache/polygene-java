@@ -95,7 +95,7 @@ public interface OSGiServiceExporter
                 }
                 properties.put( "org.apache.zest.api.service.active", ref.isActive() );
                 properties.put( "org.apache.zest.api.service.available", ref.isAvailable() );
-                properties.put( "org.apache.zest.api.service.identity", ref.identity() );
+                properties.put( "org.apache.zest.api.service.reference", ref.identity() );
 
 
                 String[] interfaceNames = interfacesOf( service.getClass() )

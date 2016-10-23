@@ -57,6 +57,8 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -66,7 +68,6 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -155,7 +156,6 @@ public interface ConfigurationManagerService
                 }
 
                 String serviceClass = compositeInstance.types().findFirst().get().getName();
-                String name = configurableService.identity();
                 ServiceDescriptor serviceDescriptor = spi.serviceDescriptorFor( configurableService );
                 ModuleDescriptor module = spi.moduleOf( configurableService );
                 Class<Object> configurationClass = serviceDescriptor.configurationType();
@@ -204,18 +204,19 @@ public interface ConfigurationManagerService
                     List<MBeanOperationInfo> operations = new ArrayList<>();
                     operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[ 0 ], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
 
-                    MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[ attributes
+                    String mbeanName = configurableService.identity().toString();
+                    MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, mbeanName, attributes.toArray( new MBeanAttributeInfo[ attributes
                         .size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
-                    Object mbean = new ConfigurableService( configurableService, mbeanInfo, name, properties );
+                    Object mbean = new ConfigurableService( configurableService, mbeanInfo, mbeanName, properties );
                     ObjectName configurableServiceName;
-                    ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), name );
+                    ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), mbeanName );
                     if( serviceName != null )
                     {
                         configurableServiceName = new ObjectName( serviceName.toString() + ",name=Configuration" );
                     }
                     else
                     {
-                        configurableServiceName = new ObjectName( "Configuration:name=" + name );
+                        configurableServiceName = new ObjectName( "Configuration:name=" + mbeanName );
                     }
 
                     server.registerMBean( mbean, configurableServiceName );
@@ -238,13 +239,13 @@ public interface ConfigurationManagerService
             implements DynamicMBean
         {
             MBeanInfo info;
-            String identity;
+            Identity identity;
             Map<String, AccessibleObject> propertyNames;
 
             EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 this.info = info;
-                this.identity = identity;
+                this.identity = new StringIdentity(identity);
                 this.propertyNames = propertyNames;
             }
 

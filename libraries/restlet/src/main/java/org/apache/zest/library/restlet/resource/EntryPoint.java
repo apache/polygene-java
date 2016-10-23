@@ -21,11 +21,11 @@
 package org.apache.zest.library.restlet.resource;
 
 import java.util.Map;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.restlet.RestLink;
 
-public interface EntryPoint extends Identity
+public interface EntryPoint extends HasIdentity
 {
     Property<Map<String,RestLink>> api();
 }

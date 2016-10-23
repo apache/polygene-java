@@ -51,7 +51,7 @@ public final class BuilderEntityState
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
         return reference;
     }

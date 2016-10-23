@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
@@ -242,7 +243,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
                 for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    ComplexProduct product = uow.newEntity( ComplexProduct.class, "product" + i );
+                    ComplexProduct product = uow.newEntity( ComplexProduct.class, new StringIdentity( "product" + i ) );
                     product.name().set( "Product " + i );
 
                     if( i % 1000 == 0 )
@@ -264,7 +265,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 String id = rnd.nextInt( ITERATIONS ) + "";
                 for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
+                    ComplexProduct product = uow.get( ComplexProduct.class, new StringIdentity( "product" + id ) );
                     product.name().get();
                     if( i % 100 == 0 )
                     {

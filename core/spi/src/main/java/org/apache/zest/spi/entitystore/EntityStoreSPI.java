@@ -31,12 +31,12 @@ import org.apache.zest.spi.entity.EntityState;
 public interface EntityStoreSPI
 {
     EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                EntityReference identity, EntityDescriptor entityDescriptor
+                                EntityReference reference, EntityDescriptor entityDescriptor
     );
 
-    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleDescriptor module, EntityReference identity );
+    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleDescriptor module, EntityReference reference );
 
-    String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
+    String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference reference );
 
     StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state );
 }

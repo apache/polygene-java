@@ -40,8 +40,6 @@ public class RestApiModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
-
         module.objects( SimpleVerifier.class, SimpleEnroler.class);
 
         new RestletCrudConnectivityAssembler().assemble( module );

@@ -21,7 +21,8 @@
 package org.apache.zest.envisage.school.domain.school.assembly;
 
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -56,9 +57,9 @@ public interface SchoolEntity
         private SchoolState state;
         @Service
         private MailService mailer;
-        private final String schoolId;
+        private final Identity schoolId;
 
-        public SchoolMixin( @This Identity identity )
+        public SchoolMixin( @This HasIdentity identity )
         {
             schoolId = identity.identity().get();
         }

@@ -22,6 +22,7 @@ package org.apache.zest.library.alarm;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import org.apache.zest.api.identity.Identity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.mixin.Mixins;
@@ -461,7 +462,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -480,7 +481,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DEACTIVATED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -500,7 +501,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_ACKNOWLEDGED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -521,7 +522,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -542,7 +543,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -563,7 +564,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -584,7 +585,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -603,7 +604,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -623,7 +624,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -644,7 +645,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -665,7 +666,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -684,7 +685,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -704,7 +705,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -725,7 +726,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -746,7 +747,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -767,7 +768,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -788,7 +789,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -818,7 +819,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -838,7 +839,7 @@ public class ExtendedAlarmModelTest
         AlarmStatus newstate = event.newStatus().get();
         assertEquals( AlarmPoint.STATUS_DEACTIVATED, newstate.name( null ) );
 
-        AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
+        AlarmPoint eventalarm = getAlarm( event.identity().get() );
         assertEquals( underTest, eventalarm );
     }
 
@@ -961,7 +962,7 @@ public class ExtendedAlarmModelTest
         return builder.newInstance();
     }
 
-    private AlarmPoint getAlarm( String identity )
+    private AlarmPoint getAlarm( Identity identity )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         return uow.get( AlarmPoint.class, identity );

@@ -20,6 +20,7 @@
 
 package org.apache.zest.runtime.entity;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -39,9 +40,9 @@ public class EntityTypeTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, "123" );
-            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, "456" );
-            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, "789" );
+            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, new StringIdentity( "123" ) );
+            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, new StringIdentity( "456" ) );
+            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, new StringIdentity( "789" ) );
         }
         finally
         {

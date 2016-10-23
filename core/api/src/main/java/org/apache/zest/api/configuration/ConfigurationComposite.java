@@ -21,17 +21,17 @@
 package org.apache.zest.api.configuration;
 
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.entity.Queryable;
 
 /**
  * Services that want to be configurable should have a ConfigurationComposite that contains all the settings.
  * They are treated as EntityComposites, and are therefore stored in an EntityStore. There will be one instance
- * per service instance that uses each ConfigurationComposite, and the identity of the entity is the same as that
+ * per service instance that uses each ConfigurationComposite, and the reference of the entity is the same as that
  * of the service.
  */
 @Queryable( false )
 public interface ConfigurationComposite
-    extends Identity, Composite
+    extends HasIdentity, Composite
 {
 }

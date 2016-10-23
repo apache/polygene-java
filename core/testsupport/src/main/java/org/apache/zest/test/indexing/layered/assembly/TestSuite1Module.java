@@ -37,7 +37,6 @@ class TestSuite1Module
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
         declareTestCase( module, Suite1Case1.class );
         declareTestCase( module, Suite1Case2.class );
         return module;

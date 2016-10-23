@@ -47,8 +47,8 @@ public final class ZestTestBootstrap
         ModuleAssembly moduleAssembly = layerAssembly.module( MODULE );
         moduleAssembly.services( CommentServiceComposite.class ).identifiedBy( COMMENT_SERVICE_ID );
         // inject Spring bean as a service
-        moduleAssembly.importedServices( TextProcessingService.class ).setMetaInfo(
-                this.applicationContext.getBean( TO_UPPERCASE_SERVICE_ID ) );
+        moduleAssembly.importedServices( TextProcessingService.class )
+                .setMetaInfo( this.applicationContext.getBean( TO_UPPERCASE_SERVICE_ID ) );
     }
 
     public void setApplicationContext( ApplicationContext applicationContext ) throws BeansException

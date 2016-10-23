@@ -35,6 +35,8 @@ import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.constraint.Name;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
@@ -257,8 +259,8 @@ public class DefaultRequestReader
                         entityAsForm = new Form();
                     }
 
-                    args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0],
-                                                           getValue( "entity", queryAsForm, entityAsForm ) );
+                    Identity entityIdentity = new StringIdentity( getValue( "entity", queryAsForm, entityAsForm ) );
+                    args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0], entityIdentity );
 
                     return args;
                 }
@@ -490,7 +492,7 @@ public class DefaultRequestReader
             }
             else if( parameterType.isInterface() )
             {
-                arg = uowf.currentUnitOfWork().get( parameterType, argString );
+                arg = uowf.currentUnitOfWork().get( parameterType, new StringIdentity( argString ) );
             }
             else
             {

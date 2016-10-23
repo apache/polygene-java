@@ -21,6 +21,8 @@ package org.apache.zest.entitystore.sql.assembly;
 
 import java.io.IOException;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -43,7 +45,7 @@ abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
 
-    public static final String DEFAULT_ENTITYSTORE_IDENTITY = "entitystore-sql";
+    public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = new StringIdentity( "entitystore-sql" );
 
     protected SQLVendor getSQLVendor()
         throws IOException
@@ -69,13 +71,13 @@ abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
             {
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
-            module.services( DatabaseSQLServiceComposite.class ).
-                withMixins( DatabaseSQLServiceCoreMixin.class,
+            module.services( DatabaseSQLServiceComposite.class )
+                    .withMixins( DatabaseSQLServiceCoreMixin.class,
                             DatabaseSQLServiceSpi.CommonMixin.class,
                             getDatabaseStringBuilderMixin(),
                             DatabaseSQLServiceStatementsMixin.class,
-                            getDatabaseSQLServiceSpecializationMixin() ).
-                identifiedBy( hasIdentity() ? identity() : DEFAULT_ENTITYSTORE_IDENTITY ).
+                            getDatabaseSQLServiceSpecializationMixin() )
+                    .identifiedBy( ( hasIdentity() ? identity().toString() : DEFAULT_ENTITYSTORE_IDENTITY ).toString() ).
                 visibleIn( Visibility.module ).
                 setMetaInfo( sqlVendor );
         }
@@ -92,5 +94,4 @@ abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
                 visibleIn( configVisibility() );
         }
     }
-
 }

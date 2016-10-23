@@ -19,11 +19,12 @@
  */
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -54,17 +55,17 @@ public class ValueSerializationRegressionTest extends AbstractZestTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( "1234" );
+        builder.prototype().identity().set( new StringIdentity( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
     }
 
-    public interface SimpleEntity extends Identity
+    public interface SimpleEntity extends HasIdentity
     {
         Property<String> name();
     }
 
-    public interface DualFaced extends Identity
+    public interface DualFaced extends HasIdentity
     {
         Property<String> name();
 

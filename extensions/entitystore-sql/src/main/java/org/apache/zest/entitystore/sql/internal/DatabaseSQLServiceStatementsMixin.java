@@ -85,14 +85,14 @@ public abstract class DatabaseSQLServiceStatementsMixin
     public void populateGetEntityStatement( PreparedStatement ps, EntityReference ref )
             throws SQLException
     {
-        ps.setString( 1, ref.identity() );
+        ps.setString( 1, ref.identity().toString() );
     }
 
     @Override
     public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Instant lastModified )
             throws SQLException
     {
-        ps.setString( 1, ref.identity() );
+        ps.setString( 1, ref.identity().toString() );
         ps.setString( 2, entity );
         ps.setLong( 3, lastModified.toEpochMilli() );
     }

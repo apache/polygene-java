@@ -46,7 +46,6 @@ public class MultiLayeredTest extends AbstractMultiLayeredIndexingTest
         public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
             throws AssemblyException
         {
-            module.withDefaultUnitOfWorkFactory();
             new RdfMemoryStoreAssembler( Visibility.application, Visibility.module ).assemble( module );
             return module;
         }

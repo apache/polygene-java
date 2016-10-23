@@ -20,6 +20,7 @@
 package org.apache.zest.library.sql.assembly;
 
 import javax.sql.DataSource;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -66,7 +67,7 @@ public class ExternalDataSourceAssembler
     {
         if( circuitBreaker != null )
         {
-            externalDataSource = DataSources.wrapWithCircuitBreaker( identity(), externalDataSource, circuitBreaker );
+            externalDataSource = DataSources.wrapWithCircuitBreaker( new StringIdentity(identity()), externalDataSource, circuitBreaker );
         }
         module.importedServices( DataSource.class ).
             identifiedBy( identity() ).

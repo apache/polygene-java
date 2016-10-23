@@ -109,7 +109,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
             File dataDirectory;
             if( dataDir == null || "".equals( dataDir ) )
             {
-                String serviceIdentity = configuration.get().identity().get();
+                String serviceIdentity = configuration.get().identity().get().toString();
                 if( fileConfiguration != null )
                 {
                     dataDir = new File( fileConfiguration.dataDirectory(), serviceIdentity ).getAbsolutePath();

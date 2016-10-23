@@ -20,7 +20,7 @@
 
 package org.apache.zest.library.restlet.identity;
 
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -36,7 +36,7 @@ public interface CanonicalName
         implements CanonicalName
     {
         @This
-        private Identity me;
+        private HasIdentity me;
 
         @Service
         private IdentityManager manager;

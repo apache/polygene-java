@@ -122,7 +122,7 @@ public interface TupleQueryExecutor
 
         private boolean processRow( long row, BindingSet bindingSet, QualifiedIdentityResultCallback callback )
         {
-            final Value identifier = bindingSet.getValue( "identity" );
+            final Value identifier = bindingSet.getValue( "reference" );
 
             //TODO Shall we throw an exception if there is no binding for identifier = query parser is not right
             if( identifier == null )
@@ -132,13 +132,13 @@ public interface TupleQueryExecutor
 
             final String identity = identifier.stringValue();
 
-            final EntityReference entityReference = new EntityReference( identity );
+            final EntityReference entityReference = EntityReference.parseEntityReference( identity );
             return callback.processRow( row, entityReference );
         }
 
         private Map<String, Value> getBindings(Map<String, Object> variables)
         {
-            Map<String, Value> bindings = new HashMap<String, Value>();
+            Map<String, Value> bindings = new HashMap<>();
             for (Map.Entry<String, Object> stringObjectEntry : variables.entrySet())
             {
                 if (!stringObjectEntry.getValue().getClass().equals(Object.class))

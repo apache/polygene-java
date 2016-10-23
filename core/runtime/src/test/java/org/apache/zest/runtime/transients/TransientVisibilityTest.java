@@ -25,6 +25,8 @@ import org.apache.zest.api.composite.NoSuchTransientException;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -46,6 +48,7 @@ import org.junit.Test;
 
 public class TransientVisibilityTest
 {
+    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
     private Energy4Java zest;
     private Module module;
     private Application app;
@@ -183,7 +186,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleApplicationVisible();
         }
         finally
@@ -201,7 +204,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleLayerVisible();
         }
         finally
@@ -219,7 +222,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleModuleVisible();
         }
         finally
@@ -237,7 +240,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideApplicationVisible();
         }
         finally
@@ -255,7 +258,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideLayerVisible();
         }
         finally
@@ -273,7 +276,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideModuleVisible();
         }
         finally
@@ -291,7 +294,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowApplicationVisible();
         }
         finally
@@ -309,7 +312,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowLayerVisible();
         }
         finally
@@ -327,7 +330,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowModuleVisible();
         }
         finally
@@ -345,7 +348,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveApplicationVisible();
         }
         finally
@@ -363,7 +366,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveLayerVisible();
         }
         finally
@@ -381,7 +384,7 @@ public class TransientVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveModuleVisible();
         }
         finally

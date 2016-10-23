@@ -45,7 +45,7 @@ package org.apache.zest.api.entity;
  *
  *      public void create()
  *      {
- *          String thisId = meAsIdentity.identity().get();
+ *          String thisId = meAsIdentity.reference().get();
  *          EntityBuilder builder = uow.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
  *          admin.set( admin );

@@ -19,6 +19,7 @@
  */
 package org.apache.zest.index.rdf.qi64.withPropagationMandatory;
 
+import org.apache.zest.api.identity.Identity;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -53,7 +54,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        String id = newZestAccount();
+        Identity id = newZestAccount();
 
         // Make sure there's no unit of work
         assertNull( unitOfWorkFactory.currentUnitOfWork() );
@@ -66,7 +67,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        String id = newZestAccount();
+        Identity id = newZestAccount();
 
         // Make sure there's no unit of work
         assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );

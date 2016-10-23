@@ -20,8 +20,8 @@
 
 package org.apache.zest.library.restlet;
 
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 
-public interface Product extends Identity
+public interface Product extends HasIdentity
 {
 }

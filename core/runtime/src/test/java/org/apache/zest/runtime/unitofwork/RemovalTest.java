@@ -20,6 +20,8 @@
 
 package org.apache.zest.runtime.unitofwork;
 
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -37,7 +39,10 @@ import static org.junit.Assert.fail;
 public class RemovalTest
     extends AbstractZestTest
 {
-    public void assemble( ModuleAssembly module )
+
+    private static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+
+    public void assemble(ModuleAssembly module )
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
@@ -51,12 +56,12 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
+            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, TEST_IDENTITY);
             builder.instance().name().set( "Niclas" );
             builder.newInstance();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            Abc abc = uow.get( Abc.class, "123" );
+            Abc abc = uow.get( Abc.class, TEST_IDENTITY);
             assertEquals( "Niclas", abc.name().get() );
         }
         finally
@@ -72,17 +77,17 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
+            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, TEST_IDENTITY);
             builder.instance().name().set( "Niclas" );
             builder.newInstance();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            Abc abc = uow.get( Abc.class, "123" );
+            Abc abc = uow.get( Abc.class, TEST_IDENTITY);
             assertEquals( "Niclas", abc.name().get() );
             uow.remove( abc );
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            uow.get( Abc.class, "123" );
+            uow.get( Abc.class, TEST_IDENTITY);
             fail( "This '123' entity should not exist." );
         }
         catch( NoSuchEntityException e )
@@ -102,7 +107,7 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
+            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, TEST_IDENTITY);
             builder.instance().name().set( "Niclas" );
             Abc abc = builder.newInstance();
             uow.complete();
@@ -111,7 +116,7 @@ public class RemovalTest
             uow.remove( abc );
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            uow.get( Abc.class, "123" );
+            uow.get( Abc.class, TEST_IDENTITY);
             fail( "This '123' entity should not exist." );
         }
         catch( NoSuchEntityException e )
@@ -131,13 +136,13 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
+            EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, TEST_IDENTITY);
             builder.instance().name().set( "Niclas" );
             Abc abc = builder.newInstance();
             uow.remove( abc );
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            uow.get( Abc.class, "123" );
+            uow.get( Abc.class, TEST_IDENTITY);
             fail( "This '123' entity should not exist." );
         }
         catch( NoSuchEntityException e )

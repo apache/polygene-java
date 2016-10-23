@@ -21,7 +21,6 @@
 package org.apache.zest.dci.moneytransfer.test;
 
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,12 +46,9 @@ import static org.apache.zest.api.usecase.UsecaseBuilder.newUsecase;
  * Test of TransferMoneyContext
  */
 public class TransferMoneyTest
+        implements AccountIds
 {
     private static SingletonAssembler assembler;
-    public static final String SAVINGS_ACCOUNT_ID = "SavingsAccountId";
-    public static final String CHECKING_ACCOUNT_ID = "CheckingAccountId";
-    public static final String CREDITOR_ID1 = "BakerAccount";
-    public static final String CREDITOR_ID2 = "ButcherAccount";
     private static UnitOfWorkFactory uowf;
 
     @BeforeClass
@@ -64,7 +60,6 @@ public class TransferMoneyTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.withDefaultUnitOfWorkFactory();
                 module.entities(
                     CheckingAccountRolemap.class,
                     SavingsAccountRolemap.class,

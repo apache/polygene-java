@@ -19,6 +19,7 @@
  */
 package org.apache.zest.regression.qi383;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
@@ -48,9 +49,9 @@ public class Qi383Test extends AbstractZestTest
     {
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            unitOfWork.newEntity( Car.class, "Ferrari" );
-            unitOfWork.newEntity( Car.class, "Ford" );
-            unitOfWork.newEntity( Car.class, "Ferrari" );
+            unitOfWork.newEntity( Car.class, new StringIdentity( "Ferrari" ) );
+            unitOfWork.newEntity( Car.class, new StringIdentity( "Ford" ) );
+            unitOfWork.newEntity( Car.class, new StringIdentity( "Ferrari" ) );
             unitOfWork.complete();
         }
     }

@@ -223,7 +223,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     {
         try
         {
-            Location location = new Location( namespace, entityReference.identity() );
+            Location location = new Location( namespace, entityReference.identity().toString() );
             FetchValue fetch = new FetchValue.Builder( location ).build();
             FetchValue.Response response = riakClient.execute( fetch );
             if( response.isNotFound() )
@@ -261,7 +261,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                             {
                                 super.close();
                                 StoreValue store = new StoreValue.Builder( toString() )
-                                        .withLocation( new Location( namespace, ref.identity() ) )
+                                        .withLocation( new Location( namespace, ref.identity().toString() ) )
                                         .build();
                                 riakClient.execute( store );
                             }
@@ -286,7 +286,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                             try
                             {
                                 super.close();
-                                Location location = new Location( namespace, ref.identity() );
+                                Location location = new Location( namespace, ref.identity().toString() );
                                 FetchValue fetch = new FetchValue.Builder( location ).build();
                                 FetchValue.Response response = riakClient.execute( fetch );
                                 if( response.isNotFound() )
@@ -310,7 +310,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                 {
                     try
                     {
-                        Location location = new Location( namespace, ref.identity() );
+                        Location location = new Location( namespace, ref.identity().toString() );
                         FetchValue fetch = new FetchValue.Builder( location ).build();
                         FetchValue.Response response = riakClient.execute( fetch );
                         if( response.isNotFound() )

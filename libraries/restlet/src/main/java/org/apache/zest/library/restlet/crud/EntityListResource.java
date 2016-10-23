@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -46,9 +48,9 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 
 @Mixins( EntityListResource.Mixin.class )
-public interface EntityListResource<T extends Identity> extends ServerResource<EntityList>
+public interface EntityListResource<T extends HasIdentity> extends ServerResource<EntityList>
 {
-    abstract class Mixin<T extends Identity>
+    abstract class Mixin<T extends HasIdentity>
         implements EntityListResource<T>
     {
         @This
@@ -72,7 +74,7 @@ public interface EntityListResource<T extends Identity> extends ServerResource<E
             Property<Request> request = parameters.request();
             Reference base = request.get().getResourceRef();
             String name = "list[" + parameters.entityType().get().getSimpleName() + "]";
-            String identity = identityManager.generate( EntityListResource.class, name );
+            Identity identity = identityManager.generate( EntityListResource.class, name );
             ValueBuilder<EntityList> builder = vbf.newValueBuilder( EntityList.class );
             List<EntityRef> result = getEntityRefs( base );
             EntityList prototype = builder.prototype();
@@ -96,9 +98,9 @@ public interface EntityListResource<T extends Identity> extends ServerResource<E
             //noinspection unchecked
             Class<T> entityType = parameters.entityType().get();
 
-            identityManager.generate( entityType, name );
-            locator.find( entityType ).create( name );
-            return resourceBuilder.createRestLink( name, base, Method.GET );
+            Identity identity = identityManager.generate(entityType, name);
+            locator.find( entityType ).create( identity );
+            return resourceBuilder.createRestLink( identity, base, Method.GET );
         }
 
         @SuppressWarnings( "unchecked" )

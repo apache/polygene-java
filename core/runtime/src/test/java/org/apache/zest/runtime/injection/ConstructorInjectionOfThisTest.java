@@ -73,7 +73,6 @@ public class ConstructorInjectionOfThisTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.withDefaultUnitOfWorkFactory();
                 module.values( Does.class ).withMixins( NoopMixin.class ).withConcerns( DoesConcern.class );
             }
         };
@@ -93,7 +92,6 @@ public class ConstructorInjectionOfThisTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.withDefaultUnitOfWorkFactory();
                 module.values( Does.class ).withMixins( NoopMixin.class ).withSideEffects( DoesSideEffect.class );
             }
         };

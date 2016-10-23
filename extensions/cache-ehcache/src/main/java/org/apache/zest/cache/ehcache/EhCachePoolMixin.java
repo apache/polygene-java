@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.cache.Cache;
@@ -43,7 +43,7 @@ public abstract class EhCachePoolMixin
     private final ConcurrentHashMap<String, EhCacheImpl<?>> caches = new ConcurrentHashMap<>();
 
     @This
-    private Identity identity;
+    private HasIdentity identity;
 
     @This
     private Configuration<EhCacheConfiguration> configuration;

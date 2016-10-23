@@ -19,10 +19,10 @@
 -%>
 package <%= packageName %>.model.heroes;
 
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 
-public interface Hero extends Identity
+public interface Hero extends HasIdentity
 {
     Property<String> name();
 }

@@ -41,7 +41,7 @@ public class JCloudsEntityStoreAssembler
             instantiateOnStartup();
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

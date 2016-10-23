@@ -20,25 +20,26 @@
 package org.apache.zest.api;
 
 import java.util.function.Predicate;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryExpressions;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TODO
@@ -70,7 +71,7 @@ public class OperatorsTest
 
         try
         {
-            EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, "123" );
+            EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, new StringIdentity( "123" ) );
             entityBuilder.instance().value().set( assembler.module().newValue( TestValue.class ) );
             TestEntity testEntity = entityBuilder.newInstance();
 

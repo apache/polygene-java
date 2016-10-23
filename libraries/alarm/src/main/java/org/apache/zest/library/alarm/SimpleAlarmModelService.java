@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -203,7 +203,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
             if( oldStatus.name(null).equals( AlarmPoint.STATUS_NORMAL ) )
             {
                 AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_ACTIVATED );
-                return createEvent( (Identity) alarm, oldStatus, newStatus, AlarmPoint.EVENT_ACTIVATION );
+                return createEvent( alarm.identity().get(), oldStatus, newStatus, AlarmPoint.EVENT_ACTIVATION );
             }
             return null;
         }
@@ -221,7 +221,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
             if( oldStatus.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) )
             {
                 AlarmStatus newStatus = createStatus( AlarmPoint.STATUS_NORMAL );
-                return createEvent( (Identity) alarm, oldStatus, newStatus, AlarmPoint.EVENT_DEACTIVATION );
+                return createEvent( alarm.identity().get(), oldStatus, newStatus, AlarmPoint.EVENT_DEACTIVATION );
             }
             return null;
         }
@@ -242,7 +242,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         {
             ValueBuilder<AlarmEvent> builder = vbf.newValueBuilder( AlarmEvent.class );
             AlarmEvent prototype = builder.prototype();
-            prototype.alarmIdentity().set( alarmId.identity().get() );
+            prototype.identity().set( alarmId );
             prototype.eventTime().set( Instant.now() );
             prototype.newStatus().set( newStatus );
             prototype.oldStatus().set( oldStatus );

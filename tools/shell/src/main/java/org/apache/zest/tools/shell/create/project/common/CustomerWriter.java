@@ -40,11 +40,11 @@ public class CustomerWriter
             pw.println( ".model.orders;" );
             pw.println();
             pw.println("import java.time.ZonedDateTime;");
-            pw.println("import org.apache.zest.api.entity.Identity;");
+            pw.println("import org.apache.zest.api.identity.HasIdentity;");
             pw.println("import org.apache.zest.api.property.Property;");
             pw.println();
             pw.println(
-                "public interface Customer extends Identity\n" +
+                "public interface Customer extends HasIdentity\n" +
                 "{\n" +
                 "    Property<String> name();\n\n" +
                 "    Property<String> address();\n\n" +

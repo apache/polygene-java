@@ -163,7 +163,7 @@ public class MemoryMapEntityStoreMixin
                                 JSONTokener tokener = new JSONTokener( item );
                                 JSONObject entity = (JSONObject) tokener.nextValue();
                                 String id = entity.getString( JSONKeys.IDENTITY );
-                                store.put( new EntityReference( id ), item );
+                                store.put( EntityReference.parseEntityReference( id ), item );
                             }
                             catch( JSONException e )
                             {

@@ -23,7 +23,8 @@ package org.apache.zest.library.restlet.repository;
 import java.util.function.Predicate;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -37,7 +38,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.restlet.identity.IdentityManager;
 
-public class SmallCrudRepositoryMixin<T extends Identity>
+public class SmallCrudRepositoryMixin<T extends HasIdentity>
     implements CrudRepository<T>
 {
     @Structure
@@ -58,17 +59,17 @@ public class SmallCrudRepositoryMixin<T extends Identity>
     }
 
     @Override
-    public void create( String idOrName )
+    public void create( Identity identity )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        uow.newEntity( entityType, identityManager.generate( entityType, idOrName ) );
+        uow.newEntity( entityType, identity );
     }
 
     @Override
-    public T get( String idOrName )
+    public T get( Identity identity )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        return uow.get( entityType, identityManager.generate( entityType, idOrName ) );
+        return uow.get( entityType, identity );
     }
 
     @Override
@@ -77,24 +78,23 @@ public class SmallCrudRepositoryMixin<T extends Identity>
         UnitOfWork uow = uowf.currentUnitOfWork();
 
         @SuppressWarnings( "unchecked" )
-        Class<Identity> type = (Class<Identity>) entityType;
+        Class<HasIdentity> type = (Class<HasIdentity>) entityType;
 
         uow.toEntity( type, newStateAsValue );  //updates the identified entity with the value
     }
 
     @Override
-    public void delete( String idOrName )
+    public void delete( Identity identity )
     {
-        String id = identityManager.generate( entityType, idOrName );
         UnitOfWork uow = uowf.currentUnitOfWork();
         try
         {
-            T entity = uow.get( entityType, id );
+            T entity = uow.get( entityType, identity );
             uow.remove( entity );
         }
         catch( NoSuchEntityException | NoSuchEntityTypeException e )
         {
-            throw new IllegalArgumentException( "Entity  '" + idOrName + "' doesn't exist." );
+            throw new IllegalArgumentException( "Entity  '" + identity + "' doesn't exist." );
         }
     }
 

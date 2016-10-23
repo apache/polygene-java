@@ -29,7 +29,7 @@ import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.association.NamedAssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.entity.NamedAssociationState;
 
@@ -76,7 +76,7 @@ public class NamedAssociationInstance<T>
         checkImmutable();
         checkType( entity );
         associationInfo.checkConstraints( entity );
-        return namedAssociationState.put( name, new EntityReference( ( (Identity) entity ).identity().get() ) );
+        return namedAssociationState.put( name, EntityReference.create( ((HasIdentity) entity).identity().get() ) );
     }
 
     @Override

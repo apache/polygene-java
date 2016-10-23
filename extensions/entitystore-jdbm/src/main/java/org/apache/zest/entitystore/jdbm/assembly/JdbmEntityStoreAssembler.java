@@ -38,7 +38,7 @@ public class JdbmEntityStoreAssembler
         ServiceDeclaration service = module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

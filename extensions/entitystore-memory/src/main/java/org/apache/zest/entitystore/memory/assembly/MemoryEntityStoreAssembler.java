@@ -40,7 +40,7 @@ public class MemoryEntityStoreAssembler
         ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
     }
 }

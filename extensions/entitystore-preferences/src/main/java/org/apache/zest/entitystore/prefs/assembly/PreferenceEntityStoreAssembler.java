@@ -46,7 +46,7 @@ public class PreferenceEntityStoreAssembler
             .instantiateOnStartup();
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
     }

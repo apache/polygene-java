@@ -42,6 +42,7 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.ApplicationDescriptor;
@@ -125,13 +126,13 @@ public class RestTest extends AbstractZestTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, "P2" );
+            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, new StringIdentity( "P2" ) );
             PersonEntity maryDoe = builder1.instance();
             maryDoe.firstname().set( "Mary" );
             maryDoe.lastname().set( "Doe" );
             maryDoe = builder1.newInstance();
 
-            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( PersonEntity.class, "P1" );
+            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( PersonEntity.class, new StringIdentity( "P1" ) );
             PersonEntity joeDoe = builder2.instance();
             joeDoe.firstname().set( "Joe" );
             joeDoe.lastname().set( "Doe" );
@@ -155,12 +156,12 @@ public class RestTest extends AbstractZestTest
         // System.out.println( rdf.replaceAll( "\n", "\\\\n" ).replaceAll( "\"", "\\\\\"" ) );
         assertThat( "Incorrect RDF produced", rdf, anyOf(
             // Open JDK 8 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.identity.HasIdentity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.identity.HasIdentity#\">P1</identity>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // Sun JDK 6 / Oracle JDK 7 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.identity.HasIdentity#\">P1</identity>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // IBM JDK 6 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n\t<identity xmlns=\"urn:zest:type:org.apache.zest.api.identity.HasIdentity#\">P1</identity>\n\t<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n\t<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n\t<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
     }
 
     @Test
@@ -169,14 +170,14 @@ public class RestTest extends AbstractZestTest
     {
         RestTester restTester = objectFactory.newObject( RestTester.class );
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put( "identity", "P1" );
+        properties.put( "reference", "P1" );
         properties.put( "firstname", "Jack" );
         properties.put( "lastname", "Doe" );
         restTester.putEntity( "P1", properties );
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            PersonEntity entity = work.get( PersonEntity.class, "P1" );
+            PersonEntity entity = work.get( PersonEntity.class, new StringIdentity( "P1" ) );
             assertEquals( "FirstName not changed.", "Jack", entity.firstname().get() );
             assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
             work.complete();
@@ -199,7 +200,7 @@ public class RestTest extends AbstractZestTest
             PersonEntity entity = null;
             try
             {
-                entity = work.get( PersonEntity.class, "P1" );
+                entity = work.get( PersonEntity.class, new StringIdentity( "P1" ) );
             }
             catch( NoSuchEntityException expected )
             {

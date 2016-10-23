@@ -25,6 +25,7 @@ import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.ServiceUnavailableException;
@@ -58,7 +59,7 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return serviceModel.identity();
     }

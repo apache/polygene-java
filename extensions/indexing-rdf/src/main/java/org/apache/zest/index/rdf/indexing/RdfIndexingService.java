@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.mixin.Mixins;
@@ -174,11 +175,11 @@ public interface RdfIndexingService
             {
                 if( entityState.status().equals( EntityStatus.REMOVED ) )
                 {
-                    removedStates.add( stateSerializer.createEntityURI( getValueFactory(), entityState.identity() ) );
+                    removedStates.add( stateSerializer.createEntityURI( getValueFactory(), entityState.entityReference() ) );
                 }
                 else if( entityState.status().equals( EntityStatus.UPDATED ) )
                 {
-                    removedStates.add( stateSerializer.createEntityURI( getValueFactory(), entityState.identity() ) );
+                    removedStates.add( stateSerializer.createEntityURI( getValueFactory(), entityState.entityReference() ) );
                 }
             }
 
@@ -196,7 +197,8 @@ public interface RdfIndexingService
         {
             if( entityState.entityDescriptor().queryable() )
             {
-                final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), entityState.identity() );
+                EntityReference reference = entityState.entityReference();
+                final URI entityURI = stateSerializer.createEntityURI( getValueFactory(), reference);
                 Graph graph = new GraphImpl();
                 stateSerializer.serialize( entityState, false, graph );
                 connection.add( graph, entityURI );
@@ -210,8 +212,8 @@ public interface RdfIndexingService
         {
             if( entityType.queryable() )
             {
-                final URI compositeURI = getValueFactory().createURI(
-                    Classes.toURI( entityType.types().findFirst().orElse( null ) ) );
+                String uri = Classes.toURI(entityType.types().findFirst().orElse(null));
+                final URI compositeURI = getValueFactory().createURI( uri );
                 // remove composite type if already present
                 connection.clear( compositeURI );
 

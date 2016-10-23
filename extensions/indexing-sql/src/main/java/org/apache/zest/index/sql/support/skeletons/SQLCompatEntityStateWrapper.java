@@ -97,9 +97,9 @@ class SQLCompatEntityStateWrapper
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return wrappedEntityState.identity();
+        return wrappedEntityState.entityReference();
     }
 
     @Override

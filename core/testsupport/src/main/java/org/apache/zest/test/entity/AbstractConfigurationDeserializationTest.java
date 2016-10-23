@@ -23,7 +23,7 @@ package org.apache.zest.test.entity;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -107,7 +107,7 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractZ
         }
     }
 
-    public interface ConfigSerializationConfig extends Identity
+    public interface ConfigSerializationConfig extends HasIdentity
     {
         Property<String> name();
 

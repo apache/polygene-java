@@ -41,7 +41,7 @@ public class EntityTestAssembler
         ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );

@@ -63,8 +63,6 @@ public class IndexingModuleWriter
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
                 "        throws AssemblyException\n" +
                 "    {\n" +
-                "        module.withDefaultUnitOfWorkFactory();\n" +
-                "\n" +
                 "        configModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );\n" +
                 "        new RdfNativeSesameStoreAssembler(Visibility.application, Visibility.module).assemble( module );\n" +
                 "        return module;\n" +

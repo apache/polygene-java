@@ -22,22 +22,23 @@ package org.apache.zest.library.restlet.repository;
 
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 
-public interface CrudRepository<T extends Identity>
+public interface CrudRepository<T extends HasIdentity>
 {
     @UnitOfWorkPropagation
-    void create( @EntityName String nameOfEntity );
+    void create( @EntityName Identity identityOfEntity );
 
     @UnitOfWorkPropagation
-    T get( @EntityName String nameOfEntity );
+    T get( @EntityName Identity identityOfEntity );
 
     @UnitOfWorkPropagation
     void update( T newStateAsValue );
 
     @UnitOfWorkPropagation
-    void delete( @EntityName String nameOfEntity );
+    void delete( @EntityName Identity identityOfEntity );
 
     @UnitOfWorkPropagation
     Iterable<T> findAll();

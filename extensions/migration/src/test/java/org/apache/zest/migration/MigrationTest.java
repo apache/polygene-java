@@ -22,6 +22,7 @@ package org.apache.zest.migration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
@@ -103,8 +104,8 @@ public class MigrationTest
     public void testMigration()
         throws UnitOfWorkCompletionException, IOException, ActivationException, AssemblyException
     {
+        Identity id;
         // Set up version 1
-        String id;
         StringInputOutput data_v1 = new StringInputOutput();
         {
             SingletonAssembler v1 = new SingletonAssembler()
@@ -267,15 +268,7 @@ public class MigrationTest
         public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
             throws IOException, SenderThrowableType
         {
-            sender.sendTo( new Receiver<String, IOException>()
-            {
-                @Override
-                public void receive( String item )
-                    throws IOException
-                {
-                    builder.append( item ).append( "\n" );
-                }
-            } );
+            sender.sendTo((Receiver<String, IOException>) item -> builder.append( item ).append( "\n" ));
         }
 
         @Override

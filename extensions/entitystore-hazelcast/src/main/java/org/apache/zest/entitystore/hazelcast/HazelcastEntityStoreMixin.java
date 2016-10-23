@@ -98,7 +98,7 @@ public class HazelcastEntityStoreMixin
     public Reader get( EntityReference ref )
         throws EntityStoreException
     {
-        final String serializedState = stringMap.get( ref.identity() );
+        final String serializedState = stringMap.get( ref.identity().toString() );
         if( serializedState == null )
         {
             throw new EntityNotFoundException( ref );
@@ -125,7 +125,7 @@ public class HazelcastEntityStoreMixin
                         throws IOException
                     {
                         super.close();
-                        stringMap.put( ref.identity(), toString() );
+                        stringMap.put( ref.identity().toString(), toString() );
                     }
                 };
             }
@@ -141,7 +141,7 @@ public class HazelcastEntityStoreMixin
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
-                stringMap.remove( ref.identity() );
+                stringMap.remove( ref.identity().toString() );
             }
         } );
     }

@@ -30,6 +30,7 @@ import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ServiceReference;
 
 import static org.apache.zest.api.activation.ActivationEvent.EventType.ACTIVATED;
@@ -315,7 +316,7 @@ public final class ActivationDelegate
         }
 
         @Override
-        public String identity()
+        public Identity identity()
         {
             return reference.identity();
         }

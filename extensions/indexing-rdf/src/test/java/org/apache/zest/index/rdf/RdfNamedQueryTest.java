@@ -52,195 +52,242 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
 
     private static String[] queryStrings =
     {
-        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+// START-SNIPPET: query1
+        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "\n" + "}", // script01
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "\n" + "}", // script01
+// END-SNIPPET
 
+// START-SNIPPET: query2
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Domain>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "FILTER (?v0 = \"Gaming\")\n" + "}", // script02
+// END-SNIPPET
 
-        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+// START-SNIPPET: query3
+        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "\n" + "}", // script03
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "\n" + "}", // script03
+// END-SNIPPET
 
+// START-SNIPPET: query4
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
             + "PREFIX ns2: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:placeOfBirth ?v0. \n" + "?v0 ns2:name ?v1. \n" + "FILTER (?v1 = \"Kuala Lumpur\")\n" + "}", // script04
+// END-SNIPPET
 
+// START-SNIPPET: query5
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
             + "PREFIX ns2: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:mother ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:mother ?v0. \n"
             + "?v0 ns1:placeOfBirth ?v1. \n" + "?v1 ns2:name ?v2. \n" + "FILTER (?v2 = \"Kuala Lumpur\")\n" + "}", // script05
+// END-SNIPPET
 
+// START-SNIPPET: query6
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER (?v0 >= \"1973\")\n" + "}", // script06
+// END-SNIPPET
 
+// START-SNIPPET: query7
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
             + "PREFIX ns2: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "?entity ns1:placeOfBirth ?v1. \n" + "?v1 ns2:name ?v2. \n"
             + "FILTER ((?v0 >= \"1900\") && (?v2 = \"Penang\"))\n" + "}", // script07
+// END-SNIPPET
 
+// START-SNIPPET: query8
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" + "}", // script08
+// END-SNIPPET
 
+// START-SNIPPET: query9
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Female>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER ((?v0 = \"1970\") || (?v0 = \"1975\"))\n" + "}", // script09
+// END-SNIPPET
 
+// START-SNIPPET: query10
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "FILTER (!(?v0 = \"1975\"))\n" + "}", // script10
+// END-SNIPPET
 
+// START-SNIPPET: query11
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "OPTIONAL {?entity ns1:email ?v0}. \n" + "FILTER (bound(?v0))\n" + "}", // script11
+// END-SNIPPET
 
+// START-SNIPPET: query12
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "OPTIONAL {?entity ns1:email ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script12
+// END-SNIPPET
 
-        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+// START-SNIPPET: query13
+        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
             + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Male#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (bound(?v0))\n" + "}", // script13
+// END-SNIPPET
 
-        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+// START-SNIPPET: query14
+        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
             + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Male#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Male>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script14
+// END-SNIPPET
 
-        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+// START-SNIPPET: query15
+        "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
             + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Male#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "OPTIONAL {?entity ns1:wife ?v0}. \n" + "FILTER (! bound(?v0))\n" + "}", // script15
+// END-SNIPPET
 
+// START-SNIPPET: query16
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "\n" + "}", // script16
+// END-SNIPPET
 
+// START-SNIPPET: query17
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "\n" + "} ", // script17
+// END-SNIPPET
 
+// START-SNIPPET: query18
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "\n" + "}\n", // script18
+// END-SNIPPET
 
+// START-SNIPPET: query19
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "FILTER (?v0 > \"D\")\n" + "} ", // script19
+// END-SNIPPET
 
+// START-SNIPPET: query20
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
             + "PREFIX ns2: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:yearOfBirth ?v0. \n" + "?entity ns2:name ?v1. \n" + "FILTER (?v0 > \"1973\")\n" + "}\n"
             , // script20
+// END-SNIPPET
 
+// START-SNIPPET: query21
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Person#> \n"
             + "PREFIX ns2: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Person>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n"
             + "?entity ns1:placeOfBirth ?v0. \n" + "?v0 ns2:name ?v1. \n" + "?entity ns1:yearOfBirth ?v2. \n" + "\n"
             + "}", // script21
+// END-SNIPPET
 
+// START-SNIPPET: query22
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Nameable>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "FILTER regex(?v0,\"J.*Doe\")\n" + "}", // script22
+// END-SNIPPET
 
+// START-SNIPPET: query23
         "", // script23
+// END-SNIPPET
 
+// START-SNIPPET: query24
         "PREFIX ns1: <urn:zest:type:org.apache.zest.test.indexing.model.Nameable#> \n"
-            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+            + "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
             + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?identity\n"
+            + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" + "SELECT DISTINCT ?reference\n"
             + "WHERE {\n" + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.indexing.model.Domain>. \n"
-            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?identity. \n" + "?entity ns1:name ?v0. \n"
+            + "?entity rdf:type ?entityType. \n" + "?entity ns0:identity ?reference. \n" + "?entity ns1:name ?v0. \n"
             + "FILTER (?v0 = ?domain)\n" + "}" // script24
-
+// END-SNIPPET
     };
 }

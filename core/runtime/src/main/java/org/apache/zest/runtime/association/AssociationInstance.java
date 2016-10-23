@@ -26,7 +26,7 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 
 /**
@@ -64,7 +64,7 @@ public final class AssociationInstance<T>
         associationInfo.checkConstraints( newValue );
 
         // Change association
-        associationState.set( EntityReference.create( (Identity) newValue ));
+        associationState.set( EntityReference.create( ((HasIdentity) newValue ).identity().get()));
     }
 
     @Override

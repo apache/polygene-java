@@ -24,7 +24,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -161,7 +160,7 @@ public interface RentalShop
             {
                 MessageDigest md;
                 md = MessageDigest.getInstance( "MD5" );
-                md.update( instance.identity().get().getBytes() );
+                md.update( instance.identity().get().toBytes() );
                 StringBuilder buf = new StringBuilder();
                 byte[] data = md.digest();
                 for( int i = 0; i < 4; i++ )

@@ -21,80 +21,67 @@
 package org.apache.zest.api.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.util.NullArgumentException;
 
 /**
- * An EntityReference is identity of a specific Entity instance.
- * <p>When stringified, the identity is used as-is. Example:</p>
+ * An EntityReference is reference of a specific Entity instance.
+ * <p>When stringified, the reference is used as-is. Example:</p>
  * <pre>123456-abcde</pre>
  */
 public final class EntityReference
-    implements Serializable
+        implements Serializable
 {
     /**
-     * Parse an URI to an EntityReference.
-     * @param uri the URI to parse
-     * @return the EntityReference represented by the given URI
+     * Parse an Entity reference to an EntityReference.
+     *
+     * @param identityString the EntityReference reference
+     * @return the EntityReference represented by the given reference
      */
-    public static EntityReference parseURI( String uri )
+    public static EntityReference parseEntityReference(String identityString)
     {
-        String identity = uri.substring( "urn:zest:entity:".length() );
-        return new EntityReference( identity );
-    }
-
-    /**
-     * Parse an Entity identity to an EntityReference.
-     * @param identity the EntityReference identity
-     * @return the EntityReference represented by the given identity
-     */
-    public static EntityReference parseEntityReference( String identity )
-    {
-        return new EntityReference( identity );
+        return new EntityReference( new StringIdentity( identityString ) );
     }
 
     /**
      * @param object an EntityComposite
      * @return the EntityReference for the given EntityComposite
      */
-    public static EntityReference entityReferenceFor( Object object )
+    public static EntityReference entityReferenceFor(Object object)
     {
-        return new EntityReference( (EntityComposite) object );
+        return new EntityReference(((EntityComposite) object).identity().get());
     }
 
-    public static EntityReference create( Identity identity )
+    public static EntityReference create(Identity identity)
     {
-        if( identity == null )
+        if (identity == null)
+        {
             return null;
-        return new EntityReference( identity.identity().get() );
+        }
+        return new EntityReference(identity);
     }
 
     private static final long serialVersionUID = 1L;
 
-    private String identity;
+    private Identity identity;
 
     /**
-     * @param entityComposite a non-null EntityComposite
-     * @throws NullPointerException if entityComposite is null
+     * @param identity reference reference
+     * @throws NullArgumentException if reference is null or empty
      */
-    public EntityReference( EntityComposite entityComposite )
+    private EntityReference( Identity identity )
     {
-        this( entityComposite.identity().get() );
-    }
-
-    /**
-     * @param identity reference identity
-     * @throws NullArgumentException if identity is null or empty
-     */
-    public EntityReference( String identity )
-    {
-        NullArgumentException.validateNotEmpty( "identity", identity );
+        Objects.requireNonNull(identity,"reference must not be null");
         this.identity = identity;
     }
 
     /**
-     * @return This EntityReference identity.
+     *
+     * @return The reference of the Entity that this EntityReference.is referring to
      */
-    public final String identity()
+    public final Identity identity()
     {
         return identity;
     }
@@ -108,18 +95,18 @@ public final class EntityReference
     }
 
     @Override
-    public boolean equals( Object o )
+    public boolean equals(Object o)
     {
-        if( this == o )
+        if (this == o)
         {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
+        if (o == null || getClass() != o.getClass())
         {
             return false;
         }
         EntityReference that = (EntityReference) o;
-        return identity.equals( that.identity );
+        return identity.equals(that.identity);
     }
 
     @Override
@@ -128,12 +115,9 @@ public final class EntityReference
         return identity.hashCode();
     }
 
-    /**
-     * @return This EntityReference identity.
-     */
     @Override
     public String toString()
     {
-        return identity;
+        return identity.toString();
     }
 }

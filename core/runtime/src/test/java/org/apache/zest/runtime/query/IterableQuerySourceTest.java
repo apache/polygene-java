@@ -22,6 +22,7 @@ package org.apache.zest.runtime.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
@@ -226,7 +227,7 @@ public class IterableQuerySourceTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        City kl = uow.get( City.class, "kualalumpur" );
+        City kl = uow.get( City.class, new StringIdentity( "kualalumpur" ));
         Query<Person> query = qb.where(
             eq( person.mother().get().placeOfBirth(), kl )
         ).newQuery( Network.persons() );
