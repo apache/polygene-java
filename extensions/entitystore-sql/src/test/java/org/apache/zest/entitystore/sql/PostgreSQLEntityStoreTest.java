@@ -47,11 +47,17 @@ import static org.apache.zest.test.util.Assume.assumeConnectivity;
  *
  * Use 'password' as password for the jdbc_test_login user.
  *
+ * Eventually create a database cluster:
+ *
+ * <pre>
+ * initdb -D /usr/local/pgsql/data
+ * </pre>
+ *
+ * Start PostgreSQL. Then, create test user and database:
+ *
  * <pre>
  * createuser -A -D -P -E -W jdbc_test_login
  * createdb -O jdbc_test_login -W jdbc_test_db
- * psql -d jdbc_testdb
- * CREATE EXTENSION ltree;
  * </pre>
  *
  * To clear the data:
@@ -59,8 +65,6 @@ import static org.apache.zest.test.util.Assume.assumeConnectivity;
  * <pre>
  * dropdb -W jdbc_test_db
  * createdb -O jdbc_test_login -W jdbc_test_db
- * psql -d jdbc_test_db
- * CREATE EXTENSION ltree;
  * </pre>
  *
  * To remove the test user:
