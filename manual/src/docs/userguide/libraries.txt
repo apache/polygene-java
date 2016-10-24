@@ -39,10 +39,6 @@ include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: 2
