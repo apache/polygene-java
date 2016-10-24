@@ -61,12 +61,12 @@ public class DocumentationSupport
 
         // START SNIPPET: meter
         MetricsMeterFactory meterFactory = provider.createFactory( MetricsMeterFactory.class );
-        MetricsMeter meter = meterFactory.createMeter( getClass(), "Sample Meter", "requests", TimeUnit.MINUTES );
+        MetricsMeter meter = meterFactory.createMeter( getClass(), "Sample Meter" );
         // END SNIPPET: meter
 
         // START SNIPPET: timer
         MetricsTimerFactory timerFactory = provider.createFactory( MetricsTimerFactory.class );
-        MetricsTimer timer = timerFactory.createTimer( getClass(), "Sample Timer", TimeUnit.SECONDS, TimeUnit.HOURS );
+        MetricsTimer timer = timerFactory.createTimer( getClass(), "Sample Timer" );
         // END SNIPPET: timer
 
         // START SNIPPET: healthcheck

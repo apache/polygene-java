@@ -24,6 +24,7 @@ import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.Gauge;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.metrics.Metric;
 import org.apache.zest.api.metrics.MetricsCounter;
@@ -39,7 +40,6 @@ import org.apache.zest.api.metrics.MetricsMeterFactory;
 import org.apache.zest.api.metrics.MetricsTimer;
 import org.apache.zest.api.metrics.MetricsTimerFactory;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
 
 public class YammerMetricsMixin extends MetricsProviderAdapter
@@ -54,15 +54,15 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsTimerFactory()
         {
             @Override
-            public MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate )
+            public MetricsTimer createTimer( Class<?> origin, String name )
             {
-                return new YammerTimer( Metrics.newTimer( origin, name, app.name(), duration, rate ) );
+                return new YammerTimer( Metrics.newTimer( origin, name, app.name(), TimeUnit.MILLISECONDS, TimeUnit.SECONDS ) );
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }
@@ -73,15 +73,15 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsMeterFactory()
         {
             @Override
-            public MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate )
+            public MetricsMeter createMeter( Class<?> origin, String name )
             {
-                return new YammerMeter( Metrics.newMeter( origin, name, app.name(), eventType, rate ) );
+                return new YammerMeter( Metrics.newMeter( origin, name, app.name(), TimeUnit.MILLISECONDS ) );
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }
@@ -98,9 +98,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }
@@ -117,9 +117,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }
@@ -145,9 +145,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }
@@ -165,9 +165,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
             }
 
             @Override
-            public Iterable<Metric> registered()
+            public Stream<Metric> registered()
             {
-                return Iterables.empty();
+                return Stream.empty();
             }
         };
     }

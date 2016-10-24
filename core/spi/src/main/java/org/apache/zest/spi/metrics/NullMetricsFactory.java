@@ -20,7 +20,7 @@
 
 package org.apache.zest.spi.metrics;
 
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.apache.zest.api.metrics.Metric;
 import org.apache.zest.api.metrics.MetricsCounter;
 import org.apache.zest.api.metrics.MetricsCounterFactory;
@@ -34,7 +34,6 @@ import org.apache.zest.api.metrics.MetricsMeter;
 import org.apache.zest.api.metrics.MetricsMeterFactory;
 import org.apache.zest.api.metrics.MetricsTimer;
 import org.apache.zest.api.metrics.MetricsTimerFactory;
-import org.apache.zest.functional.Iterables;
 
 /**
  * Factory for Metrics null objects.
@@ -50,9 +49,9 @@ public final class NullMetricsFactory
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 
@@ -66,9 +65,9 @@ public final class NullMetricsFactory
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 
@@ -81,9 +80,9 @@ public final class NullMetricsFactory
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 
@@ -96,40 +95,40 @@ public final class NullMetricsFactory
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 
     public static class NullMeterFactory implements MetricsMeterFactory
     {
         @Override
-        public MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate )
+        public MetricsMeter createMeter( Class<?> origin, String name )
         {
 
             return DefaultMetric.NULL;
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 
     public static class NullTimerFactory implements MetricsTimerFactory
     {
         @Override
-        public MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate )
+        public MetricsTimer createTimer( Class<?> origin, String name )
         {
             return DefaultMetric.NULL;
         }
 
         @Override
-        public Iterable<Metric> registered()
+        public Stream<Metric> registered()
         {
-            return Iterables.iterable( (Metric) DefaultMetric.NULL );
+            return Stream.of( DefaultMetric.NULL );
         }
     }
 }

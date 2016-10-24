@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -40,8 +39,8 @@ import org.apache.zest.api.metrics.MetricsTimerFactory;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
-import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -512,7 +511,7 @@ public final class UnitOfWorkInstance
     {
         MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
         String name = "UnitOfWork Timer";
-        MetricsTimer timer = metricsFactory.createTimer( getClass(), name, TimeUnit.MILLISECONDS, TimeUnit.SECONDS );
+        MetricsTimer timer = metricsFactory.createTimer( getClass(), name );
         metricsTimer = timer.start();
     }
 }

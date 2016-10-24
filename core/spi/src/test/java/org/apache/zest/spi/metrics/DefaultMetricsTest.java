@@ -102,7 +102,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsMeterFactory factory = underTest.createFactory( MetricsMeterFactory.class );
-        MetricsMeter test = factory.createMeter( getClass(), "test", "niclas", TimeUnit.MILLISECONDS );
+        MetricsMeter test = factory.createMeter( getClass(), "test" );
         test.mark();
         test.mark();
         test.mark();
@@ -113,7 +113,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsTimerFactory factory = underTest.createFactory( MetricsTimerFactory.class );
-        MetricsTimer test = factory.createTimer( getClass(), "test", TimeUnit.MILLISECONDS, TimeUnit.DAYS );
+        MetricsTimer test = factory.createTimer( getClass(), "test" );
         test.start().stop();
     }
 }

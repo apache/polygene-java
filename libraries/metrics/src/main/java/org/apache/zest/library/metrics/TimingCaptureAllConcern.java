@@ -22,7 +22,6 @@ package org.apache.zest.library.metrics;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.injection.scope.Invocation;
@@ -46,7 +45,7 @@ public class TimingCaptureAllConcern extends ConcernOf<InvocationHandler>
             boolean annotated = method.getAnnotation( TimingCapture.class ) != null;
             String captureNme = getMethodName( method ) + "() ["  +( annotated ? "@" : "" ) + "TimingCapture" + "]";
             Class<?> declaringClass = method.getDeclaringClass();
-            timer = factory.createTimer( declaringClass, captureNme, TimeUnit.MILLISECONDS, TimeUnit.SECONDS );
+            timer = factory.createTimer( declaringClass, captureNme );
         }
     }
 
