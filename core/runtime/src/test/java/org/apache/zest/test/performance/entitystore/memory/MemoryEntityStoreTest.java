@@ -49,7 +49,7 @@ public class MemoryEntityStoreTest
         module.objects( StatePrinter.class );
     }
 
-    static public class StatePrinter
+    private static class StatePrinter
         implements StateChangeListener
     {
         public void notifyChanges( Iterable<EntityState> changedStates )

@@ -59,6 +59,16 @@ public final class ActivationEvent
         return type;
     }
 
+
+    /**
+     *
+     * @return The instant that this event was created.
+     */
+    public Instant eventTime()
+    {
+        return timestamp;
+    }
+
     /**
      * @return an informative message describing the event
      */
@@ -84,6 +94,6 @@ public final class ActivationEvent
     @Override
     public String toString()
     {
-        return message();
+        return message() + "@" + timestamp;
     }
 }

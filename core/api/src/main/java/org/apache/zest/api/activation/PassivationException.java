@@ -42,10 +42,7 @@ public final class PassivationException
     public PassivationException( Collection<Exception> exceptions )
     {
         super( "Passivation Exception - [has " + exceptions.size() + " cause(s)]" );
-        for( Throwable cause : exceptions )
-        {
-            addSuppressed( cause );
-        }
+        exceptions.forEach( this::addSuppressed );
         this.causes = new ArrayList<>( exceptions );
     }
 

@@ -37,7 +37,8 @@ public final class ApplicationPassivationThread
      * Create a new Application Passivation Thread that output errors to STDERR.
      * @param application The Application to passivate
      */
-    public ApplicationPassivationThread( final Application application )
+    @SuppressWarnings("unused")
+    public ApplicationPassivationThread(final Application application )
     {
         this( application, null, null );
     }
@@ -47,7 +48,8 @@ public final class ApplicationPassivationThread
      * @param application The Application to passivate
      * @param logger Logger for errors
      */
-    public ApplicationPassivationThread( Application application, Logger logger )
+    @SuppressWarnings("unused")
+    public ApplicationPassivationThread(Application application, Logger logger )
     {
         this( application, null, logger );
     }
