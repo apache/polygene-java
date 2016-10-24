@@ -1055,7 +1055,7 @@ public abstract class AbstractSQLQuerying
                     if( value instanceof EntityComposite )
                     {
                         value = uowf.currentUnitOfWork().get(
-                            (EntityComposite) value ).identity().get();
+                            (EntityComposite) value ).identity().get().toString();
                     }
                     else
                     {
