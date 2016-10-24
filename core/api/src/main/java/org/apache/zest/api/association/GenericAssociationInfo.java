@@ -45,12 +45,15 @@ public final class GenericAssociationInfo
                 return parameterizedType.getActualTypeArguments()[ 0 ];
             }
         }
-
-        Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
-        for( Type anInterface : interfaces )
+        if (!(methodReturnType instanceof Class))
         {
-            Type associationType = toAssociationType( anInterface );
-            if( associationType != null )
+            throw new IllegalArgumentException( "Unable to make an association with " + methodReturnType );
+        }
+        Type[] interfaces = ((Class<?>) methodReturnType).getGenericInterfaces();
+        for (Type anInterface : interfaces)
+        {
+            Type associationType = toAssociationType(anInterface);
+            if (associationType != null)
             {
                 return associationType;
             }

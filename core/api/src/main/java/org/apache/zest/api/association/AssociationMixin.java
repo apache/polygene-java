@@ -46,7 +46,7 @@ public final class AssociationMixin
     /**
      * Associations generic mixin AppliesToFilter.
      */
-    public static class AssociationFilter
+    static class AssociationFilter
         implements AppliesToFilter
     {
         @Override
