@@ -43,6 +43,7 @@ public class MemoryEntityStoreTest
     {
         super.assemble( module );
 
+        module.services( MemoryEntityStoreService.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.importedServices( StatePrinter.class ).importedBy( NEW_OBJECT );
         module.objects( StatePrinter.class );
