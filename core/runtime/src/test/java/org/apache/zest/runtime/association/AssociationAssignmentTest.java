@@ -24,13 +24,11 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.identity.Identity;
-import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
@@ -47,7 +45,6 @@ public class AssociationAssignmentTest extends AbstractZestTest
         throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
         module.services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON );
         module.entities( TheAssociatedType.class );
@@ -76,11 +73,11 @@ public class AssociationAssignmentTest extends AbstractZestTest
         work.discard();
     }
 
-    public interface TheAssociatedType extends EntityComposite
+    interface TheAssociatedType extends EntityComposite
     {
     }
 
-    public interface TheMainType extends EntityComposite
+    interface TheMainType extends EntityComposite
     {
         Association<TheAssociatedType> assoc();
     }

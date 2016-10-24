@@ -38,7 +38,6 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
@@ -156,7 +155,6 @@ public class VisibilityInUnitOfWorkTest
             yourModule.services( YourService.class ).visibleIn( Visibility.layer );
             new DefaultUnitOfWorkAssembler().assemble( yourModule );
             infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-            infraModule.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
             infraModule.services( OrgJsonValueSerializationService.class )
                 .visibleIn( Visibility.layer )
                 .taggedWith( ValueSerialization.Formats.JSON );

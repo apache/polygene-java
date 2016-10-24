@@ -40,7 +40,6 @@ import org.apache.zest.library.logging.debug.service.DebugServiceConfiguration;
 import org.apache.zest.library.logging.debug.service.DebuggingServiceComposite;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
@@ -57,7 +56,6 @@ public class DebuggingTest
         module.services( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
         module.entities( DebugServiceConfiguration.class );
         module.entities( ServiceDebugRecordEntity.class );
-        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

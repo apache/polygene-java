@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.file.FileEntityStoreConfiguration;
 import org.apache.zest.entitystore.file.FileEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class FileEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<FileEntityStoreAssembler>
@@ -34,11 +33,10 @@ public class FileEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( FileEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {

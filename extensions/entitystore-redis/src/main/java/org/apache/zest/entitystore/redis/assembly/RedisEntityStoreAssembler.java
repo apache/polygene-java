@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.redis.RedisEntityStoreConfiguration;
 import org.apache.zest.entitystore.redis.RedisMapEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Redis EntityStore assembly.
@@ -37,11 +36,10 @@ public class RedisEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( RedisMapEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {

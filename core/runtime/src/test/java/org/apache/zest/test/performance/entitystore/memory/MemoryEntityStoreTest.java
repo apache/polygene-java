@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.StateChangeListener;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -44,7 +43,6 @@ public class MemoryEntityStoreTest
     {
         super.assemble( module );
 
-        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.importedServices( StatePrinter.class ).importedBy( NEW_OBJECT );
         module.objects( StatePrinter.class );

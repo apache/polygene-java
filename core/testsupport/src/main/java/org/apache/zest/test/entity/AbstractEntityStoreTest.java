@@ -52,7 +52,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.After;
 import org.junit.Test;
@@ -82,7 +81,6 @@ public abstract class AbstractEntityStoreTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class );
         module.entities( TestEntity.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.objects( getClass() );

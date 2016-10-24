@@ -32,7 +32,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -46,7 +45,6 @@ public class ValueSerializationRegressionTest extends AbstractZestTest
         module.entities( DualFaced.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 

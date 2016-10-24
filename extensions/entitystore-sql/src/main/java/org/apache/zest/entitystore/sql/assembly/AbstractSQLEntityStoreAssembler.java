@@ -33,7 +33,6 @@ import org.apache.zest.entitystore.sql.internal.DatabaseSQLServiceSpi;
 import org.apache.zest.entitystore.sql.internal.DatabaseSQLServiceStatementsMixin;
 import org.apache.zest.entitystore.sql.internal.DatabaseSQLStringsBuilder;
 import org.apache.zest.library.sql.common.SQLConfiguration;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
@@ -85,13 +84,10 @@ abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
         {
             throw new AssemblyException( ioe );
         }
-        module.services( SQLEntityStoreService.class,
-                         UuidIdentityGeneratorService.class ).
-            visibleIn( visibility() );
+        module.services( SQLEntityStoreService.class ).visibleIn( visibility() );
         if( hasConfig() )
         {
-            configModule().entities( SQLConfiguration.class ).
-                visibleIn( configVisibility() );
+            configModule().entities( SQLConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.indexing.model.Address;
 import org.apache.zest.test.indexing.model.Cat;
 import org.apache.zest.test.indexing.model.City;
@@ -48,7 +47,6 @@ class FamilyModule
                          Dog.class ).visibleIn( Visibility.application );
 
         module.values( Address.class ).visibleIn( Visibility.application );
-        module.services( UuidIdentityGeneratorService.class );
         return module;
     }
 }

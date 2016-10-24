@@ -39,7 +39,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
@@ -104,7 +103,6 @@ public class AssociationToValueTest extends AbstractZestTest
         module.values( Person.class );
         module.services( PersonRepository.class ).withConcerns( UnitOfWorkConcern.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
-        module.services( UuidIdentityGeneratorService.class );
         module.services( MemoryEntityStoreService.class );
 
         module.services( Runnable.class )

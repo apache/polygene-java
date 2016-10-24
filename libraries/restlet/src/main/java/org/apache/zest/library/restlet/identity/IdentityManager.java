@@ -27,13 +27,13 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.apache.zest.functional.Iterables.filter;
 import static org.apache.zest.functional.Iterables.first;
@@ -60,7 +60,7 @@ public interface IdentityManager
         implements IdentityManager
     {
         @Service
-        private UuidIdentityGeneratorService uuidService;
+        private IdentityGenerator uuidService;
 
         @This
         private Configuration<IdentityMappingConfiguration> config;

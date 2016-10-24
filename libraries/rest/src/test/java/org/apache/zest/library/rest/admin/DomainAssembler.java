@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.RdfIndexingEngineService;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.apache.zest.api.common.Visibility.application;
 import static org.apache.zest.api.common.Visibility.layer;
@@ -42,7 +41,6 @@ public class DomainAssembler
     {
         module.services(
             MemoryEntityStoreService.class,
-            UuidIdentityGeneratorService.class,
             RdfIndexingEngineService.class
         ).visibleIn( application );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );

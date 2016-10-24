@@ -32,7 +32,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -54,7 +53,6 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractZ
         module.services( MyService.class ).identifiedBy( "configtest" );
         storageModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         storageModule.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
-        storageModule.services( UuidIdentityGeneratorService.class );
     }
 
     @Test

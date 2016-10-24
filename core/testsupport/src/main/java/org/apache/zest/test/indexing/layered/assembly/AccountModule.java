@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.indexing.model.Account;
 import org.apache.zest.test.indexing.model.Domain;
 import org.apache.zest.test.indexing.model.File;
@@ -46,7 +45,6 @@ class AccountModule
         module.entities( Account.class, Domain.class ).visibleIn( Visibility.layer );
         module.values( File.class, Host.class, Port.class, Protocol.class, QueryParam.class, URL.class )
             .visibleIn( Visibility.layer );
-        module.services( UuidIdentityGeneratorService.class );
         return module;
     }
 }

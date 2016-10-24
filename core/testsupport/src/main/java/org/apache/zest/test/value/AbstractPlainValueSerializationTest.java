@@ -39,7 +39,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.Test;
 
@@ -66,7 +65,6 @@ public abstract class AbstractPlainValueSerializationTest
         module.entities( Regression142Type.class );
 
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test
