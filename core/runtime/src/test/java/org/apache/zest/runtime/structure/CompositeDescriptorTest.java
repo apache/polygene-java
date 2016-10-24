@@ -19,6 +19,7 @@
  */
 package org.apache.zest.runtime.structure;
 
+import org.apache.zest.api.composite.CompositeDescriptor;
 import org.junit.Test;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.composite.TransientDescriptor;
@@ -36,6 +37,19 @@ public class CompositeDescriptorTest
 {
     @Test
     public final void testCompositeDescriptorWithComposite()
+        throws Throwable
+    {
+        // Test with Standard composite
+        AddressComposite address = transientBuilderFactory.newTransient( AddressComposite.class );
+        CompositeDescriptor addressDescriptor = spi.compositeDescriptorFor( address );
+
+        assertNotNull( addressDescriptor );
+        assertEquals( AddressComposite.class, addressDescriptor.types().findFirst().orElse( null ) );
+        assertTrue( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ) );
+    }
+
+    @Test
+    public final void testTransientCompositeDescriptorWithComposite()
         throws Throwable
     {
         // Test with Standard composite
@@ -63,12 +77,12 @@ public class CompositeDescriptorTest
         aModule.transients( AddressComposite.class );
     }
 
-    private static interface AddressComposite
+    private interface AddressComposite
         extends Address, TransientComposite
     {
     }
 
-    private static interface Address
+    private interface Address
     {
     }
 }
