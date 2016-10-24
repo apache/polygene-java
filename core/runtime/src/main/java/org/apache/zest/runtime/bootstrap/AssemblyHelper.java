@@ -21,6 +21,7 @@
 package org.apache.zest.runtime.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -154,7 +155,10 @@ public class AssemblyHelper
                 {
                     try
                     {
-                        filter = (AppliesToFilter) appliesToClass.newInstance();
+                        @SuppressWarnings("unchecked")
+                        Constructor<AppliesToFilter> cons = (Constructor<AppliesToFilter>) appliesToClass.getDeclaredConstructor();
+                        cons.setAccessible(true);
+                        filter = cons.newInstance();
                     }
                     catch( Exception e )
                     {
