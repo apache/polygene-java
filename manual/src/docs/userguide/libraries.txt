@@ -55,10 +55,6 @@ include::../../../../libraries/constraints/src/docs/constraints.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/eventsourcing/src/docs/eventsourcing.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/fileconfig/src/docs/fileconfig.txt[]
 
 :leveloffset: 2
