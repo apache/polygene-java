@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.zest.runtime.bootstrap;
+package org.apache.zest.runtime.bootstrap.docs;
 
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.bootstrap.ApplicationAssembler;
