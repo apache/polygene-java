@@ -68,8 +68,6 @@ def springVersion = '4.3.2.RELEASE'
 def spymemcachedVersion = '2.12.1'
 def sqliteVersion = '3.8.11.2'
 def velocityVersion = '1.7'
-def wicketVersion = '1.5.8' // 6.x Samples fails to compile!
-def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.4.1'
 def yammerMetricsVersion = '2.2.0' // 3.x exists, relocated to io.dropwizard
 
@@ -176,14 +174,6 @@ rootProject.ext {
           groovy: "org.codehaus.groovy:groovy-all:$groovyVersion",
 
           javascript: "org.mozilla:rhino:$javascriptVersion",
-
-          // Wicket
-          wicket: [ "org.apache.wicket:wicket-core:$wicketVersion",
-                  "org.apache.wicket:wicket-datetime:$wicketVersion",
-                  "org.apache.wicket:wicket-extensions:$wicketVersion"
-          ],
-          wicket_devutils: "org.apache.wicket:wicket-devutils:$wicketVersion",
-          wicket_stateless: "com.jolira:wicket-stateless:$wicketStatelessVersion",
 
           // Library & Extension dependencies
           jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
