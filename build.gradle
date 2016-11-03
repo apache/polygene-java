@@ -380,11 +380,6 @@ allprojects {
         configurations = [ project.configurations.runtime ]
     }
 
-    task minBuild {
-      dependsOn classes
-      dependsOn test
-    }
-
   }
   // Actual code projects END ---------------------------------------------
 
