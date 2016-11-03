@@ -117,7 +117,6 @@ def repos_urls = [
 
 allprojects {
 
-  apply plugin: 'eclipse'
   apply plugin: 'signing'
   apply plugin: 'java'
 //  apply plugin: 'checkstyle'
