@@ -22,7 +22,7 @@ jar { manifest { name = "Apache Zest™ Core Runtime" } }
 
 dependencies {
 
-  provided libraries.osgi_core
+  compileOnly libraries.osgi_core
 
   compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
   compile libraries.asm

@@ -207,9 +207,6 @@ allprojects {
   configurations {
     archives
     deployerJars
-    provided
-    compile.extendsFrom provided
-    runtime.extendsFrom compile
   }
 
   dependencies {
