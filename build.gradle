@@ -44,7 +44,6 @@ buildscript {
 
 
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'maven-publish-auth'
@@ -106,18 +105,6 @@ rat {
     ]
 }
 
-
-// External tools BEGIN ---------------------------------------------------
-
-// IDEA plugin configuration
-idea.project.ipr {
-  withXml { provider ->
-    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
-  }
-}
-
-// External tools END -----------------------------------------------------
-
 // Define repositories URLs here so we can reuse them in the build script
 // Needed as Gradle forbid access to declared repositories URLs by design
 // Releasable submodules should not declare repositories in their own build files
@@ -131,7 +118,6 @@ def repos_urls = [
 allprojects {
 
   apply plugin: 'eclipse'
-  apply plugin: 'idea'
   apply plugin: 'signing'
   apply plugin: 'java'
 //  apply plugin: 'checkstyle'
@@ -442,11 +428,6 @@ allprojects {
   apply from: "$rootProject.projectDir/maven-compat.gradle"
   apply plugin: 'maven-publish-auth' // Bug in maven-publish-auth require apply after uploadArchives setup
 
-  idea.module.iml {
-    whenMerged { module ->
-      module.dependencies*.exported = true
-    }
-  }
 } // allprojects END -------------------------------------------------------
 
 // Allow easy download of all dependencies to go offline
