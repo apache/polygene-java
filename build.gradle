@@ -109,10 +109,10 @@ rat {
 // Needed as Gradle forbid access to declared repositories URLs by design
 // Releasable submodules should not declare repositories in their own build files
 def repos_urls = [
-  mavenCentral: "http://repo1.maven.org/maven2/",
+  mavenCentral: "https://repo1.maven.org/maven2/",
   ops4j: "http://repository.ops4j.org/maven2/",
-  restlet: 'http://maven.restlet.org/',
-  clojars: "http://clojars.org/repo/",
+  restlet: 'https://maven.restlet.org/',
+  clojars: "https://clojars.org/repo/",
 ]
 
 allprojects {
