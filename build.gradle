@@ -107,7 +107,7 @@ rat {
 def repos_urls = [
   mavenCentral: "https://repo1.maven.org/maven2/",
   ops4j: "http://repository.ops4j.org/maven2/",
-  restlet: 'https://maven.restlet.org/',
+  restlet: 'https://maven.restlet.com/',
   clojars: "https://clojars.org/repo/",
 ]
 
