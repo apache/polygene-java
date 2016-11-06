@@ -39,7 +39,8 @@ class ModuleReleaseSpecification
     satisfied |= ( codebase == 'beta' && (docs == 'complete' || docs == 'good' || docs == 'brief') && (tests == 'complete' || tests == 'good' || tests == 'some') )
     satisfied |= ( codebase == 'stable' )
     satisfied |= ( codebase == 'mature' )
-    println "$project.name($satisfied) -> $codebase, $docs, $tests"
+    // TODO Add a task to report this easily
+    // println "$project.name($satisfied) -> $codebase, $docs, $tests"
     return satisfied
   }
 }

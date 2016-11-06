@@ -124,7 +124,6 @@ def validateProject(project, parentName)
     {
         project.name = parentName + "." + project.name
     }
-    println "Project: " + project.name
     project.children.each { child ->
         validateProject(child, project.name)
     }
