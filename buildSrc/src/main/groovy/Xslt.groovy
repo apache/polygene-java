@@ -54,9 +54,9 @@
  *
  */
 
-import org.gradle.api.InvalidUserDataException
+import groovy.transform.CompileStatic
+import org.gradle.api.file.EmptyFileVisitor
 import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.InputFile
@@ -67,6 +67,7 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
+@CompileStatic
 class Xslt extends SourceTask
 {
 
@@ -85,21 +86,19 @@ class Xslt extends SourceTask
     def factory = TransformerFactory.newInstance()
     def transformer = factory.newTransformer(new StreamSource(stylesheetFile));
 
-    source.visit { FileVisitDetails fvd ->
-      if( fvd.isDirectory() )
-      {
-        return
+    getSource().visit( new EmptyFileVisitor() {
+      @Override
+      void visitFile(FileVisitDetails fvd) {
+        // Remove the extension from the file name
+        def name = fvd.file.name.replaceAll('[.][^\\.]*$', '')
+        if( extension == null )
+        {
+          extension = 'html'
+        }
+        name += '.' + extension
+        def destFile = new File(destDir, name)
+        transformer.transform(new StreamSource(fvd.file), new StreamResult(destFile))
       }
-      // Remove the extension from the file name
-      name = fvd.file.name.replaceAll('[.][^\\.]*$', '')
-      if( extension == null )
-      {
-        extension = 'html'
-      }
-      name += '.' + extension
-      def destFile = new File(destDir, name)
-      transformer.transform(new StreamSource(fvd.file), new StreamResult(destFile))
-
-    }
+    } )
   }
 }

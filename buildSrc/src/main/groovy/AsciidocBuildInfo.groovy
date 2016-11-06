@@ -18,13 +18,15 @@
  *
  */
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 
+@CompileStatic
 class AsciidocBuildInfo implements Plugin<Project>
 {
 
-    final static TASK_NAME = 'makeAsciidocBuildInfo'
+    final static String TASK_NAME = 'makeAsciidocBuildInfo'
 
     AsciidocBuildInfo()
     {

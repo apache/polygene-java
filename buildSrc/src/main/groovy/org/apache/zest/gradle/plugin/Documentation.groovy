@@ -17,19 +17,24 @@
  *
  *
  */
-package org.apache.zest.gradle.plugin;
+package org.apache.zest.gradle.plugin
 
-
+import groovy.io.FileType
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode;
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.process.ExecSpec
 
 // TODO: try to use dependencies for FOP and execute within the same JVM.
 // TODO: move the bulk of resources into this plugin, instead of sitting in the project.
+@CompileStatic
 class Documentation extends DefaultTask
 {
   @Input def String docName
@@ -57,8 +62,8 @@ class Documentation extends DefaultTask
   {
     installAsciidocFilters()
 
-    [ outputDir, tempAsciidocDir, tempDir ]*.deleteDir()
-    [ outputDir, tempAsciidocDir, tempDir ]*.mkdirs()
+    [ outputDir, tempAsciidocDir, tempDir ].each { it.deleteDir() }
+    [ outputDir, tempAsciidocDir, tempDir ].each { it.mkdirs() }
 
     copySubProjectsDocsResources()
     generateAsciidocAccordingToReleaseSpecification()
@@ -94,38 +99,43 @@ class Documentation extends DefaultTask
     if( installSnippets )
     {
       dotAsciidocFiltersDir.mkdirs()
-      project.rootProject.copy {
-        from filtersDir
-        into dotAsciidocFiltersDir
+      project.rootProject.copy { CopySpec spec ->
+        spec.from filtersDir
+        spec.into dotAsciidocFiltersDir
       }
-      dotAsciidocFiltersDir.eachFileRecurse( groovy.io.FileType.FILES ) { file ->
+      dotAsciidocFiltersDir.eachFileRecurse( FileType.FILES ) { file ->
         if( file.name.endsWith( '.py' ) ) {
-          ant.chmod( file: file.absolutePath, perm: '755' )
+          chmod(file, '755')
         }
       }
       println "Zest Asciidoc Filters Installed!"
     }
   }
 
+  @CompileStatic(TypeCheckingMode.SKIP)
+  def void chmod(File file, String permissions) {
+    ant.chmod( file: file.absolutePath, perm: permissions )
+  }
+
   def void copySubProjectsDocsResources()
   {
     project.rootProject.subprojects.each { p ->
-      p.copy {
-        from p.file( 'src/docs/resources' )
-        into outputDir
-        include '**'
+      p.copy { CopySpec spec ->
+        spec.from p.file( 'src/docs/resources' )
+        spec.into outputDir
+        spec.include '**'
       }
     }
   }
 
   def void generateAsciidocAccordingToReleaseSpecification()
   {
-    project.copy {
-      from docsDir
-      into tempAsciidocDir
-      include '**'
+    project.copy { CopySpec spec ->
+      spec.from docsDir
+      spec.into tempAsciidocDir
+      spec.include '**'
     }
-    if( project.version != '0' && !project.version.contains( 'SNAPSHOT' ) ) {
+    if( project.version != '0' && !project.version.toString().contains( 'SNAPSHOT' ) ) {
       def licenseFile = new File( tempAsciidocDir, 'userguide/libraries.txt' )
       def extensionsFile = new File( tempAsciidocDir, 'userguide/extensions.txt' )
       def toolsFile = new File( tempAsciidocDir, 'userguide/tools.txt' )
@@ -134,7 +144,8 @@ class Documentation extends DefaultTask
         asciidocFile.readLines().each { line ->
           if( line.startsWith( 'include::' ) ) {
             def approved = false
-            project.rootProject.releaseApprovedProjects.collect{it.projectDir}.each { approvedProjectDir ->
+            Set<Project> releaseApprovedProjects = project.rootProject.extensions.extraProperties.get('releaseApprovedProjects') as Set<Project>
+            releaseApprovedProjects.collect{it.projectDir}.each { approvedProjectDir ->
               if( line.contains( "${approvedProjectDir.parentFile.name}/${approvedProjectDir.name}" ) ) {
                 approved = true
               }
@@ -153,16 +164,16 @@ class Documentation extends DefaultTask
 
   def void generateXDoc()
   {
-    project.exec {
-      executable = 'asciidoc'
-      workingDir = '..'
+    project.exec { ExecSpec spec ->
+      spec.executable = 'asciidoc'
+      spec.workingDir = '..'
       def commonResourcesPath = relativePath( project.rootDir, commonResourcesDir )
       def asciidocConfigPath = relativePath( project.rootDir, new File( configDir, 'asciidoc.conf' ) )
       def docbookConfigPath = relativePath( project.rootDir, new File( configDir, 'docbook45.conf' ) )
       def linkimagesConfigPath = relativePath( project.rootDir, new File( configDir, 'linkedimages.conf' ) )
       def xdocOutputPath =  relativePath( project.rootDir, new File( tempDir, 'xdoc-temp.xml' ) )
       def asciidocIndexPath = relativePath( project.rootDir, new File( tempAsciidocDir, "$docName/index.txt" ) )
-      args = [
+      spec.args = [
               '--attribute', 'revnumber=' + project.version,
               '--attribute', 'level1=' + (docType.equals('article') ? 1 : 0),
               '--attribute', 'level2=' + (docType.equals('article') ? 2 : 1),
@@ -183,22 +194,22 @@ class Documentation extends DefaultTask
 
   def void generateChunkedHtml()
   {
-    project.copy {
-      from commonResourcesDir
-      into outputDir
-      include '**'
+    project.copy { CopySpec spec ->
+      spec.from commonResourcesDir
+      spec.into outputDir
+      spec.include '**'
     }
-    project.copy {
-      from "$docsDir/$docName/resources"
-      into outputDir
-      include '**'
+    project.copy { CopySpec spec ->
+      spec.from "$docsDir/$docName/resources"
+      spec.into outputDir
+      spec.include '**'
     }
 
-    project.exec {
+    project.exec { ExecSpec spec ->
       def xsltFile = "$docsDir/$docName/xsl/chunked.xsl"
       def outputPath = relativePath( project.projectDir, outputDir ) + '/'
-      executable = 'xsltproc'
-      args = [
+      spec.executable = 'xsltproc'
+      spec.args = [
               '--nonet',
               '--noout',
               '--output', outputPath,
@@ -210,11 +221,11 @@ class Documentation extends DefaultTask
 
   def void generateSingleHtml()
   {
-    project.exec {
+    project.exec { ExecSpec spec ->
       // XML_CATALOG_FILES=
       String xsltFile = "$xslDir/xhtml.xsl"
-      executable = 'xsltproc'
-      args = [
+      spec.executable = 'xsltproc'
+      spec.args = [
               '--nonet',
               '--noout',
               '--output', "$outputDir/${docName}.html",
@@ -228,19 +239,19 @@ class Documentation extends DefaultTask
   {
     // $ xsltproc --nonet ../docbook-xsl/fo.xsl article.xml > article.fo
     // $ fop article.fo article.pdf
-    project.exec {
+    project.exec { ExecSpec spec ->
       String xsltFile = "$xslDir/fo.xsl"
-      executable = 'xsltproc'
-      args = [
+      spec.executable = 'xsltproc'
+      spec.args = [
         '--nonet',
         '--output', "$tempDir/${docName}.fo",
         xsltFile,
         "$tempDir/xdoc-temp.xml"
       ]
     }
-    project.exec {
-      executable = 'fop'
-      args = [
+    project.exec { ExecSpec spec ->
+      spec.executable = 'fop'
+      spec.args = [
         "$tempDir/${docName}.fo",
         "$outputDir/${docName}.pdf"
       ]

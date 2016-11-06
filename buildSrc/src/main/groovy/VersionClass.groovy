@@ -18,10 +18,20 @@
  *
  */
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.Plugin
+import org.gradle.api.Task
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.bundling.Jar
 
+// TODO:perf Build only one for the whole project
+// TODO:perf Remove the build date, maybe not for release versions
+// TODO:release Put git data in with placeholders for dev versions
+@CompileStatic
 class VersionClass implements Plugin<Project>
 {
 
@@ -35,7 +45,7 @@ class VersionClass implements Plugin<Project>
     def genSrc = 'generated-src/version'
     def generatedSrcDir = new File(project.buildDir, genSrc)
 
-    def makeVersionClassTask = project.task('makeVersionClass') << {
+    Task makeVersionClassTask = project.task('makeVersionClass') << {
       def now = new Date()
       def tmpGroup = project.name
       if( tmpGroup.startsWith("org.apache.zest.core"))
@@ -73,14 +83,13 @@ public interface BuildVersion
 """)
       f.close()
     }
-    project.sourceSets {
-      version {
-        java {
-          srcDir project.buildDir.name + '/' + genSrc + '/java'
+    def sourceSets = project.convention.getPlugin(JavaPluginConvention).sourceSets
+    sourceSets.create("version") { SourceSet sourceSet ->
+        sourceSet.java { SourceDirectorySet dirSet ->
+            dirSet.srcDir project.buildDir.name + '/' + genSrc + '/java'
         }
-      }
     }
-    makeVersionClassTask.getInputs().files(project.sourceSets.main.getAllSource())
+    makeVersionClassTask.getInputs().files(sourceSets.getByName('main').allSource)
     makeVersionClassTask.getOutputs().file(generatedSrcDir)
     if( project.getBuildFile() != null && project.getBuildFile().exists() )
     {
@@ -88,8 +97,8 @@ public interface BuildVersion
     }
     project.getTasks().getByName('compileJava').dependsOn('compileVersionJava')
     project.getTasks().getByName('compileVersionJava').dependsOn('makeVersionClass')
-    project.getTasks().getByName('jar') {
-      from project.sourceSets.version.output
+    project.getTasks().getByName('jar') { Jar task ->
+      task.from sourceSets.getByName('version').output
     }
   }
 }
