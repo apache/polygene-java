@@ -19,7 +19,7 @@
  */
 package org.apache.zest.api.mixin;
 
-// START SNIPPET: mixins
+// START SNIPPET: mixin
 public interface Vehicle
 {
     void turn(float angle);
@@ -29,4 +29,4 @@ public interface Vehicle
     // more methods
 }
 
-// END SNIPPET: mixins
+// END SNIPPET: mixin
