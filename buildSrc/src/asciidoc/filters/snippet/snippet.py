@@ -6,9 +6,9 @@
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,7 +58,7 @@ def snippet(source=None, tag=None, tablength="4", snipMarker="  [...snip...]\n\n
         emitted = False
 
         for line in sourceFile:
-            if END in line: emit = False
+            if line.strip().endswith(END): emit = False
             if emit:
                 emitted = True
                 if not "SNIPPET" in line:
@@ -70,7 +70,7 @@ def snippet(source=None, tag=None, tablength="4", snipMarker="  [...snip...]\n\n
                         buff.append(indent + meat)
                     else:
                         buff.append('')
-            if START in line:
+            if line.strip().endswith(START):
                 if emitted:
                     buff.append(indent + snipMarker)
                 emit = True
