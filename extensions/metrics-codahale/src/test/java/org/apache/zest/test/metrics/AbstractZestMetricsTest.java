@@ -46,7 +46,6 @@ import org.apache.zest.library.metrics.TimingCaptureAllConcern;
 import org.apache.zest.library.metrics.TimingCaptureConcern;
 import org.apache.zest.test.AbstractZestBaseTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.metrics.MetricValuesProvider;
 import org.apache.zest.test.util.JmxFixture;
 import org.junit.Test;
 
