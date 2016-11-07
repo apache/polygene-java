@@ -18,13 +18,15 @@
  *
  */
 
+plugins {
+  id 'war'
+  id "org.akhikhl.gretty" version "1.4.0"
+}
+
 description = "Sample of implementation of a Car Rental application."
 
-apply plugin: 'war'
-apply plugin: 'jetty'
-
 // To run in an embedded Jetty use:
-//      ../../gradlew jettyRun
+//      ../../gradlew appRun
 // And then go to:
 //      http://localhost:8080/org.apache.zest.sample.rental/rental/main
 

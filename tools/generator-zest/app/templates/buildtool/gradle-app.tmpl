@@ -18,8 +18,10 @@
  *
 -%>
 
-apply plugin: 'war'
-apply plugin: 'jetty'
+plugins {
+  id 'war'
+  id "org.akhikhl.gretty" version "1.4.0"
+}
 
 dependencies {
   compile project( ":bootstrap" )

@@ -243,6 +243,9 @@ allprojects {
       if( candidate.group == 'asm' || candidate.module == 'prefuse-core' ) {
         candidate.license = 'BSD 3-Clause'
       }
+      if( candidate.group == 'javax.websocket' ) {
+        candidate.license = 'CDDL'
+      }
       if( candidate.group == 'org.apache.httpcomponents'
           || candidate.group == 'net.java.dev.jna'
           || candidate.group == 'lucene'
