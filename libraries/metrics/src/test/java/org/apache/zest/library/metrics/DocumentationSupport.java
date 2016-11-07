@@ -58,7 +58,7 @@ public class DocumentationSupport
         }
 
 // END SNIPPET: capture
-        public class MyAsembler implements Assembler
+        public class MyAssembler implements Assembler
         {
 // START SNIPPET: capture
             @Override

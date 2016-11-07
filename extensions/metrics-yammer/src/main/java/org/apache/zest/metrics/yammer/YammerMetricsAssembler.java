@@ -27,13 +27,13 @@ import com.yammer.metrics.reporting.CsvReporter;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.bootstrap.Assembler;
+import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.ServiceDeclaration;
 
 public class YammerMetricsAssembler
-    implements Assembler
+        extends Assemblers.VisibilityIdentity<YammerMetricsAssembler>
 {
 
     private AbstractPollingReporter reporter;
@@ -83,9 +83,13 @@ public class YammerMetricsAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( YammerMetricsProvider.class )
-            .instantiateOnStartup()
-            .visibleIn( Visibility.application );
+        ServiceDeclaration service = module.services(YammerMetricsProvider.class)
+                .instantiateOnStartup()
+                .visibleIn(visibility());
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
     }
 
     /**
