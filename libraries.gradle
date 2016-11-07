@@ -70,7 +70,6 @@ def spymemcachedVersion = '2.12.1'
 def sqliteVersion = '3.14.2.1'
 def velocityVersion = '1.7'
 def woodstoxVersion = '4.4.1'
-def yammerMetricsVersion = '2.2.0' // 3.x exists, relocated to io.dropwizard
 
 def antVersion = '1.9.7'
 def awaitilityVersion = '2.0.0'
@@ -212,7 +211,6 @@ rootProject.ext {
           bonecp: "com.jolbox:bonecp:$bonecpVersion",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
           sked: "org.codeartisans:sked:$skedVersion",
-          yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
           pdfbox: "org.apache.pdfbox:pdfbox:$pdfboxVersion",
           prefuse: "de.sciss:prefuse-core:$prefuseVersion",
           spymemcached: "net.spy:spymemcached:$spymemcachedVersion",

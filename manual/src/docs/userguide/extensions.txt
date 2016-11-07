@@ -133,10 +133,6 @@ include::../../../../extensions/metrics-codahale/src/docs/metrics-codahale.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/metrics-yammer/src/docs/metrics-yammer.txt[]
-
-:leveloffset: 2
-
 include::../../../../extensions/migration/src/docs/migration.txt[]
 
 :leveloffset: 2
