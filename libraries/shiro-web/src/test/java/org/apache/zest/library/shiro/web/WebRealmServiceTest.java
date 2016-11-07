@@ -143,7 +143,7 @@ public class WebRealmServiceTest
             new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
             // END SNIPPET: assembly
 
-            port = FreePortFinder.findFreePortOnLoopback();
+            port = FreePortFinder.findFreePortOnLocalHost();
             JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
             config.hostName().set( "127.0.0.1" );
             config.port().set( port );

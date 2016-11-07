@@ -88,7 +88,7 @@ public class ServletTest
     public void test()
             throws Exception
     {
-        int port = FreePortFinder.findFreePortOnLoopback( 9001 );
+        int port = FreePortFinder.findFreePortOnLocalHost();
         Server server = new Server( port );
         try {
 

@@ -74,7 +74,7 @@ public class RestTest extends AbstractZestTest
     {
         try
         {
-            ADMIN_PORT = FreePortFinder.findFreePortOnLoopback();
+            ADMIN_PORT = FreePortFinder.findFreePortOnLocalHost();
         }
         catch( IOException ex )
         {
