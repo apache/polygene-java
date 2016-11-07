@@ -161,7 +161,7 @@ $( document ).ready( function($){
             case "Ehcache Cache":
             case "Memory EntityStore":
             case "ElasticSearch Index/Query":
-            case "Yammer Metrics":
+            case "Codahale Metrics":
             case "Migration":
                 $dt.attr( "style", "margin-top: 24px" );
                 break;            

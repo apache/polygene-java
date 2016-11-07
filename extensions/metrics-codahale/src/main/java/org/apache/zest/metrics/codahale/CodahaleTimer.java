@@ -18,17 +18,24 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+package org.apache.zest.metrics.codahale;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+import com.codahale.metrics.Timer;
+import org.apache.zest.api.metrics.MetricsTimer;
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+public class CodahaleTimer
+    implements MetricsTimer
+{
+    private Timer timer;
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+    public CodahaleTimer( Timer timer )
+    {
+        this.timer = timer;
+    }
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+    @Override
+    public Context start()
+    {
+        return timer.time()::stop;
+    }
 }

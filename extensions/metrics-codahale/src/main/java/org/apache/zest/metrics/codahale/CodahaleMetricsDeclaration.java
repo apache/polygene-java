@@ -14,21 +14,23 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.metrics.codahale;
 
-description = "Apache Zest™ Metrics Library."
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Reporter;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+class CodahaleMetricsDeclaration
+{
+    String prefix;
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+    boolean fqcn = false;
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+    boolean jmx = true;
+
+    final List<Function<MetricRegistry, Reporter>> reportersFactories = new ArrayList<>();
 }

@@ -18,17 +18,24 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+package org.apache.zest.metrics.codahale;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+import com.codahale.metrics.Gauge;
+import org.apache.zest.api.metrics.MetricsGauge;
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+public class CodahaleGauge<T>
+    implements MetricsGauge<T>
+{
+    private Gauge<T> gauge;
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+    public CodahaleGauge( Gauge<T> gauge )
+    {
+        this.gauge = gauge;
+    }
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+    @Override
+    public T value()
+    {
+        return gauge.getValue();
+    }
 }

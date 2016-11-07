@@ -18,17 +18,43 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+package org.apache.zest.metrics.codahale;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+import com.codahale.metrics.Counter;
+import org.apache.zest.api.metrics.MetricsCounter;
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+public class CodahaleCounter
+    implements MetricsCounter
+{
+    private Counter counter;
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+    public CodahaleCounter( Counter counter )
+    {
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+        this.counter = counter;
+    }
+
+    @Override
+    public void increment()
+    {
+        counter.inc();
+    }
+
+    @Override
+    public void increment( int steps )
+    {
+        counter.inc( steps );
+    }
+
+    @Override
+    public void decrement()
+    {
+        counter.dec();
+    }
+
+    @Override
+    public void decrement( int steps )
+    {
+        counter.dec( steps );
+    }
 }

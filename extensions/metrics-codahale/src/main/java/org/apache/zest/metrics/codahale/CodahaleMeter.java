@@ -18,17 +18,30 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+package org.apache.zest.metrics.codahale;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+import com.codahale.metrics.Meter;
+import org.apache.zest.api.metrics.MetricsMeter;
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+public class CodahaleMeter
+    implements MetricsMeter
+{
+    private Meter meter;
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+    public CodahaleMeter( Meter meter )
+    {
+        this.meter = meter;
+    }
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+    @Override
+    public void mark()
+    {
+        meter.mark();
+    }
+
+    @Override
+    public void mark( int numberOfEvents )
+    {
+        meter.mark( numberOfEvents );
+    }
 }

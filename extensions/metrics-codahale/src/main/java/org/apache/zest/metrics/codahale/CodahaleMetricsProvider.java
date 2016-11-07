@@ -17,18 +17,19 @@
  *
  *
  */
+package org.apache.zest.metrics.codahale;
 
-description = "Apache Zest™ Metrics Library."
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import org.apache.zest.api.metrics.MetricsProvider;
+import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.api.service.ServiceActivation;
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+@Mixins( CodahaleMetricsMixin.class )
+public interface CodahaleMetricsProvider
+        extends MetricsProvider, ServiceActivation
+{
+    MetricRegistry metricRegistry();
 
-dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
-
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+    HealthCheckRegistry healthCheckRegistry();
 }

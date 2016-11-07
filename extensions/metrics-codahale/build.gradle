@@ -18,17 +18,20 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+description = "Apache Zest™ Codahale Metrics Extension"
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" }}
+jar { manifest { name = "Apache Zest™ Extension - Metrics - Codahale" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-yammer"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.metrics-codahale"))
+  compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
+  compile libraries.codahale_metrics
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
+  testCompile project(":org.apache.zest.libraries:org.apache.zest.library.jmx")
+  testCompile project(":org.apache.zest.libraries:org.apache.zest.library.metrics")
+
+  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
+  testRuntime libraries.logback
+
 }

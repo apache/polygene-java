@@ -22,6 +22,7 @@
 def asmVersion = '5.1'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.55'
+def codahaleMetricsVersion = '3.1.2'
 def commonsDbcpVersion = '2.1.1'
 def commonsLangVersion = '3.5'
 def derbyVersion = '10.13.1.1'
@@ -215,6 +216,10 @@ rootProject.ext {
           pdfbox: "org.apache.pdfbox:pdfbox:$pdfboxVersion",
           prefuse: "de.sciss:prefuse-core:$prefuseVersion",
           spymemcached: "net.spy:spymemcached:$spymemcachedVersion",
+          codahale_metrics: [
+              "io.dropwizard.metrics:metrics-core:$codahaleMetricsVersion",
+              "io.dropwizard.metrics:metrics-healthchecks:$codahaleMetricsVersion"
+          ],
 
           // Testing
           junit: "junit:junit:$junitVersion",
