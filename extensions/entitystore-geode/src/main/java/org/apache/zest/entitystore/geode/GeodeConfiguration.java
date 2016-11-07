@@ -60,10 +60,10 @@ public interface GeodeConfiguration
      * Cache Region Shortcut.
      *
      * In {@literal EMBEDDED} {@link #topology()}, defaults to  {@literal LOCAL},
-     * see {@link com.gemstone.gemfire.cache.RegionShortcut}.
+     * see {@link org.apache.geode.cache.RegionShortcut}.
      *
      * In {@literal CLIENT_SERVER} {@link #topology()}, defaults to {@literal PROXY},
-     * see {@link com.gemstone.gemfire.cache.client.ClientRegionShortcut}.
+     * see {@link org.apache.geode.cache.client.ClientRegionShortcut}.
      *
      * @return Cache Region Shortcut
      */
