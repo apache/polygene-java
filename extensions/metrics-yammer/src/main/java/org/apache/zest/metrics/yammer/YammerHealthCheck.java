@@ -29,7 +29,7 @@ public class YammerHealthCheck
 {
     private MetricsHealthCheck check;
 
-    public YammerHealthCheck( Class<?> origin, String name, final MetricsHealthCheck check )
+    public YammerHealthCheck( String name, final MetricsHealthCheck check )
     {
         this.check = check;
         HealthChecks.register( new HealthCheck( name )

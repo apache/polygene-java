@@ -29,10 +29,9 @@ public interface MetricsMeterFactory extends MetricsFactory
      * Create a MetricsMeter instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin    The class that instantiate the metric
      * @param name      A human readable, short name of the metric.
      *
      * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      */
-    MetricsMeter createMeter( Class<?> origin, String name );
+    MetricsMeter createMeter( String name );
 }

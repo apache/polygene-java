@@ -43,7 +43,7 @@ public final class NullMetricsFactory
     public static class NullCounterFactory implements MetricsCounterFactory
     {
         @Override
-        public MetricsCounter createCounter( Class<?> origin, String name )
+        public MetricsCounter createCounter( String name )
         {
             return DefaultMetric.NULL;
         }
@@ -59,7 +59,7 @@ public final class NullMetricsFactory
     {
         @Override
         @SuppressWarnings( "unchecked" )
-        public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, MetricsGauge<T> gauge )
+        public <T> MetricsGauge<T> registerGauge( String name, MetricsGauge<T> gauge )
         {
             return DefaultMetric.NULL;
         }
@@ -74,7 +74,7 @@ public final class NullMetricsFactory
     public static class NullHealthCheckFactory implements MetricsHealthCheckFactory
     {
         @Override
-        public MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check )
+        public MetricsHealthCheck registerHealthCheck( String name, MetricsHealthCheck check )
         {
             return DefaultMetric.NULL;
         }
@@ -89,7 +89,7 @@ public final class NullMetricsFactory
     public static class NullHistogramFactory implements MetricsHistogramFactory
     {
         @Override
-        public MetricsHistogram createHistogram( Class<?> origin, String name )
+        public MetricsHistogram createHistogram( String name )
         {
             return DefaultMetric.NULL;
         }
@@ -104,7 +104,7 @@ public final class NullMetricsFactory
     public static class NullMeterFactory implements MetricsMeterFactory
     {
         @Override
-        public MetricsMeter createMeter( Class<?> origin, String name )
+        public MetricsMeter createMeter( String name )
         {
 
             return DefaultMetric.NULL;
@@ -120,7 +120,7 @@ public final class NullMetricsFactory
     public static class NullTimerFactory implements MetricsTimerFactory
     {
         @Override
-        public MetricsTimer createTimer( Class<?> origin, String name )
+        public MetricsTimer createTimer( String name )
         {
             return DefaultMetric.NULL;
         }

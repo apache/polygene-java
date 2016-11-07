@@ -29,11 +29,10 @@ public interface MetricsTimerFactory extends MetricsFactory
      * Create a MetricsTimer instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin   The class that instantiate the metric
      * @param name     A human readable, short name of the metric.
      *
      * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      *
      */
-    MetricsTimer createTimer( Class<?> origin, String name );
+    MetricsTimer createTimer( String name );
 }

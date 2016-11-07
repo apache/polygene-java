@@ -31,6 +31,7 @@ import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.metrics.MetricNames;
 import org.apache.zest.api.metrics.MetricsCounter;
 import org.apache.zest.api.metrics.MetricsCounterFactory;
 import org.apache.zest.api.metrics.MetricsProvider;
@@ -56,7 +57,6 @@ import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
-import org.apache.zest.spi.metrics.DefaultMetric;
 import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
@@ -88,7 +88,9 @@ public final class UnitOfWorkInstance
     private boolean open;
     private boolean paused;
 
-    private MetricsTimer.Context metricsTimer;
+    private MetricsCounter metricsCounter;
+    private MetricsTimer metricsTimer;
+    private MetricsTimer.Context metricsTimerContext;
     private MetaInfo metaInfo;
     private List<UnitOfWorkCallback> callbacks;
 
@@ -473,45 +475,36 @@ public final class UnitOfWorkInstance
         instanceCache.remove( entityReference );
     }
 
-    private void incrementCount()
+    private void startCapture()
     {
-        MetricsCounter counter = getCounter();
-        counter.increment();
-    }
-
-    private void decrementCount()
-    {
-        MetricsCounter counter = getCounter();
-        counter.decrement();
-    }
-
-    private MetricsCounter getCounter()
-    {
-        if( metrics != null )
-        {
-            MetricsCounterFactory metricsFactory = metrics.createFactory( MetricsCounterFactory.class );
-            return metricsFactory.createCounter( getClass(), "UnitOfWork Counter" );
-        }
-        return new DefaultMetric();
+        getMetricsCounter().increment();
+        metricsTimerContext = getMetricsTimer().start();
     }
 
     private void endCapture()
     {
-        decrementCount();
-        metricsTimer.stop();
+        getMetricsCounter().decrement();
+        metricsTimerContext.stop();
+        metricsTimerContext = null;
     }
 
-    private void startCapture()
+    private MetricsCounter getMetricsCounter()
     {
-        incrementCount();
-        startTimer( metrics );
+        if( metricsCounter == null )
+        {
+            MetricsCounterFactory metricsFactory = metrics.createFactory( MetricsCounterFactory.class );
+            metricsCounter = metricsFactory.createCounter( MetricNames.nameFor( module, UnitOfWork.class, "counter" ) );
+        }
+        return metricsCounter;
     }
 
-    private void startTimer( MetricsProvider metrics )
+    private MetricsTimer getMetricsTimer()
     {
-        MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
-        String name = "UnitOfWork Timer";
-        MetricsTimer timer = metricsFactory.createTimer( getClass(), name );
-        metricsTimer = timer.start();
+        if( metricsTimer == null )
+        {
+            MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
+            metricsTimer = metricsFactory.createTimer( MetricNames.nameFor( module, UnitOfWork.class, "timer" ) );
+        }
+        return metricsTimer;
     }
 }

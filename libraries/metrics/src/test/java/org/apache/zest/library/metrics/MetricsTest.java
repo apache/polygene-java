@@ -87,6 +87,7 @@ public class MetricsTest extends AbstractZestTest
         Country underTest = transientBuilderFactory.newTransient( Country1.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
+        System.out.println( result );
         assertTrue( lastLine( result, 1 ).contains( "=====================" ) );
         System.out.println( "---END TEST---" );
     }
@@ -97,9 +98,9 @@ public class MetricsTest extends AbstractZestTest
         Country underTest = transientBuilderFactory.newTransient( Country2.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
-        assertThat( lastLine( result, 34 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );
-        assertThat( lastLine( result, 33 ).trim(), equalTo( "name() [TimingCapture]:" ) );
-        assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
+        System.out.println( result );
+        assertThat( lastLine( result, 33 ).trim(), equalTo( "Layer 1.Module 1.MetricsTest.Country.name:" ) );
+        assertThat( lastLine( result, 16 ).trim(), equalTo( "Layer 1.Module 1.MetricsTest.Country.updateName:" ) );
         assertTrue( lastLine( result, 5 ).contains( "75% <=" ) );
         assertTrue( lastLine( result, 4 ).contains( "95% <=" ) );
         assertTrue( lastLine( result, 3 ).contains( "98% <=" ) );
@@ -114,8 +115,8 @@ public class MetricsTest extends AbstractZestTest
         Country underTest = transientBuilderFactory.newTransient( Country3.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
-        assertThat( lastLine( result, 17 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );
-        assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
+        System.out.println( result );
+        assertThat( lastLine( result, 16 ).trim(), equalTo( "Country3.updateName:" ) );
         assertTrue( lastLine( result, 5 ).contains( "75% <=" ) );
         assertTrue( lastLine( result, 4 ).contains( "95% <=" ) );
         assertTrue( lastLine( result, 3 ).contains( "98% <=" ) );
@@ -132,7 +133,6 @@ public class MetricsTest extends AbstractZestTest
 
     private String runTest( Country underTest )
     {
-
         for( int i = 0; i < 1000000; i++ )
         {
             underTest.updateName( "Name" + i );
@@ -153,13 +153,11 @@ public class MetricsTest extends AbstractZestTest
     @Mixins( Country1Mixin.class )
     public interface Country1 extends Country
     {
-
     }
 
     public static abstract class Country1Mixin
         implements Country1
     {
-
         @Override
         public void updateName( String newName )
         {
@@ -175,7 +173,6 @@ public class MetricsTest extends AbstractZestTest
     public static abstract class Country2Mixin
         implements Country2
     {
-
         @Override
         public void updateName( String newName )
         {
@@ -187,13 +184,15 @@ public class MetricsTest extends AbstractZestTest
     @Concerns( TimingCaptureConcern.class )
     public interface Country3 extends Country
     {
+        @TimingCapture( "Country3.updateName" )
+        @Override
+        void updateName(String newName);
     }
 
     public static abstract class Country3Mixin
         implements Country3
     {
         @Override
-        @TimingCapture
         public void updateName( String newName )
         {
             name().set( newName );

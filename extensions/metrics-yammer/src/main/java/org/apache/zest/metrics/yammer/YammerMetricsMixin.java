@@ -23,6 +23,7 @@ package org.apache.zest.metrics.yammer;
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.Counter;
 import com.yammer.metrics.core.Gauge;
+import com.yammer.metrics.core.MetricName;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Structure;
@@ -54,9 +55,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsTimerFactory()
         {
             @Override
-            public MetricsTimer createTimer( Class<?> origin, String name )
+            public MetricsTimer createTimer( String name )
             {
-                return new YammerTimer( Metrics.newTimer( origin, name, app.name(), TimeUnit.MILLISECONDS, TimeUnit.SECONDS ) );
+                return new YammerTimer( Metrics.newTimer( new MetricName( "", "", name ), TimeUnit.MILLISECONDS, TimeUnit.SECONDS ) );
             }
 
             @Override
@@ -73,9 +74,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsMeterFactory()
         {
             @Override
-            public MetricsMeter createMeter( Class<?> origin, String name )
+            public MetricsMeter createMeter( String name )
             {
-                return new YammerMeter( Metrics.newMeter( origin, name, app.name(), TimeUnit.MILLISECONDS ) );
+                return new YammerMeter( Metrics.newMeter( new MetricName( "" , "", name ), "", TimeUnit.MILLISECONDS ) );
             }
 
             @Override
@@ -92,9 +93,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsHistogramFactory()
         {
             @Override
-            public MetricsHistogram createHistogram( Class<?> origin, String name )
+            public MetricsHistogram createHistogram( String name )
             {
-                return new YammerHistogram( Metrics.newHistogram( origin, name, app.name() ) );
+                return new YammerHistogram( Metrics.newHistogram( new MetricName( "", "", name ) ) );
             }
 
             @Override
@@ -111,9 +112,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsHealthCheckFactory()
         {
             @Override
-            public MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check )
+            public MetricsHealthCheck registerHealthCheck( String name, MetricsHealthCheck check )
             {
-                return new YammerHealthCheck( origin, name, check );
+                return new YammerHealthCheck( name, check );
             }
 
             @Override
@@ -130,9 +131,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsGaugeFactory()
         {
             @Override
-            public <T> MetricsGauge<T> registerGauge( Class<?> origin, String name, final MetricsGauge<T> gauge )
+            public <T> MetricsGauge<T> registerGauge( String name, final MetricsGauge<T> gauge )
             {
-                Gauge<T> yammer = Metrics.newGauge( origin, name, app.name(), new Gauge<T>()
+                Gauge<T> yammer = Metrics.newGauge( new MetricName( "", "", name ), new Gauge<T>()
                 {
 
                     @Override
@@ -158,9 +159,9 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
         return new MetricsCounterFactory()
         {
             @Override
-            public MetricsCounter createCounter( Class<?> origin, String name )
+            public MetricsCounter createCounter( String name )
             {
-                Counter counter = Metrics.newCounter( origin, name, app.name() );
+                Counter counter = Metrics.newCounter( new MetricName( "", "", name ) );
                 return new YammerCounter( counter );
             }
 

@@ -39,7 +39,7 @@ public class DocumentationSupport
         // END SNIPPET: gauge
         // START SNIPPET: gauge
         MetricsGaugeFactory gaugeFactory = provider.createFactory( MetricsGaugeFactory.class );
-        MetricsGauge<Integer> gauge = gaugeFactory.registerGauge( getClass(), "Sample Gauge", new MetricsGauge<Integer>()
+        MetricsGauge<Integer> gauge = gaugeFactory.registerGauge( "Sample Gauge", new MetricsGauge<Integer>()
         {
             @Override
             public Integer value()
@@ -51,28 +51,27 @@ public class DocumentationSupport
 
         // START SNIPPET: counter
         MetricsCounterFactory counterFactory = provider.createFactory( MetricsCounterFactory.class );
-        MetricsCounter counter = counterFactory.createCounter( getClass(), "Sample Counter" );
+        MetricsCounter counter = counterFactory.createCounter( "Sample Counter" );
         // END SNIPPET: counter
 
         // START SNIPPET: histogram
         MetricsHistogramFactory histoFactory = provider.createFactory( MetricsHistogramFactory.class );
-        MetricsHistogram histogram = histoFactory.createHistogram( getClass(), "Sample Histogram" );
+        MetricsHistogram histogram = histoFactory.createHistogram( "Sample Histogram" );
         // END SNIPPET: histogram
 
         // START SNIPPET: meter
         MetricsMeterFactory meterFactory = provider.createFactory( MetricsMeterFactory.class );
-        MetricsMeter meter = meterFactory.createMeter( getClass(), "Sample Meter" );
+        MetricsMeter meter = meterFactory.createMeter( "Sample Meter" );
         // END SNIPPET: meter
 
         // START SNIPPET: timer
         MetricsTimerFactory timerFactory = provider.createFactory( MetricsTimerFactory.class );
-        MetricsTimer timer = timerFactory.createTimer( getClass(), "Sample Timer" );
+        MetricsTimer timer = timerFactory.createTimer( "Sample Timer" );
         // END SNIPPET: timer
 
         // START SNIPPET: healthcheck
         MetricsHealthCheckFactory healthFactory = provider.createFactory( MetricsHealthCheckFactory.class );
         MetricsHealthCheck healthCheck = healthFactory.registerHealthCheck(
-            getClass(),
             "Sample Healthcheck",
             new MetricsHealthCheck()
             {

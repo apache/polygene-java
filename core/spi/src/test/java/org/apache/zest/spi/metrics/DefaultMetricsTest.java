@@ -47,7 +47,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsCounterFactory factory = underTest.createFactory( MetricsCounterFactory.class );
-        MetricsCounter test = factory.createCounter( getClass(), "test" );
+        MetricsCounter test = factory.createCounter( "test" );
         test.increment();
         test.decrement();
     }
@@ -57,7 +57,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsGaugeFactory factory = underTest.createFactory( MetricsGaugeFactory.class );
-        MetricsGauge<Instant> test = factory.registerGauge( getClass(), "test", new MetricsGauge<Instant>()
+        MetricsGauge<Instant> test = factory.registerGauge( "test", new MetricsGauge<Instant>()
         {
             @Override
             public Instant value()
@@ -74,7 +74,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsHealthCheckFactory factory = underTest.createFactory( MetricsHealthCheckFactory.class );
-        MetricsHealthCheck test = factory.registerHealthCheck( getClass(), "test", new MetricsHealthCheck()
+        MetricsHealthCheck test = factory.registerHealthCheck( "test", new MetricsHealthCheck()
         {
             @Override
             public Result check()
@@ -91,7 +91,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsHistogramFactory factory = underTest.createFactory( MetricsHistogramFactory.class );
-        MetricsHistogram test = factory.createHistogram( getClass(), "test" );
+        MetricsHistogram test = factory.createHistogram( "test" );
         test.update( 5L );
         test.update( 5L );
         test.update( 5L );
@@ -102,7 +102,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsMeterFactory factory = underTest.createFactory( MetricsMeterFactory.class );
-        MetricsMeter test = factory.createMeter( getClass(), "test" );
+        MetricsMeter test = factory.createMeter( "test" );
         test.mark();
         test.mark();
         test.mark();
@@ -113,7 +113,7 @@ public class DefaultMetricsTest
     {
         MetricsProvider underTest = new MetricsProviderAdapter();
         MetricsTimerFactory factory = underTest.createFactory( MetricsTimerFactory.class );
-        MetricsTimer test = factory.createTimer( getClass(), "test" );
+        MetricsTimer test = factory.createTimer( "test" );
         test.start().stop();
     }
 }

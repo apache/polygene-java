@@ -25,17 +25,20 @@ import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.metrics.MetricsProvider;
+import org.apache.zest.api.structure.Module;
 
 @AppliesTo( TimingCapture.class )
 public class TimingCaptureConcern extends TimingCaptureAllConcern
 {
 
-    public TimingCaptureConcern( @Service @Optional MetricsProvider metrics,
+    public TimingCaptureConcern( @Structure Module module,
+                                 @Service @Optional MetricsProvider metrics,
                                  @Invocation Method method
     )
     {
-        super( metrics, method );
+        super( module, metrics, method );
     }
 
     @Override
