@@ -28,7 +28,7 @@ def commonsLangVersion = '3.5'
 def derbyVersion = '10.13.1.1'
 def dnsJavaVersion = '2.1.7'
 def ehcacheVersion = '3.1.3'
-def elasticsearchVersion = '2.4.0'
+def elasticsearchVersion = '5.0.0'
 def freemarkerVersion = '2.3.25-incubating'
 def geodeVersion = '1.0.0-incubating'
 def groovyVersion = '2.4.7'
@@ -178,7 +178,13 @@ rootProject.ext {
           // Library & Extension dependencies
           jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
           ehcache: "org.ehcache:ehcache:$ehcacheVersion",
-          elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
+          elasticsearch: [
+              "org.elasticsearch:elasticsearch:$elasticsearchVersion",
+              "org.elasticsearch.client:transport:$elasticsearchVersion",
+              // Elasticsearch 5.0 do not work with log4j 2.7
+              "org.apache.logging.log4j:log4j-api:2.6.2",
+              "org.apache.logging.log4j:log4j-core:2.6.2"
+          ],
           geode: "org.apache.geode:geode-core:$geodeVersion",
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",

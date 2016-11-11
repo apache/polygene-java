@@ -21,59 +21,76 @@ package org.apache.zest.index.elasticsearch.internal;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.apache.zest.index.elasticsearch.ElasticSearchSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractElasticSearchSupport
-        implements ElasticSearchSupport
+    implements ElasticSearchSupport
 {
-
     protected static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchSupport.class );
-
     protected static final String DEFAULT_CLUSTER_NAME = "zest_cluster";
-
     protected static final String DEFAULT_INDEX_NAME = "zest_index";
-
     protected static final String ENTITIES_TYPE = "zest_entities";
 
     protected Client client;
-
     protected String index;
-
     protected boolean indexNonAggregatedAssociations;
 
     @Override
     public final void activateService()
-            throws Exception
+        throws Exception
     {
         activateElasticSearch();
 
         // Wait for yellow status: the primary shard is allocated but replicas may not be yet
         client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
-        if ( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().isExists() ) {
+        if( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().isExists() )
+        {
             // Create empty index
             LOGGER.info( "Will create '{}' index as it does not exists.", index );
-            Settings.Builder indexSettings = Settings.settingsBuilder().loadFromSource( XContentFactory.jsonBuilder().
-                    startObject().
-                    startObject( "analysis" ).
-                    startObject( "analyzer" ).
-                    //
-                    startObject( "default" ).
-                    field( "type", "keyword" ). // Globally disable analysis, content is treated as a single keyword
-                    endObject().
-                    //
-                    endObject().
-                    endObject().
-                    endObject().
-                    string() );
-            client.admin().indices().prepareCreate( index ).
-                    setIndex( index ).
-                    setSettings( indexSettings ).
-                    execute().
-                    actionGet();
+            Settings.Builder indexSettings = Settings.builder().loadFromSource(
+                XContentFactory.jsonBuilder()
+                               .startObject()
+                                   .field( "refresh_interval", -1 )
+                                   .startObject( "mapper" )
+                                       .field( "dynamic", false )
+                                   .endObject()
+                                   .startObject( "analysis" )
+                                       .startObject( "analyzer" )
+                                           .startObject( "default" )
+                                               .field( "type", "keyword" )
+                                           .endObject()
+                                           .endObject()
+                                   .endObject()
+                               .endObject()
+                               .string() );
+            XContentBuilder mapping = XContentFactory.jsonBuilder()
+                                                     .startObject()
+                                                         .startObject( entitiesType() )
+                                                             .startArray( "dynamic_templates" )
+                                                                 .startObject()
+                                                                     .startObject( entitiesType() )
+                                                                         .field( "match", "*" )
+                                                                         .field( "match_mapping_type", "string" )
+                                                                         .startObject( "mapping" )
+                                                                             .field( "type", "string" )
+                                                                             .field( "index", "not_analyzed" )
+                                                                         .endObject()
+                                                                     .endObject()
+                                                                 .endObject()
+                                                             .endArray()
+                                                         .endObject()
+                                                     .endObject();
+            client.admin().indices().prepareCreate( index )
+                  .setIndex( index )
+                  .setSettings( indexSettings )
+                  .addMapping( entitiesType(), mapping )
+                  .execute()
+                  .actionGet();
             LOGGER.info( "Index '{}' created.", index );
         }
 
@@ -87,11 +104,11 @@ public abstract class AbstractElasticSearchSupport
     }
 
     protected abstract void activateElasticSearch()
-            throws Exception;
+        throws Exception;
 
     @Override
     public final void passivateService()
-            throws Exception
+        throws Exception
     {
         client.close();
         client = null;
@@ -101,7 +118,7 @@ public abstract class AbstractElasticSearchSupport
     }
 
     protected void passivateElasticSearch()
-            throws Exception
+        throws Exception
     {
         // NOOP
     }
@@ -129,5 +146,4 @@ public abstract class AbstractElasticSearchSupport
     {
         return indexNonAggregatedAssociations;
     }
-
 }

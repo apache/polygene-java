@@ -14,10 +14,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-
 package org.apache.zest.index.elasticsearch;
 
 import java.io.File;
@@ -59,19 +56,18 @@ public class ElasticSearchFinderTest
         new EntityTestAssembler().assemble( config );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESFilesystemIndexQueryAssembler()
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        FileConfigurationOverride override = new FileConfigurationOverride()
+            .withData( new File( DATA_DIR, "zest-data" ) )
+            .withLog( new File( DATA_DIR, "zest-logs" ) )
+            .withTemporary( new File( DATA_DIR, "zest-temp" ) );
+        module.services( FileConfigurationService.class ).setMetaInfo( override );
     }
 
     @Override
@@ -79,5 +75,4 @@ public class ElasticSearchFinderTest
     {
         // IndexExporter not supported by ElasticSearch
     }
-
 }

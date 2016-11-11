@@ -14,8 +14,6 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 package org.apache.zest.index.elasticsearch;
 
@@ -39,7 +37,6 @@ import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 public class ElasticSearchComplexQueryTest
     extends AbstractComplexQueryTest
 {
-
     private static final File DATA_DIR = new File( "build/tmp/es-complex-query-test" );
     @Rule
     public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
@@ -61,17 +58,17 @@ public class ElasticSearchComplexQueryTest
         new EntityTestAssembler().assemble( config );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESFilesystemIndexQueryAssembler()
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
+        FileConfigurationOverride override = new FileConfigurationOverride()
+            .withData( new File( DATA_DIR, "zest-data" ) )
+            .withLog( new File( DATA_DIR, "zest-logs" ) )
+            .withTemporary( new File( DATA_DIR, "zest-temp" ) );
         module.services( FileConfigurationService.class ).setMetaInfo( override );
     }
 
@@ -80,5 +77,4 @@ public class ElasticSearchComplexQueryTest
     {
         // IndexExporter not supported by ElasticSearch
     }
-
 }

@@ -20,22 +20,21 @@
 package org.apache.zest.index.elasticsearch.filesystem;
 
 import java.io.File;
-import org.apache.zest.api.identity.Identity;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import java.util.stream.Stream;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.index.elasticsearch.ElasticSearchConfiguration;
 import org.apache.zest.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.apache.zest.library.fileconfig.FileConfiguration;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.node.Node;
 
 public class ESFilesystemSupport
-        extends AbstractElasticSearchSupport
+    extends AbstractElasticSearchSupport
 {
-
     @This
     private Configuration<ElasticSearchConfiguration> configuration;
 
@@ -49,7 +48,7 @@ public class ESFilesystemSupport
 
     @Override
     protected void activateElasticSearch()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         ElasticSearchConfiguration config = configuration.get();
@@ -59,32 +58,30 @@ public class ESFilesystemSupport
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
         Identity identity = hasIdentity.identity().get();
-        Settings settings = Settings.settingsBuilder().
-                put( "path.work", new File( new File( fileConfig.temporaryDirectory(), identity.toString() ), "work" ).getAbsolutePath() ).
-                put( "path.home", new File( new File( fileConfig.temporaryDirectory(), identity.toString() ), "home" ).getAbsolutePath() ).
-                put( "path.logs", new File( fileConfig.logDirectory(), identity.toString() ).getAbsolutePath() ).
-                put( "path.data", new File( fileConfig.dataDirectory(), identity.toString() ).getAbsolutePath() ).
-                put( "path.conf", new File( fileConfig.configurationDirectory(), identity.toString() ).getAbsolutePath() ).
-                put( "http.enabled", false ).
-                put( "index.cache.type", "weak" ).
-                put( "index.number_of_shards", 1 ).
-                put( "index.number_of_replicas", 0 ).
-                put( "index.refresh_interval", -1 ). // Controlled by ElasticSearchIndexer
-                build();
-        node = NodeBuilder.nodeBuilder().
-                clusterName( clusterName ).
-                settings( settings ).
-                local( true ).
-                node();
+        File homeDir = new File( new File( fileConfig.temporaryDirectory(), identity.toString() ), "home" );
+        File logsDir = new File( fileConfig.logDirectory(), identity.toString() );
+        File dataDir = new File( fileConfig.dataDirectory(), identity.toString() );
+        File confDir = new File( fileConfig.configurationDirectory(), identity.toString() );
+        Stream.of( homeDir, logsDir, dataDir, confDir ).forEach( File::mkdirs );
+        Settings settings = Settings.builder()
+                                    .put( "cluster.name", clusterName )
+                                    .put( "path.home", homeDir.getAbsolutePath() )
+                                    .put( "path.logs", logsDir.getAbsolutePath() )
+                                    .put( "path.data", dataDir.getAbsolutePath() )
+                                    .put( "path.conf", confDir.getAbsolutePath() )
+                                    .put( "transport.type", "local" )
+                                    .put( "http.enabled", false )
+                                    .build();
+        node = new Node( settings );
+        node.start();
         client = node.client();
     }
 
     @Override
     public void passivateElasticSearch()
-            throws Exception
+        throws Exception
     {
         node.close();
         node = null;
     }
-
 }

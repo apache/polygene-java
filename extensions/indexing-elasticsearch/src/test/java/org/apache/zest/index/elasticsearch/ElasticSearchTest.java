@@ -17,20 +17,18 @@
  *
  *
  */
-
 package org.apache.zest.index.elasticsearch;
 
 import java.io.File;
-import org.apache.zest.api.identity.HasIdentity;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.Aggregated;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -43,29 +41,36 @@ import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.ne;
 import static org.apache.zest.api.query.QueryExpressions.not;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ElasticSearchTest
     extends AbstractZestTest
 {
-
-    private static final File DATA_DIR = new File( "build/tmp/es-test" );
-    @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
+
+    @BeforeClass
+    public static void beforeClass_TMP()
+    {
+        new File( "build/tmp/es-query-test" ).mkdirs();
+    }
+
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder( new File( "build/tmp/es-query-test" ) );
 
     public interface Post
         extends HasIdentity
@@ -127,19 +132,25 @@ public class ElasticSearchTest
         new EntityTestAssembler().assemble( module );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESFilesystemIndexQueryAssembler().withConfig( config, Visibility.layer )
+                                             .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        try
+        {
+            File dir = tmpDir.newFolder();
+            FileConfigurationOverride override = new FileConfigurationOverride()
+                .withData( new File( dir, "zest-data" ) )
+                .withLog( new File( dir, "zest-logs" ) )
+                .withTemporary( new File( dir, "zest-temp" ) );
+            module.services( FileConfigurationService.class ).setMetaInfo( override );
+        }
+        catch( IOException e )
+        {
+            throw new UncheckedIOException( e );
+        }
 
         // Entities & Values
         module.entities( Post.class, Page.class, Author.class, Comment.class );
@@ -210,24 +221,28 @@ public class ElasticSearchTest
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( eq( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 0, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( ne( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( ne( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( not( eq( post.title(), "Not available" ) ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( not( eq( post.title(), "Not available" ) ) );
         query = uow.newQuery( queryBuilder );
         post = query.find();
         assertNotNull( post );
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.author().get().nickname(), "eskatos" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( eq( post.author().get().nickname(), "eskatos" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
         post = query.find();
@@ -236,5 +251,4 @@ public class ElasticSearchTest
 
         uow.discard();
     }
-
 }

@@ -29,7 +29,6 @@ import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssemb
 public class DocumentationSupport
     implements Assembler
 {
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -44,7 +43,5 @@ public class DocumentationSupport
         // START SNIPPET: cluster
         new ESClusterIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
         // END SNIPPET: cluster
-
     }
-
 }

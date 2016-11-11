@@ -98,19 +98,18 @@ public class ImmenseTermTest
         new EntityTestAssembler().assemble( module );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESFilesystemIndexQueryAssembler()
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        FileConfigurationOverride override = new FileConfigurationOverride()
+            .withData( new File( DATA_DIR, "zest-data" ) )
+            .withLog( new File( DATA_DIR, "zest-logs" ) )
+            .withTemporary( new File( DATA_DIR, "zest-temp" ) );
+        module.services( FileConfigurationService.class ).setMetaInfo( override );
 
         // Entities & Values
         module.entities( TestEntity.class, TestEntity2.class );

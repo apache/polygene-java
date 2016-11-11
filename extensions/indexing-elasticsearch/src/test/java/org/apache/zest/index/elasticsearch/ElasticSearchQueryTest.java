@@ -22,10 +22,7 @@ package org.apache.zest.index.elasticsearch;
 
 import java.io.File;
 import java.io.IOException;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import java.io.UncheckedIOException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -35,23 +32,31 @@ import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchQueryTest
     extends AbstractQueryTest
 {
-
-    protected static final File DATA_DIR = new File( "build/tmp/es-query-test" );
-    @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
+
+    @BeforeClass
+    public static void beforeClass_TMP()
+    {
+        new File( "build/tmp/es-query-test" ).mkdirs();
+    }
+
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder( new File( "build/tmp/es-query-test" ) );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -64,19 +69,24 @@ public class ElasticSearchQueryTest
         new EntityTestAssembler().assemble( config );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESFilesystemIndexQueryAssembler().withConfig( config, Visibility.layer ).assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        try
+        {
+            File dir = tmpDir.newFolder();
+            FileConfigurationOverride override = new FileConfigurationOverride()
+                .withData( new File( dir, "zest-data" ) )
+                .withLog( new File( dir, "zest-logs" ) )
+                .withTemporary( new File( dir, "zest-temp" ) );
+            module.services( FileConfigurationService.class ).setMetaInfo( override );
+        }
+        catch( IOException e )
+        {
+            throw new UncheckedIOException( e );
+        }
     }
 
     @Test
