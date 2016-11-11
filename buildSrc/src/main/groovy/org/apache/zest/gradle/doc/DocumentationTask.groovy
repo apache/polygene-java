@@ -14,10 +14,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.zest.gradle.plugin
+package org.apache.zest.gradle.doc
 
 import groovy.io.FileType
 import groovy.transform.CompileStatic
@@ -35,7 +33,7 @@ import org.gradle.process.ExecSpec
 // TODO: try to use dependencies for FOP and execute within the same JVM.
 // TODO: move the bulk of resources into this plugin, instead of sitting in the project.
 @CompileStatic
-class Documentation extends DefaultTask
+class DocumentationTask extends DefaultTask
 {
   @Input def String docName
   @Input def String docType

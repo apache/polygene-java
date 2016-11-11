@@ -14,12 +14,23 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.gradle.doc
+
+import groovy.transform.CompileStatic
+import org.gradle.api.file.EmptyFileVisitor
+import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.file.FileVisitDetails
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
 
 /**
- *  Gradle plug-in for running a set of one or more
+ *  Gradle task for running a set of one or more
  *  files through an XSLT transform.  A styleSheet
  *  file must be specified.  The source file(s) are
  *  configured just like any other source task:
@@ -40,38 +51,27 @@
  *
  *  Example task formatting a check style report:
  *
- *  task checkstyleReport(type: Xslt, dependsOn: check) {*      source project.checkstyleResultsDir
+ *  task checkstyleReport(type: XsltTask, dependsOn: check) {
+ *      source project.checkstyleResultsDir
  *      include '*.xml'
  *
  *      destDir = project.checkstyleResultsDir
  *      extension = 'html'
  *
  *      stylesheetFile = file( 'config/checkstyle/checkstyle-noframes.xsl' )
- *}*
+ * }
+ *
  *  The above definition requires that the specified XSL file be
  *  copied in with the other checkstyle configuration files.  (The
  *  file in the example is part of the checkstyle distribution.)
  *
  */
-
-import groovy.transform.CompileStatic
-import org.gradle.api.file.EmptyFileVisitor
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.file.FileVisitDetails
-
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.stream.StreamResult
-import javax.xml.transform.stream.StreamSource
-
 @CompileStatic
-class Xslt extends SourceTask
+class XsltTask extends SourceTask
 {
 
-  @OutputDirectory @Optional
+  @OutputDirectory
+  @Optional
   File destDir
 
   @Optional
@@ -84,20 +84,21 @@ class Xslt extends SourceTask
   def transform()
   {
     def factory = TransformerFactory.newInstance()
-    def transformer = factory.newTransformer(new StreamSource(stylesheetFile));
+    def transformer = factory.newTransformer( new StreamSource( stylesheetFile ) );
 
     getSource().visit( new EmptyFileVisitor() {
       @Override
-      void visitFile(FileVisitDetails fvd) {
+      void visitFile( FileVisitDetails fvd )
+      {
         // Remove the extension from the file name
-        def name = fvd.file.name.replaceAll('[.][^\\.]*$', '')
+        def name = fvd.file.name.replaceAll( '[.][^\\.]*$', '' )
         if( extension == null )
         {
           extension = 'html'
         }
         name += '.' + extension
-        def destFile = new File(destDir, name)
-        transformer.transform(new StreamSource(fvd.file), new StreamResult(destFile))
+        def destFile = new File( destDir, name )
+        transformer.transform( new StreamSource( fvd.file ), new StreamResult( destFile ) )
       }
     } )
   }

@@ -17,8 +17,10 @@
  *
  *
  */
-
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.apache.zest.gradle.doc.AsciidocBuildInfoPlugin
+import org.apache.zest.gradle.release.ModuleReleaseSpec
+import org.apache.zest.gradle.version.VersionClassPlugin
 
 project.ext {
   title = "Apache Zest™ (Java Edition) SDK"
@@ -51,7 +53,7 @@ sourceCompatibility = "1.8"
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
-  releaseSpec = new org.apache.zest.gradle.plugin.ModuleReleaseSpecification()
+  releaseSpec = new ModuleReleaseSpec()
   releaseApprovedProjects = allprojects.findAll( { p -> rootProject.releaseSpec.satisfiedBy( p ) } )
 }
 
@@ -281,8 +283,8 @@ allprojects {
       apply plugin: 'jacoco'
     }
     apply plugin: 'osgi'
-    apply plugin: VersionClass
-    apply plugin: AsciidocBuildInfo
+    apply plugin: VersionClassPlugin
+    apply plugin: AsciidocBuildInfoPlugin
 
 //    if( name == "org.apache.zest.core.runtime" )
 //    {
@@ -364,7 +366,7 @@ allprojects {
     }
 
 //    // Create checkstyle report
-//    task checkstyleReport( type: Xslt, dependsOn: check ) {
+//    task checkstyleReport( type: XsltTask, dependsOn: check ) {
 //      source project.checkstyle.reportsDir
 //      include '*.xml'
 //      destDir = file( "build/reports/checkstyle/" )

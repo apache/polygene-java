@@ -14,14 +14,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.zest.gradle.plugin;
+package org.apache.zest.gradle.release;
 
 import org.gradle.api.Project
 
-class ModuleReleaseSpecification
+class ModuleReleaseSpec
 {
   def boolean satisfiedBy( Project project )
   {

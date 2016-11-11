@@ -17,6 +17,8 @@
  *
  *
  */
+import org.apache.zest.gradle.doc.AsciidocBuildInfoPlugin
+import org.apache.zest.gradle.doc.DocumentationTask
 
 description = "Apache Zest™ Manuals and Website."
 
@@ -28,25 +30,25 @@ dependencies {
   runtime( libraries.slf4j_simple )
 }
 
-
-//task userguide( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task userguide( type: DocumentationTask ) {
 //  docName = 'userguide'
 //  docType = 'book'
 //}
 //
-//task recipes( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task recipes( type: DocumentationTask ) {
 //  docName = 'recipes'
 //  docType = 'article'
 //}
 //
-//task referenceManual( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task referenceManual( type: DocumentationTask ) {
 //  docName = 'reference'
 //  docType = 'book'
 //}
 
 
-task website( type: org.apache.zest.gradle.plugin.Documentation,
-              dependsOn: rootProject.allprojects.tasks.flatten().findAll { it.name == AsciidocBuildInfo.TASK_NAME } ) {
+task website( type: DocumentationTask,
+              dependsOn: rootProject.allprojects.tasks.flatten().
+                findAll { it.name == AsciidocBuildInfoPlugin.TASK_NAME } ) {
   docName 'website'
   docType 'article'
 }

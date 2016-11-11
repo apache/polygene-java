@@ -14,9 +14,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.gradle.version
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
@@ -32,33 +31,28 @@ import org.gradle.api.tasks.bundling.Jar
 // TODO:perf Remove the build date, maybe not for release versions
 // TODO:release Put git data in with placeholders for dev versions
 @CompileStatic
-class VersionClass implements Plugin<Project>
+class VersionClassPlugin implements Plugin<Project>
 {
-
-  VersionClass()
+  def void apply( Project project )
   {
-  }
-
-  def void apply(Project project)
-  {
-    project.getPlugins().apply(JavaPlugin.class)
+    project.getPlugins().apply( JavaPlugin.class )
     def genSrc = 'generated-src/version'
-    def generatedSrcDir = new File(project.buildDir, genSrc)
+    def generatedSrcDir = new File( project.buildDir, genSrc )
 
-    Task makeVersionClassTask = project.task('makeVersionClass') << {
+    Task makeVersionClassTask = project.task( 'makeVersionClass' ) << {
       def now = new Date()
       def tmpGroup = project.name
-      if( tmpGroup.startsWith("org.apache.zest.core"))
+      if( tmpGroup.startsWith( "org.apache.zest.core" ) )
       {
         tmpGroup = tmpGroup - ".core"
       }
-      tmpGroup = tmpGroup.replace('-','_')
-      def outFilename = "java/" + tmpGroup.replace('.', '/') + "/BuildVersion.java"
-      def outFile = new File(generatedSrcDir, outFilename)
+      tmpGroup = tmpGroup.replace( '-', '_' )
+      def outFilename = "java/" + tmpGroup.replace( '.', '/' ) + "/BuildVersion.java"
+      def outFile = new File( generatedSrcDir, outFilename )
       outFile.getParentFile().mkdirs()
-      def f = new FileWriter(outFile)
-      f.write('package ' + tmpGroup + ';\n')
-      f.write("""
+      def f = new FileWriter( outFile )
+      f.write( 'package ' + tmpGroup + ';\n' )
+      f.write( """
 /**
  * Simple class for storing the version derived from the build system.
  *
@@ -80,25 +74,25 @@ public interface BuildVersion
     /** The full details of the version, including the build date. */
     String DETAILED_VERSION = GROUP + ":" + NAME + ":" + VERSION + " " + DATE;
 }\n
-""")
+""" )
       f.close()
     }
-    def sourceSets = project.convention.getPlugin(JavaPluginConvention).sourceSets
-    sourceSets.create("version") { SourceSet sourceSet ->
-        sourceSet.java { SourceDirectorySet dirSet ->
-            dirSet.srcDir project.buildDir.name + '/' + genSrc + '/java'
-        }
+    def sourceSets = project.convention.getPlugin( JavaPluginConvention ).sourceSets
+    sourceSets.create( "version" ) { SourceSet sourceSet ->
+      sourceSet.java { SourceDirectorySet dirSet ->
+        dirSet.srcDir project.buildDir.name + '/' + genSrc + '/java'
+      }
     }
-    makeVersionClassTask.getInputs().files(sourceSets.getByName('main').allSource)
-    makeVersionClassTask.getOutputs().file(generatedSrcDir)
+    makeVersionClassTask.getInputs().files( sourceSets.getByName( 'main' ).allSource )
+    makeVersionClassTask.getOutputs().file( generatedSrcDir )
     if( project.getBuildFile() != null && project.getBuildFile().exists() )
     {
-      makeVersionClassTask.getInputs().files(project.getBuildFile())
+      makeVersionClassTask.getInputs().files( project.getBuildFile() )
     }
-    project.getTasks().getByName('compileJava').dependsOn('compileVersionJava')
-    project.getTasks().getByName('compileVersionJava').dependsOn('makeVersionClass')
-    project.getTasks().getByName('jar') { Jar task ->
-      task.from sourceSets.getByName('version').output
+    project.getTasks().getByName( 'compileJava' ).dependsOn( 'compileVersionJava' )
+    project.getTasks().getByName( 'compileVersionJava' ).dependsOn( 'makeVersionClass' )
+    project.getTasks().getByName( 'jar' ) { Jar task ->
+      task.from sourceSets.getByName( 'version' ).output
     }
   }
 }
