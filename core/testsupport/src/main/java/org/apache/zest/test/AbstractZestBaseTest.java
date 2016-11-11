@@ -19,6 +19,7 @@
  */
 package org.apache.zest.test;
 
+import org.apache.zest.test.util.NotYetImplemented;
 import org.junit.After;
 import org.junit.Before;
 import org.apache.zest.api.ZestAPI;
@@ -30,9 +31,12 @@ import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.spi.ZestSPI;
+import org.junit.Rule;
 
 public abstract class AbstractZestBaseTest
 {
+    @Rule public NotYetImplemented.Rule notYetImplementedRule = new NotYetImplemented.Rule();
+
     protected ZestAPI api;
     protected ZestSPI spi;
 
