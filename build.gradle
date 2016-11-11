@@ -18,9 +18,14 @@
  *
  */
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.apache.zest.gradle.ZestPlugin
 import org.apache.zest.gradle.doc.AsciidocBuildInfoPlugin
 import org.apache.zest.gradle.release.ModuleReleaseSpec
 import org.apache.zest.gradle.version.VersionClassPlugin
+
+allprojects {
+  apply plugin: ZestPlugin
+}
 
 project.ext {
   title = "Apache Zest™ (Java Edition) SDK"
