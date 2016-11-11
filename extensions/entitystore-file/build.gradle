@@ -18,19 +18,18 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - File system" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - File system" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'locking' )
+  compile zest.library( 'constraints' )
+  compile zest.library( 'fileconfig' )
 
-    compile(project(":org.apache.zest.core:org.apache.zest.core.spi"))
-    compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-    compile(project(":org.apache.zest.libraries:org.apache.zest.library.constraints"))
-    compile(project(":org.apache.zest.libraries:org.apache.zest.library.locking"))
-    compile(project(":org.apache.zest.libraries:org.apache.zest.library.fileconfig"))
+  runtime zest.core.runtime
 
-    testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-    testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-    testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-    testRuntime(libraries.logback)
+  testRuntime libraries.logback
 }

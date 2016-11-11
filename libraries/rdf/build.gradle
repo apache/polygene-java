@@ -20,25 +20,18 @@
 
 description = "Apache Zest™ RDF Library provides commonalities of various RDF based services in Apache Zest™, such as RDF Indexing."
 
-jar { manifest { name = "Apache Zest™ Library - RDF" }}
+jar { manifest { name = "Apache Zest™ Library - RDF" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.spi"))
-  compile(project(':org.apache.zest.libraries:org.apache.zest.library.constraints'))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.fileconfig"))
-  compile(libraries.sesame)
-//  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-repository-http:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-rio-n3:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-sail-memory:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
-//  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
+  compile zest.core.spi
+  compile zest.library( 'constraints' )
+  compile zest.library( 'fileconfig' )
+  compile libraries.sesame
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
+
+  testRuntime libraries.logback
 }

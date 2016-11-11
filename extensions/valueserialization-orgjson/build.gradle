@@ -23,13 +23,12 @@ description = "Apache Zest™ org.json ValueSerialization Extension"
 jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - org.json" } }
 
 dependencies {
+  compile zest.core.bootstrap
 
-    compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
+  runtime zest.core.runtime
 
-    testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
+  testCompile zest.core.testsupport
 
-    testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
-    testRuntime libraries.slf4j_simple
-
+  testRuntime libraries.logback
 }
 

@@ -23,18 +23,18 @@ description = "Apache Zest™ JClouds EntityStore Extension"
 jar { manifest { name = "Apache Zest™ Extension - EntityStore - JClouds" } }
 
 dependencies {
-
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ":org.apache.zest.libraries:org.apache.zest.library.locking" )
-  compile libraries.slf4j_api
+  compile zest.core.bootstrap
+  compile zest.library( 'locking' )
+  compile zest.library( 'fileconfig' )
   compile libraries.jclouds_core
   compile libraries.jclouds_blobstore
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile( project( ":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson" ) )
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
   testCompile libraries.jclouds_filesystem
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
   testRuntime libraries.logback
 }
 

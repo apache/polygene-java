@@ -20,8 +20,8 @@
 
 description = "Sample of how to use the Swing bindings."
 
-jar { manifest { name = "Apache Zest™ Sample - Swing Bindings" }}
+jar { manifest { name = "Apache Zest™ Sample - Swing Bindings" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile zest.core.bootstrap
 }

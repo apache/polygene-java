@@ -21,15 +21,15 @@
 
 description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Zest™."
 
-jar { manifest { name = "Apache Zest™ Sample - DCI" }}
+jar { manifest { name = "Apache Zest™ Sample - DCI" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(project(":org.apache.zest.core:org.apache.zest.core.runtime"))  /* TODO: Get rid of this dependency */
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.constraints"))
+  compile zest.core.bootstrap
+  compile zest.core.runtime  /* TODO: Get rid of this dependency */
+  compile zest.library( 'constraints' )
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(libraries.easymock)
+  testCompile zest.core.testsupport
+  testCompile libraries.easymock
 
-  testRuntime(libraries.logback)
+  testRuntime libraries.logback
 }

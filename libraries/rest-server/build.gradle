@@ -20,19 +20,19 @@
 
 description = "Apache Zest™ REST Server Library provides a server component for building REST API's based on usecases"
 
-jar { manifest { name = "Apache Zest™ Library - REST server" }}
+jar { manifest { name = "Apache Zest™ Library - REST server" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.rest-common"))
-  compile(libraries.servlet_api)
+  compile zest.library( 'rest-common' )
+  compile libraries.servlet_api
   compile libraries.slf4j_api
-  compile(libraries.velocity)
-  compile(libraries.restlet)
-  compile(libraries.freemarker)
+  compile libraries.velocity
+  compile libraries.restlet
+  compile libraries.freemarker
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

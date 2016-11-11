@@ -20,17 +20,17 @@
 
 description = "Apache Zest™ Ehcache Cache Extension"
 
-jar { manifest { name = "Apache Zest™ Extension: EhCache"}}
+jar { manifest { name = "Apache Zest™ Extension: EhCache" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'constraints' )
+  compile libraries.ehcache
 
-  compile(project(':org.apache.zest.core:org.apache.zest.core.spi'))
-  compile(project(':org.apache.zest.core:org.apache.zest.core.bootstrap'))
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
-  compile(libraries.ehcache)
+  runtime zest.core.runtime
 
-  testCompile( project(':org.apache.zest.core:org.apache.zest.core.testsupport') )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-  testRuntime( project(':org.apache.zest.core:org.apache.zest.core.runtime'))
-  testRuntime(libraries.logback)
+  testRuntime libraries.logback
 }

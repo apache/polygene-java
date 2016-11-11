@@ -20,15 +20,16 @@
 
 description = "Apache Zest™ Spring Library allows for tight integration of Spring Framework and Apache Zest™ applications."
 
-jar { manifest { name = "Apache Zest™ Library - Spring" }}
+jar { manifest { name = "Apache Zest™ Library - Spring" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(libraries.spring_core)
+  compile zest.core.bootstrap
+  compile libraries.spring_core
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(libraries.spring_testsupport)
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+  testCompile libraries.spring_testsupport
+
+  testRuntime libraries.logback
 }

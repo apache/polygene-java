@@ -23,10 +23,11 @@ import org.apache.zest.gradle.doc.DocumentationTask
 description = "Apache Zest™ Manuals and Website."
 
 dependencies {
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.logging" ) )
-  runtime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
+  compile zest.core.bootstrap
+  compile zest.library( 'constraints' )
+  compile zest.library( 'logging' )
+
+  runtime zest.core.runtime
   runtime( libraries.slf4j_simple )
 }
 
@@ -85,14 +86,16 @@ task manuals() {
 // Skip if asciidoc is not found in PATH when building a 0 or SNAPSHOT version,
 // or if skipAsciidocIfAbsent property is set and asciidoc is not found in PATH
 [ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
-  def skipAsciidocIfAbsent = rootProject.hasProperty( 'skipAsciidocIfAbsent' ) ? rootProject.skipAsciidocIfAbsent : false
+  def skipAsciidocIfAbsent = rootProject.findProperty 'skipAsciidocIfAbsent'
   def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
-  def present = pathDirs.collect( { new File( it, 'asciidoc') } ).flatten().findAll( { it.isFile() } )
-  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) ) {
+  def present = pathDirs.collect( { new File( it, 'asciidoc' ) } ).flatten().findAll( { it.isFile() } )
+  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) )
+  {
     project.logger.debug 'Asciidoc tasks forced because version is no-0 and no-SNAPSHOT, hope you have Asciidoc installed'
     return true
   }
-  if( !present ) {
+  if( !present )
+  {
     project.logger.warn 'Asciidoc not found in PATH, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
   }
   present

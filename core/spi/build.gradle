@@ -18,16 +18,14 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core SPI"}}
+jar { manifest { name = "Apache Zest™ Core SPI" } }
 
 dependencies {
+  compile zest.core.api
+  compile libraries.org_json
 
-    compile project( ':org.apache.zest.core:org.apache.zest.core.api' )
-    compile libraries.org_json
+  testCompile zest.core.testsupport
 
-    testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
-
-    testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
-    testRuntime libraries.logback
-
+  testRuntime zest.core.runtime
+  testRuntime libraries.logback
 }

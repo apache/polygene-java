@@ -20,16 +20,16 @@
 
 description = "Apache Zest™ Memcache Cache Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Cache - Memcache"}}
+jar { manifest { name = "Apache Zest™ Extension - Cache - Memcache" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile libraries.spymemcached
 
-    compile project( ':org.apache.zest.core:org.apache.zest.core.bootstrap' )
-    compile libraries.spymemcached
+  runtime zest.core.runtime
 
-    testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-    testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
-    testRuntime libraries.logback
-
+  testRuntime libraries.logback
 }

@@ -20,10 +20,10 @@
 
 description = "Apache Zest™ SQL BoneCP Library provides BoneCP support."
 
-jar { manifest { name = "Apache Zest™ Library - SQL BoneCP" }}
+jar { manifest { name = "Apache Zest™ Library - SQL BoneCP" } }
 
 dependencies {
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.sql"))
-  compile(libraries.bonecp)
+  compile zest.library( 'sql' )
+  compile libraries.bonecp
 }
 

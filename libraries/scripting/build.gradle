@@ -20,16 +20,12 @@
 
 description = "Apache Zest™ Common Scripting Library contains common classes across scripting implementations."
 
-jar { manifest { name = "Apache Zest™ Library - Scripting - Common" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - Common" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  compile zest.core.bootstrap
+
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
 }

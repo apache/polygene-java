@@ -30,15 +30,13 @@ description = "Sample of implementation of a Car Rental application."
 // And then go to:
 //      http://localhost:8080/org.apache.zest.sample.rental/rental/main
 
-jar { manifest { name = "Apache Zest™ Sample - Car Rental" }}
+jar { manifest { name = "Apache Zest™ Sample - Car Rental" } }
 
 dependencies {
-
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson" )
+  compile zest.core.bootstrap
+  compile zest.extension( 'valueserialization-orgjson' )
 
   providedCompile libraries.servlet_api
 
-  runtime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-
+  runtime zest.core.runtime
 }

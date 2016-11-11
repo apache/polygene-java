@@ -18,16 +18,15 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Memory" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - Memory" } }
 
 dependencies {
+  compile zest.core.bootstrap
 
-    compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  runtime zest.core.runtime
 
-    testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-    testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-    testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-    testRuntime(libraries.logback)
-
+  testRuntime libraries.logback
 }

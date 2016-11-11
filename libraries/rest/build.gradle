@@ -20,22 +20,21 @@
 
 description = "Apache Zest™ REST Library provides various Restlet resources that can be used to expose Apache Zest™ entities and indexes. Mostly for debugging."
 
-jar { manifest { name = "Apache Zest™ Library - REST" }}
+jar { manifest { name = "Apache Zest™ Library - REST" } }
 
 dependencies {
+  compile zest.extension( 'indexing-rdf' )
+  compile libraries.restlet
+  compile libraries.sparql
+  compile libraries.velocity
+  compile libraries.servlet_api
 
-    compile project( ':org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf' )
-    compile libraries.restlet
-    compile libraries.sparql
-    compile libraries.velocity
-    compile libraries.servlet_api
+  runtime zest.core.runtime
 
-    testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-    testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.http" )
-    testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
-    testCompile libraries.http_client
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'http' )
+  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile libraries.http_client
 
-    testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-    testRuntime libraries.logback
-
+  testRuntime libraries.logback
 }

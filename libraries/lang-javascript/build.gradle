@@ -20,16 +20,17 @@
 
 description = "Apache Zest™ JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
 
-jar { manifest { name = "Apache Zest™ Library - Scripting - JavaScript" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - JavaScript" } }
 
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile( project( ':org.apache.zest.libraries:org.apache.zest.library.scripting' ))
-  compile(libraries.javascript)
+  compile zest.core.api
+  compile zest.library( 'scripting' )
+  compile libraries.javascript
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

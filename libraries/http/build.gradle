@@ -20,52 +20,52 @@
 
 description = "Apache Zest™ Http Library provides embedded Jetty for Apache Zest™ application use."
 
-jar { manifest { name = "Apache Zest™ Library - Http" }}
+jar { manifest { name = "Apache Zest™ Library - Http" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'jmx' )
+  compile zest.library( 'constraints' )
+  compile libraries.bouncy_castle
+  compile libraries.jetty_webapp
+  compile libraries.jetty_jmx
 
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.api" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.jmx" ) )
-  compile( libraries.bouncy_castle )
-  compile( libraries.jetty_webapp )
-  compile( libraries.jetty_jmx )
+  runtime zest.core.runtime
 
-  testCompile( project( ":org.apache.zest.core:org.apache.zest.core.testsupport" ) )
-  testCompile( libraries.http_client )
+  testCompile zest.core.testsupport
+  testCompile libraries.http_client
 
-  testRuntime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
-  testRuntime( libraries.logback )
-
+  testRuntime libraries.logback
 }
 
 // Do not run vhost tests on Java >= 9 because they use internal JDK apis
-if(JavaVersion.current() < JavaVersion.VERSION_1_9) {
-    sourceSets {
-        vhostTest {
-            java {
-                compileClasspath += main.output + test.output
-                runtimeClasspath += main.output + test.output
-                srcDir file('src/vhost-test/java')
-            }
-            resources {
-                srcDir file('src/vhost-test/resources')
-            }
-        }
+if( JavaVersion.current() < JavaVersion.VERSION_1_9 )
+{
+  sourceSets {
+    vhostTest {
+      java {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        srcDir file( 'src/vhost-test/java' )
+      }
+      resources {
+        srcDir file( 'src/vhost-test/resources' )
+      }
     }
-    configurations {
-        vhostTestCompile.extendsFrom testCompile
-        vhostTestRuntime.extendsFrom testRuntime
-    }
-    dependencies {
-        vhostTestCompile( libraries.dnsjava )
-    }
-    task vhostTest(type: Test) {
-        testClassesDir = sourceSets.vhostTest.output.classesDir
-        classpath = sourceSets.vhostTest.runtimeClasspath
-        systemProperties 'networkaddress.cache.ttl': '0'
-        systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
-    }
-    check.dependsOn vhostTest
-    vhostTest.mustRunAfter test
+  }
+  configurations {
+    vhostTestCompile.extendsFrom testCompile
+    vhostTestRuntime.extendsFrom testRuntime
+  }
+  dependencies {
+    vhostTestCompile( libraries.dnsjava )
+  }
+  task vhostTest( type: Test ) {
+    testClassesDir = sourceSets.vhostTest.output.classesDir
+    classpath = sourceSets.vhostTest.runtimeClasspath
+    systemProperties 'networkaddress.cache.ttl': '0'
+    systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
+  }
+  check.dependsOn vhostTest
+  vhostTest.mustRunAfter test
 }

@@ -20,13 +20,14 @@
 
 description = "Apache Zest™ Locking Library provides lock management for methods."
 
-jar { manifest { name = "Apache Zest™ Library - Locking" }}
+jar { manifest { name = "Apache Zest™ Library - Locking" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
+  compile zest.core.api
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

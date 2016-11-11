@@ -23,14 +23,13 @@ description = "Apache Zest™ StaX ValueSerialization Extension"
 jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - StaX" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile libraries.commons_lang
 
-    compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
-    compile libraries.commons_lang
+  runtime zest.core.runtime
 
-    testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
+  testCompile zest.core.testsupport
 
-    testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
-    testRuntime libraries.slf4j_simple
-
+  testRuntime libraries.logback
 }
 

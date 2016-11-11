@@ -23,19 +23,17 @@ description = "Apache Zest™ RDF Index/Query Extension"
 jar { manifest { name = "Apache Zest™ Extension - Index/Query - RDF" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'rdf' )
+  compile libraries.sesame
+  compile libraries.commons_lang
 
-    compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-    compile project( ":org.apache.zest.libraries:org.apache.zest.library.rdf" )
-    compile libraries.sesame
-    compile libraries.commons_lang
-    compile libraries.slf4j_api
+  runtime zest.core.runtime
 
-    testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
-    testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.entitystore-preferences' )
-    testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.entitystore-jdbm' )
-    testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile zest.extension( 'entitystore-preferences' )
+  testCompile zest.extension( 'entitystore-jdbm' )
 
-    testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-    testRuntime libraries.logback
-
+  testRuntime libraries.logback
 }

@@ -17,17 +17,21 @@
  *
  *
  */
+import org.apache.zest.gradle.test.TestSupportPlugin
+
+apply plugin: TestSupportPlugin
 
 description = "Apache Zest™ File Configuration Library provides platform specific file locations."
 
-jar { manifest { name = "Apache Zest™ Library - FileConfig" }}
+jar { manifest { name = "Apache Zest™ Library - FileConfig" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile zest.core.bootstrap
   compile libraries.slf4j_api
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

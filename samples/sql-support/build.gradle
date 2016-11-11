@@ -20,23 +20,22 @@
 
 description = "SQL Support Sample."
 
-jar { manifest { name = "Apache Zest™ Sample - SQL Support" }}
+jar { manifest { name = "Apache Zest™ Sample - SQL Support" } }
 
 dependencies {
 
-    compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-    compile project( ":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp" )
-    compile project( ":org.apache.zest.extensions:org.apache.zest.extension.entitystore-preferences" )
-    compile project( ":org.apache.zest.extensions:org.apache.zest.extension.entitystore-sql" )
-    compile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-sql" )
+  compile zest.core.bootstrap
+  compile zest.library( 'sql-dbcp' )
+  compile zest.extension( 'entitystore-preferences' )
+  compile zest.extension( 'entitystore-sql' )
+  compile zest.extension( 'indexing-sql' )
 
-    runtime project(":org.apache.zest.core:org.apache.zest.core.runtime")
-    runtime libraries.postgres
-    runtime libraries.slf4j_simple
-
+  runtime zest.core.runtime
+  runtime libraries.postgres
+  runtime libraries.slf4j_simple
 }
 
 task( runSample, dependsOn: 'classes', type: JavaExec ) {
-    main = 'org.apache.zest.sample.sqlsupport.Main'
-    classpath = sourceSets.main.runtimeClasspath
+  main = 'org.apache.zest.sample.sqlsupport.Main'
+  classpath = sourceSets.main.runtimeClasspath
 }

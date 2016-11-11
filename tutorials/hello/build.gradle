@@ -20,14 +20,15 @@
 
 description = "Basic tutorial on how to covert a simple 'Hello World' application to Apache Zest™, using more and more features for each step."
 
-jar { manifest { name = "Apache Zest™ Tutorial - Composites" }}
+jar { manifest { name = "Apache Zest™ Tutorial - Composites" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.constraints"))
+  compile zest.core.bootstrap
+  compile zest.library( 'constraints' )
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }
