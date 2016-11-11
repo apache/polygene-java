@@ -14,17 +14,16 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.gradle.publish
 
-// See http://maven.apache.org/pom/asf/
+import org.gradle.api.artifacts.maven.MavenDeployer
 
-uploadArchives {
-  repositories.mavenDeployer {
-
-    pom {
-
+class MavenMetadata
+{
+  static void applyTo( MavenDeployer mavenDeployer )
+  {
+    mavenDeployer.pom {
       project {
         url 'https://zest.apache.org/'
         organization {
@@ -278,6 +277,5 @@ uploadArchives {
         }
       }
     }
-
-  }  
+  }
 }

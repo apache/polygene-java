@@ -19,9 +19,9 @@ package org.apache.zest.gradle.doc
 
 import groovy.io.FileType
 import groovy.transform.CompileStatic
-import groovy.transform.TypeCheckingMode;
+import groovy.transform.TypeCheckingMode
+import org.apache.zest.gradle.release.ReleaseSpecExtension;
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.Input
@@ -142,7 +142,7 @@ class DocumentationTask extends DefaultTask
         asciidocFile.readLines().each { line ->
           if( line.startsWith( 'include::' ) ) {
             def approved = false
-            Set<Project> releaseApprovedProjects = project.rootProject.extensions.extraProperties.get('releaseApprovedProjects') as Set<Project>
+            def releaseApprovedProjects = project.rootProject.extensions.getByType( ReleaseSpecExtension ).approvedProjects
             releaseApprovedProjects.collect{it.projectDir}.each { approvedProjectDir ->
               if( line.contains( "${approvedProjectDir.parentFile.name}/${approvedProjectDir.name}" ) ) {
                 approved = true

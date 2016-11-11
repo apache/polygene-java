@@ -27,9 +27,8 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.bundling.Jar
 
-// TODO:perf Build only one for the whole project
-// TODO:perf Remove the build date, maybe not for release versions
-// TODO:release Put git data in with placeholders for dev versions
+// TODO:release:perf Placeholder for date for dev versions
+// TODO:release:perf Add git data, placeholders for dev versions
 @CompileStatic
 class VersionClassPlugin implements Plugin<Project>
 {
@@ -39,7 +38,8 @@ class VersionClassPlugin implements Plugin<Project>
     def genSrc = 'generated-src/version'
     def generatedSrcDir = new File( project.buildDir, genSrc )
 
-    Task makeVersionClassTask = project.task( 'makeVersionClass' ) << {
+    Task makeVersionClassTask = project.task( 'makeVersionClass' )
+    makeVersionClassTask.doLast {
       def now = new Date()
       def tmpGroup = project.name
       if( tmpGroup.startsWith( "org.apache.zest.core" ) )
@@ -96,5 +96,3 @@ public interface BuildVersion
     }
   }
 }
-
-

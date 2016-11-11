@@ -30,7 +30,8 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
   {
     def buildInfoDir = new File( project.buildDir, "docs/buildinfo" );
 
-    def makeAsciidocBuildInfoTask = project.task( TASK_NAME ) << {
+    def makeAsciidocBuildInfoTask = project.task( TASK_NAME )
+    makeAsciidocBuildInfoTask.doLast {
       buildInfoDir.mkdirs()
 
       // GroupID, ArtifactID, Version table in artifact.txt

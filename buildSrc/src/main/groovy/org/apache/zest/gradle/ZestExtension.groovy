@@ -17,9 +17,11 @@
  */
 package org.apache.zest.gradle
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 
+@CompileStatic
 class ZestExtension
 {
   private final Project project

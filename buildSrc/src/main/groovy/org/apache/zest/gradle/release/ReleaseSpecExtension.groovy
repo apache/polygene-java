@@ -15,18 +15,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.gradle
+package org.apache.zest.gradle.release
 
 import groovy.transform.CompileStatic
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/**
+ * Provide release approved projects.
+ *
+ * There's no up-to-date checking on Gradle extensions.
+ * Depend on {@link ReleaseApprovedProjectsTask} to get a good up-to-date behavior.
+ */
 @CompileStatic
-class ZestPlugin implements Plugin<Project>
+class ReleaseSpecExtension
 {
-  @Override
-  void apply( final Project project )
+  static final String NAME = 'releaseSpec'
+  Set<Project> approvedProjects
+
+  ReleaseSpecExtension( Project rootProject )
   {
-    project.extensions.create( "zest", ZestExtension, project )
+    def spec = new ModuleReleaseSpec()
+    approvedProjects = rootProject.allprojects.findAll( { p -> spec.satisfiedBy( p ) } )
   }
 }
