@@ -60,7 +60,7 @@ Any of the method declarations should work. From the testcases we have the follo
 
 [snippet,java]
 ----
-source=libraries/metrics/src/test/java/org/apache/zest/library/metrics/MetricsTest.java
+source=libraries/metrics/src/test/java/org/apache/zest/library/metrics/AbstractTimingCaptureTest.java
 tag=complex-capture
 ----
 
