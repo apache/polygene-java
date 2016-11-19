@@ -15,8 +15,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import org.apache.zest.gradle.AllProjectsPlugin
+import org.apache.zest.gradle.RootProjectPlugin
+import org.apache.zest.gradle.dependencies.DependenciesDeclarationPlugin
+
+apply plugin: DependenciesDeclarationPlugin
+apply from: 'dependencies.gradle'
 
 allprojects {
-  apply plugin: org.apache.zest.gradle.AllProjectsPlugin
+  apply plugin: AllProjectsPlugin
 }
-apply plugin: org.apache.zest.gradle.RootProjectPlugin
+apply plugin: RootProjectPlugin

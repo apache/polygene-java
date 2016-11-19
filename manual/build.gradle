@@ -27,6 +27,6 @@ dependencies {
   compile zest.library( 'logging' )
 
   runtime zest.core.runtime
-  runtime( libraries.slf4j_simple )
+  runtime( libraries.logback )
 }
 

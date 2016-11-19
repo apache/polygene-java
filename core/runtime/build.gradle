@@ -30,5 +30,4 @@ dependencies {
 
   testCompile zest.core.testsupport
   testCompile zest.library( 'constraints' )
-  testCompile libraries.hamcrest
 }

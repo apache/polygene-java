@@ -34,7 +34,7 @@ dependencies {
 
   runtime zest.core.runtime
   runtime libraries.postgres
-  runtime libraries.slf4j_simple
+  runtime libraries.logback
 }
 
 task( runSqlSupportSample, dependsOn: 'classes', type: JavaExec ) {

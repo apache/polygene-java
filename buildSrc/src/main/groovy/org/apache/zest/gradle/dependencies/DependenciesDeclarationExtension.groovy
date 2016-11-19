@@ -14,22 +14,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.gradle.dependencies
 
-apply plugin: 'application'
+import groovy.transform.CompileStatic
+import org.gradle.api.artifacts.DependencySubstitution
+import org.gradle.api.artifacts.component.ModuleComponentSelector
+import org.gradle.internal.BiAction
 
-description = "Command line tools for building Apache Zest™ applications."
-mainClassName = "org.apache.zest.tools.shell.Main"
-
-jar {
-  manifest {
-    name = "Apache Zest™ Command Line"
-    attributes("Main-Class": mainClassName )
-  }
-}
-
-dependencies {
-  testRuntime libraries.logback
+@CompileStatic
+class DependenciesDeclarationExtension
+{
+  final Map<String, String> repositoriesUrls = [ : ]
+  final Map<String, Object> libraries = [ : ]
+  final Map<String, List<Object>> defaultDependencies = [ : ]
+  BiAction<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
 }

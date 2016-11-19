@@ -18,7 +18,6 @@
 package org.apache.zest.gradle
 
 import groovy.transform.CompileStatic
-import java.nio.file.Files
 import org.apache.zest.gradle.dependencies.DependenciesPlugin
 import org.apache.zest.gradle.publish.PublishingPlugin
 import org.gradle.api.JavaVersion

@@ -23,6 +23,7 @@ import org.apache.rat.gradle.RatTask
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.zest.gradle.RootProjectPlugin
 import org.apache.zest.gradle.TaskGroups
+import org.apache.zest.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.zest.gradle.dependencies.DependenciesPlugin
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.release.ReleaseSpecPlugin
@@ -291,13 +292,14 @@ class DistributionPlugin implements Plugin<Project>
 
   private static void configureGoOfflineHelpers( Project project )
   {
+    def externalRepos = project.rootProject.extensions.getByType( DependenciesDeclarationExtension ).repositoriesUrls
     def approvedProjectsTask = project.tasks.getByName( ReleaseSpecPlugin.TaskNames.RELEASE_APPROVED_PROJECTS )
     def genOfflineMaven = project.tasks.create( TaskNames.GENERATE_MAVEN_OFFLINE_HELPERS,
                                                 GoOfflineHelpersTasks.GenerateMaven )
     def genOfflineGradle = project.tasks.create( TaskNames.GENERATE_GRADLE_OFFLINE_HELPERS,
                                                  GoOfflineHelpersTasks.GenerateGradle )
-    genOfflineMaven.repositories = DependenciesPlugin.REPOSITORIES_URLS
-    genOfflineGradle.repositories = DependenciesPlugin.REPOSITORIES_URLS
+    genOfflineMaven.repositories = externalRepos
+    genOfflineGradle.repositories = externalRepos
     [ genOfflineMaven, genOfflineGradle ].each { task ->
       task.group = TaskGroups.DISTRIBUTION
       task.dependsOn approvedProjectsTask

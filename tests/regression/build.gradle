@@ -30,7 +30,5 @@ dependencies {
   compile libraries.junit
 
   runtime zest.core.runtime
-  runtime libraries.asm
-  runtime libraries.asm_commons
-  runtime libraries.slf4j_simple
+  runtime libraries.logback
 }

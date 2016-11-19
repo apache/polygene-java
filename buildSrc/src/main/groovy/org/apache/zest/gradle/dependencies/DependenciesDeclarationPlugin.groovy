@@ -14,22 +14,17 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.zest.gradle.dependencies
 
-apply plugin: 'application'
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-description = "Command line tools for building Apache Zest™ applications."
-mainClassName = "org.apache.zest.tools.shell.Main"
-
-jar {
-  manifest {
-    name = "Apache Zest™ Command Line"
-    attributes("Main-Class": mainClassName )
+class DependenciesDeclarationPlugin implements Plugin<Project>
+{
+  @Override
+  void apply( Project project )
+  {
+    project.extensions.create( 'dependenciesDeclaration', DependenciesDeclarationExtension )
   }
-}
-
-dependencies {
-  testRuntime libraries.logback
 }
