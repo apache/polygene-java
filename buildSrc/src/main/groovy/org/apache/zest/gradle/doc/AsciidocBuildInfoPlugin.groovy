@@ -18,6 +18,7 @@
 package org.apache.zest.gradle.doc
 
 import groovy.transform.CompileStatic
+import org.apache.zest.gradle.TaskGroups
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 
@@ -30,7 +31,9 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
   {
     def buildInfoDir = new File( project.buildDir, "docs/buildinfo" );
 
-    def makeAsciidocBuildInfoTask = project.task( TASK_NAME )
+    def makeAsciidocBuildInfoTask = project.tasks.create( TASK_NAME )
+    makeAsciidocBuildInfoTask.group = TaskGroups.DOCUMENTATION
+    makeAsciidocBuildInfoTask.description = 'Generates asciidoc artifact snippet'
     makeAsciidocBuildInfoTask.doLast {
       buildInfoDir.mkdirs()
 

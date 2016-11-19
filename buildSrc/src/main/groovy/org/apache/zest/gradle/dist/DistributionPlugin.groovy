@@ -22,6 +22,7 @@ import groovy.transform.TypeCheckingMode
 import org.apache.rat.gradle.RatTask
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.zest.gradle.RootProjectPlugin
+import org.apache.zest.gradle.TaskGroups
 import org.apache.zest.gradle.dependencies.DependenciesPlugin
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.release.ReleaseSpecPlugin
@@ -40,12 +41,6 @@ import org.gradle.api.tasks.bundling.Zip
 @CompileStatic
 class DistributionPlugin implements Plugin<Project>
 {
-  static class TaskGroups
-  {
-    static final String DISTRIBUTION = 'Distribution'
-    static final String DISTRIBUTION_VERIFICATION = 'Distribution verification'
-  }
-
   static class TaskNames
   {
     static final String UNPACK_SOURCE_DIST = 'unpackSrcDist'
@@ -113,6 +108,7 @@ class DistributionPlugin implements Plugin<Project>
       spec.into '.'
     }
     def srcDistFilteredFilesTask = project.tasks.create( 'srcDistFilteredFiles' )
+    srcDistFilteredFilesTask.description = 'Apply release specification to source distribution build scripts'
     // Generates various files for the source distribution
     // - settings.gradle
     // - gradle.properties to set version !
@@ -161,11 +157,15 @@ class DistributionPlugin implements Plugin<Project>
     }
 
     def zipSources = project.tasks.create( 'zipSources', Zip ) { Zip task ->
+      task.group = TaskGroups.DISTRIBUTION
+      task.description = 'Assemble .zip source distribution'
       task.baseName = 'apache-zest-java'
       task.with srcDistCopySpec
       task.classifier = 'src'
     }
     def tarSources = project.tasks.create( 'tarSources', Tar ) { Tar task ->
+      task.group = TaskGroups.DISTRIBUTION
+      task.description = 'Assemble .tar.gz source distribution'
       task.baseName = 'apache-zest-java'
       task.with srcDistCopySpec
       task.compression = Compression.GZIP
@@ -175,16 +175,16 @@ class DistributionPlugin implements Plugin<Project>
     project.artifacts.add( 'archives', tarSources )
 
     project.tasks.create( TaskNames.UNPACK_SOURCE_DIST, Copy ) { Copy task ->
-      task.description = "Unpack the source distribution"
       task.group = TaskGroups.DISTRIBUTION
+      task.description = "Unpack source distribution"
       task.with srcDistCopySpec
       task.into 'build/unpacked-distributions/src'
     }
 
     def unpackedSrcDistDir = project.file( "build/unpacked-distributions/src/apache-zest-java-$project.version-src" )
     project.tasks.create( TaskNames.CHECK_SOURCE_DIST, GradleBuild.class, { GradleBuild task ->
-      task.description = "Check the source distribution by running the 'check' and 'assemble' tasks inside"
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = "Check the source distribution by running the 'check' and 'assemble' tasks inside"
       task.dependsOn TaskNames.UNPACK_SOURCE_DIST
       task.buildFile = "$unpackedSrcDistDir/build.gradle"
       task.tasks = [ 'check', 'assemble' ]
@@ -260,12 +260,16 @@ class DistributionPlugin implements Plugin<Project>
     }
 
     def zipBinaries = project.tasks.create( 'zipBinaries', Zip ) { Zip task ->
+      task.group = TaskGroups.DISTRIBUTION
+      task.description = 'Assemble .zip binary distribution'
       task.dependsOn project.tasks.getByName( RootProjectPlugin.TaskNames.BUILD_ALL )
       task.baseName = 'apache-zest-java'
       task.classifier = 'bin'
       task.with binDistImage
     }
     def tarBinaries = project.tasks.create( 'tarBinaries', Tar ) { Tar task ->
+      task.group = TaskGroups.DISTRIBUTION
+      task.description = 'Assemble .tar.gz binary distribution'
       task.dependsOn project.tasks.getByName( RootProjectPlugin.TaskNames.BUILD_ALL )
       task.baseName = 'apache-zest-java'
       task.classifier = 'bin'
@@ -276,8 +280,8 @@ class DistributionPlugin implements Plugin<Project>
     project.artifacts.add( 'archives', tarBinaries )
 
     project.tasks.create( TaskNames.UNPACK_BINARY_DIST, Copy ) { Copy task ->
-      task.description = "Unpack the binary distribution"
       task.group = TaskGroups.DISTRIBUTION
+      task.description = "Unpack binary distribution"
       task.with binDistImage
       task.into 'build/unpacked-distributions/bin'
     }
@@ -300,9 +304,13 @@ class DistributionPlugin implements Plugin<Project>
     }
     def checkOfflineMaven = project.tasks.create( TaskNames.CHECK_MAVEN_OFFLINE_HELPERS,
                                                   GoOfflineHelpersTasks.CheckMaven )
+    checkOfflineMaven.group = TaskGroups.DISTRIBUTION_VERIFICATION
+    checkOfflineMaven.description = 'Check binary distribution Maven dependencies download helper'
+    checkOfflineMaven.dependsOn genOfflineMaven
     def checkOfflineGradle = project.tasks.create( TaskNames.CHECK_GRADLE_OFFLINE_HELPERS,
                                                    GoOfflineHelpersTasks.CheckGradle )
-    checkOfflineMaven.dependsOn genOfflineMaven
+    checkOfflineGradle.group = TaskGroups.DISTRIBUTION_VERIFICATION
+    checkOfflineGradle.description = 'Check binary distribution Gradle dependencies download helper'
     checkOfflineGradle.dependsOn genOfflineGradle
     [ checkOfflineMaven, checkOfflineGradle ].each { task ->
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
@@ -314,9 +322,9 @@ class DistributionPlugin implements Plugin<Project>
   {
     def unpackedBinDistDir = project.file( "build/unpacked-distributions/bin/apache-zest-java-$project.version-bin" )
     project.tasks.create( TaskNames.CHECK_BINARY_DIST_RAT, RatTask, { RatTask task ->
-      task.dependsOn TaskNames.UNPACK_BINARY_DIST
-      task.description = "Check the binary distribution using Apache RAT"
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = "Checks binary distribution using Apache RAT"
+      task.dependsOn TaskNames.UNPACK_BINARY_DIST
       task.inputDir = unpackedBinDistDir.absolutePath
       task.reportDir = project.file( 'build/reports/rat-bin-dist' )
       task.excludes = [
@@ -334,6 +342,8 @@ class DistributionPlugin implements Plugin<Project>
       task.mustRunAfter TaskNames.CHECK_MAVEN_OFFLINE_HELPERS
     }
     project.tasks.create( TaskNames.CHECK_BINARY_DIST ) { Task task ->
+      task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = 'Checks binary distribution'
       task.dependsOn TaskNames.CHECK_BINARY_DIST_RAT
       task.dependsOn TaskNames.CHECK_MAVEN_OFFLINE_HELPERS
       task.dependsOn TaskNames.CHECK_GRADLE_OFFLINE_HELPERS
@@ -360,15 +370,15 @@ class DistributionPlugin implements Plugin<Project>
   private static void configureHelperTasks( Project project )
   {
     project.tasks.create( 'dist', Copy ) { Copy task ->
-      task.dependsOn 'install'
-      task.description = "Unpack the binary distribution"
       task.group = TaskGroups.DISTRIBUTION
+      task.description = "Assembles source and binary distributions"
+      task.dependsOn 'install'
       task.from project.tasks.getByName( 'unpackBinDist' )
       task.into "$project.buildDir/dist"
     }
     project.tasks.create( 'checkDists' ) { Task task ->
-      task.description = "Check the source and binary distributions"
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = "Checks source and binary distributions"
       task.dependsOn TaskNames.CHECK_SOURCE_DIST, TaskNames.CHECK_BINARY_DIST
     }
   }

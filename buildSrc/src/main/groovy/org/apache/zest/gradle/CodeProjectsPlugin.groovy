@@ -28,6 +28,7 @@ import org.gradle.api.plugins.osgi.OsgiManifest
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
+import org.gradle.testing.jacoco.tasks.JacocoReport
 
 @CompileStatic
 class CodeProjectsPlugin implements Plugin<Project>
@@ -72,15 +73,18 @@ class CodeProjectsPlugin implements Plugin<Project>
   {
     def javaConvention = project.convention.getPlugin( JavaPluginConvention )
     def sourceJar = project.tasks.create( 'sourceJar', Jar ) { Jar task ->
+      task.description = 'Builds -sources.jar'
       task.classifier = 'sources'
       task.from javaConvention.sourceSets.getByName( 'main' ).allSource
     }
     def testSourceJar = project.tasks.create( 'testSourceJar', Jar ) { Jar task ->
+      task.description = 'Builds -testsources.jar'
       task.classifier = 'testsources'
       task.from javaConvention.sourceSets.getByName( 'test' ).allSource
     }
     def javadoc = project.tasks.getByName( 'javadoc' ) as Javadoc
     def javadocJar = project.tasks.create( 'javadocJar', Jar ) { Jar task ->
+      task.description = 'Builds -javadoc.jar'
       task.classifier = 'javadoc'
       task.from javadoc.destinationDir
       task.dependsOn javadoc
@@ -98,6 +102,10 @@ class CodeProjectsPlugin implements Plugin<Project>
       project.plugins.apply 'jacoco'
       def jacoco = project.extensions.getByType( JacocoPluginExtension )
       jacoco.toolVersion = '0.7.5.201505241946'
+      project.tasks.withType( JacocoReport ) { JacocoReport task ->
+        task.group = TaskGroups.VERIFICATION
+        task.description = 'Generates test coverage report.'
+      }
     }
   }
 

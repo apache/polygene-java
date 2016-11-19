@@ -18,6 +18,7 @@
 package org.apache.zest.gradle.release
 
 import groovy.transform.CompileStatic
+import org.apache.zest.gradle.TaskGroups
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -25,12 +26,6 @@ import org.gradle.api.Task
 @CompileStatic
 class ReleaseSpecPlugin implements Plugin<Project>
 {
-  static class TaskGroups
-  {
-    static final String RELEASE = 'Release'
-    static final String RELEASE_VERIFICATION = 'Release verification'
-  }
-
   static class TaskNames
   {
     static final String RELEASE_APPROVED_PROJECTS = 'releaseSpecApprovedProjects'
@@ -52,6 +47,7 @@ class ReleaseSpecPlugin implements Plugin<Project>
     project.extensions.create( ReleaseSpecExtension.NAME, ReleaseSpecExtension, project.rootProject )
     project.tasks.create( TaskNames.RELEASE_APPROVED_PROJECTS, ReleaseApprovedProjectsTask ) { Task task ->
       task.group = TaskGroups.RELEASE
+      task.description = 'Apply release specification to projects in the build'
     }
     project.tasks.create( TaskNames.CHECK_RELEASE_SPEC, CheckReleaseSpecTask ) { Task task ->
       task.group = TaskGroups.RELEASE_VERIFICATION

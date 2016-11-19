@@ -43,12 +43,6 @@ class RootProjectPlugin implements Plugin<Project>
   static final String PROJECT_DESCRIPTION = 'Apache Zest™ (Java Edition) is a framework for domain centric ' +
                                             'application development, including evolved concepts from AOP, DI and DDD.'
 
-  static class TaskGroups
-  {
-    static final String HELPER_TASKS = 'Helper tasks'
-    static final String DOCUMENTATION = 'Documentation'
-  }
-
   static class TaskNames
   {
     static final String GO_OFFLINE = 'goOffline'
@@ -86,7 +80,8 @@ class RootProjectPlugin implements Plugin<Project>
   private static void applyHelperTasks( Project project )
   {
     project.tasks.create( TaskNames.GO_OFFLINE ) { Task task ->
-      task.group = TaskGroups.HELPER_TASKS
+      task.group = TaskGroups.HELP
+      task.description = 'Resolves all dependencies configuration'
       task.doLast {
         def allConfigurations = project.allprojects.collect { Project each ->
           each.configurations
@@ -95,6 +90,8 @@ class RootProjectPlugin implements Plugin<Project>
       }
     }
     def buildAll = project.tasks.create( TaskNames.BUILD_ALL )
+    buildAll.group = TaskGroups.BUILD
+    buildAll.description = 'Builds all'
     buildAll.dependsOn 'javadocs', 'check', 'jar',
                        project.subprojects.collect { p -> p.tasks.getByName( 'dependencyReport' ) },
                        project.subprojects.collect { p -> p.tasks.getByName( 'assemble' ) },
@@ -111,6 +108,8 @@ class RootProjectPlugin implements Plugin<Project>
     project.configurations.create( 'jacoco' )
     project.dependencies.add( 'jacoco', 'org.jacoco:org.jacoco.ant:0.7.5.201505241946' )
     def task = project.tasks.create( 'coverageReport', AggregatedJacocoReportTask ) { AggregatedJacocoReportTask task ->
+      task.group = TaskGroups.VERIFICATION
+      task.description = 'Generates global coverage report'
       // ZEST-175
       task.enabled = JavaVersion.current() < JavaVersion.VERSION_1_9
       task.dependsOn project.subprojects.collect( { Project p -> p.tasks.getByName( 'test' ) } )
@@ -121,6 +120,8 @@ class RootProjectPlugin implements Plugin<Project>
   private static void configureTestReport( Project project )
   {
     project.tasks.create( TaskNames.GLOBAL_TEST_REPORT, TestReport ) { TestReport task ->
+      task.group = TaskGroups.VERIFICATION
+      task.description = 'Generates global test report'
       task.destinationDir = project.file( "$project.buildDir/reports/tests" )
       task.reportOn project.subprojects.collect { it.tasks.getByName( 'test' ) }
     }
@@ -135,7 +136,7 @@ class RootProjectPlugin implements Plugin<Project>
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
     project.tasks.create( TaskNames.JAVADOCS, Javadoc ) { Javadoc task ->
       task.group = TaskGroups.DOCUMENTATION
-      task.description = 'Build the whole SDK public Javadoc'
+      task.description = 'Builds the whole SDK public Javadoc'
       task.dependsOn ReleaseSpecPlugin.TaskNames.RELEASE_APPROVED_PROJECTS
       def options = task.options as StandardJavadocDocletOptions
       options.docFilesSubDirs = true
@@ -181,6 +182,8 @@ class RootProjectPlugin implements Plugin<Project>
       ] )
     }
     project.tasks.create( TaskNames.ARCHIVE_JAVADOCS, Copy ) { Copy task ->
+      task.group = TaskGroups.DOCUMENTATION
+      task.description = 'Copy SDK public Javadoc to ../zest-web'
       task.dependsOn TaskNames.JAVADOCS
       task.from 'build/docs/javadoc/'
       if( project.version == '0' || project.version.toString().contains( "SNAPSHOT" ) )
@@ -197,6 +200,7 @@ class RootProjectPlugin implements Plugin<Project>
   private static void configureRat( Project project )
   {
     def rat = project.tasks.getByName( 'rat' ) as RatTask
+    rat.group = TaskGroups.VERIFICATION
     rat.onlyIf { project.version != '0' }
     rat.excludes = [
       '**/.DS_Store/**', '**/._*',
@@ -242,7 +246,7 @@ class RootProjectPlugin implements Plugin<Project>
   {
     def release = project.tasks.create( 'release' )
     release.description = 'Builds, tests and uploads the release artifacts'
-    release.group = 'Release'
+    release.group = TaskGroups.RELEASE
     release.doFirst {
       if( System.properties[ 'version' ] == null || System.properties[ 'version' ].toString().contains( 'SNAPSHOT' ) )
       {
