@@ -131,9 +131,15 @@ class AllProjectsPlugin implements Plugin<Project>
       def tmpDir = new File( testDir, 'tmp' )
       def homeDir = new File( testDir, 'home' )
       testTask.workingDir = workDir
-      testTask.systemProperties[ 'user.dir' ] = workDir
-      testTask.systemProperties[ 'java.io.tmpdir' ] = tmpDir
-      testTask.systemProperties[ 'home.dir' ] = homeDir
+      testTask.systemProperties << ( [
+        'user.dir'      : workDir.absolutePath,
+        'java.io.tmpdir': tmpDir.absolutePath,
+        'home.dir'      : homeDir.absolutePath
+      ] as Map<String, Object> )
+      testTask.environment << ( [
+        'HOME'       : homeDir.absolutePath,
+        'USERPROFILE': homeDir.absolutePath
+      ] as Map<String, Object> )
       testTask.doFirst { Test task ->
         [ workDir, tmpDir, homeDir ]*.mkdirs()
       }
