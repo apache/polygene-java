@@ -46,7 +46,7 @@ class AllProjectsPlugin implements Plugin<Project>
                     'org.apache.zest' :
                     project.name.substring( 0, project.name.lastIndexOf( '.' ) )
 
-    applyVersionning( project )
+    applyDefaultVersion( project )
     applyZestExtension( project )
 
     configureJava( project )
@@ -62,7 +62,7 @@ class AllProjectsPlugin implements Plugin<Project>
     project.plugins.apply PublishingPlugin
   }
 
-  private static void applyVersionning( Project project )
+  private static void applyDefaultVersion( Project project )
   {
     if( project.version == 'unspecified' )
     {

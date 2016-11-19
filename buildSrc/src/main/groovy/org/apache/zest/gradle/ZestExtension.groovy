@@ -33,6 +33,16 @@ class ZestExtension
     this.core = new Core()
   }
 
+  boolean isDevelopmentVersion()
+  {
+    return project.version == '0' || project.version.toString().contains( 'SNAPSHOT' )
+  }
+
+  boolean isReleaseVersion()
+  {
+    return !isDevelopmentVersion()
+  }
+
   class Core
   {
     Dependency api = core( 'api' )

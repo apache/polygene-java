@@ -133,6 +133,7 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureJavadocs( Project project )
   {
+    def zest = project.extensions.getByType( ZestExtension )
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
     project.tasks.create( TaskNames.JAVADOCS, Javadoc ) { Javadoc task ->
       task.group = TaskGroups.DOCUMENTATION
@@ -186,7 +187,7 @@ class RootProjectPlugin implements Plugin<Project>
       task.description = 'Copy SDK public Javadoc to ../zest-web'
       task.dependsOn TaskNames.JAVADOCS
       task.from 'build/docs/javadoc/'
-      if( project.version == '0' || project.version.toString().contains( "SNAPSHOT" ) )
+      if( zest.developmentVersion )
       {
         task.into( "$project.projectDir/../zest-web/site/content/java/develop/javadocs/" )
       }
@@ -244,13 +245,14 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureReleaseTask( Project project )
   {
+    def zest = project.extensions.getByType( ZestExtension )
     def release = project.tasks.create( 'release' )
     release.description = 'Builds, tests and uploads the release artifacts'
     release.group = TaskGroups.RELEASE
     release.doFirst {
-      if( System.properties[ 'version' ] == null || System.properties[ 'version' ].toString().contains( 'SNAPSHOT' ) )
+      if( zest.developmentVersion )
       {
-        throw new GradleException( "'version' must be given as a system property to perform a release." )
+        throw new GradleException( "Cannot release development version $project.version, use '-Dversion=X.Y.Z'" )
       }
     }
     release.dependsOn 'checkReleaseSpec',

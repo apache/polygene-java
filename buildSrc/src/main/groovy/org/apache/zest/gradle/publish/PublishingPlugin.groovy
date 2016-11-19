@@ -18,6 +18,7 @@
 package org.apache.zest.gradle.publish
 
 import groovy.transform.CompileStatic
+import org.apache.zest.gradle.ZestExtension
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -90,9 +91,10 @@ class PublishingPlugin implements Plugin<Project>
 
   private static Config configFor( Project project )
   {
+    def zest = project.extensions.getByType( ZestExtension )
     def config = new Config()
-    config.snapshots = project.version == '0' || project.version.toString().contains( 'SNAPSHOT' )
-    config.releases = !config.snapshots
+    config.snapshots = zest.developmentVersion
+    config.releases = zest.releaseVersion
     config.signed = project.findProperty( 'uploadSigned' ) ?: config.releases
     config.releaseSpec = project.findProperty( 'uploadReleaseSpec' ) ?: config.releases
     config.wagon = project.findProperty( 'uploadWagon' ) ?: WAGON_HTTP
