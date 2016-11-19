@@ -574,9 +574,10 @@ public abstract class CompositeAssemblyImpl
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
             for( Class<?> constraint : constraintClasses )
             {
-                if( helper.appliesTo( (Class<? extends Constraint<?, ?>>) constraint, annotationType, valueType ) )
+                Class<? extends Constraint<?, ?>> constraintType = (Class<? extends Constraint<?, ?>>) constraint;
+                if( helper.appliesTo( constraintType, annotationType, valueType ) )
                 {
-                    constraintModels.add( new ConstraintModel( constraintAnnotation, (Class<? extends Constraint<?, ?>>) constraint ) );
+                    constraintModels.add( new ConstraintModel( constraintAnnotation, constraintType ) );
                     continue nextConstraint;
                 }
             }
@@ -816,7 +817,7 @@ public abstract class CompositeAssemblyImpl
     protected Stream<Class<?>> mixinDeclarations( Class<?> type )
     {
         //Stream<? extends Type> types = typesOf( type );
-        return mixinDeclarations( Arrays.asList( type ).stream() );
+        return mixinDeclarations( Stream.of( type ) );
     }
 
     private Stream<Class<?>> mixinDeclarations( Stream<? extends Class> types )

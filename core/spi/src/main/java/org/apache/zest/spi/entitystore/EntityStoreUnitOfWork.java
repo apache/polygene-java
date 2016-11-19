@@ -58,7 +58,7 @@ public interface EntityStoreUnitOfWork
      * if the entity with given {@code anIdentity} is not found.
      *
      *
-     * @param module
+     * @param module Module descriptor
      * @param anIdentity The entity reference. This argument must not be {@code null}.
      *
      * @return Entity state given the composite descriptor and reference.

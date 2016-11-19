@@ -23,7 +23,7 @@ package org.apache.zest.bootstrap;
 /**
  * Fluent API for declaring information about properties
  *
- * @param <T>
+ * @param <T> Parameterized mixin type
  */
 public interface MixinDeclaration<T>
 {

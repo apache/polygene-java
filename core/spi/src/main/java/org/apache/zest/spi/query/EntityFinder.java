@@ -41,6 +41,7 @@ public interface EntityFinder
      * @param maxResults        Maximum returned entities.
      * @param variables         Query variables
      * @return Single entity matching the query criterion.
+     * @throws EntityFinderException on error
      */
     Iterable<EntityReference> findEntities( Class<?> resultType,
                                             @Optional Predicate<Composite> whereClause,
@@ -58,6 +59,7 @@ public interface EntityFinder
      * @param whereClause   Where clause specification.
      * @param variables     Query variables
      * @return Single entity matching the query criterion.
+     * @throws EntityFinderException on error
      */
     EntityReference findEntity( Class<?> resultType,
                                 @Optional Predicate<Composite> whereClause,
@@ -72,6 +74,7 @@ public interface EntityFinder
      * @param whereClause   Where clause specification.
      * @param variables     Query variables
      * @return Count entities matching the query criterion.
+     * @throws EntityFinderException on error
      */
     long countEntities( Class<?> resultType,
                         @Optional Predicate<Composite> whereClause,

@@ -65,6 +65,8 @@ public abstract class AbstractZestBaseTest
      * the contents of each module.
      *
      * @param applicationAssembly the {@link org.apache.zest.bootstrap.ApplicationAssembly} to be populated.
+     *
+     * @throws AssemblyException on invalid assembly
      */
     protected abstract void defineApplication( ApplicationAssembly applicationAssembly )
         throws AssemblyException;

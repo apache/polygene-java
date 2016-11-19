@@ -542,8 +542,7 @@ public class ModuleUnitOfWork
 
             try
             {
-                final EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections
-                    .<String, Object>emptyMap() : variables );
+                EntityReference foundEntity = entityFinder.findEntity( resultType, whereClause, variables == null ? Collections.emptyMap() : variables );
                 if( foundEntity != null )
                 {
                     try
@@ -577,7 +576,7 @@ public class ModuleUnitOfWork
 
             try
             {
-                return entityFinder.countEntities( resultType, whereClause, variables == null ? Collections.<String, Object>emptyMap() : variables );
+                return entityFinder.countEntities( resultType, whereClause, variables == null ? Collections.emptyMap() : variables );
             }
             catch( EntityFinderException e )
             {
@@ -606,7 +605,7 @@ public class ModuleUnitOfWork
                         Iterables.toArray( OrderBy.class, orderBySegments ),
                         firstResult,
                         maxResults,
-                        variables == null ? Collections.<String, Object>emptyMap() : variables
+                        variables == null ? Collections.emptyMap() : variables
                     ).iterator();
 
                 return new Iterator<T>()

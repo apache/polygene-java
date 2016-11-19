@@ -169,6 +169,8 @@ public interface ModuleAssembly
      * @param objectTypes The types that specifies the Object types.
      *
      * @return An ObjectDeclaration for the specified Object types.
+     *
+     * @throws AssemblyException on invalid assembly
      */
     ObjectDeclaration objects( Class<?>... objectTypes )
         throws AssemblyException;

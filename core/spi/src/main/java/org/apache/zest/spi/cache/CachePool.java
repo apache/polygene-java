@@ -45,8 +45,8 @@ public interface CachePool
      *
      * @param cacheId   The reference of the cache. If the same id is given as a previous fetch, the same cache will be
      *                  returned.
-     * @param valueType
-     * @param <T>
+     * @param valueType Value type
+     * @param <T>       Value type
      *
      * @return The cache fetched from the pool.
      */
