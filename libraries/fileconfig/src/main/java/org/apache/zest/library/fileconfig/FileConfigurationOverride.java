@@ -21,14 +21,52 @@ package org.apache.zest.library.fileconfig;
 
 import java.io.File;
 
+/**
+ * Assembly time FileConfiguration override.
+ */
 public final class FileConfigurationOverride
 {
+    /**
+     * {@literal configuration}.
+     */
+    public static final String CONVENTIONAL_CONFIGURATION = "configuration";
+    /**
+     * {@literal data}.
+     */
+    public static final String CONVENTIONAL_DATA = "data";
+    /**
+     * {@literal temporary}.
+     */
+    public static final String CONVENTIONAL_TEMPORARY = "temporary";
+    /**
+     * {@literal cache}.
+     */
+    public static final String CONVENTIONAL_CACHE = "cache";
+    /**
+     * {@literal log}.
+     */
+    public static final String CONVENTIONAL_LOG = "log";
 
     private File configuration;
     private File data;
     private File temporary;
     private File cache;
     private File log;
+
+    /**
+     * With all directories under the given root using conventional names.
+     * @param root Root file
+     * @return This
+     */
+    public FileConfigurationOverride withConventionalRoot( File root )
+    {
+        this.configuration = new File( root, CONVENTIONAL_CONFIGURATION );
+        this.data = new File( root, CONVENTIONAL_DATA );
+        this.temporary = new File( root, CONVENTIONAL_TEMPORARY );
+        this.cache = new File( root, CONVENTIONAL_CACHE );
+        this.log = new File( root, CONVENTIONAL_LOG );
+        return this;
+    }
 
     public FileConfigurationOverride withConfiguration( File configuration )
     {
@@ -84,5 +122,4 @@ public final class FileConfigurationOverride
     {
         return temporary;
     }
-
 }
