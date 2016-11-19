@@ -59,7 +59,7 @@ class ViewPost
         return replyTopic.reply( message, viewPost );
     }
 
-    private class ReplyTopic
+    public class ReplyTopic
         extends Role<Topic>
     {
         @Structure
@@ -80,12 +80,12 @@ class ViewPost
         }
     }
 
-    private class PostView
+    public class PostView
         extends Role<Post>
     {
     }
 
-    private class Poster
+    public class Poster
         extends Role<User>
     {
     }
