@@ -14,11 +14,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-import org.apache.zest.gradle.doc.AsciidocBuildInfoPlugin
-import org.apache.zest.gradle.doc.DocumentationTask
+import org.apache.zest.gradle.doc.ManualPlugin
+
+apply plugin: ManualPlugin
 
 description = "Apache Zest™ Manuals and Website."
 
@@ -31,72 +30,3 @@ dependencies {
   runtime( libraries.slf4j_simple )
 }
 
-//task userguide( type: DocumentationTask ) {
-//  docName = 'userguide'
-//  docType = 'book'
-//}
-//
-//task recipes( type: DocumentationTask ) {
-//  docName = 'recipes'
-//  docType = 'article'
-//}
-//
-//task referenceManual( type: DocumentationTask ) {
-//  docName = 'reference'
-//  docType = 'book'
-//}
-
-
-task website( type: DocumentationTask,
-              dependsOn: rootProject.allprojects.tasks.flatten().
-                findAll { it.name == AsciidocBuildInfoPlugin.TASK_NAME } ) {
-  docName 'website'
-  docType 'article'
-}
-
-task archiveWebsite( type: Copy ) {
-  dependsOn website
-  if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
-  {
-    into( "$rootProject.projectDir/../zest-web/site/content/java/develop" )
-  }
-  else
-  {
-    into( "$rootProject.projectDir/../zest-web/site/content/java/$version" )
-  }
-  from( 'build/docs/website/' )
-}
-
-task copyWebsite( type: Copy ) {
-  dependsOn archiveWebsite
-  if( rootProject.version != '0' && !rootProject.version.contains( "SNAPSHOT" ) )
-  {
-    from( "$rootProject.projectDir/../zest-web/site/content/java/$version/" )
-    into( "$rootProject.projectDir/../zest-web/site/content/java/latest/" )
-  }
-}
-
-task manuals() {
-  dependsOn copyWebsite
-//  dependsOn userguide
-//  dependsOn referenceManual
-//  dependsOn recipes
-}
-
-// Skip if asciidoc is not found in PATH when building a 0 or SNAPSHOT version,
-// or if skipAsciidocIfAbsent property is set and asciidoc is not found in PATH
-[ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
-  def skipAsciidocIfAbsent = rootProject.findProperty 'skipAsciidocIfAbsent'
-  def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
-  def present = pathDirs.collect( { new File( it, 'asciidoc' ) } ).flatten().findAll( { it.isFile() } )
-  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) )
-  {
-    project.logger.debug 'Asciidoc tasks forced because version is no-0 and no-SNAPSHOT, hope you have Asciidoc installed'
-    return true
-  }
-  if( !present )
-  {
-    project.logger.warn 'Asciidoc not found in PATH, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
-  }
-  present
-}
