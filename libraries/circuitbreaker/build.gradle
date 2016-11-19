@@ -17,6 +17,7 @@
  *
  *
  */
+import org.apache.zest.gradle.TaskGroups
 
 description = "Apache Zest™ Circuit Breaker Library provides a framework for connecting external resources, so that they can be disabled during re-play of events."
 
@@ -34,7 +35,9 @@ dependencies {
   testRuntime libraries.logback
 }
 
-task( runSample, dependsOn: 'testClasses', type: JavaExec ) {
-  main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementTest'
+task( runCircuitBreakerSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementSample'
   classpath = sourceSets.test.runtimeClasspath
 }

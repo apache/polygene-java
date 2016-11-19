@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -40,7 +42,9 @@ dependencies {
   testRuntime libraries.logback
 }
 
-task runSample( type: JavaExec, dependsOn: 'testClasses' ) {
+task runRestletSample( type: JavaExec, dependsOn: 'testClasses' ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
   classpath = sourceSets.test.runtimeClasspath
   main = 'org.apache.zest.library.restlet.TestApplication'
 }

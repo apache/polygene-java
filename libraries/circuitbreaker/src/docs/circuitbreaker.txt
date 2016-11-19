@@ -113,7 +113,7 @@ tag=jmx
 
 == Interactive sample ==
 
-A gradle task runSample is defined in this library as a shortcut to run a
+From the sources you can run the `runCircuitBreakerSample` Gradle task to run a
 simple interactive example. You'll need a MBean client to connect to the
 sample, VisualVM with its MBean plugin does the job. See <<build-system>>
 if you need some guidance.

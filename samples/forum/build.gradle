@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -39,7 +41,9 @@ dependencies {
   testRuntime libraries.logback
 }
 
-task( runSample, dependsOn: 'testClasses', type: JavaExec ) {
+task( runForumSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
   main = 'org.apache.zest.sample.forum.web.Main'
   classpath = sourceSets.test.runtimeClasspath
 }

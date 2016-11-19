@@ -17,9 +17,6 @@
  *
  *
  */
-import org.apache.zest.gradle.test.TestSupportPlugin
-
-apply plugin: TestSupportPlugin
 
 description = "Apache Zest™ File Configuration Library provides platform specific file locations."
 

@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -24,4 +26,12 @@ jar { manifest { name = "Apache Zest™ Sample - Swing Bindings" } }
 
 dependencies {
   compile zest.core.bootstrap
+  runtime zest.core.runtime
+}
+
+task( runSwingSample, dependsOn: 'classes', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.zest.sample.swing.binding.example.Main'
+  classpath = sourceSets.main.runtimeClasspath
 }
