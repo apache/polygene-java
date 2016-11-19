@@ -81,7 +81,6 @@ public abstract class CompositeModel
         // Create proxy class
         createProxyClass();
         primaryType = mixinTypes()
-            .filter( type -> !type.getName().equals( "scala.ScalaObject" ) )
             .reduce( null, ( primary, type ) ->
             {
                 if( primary == null )

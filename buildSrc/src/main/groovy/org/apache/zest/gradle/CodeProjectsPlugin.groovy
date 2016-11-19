@@ -35,7 +35,6 @@ class CodeProjectsPlugin implements Plugin<Project>
   static boolean isCodeProject( Project project )
   {
     [ 'src/main/java', 'src/test/java',
-      'src/main/scala', 'src/test/scala',
       'src/main/groovy', 'src/test/groovy' ].collect { path ->
       new File( "$project.projectDir/$path" )
     }.any { dir -> dir.isDirectory() }

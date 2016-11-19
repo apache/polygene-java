@@ -76,7 +76,6 @@ class DependenciesPlugin implements Plugin<Project>
   static final def restletVersion = '2.3.7'
   static final def rdfVersion = '2.7.16' // 2.8.x change query results!! 4.x exists
   static final def riakVersion = '2.0.8'
-  static final def scalaVersion = '2.11.8'
   static final def servletVersion = '3.1.0'
   static final def shiroVersion = '1.3.2'
   static final def skedVersion = '2.1'
@@ -125,9 +124,6 @@ class DependenciesPlugin implements Plugin<Project>
                             "org.restlet.jee:org.restlet.ext.atom:$restletVersion",
                             "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
                             "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion" ],
-
-    // Scala
-    scala               : "org.scala-lang:scala-library:$scalaVersion",
 
     // Spring
     spring_core         : [ "org.springframework:spring-beans:$springVersion",

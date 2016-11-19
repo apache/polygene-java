@@ -322,7 +322,7 @@ task download( type: Copy ) {
       def header
       switch( flavour )
       {
-        case 'java': case 'groovy': case 'scala': case 'js':
+        case 'java': case 'groovy': case 'js':
           header = licenseHeader_wrap( base, '/*', ' * ', ' */' ); break
         case 'xml': case 'html':
           header = licenseHeader_wrap( base, '<!--', '  ', '-->' ); break
