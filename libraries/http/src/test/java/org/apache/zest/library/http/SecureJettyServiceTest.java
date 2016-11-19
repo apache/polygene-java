@@ -53,8 +53,8 @@ public class SecureJettyServiceTest
         // START SNIPPET: configssl
         SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
-        config.port().set( HTTPS_PORT );
-        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.port().set( httpsPort );
+        config.keystorePath().set( getKeyStoreFile( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
         config.keystoreType().set( "JCEKS" );
         config.keystorePassword().set( KS_PASSWORD );
         // END SNIPPET: configssl

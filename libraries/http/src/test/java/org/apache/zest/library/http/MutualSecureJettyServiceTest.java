@@ -46,11 +46,11 @@ public class MutualSecureJettyServiceTest
         config.hostName().set( "127.0.0.1" );
         config.port().set( HTTPS_PORT );
 
-        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.keystorePath().set( getKeyStoreFile( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
         config.keystoreType().set( "JCEKS" );
         config.keystorePassword().set( KS_PASSWORD );
 
-        config.truststorePath().set( TRUSTSTORE_PATH );
+        config.truststorePath().set( getKeyStoreFile( TRUSTSTORE_FILENAME ).getAbsolutePath() );
         config.truststoreType().set( "JCEKS" );
         config.truststorePassword().set( KS_PASSWORD );
 

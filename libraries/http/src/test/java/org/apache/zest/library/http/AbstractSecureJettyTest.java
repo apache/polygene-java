@@ -20,15 +20,16 @@
 package org.apache.zest.library.http;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,6 +38,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Base class for SecureJettyMixin tests.
@@ -48,16 +51,16 @@ public abstract class AbstractSecureJettyTest
 {
     protected static final int HTTPS_PORT = 8441;
     protected static final String KS_PASSWORD = "changeit";
-    protected static final String CLIENT_KEYSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-client-cert.jceks";
-    protected static final File CLIENT_KEYSTORE_FILE = new File( CLIENT_KEYSTORE_PATH );
-    protected static final String SERVER_KEYSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-server-cert.jceks";
-    protected static final File SERVER_KEYSTORE_FILE = new File( SERVER_KEYSTORE_PATH );
-    protected static final String TRUSTSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-ca.jceks";
-    protected static final File TRUSTSTORE_FILE = new File( TRUSTSTORE_PATH );
+    protected static final String CLIENT_KEYSTORE_FILENAME = "zest-lib-http-unittests-client-cert.jceks";
+    protected static final String SERVER_KEYSTORE_FILENAME = "zest-lib-http-unittests-server-cert.jceks";
+    protected static final String TRUSTSTORE_FILENAME = "zest-lib-http-unittests-ca.jceks";
 
     // These two clients use a HostnameVerifier that don't do any check, don't do this in production code
     protected CloseableHttpClient trustHttpClient;
     protected CloseableHttpClient mutualHttpClient;
+
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Before
     public void beforeSecure()
@@ -98,14 +101,7 @@ public abstract class AbstractSecureJettyTest
     {
         defaultHostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
         defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
-        HttpsURLConnection.setDefaultHostnameVerifier( new HostnameVerifier()
-        {
-            @Override
-            public boolean verify( String string, SSLSession ssls )
-            {
-                return true;
-            }
-        } );
+        HttpsURLConnection.setDefaultHostnameVerifier( ( string, ssls ) -> true );
         HttpsURLConnection.setDefaultSSLSocketFactory( buildTrustSSLContext().getSocketFactory() );
     }
 
@@ -147,7 +143,10 @@ public abstract class AbstractSecureJettyTest
         throws IOException, GeneralSecurityException
     {
         KeyStore truststore = KeyStore.getInstance( "JCEKS" );
-        truststore.load( new FileInputStream( TRUSTSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        try( InputStream stream = AbstractSecureJettyTest.class.getResourceAsStream( TRUSTSTORE_FILENAME ) )
+        {
+            truststore.load( stream, KS_PASSWORD.toCharArray() );
+        }
         return truststore;
     }
 
@@ -155,7 +154,31 @@ public abstract class AbstractSecureJettyTest
         throws IOException, GeneralSecurityException
     {
         KeyStore keystore = KeyStore.getInstance( "JCEKS" );
-        keystore.load( new FileInputStream( CLIENT_KEYSTORE_FILE ), KS_PASSWORD.toCharArray() );
+        try( InputStream stream = AbstractSecureJettyTest.class.getResourceAsStream( CLIENT_KEYSTORE_FILENAME ) )
+        {
+            keystore.load( stream, KS_PASSWORD.toCharArray() );
+        }
         return keystore;
+    }
+
+    protected synchronized File getKeyStoreFile( String filename )
+    {
+        try
+        {
+            File file = new File( tmpDir.getRoot(), filename );
+            if( file.exists() )
+            {
+                return file;
+            }
+            try( InputStream stream = AbstractSecureJettyTest.class.getResourceAsStream( filename ) )
+            {
+                Files.copy( stream, file.toPath() );
+            }
+            return file;
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
     }
 }
