@@ -20,31 +20,39 @@
 
 package org.apache.zest.library.rdf.repository;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.RepositoryException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 
 /**
  * JAVADOC
  */
 public class NativeRepositoryTest extends AbstractZestTest
 {
+   @Rule
+   public final TemporaryFolder tmpDir = new TemporaryFolder();
+
    @Service
    Repository repository;
 
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
       new EntityTestAssembler().assemble( module );
-      module.services(FileConfigurationService.class).instantiateOnStartup();
+      new FileConfigurationAssembler()
+          .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+          .assemble( module );
       module.services(NativeRepositoryService.class).instantiateOnStartup();
       module.entities(NativeConfiguration.class);
       module.objects(getClass());

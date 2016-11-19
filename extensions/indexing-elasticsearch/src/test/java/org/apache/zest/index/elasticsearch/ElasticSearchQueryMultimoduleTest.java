@@ -25,8 +25,8 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.EntityTestAssembler;
 
 public class ElasticSearchQueryMultimoduleTest extends ElasticSearchQueryTest
@@ -57,7 +57,8 @@ public class ElasticSearchQueryMultimoduleTest extends ElasticSearchQueryTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        module.services( FileConfigurationService.class )
-              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
     }
 }

@@ -33,8 +33,8 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Assert;
@@ -57,8 +57,9 @@ public class SolrQueryServiceTest
     {
         module.layer().application().setMode( Application.Mode.test );
 
-        module.services( FileConfigurationService.class )
-              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         new EntityTestAssembler().assemble( module );
         // START SNIPPET: assembly

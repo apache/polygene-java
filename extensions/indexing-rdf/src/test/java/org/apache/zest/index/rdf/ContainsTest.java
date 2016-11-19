@@ -19,8 +19,10 @@
  */
 package org.apache.zest.index.rdf;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -33,15 +35,14 @@ import org.apache.zest.index.rdf.ContainsAllTest.ExampleEntity;
 import org.apache.zest.index.rdf.ContainsAllTest.ExampleValue;
 import org.apache.zest.index.rdf.ContainsAllTest.ExampleValue2;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class ContainsTest extends AbstractZestTest
@@ -52,11 +53,13 @@ public class ContainsTest extends AbstractZestTest
     @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( FileConfigurationService.class );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
-                  .dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
+                  .dataDirectory().set( new File( tmpDir.getRoot(), "rdf-data" ).getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );

@@ -24,6 +24,7 @@ package org.apache.zest.index.rdf;
  * JAVADOC
  */
 
+import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,7 +44,8 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.AbstractZestTest;
@@ -72,11 +74,15 @@ public class RDFPerformanceTest extends AbstractZestTest
     @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( FileConfigurationService.class );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
+                  .tripleIndexes().set( "spoc,cspo" );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
+                  .dataDirectory().set( new File( tmpDir.getRoot(), "rdf-data" ).getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );

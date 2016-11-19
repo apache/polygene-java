@@ -23,14 +23,19 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.file.assembly.FileEntityStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class FileEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     // START SNIPPET: assembly
@@ -39,7 +44,9 @@ public class FileEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
-        module.services( FileConfigurationService.class );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );

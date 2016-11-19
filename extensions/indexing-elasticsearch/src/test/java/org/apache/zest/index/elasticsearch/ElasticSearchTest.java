@@ -34,8 +34,8 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.BeforeClass;
@@ -129,8 +129,9 @@ public class ElasticSearchTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        module.services( FileConfigurationService.class )
-              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         // Entities & Values
         module.entities( Post.class, Page.class, Author.class, Comment.class );

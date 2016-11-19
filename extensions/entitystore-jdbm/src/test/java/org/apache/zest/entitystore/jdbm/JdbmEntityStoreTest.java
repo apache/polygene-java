@@ -19,28 +19,23 @@
  */
 package org.apache.zest.entitystore.jdbm;
 
-import org.junit.Before;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfiguration;
-import org.apache.zest.library.fileconfig.FileConfigurationDataWiper;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class JdbmEntityStoreTest
     extends AbstractEntityStoreTest
 {
-
-    @Before
-    public void testDataCleanup()
-    {
-        FileConfiguration fileConfig = serviceFinder.findService( FileConfiguration.class ).get();
-        FileConfigurationDataWiper.registerApplicationPassivationDataWiper( fileConfig, application );
-    }
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -49,11 +44,12 @@ public class JdbmEntityStoreTest
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( FileConfigurationService.class ).visibleIn( Visibility.layer ).instantiateOnStartup();
         new EntityTestAssembler().assemble( config );
 
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         new OrgJsonValueSerializationAssembler().assemble( module );
         new JdbmEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
-
 }

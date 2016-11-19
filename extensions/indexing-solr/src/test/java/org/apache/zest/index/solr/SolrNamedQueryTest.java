@@ -23,8 +23,8 @@ import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.indexing.AbstractNamedQueryTest;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -42,8 +42,9 @@ public class SolrNamedQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( FileConfigurationService.class )
-              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         new SolrAssembler().assemble( module );
     }
 
