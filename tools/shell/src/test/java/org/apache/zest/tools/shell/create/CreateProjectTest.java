@@ -21,7 +21,7 @@
 package org.apache.zest.tools.shell.create;
 
 import java.io.File;
-import org.apache.zest.tools.shell.FileUtils;
+import java.io.IOException;
 import org.apache.zest.tools.shell.HelpNeededException;
 import org.apache.zest.tools.shell.TestHelper;
 import org.junit.Test;
@@ -52,19 +52,14 @@ public class CreateProjectTest
     }
 
     @Test
-    public void givenCommandWhenTemplateExistExpectCreatedProject()
+    public void givenCommandWhenTemplateExistExpectCreatedProject() throws IOException
     {
-        TestHelper.zetZestZome();
+        TestHelper.setZestZome();
         File dest = new File( "ZestTest" );
         new CreateProject().execute( new String[]{ "create-project", "null", "ZestTest", "org.apache.zest" }, null, null );
 
         assertThat( dest.exists(), equalTo( true ) );
         File file = new File( dest, "src/main/java/org/apache/zest/package.html" );
         assertThat( file.exists(), equalTo( true ) );
-        if( ! FileUtils.removeDir( dest ) )
-        {
-            System.err.println( "Unable to remove file. Why???" );
-        }
-        assertThat( dest.exists(), equalTo( false ) );
     }
 }

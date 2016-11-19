@@ -24,7 +24,7 @@ import java.io.File;
 
 public class TestHelper
 {
-    public static void zetZestZome()
+    public static void setZestZome()
     {
         String cwd = new File( ".").getAbsolutePath();
         if( cwd.endsWith( "/java/." )) // IDEA default runner
@@ -35,6 +35,11 @@ public class TestHelper
         if( cwd.endsWith( "tools/shell/." )) // Gradle build
         {
             String zestHome = new File( new File(".").getAbsoluteFile(), "src/dist" ).getAbsolutePath();
+            System.setProperty( "zest.home", zestHome );
+        }
+        if( cwd.endsWith( "test/work/." ) ) // Parallel Gradle build
+        {
+            String zestHome = new File( cwd + "./../../../../src/dist" ).getAbsolutePath();
             System.setProperty( "zest.home", zestHome );
         }
     }

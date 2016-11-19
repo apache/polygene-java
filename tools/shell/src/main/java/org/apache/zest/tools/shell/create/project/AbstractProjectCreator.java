@@ -23,8 +23,6 @@ package org.apache.zest.tools.shell.create.project;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Map;
 import org.apache.zest.tools.shell.FileUtils;
 
@@ -41,9 +39,6 @@ abstract class AbstractProjectCreator
     {
         File templateDir = new File( FileUtils.zestHome(), properties.get( "template.dir" ) );
         copyFiles( templateDir, projectDir, properties.get( "root.package" ) );
-        File gradlewFile = new File( projectDir, "gradlew" );
-        Path gradlewPath = gradlewFile.toPath();
-        setGradlewPermissions( gradlewFile, gradlewPath );
     }
 
     private void copyFiles( File fromDir, File toDir, String rootpackage )
@@ -54,7 +49,7 @@ abstract class AbstractProjectCreator
         {
             return;
         }
-        toDir.mkdirs();     // create all directories needed.
+        Files.createDirectories( toDir.toPath() );
         for( File f : files )
         {
             String filename = f.getName();
@@ -81,25 +76,6 @@ abstract class AbstractProjectCreator
                     File dest = new File( toDir, filename );
                     FileUtils.copyFile( f, dest );
                 }
-            }
-        }
-    }
-
-    private void setGradlewPermissions( File gradlewFile, Path gradlewPath )
-        throws IOException
-    {
-        try
-        {
-            if( gradlewFile.exists() )
-            {
-                Files.setPosixFilePermissions( gradlewPath, PosixFilePermissions.fromString( "rwxr-xr-x" ) );
-            }
-        }
-        catch( Exception e )
-        {
-            if( !System.getProperty( "os.name" ).contains( "Windows" ) )
-            {
-                throw new IOException( "Unable to set file permissions on " + gradlewPath.toString(), e );
             }
         }
     }
