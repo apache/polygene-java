@@ -18,6 +18,7 @@
 package org.apache.zest.gradle
 
 import groovy.transform.CompileStatic
+import java.nio.file.Files
 import org.apache.zest.gradle.dependencies.DependenciesPlugin
 import org.apache.zest.gradle.publish.PublishingPlugin
 import org.gradle.api.JavaVersion
@@ -112,15 +113,34 @@ class AllProjectsPlugin implements Plugin<Project>
 
   private static void configureTest( Project project )
   {
-    def test = project.tasks.getByName( 'test' ) as Test
-    test.onlyIf { !project.hasProperty( 'skipTests' ) }
-    test.testLogging.info.exceptionFormat = TestExceptionFormat.FULL
-    test.maxHeapSize = '1g'
-    test.systemProperties = [ 'proxySet' : System.properties[ 'proxySet' ],
-                              'proxyHost': System.properties[ 'proxyHost' ],
-                              'proxyPort': System.properties[ 'proxyPort' ] ]
-    test.systemProperties[ 'user.dir' ] = test.workingDir
-    test.reports.html.enabled = true
+    // The space in the directory name is intentional
+    def allTestsDir = project.file( "$project.buildDir/tmp/test files" )
+    project.tasks.withType( Test ) { Test testTask ->
+      testTask.onlyIf { !project.hasProperty( 'skipTests' ) }
+      testTask.testLogging.info.exceptionFormat = TestExceptionFormat.FULL
+      testTask.maxHeapSize = '1g'
+      testTask.systemProperties = [ 'proxySet' : System.properties[ 'proxySet' ],
+                                    'proxyHost': System.properties[ 'proxyHost' ],
+                                    'proxyPort': System.properties[ 'proxyPort' ] ]
+      testTask.reports.html.enabled = true
+      def testDir = new File( allTestsDir, testTask.name )
+      def workDir = new File( testDir, 'work' )
+      def tmpDir = new File( testDir, 'tmp' )
+      def homeDir = new File( testDir, 'home' )
+      testTask.workingDir = workDir
+      testTask.systemProperties[ 'user.dir' ] = workDir
+      testTask.systemProperties[ 'java.io.tmpdir' ] = tmpDir
+      testTask.systemProperties[ 'home.dir' ] = homeDir
+      testTask.doFirst { Test task ->
+        [ workDir, tmpDir, homeDir ]*.mkdirs()
+      }
+      testTask.doLast { Test task ->
+        if( !task.state.failure )
+        {
+          project.delete testDir
+        }
+      }
+    }
   }
 
   // Dependency Report generate only the runtime configuration
