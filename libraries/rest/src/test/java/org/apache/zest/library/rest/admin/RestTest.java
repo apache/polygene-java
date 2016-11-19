@@ -21,7 +21,6 @@
 package org.apache.zest.library.rest.admin;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,19 +67,7 @@ import static org.junit.Assert.assertThat;
 
 public class RestTest extends AbstractZestTest
 {
-    private static final int ADMIN_PORT;
-
-    static
-    {
-        try
-        {
-            ADMIN_PORT = FreePortFinder.findFreePortOnLocalHost();
-        }
-        catch( IOException ex )
-        {
-            throw new UncheckedIOException( ex );
-        }
-    }
+    private static final int ADMIN_PORT = FreePortFinder.findFreePortOnLoopback();
 
     @Override
     protected ApplicationDescriptor newApplication()

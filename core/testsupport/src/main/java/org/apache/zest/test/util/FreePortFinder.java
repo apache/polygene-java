@@ -84,23 +84,27 @@ public class FreePortFinder
             checkFreePort( address, port );
             return true;
         }
-        catch( IOException ex )
+        catch( UncheckedIOException ex )
         {
             return false;
         }
     }
 
-    public static void checkFreePortOnLocalHost( int port ) throws IOException
+    public static void checkFreePortOnLocalHost( int port )
     {
         checkFreePort( getLocalHostUnchecked(), port );
     }
 
-    public static void checkFreePort( InetAddress address, int port ) throws IOException
+    public static void checkFreePort( InetAddress address, int port )
     {
         ServerSocket server = null;
         try
         {
             server = new ServerSocket( port, 1, address );
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
         }
         finally
         {
@@ -124,8 +128,12 @@ public class FreePortFinder
         return findFreePort( getLocalHostUnchecked() );
     }
 
+    public static int findFreePortOnLoopback()
+    {
+        return findFreePort( InetAddress.getLoopbackAddress() );
+    }
+
     public static int findFreePort( InetAddress address )
-        throws IOException
     {
         FreePortPredicate check = new FreePortPredicate( address );
         // Randomly choose MAX_PORT_CHECKS ports from the least used ranges
@@ -134,8 +142,8 @@ public class FreePortFinder
             .boxed()
             .collect( collectingAndThen( toList(), collected ->
             {
-              shuffle( collected );
-              return collected.stream();
+                shuffle( collected );
+                return collected.stream();
             } ) )
             .limit( MAX_PORT_CHECKS )
             .mapToInt( Integer::intValue )
@@ -145,18 +153,16 @@ public class FreePortFinder
         {
             IOException exception = new IOException( "Unable to find a free port on " + address );
             check.errors.build().forEach( exception::addSuppressed );
-            return exception;
+            return new UncheckedIOException( exception );
         } );
     }
 
     public static int findFreePortInRangeOnLocalhost( int lowerBound, int higherBound )
-        throws IOException
     {
         return findFreePortInRange( getLocalHostUnchecked(), lowerBound, higherBound );
     }
 
     public static int findFreePortInRange( InetAddress address, int lowerBound, int higherBound )
-        throws IOException
     {
         if( higherBound - lowerBound < 0 )
         {
@@ -169,7 +175,7 @@ public class FreePortFinder
             String message = "Unable to find a free port in range " + lowerBound + '-' + higherBound + " on " + address;
             IOException exception = new IOException( message );
             check.errors.build().forEach( exception::addSuppressed );
-            return exception;
+            return new UncheckedIOException( exception );
         } );
     }
 
@@ -192,7 +198,7 @@ public class FreePortFinder
                 checkFreePort( address, candidate );
                 return true;
             }
-            catch( IOException ex )
+            catch( UncheckedIOException ex )
             {
                 errors.add( ex );
                 return false;

@@ -38,7 +38,6 @@ import org.apache.zest.test.AbstractZestTest;
 public abstract class AbstractJettyTest
     extends AbstractZestTest
 {
-    protected static final int HTTP_PORT = 8041;
     protected CloseableHttpClient defaultHttpClient;
     protected ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>()
     {

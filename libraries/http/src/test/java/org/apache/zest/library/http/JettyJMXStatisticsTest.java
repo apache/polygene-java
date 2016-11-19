@@ -19,6 +19,7 @@
  */
 package org.apache.zest.library.http;
 
+import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -45,7 +46,7 @@ public class JettyJMXStatisticsTest
 
         JettyConfiguration config = configModule.forMixin( JettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
-        config.port().set( 8441 );
+        config.port().set( FreePortFinder.findFreePortOnLoopback() );
         config.statistics().set( Boolean.TRUE ); // Set statistics default to TRUE in configuration
 
         // Hello world servlet related assembly

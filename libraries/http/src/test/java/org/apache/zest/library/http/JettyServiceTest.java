@@ -21,6 +21,7 @@ package org.apache.zest.library.http;
 
 import java.util.Iterator;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceReference;
@@ -40,6 +41,7 @@ import static org.apache.zest.library.http.Servlets.serve;
 public final class JettyServiceTest
     extends AbstractJettyTest
 {
+    private final int httpPort = FreePortFinder.findFreePortOnLoopback();
 
     @Override
     public final void assemble( ModuleAssembly module )
@@ -55,7 +57,7 @@ public final class JettyServiceTest
         // Set HTTP port as JettyConfiguration default
         JettyConfiguration config = configModule.forMixin( JettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
-        config.port().set( HTTP_PORT );
+        config.port().set( httpPort );
 
         // Serve /helloWorld with HelloWorldServletService
         addServlets( serve( "/helloWorld" ).with( HelloWorldServletService.class ) ).to( module );
@@ -81,7 +83,8 @@ public final class JettyServiceTest
         JettyService jettyService = serviceRef.get();
         assertNotNull( jettyService );
 
-        String output = defaultHttpClient.execute( new HttpGet( "http://127.0.0.1:8041/helloWorld" ), stringResponseHandler );
+        String output = defaultHttpClient.execute( new HttpGet( "http://127.0.0.1:" + httpPort + "/helloWorld" ),
+                                                   stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 }

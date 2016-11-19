@@ -49,7 +49,6 @@ import org.junit.rules.TemporaryFolder;
 public abstract class AbstractSecureJettyTest
     extends AbstractJettyTest
 {
-    protected static final int HTTPS_PORT = 8441;
     protected static final String KS_PASSWORD = "changeit";
     protected static final String CLIENT_KEYSTORE_FILENAME = "zest-lib-http-unittests-client-cert.jceks";
     protected static final String SERVER_KEYSTORE_FILENAME = "zest-lib-http-unittests-server-cert.jceks";

@@ -19,7 +19,6 @@
  */
 package org.apache.zest.library.shiro.web;
 
-import java.io.IOException;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -41,33 +40,25 @@ public class WebHttpShiroTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        try
-        {
-            ModuleAssembly configModule = module;
-            new EntityTestAssembler().assemble( configModule );
-            // START SNIPPET: assembly
-            new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
-            // END SNIPPET: assembly
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
+        // START SNIPPET: assembly
+        new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
 
-            port = FreePortFinder.findFreePortOnLocalHost();
-            JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
-            config.hostName().set( "127.0.0.1" );
-            config.port().set( port );
+        port = FreePortFinder.findFreePortOnLoopback();
+        JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
+        config.port().set( port );
 
-            // START SNIPPET: assembly
-            new HttpShiroAssembler().
-                withConfig( configModule, Visibility.layer ).
-                assemble( module );
-            // END SNIPPET: assembly
+        // START SNIPPET: assembly
+        new HttpShiroAssembler()
+            .withConfig( configModule, Visibility.layer )
+            .assemble( module );
+        // END SNIPPET: assembly
 
-            configModule.forMixin( ShiroIniConfiguration.class ).
-                declareDefaults().
-                iniResourcePath().set( "classpath:web-shiro.ini" );
-        }
-        catch( IOException ex )
-        {
-            throw new AssemblyException( "Unable to find free port to bind to", ex );
-        }
+        configModule.forMixin( ShiroIniConfiguration.class )
+                    .declareDefaults().iniResourcePath().set( "classpath:web-shiro.ini" );
     }
 
     @Test

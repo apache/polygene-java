@@ -22,15 +22,6 @@ package org.apache.zest.library.rest.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import org.apache.zest.api.type.HasTypes;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.api.usecase.UsecaseBuilder;
-import org.apache.zest.api.value.ValueBuilderFactory;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.composite.TransientComposite;
@@ -42,10 +33,14 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -76,7 +71,13 @@ import org.apache.zest.library.rest.server.assembler.RestServerAssembler;
 import org.apache.zest.library.rest.server.restlet.NullCommandResult;
 import org.apache.zest.library.rest.server.spi.CommandResult;
 import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.util.FreePortFinder;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -93,8 +94,10 @@ import org.restlet.security.MapVerifier;
 import org.restlet.security.User;
 import org.restlet.service.MetadataService;
 
-import static org.apache.zest.bootstrap.ImportedServiceDeclaration.*;
-import static org.apache.zest.library.rest.client.api.HandlerCommand.*;
+import static org.apache.zest.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
+import static org.apache.zest.library.rest.client.api.HandlerCommand.command;
+import static org.apache.zest.library.rest.client.api.HandlerCommand.query;
+import static org.apache.zest.library.rest.client.api.HandlerCommand.refresh;
 
 public class ContextResourceClientFactoryTest
     extends AbstractZestTest
@@ -141,7 +144,8 @@ public class ContextResourceClientFactoryTest
     public void startWebServer()
         throws Exception
     {
-        server = new Server( Protocol.HTTP, 8888 );
+        int port = FreePortFinder.findFreePortOnLoopback();
+        server = new Server( Protocol.HTTP, port );
         ContextRestlet restlet = objectFactory.newObject( ContextRestlet.class, new org.restlet.Context() );
 
         ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
@@ -190,7 +194,7 @@ public class ContextResourceClientFactoryTest
         //END SNIPPET: client-create2
 
         //START SNIPPET: client-create3
-        Reference ref = new Reference( "http://localhost:8888/" );
+        Reference ref = new Reference( "http://localhost:" + port + '/' );
         crc = contextResourceClientFactory.newClient( ref );
         //END SNIPPET: client-create3
     }
