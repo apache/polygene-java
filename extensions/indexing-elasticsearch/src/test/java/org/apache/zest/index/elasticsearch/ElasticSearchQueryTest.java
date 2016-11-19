@@ -20,9 +20,7 @@
 
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -49,14 +47,8 @@ public class ElasticSearchQueryTest
         assumeNoIbmJdk();
     }
 
-    @BeforeClass
-    public static void beforeClass_TMP()
-    {
-        new File( "build/tmp/es-query-test" ).mkdirs();
-    }
-
     @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder( new File( "build/tmp/es-query-test" ) );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -74,19 +66,8 @@ public class ElasticSearchQueryTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        try
-        {
-            File dir = tmpDir.newFolder();
-            FileConfigurationOverride override = new FileConfigurationOverride()
-                .withData( new File( dir, "zest-data" ) )
-                .withLog( new File( dir, "zest-logs" ) )
-                .withTemporary( new File( dir, "zest-temp" ) );
-            module.services( FileConfigurationService.class ).setMetaInfo( override );
-        }
-        catch( IOException e )
-        {
-            throw new UncheckedIOException( e );
-        }
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
     }
 
     @Test

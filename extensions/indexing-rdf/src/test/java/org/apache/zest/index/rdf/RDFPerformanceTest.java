@@ -24,7 +24,6 @@ package org.apache.zest.index.rdf;
  * JAVADOC
  */
 
-import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -49,19 +48,18 @@ import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RDFPerformanceTest extends AbstractZestTest
 {
     private static final Logger LOG = LoggerFactory.getLogger( RDFPerformanceTest.class );
-    private static final File DATA_DIR = new File( "build/tmp/rdf-performance-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     public interface ExampleEntity extends EntityComposite
     {
@@ -78,7 +76,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );

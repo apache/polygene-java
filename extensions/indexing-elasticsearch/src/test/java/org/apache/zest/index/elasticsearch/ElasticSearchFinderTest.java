@@ -17,9 +17,6 @@
  */
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -28,16 +25,17 @@ import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractEntityFinderTest;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchFinderTest
     extends AbstractEntityFinderTest
 {
-    private static final File DATA_DIR = new File( "build/tmp/es-finder-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @BeforeClass
     public static void beforeClass_IBMJDK()
@@ -63,11 +61,8 @@ public class ElasticSearchFinderTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride()
-            .withData( new File( DATA_DIR, "zest-data" ) )
-            .withLog( new File( DATA_DIR, "zest-logs" ) )
-            .withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).setMetaInfo( override );
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
     }
 
     @Override

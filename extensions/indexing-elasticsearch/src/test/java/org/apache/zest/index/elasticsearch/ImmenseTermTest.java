@@ -20,11 +20,7 @@
 
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.Visibility;
@@ -40,13 +36,16 @@ import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * ImmenseTermTest.
@@ -56,9 +55,8 @@ import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 public class ImmenseTermTest
     extends AbstractZestTest
 {
-    private static final File DATA_DIR = new File( "build/tmp/immense-term-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @BeforeClass
     public static void beforeClass_IBMJDK()
@@ -105,11 +103,8 @@ public class ImmenseTermTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride()
-            .withData( new File( DATA_DIR, "zest-data" ) )
-            .withLog( new File( DATA_DIR, "zest-logs" ) )
-            .withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).setMetaInfo( override );
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
 
         // Entities & Values
         module.entities( TestEntity.class, TestEntity2.class );

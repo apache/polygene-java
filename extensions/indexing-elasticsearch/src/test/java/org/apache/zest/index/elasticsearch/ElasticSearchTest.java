@@ -19,9 +19,6 @@
  */
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.UseDefaults;
@@ -63,14 +60,8 @@ public class ElasticSearchTest
         assumeNoIbmJdk();
     }
 
-    @BeforeClass
-    public static void beforeClass_TMP()
-    {
-        new File( "build/tmp/es-query-test" ).mkdirs();
-    }
-
     @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder( new File( "build/tmp/es-query-test" ) );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     public interface Post
         extends HasIdentity
@@ -138,19 +129,8 @@ public class ElasticSearchTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        try
-        {
-            File dir = tmpDir.newFolder();
-            FileConfigurationOverride override = new FileConfigurationOverride()
-                .withData( new File( dir, "zest-data" ) )
-                .withLog( new File( dir, "zest-logs" ) )
-                .withTemporary( new File( dir, "zest-temp" ) );
-            module.services( FileConfigurationService.class ).setMetaInfo( override );
-        }
-        catch( IOException e )
-        {
-            throw new UncheckedIOException( e );
-        }
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
 
         // Entities & Values
         module.entities( Post.class, Page.class, Author.class, Comment.class );

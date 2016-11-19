@@ -19,13 +19,11 @@
  */
 package org.apache.zest.index.solr;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Property;
@@ -35,25 +33,23 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
-import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class SolrQueryServiceTest
     extends AbstractZestTest
 {
-
-    private static final File DATA_DIR = new File( "build/tmp/solr-query-service-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -61,10 +57,8 @@ public class SolrQueryServiceTest
     {
         module.layer().application().setMode( Application.Mode.test );
 
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
 
         new EntityTestAssembler().assemble( module );
         // START SNIPPET: assembly
@@ -94,7 +88,7 @@ public class SolrQueryServiceTest
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Query<TestEntity> query = uow.newQuery( queryBuilderFactory.newQueryBuilder( TestEntity.class )
-                                                        .where( SolrExpressions.search( "hello" ) ) );
+                                                                       .where( SolrExpressions.search( "hello" ) ) );
 
             TestEntity test = query.find();
             Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
@@ -125,7 +119,5 @@ public class SolrQueryServiceTest
 
         @UseDefaults
         Property<String> name();
-
     }
-
 }

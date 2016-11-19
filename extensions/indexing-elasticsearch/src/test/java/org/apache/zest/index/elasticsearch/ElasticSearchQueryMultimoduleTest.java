@@ -19,9 +19,6 @@
  */
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
@@ -60,19 +57,7 @@ public class ElasticSearchQueryMultimoduleTest extends ElasticSearchQueryTest
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        try
-        {
-            File dir = tmpDir.newFolder();
-            FileConfigurationOverride override = new FileConfigurationOverride()
-                .withData( new File( dir, "zest-data" ) )
-                .withLog( new File( dir, "zest-logs" ) )
-                .withTemporary( new File( dir, "zest-temp" ) );
-            module.services( FileConfigurationService.class ).
-                setMetaInfo( override );
-        }
-        catch( IOException e )
-        {
-            throw new UncheckedIOException( e );
-        }
+        module.services( FileConfigurationService.class )
+              .setMetaInfo( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) );
     }
 }

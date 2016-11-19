@@ -43,17 +43,16 @@ import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertTrue;
 
 public class Qi95IssueTest
 {
 
-    private static final File DATA_DIR = new File( "build/tmp/qi95-issue-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Test
     public void canCreateAndQueryWithNativeRdfAndJdbm()
@@ -351,7 +350,7 @@ public class Qi95IssueTest
 
     private File createTempDirectory( String name )
     {
-        File t = new File( DATA_DIR, name );
+        File t = new File( tmpDir.getRoot(), name );
         t.mkdirs();
         return t;
     }

@@ -19,7 +19,6 @@
  */
 package org.apache.zest.index.rdf;
 
-import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
@@ -46,15 +45,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Rule;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.rules.TemporaryFolder;
 
 // A test to verify that containsAll QueryExpression works properly.
 public class ContainsAllTest
     extends AbstractZestTest
 {
-    private static final File DATA_DIR = new File( "build/tmp/contains-all-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     public static final String TEST_STRING_1 = "TestString1";
     public static final String TEST_STRING_2 = "Some\\Weird\"$String/[]";
@@ -92,7 +90,8 @@ public class ContainsAllTest
         module.services( FileConfigurationService.class );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
+                  .dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );
