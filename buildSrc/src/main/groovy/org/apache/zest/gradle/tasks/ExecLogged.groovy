@@ -57,7 +57,7 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
     }
     finally
     {
-      [ outStream, errStream ].each { it.close() }
+      close outStream, errStream
     }
   }
 
@@ -80,7 +80,30 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
     }
     finally
     {
-      [ outStream, errStream ].each { it.close() }
+      close outStream, errStream
+    }
+  }
+
+  private static void close( Closeable... closeables )
+    throws IOException
+  {
+    def errors = [ ] as List<IOException>
+    for( Closeable closeable : closeables )
+    {
+      try
+      {
+        closeable.close()
+      }
+      catch( IOException ex )
+      {
+        errors.add( ex )
+      }
+    }
+    if( !errors.empty )
+    {
+      def ex = new IOException( 'Failed to close some' )
+      errors.each { ex.addSuppressed it }
+      throw ex
     }
   }
 
