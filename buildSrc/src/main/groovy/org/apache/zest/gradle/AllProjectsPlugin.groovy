@@ -113,12 +113,16 @@ class AllProjectsPlugin implements Plugin<Project>
 
   private static void configureTest( Project project )
   {
+    // Match --max-workers and Test maxParallelForks, use 1 if parallel is disabled
+    def parallel = project.gradle.startParameter.parallelProjectExecutionEnabled
+    def maxTestWorkers = ( parallel ? project.gradle.startParameter.maxWorkerCount : 1 ) as int
     // The space in the directory name is intentional
     def allTestsDir = project.file( "$project.buildDir/tmp/test files" )
     project.tasks.withType( Test ) { Test testTask ->
       testTask.onlyIf { !project.hasProperty( 'skipTests' ) }
       testTask.testLogging.info.exceptionFormat = TestExceptionFormat.FULL
       testTask.maxHeapSize = '1g'
+      testTask.maxParallelForks = maxTestWorkers
       testTask.systemProperties = [ 'proxySet' : System.properties[ 'proxySet' ],
                                     'proxyHost': System.properties[ 'proxyHost' ],
                                     'proxyPort': System.properties[ 'proxyPort' ] ]
