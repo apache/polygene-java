@@ -22,12 +22,17 @@ package org.apache.zest.library.uowfile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.test.AbstractZestTest;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -50,19 +55,25 @@ import org.apache.zest.library.uowfile.internal.ConcurrentUoWFileModificationExc
 import org.apache.zest.library.uowfile.plural.HasUoWFilesLifecycle;
 import org.apache.zest.library.uowfile.plural.UoWFilesLocator;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class HasUoWFilesTest
-    extends AbstractUoWFileTest
+    extends AbstractZestTest
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFilesTest.class );
     private static final URL CREATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "creation.txt" );
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "modification.txt" );
+
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     // START SNIPPET: uowfile
     public enum MyEnum
@@ -88,13 +99,17 @@ public class HasUoWFilesTest
         @This
         private HasIdentity meAsIdentity;
 
+        @Structure
+        private ZestSPI spi;
+
         @Override
         public Iterable<File> locateAttachedFiles()
         {
+            File baseDir = spi.entityDescriptorFor( meAsIdentity ).metaInfo( File.class );
             List<File> list = new ArrayList<>();
             for( MyEnum eachValue : MyEnum.values() )
             {
-                list.add( new File( baseTestDir, meAsIdentity.identity().get() + "." + eachValue.name() ) );
+                list.add( new File( baseDir, meAsIdentity.identity().get() + "." + eachValue.name() ) );
             }
             return list;
         }
@@ -102,7 +117,8 @@ public class HasUoWFilesTest
         @Override
         public File locateAttachedFile( MyEnum key )
         {
-            return new File( baseTestDir, meAsIdentity.identity().get() + "." + key.name() );
+            File baseDir = spi.entityDescriptorFor( meAsIdentity ).metaInfo( File.class );
+            return new File( baseDir, meAsIdentity.identity().get() + "." + key.name() );
         }
     }
     // END SNIPPET: locator
@@ -185,6 +201,7 @@ public class HasUoWFilesTest
 
         module.entities( TestedEntity.class ).withMixins( TestedFilesLocatorMixin.class );
         // END SNIPPET: assembly
+        module.entities( TestedEntity.class ).setMetaInfo( tmpDir.getRoot() );
         module.services( TestService.class );
         new EntityTestAssembler().assemble( module );
         new FileConfigurationAssembler().assemble( module );
@@ -222,7 +239,12 @@ public class HasUoWFilesTest
             attachedFile = entity.attachedFile( MyEnum.fileOne );
             uow.complete();
         }
-        assertTrue( "File content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("File content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Creation" ) );
+        }
     }
 
     @Test
@@ -247,7 +269,12 @@ public class HasUoWFilesTest
         {
             testService.modifyFile( entityId );
         }
-        assertTrue( "File content after discarded modification was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("File content after discarded modification was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Creation" ) );
+        }
 
         // Testing completed modification
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -255,7 +282,12 @@ public class HasUoWFilesTest
             testService.modifyFile( entityId );
             uow.complete();
         }
-        assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("Modified file content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Modification" ) );
+        }
     }
 
     @Test
@@ -385,7 +417,12 @@ public class HasUoWFilesTest
         }
 
         assertTrue( "There were errors during TestRetry", ex.isEmpty() );
-        assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("Modified file content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Modification" ) );
+        }
     }
 
     private TestedEntity createTestedOneEntityTwoFilesEntity( UnitOfWork uow, String name )
