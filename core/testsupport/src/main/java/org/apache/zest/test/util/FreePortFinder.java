@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.Random;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 
@@ -128,8 +129,8 @@ public class FreePortFinder
     {
         FreePortPredicate check = new FreePortPredicate( address );
         // Randomly choose MAX_PORT_CHECKS ports from the least used ranges
-        OptionalInt port = LEAST_USED_RANGES.stream()
-            .flatMapToInt( range -> rangeClosed( range.lowerBound, range.higherBound ) )
+        Range range = LEAST_USED_RANGES.get( new Random().nextInt( LEAST_USED_RANGES.size() ) );
+        OptionalInt port = rangeClosed( range.lowerBound, range.higherBound )
             .boxed()
             .collect( collectingAndThen( toList(), collected ->
             {
