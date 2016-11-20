@@ -30,6 +30,7 @@ dependencies {
   compile libraries.jclouds_blobstore
 
   runtime zest.core.runtime
+  runtime libraries.jaxb_api
 
   testCompile zest.core.testsupport
   testCompile zest.extension( 'valueserialization-orgjson' )

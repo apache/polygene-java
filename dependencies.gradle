@@ -55,6 +55,7 @@ def httpClientVersion = '4.5.2'
 def jacksonVersion = '2.8.5'
 def javascriptVersion = '1.7.7.1'
 def javasqlgeneratorVersion = '0.3.2'
+def jaxbApiVersion = '2.2.12'
 def jcloudsVersion = '1.9.2' // 2.0.0 exists
 def jdbmVersion = '2.4'
 def jedisVersion = '2.9.0'
@@ -95,6 +96,7 @@ dependencies.libraries << [
   javascript          : "org.mozilla:rhino:$javascriptVersion",
   javaSqlGenerator    : "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
   javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
+  jaxb_api            : "javax.xml.bind:jaxb-api:$jaxbApiVersion",
   jclouds_core        : "org.apache.jclouds:jclouds-core:$jcloudsVersion",
   jclouds_blobstore   : "org.apache.jclouds:jclouds-allblobstore:$jcloudsVersion",
   jclouds_filesystem  : "org.apache.jclouds.api:filesystem:$jcloudsVersion",
