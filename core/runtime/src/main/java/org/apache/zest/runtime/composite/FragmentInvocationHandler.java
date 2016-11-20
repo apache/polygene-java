@@ -108,6 +108,11 @@ abstract class FragmentInvocationHandler
             //noinspection ThrowableResultOfMethodCallIgnored
             cleanStackTrace( nested, proxy, method );
         }
+        for( Throwable suppressed : throwable.getSuppressed() )
+        {
+            //noinspection ThrowableResultOfMethodCallIgnored
+            cleanStackTrace( suppressed, proxy, method );
+        }
         return throwable;
     }
 
