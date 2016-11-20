@@ -196,6 +196,7 @@ public class FreePortFinder
             try
             {
                 checkFreePort( address, candidate );
+                System.err.println( "FreePortFinder found port " + candidate + " free" );
                 return true;
             }
             catch( UncheckedIOException ex )
