@@ -125,6 +125,7 @@ abstract class FragmentInvocationHandler
     private boolean isJdkInternals( String className )
     {
         return className.startsWith( "java.lang.reflect" )
+               || className.startsWith( "jdk.internal.reflect" )
                || className.startsWith( "com.sun.proxy" )
                || className.startsWith( "sun.reflect" );
     }
