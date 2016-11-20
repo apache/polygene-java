@@ -185,7 +185,8 @@ class AllProjectsPlugin implements Plugin<Project>
       {
         candidate.license = 'BSD 3-Clause'
       }
-      if( candidate.group == 'javax.websocket' )
+      if( candidate.group == 'javax.websocket'
+        || candidate.group == 'javax.xml.bind' )
       {
         candidate.license = 'CDDL'
       }
