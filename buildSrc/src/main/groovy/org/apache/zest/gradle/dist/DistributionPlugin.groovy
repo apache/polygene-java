@@ -24,7 +24,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.zest.gradle.RootProjectPlugin
 import org.apache.zest.gradle.TaskGroups
 import org.apache.zest.gradle.dependencies.DependenciesDeclarationExtension
-import org.apache.zest.gradle.dependencies.DependenciesPlugin
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.release.ReleaseSpecPlugin
 import org.gradle.api.Action
@@ -332,6 +331,7 @@ class DistributionPlugin implements Plugin<Project>
       task.excludes = [
         '.gradle/**',
         'docs/reports/**',
+        'docs/javadocs/**',
         'etc/templates/**',
         'libs/**'
       ]
