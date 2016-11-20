@@ -24,28 +24,38 @@ import java.io.IOException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
+import org.apache.zest.test.util.NotYetImplemented;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 
-public class ElasticSearchQueryTest
-    extends AbstractQueryTest
+public class ElasticSearchQueryTest extends AbstractQueryTest
 {
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
+
+    @ClassRule
+    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
+
+    @ClassRule
+    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+
+    @Rule
+    public final TestName testName = new TestName();
 
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
@@ -61,8 +71,12 @@ public class ElasticSearchQueryTest
         new EntityTestAssembler().assemble( config );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new ESClientIndexQueryAssembler( ELASTIC_SEARCH.client() )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
+                                                        testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
@@ -71,8 +85,8 @@ public class ElasticSearchQueryTest
             .assemble( module );
     }
 
+    @NotYetImplemented( reason = "IndexExporter service not implemented" )
     @Test
-    @Ignore( "IndexExporter not supported by ElasticSearch Indexing" )
     @Override
     public void showNetwork()
         throws IOException
@@ -80,8 +94,8 @@ public class ElasticSearchQueryTest
         super.showNetwork();
     }
 
+    @NotYetImplemented( reason = "oneOf() Query Expression not implemented" )
     @Test
-    @Ignore( "oneOf() Query Expression not supported by ElasticSearch Indexing" )
     @Override
     public void script23()
         throws EntityFinderException
@@ -89,11 +103,11 @@ public class ElasticSearchQueryTest
         super.script23();
     }
 
-    @Test
-    @Ignore(
-         "ElasticSearch perform automatic TimeZone resolution when querying on dates, this test assert that the "
-         + "underlying Index/Query engine do not."
+    @NotYetImplemented(
+        reason = "ElasticSearch perform automatic TimeZone resolution when querying on dates, "
+                 + "this test assert that the underlying Index/Query engine do not."
     )
+    @Test
     @Override
     public void script42_DateTime()
     {

@@ -110,11 +110,16 @@ public abstract class AbstractElasticSearchSupport
     public final void passivateService()
         throws Exception
     {
-        client.close();
-        client = null;
+        passivateClient();
         index = null;
         indexNonAggregatedAssociations = false;
         passivateElasticSearch();
+    }
+
+    protected void passivateClient()
+    {
+        client.close();
+        client = null;
     }
 
     protected void passivateElasticSearch()

@@ -32,10 +32,11 @@ http://lucene.apache.org/[Apache Lucene].
 
 WARNING: ElasticSearch Index/Query do not support ComplexQueries from the Query API, ie. queries by "example value".
 
-Two modes of operation are supported:
+Three modes of operation are supported:
 
-- local filesystem ;
-- clustered.
+- embedded local only filesystem based node ;
+- managed cluster client ;
+- with a provided client.
 
 In any case, Lucene hard limits apply.
 See the https://lucene.apache.org/core/6_1_0/core/org/apache/lucene/codecs/lucene60/package-summary.html#Limitations[Lucene File Format]
@@ -95,6 +96,33 @@ properties defined in the filesystem configuration, see above.
 ----
 source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchClusterConfiguration.java
 tag=config
+----
+
+Again, all configuration properties are defaulted meaning that you can use ElasticSearch Index/Query service without
+configuration.
+
+== Using a provided client ==
+
+=== Assembly ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
+tag=client
+----
+
+
+=== Configuration ===
+
+Here are the configuration properties for the ElasticSearch Index/Query service using a provided client.
+Note that the `clusterName` is ignored as this is managed by the client.
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchConfiguration.java
+tag=client
 ----
 
 Again, all configuration properties are defaulted meaning that you can use ElasticSearch Index/Query service without

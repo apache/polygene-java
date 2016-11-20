@@ -31,15 +31,17 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
@@ -55,6 +57,15 @@ import static org.junit.Assert.assertThat;
 public class ImmenseTermTest
     extends AbstractZestTest
 {
+    @ClassRule
+    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
+
+    @ClassRule
+    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+
+    @Rule
+    public final TestName testName = new TestName();
+
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();
 
@@ -96,10 +107,12 @@ public class ImmenseTermTest
         new EntityTestAssembler().assemble( module );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler()
+        new ESClientIndexQueryAssembler( ELASTIC_SEARCH.client() )
             .withConfig( config, Visibility.layer )
             .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
+                                                        testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig

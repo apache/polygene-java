@@ -23,8 +23,10 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.elasticsearch.client.Client;
 
 public class DocumentationSupport
     implements Assembler
@@ -37,11 +39,22 @@ public class DocumentationSupport
         Visibility configVisibility = Visibility.module;
 
         // START SNIPPET: filesystem
-        new ESFilesystemIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
+        new ESFilesystemIndexQueryAssembler()
+            .withConfig( configModule, configVisibility )
+            .assemble( module );
         // END SNIPPET: filesystem
 
         // START SNIPPET: cluster
-        new ESClusterIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
+        new ESClusterIndexQueryAssembler()
+            .withConfig( configModule, configVisibility )
+            .assemble( module );
         // END SNIPPET: cluster
+
+        Client client = null;
+        // START SNIPPET: client
+        new ESClientIndexQueryAssembler( client )
+            .withConfig( configModule, configVisibility )
+            .assemble( module );
+        // END SNIPPET: client
     }
 }
