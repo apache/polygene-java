@@ -29,4 +29,5 @@ class DependenciesDeclarationExtension
   final Map<String, Object> libraries = [ : ]
   final Map<String, List<Object>> defaultDependencies = [ : ]
   BiAction<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
+  final Map<String, String> buildToolsVersions = [ : ]
 }

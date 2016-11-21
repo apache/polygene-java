@@ -250,3 +250,8 @@ dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution,
     substitution.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
   }
 }
+
+// Build Tools
+dependencies.buildToolsVersions << [
+  jacoco: '0.7.7.201606060606'
+]

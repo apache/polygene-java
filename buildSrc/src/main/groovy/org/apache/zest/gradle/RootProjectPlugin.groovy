@@ -19,6 +19,7 @@ package org.apache.zest.gradle
 
 import groovy.transform.CompileStatic
 import org.apache.rat.gradle.RatTask
+import org.apache.zest.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.zest.gradle.dist.DistributionPlugin
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.release.ReleaseSpecPlugin
@@ -105,8 +106,9 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureJacoco( Project project )
   {
+    def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
     project.configurations.create( 'jacoco' )
-    project.dependencies.add( 'jacoco', 'org.jacoco:org.jacoco.ant:0.7.5.201505241946' )
+    project.dependencies.add( 'jacoco', "org.jacoco:org.jacoco.ant:${ dependencies.buildToolsVersions.jacoco }" )
     def task = project.tasks.create( 'coverageReport', AggregatedJacocoReportTask ) { AggregatedJacocoReportTask task ->
       task.group = TaskGroups.VERIFICATION
       task.description = 'Generates global coverage report'
