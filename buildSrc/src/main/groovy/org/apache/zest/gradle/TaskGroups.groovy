@@ -31,6 +31,8 @@ class TaskGroups
   static final String DOCUMENTATION = JavaBasePlugin.DOCUMENTATION_GROUP
   static final String DISTRIBUTION = ApplicationPlugin.APPLICATION_GROUP
   static final String DISTRIBUTION_VERIFICATION = 'distribution verification'
+  static final String PERFORMANCE = 'performance'
+  static final String PERFORMANCE_VERIFICATION = 'performance verification'
   static final String RELEASE = 'release'
   static final String RELEASE_VERIFICATION = 'release verification'
   static final String UPLOAD = BasePlugin.UPLOAD_GROUP

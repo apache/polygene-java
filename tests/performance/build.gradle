@@ -14,9 +14,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+import org.apache.zest.gradle.TaskGroups
 
 description = "Apache Zest™ Performance Test Suite."
 
@@ -53,6 +52,10 @@ dependencies {
 check.dependsOn compilePerfJava
 
 task testPerf( type: Test, dependsOn: jar ) {
+  group = TaskGroups.PERFORMANCE
+  description = 'Runs performance tests.'
+  maxParallelForks = 1
+  forkEvery = 1
   testClassesDir = sourceSets.perf.output.classesDir
   classpath = sourceSets.perf.runtimeClasspath
   systemProperties[ 'jar.path' ] = jar.archivePath
