@@ -72,7 +72,6 @@ import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
 import org.apache.zest.bootstrap.identity.DefaultIdentityGeneratorAssembler;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.TransientModel;
 import org.apache.zest.runtime.composite.TransientsModel;
@@ -392,9 +391,10 @@ final class ModuleAssemblyImpl
 
         for (Class<?> serviceType : serviceTypes)
         {
-            if (Iterables.matchesAny(AssemblySpecifications.ofAnyType(serviceType), serviceAssemblies))
+            if( serviceAssemblies.stream().anyMatch( AssemblySpecifications.ofAnyType( serviceType ) ) )
             {
-                Iterables.addAll(assemblies, Iterables.filter(AssemblySpecifications.ofAnyType(serviceType), serviceAssemblies));
+                serviceAssemblies.stream().filter( AssemblySpecifications.ofAnyType( serviceType ) )
+                                 .forEach( assemblies::add );
             }
             else
             {

@@ -20,17 +20,16 @@
 package org.apache.zest.runtime.structure;
 
 import org.apache.zest.api.composite.CompositeDescriptor;
-import org.junit.Test;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.apache.zest.functional.Iterables.first;
 
 public class CompositeDescriptorTest
     extends AbstractZestTest

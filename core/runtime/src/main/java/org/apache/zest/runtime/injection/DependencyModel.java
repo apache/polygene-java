@@ -25,14 +25,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.InvalidInjectionException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.injection.provider.CachingInjectionProviderDecorator;
@@ -42,7 +43,6 @@ import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 
 import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -53,7 +53,7 @@ public final class DependencyModel
 {
     public static boolean isOptional( Annotation injectionAnnotation, Annotation[] annotations )
     {
-        if( Iterables.matchesAny( isType( Optional.class ), iterable( annotations ) ) )
+        if( Stream.of( annotations ).anyMatch( isType( Optional.class ) ) )
         {
             return true;
         }
@@ -335,14 +335,15 @@ public final class DependencyModel
 
         if( injectionResult instanceof Iterable )
         {
-            if( Iterable.class.isAssignableFrom( rawInjectionClass ) || rawInjectionClass.isInstance(
-                injectionResult ) )
+            if( Iterable.class.isAssignableFrom( rawInjectionClass )
+                || rawInjectionClass.isInstance( injectionResult ) )
             {
                 return injectionResult;
             }
             else
             {
-                return Iterables.first( (Iterable) injectionResult );
+                Iterator iterator = ( (Iterable) injectionResult ).iterator();
+                return iterator.hasNext() ? iterator.next() : null;
             }
         }
         else

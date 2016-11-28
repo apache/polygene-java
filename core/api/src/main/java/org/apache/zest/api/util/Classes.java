@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -242,29 +243,14 @@ public final class Classes
         return clazz::isAssignableFrom;
     }
 
-    @SuppressWarnings( "raw" )
-    public static Predicate<Object> instanceOf( final Class clazz )
+    public static Predicate<Object> instanceOf( final Class<?> clazz )
     {
-        return new Predicate<Object>()
-        {
-            @Override
-            public boolean test( Object item )
-            {
-                return clazz.isInstance( item );
-            }
-        };
+        return clazz::isInstance;
     }
 
     public static Predicate<Class<?>> hasModifier( final int classModifier )
     {
-        return new Predicate<Class<?>>()
-        {
-            @Override
-            public boolean test( Class<?> item )
-            {
-                return ( item.getModifiers() & classModifier ) != 0;
-            }
-        };
+        return item -> ( item.getModifiers() & classModifier ) != 0;
     }
 
     public static <T> Function<Type, Stream<T>> forClassHierarchy( final Function<Class<?>, Stream<T>> function )
@@ -363,20 +349,13 @@ public final class Classes
             .flatMap( TYPES_OF )
             .map( RAW_CLASS )
             .map( clazz -> clazz.getAnnotation( annotationClass ) )
-            .filter( annot -> annot != null )
-            .findAny().get();
+            .filter( Objects::nonNull )
+            .findAny().orElse( null );
     }
 
     public static Predicate<Member> memberNamed( final String name )
     {
-        return new Predicate<Member>()
-        {
-            @Override
-            public boolean test( Member item )
-            {
-                return item.getName().equals( name );
-            }
-        };
+        return item -> item.getName().equals( name );
     }
 
     /**

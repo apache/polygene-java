@@ -22,7 +22,6 @@ package org.apache.zest.api.unitofwork;
 import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.functional.Iterables;
 
 import static java.util.Arrays.stream;
 
@@ -71,12 +70,6 @@ public class NoSuchEntityException
     public Usecase usecase()
     {
         return usecase;
-    }
-
-    private static Class<?>[] castToArray( Iterable<Class<?>> iterableClasses )
-    {
-        Iterable<Class> types = Iterables.cast( iterableClasses );
-        return Iterables.toArray( Class.class, types );
     }
 
     private static String toString( Class<?>[] mixinTypes )

@@ -19,30 +19,21 @@
  */
 package org.apache.zest.library.jmx;
 
-import java.util.function.Predicate;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import org.apache.zest.functional.Iterables;
 
 /**
  * Helper for working with Zest MBeans.
  */
 public class ZestMBeans
 {
-
     public static ObjectName findServiceName( MBeanServer server, String applicationName, String serviceId )
-            throws MalformedObjectNameException
+        throws MalformedObjectNameException
     {
-        return Iterables.first( Iterables.filter( new Predicate<ObjectName>()
-        {
-            @Override
-            public boolean test( ObjectName item )
-            {
-                return item.getKeyPropertyList().size() == 5;
-            }
-
-        }, server.queryNames( new ObjectName( "Zest:application=" + applicationName + ",*,service=" + serviceId ), null ) ) );
+        ObjectName objectName = new ObjectName( "Zest:application=" + applicationName + ",*,service=" + serviceId );
+        return server.queryNames( objectName, null ).stream()
+                     .filter( item -> item.getKeyPropertyList().size() == 5 )
+                     .findFirst().orElse( null );
     }
-
 }

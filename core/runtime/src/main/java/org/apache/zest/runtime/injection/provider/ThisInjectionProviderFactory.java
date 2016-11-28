@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.composite.ProxyGenerator;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
@@ -97,7 +96,7 @@ public final class ThisInjectionProviderFactory
                 }
                 else
                 {
-                    interfaces = Iterables.toArray( Class.class, Iterables.cast( types ) );
+                    interfaces = types.stream().map( Class.class::cast ).toArray( Class[]::new );
                     proxyClass = ProxyGenerator.createProxyClass( mainType.getClassLoader(), interfaces );
                 }
 

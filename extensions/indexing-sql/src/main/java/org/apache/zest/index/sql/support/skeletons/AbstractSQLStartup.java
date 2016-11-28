@@ -67,7 +67,6 @@ import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.sql.support.api.SQLAppStartup;
 import org.apache.zest.index.sql.support.api.SQLTypeInfo;
@@ -1437,10 +1436,9 @@ public abstract class AbstractSQLStartup
                         else
                         {
                             valueDescriptors.add( new CompositeDescriptorInfo(
-                                    (LayerDescriptor) Iterables
-                                    .first( Iterables.skip( 1, currentPath ) ),
-                                    (ModuleDescriptor) Iterables.first( currentPath ),
-                                    (CompositeDescriptor) visited ) );
+                                (LayerDescriptor) currentPath.stream().skip( 1 ).findFirst().orElse( null ),
+                                (ModuleDescriptor) currentPath.stream().findFirst().orElse( null ),
+                                (CompositeDescriptor) visited ) );
                         }
 
                         return false;

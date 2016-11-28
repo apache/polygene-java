@@ -106,9 +106,6 @@ import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.api.util.Classes.typeOf;
 import static org.apache.zest.api.util.Classes.typesOf;
 import static org.apache.zest.api.util.Classes.wrapperClass;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
 import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
@@ -312,7 +309,7 @@ public abstract class CompositeAssemblyImpl
         }
 
         // Check generic implementations
-        mixinClass = findGenericImplementation( method, mixinDeclarations );
+        mixinClass = findGenericImplementation( method, mixinDeclarations.stream() );
         if( mixinClass != null )
         {
             return implementMethodWithClass( method, mixinClass );
@@ -322,26 +319,22 @@ public abstract class CompositeAssemblyImpl
                                              + "\nin\n    " + types );
     }
 
-    @SuppressWarnings( { "raw", "unchecked" } )
     private Class<?> findTypedImplementation( final Method method, Stream<Class<?>> mixins )
     {
         // Check if mixinClass implements the method. If so, check if the mixinClass is generic or if the filter passes.
         // If a mixinClass is both generic AND non-generic at the same time, then the filter applies to the non-generic
         // side only.
         Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
-        return mixins
-            .filter( isAssignableFrom( method.getDeclaringClass() )
-                         .and( Genericpredicate.INSTANCE
-                                   .or( appliesToSpec ) ) )
-            .findFirst().orElse( null );
+        return mixins.filter( isAssignableFrom( method.getDeclaringClass() )
+                                  .and( Genericpredicate.INSTANCE.or( appliesToSpec ) ) )
+                     .findFirst().orElse( null );
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Class<?> findGenericImplementation( final Method method, Iterable<Class<?>> mixins )
+    private Class<?> findGenericImplementation( final Method method, Stream<Class<?>> mixins )
     {
         // Check if mixinClass is generic and the applies-to filter passes
-        return first( filter( Genericpredicate.INSTANCE
-                                  .and( item -> helper.appliesTo( item, method, types, item ) ), mixins ) );
+        Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
+        return mixins.filter( Genericpredicate.INSTANCE.and( appliesToSpec ) ).findFirst().orElse( null );
     }
 
     private MixinModel implementMethodWithClass( Method method, Class mixinClass )
@@ -500,10 +493,12 @@ public abstract class CompositeAssemblyImpl
         {
             Annotation[] parameterAnnotation = parameterAnnotations[ i ];
 
-            Name nameAnnotation = (Name) first( filter( isType( Name.class ), iterable( parameterAnnotation ) ) );
+            Name nameAnnotation = (Name) Stream.of( parameterAnnotation ).filter( isType( Name.class ) )
+                                               .findFirst().orElse( null );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            boolean optional = first( filter( isType( Optional.class ), iterable( parameterAnnotation ) ) ) != null;
+            boolean optional = Stream.of( parameterAnnotation ).filter( isType( Optional.class ) )
+                                     .findFirst().isPresent();
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
                 Arrays.stream( parameterAnnotation ),
                 parameterTypes[ i ],

@@ -58,8 +58,6 @@ import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
 
-import static org.apache.zest.functional.Iterables.empty;
-
 /**
  * Adapter for pull-parsing and tree-parsing capable ValueDeserializers.
  *
@@ -673,7 +671,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 Object entityRefs = stateMap.get( manyAssociation.qualifiedName().name() );
                 if( entityRefs == null )
                 {
-                    return empty();
+                    return Collections.emptySet();
                 }
                 //noinspection unchecked
                 return (Iterable<EntityReference>) entityRefs;

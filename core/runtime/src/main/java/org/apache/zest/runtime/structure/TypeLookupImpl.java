@@ -42,7 +42,6 @@ import static java.util.stream.Stream.concat;
 import static org.apache.zest.api.common.Visibility.application;
 import static org.apache.zest.api.common.Visibility.layer;
 import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Central place for Composite Type lookups.
@@ -240,9 +239,10 @@ class TypeLookupImpl
     }
 
     @Override
-    public ModelDescriptor lookupServiceModel( Type serviceType1 )
+    public ModelDescriptor lookupServiceModel( Type serviceType )
     {
-        return serviceModels.computeIfAbsent( serviceType1, key -> first( lookupServiceModels( key ) ) );
+        return serviceModels.computeIfAbsent( serviceType,
+                                              key -> lookupServiceModels( key ).stream().findFirst().orElse( null ) );
     }
 
     @Override

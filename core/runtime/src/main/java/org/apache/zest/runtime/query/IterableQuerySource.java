@@ -26,12 +26,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.query.QuerySource;
+
+import static java.util.stream.Collectors.toList;
+import static org.apache.zest.api.util.Classes.instanceOf;
 
 /**
  * JAVADOC
@@ -153,13 +156,16 @@ public class IterableQuerySource
     @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> filter( Class<T> resultType, Predicate whereClause )
     {
+        Stream stream = StreamSupport.stream( iterable.spliterator(), false );
         if( whereClause == null )
         {
-            return Iterables.toList( Iterables.filter( Classes.instanceOf( resultType ), iterable ) );
+            return List.class.cast( stream.filter( resultType::isInstance )
+                                          .collect( toList() ) );
         }
         else
         {
-            return Iterables.toList( Iterables.filter( Classes.instanceOf( resultType ).and( whereClause ), iterable ) );
+            return List.class.cast( stream.filter( instanceOf( resultType ).and( whereClause ) )
+                                          .collect( toList() ) );
         }
     }
 

@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.common.Resource;
 import org.apache.zest.library.rest.common.link.LinksUtil;
 import org.restlet.Response;
@@ -60,11 +59,11 @@ public class ResourceResponseWriter extends AbstractResponseWriter
 
             // Allowed methods
             response.getAllowedMethods().add( Method.GET );
-            if( Iterables.matchesAny( LinksUtil.withRel( "delete" ), resourceValue.commands().get() ) )
+            if( resourceValue.commands().get().stream().anyMatch( LinksUtil.withRel( "delete" ) ) )
             {
                 response.getAllowedMethods().add( Method.DELETE );
             }
-            if( Iterables.matchesAny( LinksUtil.withRel( "update" ), resourceValue.commands().get() ) )
+            if( resourceValue.commands().get().stream().anyMatch( LinksUtil.withRel( "update" ) ) )
             {
                 response.getAllowedMethods().add( Method.PUT );
             }

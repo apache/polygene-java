@@ -19,22 +19,20 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.time.SystemTime;
+import org.apache.zest.spi.entity.EntityStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.spi.entity.EntityStatus;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toList;
 
 public class JSONManyAssociationStateTest
 {
@@ -127,14 +125,11 @@ public class JSONManyAssociationStateTest
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "2" ) ), is( true ) );
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "1" ) ), is( true ) );
 
-        List<String> refList = toList( map( new Function<EntityReference, String>()
+        List<String> refList = new ArrayList<>();
+        for( EntityReference ref : jsonState )
         {
-            @Override
-            public String apply( EntityReference from )
-            {
-                return from.identity().toString();
-            }
-        }, jsonState ) );
+            refList.add( ref.identity().toString() );
+        }
         assertThat( refList.isEmpty(), is( false ) );
         assertArrayEquals( new String[]
         {

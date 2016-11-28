@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.Optional;
@@ -42,8 +43,8 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
@@ -71,9 +72,6 @@ import org.restlet.resource.ResourceException;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
 import static org.apache.zest.library.rest.server.api.ObjectSelection.current;
 
 /**
@@ -901,7 +899,7 @@ public class ContextResource
             // Construct form out of individual parameters instead
             for( Annotation[] annotations : interactionMethod.getParameterAnnotations() )
             {
-                Name name = (Name) first( filter( isType( Name.class ), iterable( annotations ) ) );
+                Name name = (Name) Stream.of( annotations ).filter( isType( Name.class ) ).findFirst().orElse( null );
                 form.add( name.value(), getValue( name.value(), queryAsForm, entityAsForm ) );
             }
         }

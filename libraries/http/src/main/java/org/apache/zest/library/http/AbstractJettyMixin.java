@@ -26,6 +26,8 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
 import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.library.http.Interface.Protocol;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
@@ -38,9 +40,6 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.library.http.Interface.Protocol;
 
 import static org.apache.zest.library.http.JettyConfigurationHelper.addContextListeners;
 import static org.apache.zest.library.http.JettyConfigurationHelper.addFilters;
@@ -74,9 +73,9 @@ public abstract class AbstractJettyMixin
     {
         this.identity = identity;
         this.server = jettyServer;
-        this.contextListeners = Iterables.unique( contextListeners );
-        this.servlets = Iterables.unique( servlets );
-        this.filters = Iterables.unique( filters );
+        this.contextListeners = contextListeners;
+        this.servlets = servlets;
+        this.filters = filters;
         this.mBeanServer = mBeanServer;
     }
 

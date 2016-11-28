@@ -20,11 +20,15 @@
 package org.apache.zest.runtime.activation;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.activation.PassivationException;
-import org.apache.zest.functional.Iterables;
+
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Instance of a Zest Activators of one Activation target. Contains ordered
@@ -35,7 +39,7 @@ import org.apache.zest.functional.Iterables;
 public class ActivatorsInstance<ActivateeType>
     implements Activator<ActivateeType>
 {
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public static final ActivatorsInstance EMPTY = new ActivatorsInstance( Collections.emptyList() );
 
     private final Iterable<Activator<ActivateeType>> activators;
@@ -70,8 +74,10 @@ public class ActivatorsInstance<ActivateeType>
         throws Exception
     {
         Set<Exception> exceptions = new LinkedHashSet<>();
-        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) )
+        Iterator<Activator<ActivateeType>> iterator = reverseActivatorsIterator();
+        while( iterator.hasNext() )
         {
+            Activator<ActivateeType> activator = iterator.next();
             try
             {
                 activator.beforePassivation( passivating );
@@ -92,8 +98,10 @@ public class ActivatorsInstance<ActivateeType>
         throws Exception
     {
         Set<Exception> exceptions = new LinkedHashSet<>();
-        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) )
+        Iterator<Activator<ActivateeType>> iterator = reverseActivatorsIterator();
+        while( iterator.hasNext() )
         {
+            Activator<ActivateeType> activator = iterator.next();
             try
             {
                 activator.afterPassivation( passivated );
@@ -109,4 +117,10 @@ public class ActivatorsInstance<ActivateeType>
         }
     }
 
+    private Iterator<Activator<ActivateeType>> reverseActivatorsIterator()
+    {
+        return StreamSupport.stream( activators.spliterator(), false )
+                            .collect( toCollection( LinkedList::new ) )
+                            .descendingIterator();
+    }
 }

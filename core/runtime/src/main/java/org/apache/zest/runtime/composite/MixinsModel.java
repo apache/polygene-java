@@ -30,8 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
@@ -45,8 +43,6 @@ import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
