@@ -50,11 +50,6 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
 class TypeLookupImpl
     implements TypeLookup
 {
-
-    // Constructor parameters
-    private final ModuleDescriptor moduleModel;
-
-    // Eager instance objects
     private final LazyValue<List<ObjectDescriptor>> allObjects;
     private final LazyValue<List<TransientDescriptor>> allTransients;
     private final LazyValue<List<ValueDescriptor>> allValues;
@@ -63,10 +58,12 @@ class TypeLookupImpl
     private final ConcurrentHashMap<Class<?>, ObjectDescriptor> objectModels;
     private final ConcurrentHashMap<Class<?>, TransientDescriptor> transientModels;
     private final ConcurrentHashMap<Class<?>, ValueDescriptor> valueModels;
-    private final ConcurrentHashMap<Class<?>, List<EntityDescriptor>> allEntityModels;
+    private final ConcurrentHashMap<Class<?>, List<EntityDescriptor>> entityModels;
     private final ConcurrentHashMap<Class<?>, EntityDescriptor> unambiguousEntityModels;
     private final ConcurrentHashMap<Type, ModelDescriptor> serviceModels;
     private final ConcurrentHashMap<Type, List<? extends ModelDescriptor>> servicesReferences;
+
+    private final ModuleDescriptor moduleModel;
 
     /**
      * Create a new TypeLookup bound to the given moduleModel.
@@ -75,10 +72,9 @@ class TypeLookupImpl
      */
     TypeLookupImpl( ModuleModel module )
     {
-        // Constructor parameters
-        this.moduleModel = module;
+        moduleModel = module;
 
-        // Eager instance objects
+        // Instance caches
         allObjects = new LazyValue<>();
         allTransients = new LazyValue<>();
         allValues = new LazyValue<>();
@@ -87,7 +83,7 @@ class TypeLookupImpl
         objectModels = new ConcurrentHashMap<>();
         transientModels = new ConcurrentHashMap<>();
         valueModels = new ConcurrentHashMap<>();
-        allEntityModels = new ConcurrentHashMap<>();
+        entityModels = new ConcurrentHashMap<>();
         unambiguousEntityModels = new ConcurrentHashMap<>();
         serviceModels = new ConcurrentHashMap<>();
         servicesReferences = new ConcurrentHashMap<>();
@@ -241,7 +237,7 @@ class TypeLookupImpl
     @Override
     public List<EntityDescriptor> lookupEntityModels( final Class type )
     {
-        return allEntityModels.computeIfAbsent( type, key ->
+        return entityModels.computeIfAbsent( type, key ->
             concat(
                 allEntities().filter( ref -> new ExactTypeMatching<>( key ).test( ref ) ),
                 allEntities().filter( ref -> new AssignableFromTypeMatching<>( key ).test( ref ) )
