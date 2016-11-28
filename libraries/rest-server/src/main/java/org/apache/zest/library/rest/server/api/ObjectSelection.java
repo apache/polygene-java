@@ -23,7 +23,6 @@ package org.apache.zest.library.rest.server.api;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.zest.functional.Iterables;
 import org.restlet.Request;
 
 /**
@@ -83,11 +82,11 @@ public class ObjectSelection
 
     public List<Object> selection()
     {
-        return Collections.unmodifiableList(selection);
+        return Collections.unmodifiableList( selection );
     }
 
     public Object[] toArray()
     {
-        return Iterables.toArray( Object.class, selection );
+        return selection.toArray( new Object[ selection.size() ] );
     }
 }

@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Iterables;
+
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Provides declared {@link org.apache.zest.api.structure.Layer} information that the {@link ApplicationBuilder} can use.
@@ -62,7 +64,8 @@ public class LayerDeclaration
      */
     public LayerDeclaration using( Iterable<String> layerNames )
     {
-        Iterables.addAll( using, layerNames );
+        StreamSupport.stream( layerNames.spliterator(), false )
+                     .collect( toCollection( () -> using ) );
         return this;
     }
 

@@ -35,7 +35,6 @@ import org.junit.Test;
 import static java.util.stream.Collectors.toList;
 import static org.apache.zest.bootstrap.ClassScanner.findClasses;
 import static org.apache.zest.bootstrap.ClassScanner.matches;
-import static org.apache.zest.functional.Iterables.filter;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -48,9 +47,10 @@ public class ApplicationBuilderTest
         ApplicationBuilder builder = new ApplicationBuilder( "Build from API test." );
         builder.withLayer( "layer1" ).using( "layer2" ).using( "layer3" );
         builder.withLayer( "layer2" );
-        builder.withLayer( "layer3" ).withModule( "test module" ).
-            withAssemblers( filter( matches( ".*ServiceAssembler" ),
-                                    findClasses( getClass() ).collect( toList() ) ) );
+        builder.withLayer( "layer3" )
+               .withModule( "test module" )
+               .withAssemblers( findClasses( getClass() ).filter( matches( ".*ServiceAssembler" ) )
+                                                         .collect( toList() ) );
         Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
