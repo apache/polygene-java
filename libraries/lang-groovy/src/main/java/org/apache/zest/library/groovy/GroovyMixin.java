@@ -32,12 +32,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.common.AppliesToFilter;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
 
 /**
  * Generic mixin that implements interfaces by delegating to Groovy functions
@@ -75,8 +74,7 @@ public class GroovyMixin
 
     public GroovyMixin()
     {
-
-        groovyObjects = new HashMap<Class, GroovyObject>();
+        groovyObjects = new HashMap<>();
     }
 
     @Override
@@ -104,22 +102,12 @@ public class GroovyMixin
             GroovyObject groovyObject = groovyObjects.get( declaringClass );
             if( groovyObject == null )
             {
-                InputStream is = null;
                 final Class groovyClass;
-                try
+                try( InputStream inputStream = groovySource.openStream() )
                 {
-                    is = groovySource.openStream();
-                    StringBuilder sourceBuilder = new StringBuilder();
-                    Inputs.text( groovySource ).transferTo( Outputs.text( sourceBuilder ) );
+                    String sourceText = new Scanner( inputStream ).useDelimiter( "\\Z" ).next();
                     GroovyClassLoader groovyClassLoader = new GroovyClassLoader( declaringClass.getClassLoader() );
-                    groovyClass = groovyClassLoader.parseClass( sourceBuilder.toString() );
-                }
-                finally
-                {
-                    if( is != null )
-                    {
-                        is.close();
-                    }
+                    groovyClass = groovyClassLoader.parseClass( sourceText );
                 }
                 groovyObject = (GroovyObject) groovyClass.newInstance();
                 if( hasProperty( groovyObject, "This" ) )
@@ -210,7 +198,5 @@ public class GroovyMixin
             this.script = script;
             this.url = url;
         }
-
     }
-
 }

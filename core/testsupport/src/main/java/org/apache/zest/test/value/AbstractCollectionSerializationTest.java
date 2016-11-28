@@ -44,11 +44,6 @@ import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.Test;
 
-import static org.apache.zest.io.Inputs.iterable;
-import static org.apache.zest.io.Inputs.text;
-import static org.apache.zest.io.Outputs.collection;
-import static org.apache.zest.io.Outputs.text;
-import static org.apache.zest.io.Transforms.map;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -70,19 +65,6 @@ public class AbstractCollectionSerializationTest
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
-
-    @Test
-    public void testIOString()
-        throws Exception
-    {
-        StringBuilder sb = new StringBuilder();
-        iterable( byteCollection() ).transferTo( map( valueSerialization.serialize(), text( sb ) ) );
-        String output = sb.toString();
-
-        List<Byte> list = new ArrayList<>();
-        text( output ).transferTo( map( valueSerialization.deserialize( module, Byte.class ), collection( list ) ) );
-        assertEquals( byteCollection(), list );
-    }
 
     @Test
     public void givenPrimitiveArrayWithIntsWhenSerializingAndDeserializingExpectEquals()

@@ -25,17 +25,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.zest.functional.Visitor;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 
 /**
  * Utility methods for performing SQL calls wrapping a given DataSource.
  */
 public class Databases
 {
-
     DataSource source;
 
     /**
@@ -50,15 +45,18 @@ public class Databases
      * Perform SQL update statement.
      */
     public int update( String sql )
-            throws SQLException
+        throws SQLException
     {
         Connection connection = null;
         PreparedStatement stmt = null;
-        try {
+        try
+        {
             connection = source.getConnection();
             stmt = connection.prepareStatement( sql );
             return stmt.executeUpdate();
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( stmt );
             SQLUtil.closeQuietly( connection );
         }
@@ -71,16 +69,19 @@ public class Databases
      * update the PreparedStatement with actual values.
      */
     public int update( String sql, StatementVisitor visitor )
-            throws SQLException
+        throws SQLException
     {
         Connection connection = null;
         PreparedStatement stmt = null;
-        try {
+        try
+        {
             connection = source.getConnection();
             stmt = connection.prepareStatement( sql );
             visitor.visit( stmt );
             return stmt.executeUpdate();
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( stmt );
             SQLUtil.closeQuietly( connection );
         }
@@ -90,7 +91,7 @@ public class Databases
      * Perform SQL query and let visitor handle results.
      */
     public void query( String sql, ResultSetVisitor visitor )
-            throws SQLException
+        throws SQLException
     {
         query( sql, null, visitor );
     }
@@ -101,124 +102,36 @@ public class Databases
      * If the SQL string contains ? placeholders, use the StatementVisitor to
      * update the PreparedStatement with actual values.
      */
-    public void query( String sql, StatementVisitor statement, ResultSetVisitor resultsetVisitor )
-            throws SQLException
+    public void query( String sql, StatementVisitor statementVisitor, ResultSetVisitor resultSetVisitor )
+        throws SQLException
     {
         Connection connection = null;
-        PreparedStatement stmt = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try {
+        try
+        {
             connection = source.getConnection();
-            stmt = connection.prepareStatement( sql );
-            if ( statement != null ) {
-                statement.visit( stmt );
+            statement = connection.prepareStatement( sql );
+            if( statementVisitor != null )
+            {
+                statementVisitor.visit( statement );
             }
-            resultSet = stmt.executeQuery();
-            while ( resultSet.next() ) {
-                if ( !resultsetVisitor.visit( resultSet ) ) {
+            resultSet = statement.executeQuery();
+            while( resultSet.next() )
+            {
+                if( !resultSetVisitor.visit( resultSet ) )
+                {
                     return;
                 }
             }
             resultSet.close();
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( resultSet );
-            SQLUtil.closeQuietly( stmt );
+            SQLUtil.closeQuietly( statement );
             SQLUtil.closeQuietly( connection );
         }
-    }
-
-    /**
-     * Perform SQL query and provide results as an Input.
-     *
-     * This makes it possible to combine SQL data with the I/O API.
-     */
-    public Input<ResultSet, SQLException> query( final String sql )
-    {
-        return new Input<ResultSet, SQLException>()
-        {
-
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super ResultSet, ReceiverThrowableType> output )
-                    throws SQLException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<ResultSet, SQLException>()
-                {
-
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super ResultSet, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, SQLException
-                    {
-                        query( sql, new ResultSetVisitor()
-                        {
-
-                            @Override
-                            public boolean visit( ResultSet visited )
-                                    throws SQLException
-                            {
-                                try {
-                                    receiver.receive( visited );
-                                } catch ( Throwable receiverThrowableType ) {
-                                    throw new SQLException( receiverThrowableType );
-                                }
-
-                                return true;
-                            }
-
-                        } );
-                    }
-
-                } );
-            }
-
-        };
-    }
-
-    /**
-     * Perform SQL query and provide results as an Input.
-     *
-     * This makes it possible to combine SQL data with the I/O API. If the SQL
-     * string contains ? placeholders, use the StatementVisitor to update the
-     * PreparedStatement with actual values.
-     */
-    public Input<ResultSet, SQLException> query( final String sql, final StatementVisitor visitor )
-    {
-        return new Input<ResultSet, SQLException>()
-        {
-
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super ResultSet, ReceiverThrowableType> output )
-                    throws SQLException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<ResultSet, SQLException>()
-                {
-
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super ResultSet, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, SQLException
-                    {
-                        query( sql, visitor, new ResultSetVisitor()
-                        {
-
-                            @Override
-                            public boolean visit( ResultSet visited )
-                                    throws SQLException
-                            {
-                                try {
-                                    receiver.receive( visited );
-                                } catch ( Throwable receiverThrowableType ) {
-                                    throw new SQLException( receiverThrowableType );
-                                }
-
-                                return true;
-                            }
-
-                        } );
-                    }
-
-                } );
-            }
-
-        };
     }
 
     /**
@@ -228,10 +141,8 @@ public class Databases
      */
     public interface StatementVisitor
     {
-
         void visit( PreparedStatement preparedStatement )
-                throws SQLException;
-
+            throws SQLException;
     }
 
     /**
@@ -241,8 +152,7 @@ public class Databases
      * by this API.
      */
     public interface ResultSetVisitor
-            extends Visitor<ResultSet, SQLException>
+        extends Visitor<ResultSet, SQLException>
     {
     }
-
 }
