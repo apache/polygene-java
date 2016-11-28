@@ -97,16 +97,14 @@ import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
 import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.api.util.Annotations.type;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 import static org.apache.zest.api.util.Classes.classHierarchy;
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.api.util.Classes.typeOf;
 import static org.apache.zest.api.util.Classes.typesOf;
 import static org.apache.zest.api.util.Classes.wrapperClass;
-import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * Declaration of a Composite.
@@ -247,19 +245,16 @@ public abstract class CompositeAssemblyImpl
                         mixinsModel
                     );
 
-                    DependencyModel.InjectionTypeFunction injectionTypeFunction = new DependencyModel.InjectionTypeFunction();
-                    DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
                     Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
                     source.flatMap( Dependencies::dependencies )
-                        .filter( thisSpec )
-                        .map( injectionTypeFunction )
-                        .forEach( thisDependencies::add );
+                          .filter( new DependencyModel.ScopeSpecification( This.class ) )
+                          .map( DependencyModel::rawInjectionType )
+                          .forEach( thisDependencies::add );
 
                     interfacesOf( mixinModel.mixinClass() )
                         .map( Classes.RAW_CLASS )
                         .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
-                            .noneMatch( c -> c
-                                .equals( clazz ) ) )
+                                                .noneMatch( c -> c.equals( clazz ) ) )
                         .forEach( thisDependencies::add );
 
                     compositeMethodsModel.addMethod( methodComposite );
@@ -541,7 +536,7 @@ public abstract class CompositeAssemblyImpl
 
         List<AbstractConstraintModel> constraintModels = new ArrayList<>();
         List<Annotation> filtered = constraintAnnotations
-            .filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) )
+            .filter( typeHasAnnotation( ConstraintDeclaration.class ) )
             .collect( Collectors.toList() );
 
         // TODO: This massive block below should be cleaned up.
@@ -577,7 +572,7 @@ public abstract class CompositeAssemblyImpl
             // No implementation found!
             // Check if if it's a composite constraints
             if( Arrays.stream( annotationType.getAnnotations() )
-                .anyMatch( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) ) )
+                .anyMatch( typeHasAnnotation( ConstraintDeclaration.class ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(
                     Arrays.stream( annotationType.getAnnotations() ),

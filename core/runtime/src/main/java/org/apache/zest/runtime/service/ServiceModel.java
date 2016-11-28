@@ -49,8 +49,6 @@ import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.property.PropertyInstance;
 
-import static org.apache.zest.runtime.legacy.Specifications.translate;
-
 /**
  * JAVADOC
  */
@@ -171,8 +169,7 @@ public final class ServiceModel extends CompositeModel
     public Class calculateConfigurationType()
     {
         DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
-        Predicate<DependencyModel> configurationCheck =
-            translate( new DependencyModel.InjectionTypeFunction(), clazz -> clazz.equals( Configuration.class ) );
+        Predicate<DependencyModel> configurationCheck = item -> item.rawInjectionType().equals( Configuration.class );
         return dependencies().filter( thisSpec.and( configurationCheck ) )
             .filter( dependencyModel -> dependencyModel.rawInjectionType().equals( Configuration.class ) )
             .filter( dependencyModel -> dependencyModel.injectionType() instanceof ParameterizedType )

@@ -159,7 +159,7 @@ public final class MixinModel
         return dependencies()
             .filter( new DependencyModel.ScopeSpecification( This.class ) )
             .distinct()
-            .map( new DependencyModel.InjectionTypeFunction() )
+            .map( DependencyModel::rawInjectionType )
             .collect( Collectors.toList() );
     }
 

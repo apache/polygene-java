@@ -30,14 +30,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
 import org.apache.zest.api.injection.InjectionScope;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.HierarchicalVisitor;
@@ -48,9 +46,10 @@ import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedParametersModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.ParameterizedTypeInstance;
-import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
+
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 /**
  * JAVADOC
@@ -129,10 +128,8 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
         for( Type type : injectedConstructor.getGenericParameterTypes() )
         {
-            Predicate<Annotation> injectionAnnotationSpec = Specifications.translate(
-                Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) );
             Annotation injectionAnnotation = Stream.of( parameterAnnotations[ idx ] )
-                                                   .filter( injectionAnnotationSpec )
+                                                   .filter( typeHasAnnotation( InjectionScope.class ) )
                                                    .findFirst().orElse( null );
 
             if( injectionAnnotation == null )

@@ -30,14 +30,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.apache.zest.api.injection.InjectionScope;
-import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Methods;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.functional.VisitableHierarchy;
 
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 /**
  * JAVADOC
@@ -60,7 +58,7 @@ public final class InjectedMethodsModel
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
                     Optional<Annotation> opt = Arrays.stream( parameterAnnotations[ i ] )
-                        .filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class ) ) )
+                        .filter( typeHasAnnotation( InjectionScope.class ) )
                         .findFirst();
                     if( opt.isPresent() )
                     {

@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
@@ -417,16 +416,6 @@ public final class DependencyModel
         public boolean test( DependencyModel model )
         {
             return model.hasScope( scope );
-        }
-    }
-
-    public static class InjectionTypeFunction
-        implements Function<DependencyModel, Class<?>>
-    {
-        @Override
-        public Class<?> apply( DependencyModel dependencyModel )
-        {
-            return dependencyModel.rawInjectionType();
         }
     }
 }

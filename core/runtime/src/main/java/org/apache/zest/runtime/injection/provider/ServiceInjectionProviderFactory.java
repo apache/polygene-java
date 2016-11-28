@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.Qualifier;
-import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
 import org.apache.zest.functional.Iterables;
@@ -37,10 +36,9 @@ import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.InjectionProvider;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
-import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.runtime.model.Resolution;
 
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
@@ -52,8 +50,7 @@ public final class ServiceInjectionProviderFactory
     {
         // TODO This could be changed to allow multiple @Qualifier annotations
         Annotation qualifierAnnotation = Stream.of( dependencyModel.annotations() )
-                                               .filter( Specifications.translate( Annotations.type(),
-                                                                                  hasAnnotation( Qualifier.class ) ) )
+                                               .filter( typeHasAnnotation( Qualifier.class ) )
                                                .findFirst().orElse( null );
         Predicate<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
