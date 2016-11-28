@@ -22,7 +22,8 @@ package org.apache.zest.library.rest.common.link;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.apache.zest.functional.Iterables;
+
+import static org.apache.zest.api.util.Collectors.single;
 
 /**
  * Helper methods for links
@@ -52,14 +53,14 @@ public final class LinksUtil
       };
    }
 
-    public static Link withRel(String rel, Links links)
+    public static Link withRel( String rel, Links links )
     {
-        return Iterables.single( Iterables.filter( withRel( rel ), links.links().get() ) );
+        return links.links().get().stream().filter( withRel( rel ) ).collect( single() );
     }
 
     public static Link withId(String id, Links links)
     {
-        return Iterables.single( Iterables.filter( withId( id ), links.links().get() ) );
+        return links.links().get().stream().filter( withId( id ) ).collect( single() );
     }
 
    public static Function<Link, String> toRel()
