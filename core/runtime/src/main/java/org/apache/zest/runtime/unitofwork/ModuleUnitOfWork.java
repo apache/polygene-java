@@ -293,7 +293,7 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, Identity identity )
         throws NoSuchEntityTypeException, NoSuchEntityException
     {
-        Iterable<? extends EntityDescriptor> models = module.typeLookup().lookupEntityModels( type );
+        Iterable<EntityDescriptor> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {

@@ -27,7 +27,6 @@ import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
-import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.value.ValueDescriptor;
 
 public interface TypeLookup
@@ -106,7 +105,7 @@ public interface TypeLookup
     /**
      * Lookup all Entity Models matching the given Type.
      *
-     * <p>Returned Iterable contains, in order, Entity Models that: </p>
+     * <p>Returned List contains, in order, Entity Models that: </p>
      *
      * <ul>
      * <li>exactly match the given type, in Visibility then Assembly order ;</li>
@@ -125,7 +124,7 @@ public interface TypeLookup
      *
      * @return All matching Entity Models
      */
-    Iterable<? extends EntityDescriptor> lookupEntityModels( Class<?> type );
+    List<EntityDescriptor> lookupEntityModels( Class<?> type );
 
     /**
      * Lookup first ServiceDescriptor/ImportedServiceDescriptor matching the given Type.
@@ -161,15 +160,28 @@ public interface TypeLookup
      */
     List<? extends ModelDescriptor> lookupServiceModels( Type type );
 
-    Stream<? extends ObjectDescriptor> allObjects();
+    /**
+     * @return All visible Objects, in visibility order
+     */
+    Stream<ObjectDescriptor> allObjects();
 
-    Stream<? extends TransientDescriptor> allTransients();
+    /**
+     * @return All visible Transients, in visibility order
+     */
+    Stream<TransientDescriptor> allTransients();
 
-    Stream<? extends ValueDescriptor> allValues();
+    /**
+     * @return All visible Values, in visibility order
+     */
+    Stream<ValueDescriptor> allValues();
 
-    Stream<? extends EntityDescriptor> allEntities();
+    /**
+     * @return All visible Entities, in visibility order
+     */
+    Stream<EntityDescriptor> allEntities();
 
+    /**
+     * @return All visible Services, in visibility order
+     */
     Stream<? extends ModelDescriptor> allServices();
-
-    Stream<Class<?>> allVisibleObjects();
 }
