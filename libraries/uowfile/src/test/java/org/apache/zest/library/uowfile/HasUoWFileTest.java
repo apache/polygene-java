@@ -21,6 +21,7 @@ package org.apache.zest.library.uowfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -42,8 +43,6 @@ import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.uowfile.bootstrap.UoWFileAssembler;
 import org.apache.zest.library.uowfile.internal.ConcurrentUoWFileModificationException;
@@ -59,6 +58,7 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -171,9 +171,11 @@ public class HasUoWFileTest
             File attachedFile = entity.attachedFile();
             File managedFile = entity.managedFile();
             // END SNIPPET: api
-            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( managedFile ) );
+            try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+            {
+                Files.copy( input, managedFile.toPath(), REPLACE_EXISTING );
+            }
         }
-
     }
 
     @Override
@@ -225,9 +227,9 @@ public class HasUoWFileTest
         }
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
-            assertThat("File content was not the good one",
-                       lines.limit( 1 ).findFirst().get(),
-                       equalTo( "Creation" ) );
+            assertThat( "File content was not the good one",
+                        lines.limit( 1 ).findFirst().get(),
+                        equalTo( "Creation" ) );
         }
     }
 
@@ -255,9 +257,9 @@ public class HasUoWFileTest
         }
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
-            assertThat("File content after discarded modification was not the good one",
-                       lines.limit( 1 ).findFirst().get(),
-                       equalTo( "Creation" ) );
+            assertThat( "File content after discarded modification was not the good one",
+                        lines.limit( 1 ).findFirst().get(),
+                        equalTo( "Creation" ) );
         }
 
         // Testing completed modification
@@ -268,9 +270,9 @@ public class HasUoWFileTest
         }
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
-            assertThat("Modified file content was not the good one",
-                       lines.limit( 1 ).findFirst().get(),
-                       equalTo( "Modification" ) );
+            assertThat( "Modified file content was not the good one",
+                        lines.limit( 1 ).findFirst().get(),
+                        equalTo( "Modification" ) );
         }
     }
 
@@ -330,11 +332,17 @@ public class HasUoWFileTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile().toPath(), REPLACE_EXISTING );
+        }
 
         uow2 = unitOfWorkFactory.newUnitOfWork();
         entity = uow2.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile().toPath(), REPLACE_EXISTING );
+        }
 
         uow.complete();
         try
@@ -403,9 +411,9 @@ public class HasUoWFileTest
         assertTrue( "There were errors during TestRetry", ex.isEmpty() );
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
-            assertThat("Modified file content was not the good one",
-                       lines.limit( 1 ).findFirst().get(),
-                       equalTo( "Modification" ) );
+            assertThat( "Modified file content was not the good one",
+                        lines.limit( 1 ).findFirst().get(),
+                        equalTo( "Modification" ) );
         }
     }
 
@@ -416,8 +424,10 @@ public class HasUoWFileTest
         TestedEntity entity = builder.instance();
         entity.name().set( name );
         entity = builder.newInstance();
-        Inputs.text( CREATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
+        try( InputStream input = CREATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile().toPath() );
+        }
         return entity;
     }
-
 }

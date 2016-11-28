@@ -21,16 +21,14 @@ package org.apache.zest.library.uowfile.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicLong;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UoWFile
 {
     /* package */ static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.library.uowfile" );
-    private static final int FILE_BUFFER_SIZE = 4096;
     private static final AtomicLong COUNT = new AtomicLong( 0L );
     private final long originalIdentity;
     private final File original;
@@ -56,11 +54,11 @@ public class UoWFile
     {
         StringBuilder sb = new StringBuilder().append( UoWFile.class.getSimpleName() );
         // UoWFile{parent/( original(oid->id) | current(id) | backup(id) )}
-        sb.append( "{" ).append( original.getParentFile().getName() ).append( "/( " ).
-            append( original.getName() ).append( "(" ).append( originalIdentity ).append( "->" ).append( fileTag( original ) ).append( ") | " ).
-            append( current.getName() ).append( "(" ).append( fileTag( current ) ).append( ") | " ).
-            append( backup.getName() ).append( "(" ).append( fileTag( backup ) ).
-            append( ") )}" );
+        sb.append( "{" ).append( original.getParentFile().getName() ).append( "/( " )
+          .append( original.getName() ).append( "(" ).append( originalIdentity ).append( "->" )
+          .append( fileTag( original ) ).append( ") | " ).append( current.getName() )
+          .append( "(" ).append( fileTag( current ) ).append( ") | " ).append( backup.getName() )
+          .append( "(" ).append( fileTag( backup ) ).append( ") )}" );
         return sb.toString();
     }
 
@@ -80,7 +78,9 @@ public class UoWFile
         {
             if( fileTag( original ) != originalIdentity )
             {
-                LOGGER.info( "Concurrent modification, original creation reference is {} and original apply reference is {}", originalIdentity, fileTag( original ) );
+                LOGGER.info(
+                    "Concurrent modification, original creation reference is {} and original apply reference is {}",
+                    originalIdentity, fileTag( original ) );
                 throw new ConcurrentUoWFileStateModificationException( this );
             }
             if( original.exists() )
@@ -132,7 +132,7 @@ public class UoWFile
     {
         try
         {
-            Inputs.byteBuffer( source, FILE_BUFFER_SIZE ).transferTo( Outputs.byteBuffer( dest ) );
+            Files.copy( source.toPath(), dest.toPath() );
         }
         catch( IOException ex )
         {
@@ -165,5 +165,4 @@ public class UoWFile
                          + "Are they on different filesystems?", source, dest );
         }
     }
-
 }

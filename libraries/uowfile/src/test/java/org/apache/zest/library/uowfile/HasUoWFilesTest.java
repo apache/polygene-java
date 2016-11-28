@@ -21,44 +21,44 @@ package org.apache.zest.library.uowfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.apache.zest.api.identity.HasIdentity;
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.spi.ZestSPI;
-import org.apache.zest.test.AbstractZestTest;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.uowfile.bootstrap.UoWFileAssembler;
 import org.apache.zest.library.uowfile.internal.ConcurrentUoWFileModificationException;
 import org.apache.zest.library.uowfile.plural.HasUoWFilesLifecycle;
 import org.apache.zest.library.uowfile.plural.UoWFilesLocator;
+import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -188,7 +188,10 @@ public class HasUoWFilesTest
             File attachedFileTwo = entity.attachedFile( MyEnum.fileTwo );
             File managedFileOne = entity.managedFile( MyEnum.fileOne );
             // END SNIPPET: api
-            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( managedFileOne ) );
+            try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+            {
+                Files.copy( input, managedFileOne.toPath(), REPLACE_EXISTING );
+            }
         }
     }
 
@@ -346,11 +349,17 @@ public class HasUoWFilesTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath(), REPLACE_EXISTING );
+        }
 
         uow2 = unitOfWorkFactory.newUnitOfWork();
         entity = uow2.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath(), REPLACE_EXISTING );
+        }
 
         uow.complete();
         try
@@ -432,7 +441,10 @@ public class HasUoWFilesTest
         TestedEntity entity = builder.instance();
         entity.name().set( name );
         entity = builder.newInstance();
-        Inputs.text( CREATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = CREATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath() );
+        }
         return entity;
     }
 
