@@ -161,7 +161,6 @@ public final class MixinModel
             .distinct()
             .map( new DependencyModel.InjectionTypeFunction() )
             .collect( Collectors.toList() );
-//        return map( new DependencyModel.InjectionTypeFunction(), unique( Iterables.filter( new DependencyModel.ScopeSpecification( This.class ), dependencies() ) ) );
     }
 
     protected FragmentInvocationHandler newInvocationHandler( Method method )

@@ -25,7 +25,6 @@ import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
-import org.apache.zest.functional.Iterables;
 
 /**
  * Import Services using a new registered Object instance.

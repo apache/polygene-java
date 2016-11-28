@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static org.apache.zest.functional.Iterables.iterable;
-
 /**
  * Useful methods for handling Constructors.
  */

@@ -206,23 +206,6 @@ public class MixinsModel
         return methodImplementation.entrySet()
             .stream().filter( entry -> entry.getValue().mixinClass().equals( mixinClass ) )
             .map( Map.Entry::getKey );
-
-//        return map( new Function<Map.Entry<Method, MixinModel>, Method>()
-//        {
-//            @Override
-//            public Method apply( Map.Entry<Method, MixinModel> entry )
-//            {
-//                return entry.getKey();
-//            }
-//        }, filter( new Predicate<Map.Entry<Method, MixinModel>>()
-//        {
-//            @Override
-//            public boolean test( Map.Entry<Method, MixinModel> item )
-//            {
-//                MixinModel model = item.getValue();
-//                return model.mixinClass().equals( mixinClass );
-//            }
-//        }, methodImplementation.entrySet() ) );
     }
 
     private class Uses

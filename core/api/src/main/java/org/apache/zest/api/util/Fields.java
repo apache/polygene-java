@@ -25,9 +25,6 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.apache.zest.functional.Iterables;
-
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * Useful methods for handling Fields.

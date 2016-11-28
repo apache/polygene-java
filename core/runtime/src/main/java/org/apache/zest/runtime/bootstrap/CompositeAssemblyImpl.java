@@ -265,23 +265,6 @@ public abstract class CompositeAssemblyImpl
                                 .equals( clazz ) ) )
                         .forEach( thisDependencies::add );
 
-//                    // Implement @This references
-//                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
-//                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
-//                                                          methodComposite.dependencies() ) );
-
-//                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
-//                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
-//                                                           mixinModel.dependencies() ) );
-
-//                    @SuppressWarnings( "unchecked" )
-//                    Iterable<Class<?>> filter = filter(
-//                        not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
-//                        map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
-//                    );
-//                    Iterable<? extends Class<?>> flatten = flatten( map, map1, filter );
-//                    addAll( thisDependencies, flatten );
-
                     compositeMethodsModel.addMethod( methodComposite );
                 }
             }

@@ -53,21 +53,6 @@ public final class InstanceImporter<T>
             .flatMap( holder -> serviceDescriptor.types().map( type -> (T) holder.metaInfo( type ) ) )
             .filter( meta -> meta != null )
             .findFirst().orElse( null );
-
-//        T instance = null;
-//        Iterable<MetaInfoHolder> holders = Iterables.iterable( serviceDescriptor, module, layer, application );
-//        for( final MetaInfoHolder metaInfoHolder : holders )
-//        {
-//            Function<Class<?>, T> metaFinder = type -> (T) metaInfoHolder.metaInfo( type );
-//
-//
-//            instance = first( filter( notNull(), map( metaFinder, serviceDescriptor.types() ) ) );
-//            if( instance != null )
-//            {
-//                break;
-//            }
-//        }
-//        return instance;
     }
 
     @Override

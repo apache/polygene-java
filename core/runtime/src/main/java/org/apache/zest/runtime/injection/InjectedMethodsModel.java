@@ -109,7 +109,6 @@ public final class InjectedMethodsModel
     public Stream<DependencyModel> dependencies()
     {
         return methodModels.stream().flatMap( InjectedMethodModel::dependencies );
-//        return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );
     }
 
     // Context

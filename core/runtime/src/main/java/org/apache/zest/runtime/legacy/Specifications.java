@@ -19,7 +19,6 @@
  */
 package org.apache.zest.runtime.legacy;
 
-import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 

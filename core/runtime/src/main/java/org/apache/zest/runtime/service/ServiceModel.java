@@ -191,39 +191,5 @@ public final class ServiceModel extends CompositeModel
                 }
                 return injectionClass;
             } );
-
-//        Class injectionClass = null;
-//        Iterable<DependencyModel> configurationThisDependencies =
-//            filter(
-//                and(
-//                    translate( new DependencyModel.InjectionTypeFunction(),
-//                               Specifications.<Class<?>>in( Configuration.class )
-//                    ),
-//                    new DependencyModel.ScopeSpecification( This.class ) ),
-//                dependencies()
-//            );
-//        for( DependencyModel dependencyModel : configurationThisDependencies )
-//
-//        {
-//            if( dependencyModel.rawInjectionType()
-//                    .equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
-//            {
-//                Class<?> type = Classes.RAW_CLASS
-//                    .apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
-//                if( injectionClass == null )
-//                {
-//                    injectionClass = type;
-//                }
-//                else
-//                {
-//                    if( injectionClass.isAssignableFrom( type ) )
-//                    {
-//                        injectionClass = type;
-//                    }
-//                }
-//            }
-//        }
-//
-//        return injectionClass;
     }
 }
