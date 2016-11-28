@@ -35,9 +35,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-
 @Mixins( IdentityManager.Mixin.class )
 @Concerns( { UnitOfWorkConcern.class } )
 public interface IdentityManager
@@ -133,18 +130,14 @@ public interface IdentityManager
                 throw new InvalidIdentityFormatException( idString );
             }
             String prefix = idString.substring( 0, pos );
-            Map.Entry<String, String> found =
-                first(
-                    filter(
-                        new FindClassSpecification( prefix ),
-                        config.get().mapping().get().entrySet()
-                    )
-                );
+            Map.Entry<String, String> found = config.get().mapping().get().entrySet().stream()
+                                                    .filter( new FindClassSpecification( prefix ) )
+                                                    .findFirst().orElse( null );
             return found == null ? null : actualClasses.get( found.getKey() );
         }
 
         private static class FindClassSpecification
-            implements Predicate<Map.Entry<Class, String>>
+            implements Predicate<Map.Entry<String, String>>
         {
             private String prefix;
 
@@ -154,7 +147,7 @@ public interface IdentityManager
             }
 
             @Override
-            public boolean test( Map.Entry<Class, String> item )
+            public boolean test( Map.Entry<String, String> item )
             {
                 return item.getValue().equals( prefix );
             }
