@@ -23,6 +23,7 @@ package org.apache.zest.library.rest.server.assembler;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
 import org.apache.velocity.app.VelocityEngine;
@@ -42,11 +43,11 @@ import org.apache.zest.library.rest.server.restlet.responsewriter.DefaultRespons
 import org.apache.zest.library.rest.server.spi.ResponseWriter;
 import org.restlet.service.MetadataService;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.zest.api.util.Classes.hasModifier;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.bootstrap.ImportedServiceDeclaration.INSTANCE;
 import static org.apache.zest.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
-import static org.apache.zest.functional.Iterables.filter;
 
 /**
  * JAVADOC
@@ -66,7 +67,7 @@ public class RestServerAssembler
             VelocityEngine velocity = new VelocityEngine( props );
 
             module.importedServices( VelocityEngine.class )
-                .importedBy( INSTANCE ).setMetaInfo( velocity );
+                  .importedBy( INSTANCE ).setMetaInfo( velocity );
         }
         catch( Exception e )
         {
@@ -83,28 +84,29 @@ public class RestServerAssembler
         module.importedServices( MetadataService.class );
 
         module.importedServices( ResponseWriterDelegator.class )
-            .identifiedBy( "responsewriterdelegator" )
-            .importedBy( NEW_OBJECT )
-            .visibleIn( Visibility.layer );
+              .identifiedBy( "responsewriterdelegator" )
+              .importedBy( NEW_OBJECT )
+              .visibleIn( Visibility.layer );
         module.objects( ResponseWriterDelegator.class );
 
         module.importedServices( RequestReaderDelegator.class )
-            .identifiedBy( "requestreaderdelegator" )
-            .importedBy( NEW_OBJECT )
-            .visibleIn( Visibility.layer );
+              .identifiedBy( "requestreaderdelegator" )
+              .importedBy( NEW_OBJECT )
+              .visibleIn( Visibility.layer );
         module.objects( RequestReaderDelegator.class );
 
-        module.importedServices( InteractionConstraintsService.class ).
-            importedBy( NewObjectImporter.class ).
-            visibleIn( Visibility.application );
+        module.importedServices( InteractionConstraintsService.class )
+              .importedBy( NewObjectImporter.class )
+              .visibleIn( Visibility.application );
         module.objects( InteractionConstraintsService.class );
 
         // Standard response writers
-        Iterable<Class<?>> writers = ClassScanner.findClasses( DefaultResponseWriter.class );
-        Predicate<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
+        Predicate<Class<?>> isResponseWriterClass = isAssignableFrom( ResponseWriter.class );
         Predicate<Class<?>> isNotAnAbstract = hasModifier( Modifier.ABSTRACT ).negate();
-        Iterable<Class<?>> candidates = filter( isNotAnAbstract.and( responseWriterClass ), writers );
-        for( Class<?> responseWriter : candidates )
+        List<? extends Class<?>> responseWriters = ClassScanner.findClasses( DefaultResponseWriter.class )
+                                                               .filter( isNotAnAbstract.and( isResponseWriterClass ) )
+                                                               .collect( toList() );
+        for( Class<?> responseWriter : responseWriters )
         {
             module.objects( responseWriter );
         }

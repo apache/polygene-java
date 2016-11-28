@@ -81,15 +81,11 @@ public class IterableQuerySourceTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                Iterable<Class<?>> entities = ClassScanner.findClasses( DomainEntity.class );
-
-                for( Class entity : entities )
-                {
-                    module.entities( entity );
-                }
+                ClassScanner.findClasses( DomainEntity.class ).forEach( module::entities );
 
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );

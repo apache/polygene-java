@@ -26,9 +26,8 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 
-import static org.apache.zest.api.util.Classes.*;
-import static org.apache.zest.bootstrap.ClassScanner.*;
-import static org.apache.zest.functional.Iterables.*;
+import static org.apache.zest.api.util.Classes.isAssignableFrom;
+import static org.apache.zest.bootstrap.ClassScanner.findClasses;
 
 /**
  * Assembler for all REST values.
@@ -40,9 +39,8 @@ public class ValueAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        for( Class<?> aClass : filter( isAssignableFrom( ValueComposite.class ), findClasses( Resource.class ) ))
-        {
-            module.values( aClass ).visibleIn( Visibility.application );
-        }
+        findClasses( Resource.class ).filter( isAssignableFrom( ValueComposite.class ) )
+                                     .forEach( resourceType -> module.values( resourceType )
+                                                                     .visibleIn( Visibility.application ) );
     }
 }
