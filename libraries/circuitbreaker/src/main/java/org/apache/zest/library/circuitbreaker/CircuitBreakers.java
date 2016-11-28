@@ -20,57 +20,12 @@
 package org.apache.zest.library.circuitbreaker;
 
 import java.util.function.Predicate;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 
 /**
  * CircuitBreaker helper methods.
  */
 public class CircuitBreakers
 {
-   public static <Item, ReceiverThrowable extends Throwable> Output<Item, ReceiverThrowable> withBreaker( final CircuitBreaker breaker, final Output<Item, ReceiverThrowable> output)
-   {
-      return new Output<Item, ReceiverThrowable>()
-      {
-         @Override
-         public <SenderThrowableType extends Throwable> void receiveFrom(final Sender<? extends Item, SenderThrowableType> sender) throws ReceiverThrowable, SenderThrowableType
-         {
-            output.receiveFrom( new Sender<Item, SenderThrowableType>()
-            {
-               @Override
-               public <ReceiverThrowableType extends Throwable> void sendTo(final Receiver<? super Item, ReceiverThrowableType> receiver) throws ReceiverThrowableType, SenderThrowableType
-               {
-                  // Check breaker first
-                  if (!breaker.isOn())
-                     throw (ReceiverThrowableType) breaker.lastThrowable();
-
-                  sender.sendTo( new Receiver<Item, ReceiverThrowableType>()
-                  {
-                     @Override
-                     public void receive( Item item ) throws ReceiverThrowableType
-                     {
-                        try
-                        {
-                           receiver.receive( item );
-
-                           // Notify breaker that it went well
-                           breaker.success();
-                        } catch (Throwable receiverThrowableType)
-                        {
-                           // Notify breaker of trouble
-                           breaker.throwable( receiverThrowableType );
-
-                           throw (ReceiverThrowableType) receiverThrowableType;
-                        }
-                     }
-                  });
-               }
-            });
-         }
-      };
-   }
-
    /**
     * Allow all throwables that are equal to or subclasses of given list of throwables.
     *
