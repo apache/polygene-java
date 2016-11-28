@@ -20,7 +20,7 @@
 package org.apache.zest.sample.forum.assembler;
 
 import java.lang.reflect.Modifier;
-
+import java.util.List;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.value.ValueComposite;
@@ -42,20 +42,20 @@ import org.apache.zest.library.rest.server.restlet.RequestReaderDelegator;
 import org.apache.zest.library.rest.server.restlet.ResponseWriterDelegator;
 import org.apache.zest.library.rest.server.spi.CommandResult;
 import org.apache.zest.sample.forum.context.Context;
-import org.apache.zest.sample.forum.domainevent.DomainCommandResult;
-import org.apache.zest.sample.forum.rest.resource.RootResource;
 import org.apache.zest.sample.forum.context.EventsService;
 import org.apache.zest.sample.forum.data.entity.User;
+import org.apache.zest.sample.forum.domainevent.DomainCommandResult;
 import org.apache.zest.sample.forum.domainevent.DomainEventValue;
 import org.apache.zest.sample.forum.domainevent.ParameterValue;
 import org.apache.zest.sample.forum.rest.ForumRestlet;
+import org.apache.zest.sample.forum.rest.resource.RootResource;
 import org.apache.zest.sample.forum.service.BootstrapData;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.service.MetadataService;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.zest.api.util.Classes.hasModifier;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
-import static org.apache.zest.functional.Iterables.filter;
 
 /**
  * TODO
@@ -103,17 +103,19 @@ public class ForumAssembler
         LayerAssembly data = assembly.layer( "Data" ).uses( infrastructure );
         {
             ModuleAssembly forum = data.module( "Forum" );
-            for( Class<?> dataClass : filter( hasModifier( Modifier.INTERFACE ), filter( isAssignableFrom( EntityComposite.class ), ClassScanner
-                .findClasses( User.class ) ) ) )
-            {
-                forum.entities( dataClass ).visibleIn( Visibility.application );
-            }
+            ClassScanner.findClasses( User.class )
+                        .filter( isAssignableFrom( EntityComposite.class ) )
+                        .filter( hasModifier( Modifier.INTERFACE ) )
+                        .forEach( dataClass -> forum.entities( dataClass ).visibleIn( Visibility.application ) );
         }
 
         LayerAssembly context = assembly.layer( "Context" ).uses( data );
         {
             ModuleAssembly contexts = context.module( "Context" );
-            for( Class<?> contextClass : filter( hasModifier( Modifier.INTERFACE ).negate(), ClassScanner.findClasses( Context.class ) ) )
+            List<? extends Class<?>> contextClasses = ClassScanner.findClasses( Context.class )
+                                                                  .filter( hasModifier( Modifier.INTERFACE ).negate() )
+                                                                  .collect( toList() );
+            for( Class<?> contextClass : contextClasses )
             {
                 if( contextClass.getName().contains( "$" ) )
                 {
@@ -125,10 +127,9 @@ public class ForumAssembler
                 }
             }
 
-            for( Class<?> valueClass : filter( isAssignableFrom( ValueComposite.class ), ClassScanner.findClasses( Context.class ) ) )
-            {
-                contexts.values( valueClass ).visibleIn( Visibility.application );
-            }
+            ClassScanner.findClasses( Context.class )
+                        .filter( isAssignableFrom( ValueComposite.class ) )
+                        .forEach( valueClass -> contexts.values( valueClass ).visibleIn( Visibility.application ) );
 
             contexts.services( EventsService.class );
 
@@ -159,7 +160,8 @@ public class ForumAssembler
             }
 
             ModuleAssembly resources = rest.module( "Resources" );
-            for( Class<?> resourceClass : ClassScanner.findClasses( RootResource.class ) )
+            List<? extends Class<?>> resourceClasses = ClassScanner.findClasses( RootResource.class ).collect( toList() );
+            for( Class<?> resourceClass : resourceClasses )
             {
                 resources.objects( resourceClass ).visibleIn( Visibility.layer );
             }

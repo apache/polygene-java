@@ -22,7 +22,6 @@ package org.apache.zest.sample.forum.domainevent;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
-import java.util.function.Function;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.injection.scope.Structure;
@@ -33,9 +32,10 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.api.ObjectSelection;
 import org.restlet.Request;
+
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * TODO
@@ -82,14 +82,9 @@ public @interface DomainEvent
                 prototype.parameters().get().add( parameterBuilder.newInstance() );
             }
 
-            Iterables.addAll( prototype.selection().get(), Iterables.map( new Function<Object, String>()
-            {
-                @Override
-                public String apply( Object o )
-                {
-                    return o.toString();
-                }
-            }, ObjectSelection.current().selection() ) );
+            ObjectSelection.current().selection().stream()
+                           .map( Object::toString )
+                           .collect( toCollection( () -> prototype.selection().get() ) );
 
             final DomainEventValue domainEvent = builder.newInstance();
 
