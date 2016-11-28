@@ -21,6 +21,7 @@
 package org.apache.zest.library.rest.server.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.zest.functional.Iterables;
 import org.restlet.Request;
@@ -80,9 +81,9 @@ public class ObjectSelection
         throw new IllegalArgumentException( "No object in selection for type:" + type.getSimpleName() );
     }
 
-    public Iterable<Object> selection()
+    public List<Object> selection()
     {
-        return selection;
+        return Collections.unmodifiableList(selection);
     }
 
     public Object[] toArray()
