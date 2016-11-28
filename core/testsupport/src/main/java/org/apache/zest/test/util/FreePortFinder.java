@@ -55,7 +55,7 @@ public class FreePortFinder
     private static final List<Range> LEAST_USED_RANGES = Arrays.asList(
         new Range( 29170, 29998 ),
         new Range( 38866, 39680 ),
-        new Range( 41798, 42507 ),
+        // new Range( 41798, 42507 ), // 42187 seen busy
         new Range( 43442, 44122 ),
         new Range( 46337, 46997 ),
         new Range( 35358, 36000 ),
