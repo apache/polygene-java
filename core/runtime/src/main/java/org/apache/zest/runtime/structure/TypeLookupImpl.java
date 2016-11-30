@@ -22,6 +22,7 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -237,33 +238,20 @@ class TypeLookupImpl
     @Override
     public List<EntityDescriptor> lookupEntityModels( final Class type )
     {
-        return entityModels.computeIfAbsent( type, key ->
-            concat(
-                allEntities().filter( ref -> new ExactTypeMatching<>( key ).test( ref ) ),
-                allEntities().filter( ref -> new AssignableFromTypeMatching<>( key ).test( ref ) )
-            ).distinct().collect( toList() )
-        );
+        return entityModels.computeIfAbsent( type, key -> new TypeMatchingDescriptors<EntityDescriptor>(key).selectedFrom(allEntities()));
     }
 
     @Override
     public ModelDescriptor lookupServiceModel( Type serviceType )
     {
         return serviceModels.computeIfAbsent( serviceType,
-                                              key -> lookupServiceModels( key ).stream().findFirst().orElse( null ) );
+                                              key -> new BestTypeMatchingDescriptors<ModelDescriptor>(key).selectedFrom(allServices()).bestMatchOrElse(null));
     }
 
     @Override
     public List<? extends ModelDescriptor> lookupServiceModels( final Type type1 )
     {
-        return servicesReferences.computeIfAbsent( type1, type ->
-        {
-            // There is a requirement that "exact match" services must be returned before "assignable match"
-            // services, hence the dual streams instead of a OR filter.
-            return Stream.concat( allServices().filter( new ExactTypeMatching<>( type ) ),
-                                  allServices().filter( new AssignableFromTypeMatching<>( type ) ) )
-                         .distinct()
-                         .collect( toList() );
-        } );
+        return servicesReferences.computeIfAbsent( type1, type ->new TypeMatchingDescriptors<ModelDescriptor>(type).selectedFrom(allServices()));
     }
 
     @Override
@@ -535,4 +523,86 @@ class TypeLookupImpl
             return value;
         }
     }
+    
+    private static class TypeMatchingDescriptors<T extends HasTypes> extends ArrayList<T> {
+
+        /**
+         * mutable :-( But performance is an issue here.
+         */
+        private Integer lastMatchingindex;
+        private final ExactTypeMatching<T> exactMatchingPredicate;
+        private final AssignableFromTypeMatching<T> assignablePredicate;
+
+        private TypeMatchingDescriptors(Type type) {
+            this.lastMatchingindex = null;
+            this.exactMatchingPredicate = new ExactTypeMatching<>(type);
+            this.assignablePredicate = new AssignableFromTypeMatching<>(type);
+        }
+
+        TypeMatchingDescriptors<T> selectedFrom(Stream<? extends T> candidates){
+            candidates.forEach(this::smartAddition);
+            return this;
+        }
+        /**
+         * Sorts the descriptors in a common list : matching ones first,
+         * assignable ones follow. The order of arrival is important :
+         * 
+         * "{assignable1, matching1, assignable2,assignable3,matching2,
+         * non-matching-or-assignable}" should result in "{ matching1,
+         * matching2, assignable1, assignable2, assignable3}"
+         */
+        private  void smartAddition(T descriptor) {
+            if (contains(descriptor)) {
+                return;
+            }
+            if ( exactMatchingPredicate.test(descriptor)) {
+                Integer nextMatchingIdx = lastMatchingindex == null ? 0 : lastMatchingindex + 1;
+                add(nextMatchingIdx, descriptor);
+                lastMatchingindex = nextMatchingIdx;
+                return;
+            }
+            if (assignablePredicate.test(descriptor)) {
+                add(descriptor);
+            }
+        }
+
+        private  boolean containsExactMatches() {
+            return lastMatchingindex != null;
+        }
+
+    }
+
+    private static class BestTypeMatchingDescriptors<T extends HasTypes> {
+
+        private TypeMatchingDescriptors<T> descriptors;
+
+        private  BestTypeMatchingDescriptors(Type type) {
+            this(new TypeMatchingDescriptors<>(type));
+        }
+
+        private  BestTypeMatchingDescriptors(TypeMatchingDescriptors<T> descriptors) {
+            this.descriptors = descriptors;
+        }
+
+        BestTypeMatchingDescriptors<T> selectedFrom(Stream<? extends T> candidates) {
+            candidates.forEach(this::smartAddition);
+            return this;
+        }
+        
+        private T bestMatchOrElse(T or) {
+            return !descriptors.isEmpty() ? descriptors.get(0) : or;
+        }
+
+        /**
+         * We want the first matching if exists, the first assignable otherwise.
+         * While there is no matching descriptor, even if we found assignable
+         * ones, we keep searching in case the last element is a matching type.
+         */
+        private void smartAddition(T descriptor) {
+            if (!descriptors.containsExactMatches()) {
+                descriptors.smartAddition(descriptor);
+            }
+        }
+    }
+
 }
