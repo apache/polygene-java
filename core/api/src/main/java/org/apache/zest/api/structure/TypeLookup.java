@@ -23,6 +23,7 @@ package org.apache.zest.api.structure;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Stream;
+import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -45,8 +46,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return First matching Object Model
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    ObjectDescriptor lookupObjectModel( Class<?> type );
+    ObjectDescriptor lookupObjectModel( Class<?> type ) throws AmbiguousTypeException;
 
     /**
      * Lookup first Transient Model matching the given Type.
@@ -62,8 +64,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return First matching Transient Model
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    TransientDescriptor lookupTransientModel( Class<?> type );
+    TransientDescriptor lookupTransientModel( Class<?> type ) throws AmbiguousTypeException;
 
     /**
      * Lookup first Value Model matching the given Type.
@@ -79,8 +82,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return First matching Value Model
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    ValueDescriptor lookupValueModel( Class<?> type );
+    ValueDescriptor lookupValueModel( Class<?> type ) throws AmbiguousTypeException;
 
     /**
      * Lookup first Entity Model matching the given Type.
@@ -99,8 +103,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return First matching Entity Model
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    EntityDescriptor lookupEntityModel( Class<?> type );
+    EntityDescriptor lookupEntityModel( Class<?> type ) throws AmbiguousTypeException;
 
     /**
      * Lookup all Entity Models matching the given Type.
@@ -123,8 +128,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return All matching Entity Models
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    List<EntityDescriptor> lookupEntityModels( Class<?> type );
+    List<EntityDescriptor> lookupEntityModels( Class<?> type ) throws AmbiguousTypeException;
 
     /**
      * Lookup first ServiceDescriptor/ImportedServiceDescriptor matching the given Type.
@@ -136,8 +142,9 @@ public interface TypeLookup
      * @param serviceType Looked up Type
      *
      * @return First matching Service
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    ModelDescriptor lookupServiceModel( Type serviceType );
+    ModelDescriptor lookupServiceModel( Type serviceType ) throws AmbiguousTypeException;
 
     /**
      * Lookup all ServiceDescriptors matching the given Type.
@@ -157,8 +164,9 @@ public interface TypeLookup
      * @param type Looked up Type
      *
      * @return All matching ServiceReferences
+     * @throws AmbiguousTypeException when a type ambiguity is found
      */
-    List<? extends ModelDescriptor> lookupServiceModels( Type type );
+    List<? extends ModelDescriptor> lookupServiceModels( Type type ) throws AmbiguousTypeException;
 
     /**
      * @return All visible Objects, in visibility order

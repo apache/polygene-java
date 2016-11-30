@@ -66,7 +66,7 @@ class TypeLookupImpl
     private final ModuleDescriptor moduleModel;
 
     /**
-     * Create a new TypeLookup bound to the given moduleModel.
+     * Create a new TypeLookup bound to the given ModuleModel.
      *
      * @param module ModuleModel bound to this TypeLookup
      */
@@ -89,21 +89,6 @@ class TypeLookupImpl
         servicesReferences = new ConcurrentHashMap<>();
     }
 
-    /**
-     * Lookup first Object Model matching the given Type.
-     *
-     * <p>First, if Object Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Second, if Object Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * @param type Looked up Type
-     *
-     * @return First matching Object Model
-     */
     @Override
     public ObjectDescriptor lookupObjectModel( final Class<?> type )
     {
@@ -119,21 +104,6 @@ class TypeLookupImpl
         } );
     }
 
-    /**
-     * Lookup first Transient Model matching the given Type.
-     *
-     * <p>First, if Transient Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Second, if Transient Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * @param type Looked up Type
-     *
-     * @return First matching Transient Model
-     */
     @Override
     public TransientDescriptor lookupTransientModel( final Class<?> type )
     {
@@ -149,21 +119,6 @@ class TypeLookupImpl
         } );
     }
 
-    /**
-     * Lookup first Value Model matching the given Type.
-     *
-     * <p>First, if Value Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Second, if Value Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * @param type Looked up Type
-     *
-     * @return First matching Value Model
-     */
     @Override
     public ValueDescriptor lookupValueModel( final Class<?> type )
     {
@@ -179,24 +134,6 @@ class TypeLookupImpl
         } );
     }
 
-    /**
-     * Lookup first Entity Model matching the given Type.
-     *
-     * <p>First, if Entity Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Second, if Entity Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
-     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * <p><b>Should be used for creational use cases only.</b> For non-creational use cases see
-     * {@link #lookupEntityModels(java.lang.Class)}.</p>
-     *
-     * @param type Looked up Type
-     *
-     * @return First matching Entity Model
-     */
     @Override
     public EntityDescriptor lookupEntityModel( final Class<?> type )
     {
@@ -212,28 +149,6 @@ class TypeLookupImpl
         } );
     }
 
-    /**
-     * Lookup all Entity Models matching the given Type.
-     *
-     * <p>Returned Iterable contains, in order, Entity Models that: </p>
-     *
-     * <ul>
-     * <li>exactly match the given type, in Visibility then Assembly order ;</li>
-     * <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
-     * </ul>
-     *
-     * <p>Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
-     * <p>Multiple <b>assignable</b> matches are <b>allowed</b> to enable polymorphic fetches and queries.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * <p><b>Should be used for non-creational use cases only.</b> For creational use cases see
-     * {@link #lookupEntityModel(java.lang.Class)}.</p>
-     *
-     * @param type Looked up Type
-     *
-     * @return All matching Entity Models
-     */
     @Override
     public List<EntityDescriptor> lookupEntityModels( final Class type )
     {
@@ -368,7 +283,7 @@ class TypeLookupImpl
         return getAllServices().stream();
     }
 
-    public List<? extends ModelDescriptor> getAllServices()
+    private List<? extends ModelDescriptor> getAllServices()
     {
         return allServices.computeIfAbsent(
             () -> concat(
