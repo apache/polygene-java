@@ -20,43 +20,37 @@
 
 package org.apache.zest.entitystore.jclouds;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.zest.api.time.SystemTime;
-import org.apache.zest.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
-import org.jclouds.filesystem.reference.FilesystemConstants;
-import org.junit.AfterClass;
+import java.util.Collections;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.jclouds.filesystem.reference.FilesystemConstants;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class JCloudsFilesystemTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-        JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
+        JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class )
+                                                            .declareDefaults();
         defaults.provider().set( "filesystem" );
-        Map<String, String> props = new HashMap<String, String>();
-        props.put( FilesystemConstants.PROPERTY_BASEDIR, "build/tmp/" + getClass().getPackage().getName() + "/es-jclouds-" + SystemTime.now().toEpochMilli() );
-        defaults.properties().set( props );
+        defaults.properties().set( Collections.singletonMap( FilesystemConstants.PROPERTY_BASEDIR,
+                                                             tmpDir.getRoot().getAbsolutePath() ) );
     }
-
-    @AfterClass
-    public static void filesystemCleanup()
-    {
-        // TODO recursively delete "build/tmp/" + getClass().getPackage().getName()
-    }
-
 }
