@@ -19,11 +19,11 @@
  */
 package org.apache.zest.index.reindexer;
 
-import info.aduna.io.FileUtil;
 import java.io.File;
-import org.apache.tools.ant.util.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Test;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -40,21 +40,26 @@ import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
+import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings( "PublicInnerClass" )
 public class ReindexerTest
-        extends AbstractZestTest
+    extends AbstractZestTest
 {
+    private static final String ENTITIES_DIR = "zest-entities";
+    private static final String INDEX_DIR = "zest-index";
 
-    @SuppressWarnings( "unchecked" )
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
+
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // JDBM EntityStore
         new JdbmEntityStoreAssembler().assemble( module );
@@ -70,30 +75,29 @@ public class ReindexerTest
         // Configuration
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class ).visibleIn( Visibility.layer );
+        config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class )
+              .visibleIn( Visibility.layer );
+        config.forMixin( JdbmConfiguration.class ).declareDefaults()
+              .file().set( new File( tmpDir.getRoot(), ENTITIES_DIR ).getAbsolutePath() );
+        config.forMixin( NativeConfiguration.class ).declareDefaults()
+              .dataDirectory().set( new File( tmpDir.getRoot(), INDEX_DIR ).getAbsolutePath() );
 
         // Test entity
         module.entities( MyEntity.class );
-
     }
 
     private static final String TEST_NAME = "foo";
 
-    public static interface MyEntity
-            extends EntityComposite
+    public interface MyEntity extends EntityComposite
     {
 
         Property<String> name();
-
     }
 
     @Test
     public void createDataWipeIndexReindexAndAssertData()
-            throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, IOException
     {
-        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-index" ).getAbsoluteFile();
-        rdfDir.mkdirs();
-        assertThat( rdfDir.exists(), is(true) );
 
         // ----> Create data and wipe index
 
@@ -106,8 +110,11 @@ public class ReindexerTest
 
         uow.complete();
 
-        deleteIndexData(); // Wipe the index data on disk
-        rdfDir.mkdirs();
+        // Wipe the index data on disk
+        try( Stream<Path> files = Files.walk( new File( tmpDir.getRoot(), INDEX_DIR ).getAbsoluteFile().toPath() ) )
+        {
+            files.map( Path::toFile ).forEach( File::delete );
+        }
 
 
         // ----> Reindex and assert data
@@ -128,40 +135,4 @@ public class ReindexerTest
 
         uow.complete();
     }
-
-    @AfterClass
-    @SuppressWarnings( "AssignmentReplaceableWithOperatorAssignment" )
-    public static void afterClass()
-            throws Exception
-    {
-        boolean success = true;
-        success = deleteEntitiesData();
-        success = success & deleteIndexData();
-        if ( !success ) {
-            throw new Exception( "Could not delete test data" );
-        }
-
-    }
-
-    private static boolean deleteEntitiesData()
-    {
-        boolean success = true;
-        File esDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-entities" ).getAbsoluteFile();
-        if ( esDir.exists() ) {
-            success = FileUtil.deltree( esDir );
-        }
-        return success;
-    }
-
-    private static boolean deleteIndexData()
-    {
-        boolean success = true;
-        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-index" ).getAbsoluteFile();
-        if ( rdfDir.exists() ) {
-            FileUtils.delete( rdfDir );
-            success = FileUtil.deltree( rdfDir );
-        }
-        return success;
-    }
-
 }
