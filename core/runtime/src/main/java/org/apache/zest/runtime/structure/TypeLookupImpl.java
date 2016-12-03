@@ -153,20 +153,26 @@ class TypeLookupImpl
     @Override
     public List<EntityDescriptor> lookupEntityModels( final Class type )
     {
-        return entityModels.computeIfAbsent( type, key -> new TypeMatchingDescriptors<EntityDescriptor>(key).selectedFrom(allEntities()));
+        return entityModels.computeIfAbsent(
+            type,
+            key -> new TypeMatchesSelector<EntityDescriptor>( key ).selectFrom( allEntities() ) );
     }
 
     @Override
     public ModelDescriptor lookupServiceModel( Type serviceType )
     {
-        return serviceModels.computeIfAbsent( serviceType,
-                                              key -> new BestTypeMatchingDescriptors<ModelDescriptor>(key).selectedFrom(allServices()).bestMatchOrElse(null));
+        return serviceModels.computeIfAbsent(
+            serviceType,
+            key -> new BestTypeMatchSelector<ModelDescriptor>( key ).selectFrom( allServices() )
+                                                                    .bestMatchOrElse( null ) );
     }
 
     @Override
-    public List<? extends ModelDescriptor> lookupServiceModels( final Type type1 )
+    public List<? extends ModelDescriptor> lookupServiceModels( final Type type )
     {
-        return servicesReferences.computeIfAbsent( type1, type ->new TypeMatchingDescriptors<ModelDescriptor>(type).selectedFrom(allServices()));
+        return servicesReferences.computeIfAbsent(
+            type,
+            key -> new TypeMatchesSelector<ModelDescriptor>( key ).selectFrom( allServices() ) );
     }
 
     @Override
@@ -400,6 +406,102 @@ class TypeLookupImpl
     }
 
     /**
+     * Selects descriptors by combining {@link ExactTypeMatching} and {@link AssignableFromTypeMatching}.
+     *
+     * Selected descriptors are sorted, exact matches first, assignable ones second.
+     * Other than that, original order is preserved.
+     *
+     * <code>
+     *     [ assignable1, matching1, assignable2, assignable3, matching2, non-matching-nor-assignable ]
+     * </code>
+     * results in
+     * <code>
+     *     [ matching1, matching2, assignable1, assignable2, assignable3 ]
+     * </code>
+     *
+     * @param <T> Descriptor type
+     */
+    private static class TypeMatchesSelector<T extends HasTypes> extends ArrayList<T>
+    {
+        private final ExactTypeMatching<T> exactMatchPredicate;
+        private final AssignableFromTypeMatching<T> assignablePredicate;
+        private Integer lastMatchIndex;
+
+        private TypeMatchesSelector( Type type )
+        {
+            this.exactMatchPredicate = new ExactTypeMatching<>( type );
+            this.assignablePredicate = new AssignableFromTypeMatching<>( type );
+        }
+
+        List<T> selectFrom( Stream<? extends T> candidates )
+        {
+            candidates.forEach( this::addDescriptor );
+            return this;
+        }
+
+        private void addDescriptor( T descriptor )
+        {
+            if( contains( descriptor ) )
+            {
+                return;
+            }
+            if( exactMatchPredicate.test( descriptor ) )
+            {
+                Integer nextMatchIndex = lastMatchIndex == null ? 0 : lastMatchIndex + 1;
+                add( nextMatchIndex, descriptor );
+                lastMatchIndex = nextMatchIndex;
+            }
+            else if( assignablePredicate.test( descriptor ) )
+            {
+                add( descriptor );
+            }
+        }
+
+        boolean containsExactMatches()
+        {
+            return lastMatchIndex != null;
+        }
+    }
+
+    /**
+     * Selects the best matching descriptor by combining {@link ExactTypeMatching} and {@link AssignableFromTypeMatching}.
+     *
+     * Selected descriptor is the first exact match if it exists, the first assignable otherwise.
+     *
+     * @param <T> Descriptor type
+     */
+    private static class BestTypeMatchSelector<T extends HasTypes>
+    {
+        private TypeMatchesSelector<T> descriptors;
+
+        BestTypeMatchSelector( Type type )
+        {
+            this.descriptors = new TypeMatchesSelector<>( type );
+        }
+
+        BestTypeMatchSelector<T> selectFrom( Stream<? extends T> candidates )
+        {
+            candidates.forEach( this::addDescriptor );
+            return this;
+        }
+
+        T bestMatchOrElse( T or )
+        {
+            return !descriptors.isEmpty() ? descriptors.get( 0 ) : or;
+        }
+
+        private void addDescriptor( T descriptor )
+        {
+            // Until an exact match is found, even if we already found assignable ones,
+            // keep selecting in case the last element is an exact match.
+            if( !descriptors.containsExactMatches() )
+            {
+                descriptors.addDescriptor( descriptor );
+            }
+        }
+    }
+
+    /**
      * This Predicate will filter out all Models that doesn't have the same visibility as the first one.
      */
     private static class SameVisibility<T extends ModelDescriptor>
@@ -438,86 +540,4 @@ class TypeLookupImpl
             return value;
         }
     }
-    
-    private static class TypeMatchingDescriptors<T extends HasTypes> extends ArrayList<T> {
-
-        /**
-         * mutable :-( But performance is an issue here.
-         */
-        private Integer lastMatchingindex;
-        private final ExactTypeMatching<T> exactMatchingPredicate;
-        private final AssignableFromTypeMatching<T> assignablePredicate;
-
-        private TypeMatchingDescriptors(Type type) {
-            this.lastMatchingindex = null;
-            this.exactMatchingPredicate = new ExactTypeMatching<>(type);
-            this.assignablePredicate = new AssignableFromTypeMatching<>(type);
-        }
-
-        TypeMatchingDescriptors<T> selectedFrom(Stream<? extends T> candidates){
-            candidates.forEach(this::smartAddition);
-            return this;
-        }
-        /**
-         * Sorts the descriptors in a common list : matching ones first,
-         * assignable ones follow. The order of arrival is important :
-         * 
-         * "{assignable1, matching1, assignable2,assignable3,matching2,
-         * non-matching-or-assignable}" should result in "{ matching1,
-         * matching2, assignable1, assignable2, assignable3}"
-         */
-        private  void smartAddition(T descriptor) {
-            if (contains(descriptor)) {
-                return;
-            }
-            if ( exactMatchingPredicate.test(descriptor)) {
-                Integer nextMatchingIdx = lastMatchingindex == null ? 0 : lastMatchingindex + 1;
-                add(nextMatchingIdx, descriptor);
-                lastMatchingindex = nextMatchingIdx;
-                return;
-            }
-            if (assignablePredicate.test(descriptor)) {
-                add(descriptor);
-            }
-        }
-
-        private  boolean containsExactMatches() {
-            return lastMatchingindex != null;
-        }
-
-    }
-
-    private static class BestTypeMatchingDescriptors<T extends HasTypes> {
-
-        private TypeMatchingDescriptors<T> descriptors;
-
-        private  BestTypeMatchingDescriptors(Type type) {
-            this(new TypeMatchingDescriptors<>(type));
-        }
-
-        private  BestTypeMatchingDescriptors(TypeMatchingDescriptors<T> descriptors) {
-            this.descriptors = descriptors;
-        }
-
-        BestTypeMatchingDescriptors<T> selectedFrom(Stream<? extends T> candidates) {
-            candidates.forEach(this::smartAddition);
-            return this;
-        }
-        
-        private T bestMatchOrElse(T or) {
-            return !descriptors.isEmpty() ? descriptors.get(0) : or;
-        }
-
-        /**
-         * We want the first matching if exists, the first assignable otherwise.
-         * While there is no matching descriptor, even if we found assignable
-         * ones, we keep searching in case the last element is a matching type.
-         */
-        private void smartAddition(T descriptor) {
-            if (!descriptors.containsExactMatches()) {
-                descriptors.smartAddition(descriptor);
-            }
-        }
-    }
-
 }
