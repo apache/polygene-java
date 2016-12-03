@@ -19,26 +19,18 @@
  */
 package org.apache.zest.migration;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.hamcrest.CoreMatchers;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
+import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationException;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.importer.NewObjectImporter;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.migration.assembly.EntityMigrationOperation;
 import org.apache.zest.migration.assembly.MigrationBuilder;
 import org.apache.zest.migration.assembly.MigrationOperation;
@@ -47,7 +39,12 @@ import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.StateStore;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.hamcrest.CoreMatchers;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -106,7 +103,7 @@ public class MigrationTest
     {
         Identity id;
         // Set up version 1
-        StringInputOutput data_v1 = new StringInputOutput();
+        List<String> data_v1;
         {
             SingletonAssembler v1 = new SingletonAssembler()
             {
@@ -130,11 +127,14 @@ public class MigrationTest
             BackupRestore backupRestore = v1.module()
                 .findService( BackupRestore.class )
                 .get();
-            backupRestore.backup().transferTo( data_v1 );
+            try( Stream<String> backup = backupRestore.backup() )
+            {
+                data_v1 = backup.collect( toList() );
+            }
         }
 
         // Set up version 1.1
-        StringInputOutput data_v1_1 = new StringInputOutput();
+        List<String> data_v1_1;
         {
             SingletonAssembler v1_1 = new SingletonAssembler()
             {
@@ -148,7 +148,7 @@ public class MigrationTest
             };
 
             BackupRestore testData = v1_1.module().findService( BackupRestore.class ).get();
-            data_v1.transferTo( testData.restore() );
+            testData.restore( data_v1.stream() );
 
             UnitOfWork uow = v1_1.module().unitOfWorkFactory().newUnitOfWork();
             TestEntity1_1 entity = uow.get( TestEntity1_1.class, id );
@@ -157,7 +157,10 @@ public class MigrationTest
             assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo( entity ) );
             uow.complete();
 
-            testData.backup().transferTo( data_v1_1 );
+            try( Stream<String> backup = testData.backup() )
+            {
+                data_v1_1 = backup.collect( toList() );
+            }
         }
 
         // Set up version 2.0
@@ -177,7 +180,7 @@ public class MigrationTest
 
             // Test migration from 1.0 -> 2.0
             {
-                data_v1.transferTo( testData.restore() );
+                testData.restore( data_v1.stream() );
                 UnitOfWork uow = v2_0.module().unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo( "Some value" ) );
@@ -202,11 +205,11 @@ public class MigrationTest
             };
 
             BackupRestore testData = v3_0.module().findService( BackupRestore.class ).get();
-            data_v1_1.transferTo( testData.restore() );
+            testData.restore( data_v1_1.stream() );
 
             // Test migration from 1.0 -> 3.0
             {
-                data_v1.transferTo( testData.restore() );
+                testData.restore( data_v1.stream() );
                 UnitOfWork uow = v3_0.module().unitOfWorkFactory().newUnitOfWork();
                 org.apache.zest.migration.moved.TestEntity2_0 entity = uow.get( org.apache.zest.migration.moved.TestEntity2_0.class, id );
                 uow.complete();
@@ -258,51 +261,4 @@ public class MigrationTest
             System.out.println( msg );
         }
     }
-
-    private static class StringInputOutput
-        implements Output<String, IOException>, Input<String, IOException>
-    {
-        final StringBuilder builder = new StringBuilder();
-
-        @Override
-        public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
-            throws IOException, SenderThrowableType
-        {
-            sender.sendTo((Receiver<String, IOException>) item -> builder.append( item ).append( "\n" ));
-        }
-
-        @Override
-        public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
-            throws IOException, ReceiverThrowableType
-        {
-            output.receiveFrom( new Sender<String, IOException>()
-            {
-                @Override
-                public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                    throws ReceiverThrowableType, IOException
-                {
-                    BufferedReader reader = new BufferedReader( new StringReader( builder.toString() ) );
-                    String line;
-                    try
-                    {
-                        while( ( line = reader.readLine() ) != null )
-                        {
-                            receiver.receive( line );
-                        }
-                    }
-                    finally
-                    {
-                        reader.close();
-                    }
-                }
-            } );
-        }
-
-        @Override
-        public String toString()
-        {
-            return builder.toString();
-        }
-    }
-
 }

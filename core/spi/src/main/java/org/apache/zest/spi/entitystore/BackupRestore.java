@@ -20,9 +20,8 @@
 
 package org.apache.zest.spi.entitystore;
 
-import java.io.IOException;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Allow backups and restores of data in an EntityStore to be made
@@ -30,16 +29,22 @@ import org.apache.zest.io.Output;
 public interface BackupRestore
 {
     /**
-     * Input that allows data from the entity store to be backed up.
-     *
-     * @return An Input instance containing the data to back up.
+     * Backup as a stream of serialized entity states, must be closed.
      */
-    Input<String, IOException> backup();
+    Stream<String> backup();
 
     /**
-     * Output that allows data to be restored from a backup.
-     *
-     * @return An Output instance to receive the restored data.
+     * Restore from a stream of serialized entity states.
      */
-    Output<String, IOException> restore();
+    void restore( Stream<String> states );
+
+    /**
+     * Restore from streams of serialized entity states.
+     *
+     * @return A consumer of streams of serialized entity states
+     */
+    default Consumer<Stream<String>> restore()
+    {
+        return this::restore;
+    }
 }

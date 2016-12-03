@@ -20,9 +20,8 @@
 
 package org.apache.zest.library.logging;
 
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.identity.Identity;
-import org.junit.Test;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -31,8 +30,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.io.Outputs;
-import org.apache.zest.io.Transforms;
 import org.apache.zest.library.logging.debug.Debug;
 import org.apache.zest.library.logging.debug.DebugConcern;
 import org.apache.zest.library.logging.debug.records.ServiceDebugRecordEntity;
@@ -42,6 +39,7 @@ import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -76,19 +74,18 @@ public class DebuggingTest
             assertEquals( message, "Hello!" );
             EntityStore es = serviceFinder.findService( EntityStore.class ).get();
             final Identity[] result = new Identity[1];
-            es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
-                    {
-                        public EntityState apply( EntityState entityState )
-                        {
-                            if( ServiceDebugRecordEntity.class.getName()
-                                    .equals( entityState.entityDescriptor().types().findFirst().get().getName() ) )
-                            {
-                                result[0] = entityState.entityReference().identity();
-                            }
-
-                            return entityState;
-                        }
-                    }, Outputs.<EntityState>noop() ));
+            try( Stream<EntityState> entityStates = es.entityStates( module ) )
+            {
+                entityStates
+                    .forEach( entityState ->
+                              {
+                                  if( ServiceDebugRecordEntity.class.getName().equals(
+                                      entityState.entityDescriptor().types().findFirst().get().getName() ) )
+                                  {
+                                      result[ 0 ] = entityState.entityReference().identity();
+                                  }
+                              } );
+            }
 
             ServiceDebugRecordEntity debugEntry = uow.get( ServiceDebugRecordEntity.class, result[ 0 ] );
             String mess = debugEntry.message().get();

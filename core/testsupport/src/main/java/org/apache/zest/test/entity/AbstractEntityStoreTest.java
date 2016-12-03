@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -51,6 +52,7 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.After;
@@ -498,6 +500,36 @@ public abstract class AbstractEntityStoreTest
         finally
         {
             unitOfWork.discard();
+        }
+    }
+
+    @Test
+    public void entityStatesSPI()
+    {
+        EntityStore entityStore = serviceFinder.findService( EntityStore.class ).get();
+
+        try( Stream<EntityState> states = entityStore.entityStates( module ) )
+        {
+            assertThat( states.count(), is( 0L ) );
+        }
+
+        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        TestEntity newInstance = createEntity( unitOfWork );
+        unitOfWork.complete();
+
+        try( Stream<EntityState> states = entityStore.entityStates( module ) )
+        {
+            assertThat( states.count(), is( 1L ) );
+        }
+
+        unitOfWork = unitOfWorkFactory.newUnitOfWork();
+        TestEntity instance = unitOfWork.get( newInstance );
+        unitOfWork.remove( instance );
+        unitOfWork.complete();
+
+        try( Stream<EntityState> states = entityStore.entityStates( module ) )
+        {
+            assertThat( states.count(), is( 0L ) );
         }
     }
 

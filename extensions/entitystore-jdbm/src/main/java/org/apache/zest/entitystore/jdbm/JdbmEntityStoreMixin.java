@@ -24,9 +24,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Properties;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
@@ -48,10 +55,6 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.io.Files;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.library.locking.ReadLock;
 import org.apache.zest.library.locking.WriteLock;
@@ -213,198 +216,166 @@ public class JdbmEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                lock.writeLock().lock();
-
-                try
-                {
-                    output.receiveFrom( new Sender<Reader, IOException>()
-                    {
-                        @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
-                            final TupleBrowser browser = index.browse();
-                            final Tuple tuple = new Tuple();
-
-                            while( browser.getNext( tuple ) )
-                            {
-                                Identity id = new StringIdentity( (byte[]) tuple.getKey() );
-
-                                Long stateIndex = getStateIndex( id );
-
-                                if( stateIndex == null )
-                                {
-                                    continue;
-                                } // Skip this one
-
-                                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
-
-                                receiver.receive( new StringReader( new String( serializedState, "UTF-8" ) ) );
-                            }
-                        }
-                    } );
-                }
-                finally
-                {
-                    lock.writeLock().unlock();
-                }
-            }
-        };
+        return backup().map( StringReader::new );
     }
 
     @Override
-    public Input<String, IOException> backup()
+    public Stream<String> backup()
     {
-        return new Input<String, IOException>()
+        lock.writeLock().lock();
+        TupleBrowser browser;
+        try
         {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
+            browser = index.browse();
+        }
+        catch( IOException ex )
+        {
+            lock.writeLock().unlock();
+            throw new EntityStoreException( ex );
+        }
+        return StreamSupport.stream(
+            new Spliterators.AbstractSpliterator<String>( Long.MAX_VALUE, Spliterator.ORDERED )
             {
-                lock.readLock().lock();
+                private final Tuple tuple = new Tuple();
 
-                try
+                @Override
+                public boolean tryAdvance( final Consumer<? super String> action )
                 {
-                    output.receiveFrom( new Sender<String, IOException>()
+                    try
                     {
-                        @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        if( !browser.getNext( tuple ) )
                         {
-                            final TupleBrowser browser = index.browse();
-                            final Tuple tuple = new Tuple();
-
-                            while( browser.getNext( tuple ) )
-                            {
-                                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
-
-                                Long stateIndex = getStateIndex( new StringIdentity( id ) );
-
-                                if( stateIndex == null )
-                                {
-                                    continue;
-                                } // Skip this one
-
-                                byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
-
-                                receiver.receive( new String( serializedState, "UTF-8" ) );
-                            }
+                            return false;
                         }
-                    } );
+                        Identity identity = new StringIdentity( (byte[]) tuple.getKey() );
+                        Long stateIndex = getStateIndex( identity );
+                        if( stateIndex == null )
+                        {
+                            return false;
+                        }
+                        byte[] serializedState = (byte[]) recordManager.fetch( stateIndex, serializer );
+                        String state = new String( serializedState, "UTF-8" );
+                        action.accept( state );
+                        return true;
+                    }
+                    catch( IOException ex )
+                    {
+                        lock.writeLock().unlock();
+                        throw new EntityStoreException( ex );
+                    }
                 }
-                finally
-                {
-                    lock.readLock().unlock();
-                }
-            }
-        };
+            },
+            false
+        ).onClose( () -> lock.writeLock().unlock() );
     }
 
     @Override
-    public Output<String, IOException> restore()
+    public void restore( final Stream<String> states )
     {
-        return new Output<String, IOException>()
+        File dbFile = new File( getDatabaseName() + ".db" );
+        File lgFile = new File( getDatabaseName() + ".lg" );
+
+        // Create temporary store
+        File tempDatabase = Files.createTemporayFileOf( dbFile );
+        final RecordManager recordManager;
+        final BTree index;
+        try
         {
-            @Override
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
+            recordManager = RecordManagerFactory.createRecordManager( tempDatabase.getAbsolutePath(),
+                                                                      new Properties() );
+            ByteArrayComparator comparator = new ByteArrayComparator();
+            index = BTree.createInstance( recordManager, comparator, serializer, DefaultSerializer.INSTANCE, 16 );
+            recordManager.setNamedObject( "index", index.getRecid() );
+            recordManager.commit();
+        }
+        catch( IOException ex )
+        {
+            throw new EntityStoreException( ex );
+        }
+        try
+        {
+            // TODO NO NEED TO SYNCHRONIZE HERE
+            AtomicLong counter = new AtomicLong();
+            Consumer<String> stateConsumer = state ->
             {
-                File dbFile = new File( getDatabaseName() + ".db" );
-                File lgFile = new File( getDatabaseName() + ".lg" );
-
-                // Create temporary store
-                File tempDatabase = Files.createTemporayFileOf( dbFile );
-
-                final RecordManager recordManager = RecordManagerFactory.createRecordManager( tempDatabase.getAbsolutePath(), new Properties() );
-                ByteArrayComparator comparator = new ByteArrayComparator();
-                final BTree index = BTree.createInstance( recordManager, comparator, serializer, DefaultSerializer.INSTANCE, 16 );
-                recordManager.setNamedObject( "index", index.getRecid() );
-                recordManager.commit();
-
                 try
                 {
-                    sender.sendTo( new Receiver<String, IOException>()
+                    // Commit one batch
+                    if( ( counter.incrementAndGet() % 1000 ) == 0 )
                     {
-                        int counter = 0;
+                        recordManager.commit();
+                    }
 
-                        @Override
-                        public void receive( String item )
-                            throws IOException
-                        {
-                            // Commit one batch
-                            if( ( counter++ % 1000 ) == 0 )
-                            {
-                                recordManager.commit();
-                            }
+                    String id = state.substring( "{\"reference\":\"".length() );
+                    id = id.substring( 0, id.indexOf( '"' ) );
 
-                            String id = item.substring( "{\"reference\":\"".length() );
-                            id = id.substring( 0, id.indexOf( '"' ) );
-
-                            // Insert
-                            byte[] stateArray = item.getBytes( "UTF-8" );
-                            long stateIndex = recordManager.insert( stateArray, serializer );
-                            index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
-                        }
-                    } );
+                    // Insert
+                    byte[] stateArray = state.getBytes( "UTF-8" );
+                    long stateIndex = recordManager.insert( stateArray, serializer );
+                    index.insert( id.getBytes( "UTF-8" ), stateIndex, false );
                 }
-                catch( IOException e )
+                catch( IOException ex )
                 {
-                    recordManager.close();
-                    tempDatabase.delete();
-                    throw e;
+                    throw new UncheckedIOException( ex );
                 }
-                catch( Throwable senderThrowableType )
-                {
-                    recordManager.close();
-                    tempDatabase.delete();
-                    throw (SenderThrowableType) senderThrowableType;
-                }
-
-                // Import went ok - continue
-                recordManager.commit();
-                // close file handles otherwise Microsoft Windows will fail to rename database files.
+            };
+            states.forEach( stateConsumer );
+            // Import went ok - continue
+            recordManager.commit();
+            // close file handles otherwise Microsoft Windows will fail to rename database files.
+            recordManager.close();
+        }
+        catch( IOException | UncheckedIOException ex )
+        {
+            try
+            {
                 recordManager.close();
-
-                lock.writeLock().lock();
-                try
-                {
-                    // Replace old database with new
-                    JdbmEntityStoreMixin.this.recordManager.close();
-
-                    boolean deletedOldDatabase = true;
-                    deletedOldDatabase &= dbFile.delete();
-                    deletedOldDatabase &= lgFile.delete();
-                    if( !deletedOldDatabase )
-                    {
-                        throw new IOException( "Could not remove old database" );
-                    }
-
-                    boolean renamedTempDatabase = true;
-                    renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".db" ).renameTo( dbFile );
-                    renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".lg" ).renameTo( lgFile );
-
-                    if( !renamedTempDatabase )
-                    {
-                        throw new IOException( "Could not replace database with temp database" );
-                    }
-
-                    // Start up again
-                    initialize();
-                }
-                finally
-                {
-                    lock.writeLock().unlock();
-                }
             }
-        };
+            catch( IOException ignore ) { }
+            tempDatabase.delete();
+            throw new EntityStoreException( ex );
+        }
+        try
+        {
+
+            lock.writeLock().lock();
+            try
+            {
+                // Replace old database with new
+                JdbmEntityStoreMixin.this.recordManager.close();
+
+                boolean deletedOldDatabase = true;
+                deletedOldDatabase &= dbFile.delete();
+                deletedOldDatabase &= lgFile.delete();
+                if( !deletedOldDatabase )
+                {
+                    throw new EntityStoreException( "Could not remove old database" );
+                }
+
+                boolean renamedTempDatabase = true;
+                renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".db" ).renameTo( dbFile );
+                renamedTempDatabase &= new File( tempDatabase.getAbsolutePath() + ".lg" ).renameTo( lgFile );
+
+                if( !renamedTempDatabase )
+                {
+                    throw new EntityStoreException( "Could not replace database with temp database" );
+                }
+
+                // Start up again
+                initialize();
+            }
+            finally
+            {
+                lock.writeLock().unlock();
+            }
+        }
+        catch( IOException ex )
+        {
+            tempDatabase.delete();
+            throw new EntityStoreException( ex );
+        }
     }
 
     private String getDatabaseName()

@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -47,10 +48,6 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.cache.Cache;
 import org.apache.zest.spi.cache.CachePool;
@@ -310,102 +307,62 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
+    public Stream<EntityState> entityStates( ModuleDescriptor module )
     {
-        return new Input<EntityState, EntityStoreException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
+        List<EntityState> migrated = new ArrayList<>();
+        return mapEntityStore.entityStates().map(
+            reader ->
             {
-                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
+                EntityState entity = readEntityState( module, reader );
+                if( entity.status() == EntityStatus.UPDATED )
                 {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, EntityStoreException
+                    migrated.add( entity );
+                    // Synch back 100 at a time
+                    if( migrated.size() > 100 )
                     {
-                        final List<EntityState> migrated = new ArrayList<>();
-                        try
-                        {
-                            mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
-                            {
-                                @Override
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Reader, SenderThrowableType> sender )
-                                    throws ReceiverThrowableType, SenderThrowableType
-                                {
-                                    sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
-                                    {
-                                        @Override
-                                        public void receive( Reader item )
-                                            throws ReceiverThrowableType
-                                        {
-                                            final EntityState entity = readEntityState( module, item );
-                                            if( entity.status() == EntityStatus.UPDATED )
-                                            {
-                                                migrated.add( entity );
-
-                                                // Synch back 100 at a time
-                                                if( migrated.size() > 100 )
-                                                {
-                                                    try
-                                                    {
-                                                        synchMigratedEntities( migrated );
-                                                    }
-                                                    catch( IOException e )
-                                                    {
-                                                        throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
-                                                    }
-                                                }
-                                            }
-                                            receiver.receive( entity );
-                                        }
-                                    } );
-
-                                    // Synch any remaining migrated entities
-                                    if( !migrated.isEmpty() )
-                                    {
-                                        try
-                                        {
-                                            synchMigratedEntities( migrated );
-                                        }
-                                        catch( IOException e )
-                                        {
-                                            throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
-                                        }
-                                    }
-                                }
-                            } );
-                        }
-                        catch( IOException e )
-                        {
-                            throw new EntityStoreException( e );
-                        }
+                        synchMigratedEntities( migrated );
                     }
-                } );
+                }
+                return entity;
             }
-        };
+        ).onClose(
+            () ->
+            {
+                // Synch any remaining migrated entities
+                if( !migrated.isEmpty() )
+                {
+                    synchMigratedEntities( migrated );
+                }
+            }
+        );
     }
 
     private void synchMigratedEntities( final List<EntityState> migratedEntities )
-        throws IOException
     {
-        mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
+        try
         {
-            @Override
-            public void visitMap( MapEntityStore.MapChanger changer )
-                throws IOException
+            mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
             {
-                for( EntityState migratedEntity : migratedEntities )
+                @Override
+                public void visitMap( MapEntityStore.MapChanger changer )
+                    throws IOException
                 {
-                    JSONEntityState state = (JSONEntityState) migratedEntity;
-                    try (Writer writer = changer.updateEntity( state.entityReference(), state.entityDescriptor() ))
+                    for( EntityState migratedEntity : migratedEntities )
                     {
-                        writeEntityState( state, writer, state.version(), state.lastModified() );
+                        JSONEntityState state = (JSONEntityState) migratedEntity;
+                        try( Writer writer = changer.updateEntity( state.entityReference(), state.entityDescriptor() ) )
+                        {
+                            writeEntityState( state, writer, state.version(), state.lastModified() );
+                        }
                     }
                 }
-            }
-        } );
-        migratedEntities.clear();
+            } );
+            migratedEntities.clear();
+        }
+        catch( IOException ex )
+        {
+            throw new EntityStoreException( "Synchronization of Migrated Entities failed.", ex );
+        }
     }
 
     protected Identity newUnitOfWorkId()

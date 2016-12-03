@@ -23,18 +23,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.BackupRestore;
 import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
@@ -42,6 +37,9 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStoreActivation;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * In-memory implementation of MapEntityStore.
@@ -90,95 +88,34 @@ public class MemoryMapEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
-                        for( String state : store.values() )
-                        {
-                            receiver.receive( new StringReader( state ) );
-                        }
-                    }
-                } );
-            }
-        };
+        return store.values().stream().map( StringReader::new );
     }
 
     @Override
-    public Input<String, IOException> backup()
+    public Stream<String> backup()
     {
-        return new Input<String, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<String, IOException>()
-                {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
-                        for( String state : store.values() )
-                        {
-                            receiver.receive( state );
-                        }
-                    }
-                } );
-            }
-        };
+        return store.values().stream();
     }
 
     @Override
-    public Output<String, IOException> restore()
+    public void restore( final Stream<String> stream )
     {
-        return new Output<String, IOException>()
-        {
-            @Override
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
+        store.clear();
+        stream.forEach( item -> {
+            try
             {
-                store.clear();
-
-                try
-                {
-                    sender.sendTo( new Receiver<String, IOException>()
-                    {
-                        @Override
-                        public void receive( String item )
-                            throws IOException
-                        {
-                            try
-                            {
-                                JSONTokener tokener = new JSONTokener( item );
-                                JSONObject entity = (JSONObject) tokener.nextValue();
-                                String id = entity.getString( JSONKeys.IDENTITY );
-                                store.put( EntityReference.parseEntityReference( id ), item );
-                            }
-                            catch( JSONException e )
-                            {
-                                throw new IOException( e );
-                            }
-                        }
-                    } );
-                }
-                catch( IOException e )
-                {
-                    store.clear();
-                    throw e;
-                }
+                JSONTokener tokener = new JSONTokener( item );
+                JSONObject entity = (JSONObject) tokener.nextValue();
+                String id = entity.getString( JSONKeys.IDENTITY );
+                store.put( EntityReference.parseEntityReference( id ), item );
             }
-        };
+            catch( JSONException e )
+            {
+                throw new UncheckedIOException( new IOException( e ) );
+            }
+        } );
     }
 
     private class MemoryMapChanger

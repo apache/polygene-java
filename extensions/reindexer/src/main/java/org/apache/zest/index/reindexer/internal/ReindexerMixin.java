@@ -21,7 +21,7 @@
 package org.apache.zest.index.reindexer.internal;
 
 import java.util.ArrayList;
-import org.apache.zest.api.common.QualifiedName;
+import java.util.stream.Stream;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
@@ -31,9 +31,6 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.reindexer.ReindexerConfiguration;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.StateChangeListener;
@@ -67,52 +64,43 @@ public class ReindexerMixin
         {
             loadValue = 50;
         }
-        new ReindexerOutput( loadValue ).reindex( store );
+        ReindexerHelper helper = new ReindexerHelper( loadValue );
+        helper.reindex( store );
     }
 
-    private class ReindexerOutput
-        implements Output<EntityState, RuntimeException>, Receiver<EntityState, RuntimeException>
+    private class ReindexerHelper
     {
         private int count;
         private int loadValue;
         private ArrayList<EntityState> states;
 
-        public ReindexerOutput( Integer loadValue )
+        private ReindexerHelper( int loadValue )
         {
             this.loadValue = loadValue;
             states = new ArrayList<>();
         }
 
-        public void reindex( EntityStore store )
+        private void reindex( EntityStore store )
         {
-
-            store.entityStates( module ).transferTo( this );
-            reindexState();
-        }
-
-        @Override
-        public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends EntityState, SenderThrowableType> sender )
-            throws RuntimeException, SenderThrowableType
-        {
-            sender.sendTo( this );
-            reindexState();
-        }
-
-        @Override
-        public void receive( EntityState item )
-            throws RuntimeException
-        {
-            count++;
-            item.setPropertyValue( HasIdentity.IDENTITY_STATE_NAME, item.entityReference().identity() );
-            states.add( item );
-
-            if( states.size() >= loadValue )
+            try( Stream<EntityState> entityStates = store.entityStates( module ) )
             {
-                reindexState();
+                entityStates
+                    .forEach( entityState ->
+                              {
+                                  count++;
+                                  entityState.setPropertyValue( HasIdentity.IDENTITY_STATE_NAME,
+                                                                entityState.entityReference().identity() );
+                                  states.add( entityState );
+                                  if( states.size() >= loadValue )
+                                  {
+                                      reindexState();
+                                  }
+                              } );
             }
+            reindexState();
         }
 
-        public void reindexState()
+        private void reindexState()
         {
             for( ServiceReference<StateChangeListener> listener : listeners )
             {

@@ -26,7 +26,6 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -36,15 +35,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
@@ -54,7 +50,6 @@ import org.jclouds.apis.Apis;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.io.Payload;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
@@ -254,52 +249,26 @@ public class JCloudsMapEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom(
-                    new Sender<Reader, IOException>()
-                    {
-                        @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                        {
-                            for( StorageMetadata stored : storeContext.getBlobStore().list() )
-                            {
-                                Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
-                                if( payload == null )
-                                {
-                                    throw new EntityNotFoundException( EntityReference.parseEntityReference( stored.getName() ) );
-                                }
-                                InputStream input = null;
-                                try
-                                {
-                                    input = payload.openStream();
-                                    receiver.receive( new InputStreamReader( input, "UTF-8" ) );
-                                }
-                                finally
-                                {
-                                    if( input != null )
-                                    {
-                                        try
-                                        {
-                                            input.close();
-                                        }
-                                        catch( IOException ignored )
-                                        {
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                );
-            }
-        };
+        return storeContext
+            .getBlobStore().list( container ).stream()
+            .map( metadata ->
+                  {
+                      Payload payload = storeContext.getBlobStore().getBlob( container, metadata.getName() ).getPayload();
+                      if( payload == null )
+                      {
+                          throw new EntityNotFoundException( EntityReference.parseEntityReference( metadata.getName() ) );
+                      }
+                      try( InputStream input = payload.openStream() )
+                      {
+                          String state = new Scanner( input, UTF_8.name() ).useDelimiter( "\\Z" ).next();
+                          return (Reader) new StringReader( state );
+                      }
+                      catch( IOException ex )
+                      {
+                          throw new EntityStoreException( ex );
+                      }
+                  } );
     }
 }

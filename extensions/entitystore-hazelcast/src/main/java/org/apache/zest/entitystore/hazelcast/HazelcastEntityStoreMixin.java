@@ -30,16 +30,12 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
@@ -147,28 +143,9 @@ public class HazelcastEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <RTT extends Throwable> void sendTo( Receiver<? super Reader, RTT> receiver )
-                        throws RTT, IOException
-                    {
-                        for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
-                        {
-                            receiver.receive( new StringReader( eachEntry.getValue() ) );
-                        }
-                    }
-                } );
-            }
-        };
+        return stringMap.values().stream().map( StringReader::new );
     }
 
     private Config createConfig( HazelcastConfiguration configuration )

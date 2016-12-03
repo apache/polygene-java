@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -46,10 +47,6 @@ import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
@@ -200,74 +197,47 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
+    public Stream<EntityState> entityStates( final ModuleDescriptor module )
     {
-        return new Input<EntityState, EntityStoreException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
-                {
-                    @Override
-                    public <RecThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, RecThrowableType> receiver )
-                        throws RecThrowableType, EntityStoreException
-                    {
-                        final List<EntityState> migrated = new ArrayList<>();
-                        try
-                        {
-                            mapEntityStore.entityStates().transferTo( new Output<Reader, RecThrowableType>()
-                            {
-                                @Override
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Reader, SenderThrowableType> sender )
-                                    throws RecThrowableType, SenderThrowableType
-                                {
-                                    sender.sendTo( item -> {
-                                        final EntityState entity = readEntityState( module, item );
-                                        if( entity.status() == EntityStatus.UPDATED )
-                                        {
-                                            migrated.add( entity );
-
-                                            // Synch back 100 at a time
-                                            if( migrated.size() > 100 )
-                                            {
-                                                try
-                                                {
-                                                    synchMigratedEntities( migrated );
-                                                }
-                                                catch( IOException e )
-                                                {
-                                                    throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
-                                                }
-                                            }
-                                        }
-                                        receiver.receive( entity );
-                                    } );
-
-                                    // Synch any remaining migrated entities
-                                    if( !migrated.isEmpty() )
-                                    {
-                                        try
-                                        {
-                                            synchMigratedEntities( migrated );
-                                        }
-                                        catch( IOException e )
-                                        {
-                                            throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
-                                        }
-                                    }
-                                }
-                            } );
-                        }
-                        catch( IOException e )
-                        {
-                            throw new EntityStoreException( e );
-                        }
-                    }
-                } );
-            }
-        };
+        List<EntityState> migrated = new ArrayList<>();
+        return mapEntityStore
+            .entityStates()
+            .map( reader ->
+                  {
+                      EntityState entity = readEntityState( module, reader );
+                      if( entity.status() == EntityStatus.UPDATED )
+                      {
+                          migrated.add( entity );
+                          // Synch back 100 at a time
+                          if( migrated.size() > 100 )
+                          {
+                              try
+                              {
+                                  synchMigratedEntities( migrated );
+                              }
+                              catch( IOException e )
+                              {
+                                  throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                              }
+                          }
+                      }
+                      return entity;
+                  } )
+            .onClose( () ->
+                      {
+                          // Synch any remaining migrated entities
+                          if( !migrated.isEmpty() )
+                          {
+                              try
+                              {
+                                  synchMigratedEntities( migrated );
+                              }
+                              catch( IOException e )
+                              {
+                                  throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                              }
+                          }
+                      } );
     }
 
     private void synchMigratedEntities( final List<EntityState> migratedEntities )

@@ -22,9 +22,9 @@ package org.apache.zest.spi.entitystore.helpers;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.io.Input;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 
@@ -42,9 +42,9 @@ public interface MapEntityStore
         throws EntityStoreException;
 
     /**
-     * @return All entities state Readers
+     * @return All entities state Readers, must be closed
      */
-    Input<Reader, IOException> entityStates();
+    Stream<Reader> entityStates();
 
     void applyChanges( MapChanges changes )
         throws IOException;

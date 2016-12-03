@@ -25,7 +25,6 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -40,15 +39,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
@@ -289,33 +286,16 @@ public class MongoMapEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo(
-                Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo(
-                        Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
-                        FindIterable<Document> cursor = db.getCollection( collectionName ).find();
-                        for( Document eachEntity : cursor )
-                        {
-                            Document bsonState = (Document) eachEntity.get( STATE_COLUMN );
-                            String jsonState = JSON.serialize( bsonState );
-                            receiver.receive( new StringReader( jsonState ) );
-                        }
-                    }
-                } );
-            }
-        };
+        return StreamSupport
+            .stream( db.getCollection( collectionName ).find().spliterator(), false )
+            .map( eachEntity ->
+                  {
+                      Document bsonState = (Document) eachEntity.get( STATE_COLUMN );
+                      String jsonState = JSON.serialize( bsonState );
+                      return new StringReader( jsonState );
+                  } );
     }
 
     private Bson byIdentity( EntityReference entityReference )
