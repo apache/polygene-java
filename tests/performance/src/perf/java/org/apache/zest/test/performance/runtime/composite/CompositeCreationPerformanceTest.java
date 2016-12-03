@@ -17,21 +17,16 @@
  */
 package org.apache.zest.test.performance.runtime.composite;
 
-import java.time.Duration;
-import java.time.Instant;
-import org.apache.zest.api.time.SystemTime;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.object.ObjectFactory;
-import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
 /**
  * Tests performance of new composite creation.
@@ -40,7 +35,7 @@ public class CompositeCreationPerformanceTest
 {
     @Test
     public void newInstanceForRegisteredCompositePerformance()
-        throws ActivationException, AssemblyException
+        throws ActivationException, AssemblyException, InterruptedException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -53,70 +48,122 @@ public class CompositeCreationPerformanceTest
                 module.values( AnyValue.class );
             }
         };
-        int loops = 2;
-        long t0 = 0;
+        int warmups = 10;
+        int runs = 20;
+        long waitBeforeRun = 1000;
+        long waitBetweenRuns = 500;
+        long timeForJavaObject = 0;
         {
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t0 = t0 + testJavaObjectCreationPerformance();
+                testJavaObjectCreationPerformance( false );
             }
-            t0 = t0 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForJavaObject += testJavaObjectCreationPerformance( true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForJavaObject = timeForJavaObject / runs;
         }
-        long t1 = 0;
+        long timeForTransientComposite = 0;
         {
             TransientBuilderFactory module = assembler.module();
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t1 = t1 + testCompositeCreationPerformance( module );
+                testCompositeCreationPerformance( module, false );
             }
-            t1 = t1 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForTransientComposite += testCompositeCreationPerformance( module, true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForTransientComposite = timeForTransientComposite / runs;
         }
-        long t2 = 0;
+        long timeForManagedObject = 0;
         {
             ObjectFactory objectFactory = assembler.module();
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t2 = t2 + testObjectCreationPerformance( objectFactory );
+                testObjectCreationPerformance( objectFactory, false );
             }
-            t2 = t2 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForManagedObject += testObjectCreationPerformance( objectFactory, true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForManagedObject = timeForManagedObject / runs;
         }
-        long t3 = 0;
+        long timeForValueComposite = 0;
         {
             ValueBuilderFactory valueBuilderFactory = assembler.module();
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t3 = t3 + testValueCreationPerformance( valueBuilderFactory );
+                testValueCreationPerformance( valueBuilderFactory, false );
             }
-            t3 = t3 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForValueComposite += testValueCreationPerformance( valueBuilderFactory, true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForValueComposite = timeForValueComposite / runs;
         }
 
-        long t4 = 0;
+        long timeForTransientCompositeBuilder = 0;
         {
             TransientBuilderFactory module = assembler.module();
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t4 = t4 + testCompositeCreationWithBuilderPerformance( module );
+                testCompositeCreationWithBuilderPerformance( module, false );
             }
-            t4 = t4 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForTransientCompositeBuilder += testCompositeCreationWithBuilderPerformance( module, true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForTransientCompositeBuilder = timeForTransientCompositeBuilder / runs;
         }
-        long t6 = 0;
+        long timeForValueCompositeBuilder = 0;
         {
             ValueBuilderFactory valueBuilderFactory = assembler.module();
-            for( int i = 0; i < loops; i++ )
+            // Warmup
+            for( int i = 0; i < warmups; i++ )
             {
-                t6 = t6 + testValueCreationWithBuilderPerformance( valueBuilderFactory );
+                testValueCreationWithBuilderPerformance( valueBuilderFactory, false );
             }
-            t6 = t6 / loops;
+            Thread.sleep( waitBeforeRun );
+            // Run
+            for( int i = 0; i < runs; i++ )
+            {
+                timeForValueCompositeBuilder += testValueCreationWithBuilderPerformance( valueBuilderFactory, true );
+                Thread.sleep( waitBetweenRuns );
+            }
+            timeForValueCompositeBuilder = timeForValueCompositeBuilder / runs;
         }
 
-        System.out.println( "Transient: " + ( t1 / t0 ) + "x" );
-        System.out.println( "TransientBuilder: " + ( t4 / t0 ) + "x" );
-        System.out.println( "Value: " + ( t3 / t0 ) + "x" );
-        System.out.println( "ValueBuilder: " + ( t6 / t0 ) + "x" );
-        System.out.println( "Object: " + ( t2 / t0 ) + "x" );
+        System.out.println( "----" );
+        System.out.println( "Transient: " + ( timeForTransientComposite / timeForJavaObject ) + "x" );
+        System.out.println( "TransientBuilder: " + ( timeForTransientCompositeBuilder / timeForJavaObject ) + "x" );
+        System.out.println( "Value: " + ( timeForValueComposite / timeForJavaObject ) + "x" );
+        System.out.println( "ValueBuilder: " + ( timeForValueCompositeBuilder / timeForJavaObject ) + "x" );
+        System.out.println( "Object: " + ( timeForManagedObject / timeForJavaObject ) + "x" );
     }
 
-    private long testCompositeCreationPerformance( TransientBuilderFactory module )
+    private long testCompositeCreationPerformance( TransientBuilderFactory module, boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
@@ -127,27 +174,32 @@ public class CompositeCreationPerformanceTest
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Composite Creation Time:" + time + " nanoseconds per composite" );
+        if( run )
+        {
+            System.out.println( "Composite Creation Time:" + time + " nanoseconds per composite" );
+        }
         return time;
     }
 
-    private long testCompositeCreationWithBuilderPerformance( TransientBuilderFactory module )
+    private long testCompositeCreationWithBuilderPerformance( TransientBuilderFactory module, boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
         for( int i = 0; i < iter; i++ )
         {
-            TransientBuilder<AnyComposite> builder = module.newTransientBuilder( AnyComposite.class );
-            builder.newInstance();
+            module.newTransientBuilder( AnyComposite.class ).newInstance();
         }
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Composite (builder) Creation Time:" + time + " nanoseconds per composite" );
+        if( run )
+        {
+            System.out.println( "Composite (builder) Creation Time:" + time + " nanoseconds per composite" );
+        }
         return time;
     }
 
-    private long testValueCreationPerformance( ValueBuilderFactory valueBuilderFactory )
+    private long testValueCreationPerformance( ValueBuilderFactory valueBuilderFactory, boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
@@ -158,27 +210,32 @@ public class CompositeCreationPerformanceTest
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Value Creation Time:" + time + " nanoseconds per composite" );
+        if( run )
+        {
+            System.out.println( "Value Creation Time:" + time + " nanoseconds per composite" );
+        }
         return time;
     }
 
-    private long testValueCreationWithBuilderPerformance( ValueBuilderFactory valueBuilderFactory )
+    private long testValueCreationWithBuilderPerformance( ValueBuilderFactory valueBuilderFactory, boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
         for( int i = 0; i < iter; i++ )
         {
-            ValueBuilder<AnyValue> builder = valueBuilderFactory.newValueBuilder( AnyValue.class );
-            builder.newInstance();
+            valueBuilderFactory.newValueBuilder( AnyValue.class ).newInstance();
         }
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Value (builder) Creation Time:" + time + " nanoseconds per composite" );
+        if( run )
+        {
+            System.out.println( "Value (builder) Creation Time:" + time + " nanoseconds per composite" );
+        }
         return time;
     }
 
-    private long testObjectCreationPerformance( ObjectFactory objectFactory )
+    private long testObjectCreationPerformance( ObjectFactory objectFactory, boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
@@ -189,11 +246,14 @@ public class CompositeCreationPerformanceTest
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Zest Object Creation Time:" + time + " nanoseconds per object" );
+        if( run )
+        {
+            System.out.println( "Zest Object Creation Time:" + time + " nanoseconds per object" );
+        }
         return time;
     }
 
-    private long testJavaObjectCreationPerformance()
+    private long testJavaObjectCreationPerformance( boolean run )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
@@ -204,16 +264,19 @@ public class CompositeCreationPerformanceTest
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Java Object Creation Time:" + time + " nanoseconds per object" );
+        if( run )
+        {
+            System.out.println( "Java Object Creation Time:" + time + " nanoseconds per object" );
+        }
         return time;
     }
 
-    public static interface AnyComposite
+    public interface AnyComposite
         extends TransientComposite
     {
     }
 
-    public static interface AnyValue
+    public interface AnyValue
         extends ValueComposite
     {
     }
@@ -221,5 +284,4 @@ public class CompositeCreationPerformanceTest
     public static class AnyObject
     {
     }
-
 }
