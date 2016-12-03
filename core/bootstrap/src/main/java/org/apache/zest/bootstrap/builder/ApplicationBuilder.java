@@ -48,12 +48,50 @@ public class ApplicationBuilder
     implements ActivationEventListenerRegistration
 {
     private final String applicationName;
+    private String applicationVersion;
+    private Application.Mode applicationMode;
+    private final List<Object> metaInfos = new ArrayList<>();
+    private boolean passivationShutdownHook;
     private final Map<String, LayerDeclaration> layers = new HashMap<>();
     private final List<ActivationEventListener> activationListeners = new ArrayList<>();
 
     public ApplicationBuilder( String applicationName )
     {
         this.applicationName = applicationName;
+    }
+
+    public ApplicationBuilder version( String version )
+    {
+        applicationVersion = version;
+        return this;
+    }
+
+    public ApplicationBuilder mode( Application.Mode mode )
+    {
+        applicationMode = mode;
+        return this;
+    }
+
+    public ApplicationBuilder metaInfo( Object... metaInfos )
+    {
+        for( Object metaInfo : metaInfos )
+        {
+            this.metaInfos.add( metaInfo );
+        }
+        return this;
+    }
+
+    /**
+     * Register a JVM shutdown hook that passivate the Application.
+     *
+     * The hook is registered after activating the Application and before {@link #afterActivation()}.
+     *
+     * @return This builder
+     */
+    public ApplicationBuilder withPassivationShutdownHook()
+    {
+        this.passivationShutdownHook = true;
+        return this;
     }
 
     /**
@@ -74,6 +112,18 @@ public class ApplicationBuilder
             {
                 ApplicationAssembly assembly = factory.newApplicationAssembly();
                 assembly.setName( applicationName );
+                if( applicationVersion != null )
+                {
+                    assembly.setVersion( applicationVersion );
+                }
+                if( applicationMode != null )
+                {
+                    assembly.setMode( applicationMode );
+                }
+                for( Object metaInfo : metaInfos )
+                {
+                    assembly.setMetaInfo( metaInfo );
+                }
                 HashMap<String, LayerAssembly> createdLayers = new HashMap<>();
                 for( Map.Entry<String, LayerDeclaration> entry : layers.entrySet() )
                 {
@@ -94,6 +144,10 @@ public class ApplicationBuilder
         }
         beforeActivation();
         application.activate();
+        if( passivationShutdownHook )
+        {
+            Runtime.getRuntime().addShutdownHook( new ApplicationPassivationThread( application ) );
+        }
         afterActivation();
         return application;
     }
@@ -244,8 +298,6 @@ public class ApplicationBuilder
     public static void main( String[] args )
         throws JSONException, ActivationException, AssemblyException
     {
-        ApplicationBuilder builder = fromJson( System.in );
-        Application application = builder.newApplication();
-        Runtime.getRuntime().addShutdownHook( new ApplicationPassivationThread( application, System.err ) );
+        fromJson( System.in ).withPassivationShutdownHook().newApplication();
     }
 }
