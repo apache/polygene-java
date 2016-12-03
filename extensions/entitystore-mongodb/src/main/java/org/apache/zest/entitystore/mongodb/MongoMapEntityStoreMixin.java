@@ -20,14 +20,15 @@
 package org.apache.zest.entitystore.mongodb;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 import java.io.IOException;
 import java.io.Reader;
@@ -37,6 +38,7 @@ import java.io.Writer;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -50,6 +52,10 @@ import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * MongoDB implementation of MapEntityStore.
@@ -70,7 +76,7 @@ public class MongoMapEntityStoreMixin
     private String username;
     private char[] password;
     private MongoClient mongo;
-    private DB db;
+    private MongoDatabase db;
 
     @Override
     public void activateService()
@@ -79,20 +85,21 @@ public class MongoMapEntityStoreMixin
         loadConfiguration();
 
         // Create Mongo driver and open the database
+        MongoClientOptions options = MongoClientOptions.builder().writeConcern( writeConcern ).build();
         if( username.isEmpty() )
         {
-            mongo = new MongoClient( serverAddresses );
+            mongo = new MongoClient( serverAddresses, options );
         }
         else
         {
             MongoCredential credential = MongoCredential.createMongoCRCredential( username, databaseName, password );
-            mongo = new MongoClient( serverAddresses, Arrays.asList( credential ) );
+            mongo = new MongoClient( serverAddresses, Collections.singletonList( credential ), options );
         }
-        db = mongo.getDB( databaseName );
+        db = mongo.getDatabase( databaseName );
 
         // Create index if needed
-        DBCollection entities = db.getCollection( collectionName );
-        if( entities.getIndexInfo().isEmpty() )
+        MongoCollection<Document> entities = db.getCollection( collectionName );
+        if( !entities.listIndexes().iterator().hasNext() )
         {
             entities.createIndex( new BasicDBObject( IDENTITY_COLUMN, 1 ) );
         }
@@ -139,24 +146,27 @@ public class MongoMapEntityStoreMixin
         // If write concern not configured, set it to normal
         switch( config.writeConcern().get() )
         {
-            case FSYNC_SAFE:
-                writeConcern = WriteConcern.FSYNC_SAFE;
+            case W1:
+                writeConcern = WriteConcern.W1;
                 break;
-            case JOURNAL_SAFE:
-                writeConcern = WriteConcern.JOURNAL_SAFE;
+            case W2:
+                writeConcern = WriteConcern.W2;
+                break;
+            case W3:
+                writeConcern = WriteConcern.W3;
+                break;
+            case UNACKNOWLEDGED:
+                writeConcern = WriteConcern.UNACKNOWLEDGED;
+                break;
+            case JOURNALED:
+                writeConcern = WriteConcern.JOURNALED;
                 break;
             case MAJORITY:
                 writeConcern = WriteConcern.MAJORITY;
                 break;
-            case REPLICAS_SAFE:
-                writeConcern = WriteConcern.REPLICAS_SAFE;
-                break;
-            case SAFE:
-                writeConcern = WriteConcern.SAFE;
-                break;
-            case NORMAL:
+            case ACKNOWLEDGED:
             default:
-                writeConcern = WriteConcern.NORMAL;
+                writeConcern = WriteConcern.ACKNOWLEDGED;
         }
 
         // Username and password are defaulted to empty strings
@@ -186,7 +196,7 @@ public class MongoMapEntityStoreMixin
     }
 
     @Override
-    public DB dbInstanceUsed()
+    public MongoDatabase dbInstanceUsed()
     {
         return db;
     }
@@ -201,13 +211,14 @@ public class MongoMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        DBObject entity = db.getCollection( collectionName ).findOne( byIdentity( entityReference ) );
-        if( entity == null )
+        MongoCursor<Document> cursor = db.getCollection( collectionName )
+                                         .find( byIdentity( entityReference ) )
+                                         .limit( 1 ).iterator();
+        if( !cursor.hasNext() )
         {
             throw new EntityNotFoundException( entityReference );
         }
-        DBObject bsonState = (DBObject) entity.get( STATE_COLUMN );
-
+        Document bsonState = (Document) cursor.next().get( STATE_COLUMN );
         String jsonState = JSON.serialize( bsonState );
         return new StringReader( jsonState );
     }
@@ -216,7 +227,7 @@ public class MongoMapEntityStoreMixin
     public void applyChanges( MapChanges changes )
         throws IOException
     {
-        final DBCollection entities = db.getCollection( collectionName );
+        final MongoCollection<Document> entities = db.getCollection( collectionName );
 
         changes.visitMap( new MapChanger()
         {
@@ -231,14 +242,11 @@ public class MongoMapEntityStoreMixin
                         throws IOException
                     {
                         super.close();
-
-                        String jsonState = toString();
-                        DBObject bsonState = (DBObject) JSON.parse( jsonState );
-
-                        BasicDBObject entity = new BasicDBObject();
+                        Document bsonState = Document.parse( toString() );
+                        Document entity = new Document();
                         entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
-                        entities.insert( entity, writeConcern );
+                        entities.insertOne( entity );
                     }
                 };
             }
@@ -254,13 +262,11 @@ public class MongoMapEntityStoreMixin
                         throws IOException
                     {
                         super.close();
-
-                        DBObject bsonState = (DBObject) JSON.parse( toString() );
-
-                        BasicDBObject entity = new BasicDBObject();
+                        Document bsonState = Document.parse( toString() );
+                        Document entity = new Document();
                         entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
-                        entities.update( byIdentity( ref ), entity, false, false, writeConcern );
+                        entities.replaceOne( byIdentity( ref ), entity );
                     }
                 };
             }
@@ -269,12 +275,15 @@ public class MongoMapEntityStoreMixin
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
-                DBObject entity = entities.findOne( byIdentity( ref ) );
-                if( entity == null )
+                Bson byIdFilter = byIdentity( ref );
+                MongoCursor<Document> cursor = db.getCollection( collectionName )
+                                                 .find( byIdFilter )
+                                                 .limit( 1 ).iterator();
+                if( !cursor.hasNext() )
                 {
                     throw new EntityNotFoundException( ref );
                 }
-                entities.remove( entity, writeConcern );
+                entities.deleteOne( byIdFilter );
             }
         } );
     }
@@ -296,11 +305,10 @@ public class MongoMapEntityStoreMixin
                         Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {
-                        DBCursor cursor = db.getCollection( collectionName ).find();
-                        while( cursor.hasNext() )
+                        FindIterable<Document> cursor = db.getCollection( collectionName ).find();
+                        for( Document eachEntity : cursor )
                         {
-                            DBObject eachEntity = cursor.next();
-                            DBObject bsonState = (DBObject) eachEntity.get( STATE_COLUMN );
+                            Document bsonState = (Document) eachEntity.get( STATE_COLUMN );
                             String jsonState = JSON.serialize( bsonState );
                             receiver.receive( new StringReader( jsonState ) );
                         }
@@ -310,8 +318,8 @@ public class MongoMapEntityStoreMixin
         };
     }
 
-    private DBObject byIdentity( EntityReference entityReference )
+    private Bson byIdentity( EntityReference entityReference )
     {
-        return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity().toString() );
+        return eq( IDENTITY_COLUMN, entityReference.identity().toString() );
     }
 }

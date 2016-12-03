@@ -58,7 +58,7 @@ public class MongoMapEntityStoreWithCacheTest
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.FSYNC_SAFE );
+        mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "zest:test" );
         mongoConfig.collection().set( "zest:test:entities" );
     }

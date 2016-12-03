@@ -19,16 +19,14 @@
  */
 package org.apache.zest.entitystore.mongodb;
 
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 public interface MongoAccessors
 {
-
     MongoClient mongoInstanceUsed();
 
-    DB dbInstanceUsed();
+    MongoDatabase dbInstanceUsed();
 
     String collectionUsed();
-
 }
