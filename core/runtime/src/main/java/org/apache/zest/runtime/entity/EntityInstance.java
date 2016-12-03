@@ -32,7 +32,7 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
@@ -59,7 +59,7 @@ public final class EntityInstance
     private final EntityComposite proxy;
     private final UnitOfWork uow;
     private final EntityModel entityModel;
-    private final EntityReference identity;
+    private final EntityReference reference;
     private final EntityState entityState;
 
     private Object[] mixins;
@@ -72,7 +72,7 @@ public final class EntityInstance
     {
         this.uow = uow;
         this.entityModel = entityModel;
-        this.identity = entityState.identity();
+        this.reference = entityState.entityReference();
         this.entityState = entityState;
 
         proxy = (EntityComposite) entityModel.newProxy( this );
@@ -85,9 +85,9 @@ public final class EntityInstance
         return entityModel.invoke( this, this.proxy, method, args );
     }
 
-    public EntityReference identity()
+    public EntityReference reference()
     {
-        return identity;
+        return reference;
     }
 
     @Override
@@ -201,7 +201,7 @@ public final class EntityInstance
 
         if( status() == EntityStatus.REMOVED )
         {
-            throw new NoSuchEntityException( identity, entityModel.types(), unitOfWork().usecase() );
+            throw new NoSuchEntityException(reference, entityModel.types(), unitOfWork().usecase() );
         }
 
         mixins = entityModel.newMixinHolder();
@@ -211,7 +211,7 @@ public final class EntityInstance
     @Override
     public int hashCode()
     {
-        return identity.hashCode();
+        return reference.hashCode();
     }
 
     @Override
@@ -219,8 +219,8 @@ public final class EntityInstance
     {
         try
         {
-            Identity other = ( (Identity) o );
-            return other != null && other.identity().get().equals( identity.identity() );
+            HasIdentity other = ( (HasIdentity) o );
+            return other != null && other.identity().get().equals( reference.identity() );
         }
         catch( ClassCastException e )
         {
@@ -237,7 +237,7 @@ public final class EntityInstance
         }
         else
         {
-            return identity.toString();
+            return reference.toString();
         }
     }
 
@@ -308,7 +308,7 @@ public final class EntityInstance
         catch( ConstraintViolationException e )
         {
             List<Class<?>> entityModelList = entityModel.types().collect( toList() );
-            throw new ConstraintViolationException( identity.identity(),
+            throw new ConstraintViolationException( reference.identity(),
                                                     entityModelList,
                                                     e.mixinTypeName(),
                                                     e.methodName(),

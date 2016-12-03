@@ -24,6 +24,7 @@ package org.apache.zest.api.activation;
  * <p>Application and Layer expose this interface so you can activate and passivate them.</p>
  * <p>Module and ServiceComposite activation/passivation is handled by the Zest runtime.</p>
  */
+@SuppressWarnings("JavaDoc")
 public interface Activation
 {
     /**

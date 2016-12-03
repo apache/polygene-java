@@ -23,6 +23,7 @@ package org.apache.zest.envisage.school.domain.person.initialdata;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -95,7 +96,7 @@ public interface SamplePersonInitialData
 
         private void createPerson( UnitOfWork uow, String personId, String firstName, String lastName )
         {
-            EntityBuilder<Person> person = uow.newEntityBuilder( Person.class, personId );
+            EntityBuilder<Person> person = uow.newEntityBuilder( Person.class, new StringIdentity( personId ) );
 
             PersonEntity.PersonState state = person.instanceFor( PersonEntity.PersonState.class );
             state.firstName().set( firstName );

@@ -22,6 +22,7 @@ package org.apache.zest.runtime.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
@@ -80,15 +81,11 @@ public class IterableQuerySourceTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                Iterable<Class<?>> entities = ClassScanner.findClasses( DomainEntity.class );
-
-                for( Class entity : entities )
-                {
-                    module.entities( entity );
-                }
+                ClassScanner.findClasses( DomainEntity.class ).forEach( module::entities );
 
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
@@ -226,7 +223,7 @@ public class IterableQuerySourceTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        City kl = uow.get( City.class, "kualalumpur" );
+        City kl = uow.get( City.class, new StringIdentity( "kualalumpur" ));
         Query<Person> query = qb.where(
             eq( person.mother().get().placeOfBirth(), kl )
         ).newQuery( Network.persons() );

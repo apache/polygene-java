@@ -22,6 +22,7 @@ package org.apache.zest.entitystore.sql.internal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 
@@ -84,16 +85,16 @@ public abstract class DatabaseSQLServiceStatementsMixin
     public void populateGetEntityStatement( PreparedStatement ps, EntityReference ref )
             throws SQLException
     {
-        ps.setString( 1, ref.identity() );
+        ps.setString( 1, ref.identity().toString() );
     }
 
     @Override
-    public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Long lastModified )
+    public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Instant lastModified )
             throws SQLException
     {
-        ps.setString( 1, ref.identity() );
+        ps.setString( 1, ref.identity().toString() );
         ps.setString( 2, entity );
-        ps.setLong( 3, lastModified );
+        ps.setLong( 3, lastModified.toEpochMilli() );
     }
 
     @Override
@@ -104,12 +105,12 @@ public abstract class DatabaseSQLServiceStatementsMixin
     }
 
     @Override
-    public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Long lastModified )
+    public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Instant lastModified )
             throws SQLException
     {
         ps.setLong( 1, entityOptimisticLock + 1 );
         ps.setString( 2, entity );
-        ps.setLong( 3, lastModified );
+        ps.setLong( 3, lastModified.toEpochMilli() );
         ps.setLong( 4, entityPK );
         ps.setLong( 5, entityOptimisticLock );
     }

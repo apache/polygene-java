@@ -20,6 +20,8 @@
 
 package org.apache.zest.runtime.mixin;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.entity.EntityComposite;
@@ -61,11 +63,11 @@ public class AssemblyMixinTest
         throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        FooEntity entity = uow.newEntity( FooEntity.class, "123" );
+        FooEntity entity = uow.newEntity( FooEntity.class, new StringIdentity( "123" ) );
         uow.complete();
 
         uow = unitOfWorkFactory.newUnitOfWork();
-        Foo foo = uow.get( Foo.class, "123" );
+        Foo foo = uow.get( Foo.class, new StringIdentity( "123" ) );
 
         try
         {

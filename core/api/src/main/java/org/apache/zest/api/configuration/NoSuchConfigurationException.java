@@ -20,16 +20,16 @@
 
 package org.apache.zest.api.configuration;
 
-import org.apache.zest.api.constraint.ConstraintViolationException;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 
 public class NoSuchConfigurationException extends RuntimeException
 {
-    private final Class<? extends Identity> configType;
-    private final String identity;
+    private final Class<? extends HasIdentity> configType;
+    private final Identity identity;
 
-    public NoSuchConfigurationException( Class<? extends Identity> configType,
-                                         String identity,
+    public NoSuchConfigurationException( Class<? extends HasIdentity> configType,
+                                         Identity identity,
                                          Exception cause
     )
     {
@@ -38,12 +38,12 @@ public class NoSuchConfigurationException extends RuntimeException
         this.identity = identity;
     }
 
-    public Class<? extends Identity> configType()
+    public Class<? extends HasIdentity> configType()
     {
         return configType;
     }
 
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }

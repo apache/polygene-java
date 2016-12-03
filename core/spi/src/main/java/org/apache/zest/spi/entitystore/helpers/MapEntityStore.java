@@ -57,6 +57,9 @@ public interface MapEntityStore
 
         /**
          * Visitable MapChanges.
+         *
+         * @param changer Map changer
+         * @throws IOException on error
          */
         void visitMap( MapChanger changer )
             throws IOException;

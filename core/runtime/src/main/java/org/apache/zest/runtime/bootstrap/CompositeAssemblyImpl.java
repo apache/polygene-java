@@ -97,19 +97,14 @@ import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
 import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.api.util.Annotations.type;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 import static org.apache.zest.api.util.Classes.classHierarchy;
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.api.util.Classes.typeOf;
 import static org.apache.zest.api.util.Classes.typesOf;
 import static org.apache.zest.api.util.Classes.wrapperClass;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * Declaration of a Composite.
@@ -250,37 +245,17 @@ public abstract class CompositeAssemblyImpl
                         mixinsModel
                     );
 
-                    DependencyModel.InjectionTypeFunction injectionTypeFunction = new DependencyModel.InjectionTypeFunction();
-                    DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
                     Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
                     source.flatMap( Dependencies::dependencies )
-                        .filter( thisSpec )
-                        .map( injectionTypeFunction )
-                        .forEach( thisDependencies::add );
+                          .filter( new DependencyModel.ScopeSpecification( This.class ) )
+                          .map( DependencyModel::rawInjectionType )
+                          .forEach( thisDependencies::add );
 
                     interfacesOf( mixinModel.mixinClass() )
                         .map( Classes.RAW_CLASS )
                         .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
-                            .noneMatch( c -> c
-                                .equals( clazz ) ) )
+                                                .noneMatch( c -> c.equals( clazz ) ) )
                         .forEach( thisDependencies::add );
-
-//                    // Implement @This references
-//                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
-//                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
-//                                                          methodComposite.dependencies() ) );
-
-//                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
-//                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
-//                                                           mixinModel.dependencies() ) );
-
-//                    @SuppressWarnings( "unchecked" )
-//                    Iterable<Class<?>> filter = filter(
-//                        not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
-//                        map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
-//                    );
-//                    Iterable<? extends Class<?>> flatten = flatten( map, map1, filter );
-//                    addAll( thisDependencies, flatten );
 
                     compositeMethodsModel.addMethod( methodComposite );
                 }
@@ -329,7 +304,7 @@ public abstract class CompositeAssemblyImpl
         }
 
         // Check generic implementations
-        mixinClass = findGenericImplementation( method, mixinDeclarations );
+        mixinClass = findGenericImplementation( method, mixinDeclarations.stream() );
         if( mixinClass != null )
         {
             return implementMethodWithClass( method, mixinClass );
@@ -339,26 +314,22 @@ public abstract class CompositeAssemblyImpl
                                              + "\nin\n    " + types );
     }
 
-    @SuppressWarnings( { "raw", "unchecked" } )
     private Class<?> findTypedImplementation( final Method method, Stream<Class<?>> mixins )
     {
         // Check if mixinClass implements the method. If so, check if the mixinClass is generic or if the filter passes.
         // If a mixinClass is both generic AND non-generic at the same time, then the filter applies to the non-generic
         // side only.
         Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
-        return mixins
-            .filter( isAssignableFrom( method.getDeclaringClass() )
-                         .and( Genericpredicate.INSTANCE
-                                   .or( appliesToSpec ) ) )
-            .findFirst().orElse( null );
+        return mixins.filter( isAssignableFrom( method.getDeclaringClass() )
+                                  .and( Genericpredicate.INSTANCE.or( appliesToSpec ) ) )
+                     .findFirst().orElse( null );
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Class<?> findGenericImplementation( final Method method, Iterable<Class<?>> mixins )
+    private Class<?> findGenericImplementation( final Method method, Stream<Class<?>> mixins )
     {
         // Check if mixinClass is generic and the applies-to filter passes
-        return first( filter( Genericpredicate.INSTANCE
-                                  .and( item -> helper.appliesTo( item, method, types, item ) ), mixins ) );
+        Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
+        return mixins.filter( Genericpredicate.INSTANCE.and( appliesToSpec ) ).findFirst().orElse( null );
     }
 
     private MixinModel implementMethodWithClass( Method method, Class mixinClass )
@@ -517,10 +488,12 @@ public abstract class CompositeAssemblyImpl
         {
             Annotation[] parameterAnnotation = parameterAnnotations[ i ];
 
-            Name nameAnnotation = (Name) first( filter( isType( Name.class ), iterable( parameterAnnotation ) ) );
+            Name nameAnnotation = (Name) Stream.of( parameterAnnotation ).filter( isType( Name.class ) )
+                                               .findFirst().orElse( null );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            boolean optional = first( filter( isType( Optional.class ), iterable( parameterAnnotation ) ) ) != null;
+            boolean optional = Stream.of( parameterAnnotation ).filter( isType( Optional.class ) )
+                                     .findFirst().isPresent();
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
                 Arrays.stream( parameterAnnotation ),
                 parameterTypes[ i ],
@@ -563,7 +536,7 @@ public abstract class CompositeAssemblyImpl
 
         List<AbstractConstraintModel> constraintModels = new ArrayList<>();
         List<Annotation> filtered = constraintAnnotations
-            .filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) )
+            .filter( typeHasAnnotation( ConstraintDeclaration.class ) )
             .collect( Collectors.toList() );
 
         // TODO: This massive block below should be cleaned up.
@@ -574,9 +547,10 @@ public abstract class CompositeAssemblyImpl
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
             for( Class<?> constraint : constraintClasses )
             {
-                if( helper.appliesTo( (Class<? extends Constraint<?, ?>>) constraint, annotationType, valueType ) )
+                Class<? extends Constraint<?, ?>> constraintType = (Class<? extends Constraint<?, ?>>) constraint;
+                if( helper.appliesTo( constraintType, annotationType, valueType ) )
                 {
-                    constraintModels.add( new ConstraintModel( constraintAnnotation, (Class<? extends Constraint<?, ?>>) constraint ) );
+                    constraintModels.add( new ConstraintModel( constraintAnnotation, constraintType ) );
                     continue nextConstraint;
                 }
             }
@@ -598,7 +572,7 @@ public abstract class CompositeAssemblyImpl
             // No implementation found!
             // Check if if it's a composite constraints
             if( Arrays.stream( annotationType.getAnnotations() )
-                .anyMatch( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) ) )
+                .anyMatch( typeHasAnnotation( ConstraintDeclaration.class ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(
                     Arrays.stream( annotationType.getAnnotations() ),
@@ -816,7 +790,7 @@ public abstract class CompositeAssemblyImpl
     protected Stream<Class<?>> mixinDeclarations( Class<?> type )
     {
         //Stream<? extends Type> types = typesOf( type );
-        return mixinDeclarations( Arrays.asList( type ).stream() );
+        return mixinDeclarations( Stream.of( type ) );
     }
 
     private Stream<Class<?>> mixinDeclarations( Stream<? extends Class> types )

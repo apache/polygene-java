@@ -26,6 +26,7 @@ import java.lang.reflect.Proxy;
 import java.net.ConnectException;
 import java.util.function.Predicate;
 import javax.sql.DataSource;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 
@@ -47,7 +48,7 @@ public class DataSources
         return new CircuitBreaker( threshold, timeout, rootCause( in ).negate() );
     }
 
-    public static DataSource wrapWithCircuitBreaker( final String dataSourceIdentity, final DataSource pool, final CircuitBreaker circuitBreaker )
+    public static DataSource wrapWithCircuitBreaker(final Identity dataSourceIdentity, final DataSource pool, final CircuitBreaker circuitBreaker )
     {
         // Create wrapper
         InvocationHandler handler = new InvocationHandler()

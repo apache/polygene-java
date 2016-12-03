@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.zest.functional.Iterables;
 
 /**
  * JAVADOC
@@ -79,7 +78,7 @@ public final class UsesInstance
 
     public Object[] toArray()
     {
-        return Iterables.toArray( uses );
+        return uses.toArray();
     }
 
     @Override

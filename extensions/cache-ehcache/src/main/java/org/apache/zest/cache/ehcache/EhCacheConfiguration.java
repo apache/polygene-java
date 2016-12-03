@@ -19,87 +19,125 @@
  */
 package org.apache.zest.cache.ehcache;
 
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.configuration.ConfigurationComposite;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.library.constraints.annotation.OneOf;
 
 // START SNIPPET: config
-public interface EhCacheConfiguration
-    extends ConfigurationComposite
-{
-
-    @Optional @UseDefaults
-    Property<Boolean> clearOnFlush();
-
-    @Optional @UseDefaults
-    Property<Integer> diskAccessStripes();
-
-    @Optional @UseDefaults
-    Property<Long> diskExpiryThreadIntervalSeconds();
+public interface EhCacheConfiguration extends ConfigurationComposite {
 
     /**
-     * Cache Persistence Strategy.
+     * Heap tier size.
      *
-     * Can be:
-     * <ul>
-     *   <li>LOCALTEMPSWAP: Standard open source (non fault-tolerant) on-disk persistence.</li>
-     *   <li>LOCALRESTARTABLE: Enterprise fault tolerant persistence.</li>
-     *   <li>NONE: No persistence.</li>
-     *   <li>DISTRIBUTED: Terracotta clustered persistence (requires a Terracotta clustered cache).</li>
-     * </ul>
-     * Defaults to NONE.
+     * Default to 1MB, you may want to change this.
+     *
+     * @return Heap tier size
+     */
+    @UseDefaults( "1" )
+    Property<Long> heapSize();
+
+    /**
+     * Heap tier size unit.
+     *
+     * @return Heap tier size unit
+     */
+    @OneOf( { "B", "KB", "MB", "GB", "TB", "PB" } )
+    @UseDefaults( "MB" )
+    Property<String> heapUnit();
+
+    /**
+     * Optional off-heap tier size.
+     *
+     * @return Optional off-heap tier size
      */
     @Optional
-    Property<Strategy> persistenceStrategy();
-
-    @Optional @UseDefaults
-    Property<String> diskStorePath();
-
-    @Optional @UseDefaults
-    Property<Integer> diskSpoolBufferSizeMB();
-
-    @Optional @UseDefaults
-    Property<Boolean> eternal();
-
-    @Optional @UseDefaults
-    Property<Boolean> loggingEnabled();
+    Property<Long> offHeapSize();
 
     /**
-     * Number of objects the ehCache should keep in memory.
-     * Defaults to 1000
+     * Off-heap tier size unit.
      *
-     * @return The maximum number of elements to be kept in memory.
+     * @return Off-heap tier size unit
      */
-    @Optional @UseDefaults
-    Property<Integer> maxElementsInMemory();
+    @OneOf( { "B", "KB", "MB", "GB", "TB", "PB" } )
+    @UseDefaults( "MB" )
+    Property<String> offHeapUnit();
 
-    @Optional @UseDefaults
-    Property<Integer> maxElementsOnDisk();
+    /**
+     * Optional disk tier size.
+     *
+     * @return Optional disk tier size
+     */
+    @Optional
+    Property<Long> diskSize();
 
-    @Optional @UseDefaults
-    Property<String> memoryStoreEvictionPolicy();
+    /**
+     * Disk tier size unit.
+     *
+     * @return Disk tier size unit
+     */
+    @OneOf( { "B", "KB", "MB", "GB", "TB", "PB" } )
+    @UseDefaults( "MB" )
+    Property<String> diskUnit();
 
-    @Optional @UseDefaults
-    Property<String> name();
+    /**
+     * If the disk tier is persistent or not.
+     *
+     * @return If the disk tier is persistent or not
+     */
+    @UseDefaults
+    Property<Boolean> diskPersistent();
 
-    @Optional @UseDefaults
-    Property<String> transactionalMode();
+    /**
+     * Maximum size of cached objects.
+     *
+     * @return Maximum size of cached objects
+     */
+    @Optional
+    Property<Long> maxObjectSize();
 
-    @Optional @UseDefaults
-    Property<Long> timeToLiveSeconds();
+    /**
+     * Unit for maximum size of cached objects.
+     *
+     * @return Unit for maximum size of cached objects
+     */
+    @OneOf( { "B", "KB", "MB", "GB", "TB", "PB" } )
+    @UseDefaults( "MB" )
+    Property<String> maxObjectSizeUnit();
 
-    @Optional @UseDefaults
-    Property<Long> timeToIdleSeconds();
+    /**
+     * Maximum cached object graph depth.
+     *
+     * @return Maximum cached object graph depth
+     */
+    @Optional
+    Property<Long> maxObjectGraphDepth();
 
-    @Optional @UseDefaults
-    Property<String> cacheManagerName();
+    /**
+     * Expiry policy.
+     *
+     * @return Expiry policy
+     */
+    @OneOf( { "NONE", "TIME_TO_IDLE", "TIME_TO_LIVE" } )
+    @UseDefaults( "NONE" )
+    Property<String> expiry();
 
-    @Optional @UseDefaults
-    Property<String> monitoring();
+    /**
+     * Expiry length.
+     *
+     * @return Expiry length
+     */
+    @Optional
+    Property<Long> expiryLength();
 
-    @Optional @UseDefaults
-    Property<Boolean> updateCheck();
+    /**
+     * Expiry time unit.
+     *
+     * @return Expiry time unit
+     */
+    @OneOf( { "MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS" } )
+    @UseDefaults( "SECONDS" )
+    Property<String> expiryTimeUnit();
 }
 // END SNIPPET: config

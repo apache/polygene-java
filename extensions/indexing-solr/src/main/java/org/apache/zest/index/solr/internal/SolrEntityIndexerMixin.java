@@ -112,7 +112,7 @@ public abstract class SolrEntityIndexerMixin
                             {
                                 deleted = new ArrayList<>();
                             }
-                            deleted.add( entityState.identity().identity() );
+                            deleted.add( entityState.entityReference().identity().toString() );
                         }
                         else if( entityState.status().equals( EntityStatus.UPDATED ) )
                         {
@@ -157,9 +157,9 @@ public abstract class SolrEntityIndexerMixin
         stateSerializer.serialize( entityState, false, graph );
 
         SolrInputDocument input = new SolrInputDocument();
-        input.addField( "id", entityState.identity().identity() );
+        input.addField( "id", entityState.entityReference().identity() );
         input.addField( "type", entityState.entityDescriptor().types().findFirst().get().getName() );
-        input.addField( "lastModified", new java.util.Date( entityState.lastModified() ) );
+        input.addField( "lastModified", java.util.Date.from( entityState.lastModified() ) );
 
         for( Statement statement : graph )
         {

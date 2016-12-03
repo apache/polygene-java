@@ -21,13 +21,13 @@
 package org.apache.zest.api.service;
 
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 
 /**
  * All Composites being used to implement Services
  * must extend this interface.
  */
 public interface ServiceComposite
-    extends Identity, Composite
+    extends HasIdentity, Composite
 {
 }

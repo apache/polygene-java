@@ -20,11 +20,13 @@
 
 package org.apache.zest.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.Stack;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.metrics.MetricsProvider;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
@@ -48,7 +50,7 @@ public class UnitOfWorkFactoryMixin
     }
 
     @Override
-    public UnitOfWork newUnitOfWork( long currentTime )
+    public UnitOfWork newUnitOfWork(Instant currentTime )
     {
         return newUnitOfWork( Usecase.DEFAULT, currentTime );
     }
@@ -56,11 +58,11 @@ public class UnitOfWorkFactoryMixin
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
-        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, System.currentTimeMillis() );
+        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, SystemTime.now() );
     }
 
     @Override
-    public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+    public UnitOfWork newUnitOfWork( Usecase usecase, Instant currentTime )
     {
         UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( module, usecase, currentTime, metricsProvider() );
         return tbf.newTransient( UnitOfWork.class, unitOfWorkInstance );

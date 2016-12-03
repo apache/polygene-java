@@ -21,14 +21,14 @@ package org.apache.zest.bootstrap.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.toList;
 
 /**
  * Provides declared {@link org.apache.zest.api.structure.Module} information that the {@link ApplicationBuilder} can use.
@@ -88,15 +88,14 @@ public class ModuleDeclaration
      * <p>Typically used along {@link org.apache.zest.bootstrap.ClassScanner}.</p>
      * @param assemblerClasses Assembler classes
      * @return This Module declaration
-     * @throws AssemblyException if one of the Class is not an Assembler or unable to instanciate
+     * @throws AssemblyException if one of the Class is not an Assembler or unable to instantiate
      */
     public ModuleDeclaration withAssemblers( Iterable<Class<?>> assemblerClasses )
         throws AssemblyException
     {
-        List<Class<?>> notAssemblers = toList(
-            filter( isAssignableFrom( Assembler.class ).negate(),
-                    assemblerClasses )
-        );
+        List<Class<?>> notAssemblers = StreamSupport.stream( assemblerClasses.spliterator(), false )
+                                                    .filter( isAssignableFrom( Assembler.class ).negate() )
+                                                    .collect( toList() );
         if( !notAssemblers.isEmpty() )
         {
             throw new AssemblyException(

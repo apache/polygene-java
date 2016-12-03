@@ -20,23 +20,23 @@
 
 description = "Apache Zest™ SQL Library provides SQL support."
 
-jar { manifest { name = "Apache Zest™ Library - SQL" }}
+jar { manifest { name = "Apache Zest™ Library - SQL" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.circuitbreaker"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.jmx"))
-  compile libraries.slf4j_api
+  compile zest.core.bootstrap
+  compile zest.library( 'circuitbreaker' )
+  compile zest.library( 'jmx' )
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testCompile(project(":org.apache.zest.libraries:org.apache.zest.library.sql-bonecp"))
-  testCompile(project(":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp"))
-  testCompile(project(":org.apache.zest.libraries:org.apache.zest.library.sql-liquibase"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.entitystore-preferences"))
-  
-  testRuntime(libraries.derby)
-  testRuntime(libraries.mysql_connector)
-  testRuntime(libraries.postgres)
-  testRuntime(libraries.logback)
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'sql-bonecp' )
+  testCompile zest.library( 'sql-dbcp' )
+  testCompile zest.library( 'sql-liquibase' )
+  testCompile zest.extension( 'entitystore-preferences' )
+
+  testRuntime libraries.logback
+  testRuntime libraries.derby
+  testRuntime libraries.mysql_connector
+  testRuntime libraries.postgres
 }

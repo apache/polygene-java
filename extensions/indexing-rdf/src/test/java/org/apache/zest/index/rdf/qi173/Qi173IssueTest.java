@@ -19,6 +19,7 @@
  */
 package org.apache.zest.index.rdf.qi173;
 
+import org.apache.zest.api.identity.Identity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -104,7 +105,7 @@ public class Qi173IssueTest
         uow.discard();
     }
 
-    private String createCar( String manufacturer, String model, int year )
+    private Identity createCar(String manufacturer, String model, int year )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );

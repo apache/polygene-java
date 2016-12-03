@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,9 +31,23 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
+import org.apache.zest.api.configuration.Configuration;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.api.service.ServiceActivation;
+import org.apache.zest.io.Input;
+import org.apache.zest.io.Output;
+import org.apache.zest.io.Receiver;
+import org.apache.zest.io.Sender;
+import org.apache.zest.spi.entitystore.EntityNotFoundException;
+import org.apache.zest.spi.entitystore.EntityStoreException;
+import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 import org.jclouds.ContextBuilder;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.apis.Apis;
@@ -45,27 +58,12 @@ import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.io.Payload;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
-import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Outputs;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
-import org.apache.zest.spi.entitystore.EntityNotFoundException;
-import org.apache.zest.spi.entitystore.EntityStoreException;
-import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
-import static org.apache.zest.api.entity.EntityReference.parseEntityReference;
 
 /**
  * JClouds implementation of MapEntityStore.
@@ -170,7 +168,7 @@ public class JCloudsMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        Blob blob = storeContext.getBlobStore().getBlob( container, entityReference.identity() );
+        Blob blob = storeContext.getBlobStore().getBlob( container, entityReference.identity().toString() );
         if( blob == null )
         {
             throw new EntityNotFoundException( entityReference );
@@ -180,30 +178,14 @@ public class JCloudsMapEntityStoreMixin
         {
             throw new EntityNotFoundException( entityReference );
         }
-        InputStream input = null;
-        try
+        try( InputStream input = payload.openStream() )
         {
-            input = payload.openStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Inputs.byteBuffer( input, 4096 ).transferTo( Outputs.byteBuffer( baos ) );
-            return new StringReader( baos.toString( "UTF-8" ) );
+            String state = new Scanner( input, StandardCharsets.UTF_8.name() ).useDelimiter( "\\Z" ).next();
+            return new StringReader( state );
         }
         catch( IOException ex )
         {
             throw new EntityStoreException( "Unable to read entity state for: " + entityReference, ex );
-        }
-        finally
-        {
-            if( input != null )
-            {
-                try
-                {
-                    input.close();
-                }
-                catch( IOException ignored )
-                {
-                }
-            }
         }
     }
 
@@ -226,7 +208,7 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                         {
                             super.close();
-                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                            Blob blob = blobStore.blobBuilder( ref.identity().toString() )
                                 .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
                                 .build();
                             blobStore.putBlob( container, blob );
@@ -238,7 +220,7 @@ public class JCloudsMapEntityStoreMixin
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                     throws IOException
                 {
-                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    if( !blobStore.blobExists( container, ref.identity().toString() ) )
                     {
                         throw new EntityNotFoundException( ref );
                     }
@@ -249,7 +231,7 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                         {
                             super.close();
-                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                            Blob blob = blobStore.blobBuilder( ref.identity().toString() )
                                 .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
                                 .build();
                             blobStore.putBlob( container, blob );
@@ -261,11 +243,11 @@ public class JCloudsMapEntityStoreMixin
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws EntityNotFoundException
                 {
-                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    if( !blobStore.blobExists( container, ref.identity().toString() ) )
                     {
                         throw new EntityNotFoundException( ref );
                     }
-                    blobStore.removeBlob( container, ref.identity() );
+                    blobStore.removeBlob( container, ref.identity().toString() );
                 }
             }
         );
@@ -292,7 +274,7 @@ public class JCloudsMapEntityStoreMixin
                                 Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
                                 if( payload == null )
                                 {
-                                    throw new EntityNotFoundException( parseEntityReference( stored.getName() ) );
+                                    throw new EntityNotFoundException( EntityReference.parseEntityReference( stored.getName() ) );
                                 }
                                 InputStream input = null;
                                 try

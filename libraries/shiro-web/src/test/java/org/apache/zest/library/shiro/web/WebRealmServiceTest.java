@@ -71,8 +71,7 @@ import static org.apache.zest.library.http.Servlets.serve;
 public class WebRealmServiceTest
     extends AbstractZestTest
 {
-
-    private int port;
+    private final int port = FreePortFinder.findFreePortOnLoopback();
 
     @Mixins( MyRealmMixin.class )
     public interface MyRealmService
@@ -84,7 +83,6 @@ public class WebRealmServiceTest
         extends SimpleAccountRealm
         implements ServiceActivation
     {
-
         private final PasswordService passwordService;
 
         public MyRealmMixin()
@@ -109,7 +107,6 @@ public class WebRealmServiceTest
             throws Exception
         {
         }
-
     }
 
     @Mixins( MyServlet.class )
@@ -121,50 +118,39 @@ public class WebRealmServiceTest
     public static class MyServlet
         extends HttpServlet
     {
-
         @Override
         protected void doGet( HttpServletRequest req, HttpServletResponse resp )
             throws ServletException, IOException
         {
             resp.getWriter().println( "FOO" );
         }
-
     }
 
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        try
-        {
-            ModuleAssembly configModule = module;
-            new EntityTestAssembler().assemble( configModule );
-            // START SNIPPET: assembly
-            new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
-            // END SNIPPET: assembly
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
+        // START SNIPPET: assembly
+        new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
 
-            port = FreePortFinder.findFreePortOnLoopback();
-            JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
-            config.hostName().set( "127.0.0.1" );
-            config.port().set( port );
+        JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        config.hostName().set( "127.0.0.1" );
+        config.port().set( port );
 
-            // START SNIPPET: assembly
-            new HttpShiroAssembler().
-                withConfig( configModule, Visibility.layer ).
-                assemble( module );
-            module.services( MyRealmService.class );
-            // END SNIPPET: assembly
+        // START SNIPPET: assembly
+        new HttpShiroAssembler()
+            .withConfig( configModule, Visibility.layer )
+            .assemble( module );
+        module.services( MyRealmService.class );
+        // END SNIPPET: assembly
 
-            configModule.forMixin( ShiroIniConfiguration.class ).
-                declareDefaults().
-                iniResourcePath().set( "classpath:web-shiro.ini" );
+        configModule.forMixin( ShiroIniConfiguration.class )
+                    .declareDefaults().iniResourcePath().set( "classpath:web-shiro.ini" );
 
-            addServlets( serve( "/*" ).with( MyServletService.class ) ).to( module );
-        }
-        catch( IOException ex )
-        {
-            throw new AssemblyException( "Unable to find free port to bind to", ex );
-        }
+        addServlets( serve( "/*" ).with( MyServletService.class ) ).to( module );
     }
 
     @Test
@@ -212,7 +198,8 @@ public class WebRealmServiceTest
             throws HttpException, IOException
         {
             AuthState authState = (AuthState) context.getAttribute( ClientContext.TARGET_AUTH_STATE );
-            CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute( ClientContext.CREDS_PROVIDER );
+            CredentialsProvider credsProvider = (CredentialsProvider) context
+                .getAttribute( ClientContext.CREDS_PROVIDER );
             HttpHost targetHost = (HttpHost) context.getAttribute( ExecutionContext.HTTP_TARGET_HOST );
 
             // If not auth scheme has been initialized yet
@@ -231,5 +218,4 @@ public class WebRealmServiceTest
             }
         }
     }
-
 }

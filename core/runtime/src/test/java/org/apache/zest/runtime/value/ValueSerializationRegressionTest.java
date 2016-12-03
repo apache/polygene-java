@@ -19,11 +19,12 @@
  */
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -31,7 +32,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -45,7 +45,6 @@ public class ValueSerializationRegressionTest extends AbstractZestTest
         module.entities( DualFaced.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 
@@ -54,17 +53,17 @@ public class ValueSerializationRegressionTest extends AbstractZestTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( "1234" );
+        builder.prototype().identity().set( new StringIdentity( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
     }
 
-    public interface SimpleEntity extends Identity
+    public interface SimpleEntity extends HasIdentity
     {
         Property<String> name();
     }
 
-    public interface DualFaced extends Identity
+    public interface DualFaced extends HasIdentity
     {
         Property<String> name();
 

@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.query.NotQueryableException;
 import org.apache.zest.api.query.Query;
@@ -491,7 +492,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Domain gaming = unitOfWork.get( Domain.class, "Gaming" );
+        Domain gaming = unitOfWork.get( Domain.class, new StringIdentity( "Gaming" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.interests(), gaming ) ) );
         System.out.println( "*** script33: " + query );
 
@@ -503,7 +504,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Female annDoe = unitOfWork.get( Female.class, "anndoe" );
+        Female annDoe = unitOfWork.get( Female.class, new StringIdentity( "anndoe" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ) );
         System.out.println( "*** script34: " + query );
 
@@ -526,7 +527,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Account anns = unitOfWork.get( Account.class, "accountOfAnnDoe" );
+        Account anns = unitOfWork.get( Account.class, new StringIdentity( "accountOfAnnDoe" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.accounts(), anns ) ) );
         System.out.println( "*** script36: " + query );
 

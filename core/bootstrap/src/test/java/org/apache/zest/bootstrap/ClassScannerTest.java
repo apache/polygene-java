@@ -19,16 +19,14 @@
  */
 package org.apache.zest.bootstrap;
 
+import org.apache.zest.api.activation.ActivationException;
+import org.apache.zest.bootstrap.somepackage.Test2Value;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.bootstrap.somepackage.Test2Value;
-import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.bootstrap.ClassScanner.findClasses;
 import static org.apache.zest.bootstrap.ClassScanner.matches;
-import static org.apache.zest.functional.Iterables.filter;
 
 /**
  * Test and showcase of the ClassScanner assembly utility.
@@ -45,13 +43,11 @@ public class ClassScannerTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                // Find all classes starting from TestValue, but include only the ones that are named *Value
+                new DefaultUnitOfWorkAssembler().assemble( module );
 
-                for( Class aClass : filter( matches( ".*Value" ), findClasses( TestValue.class ) ) )
-                {
-                    module.values( aClass );
-                    new DefaultUnitOfWorkAssembler().assemble( module );
-                }
+                // Find all classes starting from TestValue, but include only the ones that are named *Value
+                findClasses( TestValue.class ).filter( matches( ".*Value" ) )
+                                              .forEach( module::values );
             }
         };
 
@@ -62,6 +58,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 185, Iterables.count( findClasses( Test.class ) ) );
+        Assert.assertEquals( 185, findClasses( Test.class ).count() );
     }
 }

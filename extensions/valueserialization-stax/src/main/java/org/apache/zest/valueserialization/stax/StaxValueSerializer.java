@@ -22,7 +22,7 @@ package org.apache.zest.valueserialization.stax;
 import java.io.OutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.zest.spi.value.ValueSerializerAdapter;
 
 /**

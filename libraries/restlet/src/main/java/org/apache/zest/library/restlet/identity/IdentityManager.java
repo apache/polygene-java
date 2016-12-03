@@ -26,15 +26,14 @@ import java.util.function.Predicate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.configuration.Configuration;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
 
 @Mixins( IdentityManager.Mixin.class )
 @Concerns( { UnitOfWorkConcern.class } )
@@ -45,11 +44,11 @@ public interface IdentityManager
 
     boolean isIdentity( String candidate );
 
-    String generate( Class type, @Optional String canonicalName );
+    Identity generate( Class type, @Optional String canonicalName );
 
-    String extractName( String identity );
+    String extractName( Identity identity );
 
-    Class extractType( String identity );
+    Class extractType( Identity identity );
 
     @UnitOfWorkPropagation
     String findPrefix( Class type );
@@ -58,7 +57,7 @@ public interface IdentityManager
         implements IdentityManager
     {
         @Service
-        private UuidIdentityGeneratorService uuidService;
+        private IdentityGenerator uuidService;
 
         @This
         private Configuration<IdentityMappingConfiguration> config;
@@ -72,19 +71,19 @@ public interface IdentityManager
         }
 
         @Override
-        public String generate( Class type, String canonicalName )
+        public Identity generate( Class type, String canonicalName )
         {
             if( canonicalName == null )
             {
-                canonicalName = uuidService.generate( type );
+                canonicalName = uuidService.generate( type ).toString();
             }
             if( isIdentity( canonicalName ) )
             {
                 // This is already an ID, and we simply return it.
-                return canonicalName;
+                return new StringIdentity( canonicalName );
             }
             String prefix = findPrefix( type );
-            return prefix + SEPARATOR + canonicalName;
+            return new StringIdentity( prefix + SEPARATOR + canonicalName );
         }
 
         @Override
@@ -106,45 +105,39 @@ public interface IdentityManager
         }
 
         @Override
-        public String extractName( String identity )
+        public String extractName( Identity identity )
         {
-            if( !isIdentity( identity ) )
-            {
-                return identity;
-            }
-            int pos = identity.indexOf( SEPARATOR );
+            String idString = identity.toString();
+            int pos = idString.indexOf( SEPARATOR );
             if( pos < 1 )
             {
-                throw new InvalidIdentityFormatException( identity );
+                throw new InvalidIdentityFormatException( idString );
             }
-            return identity.substring( pos + 1 );
+            return idString.substring( pos + 1 );
         }
 
         @Override
-        public Class extractType( String identity )
+        public Class extractType( Identity identity )
         {
-            if( !isIdentity( identity ) )
+            String idString = identity.toString();
+            if( !isIdentity( idString ) )
             {
-                throw new IllegalArgumentException( "Given argument '" + identity + "' is not an Identity" );
+                throw new IllegalArgumentException( "Given argument '" + idString + "' is not an Identity" );
             }
-            int pos = identity.indexOf( SEPARATOR );
+            int pos = idString.indexOf( SEPARATOR );
             if( pos < 1 )
             {
-                throw new InvalidIdentityFormatException( identity );
+                throw new InvalidIdentityFormatException( idString );
             }
-            String prefix = identity.substring( 0, pos );
-            Map.Entry<String, String> found =
-                first(
-                    filter(
-                        new FindClassSpecification( prefix ),
-                        config.get().mapping().get().entrySet()
-                    )
-                );
+            String prefix = idString.substring( 0, pos );
+            Map.Entry<String, String> found = config.get().mapping().get().entrySet().stream()
+                                                    .filter( new FindClassSpecification( prefix ) )
+                                                    .findFirst().orElse( null );
             return found == null ? null : actualClasses.get( found.getKey() );
         }
 
         private static class FindClassSpecification
-            implements Predicate<Map.Entry<Class, String>>
+            implements Predicate<Map.Entry<String, String>>
         {
             private String prefix;
 
@@ -154,7 +147,7 @@ public interface IdentityManager
             }
 
             @Override
-            public boolean test( Map.Entry<Class, String> item )
+            public boolean test( Map.Entry<String, String> item )
             {
                 return item.getValue().equals( prefix );
             }

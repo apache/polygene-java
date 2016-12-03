@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.forum.domainevent;
 
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
@@ -34,7 +35,7 @@ public interface DomainEventValue
     Property<String> version();
 
     // When the event occurred
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     // Selected objects
     @UseDefaults

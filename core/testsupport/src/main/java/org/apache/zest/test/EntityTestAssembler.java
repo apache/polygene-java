@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
@@ -43,7 +42,6 @@ public class EntityTestAssembler
         {
             service.identifiedBy( identity() );
         }
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 }

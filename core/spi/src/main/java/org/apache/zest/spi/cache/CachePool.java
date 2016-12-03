@@ -43,10 +43,10 @@ public interface CachePool
      * If the cache does not exist already, then a new Cache should be created and returned. For each fetchCache()
      * call, a reference count on the Cache must be increased.
      *
-     * @param cacheId   The identity of the cache. If the same id is given as a previous fetch, the same cache will be
+     * @param cacheId   The reference of the cache. If the same id is given as a previous fetch, the same cache will be
      *                  returned.
-     * @param valueType
-     * @param <T>
+     * @param valueType Value type
+     * @param <T>       Value type
      *
      * @return The cache fetched from the pool.
      */

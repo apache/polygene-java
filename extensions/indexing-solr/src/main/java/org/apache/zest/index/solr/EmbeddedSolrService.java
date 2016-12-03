@@ -90,7 +90,7 @@ public interface EmbeddedSolrService extends ServiceComposite
 
          try
          {
-            File directory = new File( fileConfig.dataDirectory(), descriptor.identity() );
+            File directory = new File( fileConfig.dataDirectory(), descriptor.identity().toString() );
             directory.mkdir();
 
             System.setProperty( "solr.solr.home", directory.getAbsolutePath() );

@@ -54,7 +54,7 @@ abstract class AbstractProjectCreator
         {
             return;
         }
-        toDir.mkdirs();     // create all directories needed.
+        Files.createDirectories( toDir.toPath() );
         for( File f : files )
         {
             String filename = f.getName();

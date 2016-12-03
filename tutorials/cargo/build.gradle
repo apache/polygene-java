@@ -20,13 +20,15 @@
 
 description = "Tutorial on how to convert existing application into a Apache Zest™ one, step-by-step."
 
-jar { manifest { name = "Apache Zest™ Tutorial - Cargo" }}
+jar { manifest { name = "Apache Zest™ Tutorial - Cargo" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(project(":org.apache.zest.core:org.apache.zest.core.runtime"))  // TODO: Get rid of this dependency
+  compile zest.core.bootstrap
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(libraries.easymock)
-  testRuntime(libraries.logback)
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile libraries.easymock
+
+  testRuntime libraries.logback
 }

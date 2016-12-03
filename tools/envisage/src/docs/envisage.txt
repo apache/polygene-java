@@ -36,8 +36,8 @@ tag=envisage
 As you can see, Envisage operates on the ApplicationModel, this means that you
 can easily embed it in your own Applications too.
 
-Two gradle tasks runSample and runSchool are defined in this module as a
-shortcut to run the examples. See <<build-system>>.
+From the sources you can run the `runEnvisageSample` or `runEnvisageSchoolSample` Gradle tasks
+to run interactive examples. See <<build-system>> if you need some guidance.
 
 == Screenshots ==
 

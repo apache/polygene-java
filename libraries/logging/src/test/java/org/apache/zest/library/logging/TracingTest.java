@@ -39,7 +39,6 @@ import org.apache.zest.library.logging.trace.records.CompositeTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.EntityTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.ServiceTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.TraceRecord;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 
 import java.util.Iterator;
@@ -60,7 +59,6 @@ public class TracingTest
         new TracingAssembler().assemble( module );
         new EntityTestAssembler().assemble( module );
         new RdfMemoryStoreAssembler().assemble( module );
-        module.services( UuidIdentityGeneratorService.class );
         module.entities( CompositeTraceRecordEntity.class );
         module.entities( EntityTraceRecordEntity.class );
         module.entities( ServiceTraceRecordEntity.class );

@@ -19,6 +19,7 @@
  */
 package org.apache.zest.index.sql.support.skeletons;
 
+import java.time.Instant;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * <p>This allows to disable unsupported properties indexing to prevent failures in the SQL Index/Query engine.</p>
  * <p>When an unsupported Property is found it is logged at WARN level.</p>
  */
-/* package */ class SQLCompatEntityStateWrapper
+class SQLCompatEntityStateWrapper
     implements EntityState
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( SQLCompatEntityStateWrapper.class.getName() );
@@ -96,9 +97,9 @@ import org.slf4j.LoggerFactory;
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return wrappedEntityState.identity();
+        return wrappedEntityState.entityReference();
     }
 
     @Override
@@ -108,7 +109,7 @@ import org.slf4j.LoggerFactory;
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return wrappedEntityState.lastModified();
     }

@@ -21,6 +21,8 @@
 package org.apache.zest.library.logging.trace.service;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.Instant;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 
@@ -28,8 +30,8 @@ public interface TraceService
 {
     int traceLevel();
 
-    void traceSuccess( Class compositeType, Composite object, Method method, @Optional Object[] args, Object result, long entryTime, long durationNano );
+    void traceSuccess(Class compositeType, Composite object, Method method, @Optional Object[] args, Object result, Instant entryTime, Duration duration );
 
-    void traceException( Class compositeType, Composite object, Method method, @Optional Object[] args, Throwable t, long entryTime, long durationNano );
+    void traceException( Class compositeType, Composite object, Method method, @Optional Object[] args, Throwable t, Instant entryTime, Duration duration );
 
 }

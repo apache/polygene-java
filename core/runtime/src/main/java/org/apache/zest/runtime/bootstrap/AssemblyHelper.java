@@ -21,6 +21,7 @@
 package org.apache.zest.runtime.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -41,29 +42,30 @@ import org.apache.zest.runtime.composite.SideEffectModel;
  * This helper is used when building the application model. It keeps track
  * of already created classloaders and various models
  */
+@SuppressWarnings("WeakerAccess")
 public class AssemblyHelper
 {
-    Map<Class, Class> instantiationClasses = new HashMap<>();
-    Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<>();
-    Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<>();
-    Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<>();
+    private Map<Class, Class> instantiationClasses = new HashMap<>();
+    private Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<>();
+    private Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<>();
+    private Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<>();
 
-    public MixinModel getMixinModel( Class mixinClass )
+    protected MixinModel getMixinModel(Class mixinClass)
     {
         return new MixinModel( mixinClass, instantiationClass( mixinClass ) );
     }
 
-    public ConcernModel getConcernModel( Class concernClass )
+    protected ConcernModel getConcernModel(Class concernClass)
     {
         return new ConcernModel( concernClass, instantiationClass( concernClass ) );
     }
 
-    public SideEffectModel getSideEffectModel( Class sideEffectClass )
+    protected SideEffectModel getSideEffectModel(Class sideEffectClass)
     {
         return new SideEffectModel( sideEffectClass, instantiationClass( sideEffectClass ) );
     }
 
-    protected Class instantiationClass( Class fragmentClass )
+    protected Class instantiationClass(Class fragmentClass)
     {
         Class instantiationClass = fragmentClass;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
@@ -87,7 +89,7 @@ public class AssemblyHelper
         return instantiationClass;
     }
 
-    private FragmentClassLoader getModifierClassLoader( ClassLoader classLoader )
+    protected FragmentClassLoader getModifierClassLoader( ClassLoader classLoader )
     {
         FragmentClassLoader cl = modifierClassLoaders.get( classLoader );
         if( cl == null )
@@ -121,7 +123,7 @@ public class AssemblyHelper
         return false;
     }
 
-    public AppliesToFilter createAppliesToFilter( Class<?> fragmentClass )
+    protected AppliesToFilter createAppliesToFilter( Class<?> fragmentClass )
     {
         AppliesToFilter result = null;
         if( !InvocationHandler.class.isAssignableFrom( fragmentClass ) )
@@ -140,7 +142,7 @@ public class AssemblyHelper
         return result;
     }
 
-    private AppliesToFilter applyAppliesTo( AppliesToFilter existing, Class<?> modifierClass )
+    protected AppliesToFilter applyAppliesTo( AppliesToFilter existing, Class<?> modifierClass )
     {
         AppliesTo appliesTo = modifierClass.getAnnotation( AppliesTo.class );
         if( appliesTo != null )
@@ -154,7 +156,10 @@ public class AssemblyHelper
                 {
                     try
                     {
-                        filter = (AppliesToFilter) appliesToClass.newInstance();
+                        @SuppressWarnings("unchecked")
+                        Constructor<AppliesToFilter> cons = (Constructor<AppliesToFilter>) appliesToClass.getDeclaredConstructor();
+                        cons.setAccessible(true);
+                        filter = cons.newInstance();
                     }
                     catch( Exception e )
                     {

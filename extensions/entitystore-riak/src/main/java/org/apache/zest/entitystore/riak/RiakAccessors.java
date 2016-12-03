@@ -19,12 +19,12 @@
  */
 package org.apache.zest.entitystore.riak;
 
-import com.basho.riak.client.IRiakClient;
+import com.basho.riak.client.api.RiakClient;
 
 public interface RiakAccessors
 {
 
-    IRiakClient riakClient();
+    RiakClient riakClient();
 
     String bucket();
 

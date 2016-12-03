@@ -30,7 +30,7 @@ import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.ManyAssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.entity.ManyAssociationState;
@@ -72,7 +72,7 @@ public class ManyAssociationInstance<T>
         checkImmutable();
         checkType( entity );
         associationInfo.checkConstraints( entity );
-        return manyAssociationState.add( i, new EntityReference( ( (Identity) entity ).identity().get() ) );
+        return manyAssociationState.add( i, EntityReference.create( ((HasIdentity) entity ).identity().get()) );
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ManyAssociationInstance<T>
         checkImmutable();
         checkType( entity );
 
-        return manyAssociationState.remove( new EntityReference( ( (Identity) entity ).identity().get() ) );
+        return manyAssociationState.remove( EntityReference.create( ((HasIdentity) entity).identity().get() ) );
     }
 
     @Override

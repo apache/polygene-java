@@ -19,8 +19,10 @@
  */
 package org.apache.zest.regression.qi377;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
@@ -33,6 +35,9 @@ import org.apache.zest.test.AbstractZestTest;
 public class ValueCollisionWithRelatedReturnTypesTest
     extends AbstractZestTest
 {
+
+    public static final Identity NICLAS = new StringIdentity( "niclas" );
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -53,7 +58,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         Company startUp = valueBuilderFactory.newValue( Company.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set(NICLAS);
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
@@ -63,7 +68,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         SalesTeam startUp = valueBuilderFactory.newValue( SalesTeam.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set(NICLAS);
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
@@ -73,7 +78,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         ResearchTeam startUp = valueBuilderFactory.newValue( ResearchTeam.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set(NICLAS);
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
@@ -83,7 +88,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         Company startUp = valueBuilderFactory.newValue( Company.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set(NICLAS);
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
@@ -93,7 +98,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         SalesTeam startUp = valueBuilderFactory.newValue( SalesTeam.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set(NICLAS);
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
@@ -103,13 +108,13 @@ public class ValueCollisionWithRelatedReturnTypesTest
     {
         ResearchTeam startUp = valueBuilderFactory.newValue( ResearchTeam.class );
         ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
-        builder.prototype().identity().set( "niclas" );
+        builder.prototype().identity().set( NICLAS );
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
 
     public interface Employee
-        extends Identity
+        extends HasIdentity
     {
     }
 

@@ -108,6 +108,11 @@ abstract class FragmentInvocationHandler
             //noinspection ThrowableResultOfMethodCallIgnored
             cleanStackTrace( nested, proxy, method );
         }
+        for( Throwable suppressed : throwable.getSuppressed() )
+        {
+            //noinspection ThrowableResultOfMethodCallIgnored
+            cleanStackTrace( suppressed, proxy, method );
+        }
         return throwable;
     }
 
@@ -125,6 +130,7 @@ abstract class FragmentInvocationHandler
     private boolean isJdkInternals( String className )
     {
         return className.startsWith( "java.lang.reflect" )
+               || className.startsWith( "jdk.internal.reflect" )
                || className.startsWith( "com.sun.proxy" )
                || className.startsWith( "sun.reflect" );
     }

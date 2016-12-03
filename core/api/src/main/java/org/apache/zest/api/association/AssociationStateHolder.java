@@ -30,7 +30,7 @@ public interface AssociationStateHolder
     extends StateHolder
 {
     /**
-     * Get an association for a specific accessor method
+     * Get an association for a specific accessor method.
      *
      * @param associationMethod for the association
      *
@@ -39,14 +39,14 @@ public interface AssociationStateHolder
     <T> Association<T> associationFor( AccessibleObject associationMethod );
 
     /**
-     * Get all associations
+     * Get all associations.
      *
-     * @return iterable of associations
+     * @return stream of associations
      */
     Stream<? extends Association<?>> allAssociations();
 
     /**
-     * Get a many-association for a specific accessor method
+     * Get a many-association for a specific accessor method.
      *
      * @param manyassociationMethod for the many-association
      *
@@ -55,14 +55,14 @@ public interface AssociationStateHolder
     <T> ManyAssociation<T> manyAssociationFor( AccessibleObject manyassociationMethod );
 
     /**
-     * Get all ManyAssociations
+     * Get all ManyAssociations.
      *
-     * @return iterable of many-associations
+     * @return stream of many-associations
      */
     Stream<? extends ManyAssociation<?>> allManyAssociations();
 
     /**
-     * Get a named-association for a specific accessor method
+     * Get a named-association for a specific accessor method.
      *
      * @param namedassociationMethod for the named-association
      *
@@ -71,9 +71,9 @@ public interface AssociationStateHolder
     <T> NamedAssociation<T> namedAssociationFor( AccessibleObject namedassociationMethod );
 
     /**
-     * Get all NmaedAssociations
+     * Get all named-associations.
      *
-     * @return iterable of named-associations
+     * @return stream of named-associations
      */
     Stream<? extends NamedAssociation<?>> allNamedAssociations();
 }

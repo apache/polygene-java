@@ -207,7 +207,7 @@ public class EntitiesResource
                 Entry entry = new Entry();
                 entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityReference.toString() ) );
                 Link link = new Link();
-                link.setHref( getRequest().getResourceRef().clone().addSegment( entityReference.identity() ) );
+                link.setHref( getRequest().getResourceRef().clone().addSegment( entityReference.identity().toString() ) );
                 entry.getLinks().add( link );
                 entries.add( entry );
             }
@@ -227,11 +227,11 @@ public class EntitiesResource
         try
         {
             /*
-             * InputStream in = entity.getStream(); ObjectInputStream oin = new ObjectInputStream( in ); String identity
+             * InputStream in = entity.getStream(); ObjectInputStream oin = new ObjectInputStream( in ); String reference
              * = oin.readUTF(); Usecase usecase = (Usecase) oin.readUnshared(); MetaInfo unitofwork = (MetaInfo)
              * oin.readUnshared(); Iterable<UnitOfWorkEvent> events = (Iterable<UnitOfWorkEvent>) oin.readUnshared();
              *
-             * // Store state try { entityStore.apply( identity, events, usecase, unitofwork ).commit(); } catch(
+             * // Store state try { entityStore.apply( reference, events, usecase, unitofwork ).commit(); } catch(
              * ConcurrentEntityStateModificationException e ) { throw new ResourceException(
              * Status.CLIENT_ERROR_CONFLICT ); }
              */

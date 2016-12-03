@@ -26,12 +26,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import org.iq80.leveldb.CompressionType;
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBFactory;
-import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.Options;
-import org.iq80.leveldb.WriteBatch;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -48,6 +42,12 @@ import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
+import org.iq80.leveldb.CompressionType;
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBFactory;
+import org.iq80.leveldb.DBIterator;
+import org.iq80.leveldb.Options;
+import org.iq80.leveldb.WriteBatch;
 
 /**
  * LevelDB implementation of MapEntityStore.
@@ -128,7 +128,7 @@ public class LevelDBEntityStoreMixin
         }
 
         // Open/Create the database
-        File dbFile = new File( fileConfig.dataDirectory(), descriptor.identity() );
+        File dbFile = new File( fileConfig.dataDirectory(), descriptor.identity().toString() );
         db = factory.open( dbFile, options );
     }
 
@@ -187,7 +187,7 @@ public class LevelDBEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        byte[] state = db.get( entityReference.identity().getBytes( charset ) );
+        byte[] state = db.get( entityReference.identity().toString().getBytes( charset ) );
         if( state == null )
         {
             throw new EntityNotFoundException( entityReference );
@@ -258,7 +258,7 @@ public class LevelDBEntityStoreMixin
                         {
                             super.close();
                             String jsonState = toString();
-                            writeBatch.put( ref.identity().getBytes( charset ), jsonState.getBytes( charset ) );
+                            writeBatch.put( ref.identity().toString().getBytes( charset ), jsonState.getBytes( charset ) );
                         }
 
                     };
@@ -277,7 +277,7 @@ public class LevelDBEntityStoreMixin
                         {
                             super.close();
                             String jsonState = toString();
-                            writeBatch.put( ref.identity().getBytes( charset ), jsonState.getBytes( charset ) );
+                            writeBatch.put( ref.identity().toString().getBytes( charset ), jsonState.getBytes( charset ) );
                         }
 
                     };
@@ -287,7 +287,7 @@ public class LevelDBEntityStoreMixin
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws EntityNotFoundException
                 {
-                    writeBatch.delete( ref.identity().getBytes( charset ) );
+                    writeBatch.delete( ref.identity().toString().getBytes( charset ) );
                 }
 
             } );

@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContextAware;
  * <li>Create a class that extends {@link ZestApplicationBootstrap}.</li>
  * <li>Sets the layer and module that register BeanFactory service.</li>
  * <li>Assemble Zest application by implementing #assemble method.</li>
- * <li>Sets the identity of bean factory service. This identity is the spring
+ * <li>Sets the reference of bean factory service. This reference is the spring
  * bean name.</li>
  * <li>Declare Zest bootstrap in spring xml application context.
  * <pre><code>

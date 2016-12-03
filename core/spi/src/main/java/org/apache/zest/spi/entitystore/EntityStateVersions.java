@@ -20,6 +20,7 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,9 @@ import java.util.WeakHashMap;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Entity versions state.
@@ -41,9 +40,9 @@ public interface EntityStateVersions
 {
     void forgetVersions( Iterable<EntityState> states );
 
-    void rememberVersion( EntityReference identity, String version );
+    void rememberVersion( EntityReference reference, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, Instant currentTime )
         throws ConcurrentEntityStateModificationException;
 
     /**
@@ -62,19 +61,19 @@ public interface EntityStateVersions
         {
             for( EntityState state : states )
             {
-                versions.remove( state.identity() );
+                versions.remove( state.entityReference() );
             }
         }
 
         @Override
-        public synchronized void rememberVersion( EntityReference identity, String version )
+        public synchronized void rememberVersion( EntityReference reference, String version )
         {
-            versions.put( identity, version );
+            versions.put( reference, version );
         }
 
         @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
-                                                                 long currentTime
+                                                                 Instant currentTime
         )
             throws ConcurrentEntityStateModificationException
         {
@@ -86,11 +85,11 @@ public interface EntityStateVersions
                     continue;
                 }
 
-                String storeVersion = versions.get( entityState.identity() );
+                String storeVersion = versions.get( entityState.entityReference() );
                 if( storeVersion == null )
                 {
                     EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( entityState.entityDescriptor().module(), Usecase.DEFAULT, currentTime );
-                    storeVersion = unitOfWork.versionOf( entityState.identity() );
+                    storeVersion = unitOfWork.versionOf( entityState.entityReference() );
                     unitOfWork.discard();
                 }
 
@@ -100,7 +99,7 @@ public interface EntityStateVersions
                     {
                         changed = new ArrayList<>();
                     }
-                    changed.add( entityState.identity() );
+                    changed.add( entityState.entityReference() );
                 }
             }
 

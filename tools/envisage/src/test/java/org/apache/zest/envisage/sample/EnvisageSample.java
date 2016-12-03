@@ -20,6 +20,7 @@
 
 package org.apache.zest.envisage.sample;
 
+import org.apache.zest.api.identity.Identity;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -102,7 +103,7 @@ public class EnvisageSample
         }
     }
 
-    private String createCar( String manufacturer, String model, int year )
+    private Identity createCar(String manufacturer, String model, int year )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
@@ -114,7 +115,7 @@ public class EnvisageSample
         return entity.identity().get();
     }
 
-    private String createAnimal( String name, String sound )
+    private Identity createAnimal( String name, String sound )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );

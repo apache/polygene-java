@@ -21,6 +21,7 @@
 package org.apache.zest.library.rest.server.api;
 
 import java.time.Instant;
+import java.time.temporal.ChronoField;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -66,8 +67,8 @@ class ResourceValidity
         if( entity != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Tag tag = new Tag( state.identity().identity() + "/" + state.version() );
-            response.getEntity().setModificationDate( new java.util.Date( state.lastModified() ) );
+            Tag tag = new Tag( state.entityReference().identity() + "/" + state.version() );
+            response.getEntity().setModificationDate( java.util.Date.from( state.lastModified() ) );
             response.getEntity().setTag( tag );
         }
     }
@@ -78,10 +79,10 @@ class ResourceValidity
         // Check command rules
         Instant unmodifiedSince = request.getConditions().getUnmodifiedSince().toInstant();
         EntityState state = spi.entityStateOf( entity );
-        Instant lastModified = cutoffMillis( state.lastModified() );
+        Instant lastModifiedSeconds = state.lastModified().with(ChronoField.NANO_OF_SECOND, 0 );
         if( unmodifiedSince != null )
         {
-            if( lastModified.isAfter( unmodifiedSince ) )
+            if( lastModifiedSeconds.isAfter( unmodifiedSince ) )
             {
                 throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
             }
@@ -91,15 +92,10 @@ class ResourceValidity
         Instant modifiedSince = request.getConditions().getModifiedSince().toInstant();
         if( modifiedSince != null )
         {
-            if( !lastModified.isAfter( modifiedSince ) )
+            if( !lastModifiedSeconds.isAfter( modifiedSince ) )
             {
                 throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
             }
         }
-    }
-
-    private Instant cutoffMillis( long time )
-    {
-        return Instant.ofEpochMilli( time / 1000 * 1000 );
     }
 }

@@ -21,6 +21,7 @@
 package org.apache.zest.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,8 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
@@ -44,8 +43,6 @@ import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * Base implementation of model for mixins. This records the mapping between methods in the Composite
@@ -205,23 +202,6 @@ public class MixinsModel
         return methodImplementation.entrySet()
             .stream().filter( entry -> entry.getValue().mixinClass().equals( mixinClass ) )
             .map( Map.Entry::getKey );
-
-//        return map( new Function<Map.Entry<Method, MixinModel>, Method>()
-//        {
-//            @Override
-//            public Method apply( Map.Entry<Method, MixinModel> entry )
-//            {
-//                return entry.getKey();
-//            }
-//        }, filter( new Predicate<Map.Entry<Method, MixinModel>>()
-//        {
-//            @Override
-//            public boolean test( Map.Entry<Method, MixinModel> item )
-//            {
-//                MixinModel model = item.getValue();
-//                return model.mixinClass().equals( mixinClass );
-//            }
-//        }, methodImplementation.entrySet() ) );
     }
 
     private class Uses
@@ -236,7 +216,11 @@ public class MixinsModel
             {
                 for( Method method : thisMixinType.getMethods() )
                 {
-                    usedMixinClasses.add( methodImplementation.get( method ) );
+                    if( !Modifier.isStatic( method.getModifiers() ) )
+                    {
+                        MixinModel used = methodImplementation.get( method );
+                        usedMixinClasses.add( used );
+                    }
                 }
             }
             return usedMixinClasses;

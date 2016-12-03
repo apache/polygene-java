@@ -20,10 +20,10 @@
 
 description = "Apache Zest™ SQL DBCP Library provides DBCP support."
 
-jar { manifest { name = "Apache Zest™ Library - SQL DBCP" }}
+jar { manifest { name = "Apache Zest™ Library - SQL DBCP" } }
 
 dependencies {
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.sql"))
-  compile(libraries.commons_dbcp)
+  compile zest.library( 'sql' )
+  compile libraries.commons_dbcp
 }
 

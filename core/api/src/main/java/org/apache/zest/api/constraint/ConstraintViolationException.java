@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
+import org.apache.zest.api.identity.Identity;
 
 import static java.util.stream.Collectors.joining;
 
@@ -76,14 +77,14 @@ public class ConstraintViolationException
         this.constraintViolations = violations;
     }
 
-    public ConstraintViolationException( String instanceToString,
+    public ConstraintViolationException( Identity identity,
                                          List<Class<?>> instanceTypes,
                                          String mixinTypeName,
                                          String methodName,
                                          Collection<ConstraintViolation> violations
     )
     {
-        this.instanceToString = instanceToString;
+        this.instanceToString = identity.toString();
         this.instanceTypes = instanceTypes;
         this.mixinTypeName = mixinTypeName;
         this.methodName = methodName;

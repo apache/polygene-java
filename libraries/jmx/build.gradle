@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -20,20 +22,23 @@
 
 description = "Apache Zest™ JMX Library provides Java Management Extension (JMX) integration for Apache Zest™ applications."
 
-jar { manifest { name = "Apache Zest™ Library - JMX" }}
+jar { manifest { name = "Apache Zest™ Library - JMX" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile zest.core.bootstrap
   compile libraries.slf4j_api
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }
 
-task(runSample, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.apache.zest.library.jmx.JMXTest'
-    classpath = sourceSets.test.runtimeClasspath
+task( runJmxSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.zest.library.jmx.JMXTest'
+  classpath = sourceSets.test.runtimeClasspath
 }
 

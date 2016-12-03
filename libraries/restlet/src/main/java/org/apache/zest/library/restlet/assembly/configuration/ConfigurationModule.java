@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.jackson.JacksonValueSerializationAssembler;
 
 public class ConfigurationModule
@@ -39,7 +38,6 @@ public class ConfigurationModule
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         new JacksonValueSerializationAssembler().visibleIn( Visibility.layer ).assemble( module );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
         return module;
     }
 }

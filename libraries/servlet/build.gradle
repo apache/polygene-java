@@ -20,17 +20,18 @@
 
 description = "Apache Zest™ Servlet Library provides integration of Apache Zest™ into web applications."
 
-jar { manifest { name = "Apache Zest™ Library - Servlet" }}
+jar { manifest { name = "Apache Zest™ Library - Servlet" } }
 
 dependencies {
-  compile( project(":org.apache.zest.core:org.apache.zest.core.bootstrap") )
-  compile libraries.servlet_api 
+  compile zest.core.bootstrap
+  compile libraries.servlet_api
   compile libraries.slf4j_api
 
-  testCompile( project(":org.apache.zest.core:org.apache.zest.core.testsupport") )
-  testCompile( libraries.jetty_webapp )
-  testCompile( libraries.http_client )
+  runtime zest.core.runtime
 
-  testRuntime( project(":org.apache.zest.core:org.apache.zest.core.runtime") )
-  testRuntime(libraries.logback )
+  testCompile zest.core.testsupport
+  testCompile libraries.jetty_webapp
+  testCompile libraries.http_client
+
+  testRuntime libraries.logback
 }

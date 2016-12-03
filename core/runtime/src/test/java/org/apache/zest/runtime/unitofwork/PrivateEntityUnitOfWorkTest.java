@@ -24,7 +24,9 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
@@ -50,6 +52,8 @@ import static org.junit.Assert.fail;
  */
 public class PrivateEntityUnitOfWorkTest
 {
+    private static final Identity TEST_IDENTITY = new StringIdentity( "1" );
+
     @Structure
     private UnitOfWorkFactory uowf;
 
@@ -98,16 +102,16 @@ public class PrivateEntityUnitOfWorkTest
         catch( NoSuchEntityTypeException e )
         {
             // Ok
-            ProductCatalog catalog = unitOfWork.newEntity( ProductCatalog.class, "1" );
+            ProductCatalog catalog = unitOfWork.newEntity( ProductCatalog.class, TEST_IDENTITY);
             unitOfWork.complete();
         }
         unitOfWork = uowf.newUnitOfWork();
 
-        String id;
+        Identity id;
         try
         {
-            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );
-            id = ( (Identity) catalog.newProduct() ).identity().get();
+            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, TEST_IDENTITY);
+            id = catalog.newProduct().identity().get();
             unitOfWork.complete();
         }
         finally
@@ -118,7 +122,7 @@ public class PrivateEntityUnitOfWorkTest
         unitOfWork = uowf.newUnitOfWork();
         try
         {
-            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );
+            ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, TEST_IDENTITY);
             Product product = catalog.findProduct( id );
             product.price().set( 100 );
             unitOfWork.complete();
@@ -133,7 +137,7 @@ public class PrivateEntityUnitOfWorkTest
     {
         Product newProduct();
 
-        Product findProduct( String id );
+        Product findProduct( Identity id );
     }
 
     @Mixins( ProductCatalogEntity.ProductRepositoryMixin.class )
@@ -164,10 +168,10 @@ public class PrivateEntityUnitOfWorkTest
                 return eb.newInstance();
             }
 
-            public Product findProduct( String id )
+            public Product findProduct( Identity id )
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                return uow.get( Product.class, id );
+                return uow.get( Product.class,  id );
             }
         }
     }
@@ -243,7 +247,7 @@ public class PrivateEntityUnitOfWorkTest
         Property<Float> weight();
     }
 
-    public interface Product
+    public interface Product extends HasIdentity
     {
         Property<String> name();
 

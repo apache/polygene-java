@@ -45,6 +45,7 @@ import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -144,6 +145,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         // Number types
         registerSerializer( BigDecimal.class, ( options, bigDecimal ) -> bigDecimal.toString() );
         registerSerializer( BigInteger.class, ( options, bigInteger ) -> bigInteger.toString() );
+        registerSerializer( Identity.class, ( options, identity ) -> identity.toString() );
 
         // Date types
         registerSerializer( Instant.class, ( options, date ) -> date.toString() );
@@ -261,6 +263,11 @@ public abstract class ValueSerializerAdapter<OutputType>
                 Object serialized = serializers.get( object.getClass() ).apply( options, object );
                 output.write( serialized.toString().getBytes( UTF_8 ) );
             }
+            else if( object instanceof Identity )
+            {
+                Object serialized = serializers.get( Identity.class ).apply( options, object );
+                output.write( serialized.toString().getBytes( UTF_8 ) );
+            }
             else if( object.getClass().isEnum() )
             {
                 // Enum Value
@@ -300,7 +307,11 @@ public abstract class ValueSerializerAdapter<OutputType>
                 complexSerializers.get( object.getClass() ).serialize( options, object, output );
             }
             else // ValueComposite
-                if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
+                if( Identity.class.isAssignableFrom( object.getClass() ) )
+                {
+                    serializeIdentity( object, output );
+                }
+                else if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
                 {
                     serializeValueComposite( options, object, output, rootPass );
                 }
@@ -333,6 +344,12 @@ public abstract class ValueSerializerAdapter<OutputType>
                                     {
                                         serializeBase64Serializable( object, output );
                                     }
+    }
+
+    private void serializeIdentity( Object object, OutputType output )
+            throws Exception
+    {
+        onValue( output, object.toString() );
     }
 
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
@@ -382,7 +399,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 }
                 else
                 {
-                    onValue( output, ref.identity() );
+                    onValue( output, ref.identity().toString() );
                 }
                 onValueEnd( output );
                 onFieldEnd( output );
@@ -402,7 +419,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 for( EntityReference ref : manyAssociation.references() )
                 {
                     onValueStart( output );
-                    onValue( output, ref.identity() );
+                    onValue( output, ref.identity().toString() );
                     onValueEnd( output );
                 }
                 onArrayEnd( output );
@@ -426,7 +443,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                     onFieldStart( output, name );
                     onValueStart( output );
                     EntityReference ref = namedAssociation.referenceOf( name );
-                    onValue( output, ref.identity() );
+                    onValue( output, ref.identity().toString() );
                     onValueEnd( output );
                     onFieldEnd( output );
                 }

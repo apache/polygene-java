@@ -23,14 +23,14 @@ import org.apache.zest.api.association.AssociationMixin;
 import org.apache.zest.api.association.ManyAssociationMixin;
 import org.apache.zest.api.association.NamedAssociationMixin;
 import org.apache.zest.api.composite.Composite;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.mixin.Mixins;
 
 /**
  * EntityComposites are Composites that has mutable state persisted in EntityStores and equality defined from its
- * identity.
+ * reference.
  */
 @Mixins( { AssociationMixin.class, ManyAssociationMixin.class, NamedAssociationMixin.class } )
-public interface EntityComposite
-    extends Identity, Composite
+public interface EntityComposite extends HasIdentity, Composite
 {
 }

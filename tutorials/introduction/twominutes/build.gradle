@@ -20,14 +20,14 @@
 
 description = "A 2-minute Introduction Tutorial to Apache Zest™ in its simplest form."
 
-jar { manifest { name = "Apache Zest™ Tutorial - 2 minute Introduction" }}
+jar { manifest { name = "Apache Zest™ Tutorial - 2 minute Introduction" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile zest.core.bootstrap
 
-  runtime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  runtime zest.core.runtime
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile zest.core.testsupport
 
-  testRuntime(libraries.logback)
+  testRuntime libraries.logback
 }

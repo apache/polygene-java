@@ -27,16 +27,16 @@ import org.apache.zest.api.entity.EntityReference;
 public class EntityNotFoundException
     extends EntityStoreException
 {
-    private EntityReference identity;
+    private EntityReference reference;
 
-    public EntityNotFoundException( EntityReference identity )
+    public EntityNotFoundException( EntityReference reference)
     {
-        super("Entity " + identity + " not found");
-        this.identity = identity;
+        super("Entity " + reference + " not found");
+        this.reference = reference;
     }
 
-    public EntityReference identity()
+    public EntityReference reference()
     {
-        return identity;
+        return reference;
     }
 }

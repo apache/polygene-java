@@ -23,13 +23,12 @@ package org.apache.zest.tools.shell.create.project;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.zest.tools.shell.FileUtils;
 import org.apache.zest.tools.shell.TestHelper;
 import org.junit.Test;
 
-import static org.apache.zest.tools.shell.FileUtils.removeDir;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultProjectCreatorTest
 {
@@ -40,12 +39,8 @@ public class DefaultProjectCreatorTest
         throws Exception
     {
 
-        TestHelper.zetZestZome();
+        TestHelper.setZestZome();
         File projectDir = new File( "ZestTest" );
-        if( projectDir.exists() )
-        {
-            removeDir( projectDir );
-        }
         Map<String, String> properties = new HashMap<>();
         properties.put( "zest.home", System.getProperty( "zest.home" ) );
         properties.put( "root.package", "org.apache.zest.test" );
@@ -96,13 +91,9 @@ public class DefaultProjectCreatorTest
         assertThat( new File( projectDir, "gradle/wrapper/gradle-wrapper.jar" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "gradle/wrapper/gradle-wrapper.properties" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "gradlew" ).exists(), equalTo( true ) );
+        assertTrue( new File( projectDir, "gradlew" ).canExecute() );
         assertThat( new File( projectDir, "gradlew.bat" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "build.gradle" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "settings.gradle" ).exists(), equalTo( true ) );
-        if( !FileUtils.removeDir( projectDir ) )
-        {
-            System.err.println( "Unable to remove file. Why???" );
-        }
-        assertThat( projectDir.exists(), equalTo( false ) );
     }
 }

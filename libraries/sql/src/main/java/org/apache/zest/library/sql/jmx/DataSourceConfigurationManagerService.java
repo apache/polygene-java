@@ -48,6 +48,8 @@ import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -128,7 +130,6 @@ public interface DataSourceConfigurationManagerService
                 throws MalformedObjectNameException, MBeanRegistrationException, InstanceAlreadyExistsException, NotCompliantMBeanException
         {
             for ( ServiceReference<DataSource> dataSource : dataSources ) {
-                String name = dataSource.identity();
                 ModuleDescriptor module = spi.moduleOf( dataSource );
                 EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
                 List<MBeanAttributeInfo> attributes = new ArrayList<>();
@@ -145,9 +146,10 @@ public interface DataSourceConfigurationManagerService
                 List<MBeanOperationInfo> operations = new ArrayList<>();
                 operations.add( new MBeanOperationInfo( "restart", "Restart DataSource", new MBeanParameterInfo[ 0 ], "void", MBeanOperationInfo.ACTION_INFO ) );
 
-                MBeanInfo mbeanInfo = new MBeanInfo( DataSourceConfiguration.class.getName(), name, attributes.toArray( new MBeanAttributeInfo[ attributes.size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
-                Object mbean = new ConfigurableDataSource( dataSourceService, mbeanInfo, name, properties );
-                ObjectName configurableDataSourceName = new ObjectName( "Zest:application=" + application.name() + ",class=Datasource,name=" + name );
+                String mbeanName = dataSource.identity().toString();
+                MBeanInfo mbeanInfo = new MBeanInfo( DataSourceConfiguration.class.getName(), mbeanName, attributes.toArray( new MBeanAttributeInfo[ attributes.size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
+                Object mbean = new ConfigurableDataSource( dataSourceService, mbeanInfo, mbeanName, properties );
+                ObjectName configurableDataSourceName = new ObjectName( "Zest:application=" + application.name() + ",class=Datasource,name=" + mbeanName );
                 server.registerMBean( mbean, configurableDataSourceName );
                 configurationNames.add( configurableDataSourceName );
             }
@@ -168,14 +170,14 @@ public interface DataSourceConfigurationManagerService
 
             MBeanInfo info;
 
-            String identity;
+            Identity identity;
 
             Map<String, AccessibleObject> propertyNames;
 
             EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 this.info = info;
-                this.identity = identity;
+                this.identity = new StringIdentity( identity );
                 this.propertyNames = propertyNames;
             }
 

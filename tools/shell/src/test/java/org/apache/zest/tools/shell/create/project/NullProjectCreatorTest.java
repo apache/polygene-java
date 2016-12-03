@@ -23,11 +23,9 @@ package org.apache.zest.tools.shell.create.project;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.zest.tools.shell.FileUtils;
 import org.apache.zest.tools.shell.TestHelper;
 import org.junit.Test;
 
-import static org.apache.zest.tools.shell.FileUtils.removeDir;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -40,12 +38,8 @@ public class NullProjectCreatorTest
         throws Exception
     {
 
-        TestHelper.zetZestZome();
+        TestHelper.setZestZome();
         File projectDir = new File( "ZestTest" );
-        if( projectDir.exists() )
-        {
-            removeDir( projectDir );
-        }
         Map<String, String> properties = new HashMap<>();
         properties.put( "zest.home", System.getProperty( "zest.home" ) );
         properties.put( "root.package", "org.apache.zest.test" );
@@ -57,10 +51,5 @@ public class NullProjectCreatorTest
         assertThat( new File( projectDir, "gradlew" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "gradlew.bat" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "build.gradle" ).exists(), equalTo( true ) );
-        if( ! FileUtils.removeDir( projectDir ) )
-        {
-            System.err.println( "Unable to remove file. Why???" );
-        }
-        assertThat( projectDir.exists(), equalTo( false ) );
     }
 }

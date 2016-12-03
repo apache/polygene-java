@@ -54,7 +54,7 @@ import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -67,7 +67,6 @@ import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.sql.support.api.SQLAppStartup;
 import org.apache.zest.index.sql.support.api.SQLTypeInfo;
@@ -1437,10 +1436,9 @@ public abstract class AbstractSQLStartup
                         else
                         {
                             valueDescriptors.add( new CompositeDescriptorInfo(
-                                    (LayerDescriptor) Iterables
-                                    .first( Iterables.skip( 1, currentPath ) ),
-                                    (ModuleDescriptor) Iterables.first( currentPath ),
-                                    (CompositeDescriptor) visited ) );
+                                (LayerDescriptor) currentPath.stream().skip( 1 ).findFirst().orElse( null ),
+                                (ModuleDescriptor) currentPath.stream().findFirst().orElse( null ),
+                                (CompositeDescriptor) visited ) );
                         }
 
                         return false;
@@ -1487,7 +1485,7 @@ public abstract class AbstractSQLStartup
     )
     {
         QualifiedName qName = pType.qualifiedName();
-        if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
+        if( !newQNames.contains( qName ) && !qName.name().equals( HasIdentity.class.getName() ) )
         {
             newQNames.add( qName );
             QNameInfo info = qNameInfos.get( qName );

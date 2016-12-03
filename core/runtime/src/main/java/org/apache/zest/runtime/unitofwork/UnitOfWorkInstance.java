@@ -20,17 +20,18 @@
 
 package org.apache.zest.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.metrics.MetricNames;
 import org.apache.zest.api.metrics.MetricsCounter;
 import org.apache.zest.api.metrics.MetricsCounterFactory;
 import org.apache.zest.api.metrics.MetricsProvider;
@@ -39,8 +40,8 @@ import org.apache.zest.api.metrics.MetricsTimerFactory;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
-import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -56,7 +57,6 @@ import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
-import org.apache.zest.spi.metrics.DefaultMetric;
 import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
@@ -64,7 +64,7 @@ import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus
 
 public final class UnitOfWorkInstance
 {
-    private static final ThreadLocal<Stack<UnitOfWorkInstance>> current = new ThreadLocal<Stack<UnitOfWorkInstance>>()
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> CURRENT = new ThreadLocal<Stack<UnitOfWorkInstance>>()
     {
         @Override
         protected Stack<UnitOfWorkInstance> initialValue()
@@ -72,46 +72,42 @@ public final class UnitOfWorkInstance
             return new Stack<>();
         }
     };
-    private MetricsTimer.Context metricsTimer;
 
     public static Stack<UnitOfWorkInstance> getCurrent()
     {
-        return current.get();
+        return CURRENT.get();
     }
 
+    private final HashMap<EntityReference, EntityInstance> instanceCache = new HashMap<>();
+    private final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork = new HashMap<>();
     private final ModuleSpi module;
-    private long currentTime;
-    private MetricsProvider metrics;
-    final HashMap<EntityReference, EntityInstance> instanceCache;
-    final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
+    private final Usecase usecase;
+    private final Instant currentTime;
+    private final MetricsProvider metrics;
 
     private boolean open;
-
     private boolean paused;
 
-    /**
-     * Lazy query builder factory.
-     */
-    private Usecase usecase;
-
+    private MetricsCounter metricsCounter;
+    private MetricsTimer metricsTimer;
+    private MetricsTimer.Context metricsTimerContext;
     private MetaInfo metaInfo;
-
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( ModuleSpi module, Usecase usecase, long currentTime, MetricsProvider metrics )
+    public UnitOfWorkInstance(ModuleSpi module, Usecase usecase, Instant currentTime, MetricsProvider metrics )
     {
         this.module = module;
-        this.currentTime = currentTime;
-        this.open = true;
-        instanceCache = new HashMap<>();
-        storeUnitOfWork = new HashMap<>();
-        getCurrent().push( this );
-        paused = false;
         this.usecase = usecase;
-        startCapture( metrics );
+        this.currentTime = currentTime;
+        this.metrics = metrics;
+
+        this.open = true;
+        getCurrent().push( this );
+        this.paused = false;
+        startCapture();
     }
 
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }
@@ -127,7 +123,7 @@ public final class UnitOfWorkInstance
         return uow;
     }
 
-    public <T> T get( EntityReference identity,
+    public <T> T get( EntityReference reference,
                       UnitOfWork uow,
                       Iterable<? extends EntityDescriptor> potentialModels,
                       Class<T> mixinType
@@ -136,7 +132,7 @@ public final class UnitOfWorkInstance
     {
         checkOpen();
 
-        EntityInstance entityInstance = instanceCache.get( identity );
+        EntityInstance entityInstance = instanceCache.get( reference );
         if( entityInstance == null )
         {   // Not yet in cache
 
@@ -151,7 +147,7 @@ public final class UnitOfWorkInstance
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store );
                 try
                 {
-                    entityState = storeUow.entityStateOf( potentialModel.module(), identity );
+                    entityState = storeUow.entityStateOf( potentialModel.module(), reference );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -169,7 +165,7 @@ public final class UnitOfWorkInstance
                 // Check if state was found
                 if( entityState == null )
                 {
-                    throw new NoSuchEntityException( identity, mixinType, usecase );
+                    throw new NoSuchEntityException( reference, mixinType, usecase );
                 }
                 else
                 {
@@ -178,14 +174,14 @@ public final class UnitOfWorkInstance
             }
             // Create instance
             entityInstance = new EntityInstance( uow, model, entityState );
-            instanceCache.put( identity, entityInstance );
+            instanceCache.put( reference, entityInstance );
         }
         else
         {
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, mixinType, usecase );
+                throw new NoSuchEntityException( reference, mixinType, usecase );
             }
         }
 
@@ -233,7 +229,7 @@ public final class UnitOfWorkInstance
                             {
                                 prunedInstances = new ArrayList<>();
                             }
-                            prunedInstances.add( entityInstance.identity() );
+                            prunedInstances.add( entityInstance.reference() );
                         }
                     }
                     if( prunedInstances != null )
@@ -341,7 +337,7 @@ public final class UnitOfWorkInstance
 
     public void addEntity( EntityInstance instance )
     {
-        instanceCache.put( instance.identity(), instance );
+        instanceCache.put( instance.reference(), instance );
     }
 
     private List<StateCommitter> applyChanges()
@@ -369,7 +365,7 @@ public final class UnitOfWorkInstance
                     for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
                         instanceCache.values().stream()
-                            .filter( instance -> instance.identity().equals( modifiedEntityIdentity ) )
+                            .filter( instance -> instance.reference().equals( modifiedEntityIdentity ) )
                             .forEach( instance -> modifiedEntities.put( instance.<EntityComposite>proxy(), instance ) );
                     }
                     throw new ConcurrentEntityModificationException( modifiedEntities, usecase );
@@ -479,46 +475,36 @@ public final class UnitOfWorkInstance
         instanceCache.remove( entityReference );
     }
 
-    private void incrementCount()
+    private void startCapture()
     {
-        MetricsCounter counter = getCounter();
-        counter.increment();
-    }
-
-    private void decrementCount()
-    {
-        MetricsCounter counter = getCounter();
-        counter.decrement();
-    }
-
-    private MetricsCounter getCounter()
-    {
-        if( metrics != null )
-        {
-            MetricsCounterFactory metricsFactory = metrics.createFactory( MetricsCounterFactory.class );
-            return metricsFactory.createCounter( getClass(), "UnitOfWork Counter" );
-        }
-        return new DefaultMetric();
+        getMetricsCounter().increment();
+        metricsTimerContext = getMetricsTimer().start();
     }
 
     private void endCapture()
     {
-        decrementCount();
-        metricsTimer.stop();
+        getMetricsCounter().decrement();
+        metricsTimerContext.stop();
+        metricsTimerContext = null;
     }
 
-    private void startCapture( MetricsProvider metrics )
+    private MetricsCounter getMetricsCounter()
     {
-        this.metrics = metrics;
-        incrementCount();
-        startTimer( metrics );
+        if( metricsCounter == null )
+        {
+            MetricsCounterFactory metricsFactory = metrics.createFactory( MetricsCounterFactory.class );
+            metricsCounter = metricsFactory.createCounter( MetricNames.nameFor( module, UnitOfWork.class, "counter" ) );
+        }
+        return metricsCounter;
     }
 
-    private void startTimer( MetricsProvider metrics )
+    private MetricsTimer getMetricsTimer()
     {
-        MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
-        String name = "UnitOfWork Timer";
-        MetricsTimer timer = metricsFactory.createTimer( getClass(), name, TimeUnit.MILLISECONDS, TimeUnit.SECONDS );
-        metricsTimer = timer.start();
+        if( metricsTimer == null )
+        {
+            MetricsTimerFactory metricsFactory = metrics.createFactory( MetricsTimerFactory.class );
+            metricsTimer = metricsFactory.createTimer( MetricNames.nameFor( module, UnitOfWork.class, "timer" ) );
+        }
+        return metricsTimer;
     }
 }

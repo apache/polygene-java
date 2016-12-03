@@ -21,6 +21,8 @@ package org.apache.zest.index.sql.assembly;
 
 import java.io.IOException;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -34,13 +36,13 @@ import org.sql.generation.api.vendor.SQLVendorProvider;
 public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-    public static final String DEFAULT_IDENTITY = "indexing-sql";
+    public static final Identity DEFAULT_IDENTITY = new StringIdentity( "indexing-sql" );
 
     private Class<? extends ReindexingStrategy> reindexingStrategy = ReindexingStrategy.NeverNeed.class;
 
     public AbstractSQLIndexQueryAssembler()
     {
-        identifiedBy( DEFAULT_IDENTITY );
+        identifiedBy( DEFAULT_IDENTITY.toString() );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -70,7 +72,7 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
             module.services( getIndexQueryServiceType() )
-                .identifiedBy( identity() )
+                .identifiedBy( identity().toString() )
                 .setMetaInfo( sqlVendor )
                 .visibleIn( visibility() )
                 .instantiateOnStartup();

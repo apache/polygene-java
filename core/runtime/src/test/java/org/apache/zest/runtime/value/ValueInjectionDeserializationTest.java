@@ -20,6 +20,7 @@
 
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.api.identity.Identity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -66,7 +67,7 @@ public class ValueInjectionDeserializationTest
             EntityBuilder<Niclas> eb = uow.newEntityBuilder( Niclas.class );
             eb.instance().value().set( value );
             Niclas niclas1 = eb.newInstance();
-            String id = niclas1.identity().get();
+            Identity id = niclas1.identity().get();
             uow.complete();
 
             uow = unitOfWorkFactory.newUnitOfWork();

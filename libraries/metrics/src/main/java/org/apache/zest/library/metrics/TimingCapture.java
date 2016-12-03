@@ -33,4 +33,5 @@ import org.apache.zest.api.injection.InjectionScope;
 @InjectionScope
 public @interface TimingCapture
 {
+    String value() default "";
 }

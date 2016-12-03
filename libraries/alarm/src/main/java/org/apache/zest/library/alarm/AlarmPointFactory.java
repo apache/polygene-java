@@ -21,6 +21,7 @@
 package org.apache.zest.library.alarm;
 
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -32,7 +33,7 @@ import org.apache.zest.api.value.ValueBuilderFactory;
 @Mixins( AlarmPointFactory.Mixin.class )
 public interface AlarmPointFactory extends ServiceComposite
 {
-    AlarmPoint create( String identity, String systemName, String categoryName, AlarmClass alarmClass );
+    AlarmPoint create(Identity identity, String systemName, String categoryName, AlarmClass alarmClass );
 
     abstract class Mixin
         implements AlarmPointFactory
@@ -45,7 +46,7 @@ public interface AlarmPointFactory extends ServiceComposite
         private ValueBuilderFactory vbf;
 
         @Override
-        public AlarmPoint create( String identity, String systemName, String categoryName, AlarmClass alarmClass )
+        public AlarmPoint create( Identity identity, String systemName, String categoryName, AlarmClass alarmClass )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class, identity );

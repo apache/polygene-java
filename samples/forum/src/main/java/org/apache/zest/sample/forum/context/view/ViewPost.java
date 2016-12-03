@@ -59,7 +59,7 @@ class ViewPost
         return replyTopic.reply( message, viewPost );
     }
 
-    private class ReplyTopic
+    public class ReplyTopic
         extends Role<Topic>
     {
         @Structure
@@ -70,7 +70,7 @@ class ViewPost
             Post post = uowf.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
             post.createdBy().set( poster.self() );
-            post.createdOn().set( Instant.ofEpochMilli( uowf.currentUnitOfWork().currentTime()) );
+            post.createdOn().set( uowf.currentUnitOfWork().currentTime() );
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );
@@ -80,12 +80,12 @@ class ViewPost
         }
     }
 
-    private class PostView
+    public class PostView
         extends Role<Post>
     {
     }
 
-    private class Poster
+    public class Poster
         extends Role<User>
     {
     }

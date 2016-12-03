@@ -19,6 +19,7 @@
  */
 package org.apache.zest.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.zest.api.common.QualifiedName;
@@ -50,7 +51,7 @@ public final class BuilderEntityState
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
         return reference;
     }
@@ -62,9 +63,9 @@ public final class BuilderEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
-        return 0;
+        return Instant.MIN;
     }
 
     @Override

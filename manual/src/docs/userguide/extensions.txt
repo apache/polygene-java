@@ -129,7 +129,7 @@ include::../../../../extensions/indexing-sql/src/docs/index-sql.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/metrics-yammer/src/docs/metrics-yammer.txt[]
+include::../../../../extensions/metrics-codahale/src/docs/metrics-codahale.txt[]
 
 :leveloffset: 2
 

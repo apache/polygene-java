@@ -19,7 +19,7 @@
  */
 package org.apache.zest.library.rest.client;
 
-import org.apache.zest.api.composite.TransientBuilderFactory;
+import org.apache.zest.test.util.FreePortFinder;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -116,7 +116,8 @@ public class ContinuousIntegrationTest
     public void startWebServer()
         throws Exception
     {
-        server = new Server( Protocol.HTTP, 8888 );
+        int port = FreePortFinder.findFreePortOnLoopback();
+        server = new Server( Protocol.HTTP, port );
         ContextRestlet restlet = objectFactory.newObject( ContextRestlet.class, new org.restlet.Context() );
 
         ChallengeAuthenticator guard = new ChallengeAuthenticator( null, ChallengeScheme.HTTP_BASIC, "testRealm" );
@@ -167,7 +168,7 @@ public class ContinuousIntegrationTest
         //END SNIPPET: client-create2
 
         //START SNIPPET: client-create3
-        Reference ref = new Reference( "http://localhost:8888/" );
+        Reference ref = new Reference( "http://localhost:" + port + '/' );
         crc = contextResourceClientFactory.newClient( ref );
         //END SNIPPET: client-create3
     }

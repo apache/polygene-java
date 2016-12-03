@@ -20,10 +20,8 @@
 package org.apache.zest.library.osgi;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Properties;
-import java.util.stream.Stream;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.injection.scope.Service;
@@ -32,6 +30,8 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.HasMetaInfo;
 import org.apache.zest.api.util.Classes;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 
@@ -88,14 +88,14 @@ public interface OSGiServiceExporter
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Properties properties = ref.metaInfo( Properties.class );
+                Dictionary properties = ref.metaInfo( Dictionary.class );
                 if( properties == null )
                 {
                     properties = new Properties();
                 }
                 properties.put( "org.apache.zest.api.service.active", ref.isActive() );
                 properties.put( "org.apache.zest.api.service.available", ref.isAvailable() );
-                properties.put( "org.apache.zest.api.service.identity", ref.identity() );
+                properties.put( "org.apache.zest.api.service.reference", ref.identity() );
 
 
                 String[] interfaceNames = interfacesOf( service.getClass() )

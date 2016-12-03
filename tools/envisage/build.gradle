@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -20,30 +22,33 @@
 
 description = "Visualizer of a Apache Zest™ Application Structure."
 
-jar { manifest { name = "Apache Zest™ Envisage" }}
+jar { manifest { name = "Apache Zest™ Envisage" } }
 
 dependencies {
-
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ":org.apache.zest.tools:org.apache.zest.tool.model-detail" )
+  compile zest.core.bootstrap
+  compile zest.tool( 'model-detail' )
   compile libraries.jgoodies_looks
   compile libraries.pdfbox
   compile libraries.prefuse
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )
+  runtime zest.core.runtime
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'indexing-rdf' )
+
   testRuntime libraries.logback
-
 }
 
-task(runSample, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.apache.zest.envisage.sample.EnvisageSample'
-    classpath = sourceSets.test.runtimeClasspath
+task( runEnvisageSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.zest.envisage.sample.EnvisageSample'
+  classpath = sourceSets.test.runtimeClasspath
 }
 
-task(runSchool, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.apache.zest.envisage.school.EnvisageSchoolSample'
-    classpath = sourceSets.test.runtimeClasspath
+task( runEnvisageSchoolSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name School sample."
+  main = 'org.apache.zest.envisage.school.EnvisageSchoolSample'
+  classpath = sourceSets.test.runtimeClasspath
 }

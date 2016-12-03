@@ -25,12 +25,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.util.Classes;
@@ -95,13 +97,14 @@ public interface ElasticSearchIndexer
             {
                 if( eState.status() == EntityStatus.UPDATED || eState.status() == EntityStatus.NEW )
                 {
-                    newStates.put( eState.identity().identity(), eState );
+                    newStates.put( eState.entityReference().identity().toString(), eState );
                 }
             }
 
             EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
-                module, UsecaseBuilder.newUsecase( "Load associations for indexing" ),
-                System.currentTimeMillis()
+                    module,
+                    UsecaseBuilder.newUsecase( "Load associations for indexing" ),
+                    SystemTime.now()
             );
 
             // Bulk index request builder
@@ -116,20 +119,20 @@ public interface ElasticSearchIndexer
                     {
                     case REMOVED:
                         LOGGER.trace( "Removing Entity State from Index: {}", changedState );
-                        remove( bulkBuilder, changedState.identity().identity() );
+                        remove( bulkBuilder, changedState.entityReference().identity().toString() );
                         break;
                     case UPDATED:
                         LOGGER.trace( "Updating Entity State in Index: {}", changedState );
-                        remove( bulkBuilder, changedState.identity().identity() );
+                        remove( bulkBuilder, changedState.entityReference().identity().toString() );
                         String updatedJson = toJSON( changedState, newStates, uow );
                         LOGGER.trace( "Will index: {}", updatedJson );
-                        index( bulkBuilder, changedState.identity().identity(), updatedJson );
+                        index( bulkBuilder, changedState.entityReference().identity().toString(), updatedJson );
                         break;
                     case NEW:
                         LOGGER.trace( "Creating Entity State in Index: {}", changedState );
                         String newJson = toJSON( changedState, newStates, uow );
                         LOGGER.trace( "Will index: {}", newJson );
-                        index( bulkBuilder, changedState.identity().identity(), newJson );
+                        index( bulkBuilder, changedState.entityReference().identity().toString(), newJson );
                         break;
                     case LOADED:
                     default:
@@ -179,9 +182,9 @@ public interface ElasticSearchIndexer
          *  "_identity": "ENTITY-IDENTITY",
          *  "_types": [ "All", "Entity", "types" ],
          *  "property.name": property.value,
-         *  "association.name": { "identity": "ASSOCIATED-IDENTITY" }
-         *  "manyassociation.name": [ { "identity": "ASSOCIATED" }, { "identity": "IDENTITIES" } ]
-         *  "namedassociation.name": [ { "_named": "NAMED", "identity": "IDENTITY" } }
+         *  "association.name": { "reference": "ASSOCIATED-IDENTITY" }
+         *  "manyassociation.name": [ { "reference": "ASSOCIATED" }, { "reference": "IDENTITIES" } ]
+         *  "namedassociation.name": [ { "_named": "NAMED", "reference": "IDENTITY" } }
          * }
          * </pre>
          */
@@ -191,12 +194,11 @@ public interface ElasticSearchIndexer
 
             try
             {
-                json.put( "_identity", state.identity().identity() );
+                json.put( "_identity", state.entityReference().identity().toString() );
                 json.put( "_types", state.entityDescriptor()
                     .mixinTypes()
                     .map( Classes.toClassName() )
-                    .collect( Collectors
-                                  .toList() ) );
+                    .collect( Collectors.toList() ) );
             }
             catch( JSONException e )
             {
@@ -259,20 +261,20 @@ public interface ElasticSearchIndexer
                         {
                             if( assocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
                             {
-                                if( newStates.containsKey( associated.identity() ) )
+                                if( newStates.containsKey( associated.identity().toString() ) )
                                 {
-                                    value = new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
+                                    value = new JSONObject( toJSON( newStates.get( associated.identity().toString() ), newStates, uow ) );
                                 }
                                 else
                                 {
-                                    EntityReference reference = EntityReference.parseEntityReference( associated.identity() );
+                                    EntityReference reference = EntityReference.create( associated.identity() );
                                     EntityState assocState = uow.entityStateOf( module, reference );
                                     value = new JSONObject( toJSON( assocState, newStates, uow ) );
                                 }
                             }
                             else
                             {
-                                value = new JSONObject( Collections.singletonMap( "identity", associated.identity() ) );
+                                value = new JSONObject( Collections.singletonMap( "reference", associated.identity().toString() ) );
                             }
                         }
                         json.put( key, value );
@@ -297,20 +299,20 @@ public interface ElasticSearchIndexer
                         {
                             if( manyAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
                             {
-                                if( newStates.containsKey( associated.identity() ) )
+                                if( newStates.containsKey( associated.identity().toString() ) )
                                 {
-                                    array.put( new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) ) );
+                                    array.put( new JSONObject( toJSON( newStates.get( associated.identity().toString() ), newStates, uow ) ) );
                                 }
                                 else
                                 {
-                                    EntityReference reference = EntityReference.parseEntityReference( associated.identity() );
+                                    EntityReference reference = EntityReference.create( associated.identity() );
                                     EntityState assocState = uow.entityStateOf( module, reference );
                                     array.put( new JSONObject( toJSON( assocState, newStates, uow ) ) );
                                 }
                             }
                             else
                             {
-                                array.put( new JSONObject( Collections.singletonMap( "identity", associated.identity() ) ) );
+                                array.put( new JSONObject( Collections.singletonMap( "reference", associated.identity().toString() ) ) );
                             }
                         }
                         json.put( key, array );
@@ -333,18 +335,19 @@ public interface ElasticSearchIndexer
                         NamedAssociationState associateds = state.namedAssociationValueOf( namedAssocDesc.qualifiedName() );
                         for( String name : associateds )
                         {
+                            Identity identity = associateds.get(name).identity();
                             if( namedAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
                             {
-                                String identity = associateds.get( name ).identity();
-                                if( newStates.containsKey( identity ) )
+                                String identityString = identity.toString();
+                                if( newStates.containsKey( identityString ) )
                                 {
-                                    JSONObject obj = new JSONObject( toJSON( newStates.get( identity ), newStates, uow ) );
+                                    JSONObject obj = new JSONObject( toJSON( newStates.get( identityString ), newStates, uow ) );
                                     obj.put( "_named", name );
                                     array.put( obj );
                                 }
                                 else
                                 {
-                                    EntityReference reference = EntityReference.parseEntityReference( identity );
+                                    EntityReference reference = EntityReference.create( identity );
                                     EntityState assocState = uow.entityStateOf( module, reference );
                                     JSONObject obj = new JSONObject( toJSON( assocState, newStates, uow ) );
                                     obj.put( "_named", name );
@@ -355,7 +358,7 @@ public interface ElasticSearchIndexer
                             {
                                 JSONObject obj = new JSONObject();
                                 obj.put( "_named", name );
-                                obj.put( "identity", associateds.get( name ).identity() );
+                                obj.put( "reference", identity.toString() );
                                 array.put( obj );
                             }
                         }

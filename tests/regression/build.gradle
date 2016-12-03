@@ -20,20 +20,15 @@
 
 description = "Apache Zest™ Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
 
-jar { manifest { name = "Apache Zest™ Tests - Regression" }}
+jar { manifest { name = "Apache Zest™ Tests - Regression" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(libraries.slf4j_api)
-  compile(libraries.junit)
-  runtime(libraries.asm)
-  runtime(libraries.asm_commons)
-  runtime(libraries.slf4j_simple)
-  compile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.logging"))
-  compile(project(":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf"))
-  compile(project(":org.apache.zest.extensions:org.apache.zest.extension.entitystore-jdbm"))
-  runtime(project(":org.apache.zest.core:org.apache.zest.core.spi"))
-  runtime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  compile zest.core.testsupport
+  compile zest.library( 'logging' )
+  compile zest.extension( 'entitystore-jdbm' )
+  compile libraries.slf4j_api
+  compile libraries.junit
+
+  runtime zest.core.runtime
+  runtime libraries.logback
 }

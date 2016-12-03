@@ -19,15 +19,13 @@
  */
 package org.apache.zest.api.type;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Iterables;
 
-import static org.apache.zest.functional.Iterables.first;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Base class for types of values in ValueComposites and Properties.
@@ -74,6 +72,11 @@ public class ValueType
             return isArrayOfPrimitiveValues( object );
         }
         return false;
+    }
+
+    public static boolean isIdentity( Object object )
+    {
+        return object instanceof Identity;
     }
 
     private static boolean isArrayOfPrimitiveValues( Object array )
@@ -129,7 +132,7 @@ public class ValueType
 
     public Class<?> mainType()
     {
-        return first( types );
+        return types.stream().findFirst().orElse( null );
     }
 
     @Override
@@ -141,7 +144,7 @@ public class ValueType
     @Override
     public String toString()
     {
-        String name = Iterables.toString( types, Class::getName, "," );
+        String name = types.stream().map( Class::getName ).collect( joining( "," ) );
         if( name.contains( "," ) )
         {
             name = "{" + name + "}";

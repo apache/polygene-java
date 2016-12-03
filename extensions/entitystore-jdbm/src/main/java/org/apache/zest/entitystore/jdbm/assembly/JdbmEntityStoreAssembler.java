@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.jdbm.JdbmConfiguration;
 import org.apache.zest.entitystore.jdbm.JdbmEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class JdbmEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<JdbmEntityStoreAssembler>
@@ -34,8 +33,7 @@ public class JdbmEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( JdbmEntityStoreService.class ).visibleIn( visibility() );
-        ServiceDeclaration service = module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( JdbmEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );

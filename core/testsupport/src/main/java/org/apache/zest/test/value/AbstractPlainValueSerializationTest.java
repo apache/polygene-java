@@ -28,6 +28,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -37,7 +39,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.Test;
 
@@ -64,7 +65,6 @@ public abstract class AbstractPlainValueSerializationTest
         module.entities( Regression142Type.class );
 
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test
@@ -254,7 +254,7 @@ public abstract class AbstractPlainValueSerializationTest
             value = serialization.deserialize( module, Regression142Type.class, serialized ); // ok
         }
         {
-            String valueId = "abcdefg";
+            Identity valueId = new StringIdentity( "abcdefg" );
             {
                 try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ))
                 {

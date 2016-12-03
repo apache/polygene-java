@@ -20,6 +20,7 @@
 
 package org.apache.zest.valueserialization.stax;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.Service;
@@ -51,7 +52,7 @@ public class StaxConfigurationDeserializationTest
         ValueBuilder<ConfigSerializationConfig> builder = valueBuilderFactory.newValueBuilder( ConfigSerializationConfig.class );
         builder.prototype().name().set( "main" );
         builder.prototype().host().set( createHost() );
-        builder.prototype().identity().set( "configtest" );
+        builder.prototype().identity().set( new StringIdentity( "configtest" )  );
         ConfigSerializationConfig value = builder.newInstance();
 
         valueSerialization.serialize( value, System.out );

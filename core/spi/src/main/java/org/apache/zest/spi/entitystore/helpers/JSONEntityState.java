@@ -19,9 +19,11 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.time.Instant;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
@@ -55,18 +57,18 @@ public final class JSONEntityState
     private final ModuleDescriptor module;
     private final ValueSerialization valueSerialization;
     private final String version;
-    private final EntityReference identity;
+    private final EntityReference reference;
     private final EntityDescriptor entityDescriptor;
 
     private EntityStatus status;
-    private long lastModified;
+    private Instant lastModified;
     private JSONObject state;
 
     /* package */ JSONEntityState( ModuleDescriptor module,
                                    ValueSerialization valueSerialization,
                                    String version,
-                                   long lastModified,
-                                   EntityReference identity,
+                                   Instant lastModified,
+                                   EntityReference reference,
                                    EntityStatus status,
                                    EntityDescriptor entityDescriptor,
                                    JSONObject state
@@ -76,7 +78,7 @@ public final class JSONEntityState
         this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;
-        this.identity = identity;
+        this.reference = reference;
         this.status = status;
         this.entityDescriptor = entityDescriptor;
         this.state = state;
@@ -90,15 +92,15 @@ public final class JSONEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return lastModified;
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return identity;
+        return reference;
     }
 
     @Override
@@ -137,6 +139,10 @@ public final class JSONEntityState
             {
                 jsonValue = newValue;
             }
+            else if( ValueType.isIdentity( newValue ) )
+            {
+                jsonValue = newValue.toString();
+            }
             else
             {
                 String serialized = valueSerialization.serialize( newValue );
@@ -159,7 +165,7 @@ public final class JSONEntityState
         }
         catch( ValueSerializationException | JSONException e )
         {
-            throw new EntityStoreException( e );
+            throw new EntityStoreException( "Unable to set property " + stateName + " value " + newValue, e );
         }
     }
 
@@ -204,7 +210,7 @@ public final class JSONEntityState
             cloneStateIfGlobalStateLoaded();
             state.getJSONObject( JSONKeys.ASSOCIATIONS ).put( stateName.name(), newEntity == null
                                                                                 ? null
-                                                                                : newEntity.identity() );
+                                                                                : newEntity.identity().toString() );
             markUpdated();
         }
         catch( JSONException e )
@@ -285,7 +291,7 @@ public final class JSONEntityState
     @Override
     public String toString()
     {
-        return identity + "(" + state + ")";
+        return reference + "(" + state + ")";
     }
 
     public void markUpdated()

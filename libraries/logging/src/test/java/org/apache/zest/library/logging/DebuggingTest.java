@@ -21,6 +21,7 @@
 package org.apache.zest.library.logging;
 
 import java.util.function.Function;
+import org.apache.zest.api.identity.Identity;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -39,7 +40,6 @@ import org.apache.zest.library.logging.debug.service.DebugServiceConfiguration;
 import org.apache.zest.library.logging.debug.service.DebuggingServiceComposite;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
@@ -56,7 +56,6 @@ public class DebuggingTest
         module.services( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
         module.entities( DebugServiceConfiguration.class );
         module.entities( ServiceDebugRecordEntity.class );
-        module.services( UuidIdentityGeneratorService.class );
     }
 
     @Test
@@ -72,11 +71,11 @@ public class DebuggingTest
 //            QueryBuilder<DebugRecord> builder = module.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );
 //            assertEquals( 0, query.count() );
-            Some service = (Some) serviceFinder.findService( Some.class ).get();
+            Some service = serviceFinder.findService( Some.class ).get();
             String message = service.doSomething( "World!", 10 );
             assertEquals( message, "Hello!" );
-            EntityStore es = (EntityStore) serviceFinder.findService( EntityStore.class ).get();
-            final String[] result = new String[1];
+            EntityStore es = serviceFinder.findService( EntityStore.class ).get();
+            final Identity[] result = new Identity[1];
             es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
                     {
                         public EntityState apply( EntityState entityState )
@@ -84,7 +83,7 @@ public class DebuggingTest
                             if( ServiceDebugRecordEntity.class.getName()
                                     .equals( entityState.entityDescriptor().types().findFirst().get().getName() ) )
                             {
-                                result[0] = entityState.identity().identity();
+                                result[0] = entityState.entityReference().identity();
                             }
 
                             return entityState;

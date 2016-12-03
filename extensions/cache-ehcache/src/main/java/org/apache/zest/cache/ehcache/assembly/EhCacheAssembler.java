@@ -36,7 +36,7 @@ public class EhCacheAssembler
         ServiceDeclaration service = module.services( EhCachePoolService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity() );
+            service.identifiedBy( identity().toString() );
         }
         if( hasConfig() )
         {

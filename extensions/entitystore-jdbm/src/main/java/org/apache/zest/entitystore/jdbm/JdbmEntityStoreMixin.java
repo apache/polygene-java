@@ -41,6 +41,8 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.injection.scope.Uses;
@@ -165,7 +167,7 @@ public class JdbmEntityStoreMixin
                         {
                             super.close();
 
-                            Long stateIndex = getStateIndex( ref.toString() );
+                            Long stateIndex = getStateIndex( ref.identity() );
                             byte[] stateArray = toString().getBytes( "UTF-8" );
                             recordManager.update( stateIndex, stateArray, serializer );
                         }
@@ -178,7 +180,7 @@ public class JdbmEntityStoreMixin
                 {
                     try
                     {
-                        Long stateIndex = getStateIndex( ref.toString() );
+                        Long stateIndex = getStateIndex( ref.identity() );
                         recordManager.delete( stateIndex );
                         index.remove( ref.toString().getBytes( "UTF-8" ) );
                     }
@@ -234,7 +236,7 @@ public class JdbmEntityStoreMixin
 
                             while( browser.getNext( tuple ) )
                             {
-                                String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
+                                Identity id = new StringIdentity( (byte[]) tuple.getKey() );
 
                                 Long stateIndex = getStateIndex( id );
 
@@ -284,7 +286,7 @@ public class JdbmEntityStoreMixin
                             {
                                 String id = new String( (byte[]) tuple.getKey(), "UTF-8" );
 
-                                Long stateIndex = getStateIndex( id );
+                                Long stateIndex = getStateIndex( new StringIdentity( id ) );
 
                                 if( stateIndex == null )
                                 {
@@ -343,7 +345,7 @@ public class JdbmEntityStoreMixin
                                 recordManager.commit();
                             }
 
-                            String id = item.substring( "{\"identity\":\"".length() );
+                            String id = item.substring( "{\"reference\":\"".length() );
                             id = id.substring( 0, id.indexOf( '"' ) );
 
                             // Insert
@@ -440,10 +442,10 @@ public class JdbmEntityStoreMixin
         return properties;
     }
 
-    private Long getStateIndex( String identity )
+    private Long getStateIndex( Identity identity )
         throws IOException
     {
-        return (Long) index.find( identity.getBytes( "UTF-8" ) );
+        return (Long) index.find( identity.toBytes() );
     }
 
     private void initialize()

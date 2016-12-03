@@ -21,47 +21,59 @@ package org.apache.zest.library.uowfile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.uowfile.bootstrap.UoWFileAssembler;
 import org.apache.zest.library.uowfile.internal.ConcurrentUoWFileModificationException;
 import org.apache.zest.library.uowfile.plural.HasUoWFilesLifecycle;
 import org.apache.zest.library.uowfile.plural.UoWFilesLocator;
+import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class HasUoWFilesTest
-    extends AbstractUoWFileTest
+    extends AbstractZestTest
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFilesTest.class );
     private static final URL CREATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "creation.txt" );
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "modification.txt" );
+
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     // START SNIPPET: uowfile
     public enum MyEnum
@@ -72,7 +84,7 @@ public class HasUoWFilesTest
     // START SNIPPET: entity
     public interface TestedEntity
         extends HasUoWFilesLifecycle<MyEnum> // END SNIPPET: entity
-        , Identity
+        , HasIdentity
     // START SNIPPET: entity
     {
         Property<String> name();
@@ -85,15 +97,19 @@ public class HasUoWFilesTest
         implements UoWFilesLocator<MyEnum>
     {
         @This
-        private Identity meAsIdentity;
+        private HasIdentity meAsIdentity;
+
+        @Structure
+        private ZestSPI spi;
 
         @Override
         public Iterable<File> locateAttachedFiles()
         {
+            File baseDir = spi.entityDescriptorFor( meAsIdentity ).metaInfo( File.class );
             List<File> list = new ArrayList<>();
             for( MyEnum eachValue : MyEnum.values() )
             {
-                list.add( new File( baseTestDir, meAsIdentity.identity().get() + "." + eachValue.name() ) );
+                list.add( new File( baseDir, meAsIdentity.identity().get() + "." + eachValue.name() ) );
             }
             return list;
         }
@@ -101,7 +117,8 @@ public class HasUoWFilesTest
         @Override
         public File locateAttachedFile( MyEnum key )
         {
-            return new File( baseTestDir, meAsIdentity.identity().get() + "." + key.name() );
+            File baseDir = spi.entityDescriptorFor( meAsIdentity ).metaInfo( File.class );
+            return new File( baseDir, meAsIdentity.identity().get() + "." + key.name() );
         }
     }
     // END SNIPPET: locator
@@ -110,12 +127,12 @@ public class HasUoWFilesTest
     @Concerns( UnitOfWorkConcern.class )
     public interface TestService
     {
-        void modifyFile( String entityId )
+        void modifyFile( Identity entityId )
             throws IOException;
 
         @UnitOfWorkPropagation
         @UnitOfWorkRetry
-        void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
+        void modifyFileWithRetry( Identity entityId, long sleepBefore, long sleepAfter )
             throws IOException;
     }
 
@@ -126,14 +143,14 @@ public class HasUoWFilesTest
         private UnitOfWorkFactory uowf;
 
         @Override
-        public void modifyFile( String entityId )
+        public void modifyFile( Identity entityId )
             throws IOException
         {
             modifyFileImmediatly( entityId );
         }
 
         @Override
-        public void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
+        public void modifyFileWithRetry( Identity entityId, long sleepBefore, long sleepAfter )
             throws IOException
         {
             LOGGER.info( "Waiting " + sleepBefore + "ms before file modification" );
@@ -163,7 +180,7 @@ public class HasUoWFilesTest
             }
         }
 
-        private void modifyFileImmediatly( String entityId )
+        private void modifyFileImmediatly( Identity entityId )
             throws IOException
         {
             TestedEntity entity = uowf.currentUnitOfWork().get( TestedEntity.class, entityId );
@@ -171,7 +188,10 @@ public class HasUoWFilesTest
             File attachedFileTwo = entity.attachedFile( MyEnum.fileTwo );
             File managedFileOne = entity.managedFile( MyEnum.fileOne );
             // END SNIPPET: api
-            Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( managedFileOne ) );
+            try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+            {
+                Files.copy( input, managedFileOne.toPath(), REPLACE_EXISTING );
+            }
         }
     }
 
@@ -184,6 +204,7 @@ public class HasUoWFilesTest
 
         module.entities( TestedEntity.class ).withMixins( TestedFilesLocatorMixin.class );
         // END SNIPPET: assembly
+        module.entities( TestedEntity.class ).setMetaInfo( tmpDir.getRoot() );
         module.services( TestService.class );
         new EntityTestAssembler().assemble( module );
         new FileConfigurationAssembler().assemble( module );
@@ -221,7 +242,12 @@ public class HasUoWFilesTest
             attachedFile = entity.attachedFile( MyEnum.fileOne );
             uow.complete();
         }
-        assertTrue( "File content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("File content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Creation" ) );
+        }
     }
 
     @Test
@@ -229,7 +255,7 @@ public class HasUoWFilesTest
         throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Modification ##########################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -246,7 +272,12 @@ public class HasUoWFilesTest
         {
             testService.modifyFile( entityId );
         }
-        assertTrue( "File content after discarded modification was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("File content after discarded modification was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Creation" ) );
+        }
 
         // Testing completed modification
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -254,7 +285,12 @@ public class HasUoWFilesTest
             testService.modifyFile( entityId );
             uow.complete();
         }
-        assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("Modified file content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Modification" ) );
+        }
     }
 
     @Test
@@ -262,7 +298,7 @@ public class HasUoWFilesTest
         throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Deletion ##############################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -297,7 +333,7 @@ public class HasUoWFilesTest
         throws IOException, UnitOfWorkCompletionException
     {
         LOGGER.info( "# Test Concurrent Modification ###############################################################" );
-        final String entityId;
+        final Identity entityId;
 
         // Create new
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -313,11 +349,17 @@ public class HasUoWFilesTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath(), REPLACE_EXISTING );
+        }
 
         uow2 = unitOfWorkFactory.newUnitOfWork();
         entity = uow2.get( TestedEntity.class, entityId );
-        Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = MODIFICATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath(), REPLACE_EXISTING );
+        }
 
         uow.complete();
         try
@@ -336,7 +378,7 @@ public class HasUoWFilesTest
         throws IOException, UnitOfWorkCompletionException, InterruptedException
     {
         LOGGER.info( "# Test Retry #################################################################################" );
-        final String entityId;
+        final Identity entityId;
         File attachedFile;
 
         // Create new
@@ -349,34 +391,26 @@ public class HasUoWFilesTest
         }
 
         final List<Exception> ex = new ArrayList<>();
-        Thread t1 = new Thread( new Runnable()
+        Thread t1 = new Thread(() ->
         {
-            @Override
-            public void run()
+            try
             {
-                try
-                {
-                    testService.modifyFileWithRetry( entityId, 0, 10000 );
-                }
-                catch( Exception ex1 )
-                {
-                    ex.add( ex1 );
-                }
+                testService.modifyFileWithRetry( entityId, 0, 10000 );
+            }
+            catch( Exception ex1 )
+            {
+                ex.add( ex1 );
             }
         }, "job1" );
-        Thread t2 = new Thread( new Runnable()
+        Thread t2 = new Thread(() ->
         {
-            @Override
-            public void run()
+            try
             {
-                try
-                {
-                    testService.modifyFileWithRetry( entityId, 5000, 0 );
-                }
-                catch( Exception ex1 )
-                {
-                    ex.add( ex1 );
-                }
+                testService.modifyFileWithRetry( entityId, 5000, 0 );
+            }
+            catch( Exception ex1 )
+            {
+                ex.add( ex1 );
             }
         }, "job2" );
 
@@ -392,7 +426,12 @@ public class HasUoWFilesTest
         }
 
         assertTrue( "There were errors during TestRetry", ex.isEmpty() );
-        assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
+        try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
+        {
+            assertThat("Modified file content was not the good one",
+                       lines.limit( 1 ).findFirst().get(),
+                       equalTo( "Modification" ) );
+        }
     }
 
     private TestedEntity createTestedOneEntityTwoFilesEntity( UnitOfWork uow, String name )
@@ -402,7 +441,10 @@ public class HasUoWFilesTest
         TestedEntity entity = builder.instance();
         entity.name().set( name );
         entity = builder.newInstance();
-        Inputs.text( CREATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile( MyEnum.fileOne ) ) );
+        try( InputStream input = CREATION_CONTENT_URL.openStream() )
+        {
+            Files.copy( input, entity.managedFile( MyEnum.fileOne ).toPath() );
+        }
         return entity;
     }
 

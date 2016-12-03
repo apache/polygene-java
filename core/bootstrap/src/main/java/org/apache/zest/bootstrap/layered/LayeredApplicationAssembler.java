@@ -282,15 +282,15 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * Called from the <code>assemble</code> method to assemble the layers in the applcation.
+     * Called from the <code>assemble</code> method to assemble the layers in the application.
      *
      * <p>
-     * This method must be implemented, and is typically a list of LayerAssembler instantitations, followed
+     * This method must be implemented, and is typically a list of LayerAssembler instantiations, followed
      * by {@link LayerAssembly#uses(LayerAssembly...)} declarations.
      * </p>
-     * <pre><code>
      *
-     * </code></pre>
+     * @param assembly Application assembly
+     * @throws AssemblyException on invalid assembly
      */
     protected abstract void assembleLayers( ApplicationAssembly assembly )
         throws AssemblyException;

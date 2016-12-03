@@ -20,20 +20,18 @@
 
 package org.apache.zest.runtime.value;
 
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
@@ -42,11 +40,16 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ValueVisibilityTest
 {
 
+    public static final Identity TEST_IDENTIY = new StringIdentity( "123" );
     private Energy4Java zest;
     private Module module;
     private Application app;
@@ -184,7 +187,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.moduleApplicationVisible();
         }
         finally
@@ -202,7 +205,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.moduleLayerVisible();
         }
         finally
@@ -220,7 +223,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.moduleModuleVisible();
         }
         finally
@@ -238,7 +241,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.besideApplicationVisible();
         }
         finally
@@ -256,7 +259,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.besideLayerVisible();
         }
         finally
@@ -274,7 +277,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.besideModuleVisible();
         }
         finally
@@ -292,7 +295,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.belowApplicationVisible();
         }
         finally
@@ -310,7 +313,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.belowLayerVisible();
         }
         finally
@@ -328,7 +331,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.belowModuleVisible();
         }
         finally
@@ -346,7 +349,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.aboveApplicationVisible();
         }
         finally
@@ -364,7 +367,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.aboveLayerVisible();
         }
         finally
@@ -382,7 +385,7 @@ public class ValueVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTIY);
             entity.aboveModuleVisible();
         }
         finally

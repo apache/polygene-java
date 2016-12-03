@@ -36,7 +36,6 @@ public class SecurityModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
         module.services( SecurityRepository.class )
             .withMixins( HardcodedSecurityRepositoryMixin.class )
             .visibleIn( Visibility.application )

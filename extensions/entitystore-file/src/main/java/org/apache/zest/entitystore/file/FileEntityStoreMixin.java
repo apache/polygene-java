@@ -78,7 +78,7 @@ public class FileEntityStoreMixin
         {
             if( fileConfiguration != null )
             {
-                String storeId = config.get().identity().get();
+                String storeId = config.get().identity().get().toString();
                 pathName = new File( fileConfiguration.dataDirectory(), storeId ).getAbsolutePath();
             }
             else
@@ -321,7 +321,7 @@ public class FileEntityStoreMixin
                     public void receive( String item )
                         throws IOException
                     {
-                        String id = item.substring( "{\"identity\":\"".length() );
+                        String id = item.substring( "{\"reference\":\"".length() );
                         id = id.substring( 0, id.indexOf( '"' ) );
                         byte[] stateArray = item.getBytes( "UTF-8" );
                         store( getDataFile( id ), stateArray );
@@ -379,7 +379,7 @@ public class FileEntityStoreMixin
      * The resulting files should be portable across filesystems.
      * </p>
      *
-     * @param identity The identity that needs a file to be stored in.
+     * @param identity The reference that needs a file to be stored in.
      *
      * @return A filesystem-safe name.
      */
@@ -415,7 +415,7 @@ public class FileEntityStoreMixin
 
     private File getDataFile( EntityReference ref )
     {
-        return getDataFile( ref.identity() );
+        return getDataFile( ref.identity().toString() );
     }
 
     private byte[] fetch( File dataFile )

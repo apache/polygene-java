@@ -1,3 +1,5 @@
+import org.apache.zest.gradle.TaskGroups
+
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
@@ -24,26 +26,26 @@ jar { manifest { name = "Apache Zest™ Library - Restlet" } }
 
 dependencies {
 
-  compile project( ":org.apache.zest.core:org.apache.zest.core.api" )
-  compile project( ":org.apache.zest.core:org.apache.zest.core.spi" )
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-jackson' )
-  compile project( ':org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf' )
-  compile project( ':org.apache.zest.extensions:org.apache.zest.extension.entitystore-file' )
-
+  compile zest.core.bootstrap
+  compile zest.extension( 'valueserialization-jackson' )
+  compile zest.extension( 'indexing-rdf' )
+  compile zest.extension( 'entitystore-file' )
   compile libraries.restlet
   compile libraries.servlet_api
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.http" )
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'http' )
   testCompile libraries.http_client
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
   testRuntime libraries.logback
 }
 
-task runSample( type: JavaExec, dependsOn: 'testClasses' ) {
-    classpath = sourceSets.test.runtimeClasspath
-    main = 'org.apache.zest.library.restlet.TestApplication'
+task runRestletSample( type: JavaExec, dependsOn: 'testClasses' ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  classpath = sourceSets.test.runtimeClasspath
+  main = 'org.apache.zest.library.restlet.TestApplication'
 }
 

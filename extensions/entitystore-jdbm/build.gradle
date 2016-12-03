@@ -20,19 +20,18 @@
 
 description = "Apache Zest™ JDBM EntityStore Extension"
 
-jar { manifest {name = "Apache Zest™ Extension - EntityStore - JDBM" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - JDBM" } }
 
 dependencies {
-
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ":org.apache.zest.libraries:org.apache.zest.library.locking" )
-  compile project( ":org.apache.zest.libraries:org.apache.zest.library.fileconfig" )
+  compile zest.core.bootstrap
+  compile zest.library( 'locking' )
+  compile zest.library( 'fileconfig' )
   compile libraries.jdbm
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+  runtime zest.core.runtime
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
+
   testRuntime libraries.logback
-
 }

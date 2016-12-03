@@ -63,6 +63,6 @@ public class AssociationNullPredicate<T>
     @Override
     public String toString()
     {
-        return association.toString() + "is null";
+        return association.toString() + " is null";
     }
 }

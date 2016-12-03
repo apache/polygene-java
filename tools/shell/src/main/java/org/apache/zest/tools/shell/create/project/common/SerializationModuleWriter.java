@@ -48,7 +48,6 @@ public class SerializationModuleWriter
                 "import org.apache.zest.bootstrap.LayerAssembly;\n" +
                 "import org.apache.zest.bootstrap.ModuleAssembly;\n" +
                 "import org.apache.zest.bootstrap.layered.ModuleAssembler;\n" +
-                "import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;\n" +
                 "import org.apache.zest.valueserialization.jackson.JacksonValueSerializationAssembler;\n" +
                 "\n" +
                 "public class SerializationModule\n" +
@@ -70,7 +69,6 @@ public class SerializationModuleWriter
                 "            .visibleIn( Visibility.application )\n" +
                 "            .withValuesModuleFinder( typeFinder )\n" +
                 "            .assemble( module );\n" +
-                "        module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );\n" +
                 "        return module;\n" +
                 "    }\n" +
                 "}\n"

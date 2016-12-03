@@ -20,6 +20,7 @@
 
 package org.apache.zest.api.service.importer;
 
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceFinder;
@@ -44,13 +45,13 @@ public class ServiceInstanceImporter<T>
 
     ServiceImporter<T> service;
 
-    String serviceId;
+    Identity serviceId;
 
     @Override
     public T importService( ImportedServiceDescriptor importedServiceDescriptor )
         throws ServiceImporterException
     {
-        serviceId = importedServiceDescriptor.metaInfo( String.class );
+        serviceId = importedServiceDescriptor.metaInfo( Identity.class );
 
         return serviceImporter().importService( importedServiceDescriptor );
     }
@@ -66,7 +67,7 @@ public class ServiceInstanceImporter<T>
     {
         if( service == null )
         {
-            for( ServiceReference<ServiceImporter> reference : finder.<ServiceImporter>findServices( ServiceImporter.class ) )
+            for( ServiceReference<ServiceImporter> reference : finder.findServices( ServiceImporter.class ) )
             {
                 if( reference.identity().equals( serviceId ) )
                 {

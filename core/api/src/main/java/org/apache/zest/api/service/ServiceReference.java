@@ -22,6 +22,7 @@ package org.apache.zest.api.service;
 
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.identity.Identifiable;
 import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.type.HasTypes;
 
@@ -30,13 +31,8 @@ import org.apache.zest.api.type.HasTypes;
  * You can also access the actual service through get(), that can then be invoked.
  */
 public interface ServiceReference<T>
-    extends HasTypes, ActivationEventListenerRegistration, MetaInfoHolder
+    extends HasTypes, ActivationEventListenerRegistration, MetaInfoHolder, Identifiable
 {
-    /**
-     * @return the service's identity
-     */
-    String identity();
-
     /**
      * @return the actual service
      */
@@ -52,9 +48,8 @@ public interface ServiceReference<T>
      */
     boolean isAvailable();
 
-    /** Returns the ServiceModel of the service referenced by this ServiceReference.
-     *
-      * @return
+    /**
+     * @return the ServiceModel of the service referenced by this ServiceReference.
      */
      ModelDescriptor model();
 }

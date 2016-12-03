@@ -20,8 +20,6 @@
 
 package org.apache.zest.api.metrics;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Create MetricsTimer instances.
  */
@@ -31,13 +29,10 @@ public interface MetricsTimerFactory extends MetricsFactory
      * Create a MetricsTimer instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin   The class that instantiate the metric
      * @param name     A human readable, short name of the metric.
-     * @param duration the scale unit for this timer's duration metrics
-     * @param rate     the scale unit for this timer's rate metrics
      *
      * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      *
      */
-    MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate );
+    MetricsTimer createTimer( String name );
 }

@@ -19,6 +19,8 @@
  */
 package org.apache.zest.tutorials.hello;
 
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -32,6 +34,9 @@ import static org.junit.Assert.assertThat;
 
 public class HelloTest4 extends AbstractZestTest
 {
+
+    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -46,13 +51,13 @@ public class HelloTest4 extends AbstractZestTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Hello> builder = uow.newEntityBuilder( Hello.class, "123" );
+            EntityBuilder<Hello> builder = uow.newEntityBuilder( Hello.class, TEST_IDENTITY);
             builder.instanceFor( Hello.State.class ).phrase().set( "Hello" );
             builder.instanceFor( Hello.State.class ).name().set( "World" );
             builder.newInstance();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
-            Hello underTest = uow.get( Hello.class, "123" );
+            Hello underTest = uow.get( Hello.class, TEST_IDENTITY);
             String result = underTest.say();
             uow.complete();
             assertThat( result, equalTo( "Hello World" ) );

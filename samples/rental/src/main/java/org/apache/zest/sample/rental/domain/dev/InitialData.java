@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -197,7 +198,7 @@ public interface InitialData
         private RentalShop createShop( UnitOfWork uow )
             throws UnitOfWorkCompletionException
         {
-            return uow.newEntity( RentalShop.class, "SHOP" );
+            return uow.newEntity( RentalShop.class, new StringIdentity( "SHOP" ) );
         }
 
         private void createCustomers( RentalShop shop )

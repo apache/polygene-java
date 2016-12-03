@@ -20,25 +20,25 @@
 
 description = "Apache Zest™ Shiro Library integrates Apache Shiro security framework into Apache Zest™. This bundle provides Servlet support."
 
-jar { manifest { name = "Apache Zest™ Library - Shiro Web" }}
+jar { manifest { name = "Apache Zest™ Library - Shiro Web" } }
 
 dependencies {
 
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-  compile project( ':org.apache.zest.libraries:org.apache.zest.library.shiro-core' )
-  compile project( ':org.apache.zest.libraries:org.apache.zest.library.servlet' )
-  compile project( ':org.apache.zest.libraries:org.apache.zest.library.http' )
+  compile zest.core.bootstrap
+  compile zest.library( 'shiro-core' )
+  compile zest.library( 'servlet' )
+  compile zest.library( 'http' )
   compile libraries.shiro_web
   compile libraries.servlet_api
   compile libraries.slf4j_api
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.shiro-web" )
-  testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.servlet" )
-  testCompile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'shiro-web' )
+  testCompile zest.extension( 'indexing-rdf' )
   testCompile libraries.jetty_webapp
   testCompile libraries.http_client
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
   testRuntime libraries.logback
 }

@@ -19,6 +19,7 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,8 +43,8 @@ public final class DefaultEntityState
     private EntityStatus status;
 
     private String version;
-    private long lastModified;
-    private final EntityReference identity;
+    private Instant lastModified;
+    private final EntityReference reference;
     private final EntityDescriptor entityDescriptor;
 
     private final Map<QualifiedName, Object> properties;
@@ -51,14 +52,14 @@ public final class DefaultEntityState
     private final Map<QualifiedName, List<EntityReference>> manyAssociations;
     private final Map<QualifiedName, Map<String, EntityReference>> namedAssociations;
 
-    public DefaultEntityState( long currentTime,
-                               EntityReference identity,
+    public DefaultEntityState( Instant currentTime,
+                               EntityReference reference,
                                EntityDescriptor entityDescriptor
     )
     {
         this( "",
               currentTime,
-              identity,
+                reference,
               EntityStatus.NEW,
               entityDescriptor,
               new HashMap<>(),
@@ -68,8 +69,8 @@ public final class DefaultEntityState
     }
 
     public DefaultEntityState( String version,
-                               long lastModified,
-                               EntityReference identity,
+                               Instant lastModified,
+                               EntityReference reference,
                                EntityStatus status,
                                EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
@@ -80,7 +81,7 @@ public final class DefaultEntityState
     {
         this.version = version;
         this.lastModified = lastModified;
-        this.identity = identity;
+        this.reference = reference;
         this.status = status;
         this.entityDescriptor = entityDescriptor;
         this.properties = properties;
@@ -97,15 +98,15 @@ public final class DefaultEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return lastModified;
     }
 
     @Override
-    public EntityReference identity()
+    public EntityReference entityReference()
     {
-        return identity;
+        return reference;
     }
 
     @Override
@@ -240,7 +241,7 @@ public final class DefaultEntityState
     @Override
     public String toString()
     {
-        return identity + "("
+        return reference + "("
                + properties.size() + " properties, "
                + associations.size() + " associations, "
                + manyAssociations.size() + " many-associations, "

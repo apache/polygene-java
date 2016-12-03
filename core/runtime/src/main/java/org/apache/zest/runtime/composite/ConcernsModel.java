@@ -28,11 +28,9 @@ import java.util.stream.Stream;
 import org.apache.zest.api.concern.ConcernsDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -53,7 +51,6 @@ public final class ConcernsModel
     public Stream<DependencyModel> dependencies()
     {
         return concernsFor.stream().flatMap( ConcernModel::dependencies );
-//        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsFor ) );
     }
 
     // Context

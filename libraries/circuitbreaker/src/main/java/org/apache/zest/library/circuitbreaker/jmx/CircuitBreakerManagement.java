@@ -19,8 +19,6 @@
  */
 package org.apache.zest.library.circuitbreaker.jmx;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.management.JMException;
@@ -29,6 +27,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -89,7 +88,7 @@ public interface CircuitBreakerManagement
 
         private static final Logger LOGGER = LoggerFactory.getLogger( CircuitBreakerManagement.class );
 
-        private final Map<CircuitBreaker, ObjectName> registeredCircuitBreakers = new HashMap<CircuitBreaker, ObjectName>();
+        private final Map<CircuitBreaker, ObjectName> registeredCircuitBreakers = new HashMap<>();
 
         @Structure
         private Application application;
@@ -121,12 +120,12 @@ public interface CircuitBreakerManagement
             registeredCircuitBreakers.clear();
         }
 
-        private void registerCircuitBreaker( final CircuitBreaker circuitBreaker, final String name )
+        private void registerCircuitBreaker( final CircuitBreaker circuitBreaker, final Identity name )
                 throws JMException
         {
-            ObjectName mbeanObjectName = null;
+            ObjectName mbeanObjectName;
 
-            ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), name );
+            ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), name.toString() );
             if ( serviceName != null )
             {
                 mbeanObjectName = new ObjectName( serviceName.toString() + ",name=Circuit breaker" );
@@ -149,26 +148,20 @@ public interface CircuitBreakerManagement
             registeredCircuitBreakers.put( circuitBreaker, mbeanObjectName );
 
             // Add logger
-            circuitBreaker.addPropertyChangeListener( new PropertyChangeListener()
+            circuitBreaker.addPropertyChangeListener(evt ->
             {
-
-                @Override
-                public void propertyChange( PropertyChangeEvent evt )
+                if ( "status".equals( evt.getPropertyName() ) )
                 {
-                    if ( "status".equals( evt.getPropertyName() ) )
+                    if ( CircuitBreaker.Status.on.equals( evt.getNewValue() ) )
                     {
-                        if ( CircuitBreaker.Status.on.equals( evt.getNewValue() ) )
-                        {
-                            LOGGER.info( "Circuit breaker " + name + " is now on" );
-                        }
-                        else
-                        {
-                            LOGGER.error( "Circuit breaker " + name + " is now off" );
-                        }
+                        LOGGER.info( "Circuit breaker " + name + " is now on" );
+                    }
+                    else
+                    {
+                        LOGGER.error( "Circuit breaker " + name + " is now off" );
                     }
                 }
-
-            } );
+            });
         }
 
     }

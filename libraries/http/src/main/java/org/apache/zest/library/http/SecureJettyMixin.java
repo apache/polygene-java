@@ -23,6 +23,7 @@ import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
+import org.apache.zest.api.identity.HasIdentity;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -34,7 +35,6 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
@@ -53,7 +53,7 @@ public class SecureJettyMixin
     @Service
     private Iterable<ConstraintService> constraintServices;
 
-    public SecureJettyMixin( @This Identity meAsIdentity,
+    public SecureJettyMixin( @This HasIdentity meAsIdentity,
                              @Service Server jettyServer,
                              @Service Iterable<ServiceReference<ServletContextListener>> contextListeners,
                              @Service Iterable<ServiceReference<Servlet>> servlets,

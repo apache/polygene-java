@@ -99,7 +99,8 @@ postgres=# \q
 user@host $
 ----
 
-A gradle task `runSample` is defined in this module as a shortcut to run the example. See <<build-system>>.
+From the sources you can run the `runSqlSupportSample` Gradle task to run the example.
+See <<build-system>> if you need some guidance.
 
 [[sample-swing,Swing Bindings Sample]]
 == Swing Bindings Sample ==

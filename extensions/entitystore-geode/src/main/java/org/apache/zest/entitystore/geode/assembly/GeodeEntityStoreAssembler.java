@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.geode.GeodeConfiguration;
 import org.apache.zest.entitystore.geode.GeodeEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Assembler for the Geode EntityStore.
@@ -37,7 +36,6 @@ public class GeodeEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( GeodeEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

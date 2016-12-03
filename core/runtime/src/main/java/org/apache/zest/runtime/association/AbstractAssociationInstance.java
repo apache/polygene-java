@@ -21,10 +21,9 @@ package org.apache.zest.runtime.association;
 
 import java.lang.reflect.Type;
 import java.util.function.BiFunction;
-import jdk.Exported;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -71,17 +70,17 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        return new EntityReference( ( (Identity) composite ).identity().get() );
+        return EntityReference.create(((HasIdentity) composite).identity().get());
     }
 
     protected void checkType( Object instance )
     {
 
-        if( instance instanceof Identity || instance == null )
+        if( instance instanceof HasIdentity || instance == null )
         {
             return;
         }
-        throw new IllegalArgumentException( "Object must be a subtype of org.apache.zest.api.identity.Identity: " + instance.getClass() );
+        throw new IllegalArgumentException( "Object must be a subtype of org.apache.zest.api.reference.Identity: " + instance.getClass() );
     }
 
     protected void checkImmutable()

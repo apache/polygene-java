@@ -35,14 +35,11 @@ import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.toList;
 
 /**
  * JAVADOC
@@ -81,7 +78,6 @@ public abstract class CompositeModel
         // Create proxy class
         createProxyClass();
         primaryType = mixinTypes()
-            .filter( type -> !type.getName().equals( "scala.ScalaObject" ) )
             .reduce( null, ( primary, type ) ->
             {
                 if( primary == null )
@@ -178,12 +174,12 @@ public abstract class CompositeModel
     @SuppressWarnings( { "raw", "unchecked" } )
     private void createProxyClass()
     {
-        Class<?> mainType = first( types );
+        Class<?> mainType = types.stream().findFirst().get();
         if( mainType.isInterface() )
         {
             ClassLoader proxyClassloader = mainType.getClassLoader();
 
-            Class<?>[] interfaces = Iterables.toArray( Class.class, Iterables.<Class>cast( types ) );
+            Class<?>[] interfaces = types.stream().map( Class.class::cast ).toArray( Class[]::new );
             proxyClass = (Class<? extends Composite>) ProxyGenerator.createProxyClass( proxyClassloader, interfaces );
 
             try
@@ -230,7 +226,7 @@ public abstract class CompositeModel
     public Composite newProxy( InvocationHandler invocationHandler )
         throws ConstructionException
     {
-        Class<?> mainType = first( types );
+        Class<?> mainType = types.stream().findFirst().get();
         if( mainType.isInterface() )
         {
             try
@@ -277,6 +273,6 @@ public abstract class CompositeModel
     @Override
     public String toString()
     {
-        return toList( types ).toString();
+        return types.toString();
     }
 }

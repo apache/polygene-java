@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.qualifier.ServiceTags;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 
@@ -57,7 +58,7 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            serviceAssembly.identity = identity;
+            serviceAssembly.identity = new StringIdentity( identity );
         }
         return this;
     }

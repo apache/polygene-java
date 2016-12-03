@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.cache.Cache;
 
-import static org.apache.zest.functional.Iterables.single;
+import static org.apache.zest.api.util.Collectors.single;
 
 /**
  * In-Memory CachePool Mixin based on ConcurrentHashMap.
@@ -80,6 +80,6 @@ public abstract class MemoryCachePoolMixin
     @Override
     public MemoryCacheImpl<?> singleCache()
     {
-        return single( caches.values() );
+        return caches.values().stream().collect( single() );
     }
 }

@@ -99,7 +99,7 @@ public class RestApplication
         Router router = new Router( getContext() );
 
         router.attach( "/entity", newFinder( EntitiesResource.class ) );
-        router.attach( "/entity/{identity}", newFinder( EntityResource.class ) );
+        router.attach( "/entity/{reference}", newFinder( EntityResource.class ) );
 
         router.attach( "/query", newFinder( SPARQLResource.class ) );
         router.attach( "/query/sparqlhtml", newFinder( SPARQLResource.class ) );

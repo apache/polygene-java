@@ -20,12 +20,12 @@
 package org.apache.zest.library.sql.datasource;
 
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 
 /**
  * Configuration Entity for a DataSource.
  */
 public interface DataSourceConfiguration
-        extends Identity, Composite, DataSourceConfigurationState
+        extends HasIdentity, Composite, DataSourceConfigurationState
 {
 }

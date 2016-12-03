@@ -23,16 +23,16 @@ description = "Apache Zest™ Riak EntityStore Extension"
 jar { manifest { name = "Apache Zest™ Extension - EntityStore - Riak" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'locking' )
+  compile zest.library( 'constraints' )
+  compile libraries.riak
 
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.locking" ) )
-  compile libraries.slf4j_api
-  compile( libraries.riak )
+  runtime zest.core.runtime
 
-  testCompile( project( ":org.apache.zest.core:org.apache.zest.core.testsupport" ) )
-  testCompile( project( ":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson" ) )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-  testRuntime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
-  testRuntime( libraries.logback )
+  testRuntime libraries.logback
 }
 

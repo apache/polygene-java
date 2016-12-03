@@ -19,6 +19,8 @@
  */
 package org.apache.zest.bootstrap;
 
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
@@ -75,6 +77,10 @@ public class ApplicationAssemblerTest
                 if( visited instanceof ServiceDescriptor )
                 {
                     ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
+                    if( serviceDescriptor.hasType( UnitOfWorkFactory.class ) || serviceDescriptor.hasType( IdentityGenerator.class ) )
+                    {
+                        return false;
+                    }
                     Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
                     Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
                     return false;

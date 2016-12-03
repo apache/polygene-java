@@ -41,8 +41,6 @@ public class <%- zest.entitystore %>StorageModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
-
         new <%- zest.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )

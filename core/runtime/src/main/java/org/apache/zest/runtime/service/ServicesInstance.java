@@ -29,12 +29,10 @@ import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 
-import static org.apache.zest.api.util.Classes.instanceOf;
-import static org.apache.zest.functional.Iterables.filter;
+import static java.util.stream.Collectors.toList;
 
 /**
  * JAVADOC
@@ -65,7 +63,9 @@ public class ServicesInstance
     public void activate()
         throws ActivationException
     {
-        Iterable<Activation> activatees = Iterables.<Activation>cast( filter( instanceOf( Activation.class ), serviceReferences ) );
+        Iterable<Activation> activatees = serviceReferences.stream().filter( Activation.class::isInstance )
+                                                           .map( Activation.class::cast )
+                                                           .collect( toList() );
         activation.activate( ActivatorsInstance.EMPTY, activatees );
     }
 

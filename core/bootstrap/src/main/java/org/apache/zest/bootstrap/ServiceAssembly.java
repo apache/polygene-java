@@ -19,12 +19,12 @@
  */
 package org.apache.zest.bootstrap;
 
+import org.apache.zest.api.identity.Identifiable;
 import org.apache.zest.api.type.HasTypes;
 
 /**
  * This represents the assembly information of a single ServiceComposite in a Module.
  */
-public interface ServiceAssembly extends HasTypes
+public interface ServiceAssembly extends HasTypes, Identifiable
 {
-    String identity();
 }

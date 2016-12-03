@@ -20,16 +20,17 @@
 
 description = "Apache Zest™ Groovy Library allows for Mixins to be implemented in Groovy scripts instead of directly in compiled Java."
 
-jar { manifest { name = "Apache Zest™ Library - Scripting - Groovy" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - Groovy" } }
 
 apply plugin: 'groovy'
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(libraries.groovy)
+  compile zest.core.api
+  compile libraries.groovy
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

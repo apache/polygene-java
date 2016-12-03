@@ -29,6 +29,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporterException;
@@ -67,7 +68,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return serviceModel.identity();
     }

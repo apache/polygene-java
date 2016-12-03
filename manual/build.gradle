@@ -14,84 +14,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+import org.apache.zest.gradle.doc.ManualPlugin
+
+apply plugin: ManualPlugin
 
 description = "Apache Zest™ Manuals and Website."
 
 dependencies {
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.logging" ) )
-  runtime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
-  runtime( libraries.slf4j_simple )
+  compile zest.core.bootstrap
+  compile zest.library( 'constraints' )
+  compile zest.library( 'logging' )
+
+  runtime zest.core.runtime
+  runtime( libraries.logback )
 }
 
-
-//task userguide( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
-//  docName = 'userguide'
-//  docType = 'book'
-//}
-//
-//task recipes( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
-//  docName = 'recipes'
-//  docType = 'article'
-//}
-//
-//task referenceManual( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
-//  docName = 'reference'
-//  docType = 'book'
-//}
-
-
-task website( type: org.apache.zest.gradle.plugin.Documentation,
-              dependsOn: rootProject.allprojects.tasks.flatten().findAll { it.name == AsciidocBuildInfo.TASK_NAME } ) {
-  docName 'website'
-  docType 'article'
-}
-
-task archiveWebsite( type: Copy ) {
-  dependsOn website
-  if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
-  {
-    into( "$rootProject.projectDir/../zest-web/site/content/java/develop" )
-  }
-  else
-  {
-    into( "$rootProject.projectDir/../zest-web/site/content/java/$version" )
-  }
-  from( 'build/docs/website/' )
-}
-
-task copyWebsite( type: Copy ) {
-  dependsOn archiveWebsite
-  if( rootProject.version != '0' && !rootProject.version.contains( "SNAPSHOT" ) )
-  {
-    from( "$rootProject.projectDir/../zest-web/site/content/java/$version/" )
-    into( "$rootProject.projectDir/../zest-web/site/content/java/latest/" )
-  }
-}
-
-task manuals() {
-  dependsOn copyWebsite
-//  dependsOn userguide
-//  dependsOn referenceManual
-//  dependsOn recipes
-}
-
-// Skip if asciidoc is not found in PATH when building a 0 or SNAPSHOT version,
-// or if skipAsciidocIfAbsent property is set and asciidoc is not found in PATH
-[ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
-  def skipAsciidocIfAbsent = rootProject.hasProperty( 'skipAsciidocIfAbsent' ) ? rootProject.skipAsciidocIfAbsent : false
-  def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
-  def present = pathDirs.collect( { new File( it, 'asciidoc') } ).flatten().findAll( { it.isFile() } )
-  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) ) {
-    project.logger.debug 'Asciidoc tasks forced because version is no-0 and no-SNAPSHOT, hope you have Asciidoc installed'
-    return true
-  }
-  if( !present ) {
-    project.logger.warn 'Asciidoc not found in PATH, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
-  }
-  present
-}

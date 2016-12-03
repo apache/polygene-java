@@ -20,13 +20,9 @@
 
 package org.apache.zest.library.rdf;
 
-import org.junit.Test;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFWriter;
-import org.openrdf.rio.RDFWriterFactory;
-import org.openrdf.rio.n3.N3WriterFactory;
-import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
+import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.concern.Concerns;
@@ -37,14 +33,15 @@ import org.apache.zest.api.sideeffect.SideEffects;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.fileconfig.FileConfiguration;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rdf.model.ApplicationSerializer;
 import org.apache.zest.test.AbstractZestTest;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import org.junit.Test;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.RDFWriterFactory;
+import org.openrdf.rio.n3.N3WriterFactory;
+import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
 
 /**
  * JAVADOC
@@ -58,14 +55,12 @@ public class ApplicationXmlTest extends AbstractZestTest
         LayerAssembly layerAssembly = module.layer();
         layerAssembly.application().setName( "testapp" );
         module.transients( TestComposite.class );
-        module.services( FileConfigurationService.class );
     }
 
     @Test
     public void testApplicationXml()
         throws Exception
     {
-        FileConfiguration fileConfig = serviceFinder.findService( FileConfiguration.class ).get();
         ApplicationSerializer parser = new ApplicationSerializer();
         Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
         writeN3( graph );

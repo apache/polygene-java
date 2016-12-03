@@ -20,7 +20,8 @@
 
 package org.apache.zest.library.restlet.resource;
 
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -38,9 +39,9 @@ import org.apache.zest.library.restlet.repository.RepositoryLocator;
 import org.restlet.data.Method;
 
 @Mixins( CreationResource.Mixin.class )
-public interface CreationResource<T extends Identity> extends ServerResource<T>
+public interface CreationResource<T extends HasIdentity> extends ServerResource<T>
 {
-    abstract class Mixin<T extends Identity>
+    abstract class Mixin<T extends HasIdentity>
         implements CreationResource<T>
     {
         @Structure
@@ -66,13 +67,13 @@ public interface CreationResource<T extends Identity> extends ServerResource<T>
         {
             String name = form.field( "name" ).value().get();
             Class entityType = parameters.entityType().get();
-            String identity = identityManager.generate( entityType, name );
+            Identity identity = identityManager.generate( entityType, name );
             locator.find( entityType ).create( identity );
             doParameterization( form, entityType, identity );
-            return resourceBuilder.createRestLink( name, parameters.request().get().getResourceRef(), Method.GET );
+            return resourceBuilder.createRestLink( identity, parameters.request().get().getResourceRef(), Method.GET );
         }
 
-        private <P> void doParameterization( RestForm form, Class entityType, String identity )
+        private <P> void doParameterization( RestForm form, Class entityType, Identity identity )
         {
             if( !CreationParameterized.class.isAssignableFrom( entityType ) )
             {

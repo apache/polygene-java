@@ -18,16 +18,14 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core API"}}
+jar { manifest { name = "Apache Zest™ Core API" } }
 
 dependencies {
+  compile zest.core.io
 
-  compile project( ':org.apache.zest.core:org.apache.zest.core.io' )
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'constraints' )
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-  testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
-  testCompile project( ':org.apache.zest.libraries:org.apache.zest.library.constraints' )
-  testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
-
-  testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
-
+  testRuntime zest.core.runtime
 }

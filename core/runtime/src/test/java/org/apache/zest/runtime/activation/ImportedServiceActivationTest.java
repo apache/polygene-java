@@ -19,6 +19,7 @@
  */
 package org.apache.zest.runtime.activation;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.activation.Activator;
@@ -193,7 +194,7 @@ public class ImportedServiceActivationTest
             {
                 module.importedServices( TestedService.class ).
                         importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER ).
-                        setMetaInfo( "testimporter" ).
+                        setMetaInfo( new StringIdentity( "testimporter" ) ).
                         withActivators( TestedActivator.class ).
                         importOnStartup();
                 module.services( TestedServiceImporterService.class ).identifiedBy( "testimporter" );

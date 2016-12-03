@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +40,8 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -120,6 +123,9 @@ public class SQLEntityStoreMixin
 
     private final AtomicInteger count = new AtomicInteger();
 
+    @Service
+    private IdentityGenerator identityGenerator;
+
     @Override
     public void activateService()
         throws Exception
@@ -162,25 +168,25 @@ public class SQLEntityStoreMixin
                         Long entityPK = ( (SQLEntityState) state ).getEntityPK();
                         if( EntityStatus.REMOVED.equals( status ) )
                         {
-                            database.populateRemoveEntityStatement( removePS, entityPK, state.identity() );
+                            database.populateRemoveEntityStatement( removePS, entityPK, state.entityReference() );
                             removePS.addBatch();
                         }
                         else
                         {
                             StringWriter writer = new StringWriter();
-                            writeEntityState( defState, writer, unitofwork.identity() );
+                            writeEntityState( defState, writer, unitofwork.identity().toString() );
                             writer.flush();
                             if( EntityStatus.UPDATED.equals( status ) )
                             {
                                 Long entityOptimisticLock = ( (SQLEntityState) state ).getEntityOptimisticLock();
                                 database.populateUpdateEntityStatement( updatePS, entityPK, entityOptimisticLock,
-                                                                        defState.identity(), writer.toString(),
+                                                                        defState.entityReference(), writer.toString(),
                                                                         unitofwork.currentTime() );
                                 updatePS.addBatch();
                             }
                             else if( EntityStatus.NEW.equals( status ) )
                             {
-                                database.populateInsertEntityStatement( insertPS, defState.identity(),
+                                database.populateInsertEntityStatement( insertPS, defState.entityReference(),
                                                                         writer.toString(), unitofwork.currentTime() );
                                 insertPS.addBatch();
                             }
@@ -270,7 +276,7 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( module, entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
     }
@@ -344,9 +350,9 @@ public class SQLEntityStoreMixin
     {
     }
 
-    protected String newUnitOfWorkId()
+    protected Identity newUnitOfWorkId()
     {
-        return uuid + Integer.toHexString( count.incrementAndGet() );
+        return identityGenerator.generate(EntityStore.class);
     }
 
     protected DefaultEntityState readEntityState( ModuleDescriptor module, Reader entityState )
@@ -358,7 +364,7 @@ public class SQLEntityStoreMixin
             final EntityStatus[] status = { EntityStatus.LOADED };
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli(jsonObject.getLong( JSONKeys.MODIFIED ));
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct
@@ -548,11 +554,11 @@ public class SQLEntityStoreMixin
         {
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
-                key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
+                key( JSONKeys.IDENTITY ).value( state.entityReference().identity().toString() ).
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( state.entityDescriptor().types().findFirst().get().getName() ).
                 key( JSONKeys.VERSION ).value( version ).
-                key( JSONKeys.MODIFIED ).value( state.lastModified() ).
+                key( JSONKeys.MODIFIED ).value( state.lastModified().toEpochMilli() ).
                 key( JSONKeys.PROPERTIES ).object();
 
             state.entityDescriptor().state().properties().forEach( persistentProperty -> {
@@ -593,7 +599,7 @@ public class SQLEntityStoreMixin
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
-                    value( value != null ? value.identity() : null );
+                    value( value != null ? value.identity().toString() : null );
             }
 
             JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
@@ -603,7 +609,7 @@ public class SQLEntityStoreMixin
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
                 for( EntityReference entityReference : stateNameListEntry.getValue() )
                 {
-                    assocs.value( entityReference.identity() );
+                    assocs.value( entityReference.identity().toString() );
                 }
                 assocs.endArray();
             }
@@ -615,7 +621,7 @@ public class SQLEntityStoreMixin
                 JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
                 for( Map.Entry<String, EntityReference> entry : stateNameMapEntry.getValue().entrySet() )
                 {
-                    assocs.key( entry.getKey() ).value( entry.getValue().identity() );
+                    assocs.key( entry.getKey() ).value( entry.getValue().identity().toString() );
                 }
                 assocs.endObject();
             }

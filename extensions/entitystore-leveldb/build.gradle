@@ -20,22 +20,20 @@
 
 description = "Apache Zest™ LevelDB EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - LevelDB" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - LevelDB" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile zest.library( 'locking' )
+  compile zest.library( 'fileconfig' )
+  compile libraries.leveldb_api
 
-    compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
-    compile project( ":org.apache.zest.libraries:org.apache.zest.library.locking" )
-    compile project( ":org.apache.zest.libraries:org.apache.zest.library.fileconfig" )
-    compile libraries.leveldb_api
+  runtime zest.core.runtime
+  runtime libraries.leveldb_java
+  runtime libraries.leveldb_jni_all
 
-    runtime libraries.leveldb_java
-    runtime libraries.leveldb_jni_all
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-    testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-    testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
-
-    testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-    testRuntime libraries.logback
-
+  testRuntime libraries.logback
 }

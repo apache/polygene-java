@@ -27,17 +27,17 @@ import org.apache.zest.api.entity.EntityReference;
 public class EntityAlreadyExistsException
     extends EntityStoreException
 {
-    private EntityReference identity;
+    private EntityReference reference;
 
-    public EntityAlreadyExistsException( EntityReference identity )
+    public EntityAlreadyExistsException( EntityReference reference)
     {
-        super("Entity " + identity + " already exists.");
-        this.identity = identity;
+        super("Entity " + reference + " already exists.");
+        this.reference = reference;
     }
 
-    public EntityReference identity()
+    public EntityReference reference()
     {
-        return identity;
+        return reference;
     }
 
 }

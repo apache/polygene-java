@@ -20,6 +20,7 @@
 
 package org.apache.zest.spi.service.importer;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class ServiceInstanceImporterTest
     {
         module.importedServices( TestService.class ).
             identifiedBy( "test" ).
-            setMetaInfo( "testimporter" ).
+            setMetaInfo( new StringIdentity( "testimporter" ) ).
             importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
         module.services( TestImporterService.class ).identifiedBy( "testimporter" );
 

@@ -20,14 +20,18 @@
 package org.apache.zest.tools.shell;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -36,41 +40,42 @@ public class FileUtils
 {
     public static File createDir( String directoryName )
     {
-        File dir = new File( directoryName ).getAbsoluteFile();
-        if( !dir.mkdirs() )
+        try
         {
-            System.err.println( "Unable to create directory " + dir );
-//            System.exit( 1 );   during testing, I am tired of deleting directory over and over again.
+            File dir = new File( directoryName ).getAbsoluteFile();
+            Files.createDirectories( dir.toPath() );
+            return dir;
         }
-        return dir;
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
     }
 
-    public static boolean removeDir( File dir )
+    public static void removeDir( File dir ) throws IOException
     {
-        File[] files = dir.listFiles();
-        boolean success = true;
-        if( files != null )
+        Files.walkFileTree( dir.toPath(), new SimpleFileVisitor<Path>()
         {
-            for( File f : files )
+            @Override
+            public FileVisitResult visitFile( final Path file, final BasicFileAttributes attrs ) throws IOException
             {
-                if( f.isDirectory() )
-                {
-                    success = success && removeDir( f );
-                }
-                else
-                {
-                    success = success && f.delete();
-                }
+                Files.delete( file );
+                return FileVisitResult.CONTINUE;
             }
-        }
-        success = success && dir.delete();
-        return success;
+
+            @Override
+            public FileVisitResult postVisitDirectory( final Path dir, final IOException exc ) throws IOException
+            {
+                Files.delete( dir );
+                return FileVisitResult.CONTINUE;
+            }
+        } );
     }
 
     public static Map<String, String> readTemplateProperties( String templateName )
     {
         File propertiesFile = new File( zestHome(), "etc/templates/" + templateName + "/template.properties" );
-        try (InputStream in = new BufferedInputStream( new FileInputStream( propertiesFile ) ))
+        try( InputStream in = new BufferedInputStream( new FileInputStream( propertiesFile ) ) )
         {
             Properties properties = readProperties( in );
             Map<String, String> result = new HashMap<String, String>();
@@ -100,19 +105,11 @@ public class FileUtils
         throws IOException
     {
         System.out.println( "Creating " + dest.getAbsolutePath() );
-        byte[] buffer = new byte[ 100000 ];
-        try (BufferedInputStream in = new BufferedInputStream( new FileInputStream( srcFile ) ))
+        if( dest.exists() )
         {
-            try (BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( dest ) ))
-            {
-                int bytes;
-                while( ( bytes = in.read( buffer ) ) != -1 )
-                {
-                    out.write( buffer, 0, bytes );
-                }
-                out.flush();
-            }
+            Files.delete( dest.toPath() );
         }
+        Files.copy( srcFile.toPath(), dest.toPath() );
     }
 
     public static File zestHome()

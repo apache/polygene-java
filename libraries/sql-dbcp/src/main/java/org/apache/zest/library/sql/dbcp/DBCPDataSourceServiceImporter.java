@@ -20,7 +20,7 @@
 package org.apache.zest.library.sql.dbcp;
 
 import javax.sql.DataSource;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -35,7 +35,7 @@ public interface DBCPDataSourceServiceImporter
         extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
-    public static class Mixin
+    class Mixin
             extends AbstractDataSourceServiceImporterMixin<BasicDataSource>
     {
 
@@ -58,7 +58,7 @@ public interface DBCPDataSourceServiceImporter
                 pool.setMinIdle( config.minPoolSize().get() );
             }
             if ( config.maxPoolSize().get() != null ) {
-                pool.setMaxActive( config.maxPoolSize().get() );
+                pool.setMaxTotal( config.maxPoolSize().get() );
             }
             if ( config.loginTimeoutSeconds().get() != null ) {
                 pool.setLoginTimeout( config.loginTimeoutSeconds().get() );

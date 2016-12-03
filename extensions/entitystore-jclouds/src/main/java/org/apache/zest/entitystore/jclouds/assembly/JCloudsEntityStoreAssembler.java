@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.jclouds.JCloudsMapEntityStoreConfiguration;
 import org.apache.zest.entitystore.jclouds.JCloudsMapEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class JCloudsEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<JCloudsEntityStoreAssembler>
@@ -35,7 +34,6 @@ public class JCloudsEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class );
         ServiceDeclaration service = module.services( JCloudsMapEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();

@@ -29,7 +29,7 @@ import org.apache.zest.api.service.ServiceReference;
  * <p>
  * Provide a Selector which does the actual
  * selection from the list. A common case is to select
- * based on identity of the service, which you can do this way:
+ * based on reference of the service, which you can do this way:
  * </p>
  *
  * <pre><code>
@@ -69,7 +69,7 @@ public abstract class ServiceQualifier
             @Override
             public boolean test( ServiceReference<?> service )
             {
-                return service.identity().equals( anId );
+                return service.identity().toString().equals( anId );
             }
         };
     }

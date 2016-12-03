@@ -21,12 +21,13 @@
 package org.apache.zest.api.service;
 
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.identity.Identifiable;
 
 /**
  * {@code ServiceDescriptor} provides meta information of a service.
  */
 public interface ImportedServiceDescriptor
-    extends ModelDescriptor, IdentityDescriptor
+    extends ModelDescriptor, Identifiable
 {
     Class<? extends ServiceImporter> serviceImporter();
 

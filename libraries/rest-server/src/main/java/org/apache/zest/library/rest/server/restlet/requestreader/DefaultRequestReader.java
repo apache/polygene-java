@@ -31,10 +31,13 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.constraint.Name;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
@@ -47,7 +50,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.spi.RequestReader;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -63,10 +65,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.matchesAny;
 
 /**
  * Convert request into method arguments.
@@ -257,8 +255,8 @@ public class DefaultRequestReader
                         entityAsForm = new Form();
                     }
 
-                    args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0],
-                                                           getValue( "entity", queryAsForm, entityAsForm ) );
+                    Identity entityIdentity = new StringIdentity( getValue( "entity", queryAsForm, entityAsForm ) );
+                    args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0], entityIdentity );
 
                     return args;
                 }
@@ -336,7 +334,7 @@ public class DefaultRequestReader
             },
             (Function<AssociationDescriptor, Iterable<EntityReference>>) associationDescriptor -> {
                 // TODO
-                return Iterables.empty();
+                return Collections.emptySet();
             },
             new Function<AssociationDescriptor, Map<String, EntityReference>>()
             {
@@ -359,8 +357,8 @@ public class DefaultRequestReader
         int idx = 0;
         for( Annotation[] annotations : method.getParameterAnnotations() )
         {
-            Name name = (Name) first( filter( isType( Name.class ), iterable( annotations ) ) );
-
+            Name name = (Name) Stream.of( annotations ).filter( isType( Name.class ) )
+                                     .findFirst().orElse( null );
             if( name == null )
             {
                 throw new IllegalStateException( "No @Name annotation found on parameter of method:" + method );
@@ -490,7 +488,7 @@ public class DefaultRequestReader
             }
             else if( parameterType.isInterface() )
             {
-                arg = uowf.currentUnitOfWork().get( parameterType, argString );
+                arg = uowf.currentUnitOfWork().get( parameterType, new StringIdentity( argString ) );
             }
             else
             {
@@ -498,7 +496,7 @@ public class DefaultRequestReader
                                                     + " of type " + parameterType.getName() );
             }
 
-            if( arg == null && !matchesAny( isType( Optional.class ), iterable( annotations ) ) )
+            if( arg == null && Stream.of( annotations ).noneMatch( isType( Optional.class ) ) )
             {
                 throw new IllegalArgumentException( "Parameter " + name.value() + " was not set" );
             }

@@ -67,6 +67,7 @@ public class AssociationWrapper
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals( Object obj )
     {
         return next.equals( obj );

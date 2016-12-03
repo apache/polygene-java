@@ -27,14 +27,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
@@ -43,8 +42,10 @@ import org.apache.zest.test.indexing.model.Female;
 import org.apache.zest.test.indexing.model.Male;
 import org.apache.zest.test.indexing.model.Nameable;
 import org.apache.zest.test.indexing.model.Person;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.stream.Collectors.toList;
 import static org.apache.zest.api.query.QueryExpressions.and;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.ge;
@@ -57,8 +58,8 @@ import static org.apache.zest.api.query.QueryExpressions.or;
 import static org.apache.zest.api.query.QueryExpressions.orderBy;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.api.query.QueryExpressions.variable;
-import static org.apache.zest.functional.Iterables.toList;
 import static org.apache.zest.test.indexing.NameableAssert.assertNames;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Abstract satisfiedBy with tests for the EntityFinder interface.
@@ -75,7 +76,7 @@ public abstract class AbstractEntityFinderTest
 
     private static final Integer NO_MAX_RESULTS = null;
 
-    private static final Map<String, Object> NO_VARIABLES = Collections.<String, Object>emptyMap();
+    private static final Map<String, Object> NO_VARIABLES = Collections.emptyMap();
 
     private static final String JACK = "Jack Doe";
 
@@ -339,12 +340,12 @@ public abstract class AbstractEntityFinderTest
         throws EntityFinderException
     {
         // should return only 2 entities
-        final List<EntityReference> references = toList( entityFinder.findEntities(
-            Nameable.class,
-            ALL,
-            NO_SORTING,
-            NO_FIRST_RESULT, 2,
-            NO_VARIABLES ) );
+        final List<EntityReference> references = StreamSupport.stream(
+            entityFinder.findEntities( Nameable.class,
+                                       ALL,
+                                       NO_SORTING,
+                                       NO_FIRST_RESULT, 2,
+                                       NO_VARIABLES ).spliterator(), false ).collect( toList() );
         assertEquals( "2 identitities", 2, references.size() );
     }
 
@@ -353,12 +354,12 @@ public abstract class AbstractEntityFinderTest
         throws EntityFinderException
     {
         // should return only 2 entities starting with third one
-        final List<EntityReference> references = toList( entityFinder.findEntities(
-            Nameable.class,
-            ALL,
-            NO_SORTING,
-            3, 2,
-            NO_VARIABLES ) );
+        final List<EntityReference> references = StreamSupport.stream(
+            entityFinder.findEntities( Nameable.class,
+                                       ALL,
+                                       NO_SORTING,
+                                       3, 2,
+                                       NO_VARIABLES ).spliterator(), false ).collect( toList() );
         assertEquals( "2 identitities", 2, references.size() );
     }
 

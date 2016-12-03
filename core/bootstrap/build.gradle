@@ -18,12 +18,10 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core Bootstrap"}}
+jar { manifest { name = "Apache Zest™ Core Bootstrap" } }
 
 dependencies {
+  compile zest.core.spi
 
-  compile project( ':org.apache.zest.core:org.apache.zest.core.spi' )
-
-  testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
-
+  testRuntime zest.core.runtime
 }

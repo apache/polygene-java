@@ -18,13 +18,11 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core TestSupport"}}
+jar { manifest { name = "Apache Zest™ Core TestSupport" } }
 
 dependencies {
-
-  compile project( ':org.apache.zest.core:org.apache.zest.core.bootstrap' )
+  compile zest.core.bootstrap
   compile libraries.junit
 
-  testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
-
+  testRuntime zest.core.runtime
 }

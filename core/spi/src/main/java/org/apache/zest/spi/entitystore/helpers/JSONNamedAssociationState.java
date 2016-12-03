@@ -62,12 +62,12 @@ public final class JSONNamedAssociationState
     {
         try
         {
-            if( references.has( name ) && entityReference.identity().equals( references.getString( name ) ) )
+            if( references.has( name ) && entityReference.identity().toString().equals( references.getString( name ) ) )
             {
                 return false;
             }
             entityState.cloneStateIfGlobalStateLoaded();
-            references.put( name, entityReference.identity() );
+            references.put( name, entityReference.identity().toString() );
             entityState.markUpdated();
             return true;
         }
@@ -95,7 +95,7 @@ public final class JSONNamedAssociationState
     {
         try
         {
-            return new EntityReference( references.getString( name ) );
+            return EntityReference.parseEntityReference( references.getString( name ) );
         }
         catch( JSONException ex )
         {
@@ -116,7 +116,7 @@ public final class JSONNamedAssociationState
             for( int idx = 0; idx < names.length(); idx++ )
             {
                 String name = names.getString( idx );
-                if( entityReference.identity().equals( references.getString( name ) ) )
+                if( entityReference.identity().toString().equals( references.getString( name ) ) )
                 {
                     return name;
                 }

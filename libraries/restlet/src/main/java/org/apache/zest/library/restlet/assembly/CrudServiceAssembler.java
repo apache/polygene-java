@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.restlet.identity.IdentityManager;
 import org.apache.zest.library.restlet.identity.IdentityMappingConfiguration;
 import org.apache.zest.library.restlet.repository.RepositoryLocator;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class CrudServiceAssembler
     implements Assembler
@@ -35,7 +34,6 @@ public class CrudServiceAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class );
         module.entities( IdentityMappingConfiguration.class );
         module.services( IdentityManager.class ).visibleIn( Visibility.application ).instantiateOnStartup();
         module.services( RepositoryLocator.class ).visibleIn( Visibility.application );

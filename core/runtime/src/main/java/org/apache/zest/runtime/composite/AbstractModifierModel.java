@@ -77,7 +77,6 @@ public abstract class AbstractModifierModel
     {
         Stream<? extends Dependencies> models = Stream.of( this.constructorsModel, injectedFieldsModel, injectedMethodsModel );
         return models.flatMap( Dependencies::dependencies );
-//        return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
     }
 
     public boolean isGeneric()

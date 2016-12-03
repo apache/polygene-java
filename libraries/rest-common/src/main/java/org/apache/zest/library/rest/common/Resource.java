@@ -26,9 +26,10 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.common.link.Link;
 import org.apache.zest.library.rest.common.link.LinksUtil;
+
+import static org.apache.zest.api.util.Collectors.single;
 
 /**
  * Value representing a whole resource in a URL path. Allows listing of available
@@ -62,19 +63,19 @@ public interface Resource
         @Override
         public Link query( String relation )
         {
-            return Iterables.single( Iterables.filter( LinksUtil.withRel( relation ), queries().get() ) );
+            return queries().get().stream().filter( LinksUtil.withRel( relation ) ).collect( single() );
         }
 
         @Override
         public Link command( String relation )
         {
-            return Iterables.single(Iterables.filter( LinksUtil.withRel( relation ), commands().get() ));
+            return commands().get().stream().filter( LinksUtil.withRel( relation ) ).collect( single() );
         }
 
         @Override
         public Link resource( String relation )
         {
-            return Iterables.single(Iterables.filter( LinksUtil.withRel( relation ), resources().get() ));
+            return resources().get().stream().filter( LinksUtil.withRel( relation ) ).collect( single() );
         }
     }
 }

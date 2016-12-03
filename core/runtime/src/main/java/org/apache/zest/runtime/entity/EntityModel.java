@@ -28,7 +28,6 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.Queryable;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.property.StateHolder;
@@ -44,25 +43,14 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.module.ModuleSpi;
 
+import static org.apache.zest.api.identity.HasIdentity.IDENTITY_METHOD;
+
 /**
  * JAVADOC
  */
 public final class EntityModel extends CompositeModel
     implements EntityDescriptor
 {
-    private static final Method IDENTITY_METHOD;
-
-    static
-    {
-        try
-        {
-            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ModuleUnitOfWork" );
-        }
-    }
 
     private final boolean queryable;
 
@@ -116,23 +104,23 @@ public final class EntityModel extends CompositeModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
+    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference reference )
         throws ConstraintViolationException, EntityStoreException
     {
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity, this );
+            EntityState entityState = store.newEntityState( reference, this );
 
-            // Set identity property
+            // Set reference property
             PropertyDescriptor persistentPropertyDescriptor = state().propertyModelFor( IDENTITY_METHOD );
-            entityState.setPropertyValue( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
+            entityState.setPropertyValue( persistentPropertyDescriptor.qualifiedName(), reference.identity() );
 
             return entityState;
         }
         catch( EntityAlreadyExistsException e )
         {
-            throw new EntityCompositeAlreadyExistsException( identity );
+            throw new EntityCompositeAlreadyExistsException( reference );
         }
         catch( EntityStoreException e )
         {

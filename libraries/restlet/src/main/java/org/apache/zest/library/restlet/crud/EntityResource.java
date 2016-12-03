@@ -25,7 +25,9 @@ import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -43,7 +45,7 @@ import org.apache.zest.spi.ZestSPI;
 import org.restlet.data.Reference;
 
 @Mixins( EntityResource.Mixin.class )
-public interface EntityResource<T extends Identity> extends ServerResource<T>
+public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
 {
     interface EntityParam
     {
@@ -51,7 +53,7 @@ public interface EntityResource<T extends Identity> extends ServerResource<T>
         Property<String> invoke();
     }
 
-    abstract class Mixin<T extends Identity>
+    abstract class Mixin<T extends HasIdentity>
         implements EntityResource<T>
     {
 
@@ -62,7 +64,7 @@ public interface EntityResource<T extends Identity> extends ServerResource<T>
         private ValueBuilderFactory vbf;
 
         @This
-        private Identity me;
+        private HasIdentity me;
 
         @This
         private Parameters<T> parameters;
@@ -95,8 +97,8 @@ public interface EntityResource<T extends Identity> extends ServerResource<T>
         public void delete()
         {
             Class entityType = parameters.entityType().get();
-            String nameOfEntity = parameters.id().get();
-            locator.find( entityType ).delete( nameOfEntity );
+            String idOfEntity = parameters.id().get();
+            locator.find( entityType ).delete( new StringIdentity( idOfEntity ) );
         }
 
         @Override
@@ -136,7 +138,7 @@ public interface EntityResource<T extends Identity> extends ServerResource<T>
                 throw new RuntimeException( message, e );
             }
             Reference base = parameters.request().get().getResourceRef();
-            return resourceBuilder.createRestLink( "", base, org.restlet.data.Method.GET );
+            return resourceBuilder.createRestLink( new StringIdentity( "" ), base, org.restlet.data.Method.GET );
         }
 
         private Object createParametersComposite( RestForm form, Class argType )

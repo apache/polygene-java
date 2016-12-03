@@ -17,20 +17,15 @@
  *
  *
  */
-
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.Aggregated;
 import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -38,39 +33,50 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.ne;
 import static org.apache.zest.api.query.QueryExpressions.not;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ElasticSearchTest
     extends AbstractZestTest
 {
-
-    private static final File DATA_DIR = new File( "build/tmp/es-test" );
-    @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
 
-    public interface Post
-        extends Identity
-    {
+    @ClassRule
+    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
 
+    @ClassRule
+    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+
+    @Rule
+    public final TestName testName = new TestName();
+
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
+
+    public interface Post
+        extends HasIdentity
+    {
         Property<String> title();
 
         @UseDefaults
@@ -83,13 +89,11 @@ public class ElasticSearchTest
         @Aggregated
         @UseDefaults
         ManyAssociation<Comment> comments();
-
     }
 
     public interface Page
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> title();
 
         @UseDefaults
@@ -98,31 +102,24 @@ public class ElasticSearchTest
         Property<Tagline> tagline();
 
         Association<Author> author();
-
     }
 
     public interface Tagline
     {
-
         @UseDefaults
         Property<String> tags();
-
     }
 
     public interface Author
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> nickname();
-
     }
 
     public interface Comment
-        extends Identity
+        extends HasIdentity
     {
-
         Property<String> content();
-
     }
 
     @Override
@@ -137,19 +134,18 @@ public class ElasticSearchTest
         new EntityTestAssembler().assemble( module );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESClientIndexQueryAssembler( ELASTIC_SEARCH.client() )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
+                                                        testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         // Entities & Values
         module.entities( Post.class, Page.class, Author.class, Comment.class );
@@ -220,24 +216,28 @@ public class ElasticSearchTest
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( eq( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 0, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( ne( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( ne( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( not( eq( post.title(), "Not available" ) ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( not( eq( post.title(), "Not available" ) ) );
         query = uow.newQuery( queryBuilder );
         post = query.find();
         assertNotNull( post );
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.author().get().nickname(), "eskatos" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
+                                          .where( eq( post.author().get().nickname(), "eskatos" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
         post = query.find();
@@ -246,5 +246,4 @@ public class ElasticSearchTest
 
         uow.discard();
     }
-
 }

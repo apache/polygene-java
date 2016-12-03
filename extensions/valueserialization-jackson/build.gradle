@@ -23,14 +23,13 @@ description = "Apache Zest™ Jackson ValueSerialization Extension"
 jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - Jackson" } }
 
 dependencies {
+  compile zest.core.bootstrap
+  compile libraries.jackson_mapper
 
-    compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
-    compile libraries.jackson_mapper
+  runtime zest.core.runtime
 
-    testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
+  testCompile zest.core.testsupport
 
-    testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
-    testRuntime libraries.slf4j_simple
-
+  testRuntime libraries.logback
 }
 

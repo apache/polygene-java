@@ -115,8 +115,7 @@ public class Main
         {
             UnitOfWork uow = persistenceModule.unitOfWorkFactory().newUnitOfWork();
             try {
-                SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                                   PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
                 Connection connection = persistenceModule.findService( DataSource.class ).get().getConnection();
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );
@@ -142,7 +141,7 @@ public class Main
         {
             UnitOfWork uow = persistenceModule.unitOfWorkFactory().newUnitOfWork();
             try {
-                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
+                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY  );
                 Connection connection = persistenceModule.findService( DataSource.class ).get().getConnection();
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );

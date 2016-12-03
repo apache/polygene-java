@@ -21,7 +21,9 @@
 package org.apache.zest.library.restlet.resource;
 
 import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identifiable;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -35,10 +37,8 @@ import org.restlet.Response;
 import org.restlet.routing.Router;
 
 @Mixins( { ServerResource.NotPresent.class, ServerResource.IdentityMixin.class } )
-public interface ServerResource<T extends Identity>
+public interface ServerResource<T extends HasIdentity> extends Identifiable
 {
-    String identity();
-
     T get();
 
     void put( T value );
@@ -63,7 +63,7 @@ public interface ServerResource<T extends Identity>
         Property<Router> router();
     }
 
-    abstract class IdentityMixin<T extends Identity>
+    abstract class IdentityMixin<T extends HasIdentity>
         implements ServerResource<T>
     {
         @This
@@ -73,7 +73,7 @@ public interface ServerResource<T extends Identity>
         private IdentityManager identityManager;
 
         @Override
-        public String identity()
+        public Identity identity()
         {
             return identityManager.generate( parameters.entityType().get(), parameters.id().get() );
         }
@@ -83,13 +83,13 @@ public interface ServerResource<T extends Identity>
         implements ServerResource
     {
         @Override
-        public Identity get()
+        public HasIdentity get()
         {
             throw new NotPresentException();
         }
 
         @Override
-        public void put( Identity value )
+        public void put( HasIdentity value )
         {
             throw new NotPresentException();
         }

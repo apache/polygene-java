@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,10 +32,13 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
@@ -69,8 +71,6 @@ import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import static java.time.Instant.ofEpochMilli;
-
 public class EntityResource
     extends ServerResource
 {
@@ -87,7 +87,7 @@ public class EntityResource
     @Uses
     private EntityStateSerializer entitySerializer;
 
-    private String identity;
+    private Identity identity;
 
     public EntityResource()
     {
@@ -104,9 +104,9 @@ public class EntityResource
     protected void doInit()
         throws ResourceException
     {
-        // /entity/{identity}
+        // /entity/{reference}
         Map<String, Object> attributes = getRequest().getAttributes();
-        identity = (String) attributes.get( "identity" );
+        identity = new StringIdentity( (String) attributes.get( "reference" ) );
     }
 
     @Override
@@ -114,11 +114,11 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( module, usecase, System.currentTimeMillis() );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( module, usecase, SystemTime.now() );
         try
         {
-            EntityReference identityRef = EntityReference.parseEntityReference( identity );
-            uow.entityStateOf( module, identityRef ).remove();
+            EntityReference reference = EntityReference.create( identity );
+            uow.entityStateOf( module, reference ).remove();
             uow.applyChanges().commit();
             getResponse().setStatus( Status.SUCCESS_NO_CONTENT );
         }
@@ -136,7 +136,7 @@ public class EntityResource
         throws ResourceException
     {
         EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( module, UsecaseBuilder.newUsecase( "Get entity" ),
-                                                               System.currentTimeMillis() );
+                                                               SystemTime.now() );
 
         try
         {
@@ -146,7 +146,7 @@ public class EntityResource
             java.util.Date lastModified = getRequest().getConditions().getModifiedSince();
             if( lastModified != null )
             {
-                if( lastModified.toInstant().getEpochSecond() == ofEpochMilli( entityState.lastModified()).getEpochSecond() )
+                if( lastModified.toInstant().getEpochSecond() == entityState.lastModified().getEpochSecond() )
                 {
                     throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
                 }
@@ -181,7 +181,7 @@ public class EntityResource
         EntityState entityState;
         try
         {
-            EntityReference entityReference = EntityReference.parseEntityReference( identity );
+            EntityReference entityReference = EntityReference.create( identity );
             entityState = unitOfWork.entityStateOf( module, entityReference );
         }
         catch( EntityNotFoundException e )
@@ -193,7 +193,7 @@ public class EntityResource
 
     private Representation entityHeaders( Representation representation, EntityState entityState )
     {
-        representation.setModificationDate( new java.util.Date( entityState.lastModified() ) );
+        representation.setModificationDate( java.util.Date.from( entityState.lastModified() ) );
         representation.setTag( new Tag( "" + entityState.version() ) );
         representation.setCharacterSet( CharacterSet.UTF_8 );
         representation.setLanguages( Collections.singletonList( Language.ENGLISH ) );
@@ -210,10 +210,10 @@ public class EntityResource
                 throws IOException
             {
                 PrintWriter out = new PrintWriter( writer );
-                out.println( "<html><head><title>" + entity.identity() + "</title>"
+                out.println( "<html><head><title>" + entity.entityReference() + "</title>"
                              + "<link rel=\"alternate\" type=\"application/rdf+xml\" "
-                             + "href=\"" + entity.identity() + ".rdf\"/></head><body>" );
-                out.println( "<h1>" + entity.identity() + "</h1>" );
+                             + "href=\"" + entity.entityReference() + ".rdf\"/></head><body>" );
+                out.println( "<h1>" + entity.entityReference() + "</h1>" );
 
                 out.println( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
                 out.println( "<fieldset><legend>Properties</legend>\n<table>" );
@@ -257,11 +257,11 @@ public class EntityResource
 
                 out.println( "<fieldset><legend>ManyAssociations</legend>\n<table>" );
                 descriptor.state().manyAssociations().forEach( associationType -> {
-                    ManyAssociationState identities = entity.manyAssociationValueOf( associationType.qualifiedName() );
+                    ManyAssociationState references = entity.manyAssociationValueOf( associationType.qualifiedName() );
                     String value = "";
-                    for( EntityReference identity : identities )
+                    for( EntityReference reference : references )
                     {
-                        value += identity.identity() + "\n";
+                        value += reference.identity() + "\n";
                     }
 
                     out.println( "<tr><td>"
@@ -355,7 +355,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, System.currentTimeMillis() );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, SystemTime.now() );
         EntityState entity = getEntityState( unitOfWork );
 
         Form form = new Form( entityRepresentation );
@@ -416,7 +416,7 @@ public class EntityResource
                         int index = 0;
                         while( ( identity = bufferedReader.readLine() ) != null )
                         {
-                            EntityReference reference = new EntityReference( identity );
+                            EntityReference reference = EntityReference.parseEntityReference( identity );
 
                             if( manyAssociation.count() < index && manyAssociation.get( index ).equals( reference ) )
                             {
@@ -475,7 +475,7 @@ public class EntityResource
                                 break;
                             }
                             String identity = line;
-                            EntityReference reference = new EntityReference( identity );
+                            EntityReference reference = EntityReference.parseEntityReference( identity );
                             try
                             {
                                 unitOfWork.entityStateOf( module, reference );

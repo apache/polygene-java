@@ -23,7 +23,7 @@ package org.apache.zest.index.reindexer.internal;
 import java.util.ArrayList;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -43,20 +43,6 @@ import org.slf4j.LoggerFactory;
 public class ReindexerMixin
     implements Reindexer
 {
-    private static QualifiedName identityQN;
-
-    static
-    {
-        try
-        {
-            identityQN = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ReindexerMixin" );
-        }
-    }
-
     @This
     private Configuration<ReindexerConfiguration> configuration;
 
@@ -117,7 +103,7 @@ public class ReindexerMixin
             throws RuntimeException
         {
             count++;
-            item.setPropertyValue( identityQN, item.identity().identity() );
+            item.setPropertyValue( HasIdentity.IDENTITY_STATE_NAME, item.entityReference().identity() );
             states.add( item );
 
             if( states.size() >= loadValue )

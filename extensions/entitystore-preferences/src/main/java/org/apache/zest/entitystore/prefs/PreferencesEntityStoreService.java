@@ -43,7 +43,7 @@ import org.apache.zest.spi.entitystore.EntityStore;
  * </p>
  * <p>
  * Associations are stored as the identity of the referenced Entity, ManyAssociations are stored as multi-line strings
- * (one identity per line), and NamedAssociations are stored as multi-line strings (one name on a line, identity on the
+ * (one reference per line), and NamedAssociations are stored as multi-line strings (one name on a line, reference on the
  * next line).
  * </p>
  * <p>

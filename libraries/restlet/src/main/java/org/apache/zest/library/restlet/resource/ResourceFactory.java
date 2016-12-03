@@ -20,12 +20,12 @@
 
 package org.apache.zest.library.restlet.resource;
 
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 
-public interface ResourceFactory<K extends Identity, T extends ServerResource<K>>
+public interface ResourceFactory<K extends HasIdentity, T extends ServerResource<K>>
 {
     T create( Class<T> resourceType, Request request, Response response, Context context );
 }

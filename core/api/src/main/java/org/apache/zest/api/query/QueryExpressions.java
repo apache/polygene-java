@@ -32,7 +32,8 @@ import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.State;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
@@ -64,6 +65,7 @@ import org.apache.zest.api.query.grammar.PropertyReference;
 import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.util.NullArgumentException;
 
+import static org.apache.zest.api.identity.HasIdentity.IDENTITY_METHOD;
 import static org.apache.zest.functional.Iterables.first;
 import static org.apache.zest.functional.Iterables.prepend;
 
@@ -73,19 +75,6 @@ import static org.apache.zest.functional.Iterables.prepend;
 public final class QueryExpressions
 {
     // This is used for eq(Association,Composite)
-    private static final Method IDENTITY_METHOD;
-
-    static
-    {
-        try
-        {
-            IDENTITY_METHOD = Identity.class.getMethod( "identity" );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Zest Core API codebase is corrupted. Contact Zest team: QueryExpressions" );
-        }
-    }
 
     // Templates and variables -----------------------------------------------|
 
@@ -368,14 +357,16 @@ public final class QueryExpressions
      *
      * @return a new EQUALS specification for an Association.
      */
-    public static <T> EqPredicate<String> eq( Association<T> association, T value )
+    public static <T> EqPredicate<Identity> eq( Association<T> association, T value )
     {
-        return new EqPredicate<>( new PropertyFunction<String>( null,
-                                                                    association( association ),
-                                                                    null,
-                                                                    null,
-                                                                    IDENTITY_METHOD ),
-                                      value.toString() );
+        return new EqPredicate<>(
+                new PropertyFunction<>(
+                        null,
+                        association(association),
+                        null,
+                        null,
+                        IDENTITY_METHOD),
+                ((HasIdentity) value).identity().get());
     }
 
     /**

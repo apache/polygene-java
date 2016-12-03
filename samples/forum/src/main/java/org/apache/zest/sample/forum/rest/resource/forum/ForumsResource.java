@@ -19,6 +19,7 @@
  */
 package org.apache.zest.sample.forum.rest.resource.forum;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.library.rest.server.api.ContextResource;
 import org.apache.zest.library.rest.server.api.SubResources;
 import org.apache.zest.sample.forum.data.entity.Forum;
@@ -35,7 +36,7 @@ public class ForumsResource
     public void resource( String segment )
         throws ResourceException
     {
-        select( Forum.class, segment );
+        select( Forum.class, new StringIdentity( segment ) );
         subResource( ForumResource.class );
     }
 }

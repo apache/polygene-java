@@ -23,14 +23,14 @@ description = "Apache Zest™ Preferences EntityStore Extension"
 jar { manifest { name = "Apache Zest™ Extension - EntityStore - Preferences" } }
 
 dependencies {
-
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
+  compile zest.core.bootstrap
   compile libraries.slf4j_api
 
-  testCompile( project( ":org.apache.zest.core:org.apache.zest.core.testsupport" ) )
-  testCompile( project( ":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson" ) )
+  runtime zest.core.runtime
 
-  testRuntime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
-  testRuntime( libraries.logback )
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'valueserialization-orgjson' )
+
+  testRuntime libraries.logback
 }
 

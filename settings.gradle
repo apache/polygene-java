@@ -28,15 +28,11 @@ include 'core:functional',
         'libraries:alarm',
         'libraries:circuitbreaker',
         'libraries:constraints',
-        'libraries:eventsourcing',
-        'libraries:eventsourcing-jdbm',
-        'libraries:eventsourcing-rest',
         'libraries:fileconfig',
         'libraries:http',
         'libraries:invocation-cache',
         'libraries:lang-groovy',
         'libraries:lang-javascript',
-        'libraries:lang-scala',
         'libraries:jmx',
         'libraries:locking',
         'libraries:logging',
@@ -77,7 +73,7 @@ include 'core:functional',
         'extensions:indexing-rdf',
         'extensions:indexing-solr',
         'extensions:indexing-sql',
-        'extensions:metrics-yammer',
+        'extensions:metrics-codahale',
         'extensions:migration',
         'extensions:reindexer',
         'extensions:valueserialization-orgjson',
@@ -85,8 +81,6 @@ include 'core:functional',
         'extensions:valueserialization-stax',
         'manual',
         'samples:dci',
-        'samples:dci-cargo:dcisample_a',
-        'samples:dci-cargo:dcisample_b',
         'samples:forum',
         'samples:rental',
         'samples:sql-support',
@@ -130,9 +124,7 @@ def validateProject(project, parentName)
     {
         project.name = parentName + "." + project.name
     }
-    println "Project: " + project.name
     project.children.each { child ->
         validateProject(child, project.name)
     }
 }
-

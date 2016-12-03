@@ -22,40 +22,10 @@ package org.apache.zest.api.query.grammar;
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 
-import static org.apache.zest.functional.Iterables.append;
-import static org.apache.zest.functional.Iterables.iterable;
-
 /**
  * Base expression Specification.
  */
 public abstract class ExpressionPredicate
     implements Predicate<Composite>
 {
-
-//    @SuppressWarnings( "unchecked" )
-//    public AndPredicate and( Predicate<Composite> specification )
-//    {
-//        if( this instanceof AndPredicate )
-//        {
-//            return new AndPredicate( append( specification, ( (AndPredicate) this ).operands() ) );
-//        }
-//        else
-//        {
-//            return new AndPredicate( iterable( this, specification ) );
-//        }
-//    }
-//
-//    @SuppressWarnings( "unchecked" )
-//    public OrPredicate or( Predicate<Composite> specification )
-//    {
-//        if( this instanceof OrPredicate )
-//        {
-//            return new OrPredicate( append( specification, ( (OrPredicate) this ).operands() ) );
-//        }
-//        else
-//        {
-//            return new OrPredicate( iterable( this, specification ) );
-//        }
-//    }
-//
 }

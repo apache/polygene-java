@@ -44,6 +44,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
@@ -55,8 +57,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
-
-import static org.apache.zest.functional.Iterables.empty;
 
 /**
  * Adapter for pull-parsing and tree-parsing capable ValueDeserializers.
@@ -158,6 +158,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         // Number types
         registerDeserializer( BigDecimal.class, input -> new BigDecimal( input.toString() ) );
         registerDeserializer( BigInteger.class, input -> new BigInteger( input.toString() ) );
+        registerDeserializer( Identity.class, input -> StringIdentity.fromString( input.toString() ) );
 
         // Date types
         registerDeserializer( Instant.class, input -> Instant.parse( input.toString() ) );
@@ -269,7 +270,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T deserializeRoot( ModuleDescriptor module, ValueType valueType, InputStream input )
         throws Exception
     {
-        final Class<?> type = valueType.types().findFirst().orElse( null );
+        Class<?> type = valueType.types().findFirst().orElse( null );
+
+        if( Identity.class.isAssignableFrom( type ) )
+        {
+            type = Identity.class;
+        }
+
         // Plain ValueType
         Function<Object, Object> deserializationFunction = deserializers.get( type );
         if( deserializationFunction != null )
@@ -394,7 +401,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         }
         return readArrayInCollection( module,
                                       input,
-                                      this.<T>buildDeserializeInputFunction( module, collectionType.collectedType() ),
+                                      this.buildDeserializeInputFunction( module, collectionType.collectedType() ),
                                       collection );
     }
 
@@ -664,7 +671,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 Object entityRefs = stateMap.get( manyAssociation.qualifiedName().name() );
                 if( entityRefs == null )
                 {
-                    return empty();
+                    return Collections.emptySet();
                 }
                 //noinspection unchecked
                 return (Iterable<EntityReference>) entityRefs;
@@ -710,7 +717,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         }
         putArrayNodeInCollection( module,
                                   inputNode,
-                                  this.<T>buildDeserializeInputNodeFunction( module, collectionType.collectedType() ),
+                                  this.buildDeserializeInputNodeFunction( module, collectionType.collectedType() ),
                                   collection );
         return collection;
     }
@@ -721,8 +728,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         Map<K, V> map = new HashMap<>();
         putArrayNodeInMap( module,
                            inputNode,
-                           this.<K>buildDeserializeInputNodeFunction( module, mapType.keyType() ),
-                           this.<V>buildDeserializeInputNodeFunction( module, mapType.valueType() ),
+                           this.buildDeserializeInputNodeFunction( module, mapType.keyType() ),
+                           this.buildDeserializeInputNodeFunction( module, mapType.valueType() ),
                            map );
         return map;
     }
@@ -733,7 +740,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         Map<String, V> map = new HashMap<>();
         putObjectNodeInMap( module,
                             inputNode,
-                            this.<V>buildDeserializeInputNodeFunction( module, mapType.valueType() ),
+                            this.buildDeserializeInputNodeFunction( module, mapType.valueType() ),
                             map );
         return map;
     }
@@ -813,6 +820,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * Called by the adapter on deserialization start, after {@link #adaptInput(ModuleDescriptor, java.io.InputStream)}.
      *
+     * @param module    Module descriptor
      * @param valueType ValueType
      * @param input     Input
      *
@@ -828,6 +836,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * Called by the adapter on deserialization end.
      *
+     * @param module    Module descriptor
      * @param valueType ValueType
      * @param input     Input
      *
@@ -846,7 +855,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * This method is always called first, this is a chance to wrap the input type.
      *
-     * @param input InputStream to adapt
+     * @param module Module descriptor
+     * @param input  InputStream to adapt
      *
      * @return Adapted input
      *
@@ -856,7 +866,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
-     * @param input Input
+     * @param module Module descriptor
+     * @param input  Input
      *
      * @return a Plain Value read from the input
      *
@@ -866,10 +877,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
-     * @param <T>          Parameterized collection type
+     * @param module       Module descriptor
      * @param input        Input
      * @param deserializer Deserialization function
      * @param collection   Collection
+     * @param <T>          Parameterized collection type
      *
      * @return The filled collection or null if no array
      *
@@ -899,12 +911,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      * non-predictible order of key/value inside an entry object.
      * </p>
      *
-     * @param <K>               Parameterized map key type
-     * @param <V>               Parameterized map value type
+     * @param module            Module descriptor
      * @param input             Input
      * @param keyDeserializer   Map key deserialization function
      * @param valueDeserializer Map value deserialization function
      * @param map               Map
+     * @param <K>               Parameterized map key type
+     * @param <V>               Parameterized map value type
      *
      * @return The filled map or null if no array
      *
@@ -919,7 +932,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
-     * @param input Input
+     * @param module Module descriptor
+     * @param input  Input
      *
      * @return an InputNodeType or null if the value was null
      *
@@ -943,10 +957,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * Return null if the field do not exists.
      *
-     * @param <T>               Parameterized object field value type
+     * @param module            Module descriptor
      * @param inputNode         Input Node
      * @param key               Object key
      * @param valueDeserializer Deserialization function
+     * @param <T>               Parameterized object field value type
      *
      * @return The value of the field.
      *

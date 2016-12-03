@@ -41,7 +41,7 @@ public class CarEntityFactoryMixin
     }
 
     // END SNIPPET: carFactoryMixin3
-// START SNIPPET: createCar
+// START SNIPPET: create
     public Car create( Manufacturer manufacturer, String model )
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
@@ -53,6 +53,5 @@ public class CarEntityFactoryMixin
 
         return builder.newInstance();
     }
-// END SNIPPET: createCar
+// END SNIPPET: create
 }
-

@@ -23,7 +23,6 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.springframework.beans.factory.FactoryBean;
 
-import static org.apache.zest.functional.Iterables.first;
 import static org.springframework.util.Assert.notNull;
 
 public final class ServiceFactoryBean

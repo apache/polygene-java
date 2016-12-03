@@ -22,37 +22,46 @@ package org.apache.zest.library.metrics;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.metrics.MetricNames;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.metrics.MetricsTimer;
 import org.apache.zest.api.metrics.MetricsTimerFactory;
+import org.apache.zest.api.structure.Module;
 
 public class TimingCaptureAllConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    private MetricsTimer timer;
+    private final MetricsTimer timer;
 
-    public TimingCaptureAllConcern( @Service @Optional MetricsProvider metrics,
+    public TimingCaptureAllConcern( @Structure Module module,
+                                    @Service @Optional MetricsProvider metrics,
                                     @Invocation Method method
     )
     {
-        if( metrics != null )
+        if( metrics == null )
+        {
+            timer = null;
+        }
+        else
         {
             MetricsTimerFactory factory = metrics.createFactory( MetricsTimerFactory.class );
-            boolean annotated = method.getAnnotation( TimingCapture.class ) != null;
-            String captureNme = getMethodName( method ) + "() ["  +( annotated ? "@" : "" ) + "TimingCapture" + "]";
-            Class<?> declaringClass = method.getDeclaringClass();
-            timer = factory.createTimer( declaringClass, captureNme, TimeUnit.MILLISECONDS, TimeUnit.SECONDS );
+            TimingCapture capture = method.getAnnotation( TimingCapture.class );
+            String timerName;
+            if( capture == null || "".equals( capture.value() ) )
+            {
+                timerName = MetricNames.nameFor( module, method );
+            }
+            else
+            {
+                timerName = capture.value();
+            }
+            timer = factory.createTimer( timerName );
         }
-    }
-
-    private String getMethodName( Method method )
-    {
-        return method.getName();
     }
 
     @Override

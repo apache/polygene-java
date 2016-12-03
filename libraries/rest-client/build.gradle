@@ -20,20 +20,16 @@
 
 description = "Apache Zest™ REST Client Library provides a client library for the Apache Zest™ REST Server library"
 
-jar { manifest { name = "Apache Zest™ Library - REST Client" }}
+jar { manifest { name = "Apache Zest™ Library - REST Client" } }
 
 dependencies {
+  compile zest.library( 'rest-common' )
 
-    compile project( ":org.apache.zest.core:org.apache.zest.core.api" )
-    compile project( ":org.apache.zest.libraries:org.apache.zest.library.rest-common" )
-    compile libraries.restlet
-    compile libraries.slf4j_api
+  runtime zest.core.runtime
 
-    testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-    testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.rest-server" )
-    testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'rest-server' )
+  testCompile zest.extension( 'valueserialization-orgjson' )
 
-    testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-    testRuntime libraries.logback
-
+  testRuntime libraries.logback
 }

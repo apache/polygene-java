@@ -20,7 +20,7 @@
 package org.apache.zest.bootstrap;
 
 /**
- * Assembler adapters for common use cases (visibility, identity, configuration).
+ * Assembler adapters for common use cases (visibility, reference, configuration).
  */
 public class Assemblers
 {
@@ -233,9 +233,9 @@ public class Assemblers
 
         @Override
         @SuppressWarnings( "unchecked" )
-        public final AssemblerType identifiedBy( String identity )
+        public final AssemblerType identifiedBy( String identityString )
         {
-            this.identity = identity;
+            this.identity = identityString;
             return (AssemblerType) this;
         }
 

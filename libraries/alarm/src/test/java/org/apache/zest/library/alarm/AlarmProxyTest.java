@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.alarm;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -59,7 +60,7 @@ public class AlarmProxyTest extends AbstractZestTest
         try
         {
 // START SNIPPET: documentation
-            myAlarmPoint = factory.create( "This Alarm Identity", "ProActiveCRM", "Sales", AlarmClass.B );
+            myAlarmPoint = factory.create( new StringIdentity( "This Alarm Identity" ), "ProActiveCRM", "Sales", AlarmClass.B );
             myAlarmPoint.history().maxSize().set( 20 );
 // END SNIPPET: documentation
 
@@ -70,7 +71,7 @@ public class AlarmProxyTest extends AbstractZestTest
             assertThat( myAlarmPoint.history().activateCounter(), equalTo( 1 ) );
             AlarmEvent event = myAlarmPoint.history().firstEvent();
             assertThat( event, notNullValue() );
-            assertThat( event.alarmIdentity().get(), equalTo( "This Alarm Identity" ) );
+            assertThat( event.identity().get(), equalTo( new StringIdentity( "This Alarm Identity" ) ) );
             assertThat( event.newStatus().get().name( null ), equalTo( "Activated" ) );
             assertThat( event.oldStatus().get().name( null ), equalTo( "Normal" ) );
         }

@@ -22,6 +22,7 @@ package org.apache.zest.library.restlet.resource;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -79,18 +80,18 @@ public interface EntryPointResource extends ServerResource<EntryPoint>
                         RestLink link;
                         if( route.getDescription() == null )
                         {
-                            link = resourceBuilder.createRestLink( template.getPattern() , hostRef, Method.GET );
+                            link = resourceBuilder.createRestLink( new StringIdentity( template.getPattern() ), hostRef, Method.GET );
                         }
                         else
                         {
-                            link = resourceBuilder.createRestLink( template.getPattern() , hostRef, Method.GET, route.getDescription() );
+                            link = resourceBuilder.createRestLink( new StringIdentity( template.getPattern() ), hostRef, Method.GET, route.getDescription() );
                         }
                         entryPoints.put( route.getName(), link );
                     }
                 }
             }
             ValueBuilder<EntryPoint> builder = vbf.newValueBuilder( EntryPoint.class );
-            builder.prototype().identity().set( "/" );
+            builder.prototype().identity().set( new StringIdentity( "/" ) );
             builder.prototype().api().set( entryPoints );
             return builder.newInstance();
         }

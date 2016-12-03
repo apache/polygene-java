@@ -21,18 +21,7 @@ package org.apache.zest.index.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import org.elasticsearch.action.count.CountRequestBuilder;
-import org.elasticsearch.action.count.CountResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.OrFilterBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
@@ -65,20 +54,23 @@ import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.elasticsearch.index.query.FilterBuilders.andFilter;
-import static org.elasticsearch.index.query.FilterBuilders.existsFilter;
-import static org.elasticsearch.index.query.FilterBuilders.missingFilter;
-import static org.elasticsearch.index.query.FilterBuilders.notFilter;
-import static org.elasticsearch.index.query.FilterBuilders.rangeFilter;
-import static org.elasticsearch.index.query.FilterBuilders.regexpFilter;
-import static org.elasticsearch.index.query.FilterBuilders.termFilter;
-import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
 import static org.apache.zest.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -104,10 +96,10 @@ public interface ElasticSearchFinder
             // Prepare request
             SearchRequestBuilder request = support.client().prepareSearch( support.index() );
 
-            AndFilterBuilder filterBuilder = baseFilters( resultType );
-            QueryBuilder queryBuilder = processWhereSpecification( filterBuilder, whereClause, variables );
+            BoolQueryBuilder baseQueryBuilder = baseQuery( resultType );
+            QueryBuilder whereQueryBuilder = processWhereSpecification( baseQueryBuilder, whereClause, variables );
 
-            request.setQuery( filteredQuery( queryBuilder, filterBuilder ) );
+            request.setQuery( boolQuery().must( whereQueryBuilder ).filter( baseQueryBuilder ) );
             if( firstResult != null )
             {
                 request.setFrom( firstResult );
@@ -135,15 +127,7 @@ public interface ElasticSearchFinder
             // Execute
             SearchResponse response = request.execute().actionGet();
 
-            return Iterables.map( new Function<SearchHit, EntityReference>()
-            {
-                @Override
-                public EntityReference apply( SearchHit from )
-                {
-                    return EntityReference.parseEntityReference( from.id() );
-                }
-
-            }, response.getHits() );
+            return Iterables.map( (SearchHit from) -> EntityReference.parseEntityReference( from.id() ), response.getHits() );
         }
 
         @Override
@@ -155,10 +139,10 @@ public interface ElasticSearchFinder
             // Prepare request
             SearchRequestBuilder request = support.client().prepareSearch( support.index() );
 
-            AndFilterBuilder filterBuilder = baseFilters( resultType );
-            QueryBuilder queryBuilder = processWhereSpecification( filterBuilder, whereClause, variables );
+            BoolQueryBuilder baseQueryBuilder = baseQuery( resultType );
+            QueryBuilder whereQueryBuilder = processWhereSpecification( baseQueryBuilder, whereClause, variables );
 
-            request.setQuery( filteredQuery( queryBuilder, filterBuilder ) );
+            request.setQuery( boolQuery().must( whereQueryBuilder ).filter( baseQueryBuilder ) );
             request.setSize( 1 );
 
             // Log
@@ -182,28 +166,28 @@ public interface ElasticSearchFinder
             throws EntityFinderException
         {
             // Prepare request
-            CountRequestBuilder request = support.client().prepareCount( support.index() );
+            SearchRequestBuilder request = support.client().prepareSearch(support.index()).setSize(0);
 
-            AndFilterBuilder filterBuilder = baseFilters( resultType );
-            QueryBuilder queryBuilder = processWhereSpecification( filterBuilder, whereClause, variables );
+            BoolQueryBuilder baseQueryBuilder = baseQuery( resultType );
+            QueryBuilder whereQueryBuilder = processWhereSpecification( baseQueryBuilder, whereClause, variables );
 
-            request.setQuery( filteredQuery( queryBuilder, filterBuilder ) );
+            request.setQuery( boolQuery().must(whereQueryBuilder).filter(baseQueryBuilder) );
 
             // Log
             LOGGER.debug( "Will count Entities: {}", request );
 
             // Execute
-            CountResponse count = request.execute().actionGet();
+            SearchResponse count = request.execute().actionGet();
 
-            return count.getCount();
+            return count.getHits().getTotalHits();
         }
 
-        private static AndFilterBuilder baseFilters( Class<?> resultType )
+        private static BoolQueryBuilder baseQuery( Class<?> resultType )
         {
-            return andFilter( termFilter( "_types", resultType.getName() ) );
+            return boolQuery().must( termQuery( "_types", resultType.getName() ) );
         }
 
-        private QueryBuilder processWhereSpecification( AndFilterBuilder filterBuilder,
+        private QueryBuilder processWhereSpecification( BoolQueryBuilder queryBuilder,
                                                         Predicate<Composite> spec,
                                                         Map<String, Object> variables )
             throws EntityFinderException
@@ -218,11 +202,11 @@ public interface ElasticSearchFinder
                 return wrapperQuery( ( (QuerySpecification) spec ).query() );
             }
 
-            processSpecification( filterBuilder, spec, variables );
+            processSpecification( queryBuilder, spec, variables );
             return matchAllQuery();
         }
 
-        private void processSpecification( FilterBuilder filterBuilder,
+        private void processSpecification( BoolQueryBuilder queryBuilder,
                                            Predicate<Composite> spec,
                                            Map<String, Object> variables )
             throws EntityFinderException
@@ -230,70 +214,70 @@ public interface ElasticSearchFinder
             if( spec instanceof BinaryPredicate )
             {
                 BinaryPredicate binSpec = (BinaryPredicate) spec;
-                processBinarySpecification( filterBuilder, binSpec, variables );
+                processBinarySpecification( queryBuilder, binSpec, variables );
             }
             else if( spec instanceof Notpredicate )
             {
                 Notpredicate notSpec = (Notpredicate) spec;
-                processNotSpecification( filterBuilder, notSpec, variables );
+                processNotSpecification( queryBuilder, notSpec, variables );
             }
             else if( spec instanceof ComparisonPredicate )
             {
                 ComparisonPredicate<?> compSpec = (ComparisonPredicate<?>) spec;
-                processComparisonSpecification( filterBuilder, compSpec, variables );
+                processComparisonSpecification( queryBuilder, compSpec, variables );
             }
             else if( spec instanceof ContainsAllPredicate )
             {
                 ContainsAllPredicate<?> contAllSpec = (ContainsAllPredicate) spec;
-                processContainsAllSpecification( filterBuilder, contAllSpec, variables );
+                processContainsAllSpecification( queryBuilder, contAllSpec, variables );
             }
             else if( spec instanceof ContainsPredicate )
             {
                 ContainsPredicate<?> contSpec = (ContainsPredicate) spec;
-                processContainsSpecification( filterBuilder, contSpec, variables );
+                processContainsSpecification( queryBuilder, contSpec, variables );
             }
             else if( spec instanceof MatchesPredicate )
             {
                 MatchesPredicate matchSpec = (MatchesPredicate) spec;
-                processMatchesSpecification( filterBuilder, matchSpec, variables );
+                processMatchesSpecification( queryBuilder, matchSpec, variables );
             }
             else if( spec instanceof PropertyNotNullPredicate )
             {
                 PropertyNotNullPredicate<?> propNotNullSpec = (PropertyNotNullPredicate) spec;
-                processPropertyNotNullSpecification( filterBuilder, propNotNullSpec );
+                processPropertyNotNullSpecification( queryBuilder, propNotNullSpec );
             }
             else if( spec instanceof PropertyNullPredicate )
             {
                 PropertyNullPredicate<?> propNullSpec = (PropertyNullPredicate) spec;
-                processPropertyNullSpecification( filterBuilder, propNullSpec );
+                processPropertyNullSpecification( queryBuilder, propNullSpec );
             }
             else if( spec instanceof AssociationNotNullPredicate )
             {
                 AssociationNotNullPredicate<?> assNotNullSpec = (AssociationNotNullPredicate) spec;
-                processAssociationNotNullSpecification( filterBuilder, assNotNullSpec );
+                processAssociationNotNullSpecification( queryBuilder, assNotNullSpec );
             }
             else if( spec instanceof AssociationNullPredicate )
             {
                 AssociationNullPredicate<?> assNullSpec = (AssociationNullPredicate) spec;
-                processAssociationNullSpecification( filterBuilder, assNullSpec );
+                processAssociationNullSpecification( queryBuilder, assNullSpec );
             }
             else if( spec instanceof ManyAssociationContainsPredicate )
             {
                 ManyAssociationContainsPredicate<?> manyAssContSpec = (ManyAssociationContainsPredicate) spec;
-                processManyAssociationContainsSpecification( filterBuilder, manyAssContSpec, variables );
+                processManyAssociationContainsSpecification( queryBuilder, manyAssContSpec, variables );
             }
             else if( spec instanceof NamedAssociationContainsPredicate )
             {
 
                 NamedAssociationContainsPredicate<?> namedAssContSpec = (NamedAssociationContainsPredicate) spec;
-                processNamedAssociationContainsSpecification( filterBuilder, namedAssContSpec, variables );
+                processNamedAssociationContainsSpecification( queryBuilder, namedAssContSpec, variables );
 
             }
             else if( spec instanceof NamedAssociationContainsNamePredicate )
             {
 
                 NamedAssociationContainsNamePredicate<?> namedAssContNameSpec = (NamedAssociationContainsNamePredicate) spec;
-                processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
+                processNamedAssociationContainsNameSpecification( queryBuilder, namedAssContNameSpec, variables );
 
             }
             else
@@ -304,23 +288,7 @@ public interface ElasticSearchFinder
             }
         }
 
-        private static void addFilter( FilterBuilder filter, FilterBuilder into )
-        {
-            if( into instanceof AndFilterBuilder )
-            {
-                ( (AndFilterBuilder) into ).add( filter );
-            }
-            else if( into instanceof OrFilterBuilder )
-            {
-                ( (OrFilterBuilder) into ).add( filter );
-            }
-            else
-            {
-                throw new UnsupportedOperationException( "FilterBuilder is nor an AndFB nor an OrFB, cannot continue." );
-            }
-        }
-
-        private void processBinarySpecification( FilterBuilder filterBuilder,
+        private void processBinarySpecification( BoolQueryBuilder queryBuilder,
                                                  BinaryPredicate spec,
                                                  Map<String, Object> variables )
             throws EntityFinderException
@@ -330,21 +298,24 @@ public interface ElasticSearchFinder
 
             if( spec instanceof AndPredicate )
             {
-                AndFilterBuilder andFilterBuilder = new AndFilterBuilder();
+                BoolQueryBuilder andBuilder = boolQuery();
                 for( Predicate<Composite> operand : operands )
                 {
-                    processSpecification( andFilterBuilder, operand, variables );
+                    processSpecification( andBuilder, operand, variables );
                 }
-                addFilter( andFilterBuilder, filterBuilder );
+                queryBuilder.must( andBuilder );
             }
             else if( spec instanceof OrPredicate )
             {
-                OrFilterBuilder orFilterBuilder = new OrFilterBuilder();
+                BoolQueryBuilder orBuilder = boolQuery();
                 for( Predicate<Composite> operand : operands )
                 {
-                    processSpecification( orFilterBuilder, operand, variables );
+                    BoolQueryBuilder shouldBuilder = boolQuery();
+                    processSpecification( shouldBuilder, operand, variables );
+                    orBuilder.should( shouldBuilder );
                 }
-                addFilter( orFilterBuilder, filterBuilder );
+                orBuilder.minimumNumberShouldMatch( 1 );
+                queryBuilder.must( orBuilder );
             }
             else
             {
@@ -353,18 +324,18 @@ public interface ElasticSearchFinder
             }
         }
 
-        private void processNotSpecification( FilterBuilder filterBuilder,
+        private void processNotSpecification( BoolQueryBuilder queryBuilder,
                                               Notpredicate spec,
                                               Map<String, Object> variables )
             throws EntityFinderException
         {
             LOGGER.trace( "Processing NotSpecification {}", spec );
-            AndFilterBuilder operandFilter = new AndFilterBuilder();
-            processSpecification( operandFilter, spec.operand(), variables );
-            addFilter( notFilter( operandFilter ), filterBuilder );
+            BoolQueryBuilder operandBuilder = boolQuery();
+            processSpecification( operandBuilder, spec.operand(), variables );
+            queryBuilder.mustNot( operandBuilder );
         }
 
-        private void processComparisonSpecification( FilterBuilder filterBuilder,
+        private void processComparisonSpecification( BoolQueryBuilder queryBuilder,
                                                      ComparisonPredicate<?> spec,
                                                      Map<String, Object> variables )
         {
@@ -380,7 +351,7 @@ public interface ElasticSearchFinder
             {
                 // Query on complex type property
                 ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
-                addFilter( support.comparison( spec, variables ), filterBuilder );
+                queryBuilder.must( support.comparison( spec, variables ) );
             }
             else
             {
@@ -389,29 +360,27 @@ public interface ElasticSearchFinder
                 Object value = resolveVariable( spec.value(), variables );
                 if( spec instanceof EqPredicate )
                 {
-                    addFilter( termFilter( name, value ), filterBuilder );
+                    queryBuilder.must( termQuery( name, value ) );
                 }
                 else if( spec instanceof NePredicate )
                 {
-                    addFilter( andFilter( existsFilter( name ),
-                                          notFilter( termFilter( name, value ) ) ),
-                               filterBuilder );
+                    queryBuilder.must( existsQuery( name ) ).mustNot( termQuery( name, value ) );
                 }
                 else if( spec instanceof GePredicate )
                 {
-                    addFilter( rangeFilter( name ).gte( value ), filterBuilder );
+                    queryBuilder.must( rangeQuery( name ).gte( value ) );
                 }
                 else if( spec instanceof GtPredicate )
                 {
-                    addFilter( rangeFilter( name ).gt( value ), filterBuilder );
+                    queryBuilder.must( rangeQuery( name ).gt( value ) );
                 }
                 else if( spec instanceof LePredicate )
                 {
-                    addFilter( rangeFilter( name ).lte( value ), filterBuilder );
+                    queryBuilder.must( rangeQuery( name ).lte( value ) );
                 }
                 else if( spec instanceof LtPredicate )
                 {
-                    addFilter( rangeFilter( name ).lt( value ), filterBuilder );
+                    queryBuilder.must( rangeQuery( name ).lt( value ) );
                 }
                 else
                 {
@@ -422,7 +391,7 @@ public interface ElasticSearchFinder
             }
         }
 
-        private void processContainsAllSpecification( FilterBuilder filterBuilder,
+        private void processContainsAllSpecification( BoolQueryBuilder queryBuilder,
                                                       ContainsAllPredicate<?> spec,
                                                       Map<String, Object> variables )
         {
@@ -437,21 +406,21 @@ public interface ElasticSearchFinder
             else if( COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() ) != null )
             {
                 ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() );
-                addFilter( support.containsAll( spec, variables ), filterBuilder );
+                queryBuilder.must( support.containsAll( spec, variables ) );
             }
             else
             {
                 String name = spec.collectionProperty().toString();
-                AndFilterBuilder contAllFilter = new AndFilterBuilder();
+                BoolQueryBuilder contAllBuilder = boolQuery();
                 for( Object value : spec.containedValues() )
                 {
-                    contAllFilter.add( termFilter( name, resolveVariable( value, variables ) ) );
+                    contAllBuilder.must( termQuery( name, resolveVariable( value, variables ) ) );
                 }
-                addFilter( contAllFilter, filterBuilder );
+                queryBuilder.must( contAllBuilder );
             }
         }
 
-        private void processContainsSpecification( FilterBuilder filterBuilder,
+        private void processContainsSpecification( BoolQueryBuilder queryBuilder,
                                                    ContainsPredicate<?> spec,
                                                    Map<String, Object> variables )
         {
@@ -466,81 +435,81 @@ public interface ElasticSearchFinder
             else if( COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() ) != null )
             {
                 ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
-                addFilter( support.contains( spec, variables ), filterBuilder );
+                queryBuilder.must( support.contains( spec, variables ) );
             }
             else
             {
                 Object value = resolveVariable( spec.value(), variables );
-                addFilter( termFilter( name, value ), filterBuilder );
+                queryBuilder.must( termQuery( name, value ) );
             }
         }
 
-        private void processMatchesSpecification( FilterBuilder filterBuilder,
+        private void processMatchesSpecification( BoolQueryBuilder queryBuilder,
                                                   MatchesPredicate spec,
                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing MatchesSpecification {}", spec );
             String name = spec.property().toString();
             String regexp = resolveVariable( spec.regexp(), variables ).toString();
-            addFilter( regexpFilter( name, regexp ), filterBuilder );
+            queryBuilder.must( regexpQuery( name, regexp ) );
         }
 
-        private void processPropertyNotNullSpecification( FilterBuilder filterBuilder,
+        private void processPropertyNotNullSpecification( BoolQueryBuilder queryBuilder,
                                                           PropertyNotNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing PropertyNotNullSpecification {}", spec );
-            addFilter( existsFilter( spec.property().toString() ), filterBuilder );
+            queryBuilder.must( existsQuery( spec.property().toString() ) );
         }
 
-        private void processPropertyNullSpecification( FilterBuilder filterBuilder,
+        private void processPropertyNullSpecification( BoolQueryBuilder queryBuilder,
                                                        PropertyNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing PropertyNullSpecification {}", spec );
-            addFilter( missingFilter( spec.property().toString() ), filterBuilder );
+            queryBuilder.mustNot( existsQuery( ( spec.property().toString() ) ) );
         }
 
-        private void processAssociationNotNullSpecification( FilterBuilder filterBuilder,
+        private void processAssociationNotNullSpecification( BoolQueryBuilder queryBuilder,
                                                              AssociationNotNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing AssociationNotNullSpecification {}", spec );
-            addFilter( existsFilter( spec.association().toString() + ".identity" ), filterBuilder );
+            queryBuilder.must( existsQuery( spec.association().toString() + ".identity" ) );
         }
 
-        private void processAssociationNullSpecification( FilterBuilder filterBuilder,
+        private void processAssociationNullSpecification( BoolQueryBuilder queryBuilder,
                                                           AssociationNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing AssociationNullSpecification {}", spec );
-            addFilter( missingFilter( spec.association().toString() + ".identity" ), filterBuilder );
+            queryBuilder.mustNot( existsQuery( ( spec.association().toString() + ".identity" ) ) );
         }
 
-        private void processManyAssociationContainsSpecification( FilterBuilder filterBuilder,
+        private void processManyAssociationContainsSpecification( BoolQueryBuilder queryBuilder,
                                                                   ManyAssociationContainsPredicate<?> spec,
                                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ManyAssociationContainsSpecification {}", spec );
             String name = spec.manyAssociation().toString() + ".identity";
             Object value = resolveVariable( spec.value(), variables );
-            addFilter( termFilter( name, value ), filterBuilder );
+            queryBuilder.must( termQuery( name, value ) );
         }
 
-        private void processNamedAssociationContainsSpecification( FilterBuilder filterBuilder,
+        private void processNamedAssociationContainsSpecification( BoolQueryBuilder queryBuilder,
                                                                    NamedAssociationContainsPredicate<?> spec,
                                                                    Map<String, Object> variables )
         {
             LOGGER.trace( "Processing NamedAssociationContainsSpecification {}", spec );
             String name = spec.namedAssociation().toString() + ".identity";
             Object value = resolveVariable( spec.value(), variables );
-            addFilter( termFilter( name, value ), filterBuilder );
+            queryBuilder.must( termQuery( name, value ) );
         }
 
-        private void processNamedAssociationContainsNameSpecification( FilterBuilder filterBuilder,
+        private void processNamedAssociationContainsNameSpecification( BoolQueryBuilder queryBuilder,
                                                                        NamedAssociationContainsNamePredicate<?> spec,
                                                                        Map<String, Object> variables )
         {
             LOGGER.trace( "Processing NamedAssociationContainsNameSpecification {}", spec );
             String name = spec.namedAssociation().toString() + "._named";
             Object value = resolveVariable( spec.name(), variables );
-            addFilter( termFilter( name, value ), filterBuilder );
+            queryBuilder.must( termQuery( name, value ) );
         }
     }
 

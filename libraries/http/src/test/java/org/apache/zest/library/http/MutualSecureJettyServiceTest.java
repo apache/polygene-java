@@ -21,6 +21,7 @@ package org.apache.zest.library.http;
 
 import java.io.IOException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -34,6 +35,8 @@ import static org.apache.zest.library.http.Servlets.serve;
 public class MutualSecureJettyServiceTest
     extends AbstractSecureJettyTest
 {
+    private final int httpsPort = FreePortFinder.findFreePortOnLoopback();
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -44,13 +47,13 @@ public class MutualSecureJettyServiceTest
         // START SNIPPET: config
         SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
-        config.port().set( HTTPS_PORT );
+        config.port().set( httpsPort );
 
-        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.keystorePath().set( getKeyStoreFile( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
         config.keystoreType().set( "JCEKS" );
         config.keystorePassword().set( KS_PASSWORD );
 
-        config.truststorePath().set( TRUSTSTORE_PATH );
+        config.truststorePath().set( getKeyStoreFile( TRUSTSTORE_FILENAME ).getAbsolutePath() );
         config.truststoreType().set( "JCEKS" );
         config.truststorePassword().set( KS_PASSWORD );
 
@@ -65,7 +68,8 @@ public class MutualSecureJettyServiceTest
         throws IOException
     {
         // As we set wantClientAuth we can request without a client certificate ...
-        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
+        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ),
+                                                 stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 
@@ -74,7 +78,8 @@ public class MutualSecureJettyServiceTest
         throws IOException
     {
         // ... and with one
-        String output = mutualHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
+        String output = mutualHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ),
+                                                  stringResponseHandler );
         assertEquals( "Hello Mutual World", output );
     }
 }

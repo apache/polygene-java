@@ -20,14 +20,17 @@
 
 package org.apache.zest.runtime.bootstrap;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.Activator;
@@ -35,13 +38,18 @@ import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.IdentityGenerator;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.DuplicateServiceIdentityException;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.type.MatchTypeSpecification;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
+import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.AssemblySpecifications;
 import org.apache.zest.bootstrap.AssemblyVisitor;
@@ -62,8 +70,8 @@ import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
+import org.apache.zest.bootstrap.identity.DefaultIdentityGeneratorAssembler;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.TransientModel;
 import org.apache.zest.runtime.composite.TransientsModel;
@@ -80,6 +88,7 @@ import org.apache.zest.runtime.structure.ModuleModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.zest.functional.Iterables.iterable;
 
 /**
@@ -89,24 +98,34 @@ import static org.apache.zest.functional.Iterables.iterable;
  * parameters then the declared metadata will apply to all types in the method
  * call.
  */
-public final class ModuleAssemblyImpl
-    implements ModuleAssembly
+final class ModuleAssemblyImpl
+        implements ModuleAssembly
 {
+    private static HashMap<Class, Assembler> defaultAssemblers;
+
     private final LayerAssembly layerAssembly;
     private String name;
     private final MetaInfo metaInfo = new MetaInfo();
-    private final List<Class<? extends Activator<Module>>> activators = new ArrayList<>();
 
+    private final List<Class<? extends Activator<Module>>> activators = new ArrayList<>();
     private final List<ServiceAssemblyImpl> serviceAssemblies = new ArrayList<>();
     private final Map<Class<?>, ImportedServiceAssemblyImpl> importedServiceAssemblies = new LinkedHashMap<>();
     private final Map<Class<? extends EntityComposite>, EntityAssemblyImpl> entityAssemblies = new LinkedHashMap<>();
     private final Map<Class<? extends ValueComposite>, ValueAssemblyImpl> valueAssemblies = new LinkedHashMap<>();
     private final Map<Class<? extends TransientComposite>, TransientAssemblyImpl> transientAssemblies = new LinkedHashMap<>();
+
     private final Map<Class<?>, ObjectAssemblyImpl> objectAssemblies = new LinkedHashMap<>();
 
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
-    public ModuleAssemblyImpl( LayerAssembly layerAssembly, String name )
+    static
+    {
+        defaultAssemblers = new HashMap<>();
+        defaultAssemblers.put(UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler());
+        defaultAssemblers.put(IdentityGenerator.class, new DefaultIdentityGeneratorAssembler());
+    }
+
+    ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)
     {
         this.layerAssembly = layerAssembly;
         this.name = name;
@@ -119,13 +138,13 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ModuleAssembly module( String layerName, String moduleName )
+    public ModuleAssembly module(String layerName, String moduleName)
     {
-        return layerAssembly.application().module( layerName, moduleName );
+        return layerAssembly.application().module(layerName, moduleName);
     }
 
     @Override
-    public ModuleAssembly setName( String name )
+    public ModuleAssembly setName(String name)
     {
         this.name = name;
         return this;
@@ -137,509 +156,491 @@ public final class ModuleAssemblyImpl
         return name;
     }
 
-    public ModuleAssembly setMetaInfo( Object info )
+    public ModuleAssembly setMetaInfo(Object info)
     {
-        metaInfo.set( info );
+        metaInfo.set(info);
         return this;
     }
 
     @Override
     @SafeVarargs
-    public final ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
+    public final ModuleAssembly withActivators(Class<? extends Activator<Module>>... activators)
     {
-        this.activators.addAll( Arrays.asList( activators ) );
+        this.activators.addAll(Arrays.asList(activators));
         return this;
     }
 
     @Override
-    public ModuleAssembly withDefaultUnitOfWorkFactory()
-        throws AssemblyException
-    {
-        new DefaultUnitOfWorkAssembler().assemble( this );
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings( { "raw", "unchecked" } )
-    public ValueDeclaration values( Class<?>... valueTypes )
+    @SuppressWarnings("unchecked")
+    public ValueDeclaration values(Class<?>... valueTypes)
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class valueType : valueTypes )
+        for (Class valueType : valueTypes)
         {
-            if( valueAssemblies.containsKey( valueType ) )
+            if (valueAssemblies.containsKey(valueType))
             {
-                assemblies.add( valueAssemblies.get( valueType ) );
+                assemblies.add(valueAssemblies.get(valueType));
             }
             else
             {
-                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl( valueType );
-                valueAssemblies.put( valueType, valueAssembly );
-                assemblies.add( valueAssembly );
+                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl(valueType);
+                valueAssemblies.put(valueType, valueAssembly);
+                assemblies.add(valueAssembly);
             }
         }
 
-        return new ValueDeclarationImpl( assemblies );
+        return new ValueDeclarationImpl(assemblies);
     }
 
     @Override
-    public ValueDeclaration values( Predicate<? super ValueAssembly> specification )
+    public ValueDeclaration values(Predicate<? super ValueAssembly> specification)
     {
-        List<ValueAssemblyImpl> assemblies = new ArrayList<>();
-        for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
-        {
-            if( specification.test( transientAssembly ) )
-            {
-                assemblies.add( transientAssembly );
-            }
-        }
-
-        return new ValueDeclarationImpl( assemblies );
+        List<ValueAssemblyImpl> assemblies = valueAssemblies.values().stream()
+                .filter(specification::test)
+                .collect(toList());
+        return new ValueDeclarationImpl(assemblies);
     }
 
     @Override
-    @SuppressWarnings( { "raw", "unchecked" } )
-    public TransientDeclaration transients( Class<?>... transientTypes )
+    @SuppressWarnings({"raw", "unchecked"})
+    public TransientDeclaration transients(Class<?>... transientTypes)
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class valueType : transientTypes )
+        for (Class valueType : transientTypes)
         {
-            if( transientAssemblies.containsKey( valueType ) )
+            if (transientAssemblies.containsKey(valueType))
             {
-                assemblies.add( transientAssemblies.get( valueType ) );
+                assemblies.add(transientAssemblies.get(valueType));
             }
             else
             {
-                TransientAssemblyImpl transientAssembly = new TransientAssemblyImpl( valueType );
-                transientAssemblies.put( valueType, transientAssembly );
-                assemblies.add( transientAssembly );
+                TransientAssemblyImpl transientAssembly = new TransientAssemblyImpl(valueType);
+                transientAssemblies.put(valueType, transientAssembly);
+                assemblies.add(transientAssembly);
             }
         }
 
-        return new TransientDeclarationImpl( assemblies );
+        return new TransientDeclarationImpl(assemblies);
     }
 
     @Override
-    public TransientDeclaration transients( Predicate<? super TransientAssembly> specification )
+    public TransientDeclaration transients(Predicate<? super TransientAssembly> specification)
     {
-        List<TransientAssemblyImpl> assemblies = new ArrayList<>();
-        for( TransientAssemblyImpl transientAssembly : transientAssemblies.values() )
-        {
-            if( specification.test( transientAssembly ) )
-            {
-                assemblies.add( transientAssembly );
-            }
-        }
+        List<TransientAssemblyImpl> assemblies = transientAssemblies.values().stream()
+                .filter(specification::test)
+                .collect(toList());
 
-        return new TransientDeclarationImpl( assemblies );
+        return new TransientDeclarationImpl(assemblies);
     }
 
     @Override
-    @SuppressWarnings( { "raw", "unchecked" } )
-    public EntityDeclaration entities( Class<?>... entityTypes )
+    @SuppressWarnings({"raw", "unchecked"})
+    public EntityDeclaration entities(Class<?>... entityTypes)
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class entityType : entityTypes )
+        for (Class entityType : entityTypes)
         {
-            if( entityAssemblies.containsKey( entityType ) )
+            if (entityAssemblies.containsKey(entityType))
             {
-                assemblies.add( entityAssemblies.get( entityType ) );
+                assemblies.add(entityAssemblies.get(entityType));
             }
             else
             {
-                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl( entityType );
-                entityAssemblies.put( entityType, entityAssembly );
-                assemblies.add( entityAssembly );
+                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl(entityType);
+                entityAssemblies.put(entityType, entityAssembly);
+                assemblies.add(entityAssembly);
             }
         }
 
-        return new EntityDeclarationImpl( assemblies );
+        return new EntityDeclarationImpl(assemblies);
     }
 
     @Override
-    public EntityDeclaration entities( Predicate<? super EntityAssembly> specification )
+    public EntityDeclaration entities(Predicate<? super EntityAssembly> specification)
     {
-        List<EntityAssemblyImpl> assemblies = new ArrayList<>();
-        for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
-        {
-            if( specification.test( entityAssembly ) )
-            {
-                assemblies.add( entityAssembly );
-            }
-        }
+        List<EntityAssemblyImpl> assemblies = entityAssemblies.values().stream()
+                .filter(specification::test)
+                .collect(toList());
 
-        return new EntityDeclarationImpl( assemblies );
+        return new EntityDeclarationImpl(assemblies);
     }
 
     @Override
-    public ConfigurationDeclaration configurations( Class<?>... configurationTypes )
+    @SuppressWarnings("unchecked")
+    public ConfigurationDeclaration configurations(Class<?>... configurationTypes)
     {
         List<EntityAssemblyImpl> entityAssemblyList = new ArrayList<>();
 
-        for( Class entityType : configurationTypes )
+        for (Class entityType : configurationTypes)
         {
-            if( this.entityAssemblies.containsKey( entityType ) )
+            if (this.entityAssemblies.containsKey(entityType))
             {
-                entityAssemblyList.add( this.entityAssemblies.get( entityType ) );
+                entityAssemblyList.add(this.entityAssemblies.get(entityType));
             }
             else
             {
-                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl( entityType );
-                this.entityAssemblies.put( entityType, entityAssembly );
-                entityAssemblyList.add( entityAssembly );
+                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl(entityType);
+                this.entityAssemblies.put(entityType, entityAssembly);
+                entityAssemblyList.add(entityAssembly);
             }
         }
 
         List<ValueAssemblyImpl> valueAssemblyList = new ArrayList<>();
 
-        for( Class valueType : configurationTypes )
+        for (Class valueType : configurationTypes)
         {
-            if( valueAssemblies.containsKey( valueType ) )
+            if (valueAssemblies.containsKey(valueType))
             {
-                valueAssemblyList.add( valueAssemblies.get( valueType ) );
+                valueAssemblyList.add(valueAssemblies.get(valueType));
             }
             else
             {
-                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl( valueType );
-                valueAssemblies.put( valueType, valueAssembly );
-                valueAssemblyList.add( valueAssembly );
-                valueAssembly.types.add( Identity.class );
+                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl(valueType);
+                valueAssemblies.put(valueType, valueAssembly);
+                valueAssemblyList.add(valueAssembly);
+                valueAssembly.types.add(HasIdentity.class);
             }
         }
 
-        return new ConfigurationDeclarationImpl( entityAssemblyList, valueAssemblyList );
+        return new ConfigurationDeclarationImpl(entityAssemblyList, valueAssemblyList);
     }
 
     @Override
-    public ConfigurationDeclaration configurations( Predicate<HasTypes> specification )
+    public ConfigurationDeclaration configurations(Predicate<HasTypes> specification)
     {
-        Predicate<HasTypes> isConfigurationComposite = new MatchTypeSpecification( Identity.class );
-        specification = specification.and( isConfigurationComposite );
+        Predicate<HasTypes> isConfigurationComposite = new MatchTypeSpecification(HasIdentity.class);
+        specification = specification.and(isConfigurationComposite);
         List<EntityAssemblyImpl> entityAssmblyList = new ArrayList<>();
-        for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
+        for (EntityAssemblyImpl entityAssembly : entityAssemblies.values())
         {
-            if( specification.test( entityAssembly ) )
+            if (specification.test(entityAssembly))
             {
-                entityAssmblyList.add( entityAssembly );
+                entityAssmblyList.add(entityAssembly);
             }
         }
         List<ValueAssemblyImpl> valueAssemblyList = new ArrayList<>();
-        for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
+        for (ValueAssemblyImpl transientAssembly : valueAssemblies.values())
         {
-            if( specification.test( transientAssembly ) )
+            if (specification.test(transientAssembly))
             {
-                valueAssemblyList.add( transientAssembly );
+                valueAssemblyList.add(transientAssembly);
             }
         }
-        return new ConfigurationDeclarationImpl( entityAssmblyList, valueAssemblyList );
+        return new ConfigurationDeclarationImpl(entityAssmblyList, valueAssemblyList);
     }
 
     @Override
-    public ObjectDeclaration objects( Class<?>... objectTypes )
-        throws AssemblyException
+    public ObjectDeclaration objects(Class<?>... objectTypes)
+            throws AssemblyException
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class<?> objectType : objectTypes )
+        for (Class<?> objectType : objectTypes)
         {
-            if( objectType.isInterface() )
+            if (objectType.isInterface())
             {
-                throw new AssemblyException( "Interfaces can not be Zest Objects." );
+                throw new AssemblyException("Interfaces can not be Zest Objects.");
             }
-            if( objectAssemblies.containsKey( objectType ) )
+            if (objectAssemblies.containsKey(objectType))
             {
-                assemblies.add( objectAssemblies.get( objectType ) );
+                assemblies.add(objectAssemblies.get(objectType));
             }
             else
             {
-                ObjectAssemblyImpl objectAssembly = new ObjectAssemblyImpl( objectType );
-                objectAssemblies.put( objectType, objectAssembly );
-                assemblies.add( objectAssembly );
+                ObjectAssemblyImpl objectAssembly = new ObjectAssemblyImpl(objectType);
+                objectAssemblies.put(objectType, objectAssembly);
+                assemblies.add(objectAssembly);
             }
         }
 
-        return new ObjectDeclarationImpl( assemblies );
+        return new ObjectDeclarationImpl(assemblies);
     }
 
     @Override
-    public ObjectDeclaration objects( Predicate<? super ObjectAssembly> specification )
+    public ObjectDeclaration objects(Predicate<? super ObjectAssembly> specification)
     {
-        List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
-        for( ObjectAssemblyImpl objectAssembly : objectAssemblies.values() )
-        {
-            if( specification.test( objectAssembly ) )
-            {
-                assemblies.add( objectAssembly );
-            }
-        }
+        List<ObjectAssemblyImpl> assemblies = objectAssemblies.values().stream()
+                .filter(specification::test)
+                .collect(toList());
 
-        return new ObjectDeclarationImpl( assemblies );
+        return new ObjectDeclarationImpl(assemblies);
     }
 
     @Override
-    public ServiceDeclaration addServices( Class<?>... serviceTypes )
+    public ServiceDeclaration addServices(Class<?>... serviceTypes)
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class<?> serviceType : serviceTypes )
+        for (Class<?> serviceType : serviceTypes)
         {
-            ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl( serviceType );
-            serviceAssemblies.add( serviceAssembly );
-            assemblies.add( serviceAssembly );
+            ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl(serviceType);
+            serviceAssemblies.add(serviceAssembly);
+            assemblies.add(serviceAssembly);
         }
 
-        return new ServiceDeclarationImpl( assemblies );
+        return new ServiceDeclarationImpl(assemblies);
     }
 
     @Override
-    public ServiceDeclaration services( Class<?>... serviceTypes )
+    public ServiceDeclaration services(Class<?>... serviceTypes)
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class<?> serviceType : serviceTypes )
+        for (Class<?> serviceType : serviceTypes)
         {
-            if( Iterables.matchesAny( AssemblySpecifications.ofAnyType( serviceType ), serviceAssemblies ) )
+            if( serviceAssemblies.stream().anyMatch( AssemblySpecifications.ofAnyType( serviceType ) ) )
             {
-                Iterables.addAll( assemblies, Iterables.filter( AssemblySpecifications.ofAnyType( serviceType ), serviceAssemblies ) );
+                serviceAssemblies.stream().filter( AssemblySpecifications.ofAnyType( serviceType ) )
+                                 .forEach( assemblies::add );
             }
             else
             {
-                ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl( serviceType );
-                serviceAssemblies.add( serviceAssembly );
-                assemblies.add( serviceAssembly );
+                ServiceAssemblyImpl serviceAssembly = new ServiceAssemblyImpl(serviceType);
+                serviceAssemblies.add(serviceAssembly);
+                assemblies.add(serviceAssembly);
             }
         }
 
-        return new ServiceDeclarationImpl( assemblies );
+        return new ServiceDeclarationImpl(assemblies);
     }
 
     @Override
-    public ServiceDeclaration services( Predicate<? super ServiceAssembly> specification )
+    public ServiceDeclaration services(Predicate<? super ServiceAssembly> specification)
     {
-        List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
-        for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
-        {
-            if( specification.test( serviceAssembly ) )
-            {
-                assemblies.add( serviceAssembly );
-            }
-        }
-
-        return new ServiceDeclarationImpl( assemblies );
+        List<ServiceAssemblyImpl> assemblies = serviceAssemblies.stream()
+                .filter(specification::test)
+                .collect(toList());
+        return new ServiceDeclarationImpl(assemblies);
     }
 
     @Override
-    public ImportedServiceDeclaration importedServices( Class<?>... serviceTypes )
+    public ImportedServiceDeclaration importedServices(Class<?>... serviceTypes)
     {
         List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<>();
 
-        for( Class<?> serviceType : serviceTypes )
+        for (Class<?> serviceType : serviceTypes)
         {
-            if( importedServiceAssemblies.containsKey( serviceType ) )
+            if (importedServiceAssemblies.containsKey(serviceType))
             {
-                assemblies.add( importedServiceAssemblies.get( serviceType ) );
+                assemblies.add(importedServiceAssemblies.get(serviceType));
             }
             else
             {
-                ImportedServiceAssemblyImpl serviceAssembly = new ImportedServiceAssemblyImpl( serviceType, this );
-                importedServiceAssemblies.put( serviceType, serviceAssembly );
-                assemblies.add( serviceAssembly );
+                ImportedServiceAssemblyImpl serviceAssembly = new ImportedServiceAssemblyImpl(serviceType, this);
+                importedServiceAssemblies.put(serviceType, serviceAssembly);
+                assemblies.add(serviceAssembly);
             }
         }
 
-        return new ImportedServiceDeclarationImpl( assemblies );
+        return new ImportedServiceDeclarationImpl(assemblies);
     }
 
     @Override
-    public ImportedServiceDeclaration importedServices( Predicate<? super ImportedServiceAssembly> specification )
+    public ImportedServiceDeclaration importedServices(Predicate<? super ImportedServiceAssembly> specification)
     {
-        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<>();
-        for( ImportedServiceAssemblyImpl objectAssembly : importedServiceAssemblies.values() )
-        {
-            if( specification.test( objectAssembly ) )
-            {
-                assemblies.add( objectAssembly );
-            }
-        }
+        List<ImportedServiceAssemblyImpl> assemblies = importedServiceAssemblies.values().stream()
+                .filter(specification::test)
+                .collect(toList());
 
-        return new ImportedServiceDeclarationImpl( assemblies );
+        return new ImportedServiceDeclarationImpl(assemblies);
     }
 
     @Override
-    public <T> MixinDeclaration<T> forMixin( Class<T> mixinType )
+    public <T> MixinDeclaration<T> forMixin(Class<T> mixinType)
     {
-        return metaInfoDeclaration.on( mixinType );
+        return metaInfoDeclaration.on(mixinType);
     }
 
     @Override
-    public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
-        throws ThrowableType
+    public <ThrowableType extends Throwable> void visit(AssemblyVisitor<ThrowableType> visitor)
+            throws ThrowableType
     {
-        visitor.visitModule( this );
+        visitor.visitModule(this);
 
-        for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
+        for (TransientAssemblyImpl compositeDeclaration : transientAssemblies.values())
         {
-            visitor.visitComposite( new TransientDeclarationImpl( iterable( compositeDeclaration ) ) );
+            visitor.visitComposite(new TransientDeclarationImpl(iterable(compositeDeclaration)));
         }
 
-        for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
+        for (EntityAssemblyImpl entityDeclaration : entityAssemblies.values())
         {
-            visitor.visitEntity( new EntityDeclarationImpl( iterable( entityDeclaration ) ) );
+            visitor.visitEntity(new EntityDeclarationImpl(iterable(entityDeclaration)));
         }
 
-        for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
+        for (ObjectAssemblyImpl objectDeclaration : objectAssemblies.values())
         {
-            visitor.visitObject( new ObjectDeclarationImpl( iterable( objectDeclaration ) ) );
+            visitor.visitObject(new ObjectDeclarationImpl(iterable(objectDeclaration)));
         }
 
-        for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies )
+        for (ServiceAssemblyImpl serviceDeclaration : serviceAssemblies)
         {
-            visitor.visitService( new ServiceDeclarationImpl( iterable( serviceDeclaration ) ) );
+            visitor.visitService(new ServiceDeclarationImpl(iterable(serviceDeclaration)));
         }
 
-        for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
+        for (ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values())
         {
-            visitor.visitImportedService( new ImportedServiceDeclarationImpl( iterable( importedServiceDeclaration ) ) );
+            visitor.visitImportedService(new ImportedServiceDeclarationImpl(iterable(importedServiceDeclaration)));
         }
 
-        for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
+        for (ValueAssemblyImpl valueDeclaration : valueAssemblies.values())
         {
-            visitor.visitValue( new ValueDeclarationImpl( iterable( valueDeclaration ) ) );
+            visitor.visitValue(new ValueDeclarationImpl(iterable(valueDeclaration)));
         }
     }
 
-    ModuleModel assembleModule( LayerModel layerModel, AssemblyHelper helper )
-        throws AssemblyException
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    ModuleModel assembleModule(LayerModel layerModel, AssemblyHelper helper)
+            throws AssemblyException
     {
+        addDefaultAssemblers();
         List<TransientModel> transientModels = new ArrayList<>();
         List<ObjectModel> objectModels = new ArrayList<>();
         List<ValueModel> valueModels = new ArrayList<>();
         List<ServiceModel> serviceModels = new ArrayList<>();
         List<ImportedServiceModel> importedServiceModels = new ArrayList<>();
         List<EntityModel> entityModels = new ArrayList<>();
+        ModuleModel moduleModel = new ModuleModel(name,
+                metaInfo,
+                layerModel,
+                new ActivatorsModel<>(activators),
+                new TransientsModel(transientModels),
+                new EntitiesModel(entityModels),
+                new ObjectsModel(objectModels),
+                new ValuesModel(valueModels),
+                new ServicesModel(serviceModels),
+                new ImportedServicesModel(importedServiceModels));
 
-        ModuleModel moduleModel = new ModuleModel( name,
-                                                   metaInfo,
-                                                   layerModel,
-                                                   new ActivatorsModel<>( activators ),
-                                                   new TransientsModel( transientModels ),
-                                                   new EntitiesModel( entityModels ),
-                                                   new ObjectsModel( objectModels ),
-                                                   new ValuesModel( valueModels ),
-                                                   new ServicesModel( serviceModels ),
-                                                   new ImportedServicesModel( importedServiceModels ) );
-
-        if( name == null )
+        if (name == null)
         {
-            throw new AssemblyException( "Module must have name set" );
+            throw new AssemblyException("Module must have name set");
         }
 
-        for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
+        transientModels.addAll(transientAssemblies.values().stream()
+                .map(composite -> composite.newTransientModel(moduleModel, metaInfoDeclaration, helper))
+                .collect(toList()));
+
+        valueModels.addAll(valueAssemblies.values().stream()
+                .map(value -> value.newValueModel(moduleModel, metaInfoDeclaration, helper))
+                .collect(toList()));
+
+        entityModels.addAll(entityAssemblies.values().stream()
+                .map(entityDeclaration -> entityDeclaration.newEntityModel(moduleModel,
+                        metaInfoDeclaration,
+                        metaInfoDeclaration,
+                        metaInfoDeclaration,
+                        metaInfoDeclaration,
+                        helper))
+                .collect(Collectors.toList()));
+
+        for (ObjectAssemblyImpl objectDeclaration : objectAssemblies.values())
         {
-            transientModels.add( compositeDeclaration.newTransientModel( moduleModel, metaInfoDeclaration, helper ) );
+            objectDeclaration.addObjectModel(moduleModel, objectModels);
         }
 
-        for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
+        for (ServiceAssemblyImpl serviceDeclaration : serviceAssemblies)
         {
-            valueModels.add( valueDeclaration.newValueModel( moduleModel, metaInfoDeclaration, helper ) );
-        }
-
-        for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
-        {
-            entityModels.add( entityDeclaration.newEntityModel( moduleModel,
-                                                                metaInfoDeclaration,
-                                                                metaInfoDeclaration,
-                                                                metaInfoDeclaration,
-                                                                metaInfoDeclaration,
-                                                                helper ) );
-        }
-
-        for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
-        {
-            objectDeclaration.addObjectModel( moduleModel, objectModels );
-        }
-
-        for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies )
-        {
-            if( serviceDeclaration.identity == null )
+            if (serviceDeclaration.identity == null)
             {
-                serviceDeclaration.identity = generateId( serviceDeclaration.types() );
+                serviceDeclaration.identity = generateId(serviceDeclaration.types());
             }
 
-            serviceModels.add( serviceDeclaration.newServiceModel( moduleModel, metaInfoDeclaration, helper ) );
+            serviceModels.add(serviceDeclaration.newServiceModel(moduleModel, metaInfoDeclaration, helper));
         }
 
-        for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
+        for (ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values())
         {
-            importedServiceDeclaration.addImportedServiceModel( moduleModel, importedServiceModels );
+            importedServiceDeclaration.addImportedServiceModel(moduleModel, importedServiceModels);
         }
 
         // Check for duplicate service identities
         Set<String> identities = new HashSet<>();
-        for( ServiceModel serviceModel : serviceModels )
+        for (ServiceModel serviceModel : serviceModels)
         {
-            String identity = serviceModel.identity();
-            if( identities.contains( identity ) )
+            String identity = serviceModel.identity().toString();
+            if (identities.contains(identity))
             {
                 throw new DuplicateServiceIdentityException(
-                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                        "Duplicated service reference: " + identity + " in module " + moduleModel.name()
                 );
             }
-            identities.add( identity );
+            identities.add(identity);
         }
-        for( ImportedServiceModel serviceModel : importedServiceModels )
+        for (ImportedServiceModel serviceModel : importedServiceModels)
         {
-            String identity = serviceModel.identity();
-            if( identities.contains( identity ) )
+            String identity = serviceModel.identity().toString();
+            if (identities.contains(identity))
             {
                 throw new DuplicateServiceIdentityException(
-                    "Duplicated service identity: " + identity + " in module " + moduleModel.name()
+                        "Duplicated service reference: " + identity + " in module " + moduleModel.name()
                 );
             }
-            identities.add( identity );
+            identities.add(identity);
         }
 
-        for( ImportedServiceModel importedServiceModel : importedServiceModels )
+        importedServiceModels.stream().filter(importedServiceModel ->
+                !StreamSupport.stream(objectModels.spliterator(), false)
+                        .anyMatch(model -> model.types().findFirst().get().equals(importedServiceModel.serviceImporter())))
+                .forEach(importedServiceModel ->
         {
-            if( !StreamSupport.stream( objectModels.spliterator(), false )
-                .anyMatch( model ->
-                               model.types().findFirst().get().equals( importedServiceModel.serviceImporter() ) )
-                )
-            {
-                Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
-                ObjectModel objectModel = new ObjectModel( moduleModel, serviceFactoryType, Visibility.module, new MetaInfo() );
-                objectModels.add( objectModel );
-            }
-        }
+            Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
+            ObjectModel objectModel = new ObjectModel(moduleModel, serviceFactoryType, Visibility.module, new MetaInfo());
+            objectModels.add(objectModel);
+        });
 
         return moduleModel;
     }
 
-    private String generateId( Stream<Class<?>> serviceTypes )
+    private void addDefaultAssemblers()
+            throws AssemblyException
     {
-        // Find service identity that is not yet used
+        try
+        {
+            defaultAssemblers.entrySet().stream()
+                    .filter(entry -> serviceAssemblies.stream().noneMatch(serviceAssembly -> serviceAssembly.hasType(entry.getKey())))
+                    .forEach(entry ->
+                    {
+                        try
+                        {
+                            entry.getValue().assemble(this);
+                        }
+                        catch (AssemblyException e)
+                        {
+                            throw new UndeclaredThrowableException(e);
+                        }
+                    });
+        }
+        catch (UndeclaredThrowableException e)
+        {
+            throw (AssemblyException) e.getUndeclaredThrowable();
+        }
+    }
+
+    private Identity generateId(Stream<Class<?>> serviceTypes)
+    {
+        // Find service reference that is not yet used
         Class<?> serviceType = serviceTypes.findFirst()
-            .orElse( null ); // Use the first, which *SHOULD* be the main serviceType
+                .orElse(null); // Use the first, which *SHOULD* be the main serviceType
         int idx = 0;
-        String id = serviceType.getSimpleName();
+        Identity id = new StringIdentity(serviceType.getSimpleName());
         boolean invalid;
         do
         {
             invalid = false;
-            for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
+            for (ServiceAssemblyImpl serviceAssembly : serviceAssemblies)
             {
-                if( serviceAssembly.identity() != null && serviceAssembly.identity().equals( id ) )
+                if (serviceAssembly.identity() != null && serviceAssembly.identity().equals(id))
                 {
                     idx++;
-                    id = serviceType.getSimpleName() + "_" + idx;
+                    id = new StringIdentity(serviceType.getSimpleName() + "_" + idx);
                     invalid = true;
                     break;
                 }
             }
         }
-        while( invalid );
+        while (invalid);
         return id;
     }
 }

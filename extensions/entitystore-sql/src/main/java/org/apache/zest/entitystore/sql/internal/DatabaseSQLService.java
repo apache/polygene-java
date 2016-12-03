@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.service.ServiceComposite;
 
@@ -108,10 +109,10 @@ public interface DatabaseSQLService
     void populateGetAllEntitiesStatement( PreparedStatement ps )
         throws SQLException;
 
-    void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Long lastModified )
+    void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Instant lastModified )
         throws SQLException;
 
-    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Long lastModified )
+    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Instant lastModified )
         throws SQLException;
 
     void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )

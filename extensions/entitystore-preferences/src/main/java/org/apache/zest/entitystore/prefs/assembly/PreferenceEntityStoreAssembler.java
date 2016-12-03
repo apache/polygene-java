@@ -26,7 +26,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.prefs.PreferencesEntityStoreInfo;
 import org.apache.zest.entitystore.prefs.PreferencesEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class PreferenceEntityStoreAssembler
     extends Assemblers.VisibilityIdentity<PreferenceEntityStoreAssembler>
@@ -48,6 +47,5 @@ public class PreferenceEntityStoreAssembler
         {
             service.identifiedBy( identity() );
         }
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
     }
 }

@@ -20,6 +20,7 @@
 
 package org.apache.zest.api.service.importer;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
@@ -51,23 +52,8 @@ public final class InstanceImporter<T>
     {
         return Stream.of( serviceDescriptor, module, layer, application )
             .flatMap( holder -> serviceDescriptor.types().map( type -> (T) holder.metaInfo( type ) ) )
-            .filter( meta -> meta != null )
+            .filter( Objects::nonNull )
             .findFirst().orElse( null );
-
-//        T instance = null;
-//        Iterable<MetaInfoHolder> holders = Iterables.iterable( serviceDescriptor, module, layer, application );
-//        for( final MetaInfoHolder metaInfoHolder : holders )
-//        {
-//            Function<Class<?>, T> metaFinder = type -> (T) metaInfoHolder.metaInfo( type );
-//
-//
-//            instance = first( filter( notNull(), map( metaFinder, serviceDescriptor.types() ) ) );
-//            if( instance != null )
-//            {
-//                break;
-//            }
-//        }
-//        return instance;
     }
 
     @Override

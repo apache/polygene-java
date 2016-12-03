@@ -20,6 +20,7 @@
 package org.apache.zest.index.rdf.qi64;
 
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -36,12 +37,12 @@ public abstract class AbstractIssueTest
     /**
      * Creates a new Apaxhe Zest account.
      *
-     * @return The new account identity.
+     * @return The new account reference.
      *
      * @throws org.apache.zest.api.unitofwork.UnitOfWorkCompletionException
      *          Thrown if creational fail.
      */
-    protected final String newZestAccount()
+    protected final Identity newZestAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
@@ -50,7 +51,7 @@ public abstract class AbstractIssueTest
         accountComposite.name().set( DEFAULT_ACCOUNT_NAME );
         accountComposite = entityBuilder.newInstance();
 
-        String identity = accountComposite.identity().get();
+        Identity identity = accountComposite.identity().get();
         work.complete();
         return identity;
     }

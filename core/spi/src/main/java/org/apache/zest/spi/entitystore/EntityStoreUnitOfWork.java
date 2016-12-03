@@ -20,8 +20,10 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
@@ -31,17 +33,17 @@ import org.apache.zest.spi.entity.EntityState;
  */
 public interface EntityStoreUnitOfWork
 {
-    String identity();
+    Identity identity();
 
-    long currentTime();
+    Instant currentTime();
 
     /**
-     * Create new EntityState for a given identity.
+     * Create new EntityState for a given reference.
      * <p>
      * This should only create the EntityState and not insert it into any database, since that should occur during
      * the {@link EntityStoreUnitOfWork#applyChanges()} call.
      * </p>
-     * @param anIdentity       the identity of the entity
+     * @param anIdentity       the reference of the entity
      * @param entityDescriptor entity descriptor
      *
      * @return The new entity state.
@@ -52,14 +54,14 @@ public interface EntityStoreUnitOfWork
         throws EntityStoreException;
 
     /**
-     * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
+     * Get the EntityState for a given reference. Throws {@link EntityNotFoundException}
      * if the entity with given {@code anIdentity} is not found.
      *
      *
-     * @param module
-     * @param anIdentity The entity identity. This argument must not be {@code null}.
+     * @param module Module descriptor
+     * @param anIdentity The entity reference. This argument must not be {@code null}.
      *
-     * @return Entity state given the composite descriptor and identity.
+     * @return Entity state given the composite descriptor and reference.
      *
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist

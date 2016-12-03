@@ -22,6 +22,7 @@ package org.apache.zest.regression.qi377;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.AppliesTo;
@@ -60,14 +61,14 @@ public class SetAssociationInSideEffectTest
     {
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Purchase Steinway" ) ) )
         {
-            Pianist chris = uow.newEntity( Pianist.class, "Chris" );
-            Steinway modelD = uow.newEntity( Steinway.class, "ModelD-274" );
+            Pianist chris = uow.newEntity( Pianist.class, new StringIdentity( "Chris" ) );
+            Steinway modelD = uow.newEntity( Steinway.class, new StringIdentity( "ModelD-274" ) );
 
             assertThat( modelD.owner().get(), is( nullValue() ) );
 
             chris.purchase( modelD );
 
-            assertThat( modelD.owner().get(), is( theInstance( (Owner) chris ) ) );
+            assertThat( modelD.owner().get(), is( theInstance( chris ) ) );
         }
     }
 

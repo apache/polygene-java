@@ -151,7 +151,7 @@ We'll list here services that the unit tests will use if available.
 
 - Memcached, ASCII protocol, no authentication on +localhost:4444+ for +extensions/cache-memcache+
 - MongoDB without authentication on +localhost:27017+ for +extensions/entitystore-mongodb+
-- Riak without authentication on +localhost:4444+ for +extensions/entitystore-riak+
+- Riak without authentication on +localhost:8087+ for +extensions/entitystore-riak+
 - Redis without authentication on +localhost:4444+ for +extensions/entitystore-redis+
 - PostgreSQL for +extensions/entitystore-sql+ and +extensions/indexing-sql+ (need setup, see test source)
 - MySQL for +extensions/entitystore-sql+ (need setup, see test source)

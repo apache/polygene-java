@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -179,21 +180,8 @@ public final class Classes
                 }
                 else
                 {
-//                    Stream<Type> stream1 = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
-//                    Stream<Type> stream2 = Stream.of( type )
-//                        .map( RAW_CLASS )
-//                        .map( Class::getSuperclass )
-//                        .map( RAW_CLASS );
-//                    return concat( stream1, stream2 );
-
                     return concat( Stream.of( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF ),
                                    Stream.of( clazz.getSuperclass() ).flatMap( INTERFACES_OF ) );
-//                    return flatten(
-//                        flattenIterables(
-//                            map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) )
-//                        ),
-//                        INTERFACES_OF.apply( RAW_CLASS.apply( type ).getSuperclass() )
-//                    );
 
                 }
             }
@@ -255,29 +243,14 @@ public final class Classes
         return clazz::isAssignableFrom;
     }
 
-    @SuppressWarnings( "raw" )
-    public static Predicate<Object> instanceOf( final Class clazz )
+    public static Predicate<Object> instanceOf( final Class<?> clazz )
     {
-        return new Predicate<Object>()
-        {
-            @Override
-            public boolean test( Object item )
-            {
-                return clazz.isInstance( item );
-            }
-        };
+        return clazz::isInstance;
     }
 
     public static Predicate<Class<?>> hasModifier( final int classModifier )
     {
-        return new Predicate<Class<?>>()
-        {
-            @Override
-            public boolean test( Class<?> item )
-            {
-                return ( item.getModifiers() & classModifier ) != 0;
-            }
-        };
+        return item -> ( item.getModifiers() & classModifier ) != 0;
     }
 
     public static <T> Function<Type, Stream<T>> forClassHierarchy( final Function<Class<?>, Stream<T>> function )
@@ -376,33 +349,13 @@ public final class Classes
             .flatMap( TYPES_OF )
             .map( RAW_CLASS )
             .map( clazz -> clazz.getAnnotation( annotationClass ) )
-            .filter( annot -> annot != null )
-            .findAny().get();
-//
-//
-//        AnnotationType result = null;
-//        for( Type clazz : Classes.TYPES_OF.apply( type ) )
-//        {
-//            result = Classes.RAW_CLASS.apply( clazz ).getAnnotation( annotationClass );
-//            if( result != null )
-//            {
-//                break;
-//            }
-//        }
-//
-//        return result;
+            .filter( Objects::nonNull )
+            .findAny().orElse( null );
     }
 
     public static Predicate<Member> memberNamed( final String name )
     {
-        return new Predicate<Member>()
-        {
-            @Override
-            public boolean test( Member item )
-            {
-                return item.getName().equals( name );
-            }
-        };
+        return item -> item.getName().equals( name );
     }
 
     /**
@@ -466,56 +419,6 @@ public final class Classes
             .map( subClass -> resolveTypeVariable( name, declaringClass, mappings, subClass ) )
             .filter( type -> type != null )
             .findAny().orElse( null );
-
-//        List<Type> types = new ArrayList<>();
-//        for( Type type : current.getGenericInterfaces() )
-//        {
-//            Iterable<Type> interfaces = Classes.INTERFACES_OF.apply( type );
-//            for( Type anInterface : interfaces )
-//            {
-//                if( !types.contains( anInterface ) )
-//                {
-//                    types.add( anInterface );
-//                }
-//            }
-//            types.add( type );
-//        }
-//
-//        if( current.getGenericSuperclass() != null )
-//        {
-//            types.add( current.getGenericSuperclass() );
-//        }
-//
-//        for( Type type : types )
-//        {
-//            Class subClass;
-//            if( type instanceof ParameterizedType )
-//            {
-//                ParameterizedType pt = (ParameterizedType) type;
-//                Type[] args = pt.getActualTypeArguments();
-//                Class clazz = (Class) pt.getRawType();
-//                TypeVariable[] vars = clazz.getTypeParameters();
-//                for( int i = 0; i < vars.length; i++ )
-//                {
-//                    TypeVariable var = vars[ i ];
-//                    Type mappedType = args[ i ];
-//                    mappings.put( var, mappedType );
-//                }
-//                subClass = (Class) pt.getRawType();
-//            }
-//            else
-//            {
-//                subClass = (Class) type;
-//            }
-//
-//            Type resolvedType = resolveTypeVariable( name, declaringClass, mappings, subClass );
-//            if( resolvedType != null )
-//            {
-//                return resolvedType;
-//            }
-//        }
-//
-//        return null;
     }
 
     private static Class extractTypeVariables( Map<TypeVariable, Type> mappings, ParameterizedType type )

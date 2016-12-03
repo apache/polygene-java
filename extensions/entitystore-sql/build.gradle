@@ -20,27 +20,26 @@
 
 description = "Apache Zest™ SQL EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - SQL" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - SQL" } }
 
 dependencies {
-
-  compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
-  compile project(":org.apache.zest.libraries:org.apache.zest.library.sql")
+  compile zest.core.bootstrap
+  compile zest.library( 'sql' )
   compile libraries.javaSqlGenerator
-  compile( libraries.javaSqlGeneratorImpl ) { 
-      exclude group: 'junit'
+  compile( libraries.javaSqlGeneratorImpl ) {
+    exclude group: 'junit'
   }
 
-  testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
-  testCompile project(":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp")
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'sql-dbcp' )
+  testCompile zest.extension( 'valueserialization-orgjson' )
   testCompile libraries.derby // Needed at compile time for polite test shutdown
 
-  testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
   testRuntime libraries.logback
   testRuntime libraries.h2
   testRuntime libraries.mysql_connector
   testRuntime libraries.postgres
   testRuntime libraries.sqlite
-
 }

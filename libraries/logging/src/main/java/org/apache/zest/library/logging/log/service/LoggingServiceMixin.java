@@ -30,6 +30,7 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ServiceComposite;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -133,7 +134,7 @@ public abstract class LoggingServiceMixin
             EntityBuilder<ServiceLogRecord> builder = uow.newEntityBuilder( ServiceLogRecord.class );
             ServiceLogRecord state = builder.instance();
             setStandardStuff( type, composite, category, message, state, params );
-            state.source().set( ( (ServiceComposite) composite ).identity().get() );
+            state.source().set( ( (ServiceComposite) composite ).identity().get().toString() );
             ServiceLogRecord slr = builder.newInstance();
         }
         else if( composite instanceof EntityComposite )
@@ -158,7 +159,7 @@ public abstract class LoggingServiceMixin
                                    LogRecord state, List<Serializable> params )
     {
         state.logtype().set( type );
-        state.time().set( System.currentTimeMillis() );
+        state.time().set( SystemTime.now() );
         state.category().set( category );
         state.message().set( message );
         state.compositeTypeName().set( getCompositeName( composite ) );

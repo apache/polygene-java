@@ -20,6 +20,8 @@
 
 package org.apache.zest.runtime.service;
 
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
@@ -45,6 +47,8 @@ import org.apache.zest.test.EntityTestAssembler;
 
 public class ServiceVisibilityTest
 {
+    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+
     private Energy4Java zest;
     private Module module;
     private Application app;
@@ -182,7 +186,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleApplicationVisible();
         }
         finally
@@ -200,7 +204,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleLayerVisible();
         }
         finally
@@ -218,7 +222,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.moduleModuleVisible();
         }
         finally
@@ -236,7 +240,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideApplicationVisible();
         }
         finally
@@ -254,7 +258,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideLayerVisible();
         }
         finally
@@ -272,7 +276,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.besideModuleVisible();
         }
         finally
@@ -290,7 +294,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowApplicationVisible();
         }
         finally
@@ -308,7 +312,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowLayerVisible();
         }
         finally
@@ -326,7 +330,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.belowModuleVisible();
         }
         finally
@@ -344,7 +348,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveApplicationVisible();
         }
         finally
@@ -362,7 +366,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveLayerVisible();
         }
         finally
@@ -380,7 +384,7 @@ public class ServiceVisibilityTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
+            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
             entity.aboveModuleVisible();
         }
         finally

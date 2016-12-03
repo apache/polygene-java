@@ -60,10 +60,10 @@ public interface GeodeConfiguration
      * Cache Region Shortcut.
      *
      * In {@literal EMBEDDED} {@link #topology()}, defaults to  {@literal LOCAL},
-     * see {@link com.gemstone.gemfire.cache.RegionShortcut}.
+     * see {@link org.apache.geode.cache.RegionShortcut}.
      *
      * In {@literal CLIENT_SERVER} {@link #topology()}, defaults to {@literal PROXY},
-     * see {@link com.gemstone.gemfire.cache.client.ClientRegionShortcut}.
+     * see {@link org.apache.geode.cache.client.ClientRegionShortcut}.
      *
      * @return Cache Region Shortcut
      */
@@ -73,9 +73,11 @@ public interface GeodeConfiguration
     /**
      * Geode Region Name.
      *
+     * Region names may only be alphanumeric and may contain hyphens or underscores.
+     *
      * @return Geode Region Name
      */
-    @UseDefaults( "zest:entitystore:region" )
+    @UseDefaults( "zest-entitystore-region" )
     Property<String> regionName();
 }
 // END SNIPPET: config

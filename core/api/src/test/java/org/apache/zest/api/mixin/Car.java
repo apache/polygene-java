@@ -19,9 +19,8 @@
  */
 package org.apache.zest.api.mixin;
 
-// START SNIPPET: mixins
+// START SNIPPET: mixin
 @Mixins( { StartMixin.class, VehicleMixin.class } )
 public interface Car extends Startable, Vehicle
 {}
-// END SNIPPET: mixins
-
+// END SNIPPET: mixin

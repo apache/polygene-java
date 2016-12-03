@@ -21,7 +21,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreAssembler;
+import org.apache.zest.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.apache.zest.test.performance.entitystore.AbstractEntityStorePerformanceTest;

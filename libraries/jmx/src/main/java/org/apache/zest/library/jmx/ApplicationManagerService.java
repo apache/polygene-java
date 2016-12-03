@@ -64,7 +64,7 @@ import static org.apache.zest.functional.Iterables.first;
  * <pre>
  * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
  * </pre>
- * Use the following snippet to find the ObjectName of a service with a given identity:
+ * Use the following snippet to find the ObjectName of a service with a given reference:
  * <pre>
  * ObjectName serviceName = ZestMBeans.findService(mbeanServer, applicationName, serviceId);
  * </pre>
@@ -169,7 +169,7 @@ public interface ApplicationManagerService
                         ObjectName objectName = new ObjectName( names.peek()
                                                                     .toString() + ",class=Service,service=" + serviceDescriptor
                                                                     .identity() );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity().toString(), ServiceBean.class
                             .getName() ).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null )
@@ -195,7 +195,7 @@ public interface ApplicationManagerService
                         ObjectName objectName = new ObjectName( names.peek()
                                                                     .toString() + ",class=Imported service,importedservice=" + importedServiceDescriptor
                                                                     .identity() );
-                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class
+                        RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity().toString(), ImportedServiceBean.class
                             .getName() ).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
                             attribute( "Visibility", "Service visibility", String.class.getName(), "Visibility of service", "getVisibility", null )
@@ -289,7 +289,7 @@ public interface ApplicationManagerService
 
         public String getId()
         {
-            return serviceDescriptor.identity();
+            return serviceDescriptor.identity().toString();
         }
 
         public String getVisibility()
@@ -310,7 +310,7 @@ public interface ApplicationManagerService
         public boolean isActive()
         {
             Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
-            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
+            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity().toString() ),
                                                        module.findServices( mainType ) )
             );
             return first != null && first.isActive();
@@ -319,7 +319,7 @@ public interface ApplicationManagerService
         public boolean isAvailable()
         {
             Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
-            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
+            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity().toString() ),
                                                        module.findServices( mainType ) )
             );
             return first != null && first.isAvailable();
@@ -328,7 +328,7 @@ public interface ApplicationManagerService
         public String restart()
         {
             Iterable<?> services = module.findServices( serviceDescriptor.types().findFirst().orElse( null ) );
-            ServiceReference<?> serviceRef = (ServiceReference) first( filter( withId( serviceDescriptor.identity() ),
+            ServiceReference<?> serviceRef = (ServiceReference) first( filter( withId( serviceDescriptor.identity().toString() ),
                                                                                services )
             );
             if( serviceRef != null )
@@ -362,7 +362,7 @@ public interface ApplicationManagerService
 
         public String getId()
         {
-            return serviceDescriptor.identity();
+            return serviceDescriptor.identity().toString();
         }
 
         public String getVisibility()

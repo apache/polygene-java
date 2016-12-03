@@ -22,6 +22,8 @@ package org.apache.zest.tools.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.zest.tools.model.descriptor.ServiceDetailDescriptor;
+import org.apache.zest.tools.model.descriptor.TransientDetailDescriptor;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.ActivatorAdapter;
@@ -100,6 +102,10 @@ public class VisitableDetailTest
         public boolean visitEnter( Object visited )
             throws RuntimeException
         {
+            if( visited instanceof ServiceDetailDescriptor)
+            {
+                return true;
+            }
             String event = "visitEnter( " + visited + " )";
             events.add( event );
             System.out.println( event );
@@ -110,6 +116,10 @@ public class VisitableDetailTest
         public boolean visitLeave( Object visited )
             throws RuntimeException
         {
+            if( visited instanceof ServiceDetailDescriptor)
+            {
+                return true;
+            }
             String event = "visitLeave( " + visited + " )";
             events.add( event );
             System.out.println( event );
@@ -120,6 +130,10 @@ public class VisitableDetailTest
         public boolean visit( Object visited )
             throws RuntimeException
         {
+            if( visited instanceof TransientDetailDescriptor)
+            {
+                return true;
+            }
             String event = "visit( " + visited + " )";
             events.add( event );
             System.out.println( event );

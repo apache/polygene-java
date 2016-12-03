@@ -17,24 +17,27 @@
  *
  *
  */
+import org.apache.zest.gradle.TaskGroups
 
 description = "Apache Zest™ Circuit Breaker Library provides a framework for connecting external resources, so that they can be disabled during re-play of events."
 
-jar { manifest {name = "Apache Zest™ Library - Circuit Breaker"}}
+jar { manifest { name = "Apache Zest™ Library - Circuit Breaker" } }
 
 dependencies {
-    compile project( ':org.apache.zest.core:org.apache.zest.core.api' )
-    compile project( ':org.apache.zest.libraries:org.apache.zest.library.jmx' )
-    compile libraries.slf4j_api
+  compile zest.core.bootstrap
+  compile zest.library( 'jmx' )
 
-    testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
-    testCompile libraries.awaitility
+  runtime zest.core.runtime
 
-    testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
-    testRuntime libraries.logback
+  testCompile zest.core.testsupport
+  testCompile libraries.awaitility
+
+  testRuntime libraries.logback
 }
 
-task( runSample, dependsOn: 'testClasses', type: JavaExec ) {
-    main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementTest'
-    classpath = sourceSets.test.runtimeClasspath
+task( runCircuitBreakerSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementSample'
+  classpath = sourceSets.test.runtimeClasspath
 }

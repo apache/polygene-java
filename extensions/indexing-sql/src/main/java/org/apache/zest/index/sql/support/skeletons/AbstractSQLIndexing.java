@@ -37,7 +37,7 @@ import javax.sql.DataSource;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -218,7 +218,7 @@ public abstract class AbstractSQLIndexing
 //                        // throw new
 //                        // UnsupportedOperationException("Did not understand what to do with state [id = "
 //                        // +
-//                        // eState.identity().identity() + ", status = " + status + "].");
+//                        // eState.reference().reference() + ", status = " + status + "].");
 //                    }
                 }
 
@@ -330,8 +330,8 @@ public abstract class AbstractSQLIndexing
     )
         throws SQLException
     {
-        ps.setString( startingIndex, state.identity().identity() );
-        ps.setTimestamp( startingIndex + 1, new Timestamp( state.lastModified() ) );
+        ps.setString( startingIndex, state.entityReference().identity().toString() );
+        ps.setTimestamp( startingIndex + 1, Timestamp.from( state.lastModified() ) );
         ps.setString( startingIndex + 2, state.version() );
         ps.setString( startingIndex + 3, this._app.version() );
     }
@@ -344,7 +344,7 @@ public abstract class AbstractSQLIndexing
         // TODO build cache: Zest Identity -> PK
         Long entityPK = null;
         PreparedStatement ps = queryPKPS.getValue();
-        ps.setString( 1, state.identity().identity() );
+        ps.setString( 1, state.entityReference().identity().toString() );
         ResultSet rs = null;
         try
         {
@@ -651,7 +651,7 @@ public abstract class AbstractSQLIndexing
 
                         ps.setInt( 1, qNamePK[0] );
                         ps.setLong( 2, entityPK );
-                        ps.setString( 3, ref.identity() );
+                        ps.setString( 3, ref.identity().toString() );
                         ps.addBatch();
 
                         qNamePK[0] += 1;
@@ -682,7 +682,7 @@ public abstract class AbstractSQLIndexing
                             ps.setInt( 1, qNamePK[0] );
                             ps.setLong( 2, entityPK );
                             ps.setInt( 3, index );
-                            ps.setString( 4, ref.identity() );
+                            ps.setString( 4, ref.identity().toString() );
                             ps.addBatch();
                             qNamePK[0] += 1;
                         }
@@ -710,7 +710,7 @@ public abstract class AbstractSQLIndexing
         Integer result = propertyPK;
         if( property != null )
         {
-            if( !qName.type().equals( Identity.class.getName() ) )
+            if( !qName.type().equals( HasIdentity.class.getName() ) )
             {
                 QNameInfo info = this._state.qNameInfos().get().get( qName );
                 if( info.getCollectionDepth() > 0 )
@@ -1005,8 +1005,8 @@ public abstract class AbstractSQLIndexing
         this.clearAllEntitysQNames( clearPropertiesPS, entityPK );
 
         // Update state
-        ps.setString( 1, state.identity().identity() );
-        ps.setTimestamp( 2, new Timestamp( state.lastModified() ) );
+        ps.setString( 1, state.entityReference().identity().toString() );
+        ps.setTimestamp( 2, Timestamp.from( state.lastModified() ) );
         ps.setString( 3, state.version() );
         ps.setString( 4, this._app.version() );
         ps.setLong( 5, entityPK );
@@ -1035,7 +1035,7 @@ public abstract class AbstractSQLIndexing
     private void removeEntity( EntityState state, PreparedStatement ps )
         throws SQLException
     {
-        ps.setString( 1, state.identity().identity() );
+        ps.setString( 1, state.entityReference().identity().toString() );
         ps.addBatch();
     }
 

@@ -53,7 +53,6 @@ public class CrudModuleWriter
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
                 "        throws AssemblyException\n" +
                 "    {\n" +
-                "        module.withDefaultUnitOfWorkFactory();\n" +
                 "        new CrudServiceAssembler().assemble( module );\n" +
                 "        return module;\n" +
                 "    }\n" +

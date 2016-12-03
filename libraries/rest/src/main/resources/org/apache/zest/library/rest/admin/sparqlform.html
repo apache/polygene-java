@@ -43,7 +43,7 @@
 <body>
 <form method="GET" action="">
     <label>Query:</label><br/>
-    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
+    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?entityType ?identity
@@ -60,7 +60,7 @@
 
 <h3>Get all entities</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
+PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?entityType ?identity
@@ -73,7 +73,7 @@ PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
 </pre>
 <h3>Get entities of a given type</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
+PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?identity
@@ -85,7 +85,7 @@ PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
 
 <h3>Get entities with a given property value</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.entity.Identity#&gt;
+PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?identity

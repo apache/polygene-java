@@ -20,23 +20,21 @@
 
 description = "Apache Zest™ Shiro Library integrates Apache Shiro security framework into Apache Zest™."
 
-jar { manifest { name = "Apache Zest™ Library - Shiro Core" }}
+jar { manifest { name = "Apache Zest™ Library - Shiro Core" } }
 
 dependencies {
-
-  compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
+  compile zest.core.bootstrap
   compile libraries.shiro
   compile libraries.bouncy_castle
-  compile libraries.slf4j_api
 
-  testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
-  testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.shiro-web" )
-  testCompile project( ":org.apache.zest.libraries:org.apache.zest.library.servlet" )
-  testCompile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )
+  runtime zest.core.runtime
+
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'shiro-web' )
+  testCompile zest.library( 'servlet' )
+  testCompile zest.extension( 'indexing-rdf' )
   testCompile libraries.jetty_webapp
   testCompile libraries.http_client
 
-  testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
   testRuntime libraries.logback
-
 }

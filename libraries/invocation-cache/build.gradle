@@ -20,14 +20,15 @@
 
 description = "Apache Zest™ Invocation Cache Library provides caching framework for methods."
 
-jar { manifest { name = "Apache Zest™ Library - Invocation Cache" }}
+jar { manifest { name = "Apache Zest™ Library - Invocation Cache" } }
 
 dependencies {
-  compile( project(":org.apache.zest.core:org.apache.zest.core.api") )
-  compile( project(':org.apache.zest.libraries:org.apache.zest.library.jmx' ) )
+  compile zest.core.api
+  compile zest.library( 'jmx' )
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+
+  testRuntime libraries.logback
 }

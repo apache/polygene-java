@@ -23,6 +23,7 @@ package org.apache.zest.api.common;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import org.apache.zest.api.injection.scope.Service;
@@ -36,6 +37,7 @@ import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.time.SystemTime;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
@@ -352,11 +354,11 @@ public class PluginTest
         {
             @Service
             HelloWorld helloWorld;
-            private long time;
+            private Instant time;
 
             public SimonSaysMixin()
             {
-                time = System.currentTimeMillis();
+                time = SystemTime.now();
             }
 
             public String say( String phrase, String name )

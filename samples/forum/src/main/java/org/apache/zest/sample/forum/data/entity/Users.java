@@ -21,6 +21,8 @@ package org.apache.zest.sample.forum.data.entity;
 
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.Query;
@@ -39,7 +41,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
 public interface Users
     extends EntityComposite, Events
 {
-    String USERS_ID = "users";
+    Identity USERS_ID = new StringIdentity( "users" );
 
     Query<User> users();
 

@@ -18,12 +18,10 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ I/O"}}
+jar { manifest { name = "Apache Zest™ I/O" } }
 
 dependencies {
+  compile zest.core.functional
 
-  compile project( ':org.apache.zest.core:org.apache.zest.core.functional' )
-
-  testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
-
+  testCompile zest.core.testsupport
 }

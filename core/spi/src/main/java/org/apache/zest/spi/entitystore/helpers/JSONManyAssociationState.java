@@ -53,7 +53,7 @@ public final class JSONManyAssociationState
     @Override
     public boolean contains( EntityReference entityReference )
     {
-        return indexOfReference( entityReference.identity() ) != -1;
+        return indexOfReference( entityReference.toString() ) != -1;
     }
 
     @Override
@@ -61,12 +61,12 @@ public final class JSONManyAssociationState
     {
         try
         {
-            if( indexOfReference( entityReference.identity() ) != -1 )
+            if( indexOfReference( entityReference.identity().toString() ) != -1 )
             {
                 return false;
             }
             entityState.cloneStateIfGlobalStateLoaded();
-            insertReference( idx, entityReference.identity() );
+            insertReference( idx, entityReference.identity().toString() );
             entityState.markUpdated();
             return true;
         }
@@ -79,7 +79,7 @@ public final class JSONManyAssociationState
     @Override
     public boolean remove( EntityReference entityReference )
     {
-        int refIndex = indexOfReference( entityReference.identity() );
+        int refIndex = indexOfReference( entityReference.identity().toString() );
         if( refIndex != -1 )
         {
             entityState.cloneStateIfGlobalStateLoaded();
@@ -95,7 +95,7 @@ public final class JSONManyAssociationState
     {
         try
         {
-            return new EntityReference( references.getString( i ) );
+            return EntityReference.parseEntityReference( references.getString( i ) );
         }
         catch( JSONException e )
         {
@@ -121,7 +121,7 @@ public final class JSONManyAssociationState
             {
                 try
                 {
-                    EntityReference ref = new EntityReference( references.getString( idx ) );
+                    EntityReference ref = EntityReference.parseEntityReference( references.getString( idx ) );
                     idx++;
                     return ref;
                 }
@@ -145,11 +145,11 @@ public final class JSONManyAssociationState
         return references.toString();
     }
 
-    private int indexOfReference( Object item )
+    private int indexOfReference( String enityIdentityAsString )
     {
         for( int idx = 0; idx < references.length(); idx++ )
         {
-            if( item.equals( references.opt( idx ) ) )
+            if( enityIdentityAsString.equals( references.opt( idx ) ) )
             {
                 return idx;
             }

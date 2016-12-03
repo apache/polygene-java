@@ -20,6 +20,7 @@
 
 package org.apache.zest.sample.rental.web;
 
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -51,7 +52,7 @@ public interface BookingPage
             Element result = dom.createElementNS( Page.XHTML, "div" );
             String bookingId = context.path();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Booking booking = uow.get( Booking.class, bookingId );
+            Booking booking = uow.get( Booking.class, new StringIdentity( bookingId ) );
             Car car = booking.car().get();
             createChildNode( dom, result, car.model().get() );
             createChildNode( dom, result, car.licensePlate().get() );
@@ -72,7 +73,7 @@ public interface BookingPage
             Element result = dom.createElementNS( Page.XHTML, "div" );
             String bookingId = context.path();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Booking booking = uow.get( Booking.class, bookingId );
+            Booking booking = uow.get( Booking.class, new StringIdentity( bookingId ) );
             Customer customer = booking.customer().get();
             createChildNode( dom, result, customer.name().get() );
             createChildNode( dom, result, customer.address().get().line1().get() );

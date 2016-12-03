@@ -21,7 +21,7 @@
 package org.apache.zest.library.restlet.resource;
 
 import java.util.Map;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.property.PropertyDescriptor;
@@ -33,7 +33,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.routing.Router;
 
-public class DefaultResourceFactoryImpl<K extends Identity, T extends ServerResource<K>>
+public class DefaultResourceFactoryImpl<K extends HasIdentity, T extends ServerResource<K>>
     implements ResourceFactory<K, T>
 {
     @Uses
@@ -81,7 +81,7 @@ public class DefaultResourceFactoryImpl<K extends Identity, T extends ServerReso
     private Object findValue( Map<String, Object> attributes, PropertyDescriptor descriptor )
     {
         String name = descriptor.qualifiedName().name();
-        if( name.equals( "identity" ) )
+        if( name.equals( "reference" ) )
         {
             Object id = attributes.get( "id" );
             if( id == null )

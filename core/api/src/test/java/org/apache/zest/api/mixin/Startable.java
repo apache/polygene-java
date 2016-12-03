@@ -19,11 +19,11 @@
  */
 package org.apache.zest.api.mixin;
 
-// START SNIPPET: mixins
+// START SNIPPET: mixin
 public interface Startable
 {
     boolean start();
     void stop();
 }
 
-// END SNIPPET: mixins
+// END SNIPPET: mixin

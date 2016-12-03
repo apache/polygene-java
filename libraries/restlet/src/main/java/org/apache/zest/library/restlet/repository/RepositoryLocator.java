@@ -23,7 +23,7 @@ package org.apache.zest.library.restlet.repository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
@@ -31,7 +31,7 @@ import org.apache.zest.api.service.ServiceReference;
 @Mixins( RepositoryLocator.Mixin.class )
 public interface RepositoryLocator
 {
-    <T extends Identity> CrudRepository<T> find( Class<T> entityType );
+    <T extends HasIdentity> CrudRepository<T> find(Class<T> entityType );
 
     class Mixin
         implements RepositoryLocator
@@ -48,7 +48,7 @@ public interface RepositoryLocator
         }
 
         @Override
-        public <T extends Identity> CrudRepository<T> find( Class<T> entityType )
+        public <T extends HasIdentity> CrudRepository<T> find(Class<T> entityType )
         {
             //noinspection unchecked
             return repositories.get( entityType );

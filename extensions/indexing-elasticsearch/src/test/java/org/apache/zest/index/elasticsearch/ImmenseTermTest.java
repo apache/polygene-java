@@ -20,11 +20,7 @@
 
 package org.apache.zest.index.elasticsearch;
 
-import java.io.File;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.Visibility;
@@ -35,18 +31,23 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * ImmenseTermTest.
@@ -56,9 +57,17 @@ import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 public class ImmenseTermTest
     extends AbstractZestTest
 {
-    private static final File DATA_DIR = new File( "build/tmp/immense-term-test" );
+    @ClassRule
+    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
+
+    @ClassRule
+    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public final TestName testName = new TestName();
+
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @BeforeClass
     public static void beforeClass_IBMJDK()
@@ -98,19 +107,18 @@ public class ImmenseTermTest
         new EntityTestAssembler().assemble( module );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new ESClientIndexQueryAssembler( ELASTIC_SEARCH.client() )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
+                                                        testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
-        module.services( FileConfigurationService.class ).
-            setMetaInfo( override );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         // Entities & Values
         module.entities( TestEntity.class, TestEntity2.class );

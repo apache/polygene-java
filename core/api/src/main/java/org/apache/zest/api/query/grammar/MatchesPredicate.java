@@ -81,14 +81,6 @@ public class MatchesPredicate
     @Override
     public String toString()
     {
-        return new StringBuilder()
-            .append( "( " )
-            .append( property )
-            .append( " matches " )
-            .append( "\"" )
-            .append( value )
-            .append( "\"" )
-            .append( " )" )
-            .toString();
+        return "( " + property + " matches " + "\"" + value + "\"" + " )";
     }
 }

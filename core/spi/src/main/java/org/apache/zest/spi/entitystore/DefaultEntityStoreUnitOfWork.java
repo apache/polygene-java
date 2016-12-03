@@ -20,9 +20,11 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import java.util.HashMap;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
@@ -35,16 +37,16 @@ public final class DefaultEntityStoreUnitOfWork
 {
     private final ModuleDescriptor module;
     private EntityStoreSPI entityStoreSPI;
-    private String identity;
+    private Identity identity;
     private HashMap<EntityReference, EntityState> states = new HashMap<>();
     private Usecase usecase;
-    private long currentTime;
+    private Instant currentTime;
 
     public DefaultEntityStoreUnitOfWork( ModuleDescriptor module,
                                          EntityStoreSPI entityStoreSPI,
-                                         String identity,
+                                         Identity identity,
                                          Usecase usecase,
-                                         long currentTime
+                                         Instant currentTime
     )
     {
         this.module = module;
@@ -55,13 +57,13 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }

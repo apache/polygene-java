@@ -29,7 +29,6 @@ import org.apache.zest.index.rdf.query.RdfQueryParserFactory;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
 import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.apache.zest.api.common.Visibility.application;
 
@@ -43,7 +42,6 @@ public class PersistenceAssembler
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         module.services(
-            UuidIdentityGeneratorService.class,
             MemoryEntityStoreService.class,
             // Query
             RdfQueryParserFactory.class, RdfIndexingEngineService.class,

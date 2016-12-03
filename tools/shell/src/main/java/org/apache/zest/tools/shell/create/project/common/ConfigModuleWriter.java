@@ -46,7 +46,6 @@ public class ConfigModuleWriter
                 "import org.apache.zest.bootstrap.ModuleAssembly;\n" +
                 "import org.apache.zest.bootstrap.layered.ModuleAssembler;\n" +
                 "import org.apache.zest.entitystore.memory.MemoryEntityStoreService;\n" +
-                "import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;\n" +
                 "import org.apache.zest.valueserialization.jackson.JacksonValueSerializationAssembler;\n" +
                 "\n" +
                 "public class ConfigModule\n" +
@@ -58,7 +57,6 @@ public class ConfigModuleWriter
                 "    {\n" +
                 "        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );\n" +
                 "        new JacksonValueSerializationAssembler().visibleIn( Visibility.layer ).assemble( module );\n" +
-                "        module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );\n" +
                 "        return module;\n" +
                 "    }\n" +
                 "}\n");

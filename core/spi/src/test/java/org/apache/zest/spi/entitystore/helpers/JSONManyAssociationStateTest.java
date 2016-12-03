@@ -19,21 +19,20 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.time.SystemTime;
+import org.apache.zest.spi.entity.EntityStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.spi.entity.EntityStatus;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThat;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toList;
 
 public class JSONManyAssociationStateTest
 {
@@ -51,7 +50,7 @@ public class JSONManyAssociationStateTest
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           SystemTime.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,
@@ -77,7 +76,7 @@ public class JSONManyAssociationStateTest
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           SystemTime.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,
@@ -92,9 +91,9 @@ public class JSONManyAssociationStateTest
 
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "1" ) ), is( true ) );
 
-        assertThat( jsonState.get( 0 ).identity(), equalTo( "0" ) );
-        assertThat( jsonState.get( 1 ).identity(), equalTo( "1" ) );
-        assertThat( jsonState.get( 2 ).identity(), equalTo( "2" ) );
+        assertThat( jsonState.get( 0 ).identity().toString(), equalTo( "0" ) );
+        assertThat( jsonState.get( 1 ).identity().toString(), equalTo( "1" ) );
+        assertThat( jsonState.get( 2 ).identity().toString(), equalTo( "2" ) );
 
         assertThat( jsonState.count(), equalTo( 3 ) );
 
@@ -102,8 +101,8 @@ public class JSONManyAssociationStateTest
 
         assertThat( jsonState.count(), equalTo( 2 ) );
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "1" ) ), is( false ) );
-        assertThat( jsonState.get( 0 ).identity(), equalTo( "0" ) );
-        assertThat( jsonState.get( 1 ).identity(), equalTo( "2" ) );
+        assertThat( jsonState.get( 0 ).identity().toString(), equalTo( "0" ) );
+        assertThat( jsonState.get( 1 ).identity().toString(), equalTo( "2" ) );
 
         jsonState.add( 2, EntityReference.parseEntityReference( "1" ) );
 
@@ -115,9 +114,9 @@ public class JSONManyAssociationStateTest
 
         assertThat( jsonState.count(), equalTo( 6 ) );
 
-        assertThat( jsonState.get( 0 ).identity(), equalTo( "C" ) );
-        assertThat( jsonState.get( 1 ).identity(), equalTo( "B" ) );
-        assertThat( jsonState.get( 2 ).identity(), equalTo( "A" ) );
+        assertThat( jsonState.get( 0 ).identity().toString(), equalTo( "C" ) );
+        assertThat( jsonState.get( 1 ).identity().toString(), equalTo( "B" ) );
+        assertThat( jsonState.get( 2 ).identity().toString(), equalTo( "A" ) );
 
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "C" ) ), is( true ) );
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "B" ) ), is( true ) );
@@ -126,14 +125,11 @@ public class JSONManyAssociationStateTest
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "2" ) ), is( true ) );
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "1" ) ), is( true ) );
 
-        List<String> refList = toList( map( new Function<EntityReference, String>()
+        List<String> refList = new ArrayList<>();
+        for( EntityReference ref : jsonState )
         {
-            @Override
-            public String apply( EntityReference from )
-            {
-                return from.identity();
-            }
-        }, jsonState ) );
+            refList.add( ref.identity().toString() );
+        }
         assertThat( refList.isEmpty(), is( false ) );
         assertArrayEquals( new String[]
         {

@@ -35,14 +35,13 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.api.composite.ModelDescriptor;
@@ -119,14 +118,14 @@ public class PDFWriter
         {
             writeImpl( file, descriptor, graphDisplays );
         }
-        catch( IOException | COSVisitorException ex )
+        catch( IOException ex )
         {
             ex.printStackTrace();
         }
     }
 
     protected void writeImpl( File file, ApplicationDetailDescriptor descriptor, List<GraphDisplay> graphDisplays )
-        throws IOException, COSVisitorException
+        throws IOException
     {
         try
         {
@@ -162,7 +161,7 @@ public class PDFWriter
     private void writeGraphPage( GraphDisplay graphDisplay )
         throws IOException
     {
-        File tFile = File.createTempFile( "envisage", "png" );
+        File tFile = File.createTempFile( "envisage", ".png" );
         graphDisplay.saveImage( new FileOutputStream( tFile ), "png", 1d );
 
         BufferedImage img = ImageIO.read( tFile );
@@ -176,7 +175,7 @@ public class PDFWriter
         page.setMediaBox( pdRect );
         doc.addPage( page );
 
-        PDJpeg xImage = new PDJpeg( doc, img );
+        PDImageXObject xImage = PDImageXObject.createFromFileByExtension( tFile, doc );
 
         PDPageContentStream contentStream = new PDPageContentStream( doc, page );
         contentStream.drawImage( xImage, ( pdRect.getWidth() - w ) / 2, ( pdRect.getHeight() - h ) / 2 );
@@ -309,7 +308,7 @@ public class PDFWriter
         if( objectDesciptor instanceof ServiceDetailDescriptor )
         {
             ServiceDescriptor descriptor = ( (ServiceDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- identity: " + descriptor.identity() );
+            writeString( "- reference: " + descriptor.identity() );
             writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
             writeString( "- startup: " + ( (ServiceDetailDescriptor) objectDesciptor ).descriptor()

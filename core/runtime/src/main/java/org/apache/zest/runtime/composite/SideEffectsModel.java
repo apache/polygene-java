@@ -52,7 +52,6 @@ public final class SideEffectsModel
     public Stream<DependencyModel> dependencies()
     {
         return sideEffectModels.stream().flatMap( Dependencies::dependencies );
-//        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, sideEffectModels ) );
     }
 
     // Context

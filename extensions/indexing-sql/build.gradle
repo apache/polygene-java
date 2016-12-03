@@ -20,27 +20,26 @@
 
 description = "Apache Zest™ SQL Indexing Extension"
 
-jar {manifest {name = "Apache Zest™ Extension - Indexing - SQL"}}
+jar { manifest { name = "Apache Zest™ Extension - Indexing - SQL" } }
 
 dependencies {
-
-  compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
-  compile project(":org.apache.zest.libraries:org.apache.zest.library.sql")
-  compile project(':org.apache.zest.extensions:org.apache.zest.extension.reindexer')
+  compile zest.core.bootstrap
+  compile zest.library( 'sql' )
+  compile zest.extension( 'reindexer' )
   compile libraries.javaSqlGenerator
-  compile( libraries.javaSqlGeneratorImpl ) { 
-      exclude group: 'junit'
+  compile( libraries.javaSqlGeneratorImpl ) {
+    exclude group: 'junit'
   }
 
-  testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
-  testCompile project(":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp")
+  runtime zest.core.runtime
 
-  testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
+  testCompile zest.core.testsupport
+  testCompile zest.library( 'sql-dbcp' )
+
   testRuntime libraries.logback
   testRuntime libraries.derby
   testRuntime libraries.h2
   testRuntime libraries.mysql_connector
   testRuntime libraries.postgres
   testRuntime libraries.sqlite
-
 }

@@ -91,13 +91,11 @@ public class MongoMapEntityStoreMixin
         db = mongo.getDB( databaseName );
 
         // Create index if needed
-        db.requestStart();
         DBCollection entities = db.getCollection( collectionName );
         if( entities.getIndexInfo().isEmpty() )
         {
             entities.createIndex( new BasicDBObject( IDENTITY_COLUMN, 1 ) );
         }
-        db.requestDone();
     }
 
     private void loadConfiguration()
@@ -203,16 +201,12 @@ public class MongoMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        db.requestStart();
-
         DBObject entity = db.getCollection( collectionName ).findOne( byIdentity( entityReference ) );
         if( entity == null )
         {
             throw new EntityNotFoundException( entityReference );
         }
         DBObject bsonState = (DBObject) entity.get( STATE_COLUMN );
-
-        db.requestDone();
 
         String jsonState = JSON.serialize( bsonState );
         return new StringReader( jsonState );
@@ -222,7 +216,6 @@ public class MongoMapEntityStoreMixin
     public void applyChanges( MapChanges changes )
         throws IOException
     {
-        db.requestStart();
         final DBCollection entities = db.getCollection( collectionName );
 
         changes.visitMap( new MapChanger()
@@ -243,7 +236,7 @@ public class MongoMapEntityStoreMixin
                         DBObject bsonState = (DBObject) JSON.parse( jsonState );
 
                         BasicDBObject entity = new BasicDBObject();
-                        entity.put( IDENTITY_COLUMN, ref.identity() );
+                        entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
                         entities.insert( entity, writeConcern );
                     }
@@ -265,7 +258,7 @@ public class MongoMapEntityStoreMixin
                         DBObject bsonState = (DBObject) JSON.parse( toString() );
 
                         BasicDBObject entity = new BasicDBObject();
-                        entity.put( IDENTITY_COLUMN, ref.identity() );
+                        entity.put( IDENTITY_COLUMN, ref.identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
                         entities.update( byIdentity( ref ), entity, false, false, writeConcern );
                     }
@@ -284,8 +277,6 @@ public class MongoMapEntityStoreMixin
                 entities.remove( entity, writeConcern );
             }
         } );
-
-        db.requestDone();
     }
 
     @Override
@@ -305,8 +296,6 @@ public class MongoMapEntityStoreMixin
                         Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {
-                        db.requestStart();
-
                         DBCursor cursor = db.getCollection( collectionName ).find();
                         while( cursor.hasNext() )
                         {
@@ -315,8 +304,6 @@ public class MongoMapEntityStoreMixin
                             String jsonState = JSON.serialize( bsonState );
                             receiver.receive( new StringReader( jsonState ) );
                         }
-
-                        db.requestDone();
                     }
                 } );
             }
@@ -325,6 +312,6 @@ public class MongoMapEntityStoreMixin
 
     private DBObject byIdentity( EntityReference entityReference )
     {
-        return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity() );
+        return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity().toString() );
     }
 }

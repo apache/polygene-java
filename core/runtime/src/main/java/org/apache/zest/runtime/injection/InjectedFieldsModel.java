@@ -28,6 +28,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.zest.api.injection.InjectionScope;
 import org.apache.zest.api.util.Classes;
@@ -35,9 +36,7 @@ import org.apache.zest.api.util.Fields;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
-import static org.apache.zest.api.util.Annotations.type;
-import static org.apache.zest.runtime.legacy.Specifications.translate;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 /**
  * JAVADOC
@@ -51,9 +50,9 @@ public final class InjectedFieldsModel
     {
         Fields.fieldsOf( fragmentClass ).forEach( field ->
             Arrays.stream( field.getAnnotations() )
-                .filter( translate( type(), hasAnnotation( InjectionScope.class ) ) )
-                .filter( annot -> annot != null )
-                .forEach( injectionAnnotation ->  addModel( fragmentClass, field, injectionAnnotation )
+                  .filter( typeHasAnnotation( InjectionScope.class ) )
+                  .filter( Objects::nonNull )
+                  .forEach( injectionAnnotation ->  addModel( fragmentClass, field, injectionAnnotation )
             )
         );
     }

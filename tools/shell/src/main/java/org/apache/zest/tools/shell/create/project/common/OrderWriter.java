@@ -43,11 +43,11 @@ public class OrderWriter
             pw.println("import org.apache.zest.api.association.Association;");
             pw.println("import org.apache.zest.api.association.ManyAssociation;");
             pw.println("import org.apache.zest.api.common.Optional;");
-            pw.println("import org.apache.zest.api.entity.Identity;");
+            pw.println("import org.apache.zest.api.identity.HasIdentity;");
             pw.println("import org.apache.zest.api.property.Property;");
             pw.println();
             pw.println(
-                "public interface Order extends Identity\n" +
+                "public interface Order extends HasIdentity\n" +
                 "{\n" +
                 "    Property<String> orderNumber();\n\n" +
                 "    Property<ZonedDateTime> registered();\n\n" +

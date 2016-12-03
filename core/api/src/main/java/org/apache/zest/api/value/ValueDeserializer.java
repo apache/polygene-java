@@ -39,7 +39,7 @@ import org.apache.zest.api.type.ValueType;
  * </ul>
  * <p>
  * Nested plain values, EntityReferences, Collections, Maps, ValueComposites are supported.
- * EntityReferences are deserialized as their identity string.
+ * EntityReferences are deserialized as their reference string.
  * </p>
  * <p>
  * Plain values can be one of:

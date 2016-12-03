@@ -36,12 +36,10 @@ import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
 import org.apache.zest.api.injection.InjectionScope;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
@@ -51,9 +49,7 @@ import org.apache.zest.runtime.injection.ParameterizedTypeInstance;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
+import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 /**
  * JAVADOC
@@ -132,8 +128,9 @@ public final class ConstructorsModel
         Annotation[][] parameterAnnotations = injectedConstructor.getParameterAnnotations();
         for( Type type : injectedConstructor.getGenericParameterTypes() )
         {
-            Annotation injectionAnnotation = first(
-                filter( Specifications.translate( Annotations.type(), Annotations.hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[ idx ] ) ) );
+            Annotation injectionAnnotation = Stream.of( parameterAnnotations[ idx ] )
+                                                   .filter( typeHasAnnotation( InjectionScope.class ) )
+                                                   .findFirst().orElse( null );
 
             if( injectionAnnotation == null )
             {

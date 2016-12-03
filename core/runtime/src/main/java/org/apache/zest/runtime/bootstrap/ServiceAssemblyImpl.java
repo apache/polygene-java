@@ -28,16 +28,13 @@ import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.common.InvalidApplicationException;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.ServiceAssembly;
 import org.apache.zest.bootstrap.StateDeclarations;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
-import org.apache.zest.runtime.association.AssociationsModel;
-import org.apache.zest.runtime.association.ManyAssociationsModel;
-import org.apache.zest.runtime.association.NamedAssociationsModel;
 import org.apache.zest.runtime.service.ServiceModel;
 import org.apache.zest.runtime.structure.ModuleModel;
 
@@ -47,7 +44,7 @@ import org.apache.zest.runtime.structure.ModuleModel;
 public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     implements ServiceAssembly
 {
-    String identity;
+    Identity identity;
     boolean instantiateOnStartup = false;
     List<Class<? extends Activator<?>>> activators = new ArrayList<>();
 
@@ -62,7 +59,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }
@@ -73,8 +70,9 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         try
         {
             buildComposite( helper, stateDeclarations );
-            List<Class<? extends Activator<?>>> activatorClasses = Iterables.toList(
-                Iterables.<Class<? extends Activator<?>>>flatten( activators, activatorsDeclarations( types.stream() ) ) );
+            List<Class<? extends Activator<?>>> activatorClasses = Stream
+                .concat( activators.stream(), activatorsDeclarations( types ) )
+                .collect( Collectors.toList() );
             return new ServiceModel( module, types, visibility, metaInfo,
                                      new ActivatorsModel( activatorClasses ),
                                      mixinsModel, stateModel, compositeMethodsModel,
@@ -86,12 +84,12 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         }
     }
 
-    private Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Stream<? extends Class<?>> typess )
+    private Stream<Class<? extends Activator<?>>> activatorsDeclarations( List<? extends Class<?>> types )
     {
-        return typess.flatMap( Classes::typesOf )
-//            .filter( type -> Annotations.annotationOn( type, Activators.class ) == null )
-            .flatMap( this::getAnnotations )
-            .collect( Collectors.toList() );
+        return types.stream()
+                    .flatMap( Classes::typesOf )
+                    //.filter( type -> Annotations.annotationOn( type, Activators.class ) == null )
+                    .flatMap( this::getAnnotations );
     }
 
     private Stream<? extends Class<? extends Activator<?>>> getAnnotations( Type type )

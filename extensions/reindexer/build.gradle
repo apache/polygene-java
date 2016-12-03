@@ -18,16 +18,17 @@
  *
  */
 
-jar { manifest { description = "Apache Zest™ Reindexer Extension" }}
+jar { manifest { description = "Apache Zest™ Reindexer Extension" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.spi"))
-  compile(libraries.slf4j_api)
+  compile zest.core.spi
+  compile libraries.slf4j_api
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(':org.apache.zest.extensions:org.apache.zest.extension.entitystore-jdbm'))
-  testCompile(project(':org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf'))
+  runtime zest.core.runtime
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'entitystore-jdbm' )
+  testCompile zest.extension( 'indexing-rdf' )
+
+  testRuntime libraries.logback
 }

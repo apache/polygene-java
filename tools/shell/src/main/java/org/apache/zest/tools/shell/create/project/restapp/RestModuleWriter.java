@@ -60,8 +60,6 @@ public class RestModuleWriter
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
                 "        throws AssemblyException\n" +
                 "    {\n" +
-                "        module.withDefaultUnitOfWorkFactory();\n" +
-                "\n" +
                 "        module.objects( SimpleVerifier.class, SimpleEnroler.class);\n" +
                 "\n" +
                 "        new RestletCrudConnectivityAssembler().assemble( module );\n" +

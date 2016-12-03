@@ -19,6 +19,7 @@
  */
 package org.apache.zest.manual.recipes.createEntity;
 
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -39,10 +40,10 @@ public class ManufacturerRepositoryMixin
     @Structure
     private Module module;
 
-    public Manufacturer findByIdentity( String identity )
+    public Manufacturer findByIdentity( Identity identity )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        return uow.get(Manufacturer.class, identity);
+        return uow.get(Manufacturer.class, identity );
     }
 
     public Manufacturer findByName( String name )

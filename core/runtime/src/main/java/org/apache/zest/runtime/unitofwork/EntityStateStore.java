@@ -34,6 +34,6 @@ final class EntityStateStore
     @Override
     public String toString()
     {
-        return state.identity().toString();
+        return state.entityReference().toString();
     }
 }

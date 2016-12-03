@@ -20,12 +20,14 @@
 
 package org.apache.zest.spi.entitystore;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.ModuleDescriptor;
@@ -53,7 +55,7 @@ public abstract class ConcurrentModificationCheckConcern
     private ZestAPI api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( module, usecase, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), currentTime );
@@ -64,7 +66,7 @@ public abstract class ConcurrentModificationCheckConcern
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private long currentTime;
+        private Instant currentTime;
 
         private HashSet<EntityState> loaded = new HashSet<>();
 
@@ -72,7 +74,7 @@ public abstract class ConcurrentModificationCheckConcern
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        long currentTime
+                                                        Instant currentTime
         )
         {
             this.uow = uow;
@@ -81,13 +83,13 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public String identity()
+        public Identity identity()
         {
             return uow.identity();
         }
 
         @Override
-        public long currentTime()
+        public Instant currentTime()
         {
             return uow.currentTime();
         }
@@ -185,7 +187,7 @@ public abstract class ConcurrentModificationCheckConcern
             try
             {
                 EntityState entityState = uow.entityStateOf( module, anIdentity );
-                versions.rememberVersion( entityState.identity(), entityState.version() );
+                versions.rememberVersion( entityState.entityReference(), entityState.version() );
                 loaded.add( entityState );
                 return entityState;
             }

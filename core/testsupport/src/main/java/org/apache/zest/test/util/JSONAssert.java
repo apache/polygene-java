@@ -34,6 +34,10 @@ public class JSONAssert
 
     /**
      * Assert that two JSONObjects are equals without enforcing field order.
+     *
+     * @param o1 First JSON object
+     * @param o2 Second JSON object
+     * @throws JSONException on json parsing error
      */
     public static void jsonObjectsEquals( JSONObject o1, JSONObject o2 )
         throws JSONException
@@ -61,6 +65,10 @@ public class JSONAssert
 
     /**
      * Assert that two JSONArrays are equals.
+     *
+     * @param a1 First JSON array
+     * @param a2 Second JSON array
+     * @throws JSONException on json parsing error
      */
     public static void jsonArraysEquals( JSONArray a1, JSONArray a2 )
         throws JSONException

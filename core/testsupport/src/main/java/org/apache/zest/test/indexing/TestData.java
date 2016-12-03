@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -58,7 +59,7 @@ public class TestData
             NameableAssert.clear();
             Domain gaming;
             {
-                EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class, "Gaming" );
+                EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class, new StringIdentity( "Gaming" ) );
                 gaming = domainBuilder.instance();
                 gaming.name().set( "Gaming" );
                 gaming.description().set( "Gaming domain" );
@@ -120,7 +121,7 @@ public class TestData
 
             Account annsAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, "accountOfAnnDoe" );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, new StringIdentity( "accountOfAnnDoe" ) );
                 annsAccount = accountBuilder.instance();
                 annsAccount.number().set( "accountOfAnnDoe" );
                 annsAccount = accountBuilder.newInstance();
@@ -128,7 +129,7 @@ public class TestData
 
             Account jacksAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, "accountOfJackDoe" );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, new StringIdentity( "accountOfJackDoe" ) );
                 jacksAccount = accountBuilder.instance();
                 jacksAccount.number().set( "accountOfJackDoe" );
                 jacksAccount = accountBuilder.newInstance();
@@ -142,7 +143,7 @@ public class TestData
 
             Female annDoe;
             {
-                EntityBuilder<Female> femaleBuilder = unitOfWork.newEntityBuilder( Female.class, "anndoe" );
+                EntityBuilder<Female> femaleBuilder = unitOfWork.newEntityBuilder( Female.class, new StringIdentity( "anndoe" ) );
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe" );
                 annDoe.title().set( Person.Title.MRS );

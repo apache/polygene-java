@@ -23,6 +23,7 @@ package org.apache.zest.sample.rental.web;
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -58,7 +59,7 @@ public interface MainPage
             ArrayList<Node> nodes = new ArrayList<Node>();
             Document dom = context.dom();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            RentalShop shop = uow.get( RentalShop.class, "SHOP" );
+            RentalShop shop = uow.get( RentalShop.class, new StringIdentity( "SHOP" ) );
             for( Booking booking : shop.findAllBookings() )
             {
                 String plate = booking.car().get().licensePlate().get();
@@ -103,7 +104,7 @@ public interface MainPage
         private String createLink( Booking booking )
         {
             String pageUrl = urlService.createLink( bookingPage );
-            String entityId = booking.identity().get();
+            String entityId = booking.identity().get().toString();
             return pageUrl + "/" + entityId;
         }
     }

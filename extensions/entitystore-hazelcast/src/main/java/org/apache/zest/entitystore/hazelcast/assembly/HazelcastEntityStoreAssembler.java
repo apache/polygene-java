@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.hazelcast.HazelcastConfiguration;
 import org.apache.zest.entitystore.hazelcast.HazelcastEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 public class HazelcastEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<HazelcastEntityStoreAssembler>
@@ -34,7 +33,6 @@ public class HazelcastEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( HazelcastEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();

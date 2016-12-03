@@ -26,7 +26,7 @@ import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.concern.Concerns;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -62,7 +62,7 @@ public class AppBrowserTest extends AbstractZestTest
 
     @Mixins( Person.Mixin.class )
     @Concerns( Person.AgeLimitConcern.class )
-    public interface Person extends Identity
+    public interface Person extends HasIdentity
     {
         String name();
 
@@ -150,14 +150,14 @@ public class AppBrowserTest extends AbstractZestTest
     public interface AgeCheckService
     {
 
-        boolean checkAge( Property<String> identity, int years );
+        boolean checkAge( Property<Identity> identity, int years );
 
         class AgeCheckerMixin
             implements AgeCheckService
         {
 
             @Override
-            public boolean checkAge( Property<String> identity, int years )
+            public boolean checkAge( Property<Identity> identity, int years )
             {
                 double probabiility = years/(Math.random()*120+1);
                 return probabiility < 0.9;

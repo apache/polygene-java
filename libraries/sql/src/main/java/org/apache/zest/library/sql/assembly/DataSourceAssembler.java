@@ -20,6 +20,7 @@
 package org.apache.zest.library.sql.assembly;
 
 import javax.sql.DataSource;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.importer.ServiceInstanceImporter;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.bootstrap.Assemblers;
@@ -47,7 +48,7 @@ public class DataSourceAssembler
 
     public DataSourceAssembler withDataSourceServiceIdentity( String dataSourceServiceId )
     {
-        NullArgumentException.validateNotNull( "DataSourceService identity", dataSourceServiceId );
+        NullArgumentException.validateNotNull( "DataSourceService reference", dataSourceServiceId );
         this.dataSourceServiceId = dataSourceServiceId;
         return this;
     }
@@ -71,7 +72,7 @@ public class DataSourceAssembler
     {
         module.importedServices( DataSource.class ).
             importedBy( ServiceInstanceImporter.class ).
-            setMetaInfo( dataSourceServiceId ).
+            setMetaInfo( new StringIdentity( dataSourceServiceId ) ).
             identifiedBy( identity() ).
             visibleIn( visibility() );
         if( circuitBreaker != null )

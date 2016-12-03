@@ -20,6 +20,8 @@
 package org.apache.zest.sample.forum.data.entity;
 
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.Query;
@@ -36,7 +38,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
 public interface Forums
     extends Administrators, EntityComposite
 {
-    String FORUMS_ID = "forums";
+    Identity FORUMS_ID = new StringIdentity( "forums" );
 
     public Query<Forum> forums();
 

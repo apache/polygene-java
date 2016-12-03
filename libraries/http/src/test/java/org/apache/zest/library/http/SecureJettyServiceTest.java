@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.net.ssl.SSLHandshakeException;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -40,6 +41,8 @@ import static org.apache.zest.library.http.Servlets.serve;
 public class SecureJettyServiceTest
     extends AbstractSecureJettyTest
 {
+    private final int httpsPort = FreePortFinder.findFreePortOnLoopback();
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -53,8 +56,8 @@ public class SecureJettyServiceTest
         // START SNIPPET: configssl
         SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
-        config.port().set( HTTPS_PORT );
-        config.keystorePath().set( SERVER_KEYSTORE_PATH );
+        config.port().set( httpsPort );
+        config.keystorePath().set( getKeyStoreFile( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
         config.keystoreType().set( "JCEKS" );
         config.keystorePassword().set( KS_PASSWORD );
         // END SNIPPET: configssl
@@ -70,7 +73,7 @@ public class SecureJettyServiceTest
     public void testNoSSL()
         throws IOException
     {
-        HttpGet get = new HttpGet( "http://127.0.0.1:8441/hello" );
+        HttpGet get = new HttpGet( "http://127.0.0.1:" + httpsPort + "/hello" );
         defaultHttpClient.execute( get );
         fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
     }
@@ -80,7 +83,7 @@ public class SecureJettyServiceTest
     public void testNoTruststore()
         throws IOException
     {
-        defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ) );
+        defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ) );
         fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
     }
 
@@ -88,7 +91,8 @@ public class SecureJettyServiceTest
     public void testTrust()
         throws IOException, InterruptedException
     {
-        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
+        String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ),
+                                                 stringResponseHandler );
         assertEquals( "Hello World", output );
     }
 }

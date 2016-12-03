@@ -20,6 +20,7 @@
 package org.apache.zest.library.logging.log.records;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.logging.log.LogType;
@@ -36,7 +37,7 @@ public interface LogRecord
 
     Property<LogType> logtype();
 
-    Property<Long> time();
+    Property<Instant> time();
 
     Property<List<Serializable>> parameters();
 }

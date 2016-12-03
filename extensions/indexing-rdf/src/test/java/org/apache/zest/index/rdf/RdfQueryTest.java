@@ -19,7 +19,6 @@
  */
 package org.apache.zest.index.rdf;
 
-import java.io.File;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -29,18 +28,17 @@ import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
-import org.apache.zest.test.util.DelTreeAfter;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class RdfQueryTest
     extends AbstractQueryTest
 {
 
-    private static final File DATA_DIR = new File( "build/tmp/rdf-query-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -51,7 +49,8 @@ public class RdfQueryTest
 
         ModuleAssembly config = module.layer().module( "Config" );
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
-        config.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
+        config.forMixin( NativeConfiguration.class ).declareDefaults()
+              .dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
         new EntityTestAssembler().assemble( config );
         new DefaultUnitOfWorkAssembler().assemble( config );
     }

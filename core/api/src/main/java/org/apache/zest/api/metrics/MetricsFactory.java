@@ -20,10 +20,12 @@
 
 package org.apache.zest.api.metrics;
 
+import java.util.stream.Stream;
+
 /**
  * Metrics Factory.
  */
 public interface MetricsFactory
 {
-    Iterable<Metric> registered();
+    Stream<Metric> registered();
 }

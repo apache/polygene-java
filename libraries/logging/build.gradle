@@ -20,15 +20,14 @@
 
 description = "Apache Zest™ Logging Library provides an advanced logging framework which separates trace, debug and log systems."
 
-jar { manifest { name = "Apache Zest™ Library - Logging" }}
+jar { manifest { name = "Apache Zest™ Library - Logging" } }
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile( project( ':org.apache.zest.libraries:org.apache.zest.library.constraints' ))
+  compile zest.core.bootstrap
+  compile zest.library( 'constraints' )
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf"))
+  testCompile zest.core.testsupport
+  testCompile zest.extension( 'indexing-rdf' )
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
-  testRuntime(libraries.logback)
+  testRuntime libraries.logback
 }

@@ -19,49 +19,47 @@
  */
 package org.apache.zest.api.unitofwork;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.functional.Iterables;
 
 import static java.util.Arrays.stream;
 
 /**
  * This exception indicates that the requested Entity with the given
- * identity does not exist.
+ * reference does not exist.
  */
 public class NoSuchEntityException
     extends UnitOfWorkException
 {
-    private final EntityReference identity;
+    private final EntityReference reference;
     private final Usecase usecase;
     private final Class<?>[] mixinTypes;
 
-    public NoSuchEntityException( EntityReference identity, Class<?> mixinType, Usecase usecase )
+    public NoSuchEntityException(EntityReference reference, Class<?> mixinType, Usecase usecase )
     {
-        super( "Could not find entity (" + identity + ") of type " + mixinType.getName() + " in usecase '" + usecase.name() + "'" );
-        this.identity = identity;
+        super( "Could not find entity (" + reference + ") of type " + mixinType.getName() + " in usecase '" + usecase.name() + "'" );
+        this.reference = reference;
         this.usecase = usecase;
         this.mixinTypes = new Class<?>[]{ mixinType };
     }
 
-    public NoSuchEntityException( EntityReference identity, Class<?>[] mixinTypes, Usecase usecase )
+    public NoSuchEntityException(EntityReference reference, Class<?>[] mixinTypes, Usecase usecase )
     {
-        super( "Could not find entity (" + identity + ") of type " + toString( mixinTypes ) + " in usecase '" + usecase.name() + "'" );
-        this.identity = identity;
+        super( "Could not find entity (" + reference + ") of type " + toString( mixinTypes ) + " in usecase '" + usecase.name() + "'" );
+        this.reference = reference;
         this.mixinTypes = mixinTypes;
         this.usecase = usecase;
     }
 
-    public NoSuchEntityException( EntityReference identity, Stream<Class<?>> types, Usecase usecase )
+    public NoSuchEntityException(EntityReference reference, Stream<Class<?>> types, Usecase usecase )
     {
-        this( identity, types.toArray( Class[]::new ), usecase );
+        this(reference, types.toArray( Class[]::new ), usecase );
     }
 
-    public EntityReference identity()
+    public EntityReference reference()
     {
-        return identity;
+        return reference;
     }
 
     public Class<?>[] mixinTypes()
@@ -72,12 +70,6 @@ public class NoSuchEntityException
     public Usecase usecase()
     {
         return usecase;
-    }
-
-    private static Class<?>[] castToArray( Iterable<Class<?>> iterableClasses )
-    {
-        Iterable<Class> types = Iterables.cast( iterableClasses );
-        return Iterables.toArray( Class.class, types );
     }
 
     private static String toString( Class<?>[] mixinTypes )

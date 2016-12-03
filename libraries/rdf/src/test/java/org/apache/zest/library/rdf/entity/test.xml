@@ -37,7 +37,7 @@
   </rdf:Description>
   <rdf:Description rdf:about="urn:zest:entity:test2">
     <value xmlns="urn:zest:persistent:org.apache.zest.library.rdf.entity.TestEntity#"/>
-    <identity xmlns="urn:zest:persistent:org.apache.zest.api.entity.Identity#">test2</identity>
+    <identity xmlns="urn:zest:persistent:org.apache.zest.api.identity.HasIdentity#">test2</identity>
     <name xmlns="urn:zest:persistent:org.apache.zest.library.rdf.entity.TestEntity#">Niclas</name>
     <title xmlns="urn:zest:persistent:org.apache.zest.library.rdf.entity.TestEntity#">Mr</title>
     <association xmlns="urn:zest:persistent:org.apache.zest.library.rdf.entity.TestEntity#" rdf:resource="urn:zest:entity:test1"/>

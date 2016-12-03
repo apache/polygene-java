@@ -23,14 +23,19 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.leveldb.assembly.LevelDBEntityStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class JavaLevelDBEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     // START SNIPPET: assembly
@@ -43,13 +48,15 @@ public class JavaLevelDBEntityStoreTest
         new EntityTestAssembler().visibleIn( Visibility.module ).assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
 
-        module.services( FileConfigurationService.class );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         // START SNIPPET: assembly
-        new LevelDBEntityStoreAssembler().
-            withConfig( config, Visibility.layer ).
-            identifiedBy( "java-leveldb-entitystore" ).
-            assemble( module );
+        new LevelDBEntityStoreAssembler()
+            .withConfig( config, Visibility.layer )
+            .identifiedBy( "java-leveldb-entitystore" )
+            .assemble( module );
         // END SNIPPET: assembly
 
         config.forMixin( LevelDBEntityStoreConfiguration.class ).declareDefaults().flavour().set( "java" );

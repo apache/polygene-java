@@ -19,6 +19,9 @@
  */
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationStateHolder;
@@ -28,7 +31,6 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -37,7 +39,6 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -55,7 +56,6 @@ public class ValueWithAssociationTest extends AbstractZestTest
         module.values( SimpleName.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 
@@ -63,8 +63,8 @@ public class ValueWithAssociationTest extends AbstractZestTest
     public void givenEntityInStoreWhenFetchEntityReferenceExpectSuccess()
         throws UnitOfWorkCompletionException
     {
-        String identity1;
-        String identity2;
+        Identity identity1;
+        Identity identity2;
         DualFaced value;
         try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
@@ -94,14 +94,14 @@ public class ValueWithAssociationTest extends AbstractZestTest
             ManyAssociation<?> simples = holder.allManyAssociations().iterator().next();
             NamedAssociation<?> namedSimples = holder.allNamedAssociations().iterator().next();
 
-            assertThat( spi.entityReferenceOf( simple ), equalTo( EntityReference.parseEntityReference( identity1 ) ) );
+            assertThat( spi.entityReferenceOf( simple ), equalTo( EntityReference.create( identity1 ) ) );
             assertThat( spi.entityReferenceOf( simples )
                             .iterator()
-                            .next(), equalTo( EntityReference.parseEntityReference( identity1 ) ) );
+                            .next(), equalTo( EntityReference.create( identity1 ) ) );
             assertThat( spi.entityReferenceOf( namedSimples )
                             .iterator()
                             .next()
-                            .getValue(), equalTo( EntityReference.parseEntityReference( identity1 ) ) );
+                            .getValue(), equalTo( EntityReference.create( identity1 ) ) );
 
             DualFaced resurrected = uow.toEntity( DualFaced.class, value );
             assertThat( resurrected.simple(), equalTo( entity.simple() ) );
@@ -115,7 +115,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( "1234" );
+        builder.prototype().identity().set( new StringIdentity( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
 
@@ -127,8 +127,8 @@ public class ValueWithAssociationTest extends AbstractZestTest
 
         try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
-            DualFaced entity = uow.get( DualFaced.class, "1234" );
-            assertThat( entity.identity().get(), equalTo( "1234" ) );
+            DualFaced entity = uow.get( DualFaced.class, new StringIdentity( "1234" ) );
+            assertThat( entity.identity().get(), equalTo( new StringIdentity( "1234" ) ) );
             assertThat( entity.name().get(), equalTo( "Hedhman" ) );
             uow.complete();
         }
@@ -138,8 +138,8 @@ public class ValueWithAssociationTest extends AbstractZestTest
     public void givenValueWithIdentityAlreadyInStoreWhenConvertingToEntityExpectExistingEntityToBeUpdated()
         throws UnitOfWorkCompletionException
     {
-        String identity1;
-        String identity2;
+        Identity identity1;
+        Identity identity2;
         try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
             EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
@@ -184,12 +184,12 @@ public class ValueWithAssociationTest extends AbstractZestTest
         }
     }
 
-    public interface SimpleName extends Identity
+    public interface SimpleName extends HasIdentity
     {
         Property<String> name();
     }
 
-    public interface DualFaced extends Identity
+    public interface DualFaced extends HasIdentity
     {
         Property<String> name();
 

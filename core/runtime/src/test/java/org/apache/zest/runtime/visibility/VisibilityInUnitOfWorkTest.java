@@ -20,6 +20,8 @@
 package org.apache.zest.runtime.visibility;
 
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -36,12 +38,15 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 public class VisibilityInUnitOfWorkTest
 {
+
+    public static final Identity TEST_IDENTITY1 = new StringIdentity( "123" );
+    public static final Identity TEST_IDENTITY2 = new StringIdentity( "345" );
+
     @Test
     public void givenTwoModulesWithServiceAndEntityInOneAndEntityInOtherWhenOtherEntityAccessServiceWhichUsesItsEntityExpectServiceToHaveVisibility()
         throws Exception
@@ -69,14 +74,14 @@ public class VisibilityInUnitOfWorkTest
             public void create()
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                YourEntity entity = uow.newEntity( YourEntity.class, "345" );
+                YourEntity entity = uow.newEntity( YourEntity.class, TEST_IDENTITY2);
             }
 
             @Override
             public YourEntity get()
             {
                 UnitOfWork uow = uowf.currentUnitOfWork();
-                return uow.get( YourEntity.class, "345" );
+                return uow.get( YourEntity.class, TEST_IDENTITY2);
             }
         }
     }
@@ -124,8 +129,8 @@ public class VisibilityInUnitOfWorkTest
             {
                 try (UnitOfWork uow = uowf.newUnitOfWork())
                 {
-                    uow.newEntity( MyEntity.class, "123" );
-                    MyEntity entity1 = uow.get( MyEntity.class, "123" );
+                    uow.newEntity( MyEntity.class, TEST_IDENTITY1 );
+                    MyEntity entity1 = uow.get( MyEntity.class, TEST_IDENTITY1 );
                     service.create();
                     YourEntity entity2 = service.get();
                 }
@@ -150,7 +155,6 @@ public class VisibilityInUnitOfWorkTest
             yourModule.services( YourService.class ).visibleIn( Visibility.layer );
             new DefaultUnitOfWorkAssembler().assemble( yourModule );
             infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-            infraModule.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
             infraModule.services( OrgJsonValueSerializationService.class )
                 .visibleIn( Visibility.layer )
                 .taggedWith( ValueSerialization.Formats.JSON );

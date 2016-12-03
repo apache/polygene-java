@@ -26,9 +26,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
@@ -43,7 +43,7 @@ import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.IdentityGenerator;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.object.NoSuchObjectException;
 import org.apache.zest.api.object.ObjectDescriptor;
@@ -59,6 +59,7 @@ import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.structure.TypeLookup;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.util.NullArgumentException;
@@ -174,7 +175,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchObjectException( mixinType.getName(), name(), typeLookup.allVisibleObjects() );
+            throw new NoSuchObjectException( mixinType.getName(), name(),
+                                             typeLookup.allObjects().flatMap( HasTypes::types ) );
         }
 
         InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
@@ -190,7 +192,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchObjectException( instance.getClass().getName(), name(), typeLookup.allVisibleObjects() );
+            throw new NoSuchObjectException( instance.getClass().getName(), name(),
+                                             typeLookup.allObjects().flatMap( HasTypes::types ) );
         }
 
         InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
@@ -399,7 +402,7 @@ public class ModuleInstance
         //noinspection unchecked
         return serviceModels.stream()
             .map( this::findServiceReferenceInstance )
-            .filter( ref -> ref != null )
+            .filter( Objects::nonNull )
             .filter( ref -> ref.hasType( serviceType ) )
             .map( ref -> (ServiceReference<T>) ref )
             .collect( Collectors.toList() );

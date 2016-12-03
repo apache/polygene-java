@@ -19,7 +19,7 @@
  */
 package org.apache.zest.spi.module;
 
-import org.apache.zest.api.entity.IdentityGenerator;
+import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.TypeLookup;

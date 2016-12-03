@@ -20,10 +20,10 @@
 
 description = "Apache Zest™ REST Library provides various Restlet resources that can be used to expose Apache Zest™ entities and indexes. Mostly for debugging."
 
-jar { manifest { name = "Apache Zest™ Library - REST" }}
+jar { manifest { name = "Apache Zest™ Library - REST" } }
 
 dependencies {
-  compile project( ':org.apache.zest.core:org.apache.zest.core.bootstrap' )
+  compile zest.core.bootstrap
   compile libraries.restlet
   compile libraries.velocity
   compile libraries.servlet_api

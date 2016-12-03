@@ -19,6 +19,9 @@
  */
 package org.apache.zest.api.activation;
 
+import java.time.Instant;
+import org.apache.zest.api.time.SystemTime;
+
 /**
  * ActivationEvents are fired during activation and passivation of instances in Zest.
  */
@@ -29,13 +32,13 @@ public final class ActivationEvent
         ACTIVATING, ACTIVATED, PASSIVATING, PASSIVATED
     }
 
-    private final long timestamp;
+    private final Instant timestamp;
     private final Object source;
     private final EventType type;
 
     public ActivationEvent( Object source, EventType type )
     {
-        this.timestamp = System.currentTimeMillis();
+        this.timestamp = SystemTime.now();
         this.source = source;
         this.type = type;
     }
@@ -54,6 +57,16 @@ public final class ActivationEvent
     public EventType type()
     {
         return type;
+    }
+
+
+    /**
+     *
+     * @return The instant that this event was created.
+     */
+    public Instant eventTime()
+    {
+        return timestamp;
     }
 
     /**
@@ -81,6 +94,6 @@ public final class ActivationEvent
     @Override
     public String toString()
     {
-        return message();
+        return message() + "@" + timestamp;
     }
 }

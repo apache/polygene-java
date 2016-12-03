@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.property.Property;
@@ -106,7 +107,7 @@ import org.apache.zest.api.property.Property;
  * the Alarms.
  * </p>
  */
-public interface AlarmPoint
+public interface AlarmPoint extends HasIdentity
 {
     String STATUS_NORMAL = "Normal";
     String STATUS_ACTIVATED = "Activated";

@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,8 +107,8 @@ public class JDKMixinTest
 
     }
 
-    private static final String EXTENDS_IDENTITY = ExtendsJDKMixin.class.getName();
-    private static final String COMPOSE_IDENTITY = ComposeWithJDKMixin.class.getName();
+    private static final Identity EXTENDS_IDENTITY = new StringIdentity( ExtendsJDKMixin.class.getName() );
+    private static final Identity COMPOSE_IDENTITY = new StringIdentity( ComposeWithJDKMixin.class.getName() );
     private static final Predicate<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec( EXTENDS_IDENTITY );
     private static final Predicate<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec( COMPOSE_IDENTITY );
     private static final List<String> CONCERN_RECORDS = new ArrayList<String>();
@@ -122,13 +124,13 @@ public class JDKMixinTest
         throws AssemblyException
     {
         module.services( JSONSerializableMap.class ).
-            identifiedBy( EXTENDS_IDENTITY ).
+            identifiedBy( EXTENDS_IDENTITY.toString() ).
             withMixins( ExtendsJDKMixin.class ).
             instantiateOnStartup();
 
         module.layer().module( "compose" ).services( JSONSerializableMap.class ).
             visibleIn( Visibility.layer ).
-            identifiedBy( COMPOSE_IDENTITY ).
+            identifiedBy( COMPOSE_IDENTITY.toString() ).
             withMixins( HashMap.class, ComposeWithJDKMixin.class ).
             instantiateOnStartup();
     }
@@ -177,9 +179,9 @@ public class JDKMixinTest
         implements Predicate<ServiceReference<?>>
     {
 
-        private final String identity;
+        private final Identity identity;
 
-        public ServiceIdentitySpec( String identity )
+        ServiceIdentitySpec(Identity identity)
         {
             this.identity = identity;
         }

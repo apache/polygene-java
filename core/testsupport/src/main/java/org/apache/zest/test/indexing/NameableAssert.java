@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.test.indexing.model.Nameable;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -39,7 +39,7 @@ import static org.apache.zest.functional.Iterables.toList;
 public class NameableAssert
 {
     // id -> name
-    private static final Map<String, String> world = new HashMap<>();
+    private static final Map<Identity, String> world = new HashMap<>();
 
     public static void clear()
     {
@@ -72,7 +72,7 @@ public class NameableAssert
 
     public static void trace( Nameable nameable )
     {
-        world.put( ( (Identity) nameable ).identity().get(), nameable.name().get() );
+        world.put( nameable.identity().get(), nameable.name().get() );
     }
 
     public static void assertName( String expectedName, EntityReference reference )

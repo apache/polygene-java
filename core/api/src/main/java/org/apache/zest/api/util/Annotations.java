@@ -40,9 +40,13 @@ import static org.apache.zest.api.util.Classes.typeOf;
  */
 public final class Annotations
 {
-    public static Function<Type, Stream<Annotation>> ANNOTATIONS_OF =
+    public static final Function<Type, Stream<Annotation>> ANNOTATIONS_OF =
         Classes.forTypes( type -> Arrays.stream( Classes.RAW_CLASS.apply( type ).getAnnotations() ) );
-//        Classes.forTypes( type -> Iterables.iterable( Classes.RAW_CLASS.apply( type ).getAnnotations() ) );
+
+    public static Predicate<Annotation> typeHasAnnotation( Class<? extends Annotation> annotationType )
+    {
+        return element -> hasAnnotation( annotationType ).test( type().apply( element ) );
+    }
 
     public static Predicate<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
     {

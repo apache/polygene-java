@@ -24,6 +24,7 @@ import java.lang.reflect.Proxy;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
@@ -44,7 +45,7 @@ public final class ImportedServiceModel
     private final Visibility visibility;
     @SuppressWarnings( "raw" )
     private final Class<? extends ServiceImporter> serviceImporter;
-    private final String identity;
+    private final Identity identity;
     private final boolean importOnStartup;
     private final MetaInfo metaInfo;
     private final ActivatorsModel<?> activatorsModel;
@@ -55,7 +56,7 @@ public final class ImportedServiceModel
                                  Class serviceType,
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
-                                 String identity,
+                                 Identity identity,
                                  boolean importOnStartup,
                                  MetaInfo metaInfo,
                                  ActivatorsModel<?> activatorsModel,
@@ -117,7 +118,7 @@ public final class ImportedServiceModel
     }
 
     @Override
-    public String identity()
+    public Identity identity()
     {
         return identity;
     }

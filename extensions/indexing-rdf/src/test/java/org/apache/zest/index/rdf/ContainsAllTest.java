@@ -20,8 +20,9 @@
 package org.apache.zest.index.rdf;
 
 import java.io.File;
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -37,24 +38,22 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Assert;
 import org.junit.Rule;
-import org.apache.zest.test.util.DelTreeAfter;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 // A test to verify that containsAll QueryExpression works properly.
 public class ContainsAllTest
     extends AbstractZestTest
 {
-    private static final File DATA_DIR = new File( "build/tmp/contains-all-test" );
     @Rule
-    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     public static final String TEST_STRING_1 = "TestString1";
     public static final String TEST_STRING_2 = "Some\\Weird\"$String/[]";
@@ -89,10 +88,13 @@ public class ContainsAllTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( FileConfigurationService.class );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
-        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
+                  .dataDirectory().set( new File( tmpDir.getRoot(), "rdf-data" ).getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );

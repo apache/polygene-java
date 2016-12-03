@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.entitystore.leveldb.LevelDBEntityStoreConfiguration;
 import org.apache.zest.entitystore.leveldb.LevelDBEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * LevelDB EntityStore assembly.
@@ -37,7 +36,6 @@ public class LevelDBEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class );
         ServiceDeclaration service = module.services( LevelDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

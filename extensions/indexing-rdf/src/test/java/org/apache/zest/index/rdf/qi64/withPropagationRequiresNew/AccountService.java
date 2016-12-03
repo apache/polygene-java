@@ -19,6 +19,7 @@
  */
 package org.apache.zest.index.rdf.qi64.withPropagationRequiresNew;
 
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.structure.Module;
@@ -33,7 +34,7 @@ import static org.apache.zest.index.rdf.qi64.withPropagationRequiresNew.AccountS
 public interface AccountService
 {
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
-    AccountComposite getAccountById( String anId );
+    AccountComposite getAccountById( Identity anId );
 
     public class AccountServiceMixin
         implements AccountService
@@ -44,7 +45,7 @@ public interface AccountService
         @Structure
         Module module;
 
-        public AccountComposite getAccountById( String anId )
+        public AccountComposite getAccountById( Identity anId )
         {
             // Use current unit of work
             UnitOfWork work = uowf.currentUnitOfWork();

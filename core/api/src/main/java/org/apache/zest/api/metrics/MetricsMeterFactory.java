@@ -20,8 +20,6 @@
 
 package org.apache.zest.api.metrics;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Create MetricsMeter instances.
  */
@@ -31,12 +29,9 @@ public interface MetricsMeterFactory extends MetricsFactory
      * Create a MetricsMeter instance.
      * If the same arguments are given twice, the same instance must be returned.
      *
-     * @param origin    The class that instantiate the metric
      * @param name      A human readable, short name of the metric.
-     * @param eventType the plural name of the event the meter is measuring (e.g., {@code "requests"})
-     * @param rate      the scale unit for this timer's rate metrics
      *
      * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      */
-    MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate );
+    MetricsMeter createMeter( String name );
 }

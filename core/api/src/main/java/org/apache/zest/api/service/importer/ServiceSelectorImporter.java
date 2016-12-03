@@ -31,7 +31,6 @@ import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.ServiceQualifier;
-import org.apache.zest.functional.Iterables;
 
 /**
  * If several services are available with a given type, and you want to constrain

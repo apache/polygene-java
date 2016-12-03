@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Predicate;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.ConstructionException;
@@ -44,9 +46,11 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.bootstrap.SingletonAssembler;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.apache.zest.api.common.Visibility.application;
 import static org.apache.zest.api.common.Visibility.layer;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test the @Service injection annotation
@@ -82,7 +86,7 @@ public class ServiceInjectionTest
         ServiceUser user = factory.newObject( ServiceUser.class );
 
         assertEquals( "X", user.testSingle() );
-        assertEquals( "Foo", user.testIdentity() );
+        assertThat( user.testIdentity(), equalTo( new StringIdentity( "Foo" ) ) );
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "Bar", user.testQualifier() );
         assertEquals( "A", user.testStringIterable() );
@@ -234,7 +238,7 @@ public class ServiceInjectionTest
             return service.doStuff();
         }
 
-        public String testIdentity()
+        public Identity testIdentity()
         {
             return serviceComposite.identity().get();
         }

@@ -20,6 +20,8 @@
 
 package org.apache.zest.library.logging.trace.records;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.Queryable;
@@ -33,9 +35,9 @@ public interface TraceRecord
 
     Property<String> threadName();
 
-    Property<Long> entryTime();
+    Property<Instant> entryTime();
 
-    Property<Long> duration();
+    Property<Duration> duration();
 
     @Optional Property<Throwable> exception();
 
