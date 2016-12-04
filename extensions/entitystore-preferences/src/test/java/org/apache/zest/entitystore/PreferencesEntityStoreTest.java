@@ -26,10 +26,14 @@ import org.apache.zest.entitystore.prefs.PreferencesEntityStoreInfo;
 import org.apache.zest.entitystore.prefs.PreferencesEntityStoreService;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class PreferencesEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -40,7 +44,11 @@ public class PreferencesEntityStoreTest
         super.assemble( module );
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader( null );
-        PreferencesEntityStoreInfo metaInfo = new PreferencesEntityStoreInfo( Preferences.userNodeForPackage( getClass() ) );
+        Preferences node = Preferences.userNodeForPackage( getClass() )
+                                      .node( "integtest" )
+                                      .node( tmpDir.getRoot().getName() )
+                                      .node( "PreferencesEntityStoreTest" );
+        PreferencesEntityStoreInfo metaInfo = new PreferencesEntityStoreInfo( node );
         Thread.currentThread().setContextClassLoader( cl );
         module.services( PreferencesEntityStoreService.class ).setMetaInfo( metaInfo ).instantiateOnStartup();
         new OrgJsonValueSerializationAssembler().assemble( module );

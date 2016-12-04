@@ -89,8 +89,7 @@ public class RedisMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        Jedis jedis = pool.getResource();
-        try
+        try( Jedis jedis = pool.getResource() )
         {
             String jsonState = jedis.get( entityReference.identity().toString() );
             if( notFound( jsonState ) )
@@ -99,18 +98,13 @@ public class RedisMapEntityStoreMixin
             }
             return new StringReader( jsonState );
         }
-        finally
-        {
-            pool.returnResource( jedis );
-        }
     }
 
     @Override
     public void applyChanges( MapChanges changes )
         throws IOException
     {
-        final Jedis jedis = pool.getResource();
-        try
+        try( Jedis jedis = pool.getResource() )
         {
             changes.visitMap( new MapChanger()
             {
@@ -166,10 +160,6 @@ public class RedisMapEntityStoreMixin
                     jedis.del( ref.identity().toString() );
                 }
             } );
-        }
-        finally
-        {
-            pool.returnResource( jedis );
         }
     }
 

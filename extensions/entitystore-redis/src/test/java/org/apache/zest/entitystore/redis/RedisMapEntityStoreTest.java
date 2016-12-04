@@ -55,6 +55,7 @@ public class RedisMapEntityStoreTest
         new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
+
     private JedisPool jedisPool;
 
     @Override
@@ -64,21 +65,15 @@ public class RedisMapEntityStoreTest
         super.setUp();
         RedisMapEntityStoreService es = serviceFinder.findService( RedisMapEntityStoreService.class ).get();
         jedisPool = es.jedisPool();
-
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        Jedis jedis = jedisPool.getResource();
-        try
+        try( Jedis jedis = jedisPool.getResource() )
         {
             jedis.flushDB();
-        }
-        finally
-        {
-            jedisPool.returnResource( jedis );
         }
         super.tearDown();
     }

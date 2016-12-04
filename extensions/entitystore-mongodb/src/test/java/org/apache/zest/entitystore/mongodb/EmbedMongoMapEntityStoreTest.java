@@ -14,42 +14,63 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 package org.apache.zest.entitystore.mongodb;
 
-import com.mongodb.Mongo;
-import org.apache.zest.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
-import org.junit.BeforeClass;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
+import java.io.IOException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.entity.AbstractEntityStoreTest;
+import org.apache.zest.test.util.FreePortFinder;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
-import static org.apache.zest.test.util.Assume.assumeConnectivity;
-
-/**
- * Test the MongoMapEntityStoreService.
- * <p>Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017</p>
- */
-public class MongoMapEntityStoreTest
-    extends AbstractEntityStoreTest
+public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
 {
+    private static final MongodStarter MONGO_STARTER = MongodStarter.getDefaultInstance();
+
+    @Rule
+    public TestName testName = new TestName();
+    private static int port;
+    private static MongodExecutable mongod;
+
+
     @BeforeClass
-    public static void beforeRedisMapEntityStoreTests()
+    public static void startEmbedMongo() throws IOException
     {
-        assumeConnectivity( "localhost", 27017 );
+        port = FreePortFinder.findFreePortOnLoopback();
+        mongod = MONGO_STARTER.prepare( new MongodConfigBuilder()
+                                            .version( Version.Main.PRODUCTION )
+                                            .net( new Net( port, Network.localhostIsIPv6() ) )
+                                            .build() );
+        mongod.start();
+    }
+
+    @AfterClass
+    public static void stopEmbedMongo()
+    {
+        if( mongod != null )
+        {
+            mongod.stop();
+        }
     }
 
     @Override
-    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        // END SNIPPET: assembly
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
@@ -57,36 +78,15 @@ public class MongoMapEntityStoreTest
 
         new OrgJsonValueSerializationAssembler().assemble( module );
 
-        // START SNIPPET: assembly
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-        // END SNIPPET: assembly
 
-        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
+
+        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
+                                                          .declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "zest:test" );
-        mongoConfig.collection().set( "zest:test:entities" );
-        // START SNIPPET: assembly
-    }
-    // END SNIPPET: assembly
-    private Mongo mongo;
-    private String dbName;
-
-    @Override
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-        MongoMapEntityStoreService es = serviceFinder.findService( MongoMapEntityStoreService.class ).get();
-        mongo = es.mongoInstanceUsed();
-        dbName = es.dbInstanceUsed().getName();
-
-    }
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        mongo.dropDatabase( dbName );
-        super.tearDown();
+        mongoConfig.collection().set( testName.getMethodName() );
+        mongoConfig.hostname().set( "localhost" );
+        mongoConfig.port().set( port );
     }
 }

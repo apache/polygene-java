@@ -57,21 +57,39 @@ public interface MongoEntityStoreConfiguration
 
     enum WriteConcern
     {
-
-        /** Exceptions are raised for network issues, but not server errors */
-        NORMAL,
-        /** Exceptions are raised for network issues, and server errors; waits on a server for the write operation */
-        SAFE,
-        /** Exceptions are raised for network issues, and server errors; waits on a majority of servers for the write operation */
-        MAJORITY,
-        /** Exceptions are raised for network issues, and server errors; the write operation waits for the server to flush the data to disk*/
-        FSYNC_SAFE,
-        /** Exceptions are raised for network issues, and server errors; the write operation waits for the server to group commit to the journal file on disk*/
-        JOURNAL_SAFE,
-        /** Exceptions are raised for network issues, and server errors; waits for at least 2 servers for the write operation*/
-        REPLICAS_SAFE;
+        /**
+         *  Write operations that use this write concern will wait for acknowledgement,
+         *  using the default write concern configured on the server.
+         *  This is the default value.
+         */
+        ACKNOWLEDGED,
+        /**
+         * Write operations that use this write concern will wait for acknowledgement from a single member.
+         */
+        W1,
+        /**
+         * Write operations that use this write concern will wait for acknowledgement from two members.
+         */
+        W2,
+        /**
+         * Write operations that use this write concern will wait for acknowledgement from three members.
+         */
+        W3,
+        /**
+         * Write operations that use this write concern will return as soon as the message is written to the socket.
+         * Exceptions are raised for network issues, but not server errors.
+         */
+        UNACKNOWLEDGED,
+        /**
+         * Write operations wait for the server to group commit to the journal file on disk.
+         */
+        JOURNALED,
+        /**
+         * Exceptions are raised for network issues, and server errors;
+         * waits on a majority of servers for the write operation.
+         */
+        MAJORITY;
 
     }
-
 }
 // END SNIPPET: config

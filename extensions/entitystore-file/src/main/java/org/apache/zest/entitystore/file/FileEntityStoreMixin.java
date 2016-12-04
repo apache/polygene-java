@@ -19,29 +19,22 @@
  */
 package org.apache.zest.entitystore.file;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.io.Files;
 import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
@@ -52,6 +45,8 @@ import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * FileEntityStore implementation of MapEntityStore.
@@ -66,19 +61,22 @@ public class FileEntityStoreMixin
     @This
     private Configuration<FileEntityStoreConfiguration> config;
 
+    private String storeId;
     private File dataDirectory;
+    private File tempDirectory;
     private int slices;
 
     @Override
     public void initialize()
         throws Exception
     {
+        config.refresh();
+        storeId = config.get().identity().get().toString();
         String pathName = config.get().directory().get();
         if( pathName == null )
         {
             if( fileConfiguration != null )
             {
-                String storeId = config.get().identity().get().toString();
                 pathName = new File( fileConfiguration.dataDirectory(), storeId ).getAbsolutePath();
             }
             else
@@ -89,10 +87,14 @@ public class FileEntityStoreMixin
         dataDirectory = new File( pathName ).getAbsoluteFile();
         if( !dataDirectory.exists() )
         {
-            if( !dataDirectory.mkdirs() )
-            {
-                throw new IOException( "Unable to create directory " + dataDirectory );
-            }
+            Files.createDirectories( dataDirectory.toPath() );
+        }
+        tempDirectory = fileConfiguration != null
+                        ? new File( fileConfiguration.temporaryDirectory(), storeId )
+                        : new File( new File( System.getProperty( "java.io.tmpdir" ) ), storeId );
+        if( !tempDirectory.exists() )
+        {
+            Files.createDirectories( tempDirectory.toPath() );
         }
         File slicesFile = new File( dataDirectory, "slices" );
         if( slicesFile.exists() )
@@ -117,50 +119,13 @@ public class FileEntityStoreMixin
     private void writeIntegerToFile( File file, int value )
         throws IOException
     {
-        FileWriter fw = null;
-        BufferedWriter bw = null;
-        try
-        {
-            fw = new FileWriter( file );
-            bw = new BufferedWriter( fw );
-            bw.write( "" + value );
-            bw.flush();
-        }
-        finally
-        {
-            if( bw != null )
-            {
-                bw.close();
-            }
-            if( fw != null )
-            {
-                fw.close();
-            }
-        }
+        Files.write( file.toPath(), String.valueOf( value ).getBytes( UTF_8 ) );
     }
 
     private int readIntegerInFile( File file )
         throws IOException
     {
-        FileReader fis = null;
-        BufferedReader br = null;
-        try
-        {
-            fis = new FileReader( file );
-            br = new BufferedReader( fis );
-            return Integer.parseInt( br.readLine() );
-        }
-        finally
-        {
-            if( br != null )
-            {
-                br.close();
-            }
-            if( fis != null )
-            {
-                fis.close();
-            }
-        }
+        return Integer.parseInt( new String( Files.readAllBytes( file.toPath() ), UTF_8 ) );
     }
 
     @Override
@@ -176,10 +141,11 @@ public class FileEntityStoreMixin
                 throw new EntityNotFoundException( entityReference );
             }
 
-            byte[] serializedState = fetch( f );
-            return new StringReader( new String( serializedState, "UTF-8" ) );
+            String serializedState = fetch( f );
+            return new StringReader( serializedState );
         }
-        catch( FileNotFoundException e ){
+        catch( FileNotFoundException e )
+        {
             // Can't happen, but it does happen.
             throw new EntityNotFoundException( entityReference );
         }
@@ -187,19 +153,6 @@ public class FileEntityStoreMixin
         {
             throw new EntityStoreException( e );
         }
-    }
-
-    private byte[] readDataFromStream( BufferedInputStream in, byte[] buf )
-        throws IOException
-    {
-        int size = in.read( buf );
-        ByteArrayOutputStream baos = new ByteArrayOutputStream( 2000 );
-        while( size > 0 )
-        {
-            baos.write( buf, 0, size );
-            size = in.read( buf );
-        }
-        return baos.toByteArray();
     }
 
     @Override
@@ -221,13 +174,13 @@ public class FileEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            byte[] stateArray = this.toString().getBytes( "UTF-8" );
+                            String state = this.toString();
                             File dataFile = getDataFile( ref );
                             if( dataFile.exists() )
                             {
                                 throw new EntityAlreadyExistsException( ref );
                             }
-                            store( dataFile, stateArray );
+                            store( dataFile, state );
                         }
                     };
                 }
@@ -243,9 +196,9 @@ public class FileEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            byte[] stateArray = this.toString().getBytes( "UTF-8" );
+                            String state = this.toString();
                             File dataFile = getDataFile( ref );
-                            store( dataFile, stateArray );
+                            store( dataFile, state );
                         }
                     };
                 }
@@ -296,8 +249,7 @@ public class FileEntityStoreMixin
                         {
                             for( File file : sliceDirectory.listFiles() )
                             {
-                                byte[] stateArray = fetch( file );
-                                receiver.receive( new String( stateArray, "UTF-8" ) );
+                                receiver.receive( fetch( file ) );
                             }
                         }
                     }
@@ -323,8 +275,7 @@ public class FileEntityStoreMixin
                     {
                         String id = item.substring( "{\"reference\":\"".length() );
                         id = id.substring( 0, id.indexOf( '"' ) );
-                        byte[] stateArray = item.getBytes( "UTF-8" );
-                        store( getDataFile( id ), stateArray );
+                        store( getDataFile( id ), item );
                     }
                 } );
             }
@@ -350,8 +301,8 @@ public class FileEntityStoreMixin
                         {
                             for( File file : sliceDirectory.listFiles() )
                             {
-                                byte[] serializedState = fetch( file );
-                                receiver.receive( new StringReader( new String( serializedState, "UTF-8" ) ) );
+                                String state = fetch( file );
+                                receiver.receive( new StringReader( state ) );
                             }
                         }
                     }
@@ -402,7 +353,6 @@ public class FileEntityStoreMixin
                 b.append( '~' );
                 b.append( toHex( value ) );
             }
-
         }
         return b.toString();
     }
@@ -418,89 +368,45 @@ public class FileEntityStoreMixin
         return getDataFile( ref.identity().toString() );
     }
 
-    private byte[] fetch( File dataFile )
-        throws IOException
+    private String uncheckedFetch( File dataFile )
     {
-        byte[] buf = new byte[1000];
-        BufferedInputStream in = null;
-        FileInputStream fis = null;
         try
         {
-            fis = new FileInputStream( dataFile );
-            in = new BufferedInputStream( fis );
-            return readDataFromStream( in, buf );
+            return fetch( dataFile );
         }
-        finally
+        catch( IOException e )
         {
-            if( in != null )
-            {
-                try
-                {
-                    in.close();
-                }
-                catch( IOException e )
-                {
-                    // Ignore ??
-                }
-            }
-            if( fis != null )
-            {
-                try
-                {
-                    fis.close();
-                }
-                catch( IOException e )
-                {
-                    // ignore??
-                }
-            }
+            throw new EntityStoreException( e );
         }
     }
 
-    private void store( File dataFile, byte[] stateArray )
-        throws IOException
+    private void uncheckedStore( File dataFile, String state )
     {
-        FileOutputStream fos = null;
-        BufferedOutputStream bos = null;
-
-        // Write to tempfile first
-        File tempFile = Files.createTemporayFileOf( dataFile );
-        tempFile.deleteOnExit();
-
         try
         {
-            fos = new FileOutputStream( tempFile, false );
-            bos = new BufferedOutputStream( fos );
-            bos.write( stateArray );
+            store( dataFile, state );
         }
-        finally
+        catch( IOException e )
         {
-            if( bos != null )
-            {
-                try
-                {
-                    bos.close();
-                }
-                catch( IOException e )
-                {
-                    // ignore??
-                }
-            }
-            if( fos != null )
-            {
-                try
-                {
-                    fos.close();
-                }
-                catch( IOException e )
-                {
-                    // ignore??
-                }
-            }
+            throw new EntityStoreException( e );
         }
+    }
+
+    private String fetch( File dataFile )
+        throws IOException
+    {
+        return new String( Files.readAllBytes( dataFile.toPath() ), UTF_8 );
+    }
+
+    private void store( File dataFile, String state )
+        throws IOException
+    {
+        // Write to temporary file first
+        Path tempFile = Files.createTempFile( tempDirectory.toPath(), storeId, "write" );
+        tempFile.toFile().deleteOnExit();
+        Files.write( tempFile, state.getBytes( UTF_8 ) );
 
         // Replace old file
-        dataFile.delete();
-        tempFile.renameTo( dataFile );
+        Files.move( tempFile, dataFile.toPath(), StandardCopyOption.REPLACE_EXISTING );
     }
 }
