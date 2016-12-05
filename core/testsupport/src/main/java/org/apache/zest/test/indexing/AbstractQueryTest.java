@@ -36,7 +36,6 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.indexing.model.Account;
 import org.apache.zest.test.indexing.model.City;
@@ -92,7 +91,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script01()
-        throws EntityFinderException
     {
         final QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         final Query<Person> query = unitOfWork.newQuery( qb );
@@ -102,7 +100,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script02()
-        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = this.moduleInstance.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );
@@ -113,7 +110,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script03()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery( qb );
@@ -124,7 +120,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script04()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
@@ -136,7 +131,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script04_ne()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person personTemplate = templateFor( Person.class );
@@ -148,7 +142,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script05()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -164,7 +157,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script06()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -176,7 +168,6 @@ public abstract class AbstractQueryTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script07()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         Person person = templateFor( Person.class );
@@ -189,7 +180,6 @@ public abstract class AbstractQueryTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script08()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -202,7 +192,6 @@ public abstract class AbstractQueryTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script09()
-        throws EntityFinderException
     {
         QueryBuilder<Female> qb = this.moduleInstance.newQueryBuilder( Female.class );
         Person person = templateFor( Person.class );
@@ -214,7 +203,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script10()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -225,7 +213,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script11()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -236,7 +223,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script12()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -247,7 +233,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script12_ne()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -258,7 +243,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script13()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -269,7 +253,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script14()
-        throws EntityFinderException
     {
         QueryBuilder<Male> qb = this.moduleInstance.newQueryBuilder( Male.class );
         Male person = templateFor( Male.class );
@@ -280,7 +263,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script15()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Male person = templateFor( Male.class );
@@ -291,7 +273,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script16()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         // should return only 2 entities
@@ -305,7 +286,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script17()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         // should return only 3 entities starting with forth one
@@ -320,7 +300,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script18()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         // should return all Nameable entities sorted by name
@@ -334,7 +313,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script19()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         // should return all Nameable entities with a name > "D" sorted by name
@@ -347,7 +325,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script20()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
@@ -360,7 +337,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script21()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         // should return all Persons sorted by name of the city they were born, and then by year they were born
@@ -373,7 +349,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script22()
-        throws EntityFinderException
     {
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         Nameable nameable = templateFor( Nameable.class );
@@ -385,7 +360,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script23()
-        throws EntityFinderException
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
@@ -397,7 +371,6 @@ public abstract class AbstractQueryTest
 
     @Test
     public void script24()
-        throws EntityFinderException
     {
         final QueryBuilder<Domain> qb = this.moduleInstance.newQueryBuilder( Domain.class );
         final Nameable nameable = templateFor( Nameable.class );

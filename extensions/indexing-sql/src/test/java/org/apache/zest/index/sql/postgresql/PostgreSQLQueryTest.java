@@ -24,7 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.indexing.AbstractQueryTest;
 
 import static org.apache.zest.test.util.Assume.assumeConnectivity;
@@ -77,7 +76,6 @@ public class PostgreSQLQueryTest
     @Ignore( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script04_ne()
-        throws EntityFinderException
     {
         super.script04_ne();
     }
@@ -86,7 +84,6 @@ public class PostgreSQLQueryTest
     @Ignore( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script12_ne()
-        throws EntityFinderException
     {
         super.script04_ne();
     }

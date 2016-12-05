@@ -28,7 +28,6 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.indexing.model.Domain;
 import org.apache.zest.test.indexing.model.Female;
@@ -86,7 +85,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script01()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -97,7 +95,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script02()
-        throws EntityFinderException
     {
         final Query<Domain> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Domain.class )
@@ -108,7 +105,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script03()
-        throws EntityFinderException
     {
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Nameable.class )
@@ -120,7 +116,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script04()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -131,7 +126,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script05()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -142,7 +136,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script06()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -153,7 +146,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script07()
-        throws EntityFinderException
     {
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Nameable.class )
@@ -164,7 +156,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script08()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -175,7 +166,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script09()
-        throws EntityFinderException
     {
         final Query<Female> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Female.class )
@@ -186,7 +176,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script10()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -197,7 +186,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script11()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -208,7 +196,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script12()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -219,7 +206,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script13()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -230,7 +216,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script14()
-        throws EntityFinderException
     {
         final Query<Male> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Male.class )
@@ -241,7 +226,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script15()
-        throws EntityFinderException
     {
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Person.class )
@@ -252,7 +236,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script16()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
@@ -266,7 +249,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script17()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         Predicate<Composite> predicate = queries.get( "script17" );
@@ -282,7 +264,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script18()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         Predicate<Composite> predicate = queries.get( "script18" );
@@ -297,7 +278,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script19()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
@@ -310,7 +290,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script20()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
@@ -323,7 +302,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script21()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         final Query<Person> query = unitOfWork.newQuery( this.moduleInstance
@@ -336,7 +314,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script22()
-        throws EntityFinderException
     {
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Nameable.class )
@@ -347,7 +324,6 @@ public abstract class AbstractNamedQueryTest
 
     @Test
     public void script24()
-        throws EntityFinderException
     {
         final Query<Domain> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Domain.class )

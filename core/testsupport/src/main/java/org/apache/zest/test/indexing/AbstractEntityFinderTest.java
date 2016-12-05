@@ -35,7 +35,6 @@ import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.spi.query.EntityFinder;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.indexing.model.Domain;
 import org.apache.zest.test.indexing.model.Female;
@@ -111,7 +110,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script01()
-        throws EntityFinderException
     {
         // should return all persons (Joe, Ann, Jack Doe)
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -125,7 +123,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script02()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Gaming domain
@@ -140,7 +137,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script03()
-        throws EntityFinderException
     {
         // should return all entities
         Iterable<EntityReference> entities = entityFinder.findEntities(
@@ -154,7 +150,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script04()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -169,7 +164,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script05()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -184,7 +178,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script06()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Ann Doe
@@ -200,7 +193,6 @@ public abstract class AbstractEntityFinderTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script07()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack Doe
@@ -216,7 +208,6 @@ public abstract class AbstractEntityFinderTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script08()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Jack and Ann Doe
@@ -232,7 +223,6 @@ public abstract class AbstractEntityFinderTest
     @Test
     @SuppressWarnings( "unchecked" )
     public void script09()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann Doe
@@ -247,7 +237,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script10()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe and Jack Doe
@@ -262,7 +251,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script11()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Joe Doe
@@ -277,7 +265,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script12()
-        throws EntityFinderException
     {
         Person person = templateFor( Person.class );
         // should return Ann and Jack Doe
@@ -292,7 +279,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script13()
-        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Jack Doe
@@ -307,7 +293,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script14()
-        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Joe Doe
@@ -322,7 +307,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script15()
-        throws EntityFinderException
     {
         Male person = templateFor( Male.class );
         // should return Ann and Joe Doe
@@ -337,7 +321,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script16()
-        throws EntityFinderException
     {
         // should return only 2 entities
         final List<EntityReference> references = StreamSupport.stream(
@@ -351,7 +334,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script17()
-        throws EntityFinderException
     {
         // should return only 2 entities starting with third one
         final List<EntityReference> references = StreamSupport.stream(
@@ -365,7 +347,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script18()
-        throws EntityFinderException
     {
         // should return all Nameable entities sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -386,7 +367,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script19()
-        throws EntityFinderException
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
@@ -413,7 +393,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script20()
-        throws EntityFinderException
     {
         // should return all Persons born after 1973 (Ann and Joe Doe) sorted descending by name
         Person person = templateFor( Person.class );
@@ -431,7 +410,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script21()
-        throws EntityFinderException
     {
         // should return all Persons sorted name of the city they were born
         Person person = templateFor( Person.class );
@@ -449,7 +427,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script22()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // should return Jack and Joe Doe
@@ -464,7 +441,6 @@ public abstract class AbstractEntityFinderTest
 
     @Test
     public void script23()
-        throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
         // Try using variables

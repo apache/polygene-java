@@ -22,8 +22,7 @@ package org.apache.zest.spi.query;
 /**
  * Entity Finder Exception.
  */
-public class EntityFinderException
-    extends Exception
+public class EntityFinderException extends RuntimeException
 {
     public EntityFinderException( final String message )
     {
