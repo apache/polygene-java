@@ -139,11 +139,11 @@ public final class MixinModel
             {
                 ( (Initializable) mixin ).initialize();
             }
-            catch( InitializationException e )
+            catch( Exception e )
             {
                 List<Class<?>> compositeType = compositeInstance.types().collect( Collectors.toList() );
                 String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
-                throw new ConstructionException( message, e );
+                throw new ConstructionException( new InitializationException( message, e ) );
             }
         }
         return mixin;

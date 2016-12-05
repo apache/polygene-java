@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.library.rest.client.spi.RequestWriter;
 import org.restlet.Request;
@@ -48,7 +47,7 @@ public class RequestWriterDelegator
    private Module module;
 
     @Override
-   public void initialize() throws InitializationException
+   public void initialize()
    {
       Logger logger = LoggerFactory.getLogger( getClass() );
 

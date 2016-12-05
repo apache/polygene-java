@@ -21,7 +21,6 @@ package org.apache.zest.library.circuitbreaker.service;
 
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 
@@ -40,7 +39,6 @@ public class ServiceCircuitBreakerMixin
 
     @Override
     public void initialize()
-            throws InitializationException
     {
         circuitBreaker = descriptor.metaInfo( CircuitBreaker.class );
     }

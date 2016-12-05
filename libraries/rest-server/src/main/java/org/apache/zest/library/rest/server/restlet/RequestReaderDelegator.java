@@ -28,7 +28,6 @@ import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.library.rest.server.spi.RequestReader;
@@ -50,7 +49,6 @@ public class RequestReaderDelegator
     Module module;
 
     public void init( @Service Iterable<ServiceReference<RequestReader>> requestReaderReferences )
-        throws InitializationException
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
         Identity requestreaderdelegator = new StringIdentity("requestreaderdelegator");

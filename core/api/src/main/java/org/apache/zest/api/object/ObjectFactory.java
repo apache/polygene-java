@@ -42,9 +42,10 @@ public interface ObjectFactory
     /**
      * Inject an existing instance. Only fields and methods will be called.
      *
-     * @param instance
+     * @param instance instance
+     * @param uses dependencies
      *
-     * @throws ConstructionException
+     * @throws ConstructionException if it was not possible to construct the Object dependencies
      */
     void injectTo( Object instance, Object... uses )
         throws ConstructionException;
