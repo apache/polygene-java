@@ -109,7 +109,7 @@ To see all available tasks on a submodule issue the following command:
 ----
 
 This example will output all gradle tasks available in the +tests/performance+ module where you should find
-the +testPerf+ task that run the Zest™ performance test suite.
+the +performanceTest+ task that run the Zest™ performance test suite.
 
 
 == Versions ==
@@ -165,7 +165,7 @@ They can be run with the following Gradle command:
 
 [source,bash]
 -----------
-./gradlew :org.apache.zest.tests:org.apache.zest.test.performance:testPerf
+./gradlew :org.apache.zest.tests:org.apache.zest.test.performance:performanceTest
 -----------
 
 Results will then be available in the test reports.
