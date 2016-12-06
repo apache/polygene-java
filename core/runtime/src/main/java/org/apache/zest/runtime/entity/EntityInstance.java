@@ -33,7 +33,6 @@ import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.HasIdentity;
-import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -242,7 +241,6 @@ public final class EntityInstance
     }
 
     public void remove( UnitOfWork unitOfWork )
-        throws LifecycleException
     {
         invokeRemove();
 

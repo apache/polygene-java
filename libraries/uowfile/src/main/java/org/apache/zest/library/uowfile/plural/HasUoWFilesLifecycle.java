@@ -20,10 +20,10 @@
 package org.apache.zest.library.uowfile.plural;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.entity.Lifecycle;
-import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 
@@ -39,14 +39,13 @@ public interface HasUoWFilesLifecycle<T extends Enum<T>>
 
         @Override
         public void create()
-            throws LifecycleException
         {
             // NOOP
         }
 
         @Override
         public void remove()
-            throws LifecycleException
+            throws IOException
         {
             // We use the managed files so that if the UoW gets discarded the files will be restored
             List<File> errors = new ArrayList<>();
@@ -62,7 +61,7 @@ public interface HasUoWFilesLifecycle<T extends Enum<T>>
             }
             if( !errors.isEmpty() )
             {
-                throw new LifecycleException( "Unable to delete existing files: " + errors );
+                throw new IOException( "Unable to delete existing files: " + errors );
             }
         }
     }

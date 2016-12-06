@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.entity.Lifecycle;
+import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.runtime.composite.MixinModel;
@@ -88,11 +89,27 @@ public final class EntityMixinsModel
 
                 if( create )
                 {
-                    lifecycle.create();
+                    try
+                    {
+                        lifecycle.create();
+                    }
+                    catch( Exception ex )
+                    {
+                        String message = "Unable to invoke create lifecycle on " + lifecycle;
+                        throw new LifecycleException( message, ex );
+                    }
                 }
                 else
                 {
-                    lifecycle.remove();
+                    try
+                    {
+                        lifecycle.remove();
+                    }
+                    catch( Exception ex )
+                    {
+                        String message = "Unable to invoke remove lifecycle on " + lifecycle;
+                        throw new LifecycleException( message, ex );
+                    }
                 }
             }
         }
