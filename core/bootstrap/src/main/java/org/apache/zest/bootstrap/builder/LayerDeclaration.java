@@ -29,8 +29,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 
-import static java.util.stream.Collectors.toCollection;
-
 /**
  * Provides declared {@link org.apache.zest.api.structure.Layer} information that the {@link ApplicationBuilder} can use.
  */
@@ -65,7 +63,7 @@ public class LayerDeclaration
     public LayerDeclaration using( Iterable<String> layerNames )
     {
         StreamSupport.stream( layerNames.spliterator(), false )
-                     .collect( toCollection( () -> using ) );
+                     .forEach( using::add );
         return this;
     }
 
