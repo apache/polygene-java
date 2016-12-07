@@ -20,6 +20,7 @@
 package org.apache.zest.index.elasticsearch;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
@@ -396,7 +397,13 @@ public interface ElasticSearchFinder
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
-            Object firstValue = Iterables.first( spec.containedValues() );
+            Iterator<?> iterator = spec.containedValues().iterator();
+            if( !iterator.hasNext() )
+            {
+                // Ignore empty contains all spec
+                return;
+            }
+            Object firstValue = iterator.next();
             if( firstValue instanceof ValueComposite )
             {
                 // Query by complex property "example value"

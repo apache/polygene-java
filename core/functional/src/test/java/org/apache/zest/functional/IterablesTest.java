@@ -53,13 +53,6 @@ public class IterablesTest
     }
 
     @Test
-    public void testFirst()
-    {
-        assertThat( Iterables.first( numbers ), equalTo( "1" ) );
-        assertThat( Iterables.first( emptyList() ), nullValue() );
-    }
-
-    @Test
     public void testAppend()
     {
         assertThat( Iterables.toList( Iterables.append( "C", Iterables.iterable( "A", "B" ) ) ).toString(),

@@ -26,6 +26,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.Predicate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
@@ -66,7 +67,6 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.util.NullArgumentException;
 
 import static org.apache.zest.api.identity.HasIdentity.IDENTITY_METHOD;
-import static org.apache.zest.functional.Iterables.first;
 import static org.apache.zest.functional.Iterables.prepend;
 
 /**
@@ -174,7 +174,8 @@ public final class QueryExpressions
     public static <T> T oneOf( final NamedAssociation<T> association )
     {
         NullArgumentException.validateNotNull( "Association", association );
-        return association.get( first( association ) );
+        Iterator<String> iterator = association.iterator();
+        return association.get( iterator.hasNext() ? iterator.next() : null );
     }
 
     /**

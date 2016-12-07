@@ -58,31 +58,6 @@ public final class Iterables
         return new FilterIterable<>( i, (Predicate<? super X>) specification );
     }
 
-    public static <X> X first( Iterable<X> i )
-    {
-        Iterator<X> iter = i.iterator();
-        if( iter.hasNext() )
-        {
-            return iter.next();
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static <X> X last( Iterable<X> i )
-    {
-        Iterator<X> iter = i.iterator();
-        X item = null;
-        while( iter.hasNext() )
-        {
-            item = iter.next();
-        }
-
-        return item;
-    }
-
     @SuppressWarnings( "unchecked" )
     public static <FROM, TO> Iterable<TO> map( Function<? /* super FROM */, TO> function, Iterable<FROM> from )
     {

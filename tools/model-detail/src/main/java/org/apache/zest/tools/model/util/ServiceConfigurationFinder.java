@@ -30,8 +30,6 @@ import org.apache.zest.tools.model.descriptor.ServiceDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.TransientDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.ValueDetailDescriptor;
 
-import static org.apache.zest.functional.Iterables.first;
-
 class ServiceConfigurationFinder
 {
     public Object findConfigurationDescriptor( ServiceDetailDescriptor descriptor )
@@ -43,7 +41,7 @@ class ServiceConfigurationFinder
             return null;
         }
 
-        // traverse the appDescritor to find the configurationDescriptor
+        // traverse the appDescriptor to find the configurationDescriptor
         ApplicationDetailDescriptor appDescriptor = descriptor.module().layer().application();
         Object obj = findConfigurationDescriptor( appDescriptor, configType );
         if( obj == null )
