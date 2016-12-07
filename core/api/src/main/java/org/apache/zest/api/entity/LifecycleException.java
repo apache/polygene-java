@@ -21,23 +21,19 @@
 package org.apache.zest.api.entity;
 
 /**
- * Thrown by methods of Lifecycle if invocation fails
+ * Thrown if Lifecycle invocation fails
  */
 public class LifecycleException
     extends RuntimeException
 {
-    public LifecycleException( String s )
+    private static final long serialVersionUID = 1L;
+
+    public LifecycleException()
     {
-        super( s );
     }
 
-    public LifecycleException( String s, Throwable throwable )
+    public LifecycleException( String message, Throwable cause )
     {
-        super( s, throwable );
-    }
-
-    public LifecycleException( Throwable throwable )
-    {
-        super( throwable );
+        super( message, cause );
     }
 }

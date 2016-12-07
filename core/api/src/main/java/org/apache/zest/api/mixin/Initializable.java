@@ -30,9 +30,7 @@ public interface Initializable
     /**
      * Initialize the fragment
      *
-     * @throws org.apache.zest.api.mixin.InitializationException
-     *          if something went wrong
+     * @throws Exception if something went wrong
      */
-    void initialize()
-        throws InitializationException;
+    void initialize() throws Exception;
 }

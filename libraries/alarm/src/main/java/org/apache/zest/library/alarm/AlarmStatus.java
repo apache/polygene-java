@@ -26,7 +26,6 @@ import java.util.ResourceBundle;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
@@ -99,7 +98,6 @@ public interface AlarmStatus extends ValueComposite
 
         @Override
         public void initialize()
-            throws InitializationException
         {
             if( state.creationDate().get() == null )
             {

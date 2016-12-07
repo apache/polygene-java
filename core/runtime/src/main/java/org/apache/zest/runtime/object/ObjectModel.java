@@ -134,9 +134,10 @@ public final class ObjectModel
             {
                 ( (Initializable) instance ).initialize();
             }
-            catch( InitializationException e )
+            catch( Exception e )
             {
-                throw new ConstructionException( "Unable to initialize " + objectType, e );
+                String message = "Unable to initialize " + objectType;
+                throw new ConstructionException( new InitializationException( message, e ) );
             }
         }
 

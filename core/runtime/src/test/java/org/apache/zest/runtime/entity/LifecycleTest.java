@@ -20,12 +20,9 @@
 
 package org.apache.zest.runtime.entity;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.Lifecycle;
-import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -33,6 +30,8 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
 
 import static org.junit.Assert.assertThat;
 
@@ -106,13 +105,11 @@ public class LifecycleTest
         implements Lifecycle, Testing
     {
         public void create()
-            throws LifecycleException
         {
             create = true;
         }
 
         public void remove()
-            throws LifecycleException
         {
             remove = true;
         }

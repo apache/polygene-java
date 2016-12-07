@@ -27,7 +27,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
 import org.apache.zest.test.util.NotYetImplemented;
@@ -98,7 +97,6 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
     @Test
     @Override
     public void script23()
-        throws EntityFinderException
     {
         super.script23();
     }

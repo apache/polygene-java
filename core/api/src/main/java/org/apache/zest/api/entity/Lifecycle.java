@@ -65,17 +65,15 @@ package org.apache.zest.api.entity;
  */
 public interface Lifecycle
 {
-
     /**
      * Creation callback method.
      * <p>
      * Called by the Zest runtime before the newInstance of the entity completes, before the constraints are checked,
      * allowing for additional initialization.
      * </p>
-     * @throws LifecycleException if the entity could not be created
+     * @throws Exception if the entity could not be created
      */
-    void create()
-        throws LifecycleException;
+    void create() throws Exception;
 
     /**
      * Removal callback method.
@@ -83,8 +81,7 @@ public interface Lifecycle
      * Called by the Zest runtime before the entity is removed from the system, allowing
      * for clean-up operations.
      * </p>
-     * @throws LifecycleException if the entity could not be removed
+     * @throws Exception if the entity could not be removed
      */
-    void remove()
-        throws LifecycleException;
+    void remove() throws Exception;
 }

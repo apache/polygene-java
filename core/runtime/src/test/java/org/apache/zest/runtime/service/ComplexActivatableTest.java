@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.service.ServiceComposite;
@@ -83,7 +82,6 @@ public class ComplexActivatableTest
         private SuperType me;
 
         public void initialize()
-                throws InitializationException
         {
             me.greeting().set( "Hello" );
         }

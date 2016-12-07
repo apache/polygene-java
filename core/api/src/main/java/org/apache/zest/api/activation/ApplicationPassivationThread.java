@@ -27,8 +27,6 @@ import org.apache.zest.api.structure.Application;
 /**
  * Application Passivation Thread to use as a Shutdown Hook.
  * <pre>Runtime.getRuntime().addShutdownHook( new ApplicationPassivationThread( application ) );</pre>
- * <p>Constructors to control where errors are logged are provided. They support PrintStream (STDOUT/STDERR) and SLF4J
- * Loggers. Defaults to STDERR.</p>
  */
 public final class ApplicationPassivationThread
     extends Thread

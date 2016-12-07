@@ -23,7 +23,6 @@ package org.apache.zest.runtime.mixin;
 import org.junit.Test;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -72,7 +71,6 @@ public class InitializableTest
         boolean ok = false;
 
         public void initialize()
-            throws InitializationException
         {
             ok = true;
         }
@@ -89,7 +87,6 @@ public class InitializableTest
         boolean ok = false;
 
         public void initialize()
-            throws InitializationException
         {
             ok = true;
         }

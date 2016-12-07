@@ -19,26 +19,25 @@
  */
 package org.apache.zest.regression.qi382;
 
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.api.identity.StringIdentity;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.Lifecycle;
-import org.apache.zest.api.entity.LifecycleException;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -92,7 +91,6 @@ public class Qi382Test extends AbstractZestTest
 
             @Override
             public void create()
-                throws LifecycleException
             {
                 UnitOfWork unitOfWork = uowf.currentUnitOfWork();
                 EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class, NICLAS);
@@ -102,7 +100,6 @@ public class Qi382Test extends AbstractZestTest
 
             @Override
             public void remove()
-                throws LifecycleException
             {
 
             }

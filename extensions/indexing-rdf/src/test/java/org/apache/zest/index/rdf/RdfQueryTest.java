@@ -25,7 +25,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
 import org.junit.Ignore;
@@ -59,7 +58,6 @@ public class RdfQueryTest
     @Ignore( "oneOf() Query Expression not supported by RDF Indexing" )
     @Override
     public void script23()
-        throws EntityFinderException
     {
         super.script23();
     }

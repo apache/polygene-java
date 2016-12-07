@@ -20,7 +20,7 @@
 package org.apache.zest.api.mixin;
 
 /**
- * Thrown when a Fragment or object could not be instantiated.
+ * Thrown when a Fragment or object could not be initialized.
  */
 public class InitializationException
     extends RuntimeException
@@ -31,18 +31,8 @@ public class InitializationException
     {
     }
 
-    public InitializationException( String message )
-    {
-        super( message );
-    }
-
     public InitializationException( String message, Throwable cause )
     {
         super( message, cause );
-    }
-
-    public InitializationException( Throwable cause )
-    {
-        super( cause );
     }
 }
