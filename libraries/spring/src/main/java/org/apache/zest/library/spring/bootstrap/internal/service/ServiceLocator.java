@@ -34,7 +34,7 @@ final class ServiceLocator
     implements HierarchicalVisitor<Object, Object, RuntimeException>
 {
     private final String serviceId;
-    private Class serviceType;
+    private Class<?> serviceType;
     private String moduleName;
     private String layerName;
 
@@ -115,16 +115,10 @@ final class ServiceLocator
         if( layerName != null )
         {
             Module module = anApplication.findModule( layerName, moduleName );
-            Iterable<ServiceReference<Object>> serviceRefs = module.findServices( serviceType );
-            for( ServiceReference<Object> serviceRef : serviceRefs )
-            {
-                if( serviceId.equals( serviceRef.identity().toString() ) )
-                {
-                    return serviceRef;
-                }
-            }
+            return module.findServices( serviceType )
+                         .filter( ref -> ref.identity().toString().equals( serviceId ) )
+                         .findFirst().orElse( null );
         }
-
         return null;
     }
 }

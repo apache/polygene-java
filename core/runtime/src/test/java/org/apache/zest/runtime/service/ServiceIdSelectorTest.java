@@ -20,7 +20,7 @@
 
 package org.apache.zest.runtime.service;
 
-import org.junit.Test;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Uses;
@@ -31,11 +31,11 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
+import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.apache.zest.api.service.qualifier.ServiceQualifier.firstService;
-import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 
 /**
  * JAVADOC
@@ -70,7 +70,9 @@ public class ServiceIdSelectorTest
 
         public ServiceConsumer( @Uses String serviceId, @Service Iterable<ServiceReference<TestService>> serviceRefs )
         {
-            service = firstService( withId( serviceId ), serviceRefs );
+            service = StreamSupport.stream( serviceRefs.spliterator(), false )
+                                   .filter( withId( serviceId ) )
+                                   .findFirst().map( ServiceReference::get ).orElse( null );
         }
 
         public TestService getService()

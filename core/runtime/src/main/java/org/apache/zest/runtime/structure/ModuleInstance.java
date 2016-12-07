@@ -22,14 +22,13 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -386,26 +385,25 @@ public class ModuleInstance
     }
 
     @Override
-    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+    public <T> Stream<ServiceReference<T>> findServices( final Class<T> serviceType )
     {
         return findServices( (Type) serviceType );
     }
 
     @Override
-    public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
+    public <T> Stream<ServiceReference<T>> findServices( final Type serviceType )
     {
         List<? extends ModelDescriptor> serviceModels = typeLookup.lookupServiceModels( serviceType );
         if( serviceModels == null )
         {
-            return Collections.emptyList();
+            return Stream.empty();
         }
         //noinspection unchecked
         return serviceModels.stream()
-            .map( this::findServiceReferenceInstance )
-            .filter( Objects::nonNull )
-            .filter( ref -> ref.hasType( serviceType ) )
-            .map( ref -> (ServiceReference<T>) ref )
-            .collect( Collectors.toList() );
+                            .map( this::findServiceReferenceInstance )
+                            .filter( Objects::nonNull )
+                            .filter( ref -> ref.hasType( serviceType ) )
+                            .map( ref -> (ServiceReference<T>) ref );
     }
 
     private <T> ServiceReference<T> findServiceReferenceInstance( ModelDescriptor model )

@@ -21,6 +21,7 @@
 package org.apache.zest.api.service;
 
 import java.lang.reflect.Type;
+import java.util.stream.Stream;
 
 /**
  * Interface used to query for ServiceReferences.
@@ -74,9 +75,9 @@ public interface ServiceFinder
      *
      * @param serviceType the type that the Services must implement
      *
-     * @return an iterable of ServiceReferences for the given type. It is empty if none exist
+     * @return a stream of ServiceReferences for the given type. It is empty if none exist
      */
-    <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType );
+    <T> Stream<ServiceReference<T>> findServices( Class<T> serviceType );
 
     /**
      * Find ServiceReferences that implements the given type.
@@ -87,7 +88,7 @@ public interface ServiceFinder
      *
      * @param serviceType the type that the Services must implement
      *
-     * @return an iterable of ServiceReferences for the given type. It is empty if none exist
+     * @return a stream of ServiceReferences for the given type. It is empty if none exist
      */
-    <T> Iterable<ServiceReference<T>> findServices( Type serviceType );
+    <T> Stream<ServiceReference<T>> findServices( Type serviceType );
 }

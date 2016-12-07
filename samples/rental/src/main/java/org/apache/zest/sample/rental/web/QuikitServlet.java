@@ -49,7 +49,6 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.service.ServiceFinder;
-import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.ApplicationAssembler;
@@ -98,13 +97,14 @@ public class QuikitServlet
                 DataInitializer initializer = module.newTransient( DataInitializer.class );
                 initializer.initialize();
             }
-            Iterable<ServiceReference<Page>> iterable = finder.findServices( Page.class );
-            for( ServiceReference<Page> page : iterable )
-            {
-                PageMetaInfo pageMetaInfo = page.metaInfo( PageMetaInfo.class );
-                String mountPoint = pageMetaInfo.mountPoint();
-                mountPoints.put( mountPoint, page.get() );
-            }
+            finder.findServices( Page.class ).forEach(
+                page ->
+                {
+                    PageMetaInfo pageMetaInfo = page.metaInfo( PageMetaInfo.class );
+                    String mountPoint = pageMetaInfo.mountPoint();
+                    mountPoints.put( mountPoint, page.get() );
+                }
+            );
         }
         catch( Exception e )
         {

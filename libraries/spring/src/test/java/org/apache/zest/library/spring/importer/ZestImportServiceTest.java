@@ -19,26 +19,25 @@
  */
 package org.apache.zest.library.spring.importer;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.service.qualifier.ServiceQualifier;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.apache.zest.api.service.qualifier.ServiceQualifier.firstService;
-import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration
@@ -86,7 +85,9 @@ public final class ZestImportServiceTest
 
         assembler.module().injectTo(this);
 
-        CommentService service = firstService( withId( "commentService2" ), services );
+        CommentService service = StreamSupport.stream( services.spliterator(), false )
+                                              .filter( withId( "commentService2" ) )
+                                              .findFirst().map( ServiceReference::get ).orElse( null );
         assertThat( "service with correct id has been selected", service.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 
@@ -108,7 +109,10 @@ public final class ZestImportServiceTest
 
         assembler.module().injectTo( this );
 
-        CommentService foundService = ServiceQualifier.firstService( withId( "commentService2" ), finder.<CommentService>findServices( CommentService.class ));
+        CommentService foundService = finder.findServices( CommentService.class )
+                                            .filter( withId( "commentService2" ) )
+                                            .findFirst().map( ServiceReference::get )
+                                            .orElse( null );
         assertThat( "service with correct id has been selected", foundService.comment( "pizza" ), equalTo( "pizza is good." ) );
     }
 }
