@@ -47,7 +47,6 @@ import org.junit.Test;
 import org.apache.zest.functional.Visitor;
 
 import static java.util.Arrays.asList;
-import static org.apache.zest.functional.Iterables.iterable;
 import static org.apache.zest.io.Inputs.text;
 import static org.apache.zest.io.Transforms.lock;
 import static org.apache.zest.test.util.Assume.assumeConnectivity;
@@ -162,11 +161,11 @@ public class InputOutputTest
         Integer[] data = new Integer[ 105 ];
         Arrays.fill( data, 42 );
 
-        Inputs.iterable( iterable( data ) ).transferTo(
+        Inputs.iterable( Arrays.asList( data ) ).transferTo(
             Transforms.map(
-                new Transforms.ProgressLog<Integer>(
+                new Transforms.ProgressLog<>(
                     Logger.getLogger( InputOutputTest.class.getName() ), "Data transferred: {0}", 10 ),
-                Outputs.<Integer>noop() ) );
+                Outputs.noop() ) );
     }
 
     @Test
