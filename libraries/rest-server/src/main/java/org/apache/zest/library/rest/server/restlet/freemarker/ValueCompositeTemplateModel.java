@@ -32,7 +32,6 @@ import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Iterables;
 
 /**
  * TODO

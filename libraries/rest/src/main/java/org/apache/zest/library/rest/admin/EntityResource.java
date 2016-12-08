@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.Identity;
@@ -43,7 +44,6 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
 import org.apache.zest.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.zest.spi.entity.EntityState;
@@ -492,8 +492,7 @@ public class EntityResource
                         }
 
                         // Remove "left-overs"
-                        Iterables.toList( namedAssociation )
-                            .stream()
+                        StreamSupport.stream( namedAssociation.spliterator(), false )
                             .filter( assocName -> !names.contains( assocName ) )
                             .forEach( namedAssociation::remove );
                     }
