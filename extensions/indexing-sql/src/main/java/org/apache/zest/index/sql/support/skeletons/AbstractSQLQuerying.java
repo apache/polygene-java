@@ -66,7 +66,6 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.sql.support.api.SQLQuerying;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
@@ -1256,7 +1255,7 @@ public abstract class AbstractSQLQuerying
                     LiteralFactory l = vendor.getLiteralFactory();
                     ColumnsFactory c = vendor.getColumnsFactory();
 
-                    Iterable<?> collection = predicate.containedValues();
+                    Collection<?> collection = predicate.containedValues();
                     List<QNameJoin> joins = new ArrayList<>();
                     for( Object value : collection )
                     {
@@ -1288,7 +1287,7 @@ public abstract class AbstractSQLQuerying
                             b.geq(
                                 l.func( "COUNT", c.colName( TABLE_NAME_PREFIX + lastTableIndex,
                                                             DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
-                                l.n( Iterables.count( collection ) ) ) );
+                                l.n( collection.size() ) ) );
                 }
             } //
         );

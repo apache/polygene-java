@@ -20,6 +20,8 @@
 package org.apache.zest.api.query.grammar;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.apache.zest.api.composite.Composite;
 
 /**
@@ -29,14 +31,14 @@ public class ContainsAllPredicate<T>
     extends ExpressionPredicate
 {
     private PropertyFunction<? extends Collection<T>> collectionProperty;
-    private Iterable<T> valueCollection;
+    private Collection<T> valueCollection;
 
     public ContainsAllPredicate( PropertyFunction<? extends Collection<T>> collectionProperty,
-                                 Iterable<T> valueCollection
+                                 Collection<T> valueCollection
     )
     {
         this.collectionProperty = collectionProperty;
-        this.valueCollection = valueCollection;
+        this.valueCollection = Collections.unmodifiableCollection( valueCollection );
     }
 
     public PropertyFunction<? extends Collection<T>> collectionProperty()
@@ -44,7 +46,7 @@ public class ContainsAllPredicate<T>
         return collectionProperty;
     }
 
-    public Iterable<T> containedValues()
+    public Collection<T> containedValues()
     {
         return valueCollection;
     }

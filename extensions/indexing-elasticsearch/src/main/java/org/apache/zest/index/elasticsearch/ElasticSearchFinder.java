@@ -19,8 +19,8 @@
  */
 package org.apache.zest.index.elasticsearch;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -398,13 +398,13 @@ public interface ElasticSearchFinder
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
-            Iterator<?> iterator = spec.containedValues().iterator();
-            if( !iterator.hasNext() )
+            Collection<?> values = spec.containedValues();
+            if( values.isEmpty() )
             {
                 // Ignore empty contains all spec
                 return;
             }
-            Object firstValue = iterator.next();
+            Object firstValue = values.iterator().next();
             if( firstValue instanceof ValueComposite )
             {
                 // Query by complex property "example value"
@@ -420,7 +420,7 @@ public interface ElasticSearchFinder
             {
                 String name = spec.collectionProperty().toString();
                 BoolQueryBuilder contAllBuilder = boolQuery();
-                for( Object value : spec.containedValues() )
+                for( Object value : values )
                 {
                     contAllBuilder.must( termQuery( name, resolveVariable( value, variables ) ) );
                 }

@@ -598,7 +598,7 @@ public final class QueryExpressions
      * @return a new CONTAINS ALL specification for a Collection Property.
      */
     public static <T> ContainsAllPredicate<T> containsAll( Property<? extends Collection<T>> collectionProperty,
-                                                               Iterable<T> values )
+                                                           Collection<T> values )
     {
         NullArgumentException.validateNotNull( "Values", values );
         return new ContainsAllPredicate<>( property( collectionProperty ), values );
@@ -615,7 +615,7 @@ public final class QueryExpressions
     @SuppressWarnings( {"raw", "unchecked"} )
     public static <T> ContainsAllPredicate<T> containsAllVariables(
         Property<? extends Collection<T>> collectionProperty,
-        Iterable<Variable> variables )
+        Collection<Variable> variables )
     {
         NullArgumentException.validateNotNull( "Variables", variables );
         return new ContainsAllPredicate( property( collectionProperty ), variables );

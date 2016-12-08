@@ -54,7 +54,6 @@ import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.api.value.ValueSerializer.Options;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.rdf.query.RdfQueryParser;
 import org.apache.zest.spi.ZestSPI;
 import org.slf4j.LoggerFactory;
@@ -368,19 +367,11 @@ public class RdfQueryParserImpl
 
     private void processContainsAllPredicate( final ContainsAllPredicate<?> predicate, StringBuilder builder )
     {
-        Iterable<?> values = predicate.containedValues();
+        Collection<?> values = predicate.containedValues();
         String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
-        String[] strings;
-        if( values instanceof Collection )
-        {
-            strings = new String[ ( (Collection<?>) values ).size() ];
-        }
-        else
-        {
-            strings = new String[ ( (int) Iterables.count( values ) ) ];
-        }
+        String[] strings = new String[ values.size() ];
         Integer x = 0;
-        for( Object item : (Collection<?>) values )
+        for( Object item : values )
         {
             String jsonStr = "";
             if( item != null )
