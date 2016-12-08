@@ -29,15 +29,6 @@ import static org.junit.Assert.fail;
 public class CollectorsTest
 {
     @Test
-    public void singleOrEmpty()
-    {
-        assertEquals( Optional.empty(), Stream.of().collect( Collectors.singleOrEmpty() ) );
-        assertEquals( Optional.of( 1 ), Stream.of( 1 ).collect( Collectors.singleOrEmpty() ) );
-        assertEquals( Optional.empty(), Stream.of( 1, 1 ).collect( Collectors.singleOrEmpty() ) );
-        assertEquals( Optional.empty(), Stream.of( 1, 1, 1 ).collect( Collectors.singleOrEmpty() ) );
-    }
-
-    @Test
     public void single()
     {
         assertThat( Stream.of( 1L ).collect( Collectors.single() ), is( 1L ) );
@@ -57,6 +48,26 @@ public class CollectorsTest
         try
         {
             Stream.of( 1, 1, 1 ).collect( Collectors.single() );
+            fail( "Should have failed" );
+        }
+        catch( IllegalArgumentException ex ) {}
+    }
+
+    @Test
+    public void singleOrEmpty()
+    {
+        assertEquals( Optional.empty(), Stream.of().collect( Collectors.singleOrEmpty() ) );
+        assertEquals( Optional.of( 1 ), Stream.of( 1 ).collect( Collectors.singleOrEmpty() ) );
+
+        try
+        {
+            Stream.of( 1, 1 ).collect( Collectors.singleOrEmpty() );
+            fail( "Should have failed" );
+        }
+        catch( IllegalArgumentException ex ) {}
+        try
+        {
+            Stream.of( 1, 1, 1 ).collect( Collectors.singleOrEmpty() );
             fail( "Should have failed" );
         }
         catch( IllegalArgumentException ex ) {}

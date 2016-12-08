@@ -22,7 +22,6 @@ package org.apache.zest.runtime.unitofwork;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,8 +68,6 @@ import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.runtime.association.AssociationInstance;
-import org.apache.zest.runtime.association.ManyAssociationInstance;
-import org.apache.zest.runtime.association.NamedAssociationInstance;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.entity.EntityInstance;
 import org.apache.zest.runtime.entity.EntityModel;
@@ -78,7 +75,6 @@ import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.value.ValueInstance;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
-import org.apache.zest.spi.entity.NamedAssociationState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.module.ModuleSpi;
 import org.apache.zest.spi.query.EntityFinder;
@@ -215,8 +211,8 @@ public class ModuleUnitOfWork
         Class<T> type,
         Function<PropertyDescriptor, Object> propertyFunction,
         Function<AssociationDescriptor, EntityReference> associationFunction,
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
     )
         throws NoSuchEntityTypeException
     {
@@ -232,8 +228,8 @@ public class ModuleUnitOfWork
         Class<T> type, Identity identity,
         Function<PropertyDescriptor, Object> propertyFunction,
         Function<AssociationDescriptor, EntityReference> associationFunction,
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
     )
         throws NoSuchEntityTypeException
     {
@@ -434,8 +430,8 @@ public class ModuleUnitOfWork
     {
         Function<PropertyDescriptor, Object> propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
         Function<AssociationDescriptor, EntityReference> assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
 
         @SuppressWarnings( "unchecked" )
         ValueBuilder<T> builder = module().instance().newValueBuilderWithState(
@@ -487,8 +483,8 @@ public class ModuleUnitOfWork
     {
         Function<PropertyDescriptor, Object> propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
         Function<AssociationDescriptor, EntityReference> assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
 
         try
         {
@@ -660,7 +656,7 @@ public class ModuleUnitOfWork
     }
 
     private class ToValueManyAssociationMappingFunction<T>
-        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+        implements Function<AssociationDescriptor, Stream<EntityReference>>
     {
         private final T entity;
 
@@ -670,15 +666,15 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
+        public Stream<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            return entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
+            return entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
         }
     }
 
     private class ToValueNameAssociationMappingFunction<T>
-        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+        implements Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>>
     {
         private final T entity;
 
@@ -688,16 +684,10 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Map<String, EntityReference> apply( AssociationDescriptor associationDescriptor )
+        public Stream<Map.Entry<String, EntityReference>> apply( AssociationDescriptor associationDescriptor )
         {
-            Map<String, EntityReference> result = new HashMap<>();
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            final NamedAssociationState state = entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
-            for( String name : state )
-            {
-                result.put( name, state.get( name ) );
-            }
-            return result;
+            return entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
         }
     }
 
@@ -741,7 +731,7 @@ public class ModuleUnitOfWork
     }
 
     private class ToEntityManyAssociationMappingFunction<T>
-        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+        implements Function<AssociationDescriptor, Stream<EntityReference>>
     {
 
         private final T value;
@@ -752,17 +742,15 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
+        public Stream<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
-            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
-            ManyAssociationInstance<T> association =
-                (ManyAssociationInstance<T>) state.manyAssociationFor( associationDescriptor.accessor() );
-            return association.getManyAssociationState();
+            ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
+            return valueInstance.state().manyAssociationFor( associationDescriptor.accessor() ).references();
         }
     }
 
     private class ToEntityNameAssociationMappingFunction<T>
-        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+        implements Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>>
     {
         private final T value;
 
@@ -772,17 +760,10 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Map<String, EntityReference> apply( AssociationDescriptor associationDescriptor )
+        public Stream<Map.Entry<String, EntityReference>> apply( AssociationDescriptor associationDescriptor )
         {
-            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
-            NamedAssociationInstance<T> association =
-                (NamedAssociationInstance<T>) state.namedAssociationFor( associationDescriptor.accessor() );
-            HashMap<String, EntityReference> result = new HashMap<>();
-            for( Map.Entry<String, EntityReference> entry : association.getEntityReferences() )
-            {
-                result.put( entry.getKey(), entry.getValue() );
-            }
-            return result;
+            ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
+            return valueInstance.state().namedAssociationFor( associationDescriptor.accessor() ).references();
         }
     }
 }

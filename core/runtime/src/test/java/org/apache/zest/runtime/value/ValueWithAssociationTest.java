@@ -95,10 +95,10 @@ public class ValueWithAssociationTest extends AbstractZestTest
             NamedAssociation<?> namedSimples = holder.allNamedAssociations().iterator().next();
 
             assertThat( spi.entityReferenceOf( simple ), equalTo( EntityReference.create( identity1 ) ) );
-            assertThat( spi.entityReferenceOf( simples )
+            assertThat( spi.entityReferencesOf( simples )
                             .iterator()
                             .next(), equalTo( EntityReference.create( identity1 ) ) );
-            assertThat( spi.entityReferenceOf( namedSimples )
+            assertThat( spi.entityReferencesOf( namedSimples )
                             .iterator()
                             .next()
                             .getValue(), equalTo( EntityReference.create( identity1 ) ) );

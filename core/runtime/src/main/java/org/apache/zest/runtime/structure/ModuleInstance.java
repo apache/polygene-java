@@ -261,8 +261,8 @@ public class ModuleInstance
     public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+                                                         Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+                                                         Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
     )
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
@@ -306,15 +306,15 @@ public class ModuleInstance
         }
 
         @Override
-        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+        public Stream<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return new ArrayList<>();
+            return new ArrayList<EntityReference>().stream();
         }
 
         @Override
-        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+        public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return new HashMap<>();
+            return new HashMap<String, EntityReference>().entrySet().stream();
         }
     }
 

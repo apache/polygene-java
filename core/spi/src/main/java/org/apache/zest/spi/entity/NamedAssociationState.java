@@ -19,6 +19,10 @@
  */
 package org.apache.zest.spi.entity;
 
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.EntityReference;
 
 /**
@@ -41,4 +45,10 @@ public interface NamedAssociationState
     EntityReference get( String name );
 
     String nameOf( EntityReference entityReference );
+
+    default Stream<Map.Entry<String, EntityReference>> stream()
+    {
+        return StreamSupport.stream( spliterator(), false )
+                            .map( name -> new AbstractMap.SimpleImmutableEntry<>( name, get( name ) ) );
+    }
 }

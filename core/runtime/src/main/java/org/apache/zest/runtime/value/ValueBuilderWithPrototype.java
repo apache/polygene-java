@@ -19,12 +19,11 @@
  */
 package org.apache.zest.runtime.value;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
-import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
@@ -54,8 +53,6 @@ public class ValueBuilderWithPrototype<T>
     )
     {
         valueModel = (ValueModel) compositeModelModule;
-        // Only shallow clone, as all generic types of the ValueComposites are expected to be Immutable.
-
         MixinsModel mixinsModel = valueModel.mixinsModel();
         Object[] mixins = mixinsModel.newMixinHolder();
         final ValueStateInstance prototypeState = ValueInstance.valueInstanceOf( (ValueComposite) prototype ).state();
@@ -79,21 +76,6 @@ public class ValueBuilderWithPrototype<T>
             mixins[ i++ ] = mixinModel.newInstance( injectionContext );
         }
 
-//        // Use serialization-deserialization to make a copy of the prototype
-//        final Object value;
-//        try
-//        {
-//            // @TODO there is probably a more efficient way to do this
-//            ValueSerialization valueSerialization = currentModule.valueSerialization();
-//            String serialized = valueSerialization.serialize( prototype );
-//            value = valueSerialization.deserialize( valueModel.valueType(), serialized);
-//        }
-//        catch( ValueSerializationException e )
-//        {
-//            throw new IllegalStateException( "Could not serialize-copy Value", e );
-//        }
-
-//        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
         valueInstance.prepareToBuild();
         this.prototypeInstance = valueInstance;
     }
@@ -185,7 +167,7 @@ public class ValueBuilderWithPrototype<T>
     }
 
     private static class AssociationDescriptorIterableFunction
-        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+        implements Function<AssociationDescriptor, Stream<EntityReference>>
     {
         private final ValueStateInstance prototypeState;
 
@@ -195,14 +177,14 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public Iterable<EntityReference> apply( AssociationDescriptor descriptor )
+        public Stream<EntityReference> apply( AssociationDescriptor descriptor )
         {
             return prototypeState.manyAssociationFor( descriptor.accessor() ).references();
         }
     }
 
     private static class AssociationDescriptorMapFunction
-        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+        implements Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>>
     {
         private final ValueStateInstance prototypeState;
 
@@ -212,15 +194,9 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public Map<String, EntityReference> apply( AssociationDescriptor descriptor )
+        public Stream<Map.Entry<String, EntityReference>> apply( AssociationDescriptor descriptor )
         {
-            Map<String, EntityReference> result = new HashMap<>();
-            NamedAssociation<?> namedAssociation = prototypeState.namedAssociationFor( descriptor.accessor() );
-            for( String name : namedAssociation )
-            {
-                result.put( name, namedAssociation.referenceOf( name ) );
-            }
-            return result;
+            return prototypeState.namedAssociationFor( descriptor.accessor() ).references();
         }
     }
 }

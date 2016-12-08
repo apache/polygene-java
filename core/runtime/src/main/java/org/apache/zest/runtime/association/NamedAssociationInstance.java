@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.NamedAssociation;
@@ -111,11 +112,9 @@ public class NamedAssociationInstance<T>
     }
 
     @Override
-    public Iterable<EntityReference> references()
+    public Stream<Map.Entry<String, EntityReference>> references()
     {
-        return StreamSupport.stream( namedAssociationState.spliterator(), false )
-                            .map( namedAssociationState::get )
-                            .collect( Collectors.toList() );
+        return namedAssociationState.stream();
     }
 
     @Override

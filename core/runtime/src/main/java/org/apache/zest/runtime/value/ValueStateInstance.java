@@ -37,6 +37,9 @@ import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.structure.ModuleInstance;
 import org.apache.zest.runtime.unitofwork.EntityFunction;
 
+import static java.util.stream.Collectors.toList;
+import static org.apache.zest.api.util.Collectors.toMap;
+
 /**
  * TODO
  */
@@ -89,9 +92,9 @@ public final class ValueStateInstance
 
         this.manyAssociations = new LinkedHashMap<>();
         valueModel.state().manyAssociations().forEach( associationDescriptor -> {
-            AssociationInfo builderInfo = associationDescriptor
-                .getBuilderInfo();
-            List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor );
+            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
+            List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor )
+                                                       .collect( toList() );
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
             ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<>(
                 builderInfo,
@@ -102,9 +105,9 @@ public final class ValueStateInstance
 
         this.namedAssociations = new LinkedHashMap<>();
         valueModel.state().namedAssociations().forEach( associationDescriptor -> {
-            AssociationInfo builderInfo = associationDescriptor
-                .getBuilderInfo();
-            Map<String, EntityReference> value = stateResolver.getNamedAssociationState( associationDescriptor );
+            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
+            Map<String, EntityReference> value = stateResolver.getNamedAssociationState( associationDescriptor )
+                                                              .collect( toMap( LinkedHashMap::new ) );
             NamedAssociationValueState namedAssociationState = new NamedAssociationValueState( value );
             NamedAssociationInstance<Object> associationInstance = new NamedAssociationInstance<>(
                 builderInfo,

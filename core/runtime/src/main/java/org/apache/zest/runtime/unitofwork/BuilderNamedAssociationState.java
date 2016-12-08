@@ -19,8 +19,8 @@
  */
 package org.apache.zest.runtime.unitofwork;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.spi.entity.NamedAssociationState;
@@ -36,7 +36,7 @@ public final class BuilderNamedAssociationState
 
     public BuilderNamedAssociationState()
     {
-        references = new HashMap<>();
+        references = new LinkedHashMap<>();
     }
 
     @Override

@@ -21,6 +21,7 @@ package org.apache.zest.api.value;
 
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.entity.EntityReference;
@@ -87,8 +88,8 @@ public interface ValueBuilderFactory
     <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                   Function<PropertyDescriptor, Object> propertyFunction,
                                                   Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                  Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                  Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction );
+                                                  Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+                                                  Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction );
 
     /**
      * Instantiate a Value of the given type using the serialized state given as String.

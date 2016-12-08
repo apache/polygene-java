@@ -22,6 +22,7 @@ package org.apache.zest.runtime;
 import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.association.Association;
@@ -56,9 +57,6 @@ import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.ApplicationModelFactory;
 import org.apache.zest.bootstrap.ZestRuntime;
 import org.apache.zest.runtime.association.AbstractAssociationInstance;
-import org.apache.zest.runtime.association.AssociationInstance;
-import org.apache.zest.runtime.association.ManyAssociationInstance;
-import org.apache.zest.runtime.association.NamedAssociationInstance;
 import org.apache.zest.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.apache.zest.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.apache.zest.runtime.composite.ProxyReferenceInvocationHandler;
@@ -343,22 +341,20 @@ public final class ZestRuntimeImpl
     }
 
     @Override
-    public EntityReference entityReferenceOf( Association assoc )
+    public EntityReference entityReferenceOf( Association<?> assoc )
     {
-        @SuppressWarnings( "unchecked" )
-        Property<EntityReference> associationState = ( (AssociationInstance) assoc ).getAssociationState();
-        return associationState.get();
+        return assoc.reference();
     }
 
     @Override
-    public Iterable<EntityReference> entityReferenceOf( ManyAssociation assoc )
+    public Stream<EntityReference> entityReferencesOf( ManyAssociation<?> assoc )
     {
-        return ( (ManyAssociationInstance) assoc ).getManyAssociationState();
+        return assoc.references();
     }
 
     @Override
-    public Iterable<Map.Entry<String, EntityReference>> entityReferenceOf( NamedAssociation assoc )
+    public Stream<Map.Entry<String, EntityReference>> entityReferencesOf( NamedAssociation<?> assoc )
     {
-        return ( (NamedAssociationInstance) assoc ).getEntityReferences();
+        return assoc.references();
     }
 }

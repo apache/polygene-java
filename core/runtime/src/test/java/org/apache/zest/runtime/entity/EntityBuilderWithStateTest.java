@@ -19,11 +19,8 @@
  */
 package org.apache.zest.runtime.entity;
 
-import java.util.Arrays;
 import java.util.Collections;
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -31,13 +28,16 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -91,7 +91,7 @@ public class EntityBuilderWithStateTest
                 descriptor -> {
                     if( "manyAss".equals( descriptor.qualifiedName().name() ) )
                     {
-                        return Arrays.asList( EntityReference.create( associatedIdentity ) );
+                        return Stream.of( EntityReference.create( associatedIdentity ) );
                     }
                     return null;
                 },
@@ -101,7 +101,7 @@ public class EntityBuilderWithStateTest
                         return Collections.singletonMap(
                             "foo",
                             EntityReference.create( associatedIdentity )
-                        );
+                        ).entrySet().stream();
                     }
                     return null;
                 }

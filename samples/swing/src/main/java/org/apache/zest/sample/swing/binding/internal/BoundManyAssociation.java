@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
@@ -79,7 +80,7 @@ public class BoundManyAssociation<T> extends AbstractBinding<T>
     }
 
     @Override
-    public Iterable<EntityReference> references()
+    public Stream<EntityReference> references()
     {
         return actualAssociations.references();
     }

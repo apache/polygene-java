@@ -17,7 +17,10 @@
  */
 package org.apache.zest.api.util;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
@@ -29,25 +32,73 @@ public class Collectors
      * @return The single element
      * @throws IllegalArgumentException if no or more than one element
      */
-    public static <T> Collector<T, ?, T> single()
+    public static <T>
+    Collector<T, ?, T> single()
         throws IllegalArgumentException
     {
         Supplier<T> thrower = () ->
         {
             throw new IllegalArgumentException( "No or more than one element in stream" );
         };
-        return java.util.stream.Collectors.collectingAndThen( singleOrEmpty(),
+        return java.util.stream.Collectors.collectingAndThen( java.util.stream.Collectors.reducing( ( a, b ) -> null ),
                                                               optional -> optional.orElseGet( thrower ) );
     }
 
     /**
-     * Collect an optional single element.
+     * Eventually collect a single element.
      * @param <T> Element type
-     * @return An optional single element, empty if no or more than one element
+     * @return The single element, optional
+     * @throws IllegalArgumentException if more than one element
      */
-    public static <T> Collector<T, ?, Optional<T>> singleOrEmpty()
+    public static <T>
+    Collector<T, ?, Optional<T>> singleOrEmpty()
+        throws IllegalArgumentException
     {
-        return java.util.stream.Collectors.reducing( ( a, b ) -> null );
+        return java.util.stream.Collectors.reducing(
+            ( left, right ) ->
+            {
+                if( left != null && right != null )
+                {
+                    throw new IllegalArgumentException( "More than one element in stream" );
+                }
+                if( left != null )
+                {
+                    return left;
+                }
+                return right;
+            } );
+    }
+
+    public static <T, K, U, M extends Map<K, U>>
+    Collector<T, ?, M> toMap( Function<? super T, ? extends K> keyMapper,
+                              Function<? super T, ? extends U> valueMapper,
+                              Supplier<M> mapSupplier )
+    {
+        return java.util.stream.Collectors.toMap( keyMapper,
+                                                  valueMapper,
+                                                  throwingMerger(),
+                                                  mapSupplier );
+    }
+
+
+    public static <T extends Map.Entry<K, U>, K, U>
+    Collector<T, ?, Map<K, U>> toMap()
+    {
+        return java.util.stream.Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue );
+    }
+
+    public static <T extends Map.Entry<K, U>, K, U, M extends Map<K, U>>
+    Collector<T, ?, M> toMap( Supplier<M> mapSupplier )
+    {
+        return toMap( Map.Entry::getKey, Map.Entry::getValue, mapSupplier );
+    }
+
+    private static <T> BinaryOperator<T> throwingMerger()
+    {
+        return ( left, right ) ->
+        {
+            throw new IllegalStateException( String.format( "Duplicate key %s", left ) );
+        };
     }
 
     private Collectors() {}

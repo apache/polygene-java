@@ -28,7 +28,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -332,18 +331,14 @@ public class DefaultRequestReader
                     return null;
                 }
             },
-            (Function<AssociationDescriptor, Iterable<EntityReference>>) associationDescriptor -> {
+            (Function<AssociationDescriptor, Stream<EntityReference>>) associationDescriptor -> {
                 // TODO
-                return Collections.emptySet();
+                return Stream.empty();
             },
-            new Function<AssociationDescriptor, Map<String, EntityReference>>()
+            (Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>>) associationDescriptor ->
             {
-                @Override
-                public Map<String, EntityReference> apply( AssociationDescriptor from )
-                {
-                    // TODO
-                    return Collections.emptyMap();
-                }
+                // TODO
+                return Stream.empty();
             }
         );
 

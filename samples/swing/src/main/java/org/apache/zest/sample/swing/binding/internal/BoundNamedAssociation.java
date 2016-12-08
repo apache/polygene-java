@@ -22,6 +22,7 @@ package org.apache.zest.sample.swing.binding.internal;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
@@ -95,7 +96,7 @@ public class BoundNamedAssociation<T>
     }
 
     @Override
-    public Iterable<EntityReference> references()
+    public Stream<Map.Entry<String, EntityReference>> references()
     {
         return actualAssociations.references();
     }

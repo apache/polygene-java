@@ -21,6 +21,7 @@ package org.apache.zest.api.association;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityReference;
 
 /**
@@ -92,7 +93,7 @@ public class NamedAssociationWrapper
     }
 
     @Override
-    public Iterable<EntityReference> references()
+    public Stream<Map.Entry<String, EntityReference>> references()
     {
         return next.references();
     }
