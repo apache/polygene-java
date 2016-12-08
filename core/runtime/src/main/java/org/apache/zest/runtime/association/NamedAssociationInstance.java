@@ -20,11 +20,14 @@
 package org.apache.zest.runtime.association;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.association.NamedAssociationWrapper;
@@ -32,8 +35,6 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.entity.NamedAssociationState;
-
-import static org.apache.zest.functional.Iterables.map;
 
 public class NamedAssociationInstance<T>
     extends AbstractAssociationInstance<T>
@@ -112,14 +113,9 @@ public class NamedAssociationInstance<T>
     @Override
     public Iterable<EntityReference> references()
     {
-        return map( new Function<String, EntityReference>()
-        {
-            @Override
-            public EntityReference apply( String name )
-            {
-                return namedAssociationState.get( name );
-            }
-        }, namedAssociationState );
+        return StreamSupport.stream( namedAssociationState.spliterator(), false )
+                            .map( namedAssociationState::get )
+                            .collect( Collectors.toList() );
     }
 
     @Override
@@ -130,51 +126,10 @@ public class NamedAssociationInstance<T>
 
     public Iterable<Map.Entry<String, EntityReference>> getEntityReferences()
     {
-        return map( new Function<String, Map.Entry<String, EntityReference>>()
-        {
-            @Override
-            public Map.Entry<String, EntityReference> apply( final String key )
-            {
-                final EntityReference value = namedAssociationState.get( key );
-                return new Map.Entry<String, EntityReference>()
-                {
-                    @Override
-                    public String getKey()
-                    {
-                        return key;
-                    }
-
-                    @Override
-                    public EntityReference getValue()
-                    {
-                        return value;
-                    }
-
-                    @Override
-                    public EntityReference setValue( EntityReference value )
-                    {
-                        throw new UnsupportedOperationException( "Immutable Map" );
-                    }
-
-                    @Override
-                    public boolean equals( Object o )
-                    {
-                        if( o instanceof Map.Entry )
-                        {
-                            Map.Entry other = (Map.Entry) o;
-                            return key.equals( other.getKey() );
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public int hashCode()
-                    {
-                        return 997 * key.hashCode() + 981813497;
-                    }
-                };
-            }
-        }, namedAssociationState );
+        return Collections.unmodifiableMap(
+            StreamSupport.stream( namedAssociationState.spliterator(), false )
+                         .collect( Collectors.toMap( Function.identity(), namedAssociationState::get ) )
+        ).entrySet();
     }
 
 

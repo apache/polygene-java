@@ -24,9 +24,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
@@ -67,7 +70,6 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.util.NullArgumentException;
 
 import static org.apache.zest.api.identity.HasIdentity.IDENTITY_METHOD;
-import static org.apache.zest.functional.Iterables.prepend;
 
 /**
  * Static factory methods for query expressions and operators.
@@ -293,7 +295,11 @@ public final class QueryExpressions
                                     Predicate<Composite>... optionalRight
     )
     {
-        return new AndPredicate( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
+        List<Predicate<Composite>> predicates = new ArrayList<>( 2 + optionalRight.length );
+        predicates.add( left );
+        predicates.add( right );
+        Collections.addAll( predicates, optionalRight );
+        return new AndPredicate( predicates );
     }
 
     /**

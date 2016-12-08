@@ -19,6 +19,7 @@
  */
 package org.apache.zest.api;
 
+import java.util.Collections;
 import java.util.function.Predicate;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.Composite;
@@ -36,7 +37,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class OperatorsTest
             uow.complete();
             uow = uowf.newUnitOfWork();
 
-            Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
+            Iterable<TestEntity> entities = Collections.singleton( testEntity = uow.get( testEntity ) );
 
             QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
 

@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,7 +41,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.AbstractZestTest;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Assert that ValueSerialization behaviour on Collections and Maps is correct.
  */
-// TODO How to assert that given a collection of valuecomposites when serializing and deserializing we have to OOME?
+// TODO How to assert that given a collection of valuecomposites when serializing and deserializing we have no OOME?
 public class AbstractCollectionSerializationTest
     extends AbstractZestTest
 {
@@ -96,7 +96,7 @@ public class AbstractCollectionSerializationTest
     public void givenIterableTypeWithByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = valueSerialization.serialize( Iterables.iterable( byteCollection().toArray() ) );
+        String output = valueSerialization.serialize( new AdHocIterable<>( byteCollection() ) );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Byte.class ) );
         List<Byte> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( byteCollection(), list );
@@ -413,5 +413,21 @@ public class AbstractCollectionSerializationTest
             value.cathedral().set( cathedral );
         }
         return builder.newInstance();
+    }
+
+    private static class AdHocIterable<T> implements Iterable<T>
+    {
+        private final Iterable<T> delegate;
+
+        private AdHocIterable( Iterable<T> delegate )
+        {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Iterator<T> iterator()
+        {
+            return delegate.iterator();
+        }
     }
 }

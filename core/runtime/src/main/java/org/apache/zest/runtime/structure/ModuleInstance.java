@@ -92,8 +92,8 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
 import org.apache.zest.spi.module.ModuleSpi;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * Instance of a Zest Module. Contains the various composites for this Module.
@@ -427,7 +427,7 @@ public class ModuleInstance
     public void activate()
         throws ActivationException
     {
-        activation.activate( model.newActivatorsInstance(), iterable( services, importedServices ) );
+        activation.activate( model.newActivatorsInstance(), asList( services, importedServices ) );
     }
 
     @Override

@@ -32,7 +32,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.sql.DataSource;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.QualifiedName;
@@ -47,7 +48,6 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.sql.support.api.SQLIndexing;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
@@ -172,14 +172,10 @@ public abstract class AbstractSQLIndexing
             Map<Long, EntityState> statesByPK = new HashMap<>();
             Map<Long, Integer> qNamePKs = new HashMap<>();
 
-            Iterable<EntityState> relatedStates = Iterables.filter( new Predicate<EntityState>()
-            {
-                @Override
-                public boolean test( EntityState item )
-                {
-                    return item.entityDescriptor().queryable();
-                }
-            }, Iterables.map( SQLCompatEntityStateWrapper.WRAP, changedStates ) );
+            Iterable<EntityState> relatedStates = StreamSupport.stream( changedStates.spliterator(), false )
+                                                               .filter( state -> state.entityDescriptor().queryable() )
+                                                               .map( SQLCompatEntityStateWrapper.WRAP )
+                                                               .collect( Collectors.toList() );
 
             for( EntityState eState : relatedStates )
             {

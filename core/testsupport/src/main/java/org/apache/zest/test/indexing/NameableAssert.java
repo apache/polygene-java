@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.Identity;
 import org.apache.zest.test.indexing.model.Nameable;
@@ -34,7 +36,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.apache.zest.functional.Iterables.toList;
 
 public class NameableAssert
 {
@@ -56,7 +57,8 @@ public class NameableAssert
                                     String... expectedNames
     )
     {
-        final List<EntityReference> references = toList( identitiesIterable );
+        final List<EntityReference> references = StreamSupport.stream( identitiesIterable.spliterator(), false )
+                                                              .collect( Collectors.toList() );
         assertThat( expectedNames.length + " entries(" + expectedNames.length + ", got " + getNames( references ) + ")",
                     references.size(),
                     equalTo( expectedNames.length ) );

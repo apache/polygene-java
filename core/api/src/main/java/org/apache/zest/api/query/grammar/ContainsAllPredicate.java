@@ -21,7 +21,6 @@ package org.apache.zest.api.query.grammar;
 
 import java.util.Collection;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Iterables;
 
 /**
  * Contains All Specification.
@@ -74,6 +73,6 @@ public class ContainsAllPredicate<T>
     @Override
     public String toString()
     {
-        return collectionProperty + " contains " + Iterables.toList( valueCollection );
+        return collectionProperty + " contains " + valueCollection;
     }
 }

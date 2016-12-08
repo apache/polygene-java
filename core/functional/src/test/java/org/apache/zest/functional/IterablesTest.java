@@ -20,9 +20,7 @@
 package org.apache.zest.functional;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -48,36 +46,5 @@ public class IterablesTest
     public void testCount()
     {
         assertThat( Iterables.count( numbers ), equalTo( 3L ) );
-    }
-
-    @Test
-    public void testMap()
-    {
-        assertThat( Iterables.toList( Iterables.map( new Function<String, String>()
-        {
-
-            public String apply( String s )
-            {
-                return s + s;
-            }
-        }, numbers ) ).toString(), equalTo( "[11, 22, 33]" ) );
-
-        Iterable<List<String>> numberIterable = Iterables.iterable( numbers, numbers, numbers );
-        assertThat( Iterables.toList( Iterables.map( new Function<Collection, Integer>()
-        {
-
-            @Override
-            public Integer apply( Collection collection )
-            {
-                return collection.size();
-            }
-        }, numberIterable ) ).toString(), equalTo( "[3, 3, 3]" ) );
-    }
-
-    @Test
-    public void testIterableVarArg()
-    {
-        assertThat( Iterables.toList( Iterables.iterable( "1", "2", "3" ) ).toString(),
-                    equalTo( "[1, 2, 3]" ) );
     }
 }
