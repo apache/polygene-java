@@ -19,17 +19,20 @@
  */
 package org.apache.zest.runtime.query;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryExecutionException;
 import org.apache.zest.api.query.QueryExpressions;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.query.QuerySource;
 
 /**
@@ -52,7 +55,7 @@ import org.apache.zest.spi.query.QuerySource;
     /**
      * Order by clause segments.
      */
-    private Iterable<OrderBy> orderBySegments;
+    private List<OrderBy> orderBySegments;
     /**
      * First result to be returned.
      */
@@ -88,7 +91,7 @@ import org.apache.zest.spi.query.QuerySource;
     @Override
     public Query<T> orderBy( final OrderBy... segments )
     {
-        orderBySegments = Iterables.iterable( segments );
+        orderBySegments = Arrays.asList( segments );
         return this;
     }
 
@@ -100,12 +103,9 @@ import org.apache.zest.spi.query.QuerySource;
     {
         if( orderBySegments == null )
         {
-            orderBySegments = Iterables.iterable( new OrderBy( QueryExpressions.property( property ), order ) );
+            orderBySegments = new ArrayList<>();
         }
-        else
-        {
-            orderBySegments = Iterables.append( new OrderBy( QueryExpressions.property( property ), order ), orderBySegments );
-        }
+        orderBySegments.add( new OrderBy( QueryExpressions.property( property ), order ) );
         return this;
     }
 
@@ -195,7 +195,13 @@ import org.apache.zest.spi.query.QuerySource;
     @Override
     public Iterator<T> iterator()
     {
-        return querySource.iterator( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
+        return stream().iterator();
+    }
+
+    @Override
+    public Stream<T> stream()
+    {
+        return querySource.stream( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
     }
 
     @Override

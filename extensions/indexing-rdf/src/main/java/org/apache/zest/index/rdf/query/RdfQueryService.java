@@ -20,9 +20,10 @@
 
 package org.apache.zest.index.rdf.query;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.openrdf.query.QueryLanguage;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
@@ -33,6 +34,7 @@ import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
+import org.openrdf.query.QueryLanguage;
 
 /**
  * JAVADOC Add JavaDoc
@@ -57,14 +59,12 @@ public interface RdfQueryService
         TupleQueryExecutor tupleExecutor;
 
         @Override
-        public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Predicate<Composite> whereClause,
-                                                       OrderBy[] orderBySegments,
-                                                       Integer firstResult,
-                                                       Integer maxResults,
-                                                       Map<String, Object> variables
-        )
-            throws EntityFinderException
+        public Stream<EntityReference> findEntities( Class<?> resultType,
+                                                     Predicate<Composite> whereClause,
+                                                     List<OrderBy> orderBySegments,
+                                                     Integer firstResult,
+                                                     Integer maxResults,
+                                                     Map<String, Object> variables ) throws EntityFinderException
         {
             CollectingQualifiedIdentityResultCallback collectingCallback = new CollectingQualifiedIdentityResultCallback();
 
@@ -72,7 +72,7 @@ public interface RdfQueryService
             {
                 String query = ((QuerySpecification)whereClause).query();
                 tupleExecutor.performTupleQuery( QueryLanguage.SERQL, query, variables, collectingCallback );
-                return collectingCallback.entities();
+                return collectingCallback.entities().stream();
 
             } else
             {
@@ -80,7 +80,7 @@ public interface RdfQueryService
                 String query = rdfQueryParser.constructQuery( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
 
                 tupleExecutor.performTupleQuery( language, query, variables, collectingCallback );
-                return collectingCallback.entities();
+                return collectingCallback.entities().stream();
             }
         }
 

@@ -19,8 +19,10 @@
  */
 package org.apache.zest.spi.query;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
@@ -40,16 +42,15 @@ public interface EntityFinder
      * @param firstResult       Index of the first returned entity.
      * @param maxResults        Maximum returned entities.
      * @param variables         Query variables
-     * @return Single entity matching the query criterion.
+     * @return Entities matching the query criterion.
      * @throws EntityFinderException on error
      */
-    Iterable<EntityReference> findEntities( Class<?> resultType,
-                                            @Optional Predicate<Composite> whereClause,
-                                            @Optional OrderBy[] orderBySegments,
-                                            @Optional Integer firstResult,
-                                            @Optional Integer maxResults,
-                                            Map<String, Object> variables
-    )
+    Stream<EntityReference> findEntities( Class<?> resultType,
+                                          @Optional Predicate<Composite> whereClause,
+                                          @Optional List<OrderBy> orderBySegments,
+                                          @Optional Integer firstResult,
+                                          @Optional Integer maxResults,
+                                          Map<String, Object> variables )
         throws EntityFinderException;
 
     /**

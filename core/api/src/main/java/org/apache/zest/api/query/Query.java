@@ -20,6 +20,7 @@
 package org.apache.zest.api.query;
 
 import java.io.Serializable;
+import java.util.stream.Stream;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.grammar.OrderBy;
 
@@ -134,4 +135,9 @@ public interface Query<T>
      */
     long count()
         throws QueryExecutionException;
+
+    /**
+     * @return Stream results
+     */
+    Stream<T> stream();
 }

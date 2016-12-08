@@ -19,9 +19,10 @@
  */
 package org.apache.zest.spi.query;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.grammar.OrderBy;
 
@@ -32,7 +33,7 @@ public interface QuerySource
 {
     <T> T find( Class<T> resultType,
                 Predicate<Composite> whereClause,
-                Iterable<OrderBy> orderBySegments,
+                List<OrderBy> orderBySegments,
                 Integer firstResult,
                 Integer maxResults,
                 Map<String, Object> variables
@@ -40,17 +41,17 @@ public interface QuerySource
 
     <T> long count( Class<T> resultType,
                     Predicate<Composite> whereClause,
-                    Iterable<OrderBy> orderBySegments,
+                    List<OrderBy> orderBySegments,
                     Integer firstResult,
                     Integer maxResults,
                     Map<String, Object> variables
     );
 
-    <T> Iterator<T> iterator( Class<T> resultType,
-                              Predicate<Composite> whereClause,
-                              Iterable<OrderBy> orderBySegments,
-                              Integer firstResult,
-                              Integer maxResults,
-                              Map<String, Object> variables
+    <T> Stream<T> stream( Class<T> resultType,
+                          Predicate<Composite> whereClause,
+                          List<OrderBy> orderBySegments,
+                          Integer firstResult,
+                          Integer maxResults,
+                          Map<String, Object> variables
     );
 }

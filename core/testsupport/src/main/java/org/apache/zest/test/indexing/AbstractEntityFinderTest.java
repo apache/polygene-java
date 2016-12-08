@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Structure;
@@ -70,6 +70,7 @@ public abstract class AbstractEntityFinderTest
     private static final Predicate<Composite> ALL = null;
 
     private static final OrderBy[] NO_SORTING = null;
+    private static final List<OrderBy> NO_SORTING2 = null;
 
     private static final Integer NO_FIRST_RESULT = null;
 
@@ -115,9 +116,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             ALL,
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE, JACK, ANN );
     }
 
@@ -129,9 +130,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Domain.class,
             eq( nameable.name(), "Gaming" ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, "Gaming" );
     }
 
@@ -142,9 +143,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             ALL,
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, NameableAssert.allNames() );
     }
 
@@ -156,9 +157,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             eq( person.placeOfBirth().get().name(), "Kuala Lumpur" ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE, ANN );
     }
 
@@ -170,9 +171,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE );
     }
 
@@ -184,9 +185,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             ge( person.yearOfBirth(), 1973 ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE, ANN );
     }
 
@@ -199,9 +200,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             and( ge( person.yearOfBirth(), 1900 ), eq( person.placeOfBirth().get().name(), "Penang" ) ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JACK );
     }
 
@@ -214,9 +215,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JACK, ANN );
     }
 
@@ -229,9 +230,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Female.class,
             or( eq( person.yearOfBirth(), 1970 ), eq( person.yearOfBirth(), 1975 ) ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, ANN );
     }
 
@@ -243,9 +244,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             not( eq( person.yearOfBirth(), 1975 ) ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE, JACK );
     }
 
@@ -257,9 +258,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             isNotNull( person.email() ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE );
     }
 
@@ -271,9 +272,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             isNull( person.email() ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, ANN, JACK );
     }
 
@@ -285,9 +286,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             isNotNull( person.wife() ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JACK );
     }
 
@@ -299,9 +300,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Male.class,
             isNull( person.wife() ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JOE );
     }
 
@@ -313,9 +314,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             isNull( person.wife() ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, ANN, JOE );
     }
 
@@ -323,26 +324,26 @@ public abstract class AbstractEntityFinderTest
     public void script16()
     {
         // should return only 2 entities
-        final List<EntityReference> references = StreamSupport.stream(
-            entityFinder.findEntities( Nameable.class,
-                                       ALL,
-                                       NO_SORTING,
-                                       NO_FIRST_RESULT, 2,
-                                       NO_VARIABLES ).spliterator(), false ).collect( toList() );
-        assertEquals( "2 identitities", 2, references.size() );
+        Stream<EntityReference> references = entityFinder.findEntities(
+            Nameable.class,
+            ALL,
+            NO_SORTING2,
+            NO_FIRST_RESULT, 2,
+            NO_VARIABLES );
+        assertEquals( "2 identities", 2, references.count() );
     }
 
     @Test
     public void script17()
     {
         // should return only 2 entities starting with third one
-        final List<EntityReference> references = StreamSupport.stream(
-            entityFinder.findEntities( Nameable.class,
-                                       ALL,
-                                       NO_SORTING,
-                                       3, 2,
-                                       NO_VARIABLES ).spliterator(), false ).collect( toList() );
-        assertEquals( "2 identitities", 2, references.size() );
+        Stream<EntityReference> references = entityFinder.findEntities(
+            Nameable.class,
+            ALL,
+            NO_SORTING2,
+            3, 2,
+            NO_VARIABLES );
+        assertEquals( "2 identitities", 2, references.count() );
     }
 
     @Test
@@ -356,12 +357,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             ALL,
-            new OrderBy[]
-        {
-            orderBy( nameable.name() )
-            },
+            Arrays.asList(orderBy( nameable.name() )),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, allNames );
     }
 
@@ -382,12 +380,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             gt( nameable.name(), "B" ),
-            new OrderBy[]
-        {
-            orderBy( nameable.name() )
-            },
+            Arrays.asList( orderBy( nameable.name() ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, largerThanB.toArray( new String[ largerThanB.size() ] ) );
     }
 
@@ -399,12 +394,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             gt( person.yearOfBirth(), 1973 ),
-            new OrderBy[]
-        {
-            orderBy( person.name(), OrderBy.Order.DESCENDING )
-            },
+            Arrays.asList( orderBy( person.name(), OrderBy.Order.DESCENDING ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, JOE, ANN );
     }
 
@@ -416,12 +408,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             ALL,
-            new OrderBy[]
-        {
-            orderBy( person.placeOfBirth().get().name() ), orderBy( person.name() )
-            },
+            Arrays.asList( orderBy( person.placeOfBirth().get().name() ), orderBy( person.name() ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, ANN, JOE, JACK );
     }
 
@@ -433,9 +422,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             matches( nameable.name(), "J.*Doe" ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            NO_VARIABLES );
+            NO_VARIABLES ).collect( toList() );
         assertNames( entities, JACK, JOE );
     }
 
@@ -449,9 +438,9 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Domain.class,
             eq( nameable.name(), variable( "domain" ) ),
-            NO_SORTING,
+            NO_SORTING2,
             NO_FIRST_RESULT, NO_MAX_RESULTS,
-            variables );
+            variables ).collect( toList() );
         assertNames( entities, "Gaming" );
     }
 

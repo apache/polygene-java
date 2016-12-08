@@ -23,13 +23,13 @@ package org.apache.zest.runtime.unitofwork;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
@@ -68,7 +68,6 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.association.AssociationInstance;
 import org.apache.zest.runtime.association.ManyAssociationInstance;
 import org.apache.zest.runtime.association.NamedAssociationInstance;
@@ -529,7 +528,7 @@ public class ModuleUnitOfWork
         @Override
         public <T> T find( Class<T> resultType,
                            Predicate<Composite> whereClause,
-                           Iterable<OrderBy> orderBySegments,
+                           List<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
                            Map<String, Object> variables
@@ -566,7 +565,7 @@ public class ModuleUnitOfWork
         @Override
         public <T> long count( Class<T> resultType,
                                Predicate<Composite> whereClause,
-                               Iterable<OrderBy> orderBySegments,
+                               List<OrderBy> orderBySegments,
                                Integer firstResult,
                                Integer maxResults,
                                Map<String, Object> variables
@@ -586,68 +585,41 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public <T> Iterator<T> iterator( final Class<T> resultType,
-                                         Predicate<Composite> whereClause,
-                                         Iterable<OrderBy> orderBySegments,
-                                         Integer firstResult,
-                                         Integer maxResults,
-                                         Map<String, Object> variables
-        )
+        public <T> Stream<T> stream( Class<T> resultType,
+                                     Predicate<Composite> whereClause,
+                                     List<OrderBy> orderBySegments,
+                                     Integer firstResult,
+                                     Integer maxResults,
+                                     Map<String, Object> variables )
         {
             EntityFinder entityFinder = moduleUnitOfWork.module().instance().findService( EntityFinder.class ).get();
 
             try
             {
-                final Iterator<EntityReference> foundEntities =
-                    entityFinder.findEntities(
-                        resultType,
-                        whereClause,
-                        Iterables.toArray( OrderBy.class, orderBySegments ),
-                        firstResult,
-                        maxResults,
-                        variables == null ? Collections.emptyMap() : variables
-                    ).iterator();
-
-                return new Iterator<T>()
-                {
-                    @Override
-                    public boolean hasNext()
-                    {
-                        return foundEntities.hasNext();
-                    }
-
-                    @Override
-                    public T next()
-                    {
-                        final EntityReference foundEntity = foundEntities.next();
-                        try
-                        {
-                            return moduleUnitOfWork.get( resultType, foundEntity.identity() );
-                        }
-                        catch( NoSuchEntityException e )
-                        {
-                            // Index is out of sync - entity has been removed
-                            return null;
-                        }
-                    }
-
-                    @Override
-                    public void remove()
-                    {
-                        throw new UnsupportedOperationException();
-                    }
-                };
+                return entityFinder.findEntities(
+                    resultType,
+                    whereClause,
+                    orderBySegments,
+                    firstResult,
+                    maxResults,
+                    variables == null ? Collections.emptyMap() : variables
+                ).map( ref ->
+                       {
+                           try
+                           {
+                               return moduleUnitOfWork.get( resultType, ref.identity() );
+                           }
+                           catch( NoSuchEntityException e )
+                           {
+                               // Index is out of sync - entity has been removed
+                               return null;
+                           }
+                       } );
             }
             catch( EntityFinderException e )
             {
                 throw new QueryExecutionException( "Query '" + toString() + "' could not be executed", e );
             }
-        }
-
-        @Override
-        public String toString()
-        {
-            return "UnitOfWork( " + moduleUnitOfWork.usecase().name() + " )";
         }
     }
 

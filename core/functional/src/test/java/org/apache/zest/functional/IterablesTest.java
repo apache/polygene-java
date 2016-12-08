@@ -25,9 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.junit.Test;
 
-import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -50,13 +48,6 @@ public class IterablesTest
     public void testCount()
     {
         assertThat( Iterables.count( numbers ), equalTo( 3L ) );
-    }
-
-    @Test
-    public void testAppend()
-    {
-        assertThat( Iterables.toList( Iterables.append( "C", Iterables.iterable( "A", "B" ) ) ).toString(),
-                    equalTo( "[A, B, C]" ) );
     }
 
     @Test

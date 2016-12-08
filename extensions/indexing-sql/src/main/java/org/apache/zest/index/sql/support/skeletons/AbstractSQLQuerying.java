@@ -779,7 +779,7 @@ public abstract class AbstractSQLQuerying
     @Override
     public String constructQuery( Class<?> resultType, //
                                   Predicate<Composite> whereClause, //
-                                  OrderBy[] orderBySegments, //
+                                  List<OrderBy> orderBySegments, //
                                   Integer firstResult, //
                                   Integer maxResults, //
                                   Map<String, Object> variables, //
@@ -849,7 +849,7 @@ public abstract class AbstractSQLQuerying
         SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
         Class<?> resultType,
         Predicate<Composite> whereClause,
-        OrderBy[] orderBySegments,
+        List<OrderBy> orderBySegments,
         Integer firstResult,
         Integer maxResults,
         Map<String, Object> variables,
@@ -1454,23 +1454,23 @@ public abstract class AbstractSQLQuerying
         return javaRegexp;
     }
 
-    protected void processOrderBySegments( OrderBy[] orderBy, SQLVendor vendor,
+    protected void processOrderBySegments( List<OrderBy> orderBy, SQLVendor vendor,
                                            QuerySpecificationBuilder builder
     )
     {
         if( orderBy != null )
         {
-            QNameInfo[] qNames = new QNameInfo[ orderBy.length ];
+            QNameInfo[] qNames = new QNameInfo[ orderBy.size() ];
 
             QueryFactory q = vendor.getQueryFactory();
             ColumnsFactory c = vendor.getColumnsFactory();
 
             Integer tableIndex = 0;
-            for( Integer idx = 0; idx < orderBy.length; ++idx )
+            for( Integer idx = 0; idx < orderBy.size(); ++idx )
             {
-                if( orderBy[ idx ] != null )
+                if( orderBy.get( idx ) != null )
                 {
-                    PropertyFunction<?> ref = orderBy[ idx ].property();
+                    PropertyFunction<?> ref = orderBy.get( idx ).property();
                     QualifiedName qName = QualifiedName.fromAccessor( ref.accessor() );
                     QNameInfo info = this._state.qNameInfos().get().get( qName );
                     qNames[ idx ] = info;
@@ -1496,7 +1496,7 @@ public abstract class AbstractSQLQuerying
                         tableIdx = tableIndex;
                     }
                     Ordering ordering = Ordering.ASCENDING;
-                    if( orderBy[ idx ].order() == Order.DESCENDING )
+                    if( orderBy.get( idx ).order() == Order.DESCENDING )
                     {
                         ordering = Ordering.DESCENDING;
                     }

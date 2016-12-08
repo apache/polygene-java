@@ -19,7 +19,6 @@
  */
 package org.apache.zest.functional;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -122,68 +121,9 @@ public final class Iterables
         };
     }
 
-    public static <T> Iterable<T> append( final T item, final Iterable<T> iterable )
-    {
-        return new Iterable<T>()
-        {
-            @Override
-            public Iterator<T> iterator()
-            {
-                final Iterator<T> iterator = iterable.iterator();
-
-                return new Iterator<T>()
-                {
-                    T last = item;
-
-                    @Override
-                    public boolean hasNext()
-                    {
-                        return iterator.hasNext() || last != null;
-                    }
-
-                    @Override
-                    public T next()
-                    {
-                        if( iterator.hasNext() )
-                        {
-                            return iterator.next();
-                        }
-                        else
-                        {
-                            try
-                            {
-                                return last;
-                            }
-                            finally
-                            {
-                                last = null;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void remove()
-                    {
-                    }
-                };
-            }
-        };
-    }
-
     public static <T> List<T> toList( Iterable<T> iterable )
     {
         return addAll( new ArrayList<>(), iterable );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public static <T> T[] toArray( Class<T> componentType, Iterable<T> iterable )
-    {
-        if( iterable == null )
-        {
-            return null;
-        }
-        List<T> list = toList( iterable );
-        return list.toArray( (T[]) Array.newInstance( componentType, list.size() ) );
     }
 
     private static class MapIterable<FROM, TO>
