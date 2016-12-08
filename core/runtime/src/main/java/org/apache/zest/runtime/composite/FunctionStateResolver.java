@@ -25,13 +25,13 @@ import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.runtime.association.ManyAssociationModel;
-import org.apache.zest.runtime.association.NamedAssociationModel;
 import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.ManyAssociationState;
 import org.apache.zest.spi.entity.NamedAssociationState;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Function based StateResolver.
@@ -70,7 +70,9 @@ public class FunctionStateResolver
     @Override
     public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
     {
-        return Iterables.toList( manyAssociationFunction.apply( associationDescriptor ) );
+        // FIXME Do not shallow copy here
+        return stream( manyAssociationFunction.apply( associationDescriptor ).spliterator(), false )
+            .collect( toList() );
     }
 
     @Override

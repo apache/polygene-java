@@ -26,13 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.ManyAssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.entity.ManyAssociationState;
 
 /**
@@ -124,7 +125,7 @@ public class ManyAssociationInstance<T>
     @Override
     public Iterable<EntityReference> references()
     {
-        return Iterables.toList( manyAssociationState );
+        return StreamSupport.stream( manyAssociationState.spliterator(), false ).collect( Collectors.toList() );
     }
 
     @Override
