@@ -162,8 +162,7 @@ class RootProjectPlugin implements Plugin<Project>
       } )
       options.group( [
         "Core API"      : [ "org.apache.zest.api",
-                            "org.apache.zest.api.*",
-                            "org.apache.zest.functional" ],
+                            "org.apache.zest.api.*" ],
         "Core Bootstrap": [ "org.apache.zest.bootstrap",
                             "org.apache.zest.bootstrap.*" ],
         "Core SPI"      : [ "org.apache.zest.spi",

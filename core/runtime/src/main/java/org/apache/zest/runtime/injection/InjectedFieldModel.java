@@ -30,10 +30,10 @@ import java.util.stream.Stream;
 import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.api.composite.InjectedFieldDescriptor;
 import org.apache.zest.api.util.Classes;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.InjectionException;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.composite.TransientInstance;
 import org.apache.zest.runtime.model.Resolution;
 

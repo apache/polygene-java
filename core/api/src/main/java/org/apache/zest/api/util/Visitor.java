@@ -17,13 +17,23 @@
  *
  *
  */
-package org.apache.zest.functional;
+package org.apache.zest.api.util;
 
 /**
- * Interface that visitable hierarchies of objects should implement.
+ * Generic Visitor interface.
  */
-public interface VisitableHierarchy<NODE, LEAF>
+public interface Visitor<T, ThrowableType extends Throwable>
 {
-    <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super NODE, ? super LEAF, ThrowableType> visitor )
+    /**
+     * Visit an instance of T
+     *
+     * @param visited the visited instance
+     *
+     * @return true if the visitor pattern should continue, false if it should be aborted
+     *
+     * @throws ThrowableType if an exception occurred during processing. Any client call that initiated the visiting should
+     *                       get the exception in order to handle it properly.
+     */
+    boolean visit( T visited )
         throws ThrowableType;
 }

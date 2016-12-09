@@ -22,8 +22,8 @@ package org.apache.zest.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.zest.api.object.ObjectDescriptor;
-import org.apache.zest.functional.Visitable;
-import org.apache.zest.functional.Visitor;
+import org.apache.zest.api.util.Visitable;
+import org.apache.zest.api.util.Visitor;
 
 import static org.apache.zest.api.util.NullArgumentException.validateNotNull;
 

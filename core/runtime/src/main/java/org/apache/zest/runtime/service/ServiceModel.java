@@ -35,7 +35,7 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.HierarchicalVisitor;
+import org.apache.zest.api.util.HierarchicalVisitor;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;

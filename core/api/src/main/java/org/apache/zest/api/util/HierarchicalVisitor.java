@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.zest.functional;
+package org.apache.zest.api.util;
 
 /**
  * Visitor to visit hierarchies.

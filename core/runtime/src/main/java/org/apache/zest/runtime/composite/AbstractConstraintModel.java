@@ -22,8 +22,8 @@ package org.apache.zest.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import org.apache.zest.api.constraint.ConstraintDescriptor;
-import org.apache.zest.functional.Visitable;
-import org.apache.zest.functional.Visitor;
+import org.apache.zest.api.util.Visitable;
+import org.apache.zest.api.util.Visitor;
 
 /**
  * JAVADOC

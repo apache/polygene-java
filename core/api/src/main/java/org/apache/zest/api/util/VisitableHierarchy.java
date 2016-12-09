@@ -17,9 +17,13 @@
  *
  *
  */
+package org.apache.zest.api.util;
 
-jar { manifest { name = "Apache Zest™ Functional"}}
-
-dependencies {
-
+/**
+ * Interface that visitable hierarchies of objects should implement.
+ */
+public interface VisitableHierarchy<NODE, LEAF>
+{
+    <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super NODE, ? super LEAF, ThrowableType> visitor )
+        throws ThrowableType;
 }

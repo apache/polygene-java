@@ -24,9 +24,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 import org.apache.zest.api.composite.InjectedMethodDescriptor;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.bootstrap.InjectionException;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
 
 /**
  * JAVADOC

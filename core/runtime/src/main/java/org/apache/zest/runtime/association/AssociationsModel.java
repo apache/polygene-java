@@ -28,8 +28,8 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 
 /**
  * Model for Associations.

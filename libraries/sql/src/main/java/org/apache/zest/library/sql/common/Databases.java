@@ -24,7 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.apache.zest.functional.Visitor;
+import org.apache.zest.api.util.Visitor;
 
 /**
  * Utility methods for performing SQL calls wrapping a given DataSource.

@@ -45,7 +45,7 @@ import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 
 import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 

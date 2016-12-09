@@ -50,7 +50,6 @@ class ZestExtension
     Dependency runtime = core( 'runtime' )
     Dependency bootstrap = core( 'bootstrap' )
     Dependency testsupport = core( 'testsupport' )
-    Dependency functional = core( 'functional' )
   }
 
   private Dependency core( String name )

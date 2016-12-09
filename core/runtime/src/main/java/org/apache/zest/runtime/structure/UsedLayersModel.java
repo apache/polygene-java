@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.UsedLayersDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 
 /**
  * JAVADOC

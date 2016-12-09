@@ -21,7 +21,7 @@ package org.apache.zest.library.appbrowser;
 import java.util.Stack;
 import org.json.JSONException;
 import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
+import org.apache.zest.api.util.HierarchicalVisitor;
 
 public class Browser
 {

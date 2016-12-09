@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.zest.functional;
+package org.apache.zest.api.util;
 
 /**
  * Generic Hierarchical Visitor interface.

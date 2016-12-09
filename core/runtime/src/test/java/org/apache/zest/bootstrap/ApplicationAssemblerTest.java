@@ -29,7 +29,7 @@ import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 
 /**
  * TODO
