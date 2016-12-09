@@ -26,6 +26,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -54,7 +55,6 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.io.Files;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.library.locking.ReadLock;
 import org.apache.zest.library.locking.WriteLock;
@@ -82,6 +82,7 @@ public class JdbmEntityStoreMixin
     private RecordManager recordManager;
     private BTree index;
     private Serializer serializer;
+    private File tempDirectory;
 
     @This
     ReadWriteLock lock;
@@ -278,7 +279,7 @@ public class JdbmEntityStoreMixin
         File lgFile = new File( getDatabaseName() + ".lg" );
 
         // Create temporary store
-        File tempDatabase = Files.createTemporayFileOf( dbFile );
+        File tempDatabase = createTemporaryDatabase();
         final RecordManager recordManager;
         final BTree index;
         try
@@ -399,6 +400,40 @@ public class JdbmEntityStoreMixin
         directory.mkdirs();
         String name = dataFile.getAbsolutePath();
         return name;
+    }
+
+    private File createTemporaryDatabase()
+    {
+        try
+        {
+            File tempDatabase = Files.createTempFile( getTemporaryDirectory().toPath(),
+                                                      descriptor.identity().toString(),
+                                                      "write" ).toFile();
+            tempDatabase.deleteOnExit();
+            return tempDatabase;
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
+    }
+
+    private File getTemporaryDirectory() throws IOException
+    {
+        if( tempDirectory != null )
+        {
+            return tempDirectory;
+        }
+        String storeId = descriptor.identity().toString();
+        tempDirectory = fileConfiguration != null
+                        ? new File( fileConfiguration.temporaryDirectory(), storeId )
+                        : new File( new File( System.getProperty( "java.io.tmpdir" ) ),
+                                    storeId );
+        if( !tempDirectory.exists() )
+        {
+            java.nio.file.Files.createDirectories( tempDirectory.toPath() );
+        }
+        return tempDirectory;
     }
 
     private Properties getProperties()
