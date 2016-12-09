@@ -19,7 +19,6 @@
  */
 
 include 'core:functional',
-        'core:io',
         'core:api',
         'core:spi',
         'core:testsupport',

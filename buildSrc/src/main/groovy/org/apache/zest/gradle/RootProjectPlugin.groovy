@@ -163,7 +163,6 @@ class RootProjectPlugin implements Plugin<Project>
       options.group( [
         "Core API"      : [ "org.apache.zest.api",
                             "org.apache.zest.api.*",
-                            "org.apache.zest.io",
                             "org.apache.zest.functional" ],
         "Core Bootstrap": [ "org.apache.zest.bootstrap",
                             "org.apache.zest.bootstrap.*" ],

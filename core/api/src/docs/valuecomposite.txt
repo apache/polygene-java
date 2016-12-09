@@ -121,9 +121,7 @@ In this second example, we ;
     . use the +ValueSerializer#serialize()+ method to get a JSON representation of the Value,
     . and finally, use the +ValueDeserializer#eserialize()+ method to create a new Value instance from the JSON state.
 
-Many applications need to stream data. The ValueSerialization API support such use cases in two ways.
-
-The first one use classic streams.
+Many applications need to stream data. The ValueSerialization API support such use cases using classic streams:
 
 [snippet,java]
 ----
@@ -135,19 +133,3 @@ tag=stream
     . serialize data into the +OutputStream+,
     . get a handle on an +InputStream+,
     . deserialize data from the +InputStream+.
-
-The second one use the <<core-io>>:
-
-[snippet,java]
-----
-source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
-tag=io
-----
-
-    . get a handle on a source of values and a +Writer+,
-    . prepare the serialization +Function+,
-    . serialize a collection of values, one serialized value per line,
-    . get a handle on a serialized values +Reader+ and create a new empty +List+ of values,
-    . prepare the deserialization +Function+,
-    . deserialize a collection of values from read lines.
-

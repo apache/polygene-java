@@ -75,15 +75,6 @@ such as Spring or Java EE applications.
 <<core-functional,Learn more>>
 //____
 
-//*<<core-io,Core I/O API>>*
-=== Core I/O API ===
-//____
-The Zest™ Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
-possibly with transformations and filtering along the way.
-
-<<core-io,Learn more>>
-//____
-
 //*<<core-spi,Core Extension SPI>>*
 === Core Extension SPI ===
 //____
@@ -120,10 +111,6 @@ include::../../../../core/testsupport/src/docs/testsupport.txt[]
 :leveloffset: 2
 
 include::../../../../core/functional/src/docs/functional.txt[]
-
-:leveloffset: 2
-
-include::../../../../core/io/src/docs/io.txt[]
 
 :leveloffset: 2
 

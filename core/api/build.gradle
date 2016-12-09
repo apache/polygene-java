@@ -21,7 +21,7 @@
 jar { manifest { name = "Apache Zest™ Core API" } }
 
 dependencies {
-  compile zest.core.io
+  compile zest.core.functional
 
   testCompile zest.core.testsupport
   testCompile zest.library( 'constraints' )
