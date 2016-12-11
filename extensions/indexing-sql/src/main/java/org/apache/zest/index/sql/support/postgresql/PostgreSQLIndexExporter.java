@@ -194,8 +194,7 @@ public class PostgreSQLIndexExporter
         }
         catch( SQLException sqle )
         {
-            // TODO Just wrap around for now...
-            throw new IOException( sqle );
+            throw new IOException( SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {
@@ -332,8 +331,7 @@ public class PostgreSQLIndexExporter
         }
         catch( SQLException sqle )
         {
-            // TODO Just wrap around for now...
-            throw new IOException( sqle );
+            throw new IOException( SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {

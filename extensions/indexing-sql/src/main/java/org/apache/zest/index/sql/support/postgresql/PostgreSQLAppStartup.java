@@ -92,7 +92,7 @@ public class PostgreSQLAppStartup
             throw new InternalError( "It seems that your database doesn't have ltree as type. It is needed to store "
                                      + "collections. Please refer to hopefully supplied instructions on how to add "
                                      + "ltree type (hint: run <pg_install_dir>/share/contrib/ltree.sql script or "
-                                     + "command 'CREATE EXTENSION ltree;')." );
+                                     + "command 'CREATE EXTENSION ltree;').", SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {

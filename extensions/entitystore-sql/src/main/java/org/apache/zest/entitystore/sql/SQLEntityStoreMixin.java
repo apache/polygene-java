@@ -202,20 +202,8 @@ public class SQLEntityStoreMixin
                 catch( SQLException sqle )
                 {
                     SQLUtil.rollbackQuietly( connection );
-                    if( LOGGER.isDebugEnabled() )
-                    {
-                        StringWriter sb = new StringWriter();
-                        sb.append(
-                            "SQLException during commit, logging nested exceptions before throwing EntityStoreException:\n" );
-                        SQLException e = sqle;
-                        while( e != null )
-                        {
-                            e.printStackTrace( new PrintWriter( sb, true ) );
-                            e = e.getNextException();
-                        }
-                        LOGGER.debug( sb.toString() );
-                    }
-                    throw new EntityStoreException( sqle );
+                    throw new EntityStoreException( "Unable to apply state changes",
+                                                    SQLUtil.withAllSQLExceptions( sqle ) );
                 }
                 catch( RuntimeException re )
                 {
@@ -310,7 +298,8 @@ public class SQLEntityStoreMixin
                             SQLUtil.closeQuietly( rs, ex );
                             SQLUtil.closeQuietly( ps, ex );
                             SQLUtil.closeQuietly( connection, ex );
-                            throw new EntityStoreException( ex );
+                            throw new EntityStoreException( "Unable to get next entity state",
+                                                            SQLUtil.withAllSQLExceptions( ex ) );
                         }
                     }
                 },
@@ -326,7 +315,7 @@ public class SQLEntityStoreMixin
         }
         catch( SQLException ex )
         {
-            throw new EntityStoreException( ex );
+            throw new EntityStoreException( "Unable to get entity states", SQLUtil.withAllSQLExceptions( ex ) );
         }
     }
 
@@ -532,7 +521,7 @@ public class SQLEntityStoreMixin
         }
         catch( SQLException sqle )
         {
-            throw new EntityStoreException( "Unable to get Entity " + ref, sqle );
+            throw new EntityStoreException( "Unable to get Entity " + ref, SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {

@@ -26,6 +26,17 @@ import java.sql.Statement;
 
 public class SQLUtil
 {
+    public static SQLException withAllSQLExceptions( SQLException sqlEx )
+    {
+        SQLException next = sqlEx.getNextException();
+        while( next != null )
+        {
+            sqlEx.addSuppressed( next );
+            next = next.getNextException();
+        }
+        return sqlEx;
+    }
+
     public static void closeQuietly( ResultSet resultSet )
     {
         closeQuietly( resultSet, null );

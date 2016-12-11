@@ -928,7 +928,8 @@ public abstract class AbstractSQLStartup
                         }
                         catch( SQLException e )
                         {
-                            throw new EntityStoreException( "Underlying exception when setting " + pk, e );
+                            throw new EntityStoreException( "Underlying exception when setting " + pk,
+                                                            SQLUtil.withAllSQLExceptions( e ) );
                         }
                         this._state.entityTypePKs().get().put( entityTypeName, (int) pk );
 //                      this._state.entityTypeInfos().get().put( entityTypeName, new EntityTypeInfo( descriptor, (int) pk ) );

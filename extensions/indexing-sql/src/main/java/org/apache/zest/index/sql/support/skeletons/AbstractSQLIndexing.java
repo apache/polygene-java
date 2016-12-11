@@ -262,7 +262,8 @@ public abstract class AbstractSQLIndexing
         }
         catch( SQLException sqle )
         {
-            SQLUtil.rollbackQuietly( connection );
+            sqle = SQLUtil.withAllSQLExceptions( sqle );
+            SQLUtil.rollbackQuietly( connection, sqle );
             throw sqle;
         }
         finally
@@ -616,7 +617,8 @@ public abstract class AbstractSQLIndexing
                 }
                 catch( SQLException e )
                 {
-                    throw new EntityStoreException( "Underlying exception when inserting property " + pDesc );
+                    throw new EntityStoreException( "Underlying exception when inserting property " + pDesc,
+                                                    SQLUtil.withAllSQLExceptions( e ) );
                 }
             } );
         return propertyPK[0];
@@ -655,7 +657,8 @@ public abstract class AbstractSQLIndexing
                 }
                 catch( SQLException e )
                 {
-                    throw new EntityStoreException( "Underlying exception when inserting association " + aDesc );
+                    throw new EntityStoreException( "Underlying exception when inserting association " + aDesc,
+                                                    SQLUtil.withAllSQLExceptions( e ) );
                 }
             } );
 
@@ -687,7 +690,8 @@ public abstract class AbstractSQLIndexing
                 }
                 catch( SQLException e )
                 {
-                    throw new EntityStoreException( "Underlying exception when inserting manyassociation " + mDesc );
+                    throw new EntityStoreException( "Underlying exception when inserting manyassociation " + mDesc,
+                                                    SQLUtil.withAllSQLExceptions( e ) );
                 }
             } );
     }
@@ -938,7 +942,8 @@ public abstract class AbstractSQLIndexing
             }
             catch( SQLException e )
             {
-                throw new EntityStoreException( "Underlying exception when inserting property " + pDesc + " in value " + vDesc, e );
+                throw new EntityStoreException( "Underlying exception when inserting property " + pDesc + " in value " + vDesc,
+                                                SQLUtil.withAllSQLExceptions( e ) );
             }
         } );
 
@@ -1054,7 +1059,8 @@ public abstract class AbstractSQLIndexing
             }
             catch( SQLException e )
             {
-                throw new EntityStoreException( "Underlying Exception when inserting " + entityPK, e );
+                throw new EntityStoreException( "Underlying Exception when inserting " + entityPK,
+                                                SQLUtil.withAllSQLExceptions( e ) );
             }
         } );
     }

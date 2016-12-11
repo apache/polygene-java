@@ -39,6 +39,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
+import org.apache.zest.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,8 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                 LOGGER.info( "Database for DataSource is up!" );
             } catch ( SQLException e ) {
                 LOGGER.warn( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available" );
-                throw new ServiceImporterException( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available", e );
+                throw new ServiceImporterException( "Database for DataSource " + importedServiceDescriptor.identity() + " is not currently available",
+                                                    SQLUtil.withAllSQLExceptions( e ) );
             } finally {
                 Thread.currentThread().setContextClassLoader( cl );
             }

@@ -243,7 +243,7 @@ public class SQLEntityFinder
         }
         catch( SQLException sqle )
         {
-            throw new EntityFinderException( sqle );
+            throw new EntityFinderException( SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {
