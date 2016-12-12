@@ -25,7 +25,6 @@ import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.release.ReleaseSpecPlugin
 import org.apache.zest.gradle.test.AggregatedJacocoReportTask
 import org.gradle.api.GradleException
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -112,8 +111,6 @@ class RootProjectPlugin implements Plugin<Project>
     def task = project.tasks.create( 'coverageReport', AggregatedJacocoReportTask ) { AggregatedJacocoReportTask task ->
       task.group = TaskGroups.VERIFICATION
       task.description = 'Generates global coverage report'
-      // ZEST-175
-      task.enabled = JavaVersion.current() < JavaVersion.VERSION_1_9
       task.dependsOn project.subprojects.collect( { Project p -> p.tasks.getByName( 'test' ) } )
     }
     project.tasks.getByName( 'check' ).dependsOn task

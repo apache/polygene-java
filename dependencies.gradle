@@ -255,5 +255,5 @@ dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution,
 
 // Build Tools
 dependencies.buildToolsVersions << [
-  jacoco: '0.7.7.201606060606'
+  jacoco: '0.7.8'
 ]
