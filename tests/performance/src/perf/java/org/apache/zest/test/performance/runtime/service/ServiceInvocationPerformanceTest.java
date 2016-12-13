@@ -16,18 +16,18 @@
  *  limitations under the License.
  */
 
-package org.apache.zest.test.performance.runtime.service;
+package org.apache.polygene.test.performance.runtime.service;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import junit.framework.TestCase;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.service.ServiceComposite;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.SingletonAssembler;
 
 public class ServiceInvocationPerformanceTest
     extends TestCase

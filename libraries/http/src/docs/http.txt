@@ -93,7 +93,7 @@ tag=jmx
 Underlying Jetty engine configuration is exposed as a Polygene™ Service Configuration.
 The only one that is mandatory is the port.
 
-See org.apache.zest.library.http.JettyConfiguration for a reference of all available
+See org.apache.polygene.library.http.JettyConfiguration for a reference of all available
 configuration properties.
 
 == Secure Jetty Service ==
@@ -127,7 +127,7 @@ source=libraries/http/src/test/java/org/apache/zest/library/http/MutualSecureJet
 tag=config
 ----
 
-See org.apache.zest.library.http.SecureJettyConfiguration for a reference of all available
+See org.apache.polygene.library.http.SecureJettyConfiguration for a reference of all available
 configuration properties.
 
 

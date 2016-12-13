@@ -31,7 +31,7 @@ perhaps that a new Core SPI Extension is needed.
 include::../../build/docs/buildinfo/artifact.txt[]
 
 Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that the compile dependency does NOT include
-the `org.apache.zest.core.runtime` jar.
+the `org.apache.polygene.core.runtime` jar.
 
 == Custom AssemblyHelper ==
 BUT, there are super-rare cases, where a custom AssemblyHelper might be needed. One known use-case is tp introduce

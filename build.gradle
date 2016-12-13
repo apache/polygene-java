@@ -15,9 +15,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import org.apache.zest.gradle.AllProjectsPlugin
-import org.apache.zest.gradle.RootProjectPlugin
-import org.apache.zest.gradle.dependencies.DependenciesDeclarationPlugin
+import org.apache.polygene.gradle.AllProjectsPlugin
+import org.apache.polygene.gradle.RootProjectPlugin
+import org.apache.polygene.gradle.dependencies.DependenciesDeclarationPlugin
 
 apply plugin: DependenciesDeclarationPlugin
 apply from: 'dependencies.gradle'

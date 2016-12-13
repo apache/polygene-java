@@ -30,6 +30,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.apache.zest.spi" level="debug"/>
+    <logger name="org.apache.polygene.spi" level="debug"/>
 
 </configuration>

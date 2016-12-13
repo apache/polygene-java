@@ -20,7 +20,7 @@
 
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin>
-  <id>org.apache.zest</id>
+  <id>org.apache.polygene</id>
   <name>qidea</name>
   <description>Apache Polygene™ idea plugin</description>
   <version>0.1</version>
@@ -31,20 +31,20 @@
 
   <application-components>
     <component>
-      <implementation-class>org.apache.zest.ide.plugin.idea.PolygeneApplicationComponent</implementation-class>
+      <implementation-class>org.apache.polygene.ide.plugin.idea.PolygeneApplicationComponent</implementation-class>
     </component>
   </application-components>
 
   <actions>
     <action id="CreateConcernFromMixinTypeOrCompositeAction"
-            class="org.apache.zest.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
+            class="org.apache.polygene.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
             text="New Concern" description="Create new Polygene™ concern">
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Polygene" class="org.apache.zest.ide.plugin.idea.common.actions.PolygeneCreateActionGroup" text="Polygene™">
+    <group id="Polygene" class="org.apache.polygene.ide.plugin.idea.common.actions.PolygeneCreateActionGroup" text="Polygene™">
       <action id="Polygene.NewConcernOf"
-              class="org.apache.zest.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
+              class="org.apache.polygene.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
               text="New Concern" description="Create new Polygene concern">
       </action>
       <add-to-group group-id="NewGroup" anchor="last"/>

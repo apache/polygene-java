@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.service.common;
+package org.apache.polygene.ide.plugin.idea.injections.service.common;
 
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiModifierList;
@@ -27,9 +27,9 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static com.intellij.psi.PsiModifier.STATIC;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.*;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.isInjecteableByStructureAnnotation;
+import static org.apache.polygene.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
+import static org.apache.polygene.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.*;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**
  * @author edward.yakop@gmail.com

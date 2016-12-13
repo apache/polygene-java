@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.common.inspections;
+package org.apache.polygene.ide.plugin.idea.injections.common.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -25,7 +25,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractFix;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -99,7 +99,7 @@ include 'core:api',
         'tests:regression',
         'tests:performance'
 
-rootProject.name = "org.apache.zest"
+rootProject.name = "org.apache.polygene"
 
 validateProject(rootProject, "")
 
@@ -110,9 +110,9 @@ def validateProject(project, parentName)
     {
         assert project.buildFile.isFile()
     }
-    if( parentName == 'org.apache.zest.libraries' )
+    if( parentName == 'org.apache.polygene.libraries' )
     {
-        parentName = 'org.apache.zest.library'
+        parentName = 'org.apache.polygene.library'
     }
     if( parentName.endsWith('s') )
     {

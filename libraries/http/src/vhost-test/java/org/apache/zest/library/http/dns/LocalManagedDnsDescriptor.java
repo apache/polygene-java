@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.zest.library.http.dns;
+package org.apache.polygene.library.http.dns;
 
 import sun.net.spi.nameservice.NameService;
 import sun.net.spi.nameservice.NameServiceDescriptor;

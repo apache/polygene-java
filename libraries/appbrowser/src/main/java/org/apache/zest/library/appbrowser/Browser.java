@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser;
+package org.apache.polygene.library.appbrowser;
 
 import java.util.Stack;
 import org.json.JSONException;
-import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.polygene.api.structure.ApplicationDescriptor;
+import org.apache.polygene.api.util.HierarchicalVisitor;
 
 public class Browser
 {

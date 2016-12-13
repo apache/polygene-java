@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.facet;
+package org.apache.polygene.ide.plugin.idea.common.facet;
 
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetManager;

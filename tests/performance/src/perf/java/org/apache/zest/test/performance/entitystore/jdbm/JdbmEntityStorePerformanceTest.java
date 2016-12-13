@@ -15,21 +15,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.test.performance.entitystore.jdbm;
+package org.apache.polygene.test.performance.entitystore.jdbm;
 
 import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.cache.ehcache.EhCacheConfiguration;
-import org.apache.zest.cache.ehcache.EhCachePoolService;
-import org.apache.zest.entitystore.jdbm.JdbmConfiguration;
-import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.cache.ehcache.EhCacheConfiguration;
+import org.apache.polygene.cache.ehcache.EhCachePoolService;
+import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
+import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * Performance test for JdbmEntityStoreComposite

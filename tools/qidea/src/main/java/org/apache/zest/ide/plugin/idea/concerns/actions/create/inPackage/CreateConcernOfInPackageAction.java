@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.concerns.actions.create.inPackage;
+package org.apache.polygene.ide.plugin.idea.concerns.actions.create.inPackage;
 
 import com.intellij.ide.actions.CreateInPackageActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 import static com.intellij.openapi.actionSystem.DataKeys.PROJECT;
 import static com.intellij.openapi.actionSystem.DataKeys.PSI_ELEMENT;
 import static com.intellij.util.Icons.CLASS_ICON;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernConstants.TEMPLATE_GENERIC_CONCERN_OF;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.getConcernOfClass;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernConstants.TEMPLATE_GENERIC_CONCERN_OF;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.getConcernOfClass;
 
 /**
  * JAVADOC: Non generic concern

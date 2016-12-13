@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.concerns.common;
+package org.apache.polygene.ide.plugin.idea.concerns.common;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -29,11 +29,11 @@ import java.util.List;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static java.util.Collections.emptyList;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernConstants.*;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernConstants.*;
 
 /**
  * @author edward.yakop@gmail.com

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.structure.common;
+package org.apache.polygene.ide.plugin.idea.injections.structure.common;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static com.intellij.psi.PsiModifier.STATIC;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.VALID_STRUCTURE_INJECTION_TYPE;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.VALID_STRUCTURE_INJECTION_TYPE;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
 
 /**
  * @author edward.yakop@gmail.com

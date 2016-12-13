@@ -16,14 +16,14 @@
  *  limitations under the License.
  */
 
-package org.apache.zest.test.performance.runtime.object;
+package org.apache.polygene.test.performance.runtime.object;
 
 import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.object.ObjectFactory;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.polygene.api.activation.ActivationException;
+import org.apache.polygene.api.object.ObjectFactory;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.SingletonAssembler;
 
 /**
  * Tests performance of new object creation.

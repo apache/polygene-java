@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.ide.plugin.idea.concerns.actions.create;
+package org.apache.polygene.ide.plugin.idea.concerns.actions.create;
 
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.actions.AbstractCreateElementActionBase;
+import org.apache.polygene.ide.plugin.idea.common.actions.AbstractCreateElementActionBase;
 
 /**
  * @author edward.yakop@gmail.com

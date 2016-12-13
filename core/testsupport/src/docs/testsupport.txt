@@ -49,7 +49,7 @@ source=tutorials/hello/src/test/java/org/apache/zest/tutorials/hello/HelloTest.j
 tag=step2
 --------------
 
-In this case we declare that we have a ValueComposite of type org.apache.zest.tutorials.hello.Hello which looks like
+In this case we declare that we have a ValueComposite of type org.apache.polygene.tutorials.hello.Hello which looks like
 
 [snippet,java]
 --------------

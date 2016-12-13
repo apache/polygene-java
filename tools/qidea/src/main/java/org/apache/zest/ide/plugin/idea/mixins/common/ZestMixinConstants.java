@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.mixins.common;
+package org.apache.polygene.ide.plugin.idea.mixins.common;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,7 +24,7 @@ package org.apache.zest.ide.plugin.idea.mixins.common;
  */
 public final class PolygeneMixinConstants
 {
-    public static final String QUALIFIED_NAME_MIXINS = "org.apache.zest.api.mixin.Mixins";
+    public static final String QUALIFIED_NAME_MIXINS = "org.apache.polygene.api.mixin.Mixins";
 
     private PolygeneMixinConstants()
     {

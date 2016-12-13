@@ -236,11 +236,11 @@ The above could be bringing in content that looks like;
 
 [source]
 ----
-package org.apache.zest.demo.tenminute;
+package org.apache.polygene.demo.tenminute;
 
-import org.apache.zest.api.concern.Concerns;
-import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.sideeffect.SideEffects;
+import org.apache.polygene.api.concern.Concerns;
+import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.sideeffect.SideEffects;
 
 // START SNIPPET: sideEffect
 @SideEffects( MailNotifySideEffect.class )

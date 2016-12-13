@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.concerns.inspections;
+package org.apache.polygene.ide.plugin.idea.concerns.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -27,17 +27,17 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
-import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractFix;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractInspection;
+import org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.*;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.*;
 
 
 /**

@@ -1,0 +1,339 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+ */
+
+package org.apache.polygene.sample.rental.web;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.apache.polygene.api.PolygeneAPI;
+import org.apache.polygene.api.composite.Composite;
+import org.apache.polygene.api.service.ServiceFinder;
+import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.bootstrap.ApplicationAssembler;
+import org.apache.polygene.bootstrap.Energy4Java;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.SAXException;
+
+public class QuikitServlet
+    extends HttpServlet
+{
+    private Application application;
+    private ServiceFinder finder;
+    private UrlService urlService;
+    private DocumentBuilderFactory documentFactory;
+    private TreeMap<String, Page> mountPoints;
+
+    @Override
+    public void init( ServletConfig config )
+        throws ServletException
+    {
+        try
+        {
+            mountPoints = new TreeMap<>();
+            documentFactory = DocumentBuilderFactory.newInstance();
+            documentFactory.setNamespaceAware( true );
+            ClassLoader cl = getClass().getClassLoader();
+            SchemaFactory schemaFactory = SchemaFactory.newInstance( "http://www.w3.org/2001/XMLSchema" );
+            Source[] schemaSources = new Source[ 2 ];
+            schemaSources[ 0 ] = new StreamSource( cl.getResourceAsStream( "xhtml1-strict.xsd" ) );
+            schemaSources[ 1 ] = new StreamSource( cl.getResourceAsStream( "xml.xsd" ) );
+            Schema schema = schemaFactory.newSchema( schemaSources );
+            documentFactory.setSchema( schema );
+
+            ApplicationAssembler assembler = createApplicationAssembler( config );
+
+            Energy4Java zest = new Energy4Java();
+            application = zest.newApplication( assembler );
+            application.activate();
+            Module module = application.findModule( "WebLayer", "PagesModule" );
+            finder = module;
+
+            if( application.mode() == Application.Mode.development )
+            {
+                DataInitializer initializer = module.newTransient( DataInitializer.class );
+                initializer.initialize();
+            }
+            finder.findServices( Page.class ).forEach(
+                page ->
+                {
+                    PageMetaInfo pageMetaInfo = page.metaInfo( PageMetaInfo.class );
+                    String mountPoint = pageMetaInfo.mountPoint();
+                    mountPoints.put( mountPoint, page.get() );
+                }
+            );
+        }
+        catch( Exception e )
+        {
+            throw new ServletException( "Can not initialize Polygene.", e );
+        }
+    }
+
+    private ApplicationAssembler createApplicationAssembler( ServletConfig config )
+        throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+    {
+        String assemblerClassname = config.getInitParameter( "polygene-assembler" );
+        ClassLoader loader = getClass().getClassLoader();
+        Class<?> assemblerClass = loader.loadClass( assemblerClassname );
+        ApplicationAssembler assembler;
+        Constructor cons = assemblerClass.getConstructor( Application.Mode.class );
+        if( cons == null )
+        {
+            assembler = (ApplicationAssembler) assemblerClass.newInstance();
+        }
+        else
+        {
+            Application.Mode mode;
+            String modeSetting = config.getInitParameter( "polygene-application-mode" );
+            if( modeSetting == null )
+            {
+                mode = Application.Mode.development;
+            }
+            else
+            {
+                mode = Application.Mode.valueOf( modeSetting );
+            }
+            assembler = (ApplicationAssembler) cons.newInstance( mode );
+        }
+        return assembler;
+    }
+
+    @Override
+    public void destroy()
+    {
+        try
+        {
+            application.passivate();
+        }
+        catch( Exception e )
+        {
+            throw new RuntimeException( "Problem to passivate Polygene", e );
+        }
+    }
+
+    @Override
+    protected void doGet( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse )
+        throws ServletException, IOException
+    {
+        String path = httpServletRequest.getPathInfo();
+        if( urlService == null )
+        {
+            urlService = finder.findService( UrlService.class ).get();
+            String uri = httpServletRequest.getRequestURI();
+            String basePath = uri.substring( 0, uri.length() - path.length() );
+            urlService.registerBaseUri( basePath );
+        }
+        PrintWriter output = httpServletResponse.getWriter();
+        while( path.startsWith( "//" ) )
+        {
+            path = path.substring( 1 );
+        }
+        for( Map.Entry<String, Page> entry : mountPoints.entrySet() )
+        {
+            if( path.startsWith( entry.getKey() ) )
+            {
+                Page page = entry.getValue();
+                String subPath = path.substring( entry.getKey().length() );
+                try
+                {
+                    renderPage( page, subPath, output, httpServletRequest );
+                }
+                catch( Exception e )
+                {
+                    throw new ServletException( e );
+                }
+                break;
+            }
+        }
+        output.flush();
+    }
+
+    private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
+        throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
+    {
+        @SuppressWarnings( "unchecked" )
+        Class<? extends Composite> pageClass =
+            (Class<Composite>) PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( page ).types().findFirst().orElse( null );
+
+        String pageName = pageClass.getSimpleName() + ".html";
+        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        documentBuilder.setEntityResolver( createEntityResolver( documentBuilder ) );
+        InputStream pageResource = pageClass.getResourceAsStream( pageName );
+        Document dom = documentBuilder.parse( pageResource );
+        try
+        {
+            Context context = new Context( dom, page, path, httpRequest );
+            page.render( context );
+        }
+        catch( Throwable e )
+        {
+            error( dom, e );
+        }
+        DOMSource source = new DOMSource( dom );
+        StreamResult result = new StreamResult( output );
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.transform( source, result );
+        output.flush();
+    }
+
+    private EntityResolver createEntityResolver( DocumentBuilder builder )
+        throws SAXException
+    {
+        QuikitResolver quickitResolver = new QuikitResolver( builder );
+        SchemaFactory schemaFactory = SchemaFactory.newInstance( "http://www.w3.org/2001/XMLSchema" );
+        schemaFactory.setResourceResolver( quickitResolver );
+        return quickitResolver;
+    }
+
+    private void error( Document dom, Throwable exception )
+    {
+        Element root = dom.getDocumentElement();
+        dom.removeChild( root );
+        Element preElement = (Element) dom.appendChild( dom.createElementNS( Page.XHTML, "html" ) )
+            .appendChild( dom.createElementNS( Page.XHTML, "body" ) )
+            .appendChild( dom.createElementNS( Page.XHTML, "code" ) )
+            .appendChild( dom.createElementNS( Page.XHTML, "pre" ) );
+
+        StringWriter stringWriter = new StringWriter( 2000 );
+        PrintWriter writer = new PrintWriter( stringWriter );
+        exception.printStackTrace( writer );
+        writer.close();
+        String content = stringWriter.getBuffer().toString();
+        preElement.setTextContent( content );
+    }
+
+    static class Context
+        implements QuikitContext
+    {
+        private final Page page;
+        private String methodName;
+        private Element element;
+        private Element parentElement;
+        private final Document dom;
+        private final String path;
+        private final HttpServletRequest request;
+        private byte[] data = null;
+
+        public Context( Document dom, Page page, String path, HttpServletRequest httpServletRequest )
+        {
+            this.dom = dom;
+            this.page = page;
+            this.path = path;
+            this.request = httpServletRequest;
+        }
+
+        public Page page()
+        {
+            return page;
+        }
+
+        public String methodName()
+        {
+            return methodName;
+        }
+
+        public Document dom()
+        {
+            return dom;
+        }
+
+        public Element element()
+        {
+            return element;
+        }
+
+        public Element parentElement()
+        {
+            return parentElement;
+        }
+
+        public String path()
+        {
+            return path;
+        }
+
+        public String queryString()
+        {
+            return request.getQueryString();
+        }
+
+        public String getHeader( String headerKey )
+        {
+            return request.getHeader( headerKey );
+        }
+
+        public byte[] data()
+            throws RenderException
+        {
+            if( data == null )
+            {
+                try
+                {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    InputStream in = request.getInputStream();
+                    int i;
+                    while( ( i = in.read() ) != -1 )
+                    {
+                        baos.write( i );
+                    }
+                    data = baos.toByteArray();
+                }
+                catch( IOException e )
+                {
+                    throw new RenderException( "I/O problems.", e );
+                }
+            }
+            return data;
+        }
+
+        public void setDynamic( String method, Element element, Element parent )
+        {
+            this.methodName = method;
+            this.element = element;
+            this.parentElement = parent;
+        }
+    }
+}

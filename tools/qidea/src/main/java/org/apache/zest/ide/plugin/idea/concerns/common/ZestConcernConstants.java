@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.concerns.common;
+package org.apache.polygene.ide.plugin.idea.concerns.common;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -26,10 +26,10 @@ import org.jetbrains.annotations.NonNls;
  */
 public final class PolygeneConcernConstants
 {
-    public static final String QUALIFIED_NAME_CONCERNS = "org.apache.zest.api.concern.Concerns";
+    public static final String QUALIFIED_NAME_CONCERNS = "org.apache.polygene.api.concern.Concerns";
 
-    public static final String QUALIFIED_NAME_CONCERN_OF = "org.apache.zest.api.concern.ConcernOf";
-    public static final String QUALIFIED_NAME_GENERIC_CONCERN = "org.apache.zest.api.concern.GenericConcern";
+    public static final String QUALIFIED_NAME_CONCERN_OF = "org.apache.polygene.api.concern.ConcernOf";
+    public static final String QUALIFIED_NAME_GENERIC_CONCERN = "org.apache.polygene.api.concern.GenericConcern";
 
     @NonNls
     public static final String TEMPLATE_GENERIC_CONCERN_OF = "GenericConcernOf.java";

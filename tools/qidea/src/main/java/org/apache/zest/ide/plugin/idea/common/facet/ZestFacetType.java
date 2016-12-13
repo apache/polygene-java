@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.facet;
+package org.apache.polygene.ide.plugin.idea.common.facet;
 
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
@@ -104,7 +104,7 @@ public final class PolygeneFacetType extends FacetType<PolygeneFacet, PolygeneFa
                 public final void visitImportStatement( PsiImportStatement statement )
                 {
                     String packageName = statement.getQualifiedName();
-                    if( packageName != null && packageName.startsWith( "org.apache.zest" ) )
+                    if( packageName != null && packageName.startsWith( "org.apache.polygene" ) )
                     {
                         hasPolygeneImportPackage[ 0 ] = true;
                     }

@@ -16,15 +16,15 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.structure.common;
+package org.apache.polygene.ide.plugin.idea.injections.structure.common;
 
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractFix;
 
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.createStructureAnnotation;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.createStructureAnnotation;
 
 /**
  * @author edward.yakop@gmail.com

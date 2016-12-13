@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.actions;
+package org.apache.polygene.ide.plugin.idea.common.actions;
 
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;

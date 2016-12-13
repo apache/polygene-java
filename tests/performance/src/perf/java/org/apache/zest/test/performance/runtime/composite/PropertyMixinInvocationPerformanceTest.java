@@ -16,20 +16,20 @@
  *  limitations under the License.
  */
 
-package org.apache.zest.test.performance.runtime.composite;
+package org.apache.polygene.test.performance.runtime.composite;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 import org.junit.Test;
-import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.composite.TransientBuilder;
-import org.apache.zest.api.composite.TransientComposite;
-import org.apache.zest.api.injection.scope.State;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractPolygeneTest;
+import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.composite.TransientBuilder;
+import org.apache.polygene.api.composite.TransientComposite;
+import org.apache.polygene.api.injection.scope.State;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 
 /**
  * PropertyMixin invocation performance test.

@@ -30,6 +30,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.apache.zest.index" level="trace"/>
+    <logger name="org.apache.polygene.index" level="trace"/>
 
 </configuration>

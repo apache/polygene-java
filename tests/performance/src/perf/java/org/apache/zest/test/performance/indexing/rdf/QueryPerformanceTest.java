@@ -15,47 +15,47 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.test.performance.indexing.rdf;
+package org.apache.polygene.test.performance.indexing.rdf;
 
 import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.apache.zest.api.query.QueryBuilderFactory;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.polygene.api.query.QueryBuilderFactory;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.entity.EntityBuilder;
-import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.api.query.Query;
-import org.apache.zest.api.query.QueryBuilder;
-import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
-import org.apache.zest.bootstrap.ApplicationAssembler;
-import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.assembly.MemoryEntityStoreAssembler;
-import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.apache.zest.index.rdf.indexing.RdfIndexingService;
-import org.apache.zest.index.rdf.query.SesameExpressions;
-import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.entity.EntityBuilder;
+import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.query.Query;
+import org.apache.polygene.api.query.QueryBuilder;
+import org.apache.polygene.api.service.ServiceComposite;
+import org.apache.polygene.api.service.ServiceReference;
+import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.polygene.bootstrap.ApplicationAssembler;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.Energy4Java;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
+import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
+import org.apache.polygene.index.rdf.indexing.RdfIndexingService;
+import org.apache.polygene.index.rdf.query.SesameExpressions;
+import org.apache.polygene.library.rdf.repository.NativeConfiguration;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-import static org.apache.zest.api.query.QueryExpressions.eq;
-import static org.apache.zest.api.query.QueryExpressions.templateFor;
+import static org.apache.polygene.api.query.QueryExpressions.eq;
+import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 
 @SuppressWarnings( "ResultOfMethodCallIgnored" )
 public class QueryPerformanceTest
@@ -72,57 +72,57 @@ public class QueryPerformanceTest
     private Application application;
     private Module module;
     private UnitOfWorkFactory uowf;
-    private static final String QUERY1 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
+    private static final String QUERY1 = "PREFIX ns0: <urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?reference\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:reference ?reference. \n"
                                          + "?entity ns1:name \"Lead64532\". \n"
                                          + "}";
-    private static final String QUERY2 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
+    private static final String QUERY2 = "PREFIX ns0: <urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?reference\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:reference ?reference. \n"
                                          + "?entity ns1:name \"Lead98276\". \n"
                                          + "}";
-    private static final String QUERY3 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
+    private static final String QUERY3 = "PREFIX ns0: <urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?reference\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:reference ?reference. \n"
                                          + "?entity ns1:name \"Lead2\". \n"
                                          + "}";
-    private static final String QUERY4 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
+    private static final String QUERY4 = "PREFIX ns0: <urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?reference\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:reference ?reference. \n"
                                          + "?entity ns1:name \"Lead14332\". \n"
                                          + "}";
-    private static final String QUERY5 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.identity.HasIdentity#> \n"
+    private static final String QUERY5 = "PREFIX ns0: <urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?reference\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:polygene:type:org.apache.polygene.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:reference ?reference. \n"
                                          + "?entity ns1:name \"Lead632\". \n"

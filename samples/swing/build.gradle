@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -32,6 +32,6 @@ dependencies {
 task( runSwingSample, dependsOn: 'classes', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.sample.swing.binding.example.Main'
+  main = 'org.apache.polygene.sample.swing.binding.example.Main'
   classpath = sourceSets.main.runtimeClasspath
 }

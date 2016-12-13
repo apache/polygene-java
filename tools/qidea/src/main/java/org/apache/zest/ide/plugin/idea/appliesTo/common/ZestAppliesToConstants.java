@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.appliesTo.common;
+package org.apache.polygene.ide.plugin.idea.appliesTo.common;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,8 +24,8 @@ package org.apache.zest.ide.plugin.idea.appliesTo.common;
  */
 public final class PolygeneAppliesToConstants
 {
-    public static final String QUALIFIED_NAME_APPLIES_TO = "org.apache.zest.api.common.AppliesTo";
-    public static final String QUALIFIED_NAME_APPLIES_TO_FILTER = "org.apache.zest.api.common.AppliesToFilter";
+    public static final String QUALIFIED_NAME_APPLIES_TO = "org.apache.polygene.api.common.AppliesTo";
+    public static final String QUALIFIED_NAME_APPLIES_TO_FILTER = "org.apache.polygene.api.common.AppliesToFilter";
 
     private PolygeneAppliesToConstants()
     {

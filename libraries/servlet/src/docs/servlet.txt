@@ -65,5 +65,5 @@ tag=usage
 
 == Logging ==
 
-The SLF4J logger used by this library is named "org.apache.zest.library.servlet".
+The SLF4J logger used by this library is named "org.apache.polygene.library.servlet".
 

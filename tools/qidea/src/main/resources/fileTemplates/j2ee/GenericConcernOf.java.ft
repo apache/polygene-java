@@ -1,6 +1,6 @@
 package ${PACKAGE_NAME};
 
-import org.apache.zest.api.concern.GenericConcern;
+import org.apache.polygene.api.concern.GenericConcern;
 
 #parse("File Header.java")
 public class ${NAME} extends GenericConcern

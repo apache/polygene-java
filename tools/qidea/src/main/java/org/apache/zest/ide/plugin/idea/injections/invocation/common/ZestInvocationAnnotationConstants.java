@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.invocation.common;
+package org.apache.polygene.ide.plugin.idea.injections.invocation.common;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,7 +24,7 @@ package org.apache.zest.ide.plugin.idea.injections.invocation.common;
  */
 public final class PolygeneInvocationAnnotationConstants
 {
-    public static final String QUALIFIED_NAME_INVOCATION_ANNOTATION = "org.apache.zest.api.injection.scope.Invocation";
+    public static final String QUALIFIED_NAME_INVOCATION_ANNOTATION = "org.apache.polygene.api.injection.scope.Invocation";
 
     private PolygeneInvocationAnnotationConstants()
     {

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.service.inspections;
+package org.apache.polygene.ide.plugin.idea.injections.service.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -25,15 +25,15 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
-import org.apache.zest.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
+import org.apache.polygene.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
+import org.apache.polygene.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.isValidServiceAnnotationDeclaration;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
+import static org.apache.polygene.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult;
+import static org.apache.polygene.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.isValidServiceAnnotationDeclaration;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
 
 /**
  * {@code ServiceAnnotationDeclaredCorrectly} validates {@code @Service} injection annotation declaration.

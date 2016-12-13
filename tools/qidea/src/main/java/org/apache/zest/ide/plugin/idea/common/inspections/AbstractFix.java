@@ -16,12 +16,12 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.inspections;
+package org.apache.polygene.ide.plugin.idea.common.inspections;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import org.jetbrains.annotations.NotNull;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com

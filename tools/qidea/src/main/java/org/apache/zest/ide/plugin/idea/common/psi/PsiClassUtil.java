@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.psi;
+package org.apache.polygene.ide.plugin.idea.common.psi;
 
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -27,7 +27,7 @@ import java.lang.reflect.InvocationHandler;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 
 /**
  * @author edward.yakop@gmail.com

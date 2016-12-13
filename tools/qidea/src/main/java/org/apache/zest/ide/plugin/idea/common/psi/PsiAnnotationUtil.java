@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.psi;
+package org.apache.polygene.ide.plugin.idea.common.psi;
 
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;

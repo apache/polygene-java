@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.psi.search;
+package org.apache.polygene.ide.plugin.idea.common.psi.search;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.openapi.module.ModuleUtil.findModuleForPsiElement;
-import static org.apache.zest.ide.plugin.idea.common.vfs.VirtualFileUtil.getVirtualFile;
+import static org.apache.polygene.ide.plugin.idea.common.vfs.VirtualFileUtil.getVirtualFile;
 
 /**
  * @author edward.yakop@gmail.com

@@ -15,17 +15,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.test.performance.entitystore.memory;
+package org.apache.polygene.test.performance.entitystore.memory;
 
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.assembly.MemoryEntityStoreAssembler;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.entitystore.helpers.MapEntityStoreMixin;
-import org.apache.zest.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
+import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
+import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class MemoryEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest

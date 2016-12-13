@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -42,13 +42,13 @@ dependencies {
 task( runEnvisageSample, dependsOn: 'testClasses', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.envisage.sample.EnvisageSample'
+  main = 'org.apache.polygene.envisage.sample.EnvisageSample'
   classpath = sourceSets.test.runtimeClasspath
 }
 
 task( runEnvisageSchoolSample, dependsOn: 'testClasses', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name School sample."
-  main = 'org.apache.zest.envisage.school.EnvisageSchoolSample'
+  main = 'org.apache.polygene.envisage.school.EnvisageSchoolSample'
   classpath = sourceSets.test.runtimeClasspath
 }

@@ -9,14 +9,14 @@ dependencies {
   compile project( ":model" )
   compile project( ":rest" )
 
-  compile "org.apache.zest.core:org.apache.zest.core.spi:$zestVersion"
-  compile "org.apache.zest.core:org.apache.zest.core.bootstrap:$zestVersion"
-  compile "org.apache.zest.library:org.apache.zest.library.servlet:$zestVersion"
+  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$zestVersion"
+  compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$zestVersion"
+  compile "org.apache.polygene.library:org.apache.polygene.library.servlet:$zestVersion"
 
   compile "javax.servlet:servlet-api:2.5"
   compile "org.restlet.jee:org.restlet:2.3.4"
 
-  runtime "org.apache.zest.core:org.apache.zest.core.runtime:$zestVersion"
+  runtime "org.apache.polygene.core:org.apache.polygene.core.runtime:$zestVersion"
   runtime "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
 
 }

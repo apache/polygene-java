@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.actions;
+package org.apache.polygene.ide.plugin.idea.common.actions;
 
 import com.intellij.ide.IdeView;
 import com.intellij.openapi.actionSystem.*;
@@ -27,7 +27,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiDirectory;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com

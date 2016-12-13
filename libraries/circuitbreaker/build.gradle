@@ -17,7 +17,7 @@
  *
  *
  */
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 description = "Apache Polygene™ Circuit Breaker Library provides a framework for connecting external resources, so that they can be disabled during re-play of events."
 
@@ -38,6 +38,6 @@ dependencies {
 task( runCircuitBreakerSample, dependsOn: 'testClasses', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementSample'
+  main = 'org.apache.polygene.library.circuitbreaker.jmx.CircuitBreakerManagementSample'
   classpath = sourceSets.test.runtimeClasspath
 }

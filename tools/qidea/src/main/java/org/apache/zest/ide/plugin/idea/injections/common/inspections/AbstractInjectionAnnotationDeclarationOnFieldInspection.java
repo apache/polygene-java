@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.common.inspections;
+package org.apache.polygene.ide.plugin.idea.injections.common.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -25,11 +25,11 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiVariable;
-import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
+import org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractFix;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractInspection;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 

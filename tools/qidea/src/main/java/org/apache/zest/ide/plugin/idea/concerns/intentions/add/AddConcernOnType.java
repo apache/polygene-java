@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.concerns.intentions.add;
+package org.apache.polygene.ide.plugin.idea.concerns.intentions.add;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -29,16 +29,16 @@ import com.intellij.util.Processor;
 import com.intellij.util.Query;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.apache.zest.ide.plugin.idea.common.intentions.AbstractIntention;
+import org.apache.polygene.ide.plugin.idea.common.intentions.AbstractIntention;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.intellij.psi.search.searches.ClassInheritorsSearch.search;
 import static java.util.Collections.emptyList;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.addOrReplaceConcernAnnotation;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.getConcernOfClass;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.addOrReplaceConcernAnnotation;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.getConcernOfClass;
 
 /**
  * JAVADOC: This is disabled in PolygeneApplicationComponent.

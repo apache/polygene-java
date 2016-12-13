@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -44,6 +44,6 @@ dependencies {
 task( runForumSample, dependsOn: 'testClasses', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.sample.forum.web.Main'
+  main = 'org.apache.polygene.sample.forum.web.Main'
   classpath = sourceSets.test.runtimeClasspath
 }

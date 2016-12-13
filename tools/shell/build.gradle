@@ -21,7 +21,7 @@
 apply plugin: 'application'
 
 description = "Command line tools for building Apache Polygene™ applications."
-mainClassName = "org.apache.zest.tools.shell.Main"
+mainClassName = "org.apache.polygene.tools.shell.Main"
 
 jar {
   manifest {

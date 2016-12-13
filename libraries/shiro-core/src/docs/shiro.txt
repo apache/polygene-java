@@ -241,4 +241,4 @@ contribute.
 
 == Logging ==
 
-All code from this library use the `org.apache.zest.library.shiro` logger.
+All code from this library use the `org.apache.polygene.library.shiro` logger.

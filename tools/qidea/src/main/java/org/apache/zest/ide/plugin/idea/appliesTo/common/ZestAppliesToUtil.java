@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.appliesTo.common;
+package org.apache.polygene.ide.plugin.idea.appliesTo.common;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -29,12 +29,12 @@ import java.util.List;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static java.util.Collections.emptyList;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO_FILTER;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO;
+import static org.apache.polygene.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO_FILTER;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 
 /**
  * @author edward.yakop@gmail.com

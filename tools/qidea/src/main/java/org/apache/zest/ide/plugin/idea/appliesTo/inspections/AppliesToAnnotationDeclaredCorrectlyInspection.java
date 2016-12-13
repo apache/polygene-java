@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.appliesTo.inspections;
+package org.apache.polygene.ide.plugin.idea.appliesTo.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -24,21 +24,21 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
-import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractFix;
+import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractInspection;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.PolygeneAppliesToUtil.*;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.isImplementsInvocationHandler;
-import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAConcern;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAGenericConcern;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isAGenericSideEffect;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
+import static org.apache.polygene.ide.plugin.idea.appliesTo.common.PolygeneAppliesToUtil.*;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.isImplementsInvocationHandler;
+import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAConcern;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAGenericConcern;
+import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isAGenericSideEffect;
+import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
 
 /**
  * @author edward.yakop@gmail.com

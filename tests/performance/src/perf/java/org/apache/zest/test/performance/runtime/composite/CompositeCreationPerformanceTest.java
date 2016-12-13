@@ -15,17 +15,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.test.performance.runtime.composite;
+package org.apache.polygene.test.performance.runtime.composite;
 
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.composite.TransientBuilderFactory;
-import org.apache.zest.api.composite.TransientComposite;
-import org.apache.zest.api.object.ObjectFactory;
-import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.polygene.api.activation.ActivationException;
+import org.apache.polygene.api.composite.TransientBuilderFactory;
+import org.apache.polygene.api.composite.TransientComposite;
+import org.apache.polygene.api.object.ObjectFactory;
+import org.apache.polygene.api.value.ValueBuilderFactory;
+import org.apache.polygene.api.value.ValueComposite;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.junit.Test;
 
 /**

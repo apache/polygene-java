@@ -20,7 +20,7 @@
 # and from then on pretends to be the tools.shell script.
 #
 
-JARNAME=org.apache.zest.tool.shell-@version@.jar
+JARNAME=org.apache.polygene.tool.shell-@version@.jar
 
 MYNAME=`basename $0`
 

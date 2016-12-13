@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.structure.common;
+package org.apache.polygene.ide.plugin.idea.injections.structure.common;
 
 import static java.util.Arrays.sort;
 
@@ -26,7 +26,7 @@ import static java.util.Arrays.sort;
  */
 public final class PolygeneStructureAnnotationConstants
 {
-    public static final String QUALIFIED_NAME_STRUCTURE_ANNOTATION = "org.apache.zest.api.injection.scope.Structure";
+    public static final String QUALIFIED_NAME_STRUCTURE_ANNOTATION = "org.apache.polygene.api.injection.scope.Structure";
 
     public static final String[] VALID_STRUCTURE_INJECTION_TYPE;
 
@@ -34,15 +34,15 @@ public final class PolygeneStructureAnnotationConstants
     {
         VALID_STRUCTURE_INJECTION_TYPE = new String[]
             {
-                "org.apache.zest.composite.CompositeBuilderFactory",
-                "org.apache.zest.object.ObjectBuilderFactory",
-                "org.apache.zest.entity.UnitOfWorkFactory",
-                "org.apache.zest.service.ServiceFinder",
-                "org.apache.zest.structure.Module",
-                "org.apache.zest.structure.Layer",
-                "org.apache.zest.structure.Application",
-                "org.apache.zest.PolygeneAPI",
-                "org.apache.zest.spi.PolygeneSPI"
+                "org.apache.polygene.composite.CompositeBuilderFactory",
+                "org.apache.polygene.object.ObjectBuilderFactory",
+                "org.apache.polygene.entity.UnitOfWorkFactory",
+                "org.apache.polygene.service.ServiceFinder",
+                "org.apache.polygene.structure.Module",
+                "org.apache.polygene.structure.Layer",
+                "org.apache.polygene.structure.Application",
+                "org.apache.polygene.PolygeneAPI",
+                "org.apache.polygene.spi.PolygeneSPI"
             };
         sort( VALID_STRUCTURE_INJECTION_TYPE );
     }

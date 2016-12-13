@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -46,6 +46,6 @@ task runRestletSample( type: JavaExec, dependsOn: 'testClasses' ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
   classpath = sourceSets.test.runtimeClasspath
-  main = 'org.apache.zest.library.restlet.TestApplication'
+  main = 'org.apache.polygene.library.restlet.TestApplication'
 }
 

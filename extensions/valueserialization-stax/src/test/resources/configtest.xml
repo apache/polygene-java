@@ -30,7 +30,7 @@
       <object>
         <field>
           <name>_type</name>
-          <value>org.apache.zest.test.entity.AbstractConfigurationDeserializationTest$Host</value>
+          <value>org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest$Host</value>
         </field>
         <field>
           <name>port</name>

@@ -2,7 +2,7 @@
 dependencies {
   compile project( ":model" )
 
-  compile "org.apache.zest.core:org.apache.zest.core.api:$zestVersion"
-  compile "org.apache.zest.library:org.apache.zest.library.restlet:$zestVersion"
+  compile "org.apache.polygene.core:org.apache.polygene.core.api:$zestVersion"
+  compile "org.apache.polygene.library:org.apache.polygene.library.restlet:$zestVersion"
 
 }

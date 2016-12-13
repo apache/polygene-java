@@ -50,7 +50,7 @@ following types exists;
     * <<tools-shell-create-project-default>> - Creates a 4 layer, Configuration, Infrastructure, Domain and Connectivity, command line application.
     * <<tools-shell-create-project-restapp>> - Creates the same 4 layer application as _default_, but also sets it up as a Restful application, ready to deploy on a web application container.
 
-The _package_ defines the root package name to be used, e.g. +org.apache.zest.coolapp+. The +create-project+ program
+The _package_ defines the root package name to be used, e.g. +org.apache.polygene.coolapp+. The +create-project+ program
 will create additional packages under this, according to its template.
 
 [[tools-shell-create-project-null,Create Null Project]]

@@ -21,12 +21,12 @@ package <%= packageName %>.bootstrap.connectivity;
 
 import <%= packageName %>.rest.security.SimpleEnroler;
 import <%= packageName %>.rest.security.SimpleVerifier;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.library.restlet.assembly.RestletCrudConnectivityAssembler;
-import org.apache.zest.library.restlet.resource.EntryPoint;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.restlet.assembly.RestletCrudConnectivityAssembler;
+import org.apache.polygene.library.restlet.resource.EntryPoint;
 <% if( hasFeature('sample (heroes) web application') ) { %>
 import <%= packageName %>.model.heroes.Hero;
 <% } -%>

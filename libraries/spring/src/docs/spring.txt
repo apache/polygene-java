@@ -55,7 +55,7 @@ Steps to export Polygene™ service:
     6. Declare Polygene bootstrap in spring xml application context.
 
 To bootstrap the Polygene™ runtime in Spring, you should have a bootstrap bean that extends the
-+org.apache.zest.library.spring.bootstrap.PolygeneApplicationBootstrap+ and implement the
++org.apache.polygene.library.spring.bootstrap.PolygeneApplicationBootstrap+ and implement the
 +org.springframework.context.ApplicationContextAware+.
 
 A new bean will appear in the application context, called +"zestApplication"+ which is only

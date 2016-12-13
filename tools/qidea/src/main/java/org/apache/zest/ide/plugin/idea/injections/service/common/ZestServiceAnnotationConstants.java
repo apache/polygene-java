@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.service.common;
+package org.apache.polygene.ide.plugin.idea.injections.service.common;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,7 +24,7 @@ package org.apache.zest.ide.plugin.idea.injections.service.common;
  */
 public final class PolygeneServiceAnnotationConstants
 {
-    public static final String QUALIFIED_NAME_SERVICE_ANNOTATION = "org.apache.zest.api.injection.scope.Service";
+    public static final String QUALIFIED_NAME_SERVICE_ANNOTATION = "org.apache.polygene.api.injection.scope.Service";
 
     private PolygeneServiceAnnotationConstants()
     {

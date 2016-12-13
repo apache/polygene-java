@@ -17,30 +17,30 @@
  *
  *
  */
-package org.apache.zest.library.http;
+package org.apache.polygene.library.http;
 
 import java.io.IOException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.http.dns.LocalManagedDns;
-import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.util.FreePortFinder;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.library.http.dns.LocalManagedDns;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.util.FreePortFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.apache.zest.library.http.Servlets.addServlets;
-import static org.apache.zest.library.http.Servlets.serve;
-import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
+import static org.apache.polygene.library.http.Servlets.addServlets;
+import static org.apache.polygene.library.http.Servlets.serve;
+import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 import static org.junit.Assert.assertEquals;
 
 public class VirtualHostJettyServiceTest
     extends AbstractJettyTest
 {
-    private static final String HOST1 = "host1.http.library.zest";
-    private static final String HOST2 = "host2.http.library.zest";
+    private static final String HOST1 = "host1.http.library.polygene";
+    private static final String HOST2 = "host2.http.library.polygene";
 
     private final int httpPort = FreePortFinder.findFreePortOnLoopback();
 

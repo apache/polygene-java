@@ -16,27 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser;
+package org.apache.polygene.library.appbrowser;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import org.junit.Test;
-import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.ManyAssociation;
-import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.concern.ConcernOf;
-import org.apache.zest.api.concern.Concerns;
-import org.apache.zest.api.identity.HasIdentity;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.library.appbrowser.json.JsonFormatterFactory;
-import org.apache.zest.test.AbstractPolygeneTest;
+import org.apache.polygene.api.association.Association;
+import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.concern.ConcernOf;
+import org.apache.polygene.api.concern.Concerns;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.value.ValueSerialization;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
+import org.apache.polygene.library.appbrowser.json.JsonFormatterFactory;
+import org.apache.polygene.test.AbstractPolygeneTest;
 
 public class AppBrowserTest extends AbstractPolygeneTest
 {

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.facet;
+package org.apache.polygene.ide.plugin.idea.common.facet;
 
 import com.intellij.facet.FacetConfiguration;
 import com.intellij.facet.ui.FacetEditorContext;
@@ -25,7 +25,7 @@ import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
-import org.apache.zest.ide.plugin.idea.common.facet.ui.PolygeneFacetEditorTab;
+import org.apache.polygene.ide.plugin.idea.common.facet.ui.PolygeneFacetEditorTab;
 
 /**
  * @author edward.yakop@gmail.com

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.resource;
+package org.apache.polygene.ide.plugin.idea.common.resource;
 
 import com.intellij.CommonBundle;
 import org.jetbrains.annotations.NonNls;
@@ -34,7 +34,7 @@ public final class PolygeneResourceBundle
 {
 
     @NonNls
-    private static final String RESOURCE_BUNDLE_NAME = "org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle";
+    private static final String RESOURCE_BUNDLE_NAME = "org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle";
 
     private static Reference<ResourceBundle> BUNDLE_REF;
 

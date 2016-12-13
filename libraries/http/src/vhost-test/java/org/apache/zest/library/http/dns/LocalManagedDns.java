@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.zest.library.http.dns;
+package org.apache.polygene.library.http.dns;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

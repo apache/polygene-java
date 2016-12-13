@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -38,7 +38,7 @@ dependencies {
 task( runJmxSample, dependsOn: 'testClasses', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.library.jmx.JMXTest'
+  main = 'org.apache.polygene.library.jmx.JMXTest'
   classpath = sourceSets.test.runtimeClasspath
 }
 

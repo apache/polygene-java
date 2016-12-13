@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser.json;
+package org.apache.polygene.library.appbrowser.json;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.apache.zest.api.structure.LayerDescriptor;
-import org.apache.zest.api.structure.UsedLayersDescriptor;
+import org.apache.polygene.api.structure.LayerDescriptor;
+import org.apache.polygene.api.structure.UsedLayersDescriptor;
 
 public class LayerModelFormatter extends AbstractJsonFormatter<LayerDescriptor, Void>
 {

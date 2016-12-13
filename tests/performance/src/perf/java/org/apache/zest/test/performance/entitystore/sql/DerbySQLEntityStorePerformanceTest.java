@@ -15,26 +15,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.test.performance.entitystore.sql;
+package org.apache.polygene.test.performance.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.usecase.UsecaseBuilder;
-import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.apache.zest.entitystore.sql.internal.SQLs;
-import org.apache.zest.library.sql.assembly.DataSourceAssembler;
-import org.apache.zest.library.sql.common.SQLConfiguration;
-import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.apache.zest.test.EntityTestAssembler;
-import org.apache.zest.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.usecase.UsecaseBuilder;
+import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sql.internal.SQLs;
+import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.common.SQLConfiguration;
+import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * Performance test for DerbySQLEntityStore.

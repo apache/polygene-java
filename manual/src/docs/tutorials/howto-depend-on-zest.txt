@@ -48,19 +48,19 @@ You simply declare dependencies on Polygene™ artifacts:
 ----
 <dependencies>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.bootstrap</artifactId>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.bootstrap</artifactId>
         <version>ZEST_VERSION</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.runtime</artifactId>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.runtime</artifactId>
         <version>ZEST_VERSION</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.testsupport</artifactId>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.testsupport</artifactId>
         <version>ZEST_VERSION</version>
         <scope>test</scope>
     </dependency>
@@ -91,9 +91,9 @@ You simply declare dependencies on Polygene™ artifacts:
 [source,groovy]
 ----
 dependencies {
-    compile     "org.apache.zest.core:org.apache.zest.core.bootstrap:ZEST_VERSION"
-    runtime     "org.apache.zest.core:org.apache.zest.core.runtime:ZEST_VERSION"
-    testCompile "org.apache.zest.core:org.apache.zest.core.testsupport:ZEST_VERSION"
+    compile     "org.apache.polygene.core:org.apache.polygene.core.bootstrap:ZEST_VERSION"
+    runtime     "org.apache.polygene.core:org.apache.polygene.core.runtime:ZEST_VERSION"
+    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:ZEST_VERSION"
 }
 ----
 
@@ -115,9 +115,9 @@ You simply declare dependencies on Polygene™ artifacts:
 
 [source,ruby]
 ----
-compile.with 'org.apache.zest.core:org.apache.zest.core.bootstrap:ZEST_VERSION'
-package(:war).with :libs => 'org.apache.zest.core:org.apache.zest.core.runtime:ZEST_VERSION'
-test.with 'org.apache.zest.core:org.apache.zest.core.testsupport:ZEST_VERSION'
+compile.with 'org.apache.polygene.core:org.apache.polygene.core.bootstrap:ZEST_VERSION'
+package(:war).with :libs => 'org.apache.polygene.core:org.apache.polygene.core.runtime:ZEST_VERSION'
+test.with 'org.apache.polygene.core:org.apache.polygene.core.testsupport:ZEST_VERSION'
 ----
 
 Where `ZEST_VERSION` is the Polygene™ version you want to use.
@@ -137,13 +137,13 @@ You simply declare dependencies on Polygene™ artifacts:
 [source,scala]
 ----
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.bootstrap" % "ZEST_VERSION" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.bootstrap" % "ZEST_VERSION" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.runtime" % "ZEST_VERSION" % "runtime" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.runtime" % "ZEST_VERSION" % "runtime" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.testsupport" % "ZEST_VERSION" % "test" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.testsupport" % "ZEST_VERSION" % "test" \
     withSources() withJavadoc()
 ----
 
@@ -165,11 +165,11 @@ You simply declare dependencies on Polygene™ artifacts:
 ----
 <ivy-module>
     <dependencies>
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.bootstrap"
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.bootstrap"
                     rev="ZEST_VERSION"  conf="default" />
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.runtime"
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.runtime"
                     rev="ZEST_VERSION"  conf="runtime" />
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.testsupport"
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.testsupport"
                     rev="ZEST_VERSION"  conf="test" />
     </dependencies>
 </ivy-module>

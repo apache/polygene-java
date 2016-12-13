@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.sideEffects.common;
+package org.apache.polygene.ide.plugin.idea.sideEffects.common;
 
 /**
  * @author edward.yakop@gmail.com
@@ -24,10 +24,10 @@ package org.apache.zest.ide.plugin.idea.sideEffects.common;
  */
 public final class PolygeneSideEffectConstants
 {
-    public static final String QUALIFIED_NAME_SIDE_EFFECTS = "org.apache.zest.api.sideeffect.SideEffects";
+    public static final String QUALIFIED_NAME_SIDE_EFFECTS = "org.apache.polygene.api.sideeffect.SideEffects";
 
-    public static final String QUALIFIED_NAME_SIDE_EFFECT_OF = "org.apache.zest.api.sideeffect.SideEffectOf";
-    public static final String QUALIFIED_NAME_GENERIC_SIDE_EFFECT = "org.apache.zest.api.sideeffect.GenericSideEffect";
+    public static final String QUALIFIED_NAME_SIDE_EFFECT_OF = "org.apache.polygene.api.sideeffect.SideEffectOf";
+    public static final String QUALIFIED_NAME_GENERIC_SIDE_EFFECT = "org.apache.polygene.api.sideeffect.GenericSideEffect";
 
     private PolygeneSideEffectConstants()
     {

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.injections.invocation.inspections;
+package org.apache.polygene.ide.plugin.idea.injections.invocation.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -25,15 +25,15 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
-import org.apache.zest.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
+import org.apache.polygene.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
+import org.apache.polygene.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.isValidInvocationAnnotationDeclaration;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
+import static org.apache.polygene.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult;
+import static org.apache.polygene.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.isValidInvocationAnnotationDeclaration;
+import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
 
 /**
  * {@code InvocationAnnotationDeclaredCorrectlyInspection} validates {@code @Invocation} injection annotation

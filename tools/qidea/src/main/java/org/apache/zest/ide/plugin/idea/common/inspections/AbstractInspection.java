@@ -16,13 +16,13 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.common.inspections;
+package org.apache.polygene.ide.plugin.idea.common.inspections;
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
+import org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle;
 
 import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
 

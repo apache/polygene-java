@@ -1,4 +1,4 @@
-import org.apache.zest.gradle.TaskGroups
+import org.apache.polygene.gradle.TaskGroups
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
@@ -40,6 +40,6 @@ dependencies {
 task( runSqlSupportSample, dependsOn: 'classes', type: JavaExec ) {
   group = TaskGroups.SAMPLES
   description = "Runs $project.name sample."
-  main = 'org.apache.zest.sample.sqlsupport.Main'
+  main = 'org.apache.polygene.sample.sqlsupport.Main'
   classpath = sourceSets.main.runtimeClasspath
 }

@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea.mixins.common;
+package org.apache.polygene.ide.plugin.idea.mixins.common;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -30,13 +30,13 @@ import java.util.Set;
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getExtendsDeep;
-import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
-import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAConcern;
-import static org.apache.zest.ide.plugin.idea.mixins.common.PolygeneMixinConstants.QUALIFIED_NAME_MIXINS;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.getExtendsDeep;
+import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
+import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAConcern;
+import static org.apache.polygene.ide.plugin.idea.mixins.common.PolygeneMixinConstants.QUALIFIED_NAME_MIXINS;
+import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
 
 /**
  * @author edward.yakop@gmail.com

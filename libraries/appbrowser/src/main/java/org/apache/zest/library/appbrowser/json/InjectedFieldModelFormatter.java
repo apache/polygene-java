@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser.json;
+package org.apache.polygene.library.appbrowser.json;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.apache.zest.api.composite.DependencyDescriptor;
-import org.apache.zest.api.composite.InjectedFieldDescriptor;
-import org.apache.zest.library.appbrowser.Formatter;
+import org.apache.polygene.api.composite.DependencyDescriptor;
+import org.apache.polygene.api.composite.InjectedFieldDescriptor;
+import org.apache.polygene.library.appbrowser.Formatter;
 
 public class InjectedFieldModelFormatter extends AbstractJsonFormatter<InjectedFieldDescriptor, DependencyDescriptor>
 {

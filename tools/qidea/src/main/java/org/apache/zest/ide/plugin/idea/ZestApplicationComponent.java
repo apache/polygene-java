@@ -16,7 +16,7 @@
  *  limitations under the License.
 */
 
-package org.apache.zest.ide.plugin.idea;
+package org.apache.polygene.ide.plugin.idea;
 
 import com.intellij.codeInspection.InspectionToolProvider;
 import com.intellij.facet.FacetTypeRegistry;
@@ -27,19 +27,19 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.appliesTo.inspections.AppliesToAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.common.facet.PolygeneFacetType;
-import org.apache.zest.ide.plugin.idea.concerns.inspections.ConcernsAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.injections.invocation.inspections.InvocationAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.injections.service.inspections.ServiceAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.injections.structure.inspections.StructureAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.mixins.inspections.MixinImplementsMixinType;
-import org.apache.zest.ide.plugin.idea.mixins.inspections.MixinsAnnotationDeclaredOnMixinType;
-import org.apache.zest.ide.plugin.idea.sideEffects.inspections.SideEffectsAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.appliesTo.inspections.AppliesToAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.common.facet.PolygeneFacetType;
+import org.apache.polygene.ide.plugin.idea.concerns.inspections.ConcernsAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.injections.invocation.inspections.InvocationAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.injections.service.inspections.ServiceAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.injections.structure.inspections.StructureAnnotationDeclaredCorrectlyInspection;
+import org.apache.polygene.ide.plugin.idea.mixins.inspections.MixinImplementsMixinType;
+import org.apache.polygene.ide.plugin.idea.mixins.inspections.MixinsAnnotationDeclaredOnMixinType;
+import org.apache.polygene.ide.plugin.idea.sideEffects.inspections.SideEffectsAnnotationDeclaredCorrectlyInspection;
 
 import javax.swing.*;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com

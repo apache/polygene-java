@@ -14,4 +14,4 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-org.apache.zest.library.http.dns.LocalManagedDnsDescriptor
+polygene.library.http.dns.LocalManagedDnsDescriptor
