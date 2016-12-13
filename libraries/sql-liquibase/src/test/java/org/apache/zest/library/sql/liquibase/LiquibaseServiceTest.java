@@ -40,6 +40,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.library.sql.assembly.DataSourceAssembler;
 import org.apache.zest.library.sql.common.Databases;
+import org.apache.zest.library.sql.common.SQLUtil;
 import org.apache.zest.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Test;
@@ -145,7 +146,8 @@ public class LiquibaseServiceTest
                 }
                 catch( SQLException e )
                 {
-                    throw new IllegalArgumentException( "Could not convert to SomeValue", e );
+                    throw new IllegalArgumentException( "Could not convert to SomeValue",
+                                                        SQLUtil.withAllSQLExceptions( e ) );
                 }
 
                 return builder.newInstance();

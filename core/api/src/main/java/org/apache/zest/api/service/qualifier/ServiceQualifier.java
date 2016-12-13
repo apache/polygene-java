@@ -48,20 +48,6 @@ import org.apache.zest.api.service.ServiceReference;
  */
 public abstract class ServiceQualifier
 {
-    public static <T> T firstService( Predicate<ServiceReference<?>> qualifier,
-                                      Iterable<ServiceReference<T>> services
-    )
-    {
-        for( ServiceReference<T> service : services )
-        {
-            if( qualifier.test( service ) )
-            {
-                return service.get();
-            }
-        }
-        return null;
-    }
-
     public static Predicate<ServiceReference<?>> withId( final String anId )
     {
         return new Predicate<ServiceReference<?>>()

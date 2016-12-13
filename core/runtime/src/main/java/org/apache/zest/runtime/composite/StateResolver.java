@@ -19,8 +19,8 @@
  */
 package org.apache.zest.runtime.composite;
 
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
@@ -34,7 +34,7 @@ public interface StateResolver
 
     EntityReference getAssociationState( AssociationDescriptor associationDescriptor );
 
-    List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor );
+    Stream<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor );
 
-    Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor );
+    Stream<Map.Entry<String, EntityReference>> getNamedAssociationState( AssociationDescriptor associationDescriptor );
 }

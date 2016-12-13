@@ -64,26 +64,6 @@ if ever, needed.
 <<core-testsupport,Learn more>>
 //____
 
-//*<<core-functional,Core Functional API>>*
-=== Core Functional API ===
-//____
-The Zest™ Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
-
-This package is completely independent of everything else in Zest™ and may be used on its own in any kind of environment
-such as Spring or Java EE applications.
-
-<<core-functional,Learn more>>
-//____
-
-//*<<core-io,Core I/O API>>*
-=== Core I/O API ===
-//____
-The Zest™ Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
-possibly with transformations and filtering along the way.
-
-<<core-io,Learn more>>
-//____
-
 //*<<core-spi,Core Extension SPI>>*
 === Core Extension SPI ===
 //____
@@ -116,14 +96,6 @@ include::../../../../core/bootstrap/src/docs/bootstrap.txt[]
 :leveloffset: 2
 
 include::../../../../core/testsupport/src/docs/testsupport.txt[]
-
-:leveloffset: 2
-
-include::../../../../core/functional/src/docs/functional.txt[]
-
-:leveloffset: 2
-
-include::../../../../core/io/src/docs/io.txt[]
 
 :leveloffset: 2
 

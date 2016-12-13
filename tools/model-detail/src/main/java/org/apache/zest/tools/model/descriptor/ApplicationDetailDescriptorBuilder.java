@@ -42,8 +42,8 @@ import org.apache.zest.api.sideeffect.SideEffectsDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.util.HierarchicalVisitor;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
 
 public final class ApplicationDetailDescriptorBuilder
 {

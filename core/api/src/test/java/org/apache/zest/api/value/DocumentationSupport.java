@@ -24,14 +24,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Application;
@@ -42,14 +40,11 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.io.Inputs;
-import org.apache.zest.io.Outputs;
-import org.apache.zest.io.Transforms;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-import org.junit.Before;
 import org.junit.Test;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -172,27 +167,30 @@ public class DocumentationSupport
         // END SNIPPET: io
 
         List<AcmeValue> dataSource = Arrays.asList( AcmeValue.values() );
-        StringWriter outputWriter = new StringWriter();
+        StringWriter stringOutput = new StringWriter();
+        PrintWriter output = new PrintWriter( stringOutput );
+
 
         // START SNIPPET: io
         // (1)
-        Iterable<AcmeValue> queryResult = dataSource; // Eg. Entities converted to Values
-        Writer writer = outputWriter; // Eg. to pipe data to another process or to a file
+        // Eg. Entities converted to Values
+        Stream<AcmeValue> queryResult = dataSource.stream();
 
         // (2)
         Function<AcmeValue, String> serialize = valueSerializer.serialize();
 
         // (3)
-        Inputs.iterable( queryResult ).transferTo( Transforms.map( serialize, Outputs.text( writer ) ) );
+        // Eg. pipe data to another process or to a file
+        queryResult.map( serialize ).forEach( output::println );
         // END SNIPPET: io
 
-        String string = writer.toString();
-        StringReader inputReader = new StringReader( string );
+        output.flush();
+        String string = stringOutput.toString();
+        List<String> input = Arrays.asList( string.split( System.lineSeparator() ) );
 
         // START SNIPPET: io
         // (4)
-        Reader reader = inputReader;
-        List<AcmeValue> values = new ArrayList<AcmeValue>();
+        Stream<String> lines = input.stream();
 
         // (5)
         Function<String, AcmeValue> deserialize = valueDeserializer.deserialize( module, AcmeValue.class );
@@ -200,7 +198,7 @@ public class DocumentationSupport
         // Deserialization of a collection of AcmeValue from a String.
         // One serialized AcmeValue per line.
         // (6)
-        Inputs.text( reader ).transferTo( Transforms.map( deserialize, Outputs.collection( values ) ) );
+        List<AcmeValue> values = lines.map( deserialize ).collect( toList() );
         // END SNIPPET: io
 
         assertThat( dataSource, equalTo( values ) );

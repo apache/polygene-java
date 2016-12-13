@@ -32,7 +32,7 @@ import org.apache.zest.api.mixin.MixinDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
+import org.apache.zest.api.util.HierarchicalVisitor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;

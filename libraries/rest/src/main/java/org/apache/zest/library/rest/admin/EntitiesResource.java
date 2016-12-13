@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
@@ -47,6 +48,8 @@ import org.restlet.representation.Variant;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Listing of all Entities.
@@ -106,7 +109,8 @@ public class EntitiesResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.emptyMap() )
+                                                                .collect( toList() );
             return new OutputRepresentation( MediaType.APPLICATION_JSON )
             {
                 @Override
@@ -128,7 +132,7 @@ public class EntitiesResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            final Stream<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.emptyMap() );
 
             WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
@@ -141,11 +145,9 @@ public class EntitiesResource
                                  + "\txmlns=\"urn:zest:\"\n" + "\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n"
                                  + "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
                                  + "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
-                    for( EntityReference qualifiedIdentity : query )
-                    {
-                        out.println( "<zest:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/"
-                                     + qualifiedIdentity.identity() + ".rdf\"/>" );
-                    }
+                    query.forEach( qualifiedIdentity -> out.println( "<zest:entity rdf:about=\""
+                                                                     + getRequest().getResourceRef().getPath() + "/"
+                                                                     + qualifiedIdentity.identity() + ".rdf\"/>" ) );
 
                     out.println( "</rdf:RDF>" );
                 }
@@ -165,7 +167,7 @@ public class EntitiesResource
     {
         try
         {
-            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
+            Stream<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.emptyMap() );
             Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
                 @Override
@@ -175,12 +177,9 @@ public class EntitiesResource
                     PrintWriter out = new PrintWriter( buf );
                     out.println( "<html><head><title>All entities</title></head><body><h1>All entities</h1><ul>" );
 
-                    for( EntityReference entity : query )
-                    {
-                        out.println( "<li><a href=\""
-                                     + getRequest().getResourceRef().clone().addSegment( entity.identity() + ".html" )
-                                     + "\">" + entity.identity() + "</a></li>" );
-                    }
+                    query.forEach( entity -> out.println( "<li><a href=\""
+                                                          + getRequest().getResourceRef().clone().addSegment( entity.identity() + ".html" )
+                                                          + "\">" + entity.identity() + "</a></li>" ) );
                     out.println( "</ul></body></html>" );
                 }
             };
@@ -201,17 +200,18 @@ public class EntitiesResource
             Feed feed = new Feed();
             feed.setTitle( new Text( MediaType.TEXT_PLAIN, "All entities" ) );
             List<Entry> entries = feed.getEntries();
-            final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
-            for( EntityReference entityReference : query )
-            {
-                Entry entry = new Entry();
-                entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityReference.toString() ) );
-                Link link = new Link();
-                link.setHref( getRequest().getResourceRef().clone().addSegment( entityReference.identity().toString() ) );
-                entry.getLinks().add( link );
-                entries.add( entry );
-            }
-
+            entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.emptyMap() )
+                        .forEach(
+                            entityReference ->
+                            {
+                                Entry entry = new Entry();
+                                entry.setTitle( new Text( MediaType.TEXT_PLAIN, entityReference.toString() ) );
+                                Link link = new Link();
+                                link.setHref( getRequest().getResourceRef().clone()
+                                                          .addSegment( entityReference.identity().toString() ) );
+                                entry.getLinks().add( link );
+                                entries.add( entry );
+                            } );
             return feed;
         }
         catch( Exception e )

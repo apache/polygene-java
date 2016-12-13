@@ -20,9 +20,8 @@
 
 package org.apache.zest.api.service.importer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.Availability;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
@@ -30,7 +29,6 @@ import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.service.qualifier.ServiceQualifier;
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -54,25 +52,19 @@ public final class ServiceSelectorImporter<T>
     {
         Predicate<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Predicate.class );
         Class serviceType = serviceDescriptor.types().findFirst().orElse( null );
-        Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
-        List<ServiceReference<T>> filteredServices = new ArrayList<>();
-        for( ServiceReference<T> service : services )
-        {
-            Predicate selector1 = service.metaInfo( Predicate.class );
-            if( selector1 != null && selector1 == selector )
-            {
-                continue;
-            }
 
-            filteredServices.add( service );
-        }
-        T service = ServiceQualifier.firstService( selector, filteredServices );
-        if( service == null )
+        Stream<ServiceReference<T>> services = locator.findServices( serviceType );
+        Predicate<ServiceReference<T>> filter = ref ->
         {
-            throw new ServiceImporterException( "Could not find any service to import that matches the given specification for " + serviceDescriptor
-                .identity() );
-        }
-        return service;
+            Predicate selector1 = ref.metaInfo( Predicate.class );
+            return selector1 == null || selector == selector1;
+        };
+        return services.filter( filter.and( selector ) )
+                       .findFirst().map( ServiceReference::get )
+                       .orElseThrow(
+                           () -> new ServiceImporterException(
+                               "Could not find any service to import that matches the given specification for "
+                               + serviceDescriptor.identity() ) );
     }
 
     @Override

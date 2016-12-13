@@ -31,14 +31,12 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.bootstrap.ApplicationAssembler;
+import org.apache.zest.api.util.HierarchicalVisitor;
 import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.tools.model.descriptor.ApplicationDetailDescriptor;
 
 import static org.hamcrest.CoreMatchers.equalTo;

@@ -67,21 +67,13 @@ public class ServiceInstanceImporter<T>
     {
         if( service == null )
         {
-            for( ServiceReference<ServiceImporter> reference : finder.findServices( ServiceImporter.class ) )
-            {
-                if( reference.identity().equals( serviceId ) )
-                {
-                    service = reference.get();
-                    break;
-                }
-            }
+            service = finder.findServices( ServiceImporter.class )
+                            .filter( ref -> ref.identity().equals( serviceId ) )
+                            .findFirst().map( ServiceReference::get )
+                            .orElseThrow( () -> new ServiceImporterException(
+                                "No service importer with id '" + serviceId + "' was found" )
+                            );
         }
-
-        if( service == null )
-        {
-            throw new ServiceImporterException( "No service importer with id '" + serviceId + "' was found" );
-        }
-
         return service;
     }
 }

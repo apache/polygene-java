@@ -38,7 +38,7 @@ public class PostgreSQLQuerying
             SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
             Class<?> resultType,
             Predicate<Composite> whereClause,
-            OrderBy[] orderBySegments,
+            List<OrderBy> orderBySegments,
             Integer firstResult,
             Integer maxResults,
             Map<String, Object> variables,

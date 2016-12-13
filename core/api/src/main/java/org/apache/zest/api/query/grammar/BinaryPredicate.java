@@ -19,6 +19,8 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 
@@ -28,14 +30,14 @@ import org.apache.zest.api.composite.Composite;
 public abstract class BinaryPredicate
     extends ExpressionPredicate
 {
-    protected final Iterable<Predicate<Composite>> operands;
+    protected final Collection<Predicate<Composite>> operands;
 
-    protected BinaryPredicate( Iterable<Predicate<Composite>> operands )
+    protected BinaryPredicate( Collection<Predicate<Composite>> operands )
     {
-        this.operands = operands;
+        this.operands = Collections.unmodifiableCollection( operands );
     }
 
-    public Iterable<Predicate<Composite>> operands()
+    public Collection<Predicate<Composite>> operands()
     {
         return operands;
     }

@@ -44,7 +44,7 @@ of exceptions cause the circuit to break. The most crude is "all", more
 advanced ones allow exceptions that be excepted to be registered, but in
 real cases this is not enough. Case in point is JDBC exceptions where
 you want to fail on "connect exception" but not necessarily "invalid SQL
-syntax". So instead we've leveraged `Specification` from <<core-functional,Core Functional API>> where
+syntax". So instead we've leveraged `Predicate` where
 you get to provide your own specification that can use any logic to
 determine whether a particular exception is ok or not.
 

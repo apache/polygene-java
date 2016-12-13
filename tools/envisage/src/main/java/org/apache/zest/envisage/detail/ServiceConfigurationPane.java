@@ -43,8 +43,6 @@ import org.apache.zest.tools.model.descriptor.ServiceDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.ValueDetailDescriptor;
 import org.apache.zest.tools.model.util.DescriptorUtilities;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * Implementation of Service Configuration Panel
  */

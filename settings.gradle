@@ -18,9 +18,7 @@
  *
  */
 
-include 'core:functional',
-        'core:io',
-        'core:api',
+include 'core:api',
         'core:spi',
         'core:testsupport',
         'core:bootstrap',

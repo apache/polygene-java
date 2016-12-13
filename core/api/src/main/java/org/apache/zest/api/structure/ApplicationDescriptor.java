@@ -20,7 +20,7 @@
 package org.apache.zest.api.structure;
 
 import org.apache.zest.api.ZestAPI;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.VisitableHierarchy;
 
 /**
  * Application Descriptor.

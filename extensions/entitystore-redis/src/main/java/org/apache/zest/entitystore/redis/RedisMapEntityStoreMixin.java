@@ -24,16 +24,12 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
@@ -164,38 +160,12 @@ public class RedisMapEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
-                    {
-                        Jedis jedis = pool.getResource();
-                        try
-                        {
-                            Set<String> keys = jedis.keys( "*" );
-                            for( String key : keys )
-                            {
-                                String jsonState = jedis.get( key );
-                                receiver.receive( new StringReader( jsonState ) );
-                            }
-                        }
-                        finally
-                        {
-                            pool.returnResource( jedis );
-                        }
-                    }
-                } );
-            }
-        };
+        Jedis jedis = pool.getResource();
+        return jedis.keys( "*" ).stream()
+                    .map( key -> (Reader) new StringReader( jedis.get( key ) ) )
+                    .onClose( jedis::close );
     }
 
     private static boolean notFound( String jsonState )

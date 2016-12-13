@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 
 import static org.apache.zest.api.util.NullArgumentException.validateNotNull;
 

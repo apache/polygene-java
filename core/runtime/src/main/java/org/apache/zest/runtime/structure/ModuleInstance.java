@@ -22,14 +22,13 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -93,8 +92,8 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
 import org.apache.zest.spi.module.ModuleSpi;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * Instance of a Zest Module. Contains the various composites for this Module.
@@ -262,8 +261,8 @@ public class ModuleInstance
     public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+                                                         Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+                                                         Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
     )
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
@@ -307,15 +306,15 @@ public class ModuleInstance
         }
 
         @Override
-        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+        public Stream<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return new ArrayList<>();
+            return new ArrayList<EntityReference>().stream();
         }
 
         @Override
-        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+        public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return new HashMap<>();
+            return new HashMap<String, EntityReference>().entrySet().stream();
         }
     }
 
@@ -386,26 +385,25 @@ public class ModuleInstance
     }
 
     @Override
-    public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
+    public <T> Stream<ServiceReference<T>> findServices( final Class<T> serviceType )
     {
         return findServices( (Type) serviceType );
     }
 
     @Override
-    public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
+    public <T> Stream<ServiceReference<T>> findServices( final Type serviceType )
     {
         List<? extends ModelDescriptor> serviceModels = typeLookup.lookupServiceModels( serviceType );
         if( serviceModels == null )
         {
-            return Collections.emptyList();
+            return Stream.empty();
         }
         //noinspection unchecked
         return serviceModels.stream()
-            .map( this::findServiceReferenceInstance )
-            .filter( Objects::nonNull )
-            .filter( ref -> ref.hasType( serviceType ) )
-            .map( ref -> (ServiceReference<T>) ref )
-            .collect( Collectors.toList() );
+                            .map( this::findServiceReferenceInstance )
+                            .filter( Objects::nonNull )
+                            .filter( ref -> ref.hasType( serviceType ) )
+                            .map( ref -> (ServiceReference<T>) ref );
     }
 
     private <T> ServiceReference<T> findServiceReferenceInstance( ModelDescriptor model )
@@ -429,7 +427,7 @@ public class ModuleInstance
     public void activate()
         throws ActivationException
     {
-        activation.activate( model.newActivatorsInstance(), iterable( services, importedServices ) );
+        activation.activate( model.newActivatorsInstance(), asList( services, importedServices ) );
     }
 
     @Override

@@ -36,7 +36,6 @@ import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
@@ -314,7 +313,7 @@ public class ContainsAllTest
 
         builder = builder.where( QueryExpressions.containsAll(
                 QueryExpressions.templateFor( ExampleEntity.class ).strings(),
-                Iterables.iterable( strings ) ) );
+                Arrays.asList( strings ) ) );
         return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
     }
 

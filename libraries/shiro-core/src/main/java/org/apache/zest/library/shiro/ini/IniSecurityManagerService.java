@@ -34,7 +34,6 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.shiro.Shiro;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +75,7 @@ public interface IniSecurityManagerService
             setIni( Ini.fromResourcePath( iniResourcePath ) );
             securityManager = getInstance();
 
-            if ( realmsRefs != null && Iterables.count( realmsRefs ) > 0 ) {
+            if ( realmsRefs != null && realmsRefs.iterator().hasNext() ) {
 
                 // Register Realms Services
                 RealmSecurityManager realmSecurityManager = ( RealmSecurityManager ) securityManager;

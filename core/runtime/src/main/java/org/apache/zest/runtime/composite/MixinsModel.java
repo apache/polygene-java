@@ -32,10 +32,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.zest.api.util.Classes;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.bootstrap.BindingException;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedFieldModel;
@@ -210,12 +210,16 @@ public class MixinsModel
         @Override
         public Collection<MixinModel> uses( MixinModel source )
         {
+            // System.out.println("BEGIN> MixinsModel.Uses.uses( "+source+" )");
             Iterable<Class<?>> thisMixinTypes = source.thisMixinTypes();
             List<MixinModel> usedMixinClasses = new ArrayList<MixinModel>();
+            // System.out.println("\tSource Mixin Types and Methods: ");
             for( Class thisMixinType : thisMixinTypes )
             {
+                // System.out.println("\t\t"+thisMixinType);
                 for( Method method : thisMixinType.getMethods() )
                 {
+                    // System.out.println("\t\t\t"+method);
                     if( !Modifier.isStatic( method.getModifiers() ) )
                     {
                         MixinModel used = methodImplementation.get( method );
@@ -223,6 +227,7 @@ public class MixinsModel
                     }
                 }
             }
+            // System.out.println( "END>   MixinsModel.Uses.uses( " + source + " )" );
             return usedMixinClasses;
         }
     }

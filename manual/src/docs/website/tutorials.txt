@@ -65,7 +65,6 @@ typical application.
 - <<howto-create-sideeffect>>
 - <<howto-create-entity>>
 - <<howto-configure-service>>
-- <<howto-use-io>>
 
 === Zest™ Development ===
 
@@ -140,10 +139,6 @@ include::../tutorials/howto-configure-service.txt[]
 :leveloffset: 2
 
 include::../tutorials/howto-invocation-annotation.txt[]
-
-:leveloffset: 2
-
-include::../tutorials/howto-use-io.txt[]
 
 :leveloffset: 2
 

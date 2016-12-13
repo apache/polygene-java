@@ -23,13 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.Activator;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.runtime.structure.ModuleInstance;
 
 /**
  * Activators Model.

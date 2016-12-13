@@ -61,9 +61,9 @@ public class FreePortFinder
         new Range( 35358, 36000 ),
         // new Range( 36866, 37474 ), // 37334 seen busy
         new Range( 38204, 38799 ),
-        new Range( 33657, 34248 ),
+        // new Range( 33657, 34248 ), // 33951 seen busy
         new Range( 30261, 30831 ),
-        new Range( 41231, 41793 ),
+        // new Range( 41231, 41793 ), // 41652 seen busy
         new Range( 21011, 21552 ),
         new Range( 28590, 29117 ),
         new Range( 14415, 14935 ),

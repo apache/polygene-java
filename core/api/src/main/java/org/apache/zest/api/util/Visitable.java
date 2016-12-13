@@ -17,11 +17,13 @@
  *
  *
  */
+package org.apache.zest.api.util;
 
-jar { manifest { name = "Apache Zest™ I/O" } }
-
-dependencies {
-  compile zest.core.functional
-
-  testCompile zest.core.testsupport
+/**
+ * Interface that visitable objects should implement.
+ */
+public interface Visitable<T>
+{
+    <ThrowableType extends Throwable> boolean accept( Visitor<? super T, ThrowableType> visitor )
+        throws ThrowableType;
 }

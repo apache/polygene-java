@@ -20,6 +20,7 @@
 package org.apache.zest.api.association;
 
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityReference;
 
 /**
@@ -78,10 +79,10 @@ public interface NamedAssociation<T>
     Map<String, T> toMap();
 
     /**
-     * Returns an unmodifiable Iterable of the references to the associated entities.
+     * Returns a stream of the references to the associated entities.
      * @return the references to the associated entities.
      */
-    Iterable<EntityReference> references();
+    Stream<Map.Entry<String, EntityReference>> references();
 
     /** Returns the EntityReference for the Association with the given name.
      *

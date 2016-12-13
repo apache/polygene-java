@@ -66,7 +66,6 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.sql.support.api.SQLQuerying;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
@@ -779,7 +778,7 @@ public abstract class AbstractSQLQuerying
     @Override
     public String constructQuery( Class<?> resultType, //
                                   Predicate<Composite> whereClause, //
-                                  OrderBy[] orderBySegments, //
+                                  List<OrderBy> orderBySegments, //
                                   Integer firstResult, //
                                   Integer maxResults, //
                                   Map<String, Object> variables, //
@@ -849,7 +848,7 @@ public abstract class AbstractSQLQuerying
         SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
         Class<?> resultType,
         Predicate<Composite> whereClause,
-        OrderBy[] orderBySegments,
+        List<OrderBy> orderBySegments,
         Integer firstResult,
         Integer maxResults,
         Map<String, Object> variables,
@@ -1256,7 +1255,7 @@ public abstract class AbstractSQLQuerying
                     LiteralFactory l = vendor.getLiteralFactory();
                     ColumnsFactory c = vendor.getColumnsFactory();
 
-                    Iterable<?> collection = predicate.containedValues();
+                    Collection<?> collection = predicate.containedValues();
                     List<QNameJoin> joins = new ArrayList<>();
                     for( Object value : collection )
                     {
@@ -1288,7 +1287,7 @@ public abstract class AbstractSQLQuerying
                             b.geq(
                                 l.func( "COUNT", c.colName( TABLE_NAME_PREFIX + lastTableIndex,
                                                             DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ) ),
-                                l.n( Iterables.count( collection ) ) ) );
+                                l.n( collection.size() ) ) );
                 }
             } //
         );
@@ -1454,23 +1453,23 @@ public abstract class AbstractSQLQuerying
         return javaRegexp;
     }
 
-    protected void processOrderBySegments( OrderBy[] orderBy, SQLVendor vendor,
+    protected void processOrderBySegments( List<OrderBy> orderBy, SQLVendor vendor,
                                            QuerySpecificationBuilder builder
     )
     {
         if( orderBy != null )
         {
-            QNameInfo[] qNames = new QNameInfo[ orderBy.length ];
+            QNameInfo[] qNames = new QNameInfo[ orderBy.size() ];
 
             QueryFactory q = vendor.getQueryFactory();
             ColumnsFactory c = vendor.getColumnsFactory();
 
             Integer tableIndex = 0;
-            for( Integer idx = 0; idx < orderBy.length; ++idx )
+            for( Integer idx = 0; idx < orderBy.size(); ++idx )
             {
-                if( orderBy[ idx ] != null )
+                if( orderBy.get( idx ) != null )
                 {
-                    PropertyFunction<?> ref = orderBy[ idx ].property();
+                    PropertyFunction<?> ref = orderBy.get( idx ).property();
                     QualifiedName qName = QualifiedName.fromAccessor( ref.accessor() );
                     QNameInfo info = this._state.qNameInfos().get().get( qName );
                     qNames[ idx ] = info;
@@ -1496,7 +1495,7 @@ public abstract class AbstractSQLQuerying
                         tableIdx = tableIndex;
                     }
                     Ordering ordering = Ordering.ASCENDING;
-                    if( orderBy[ idx ].order() == Order.DESCENDING )
+                    if( orderBy.get( idx ).order() == Order.DESCENDING )
                     {
                         ordering = Ordering.DESCENDING;
                     }

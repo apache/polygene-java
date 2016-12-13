@@ -20,6 +20,7 @@
 
 package org.apache.zest.index.rdf.query;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
@@ -29,7 +30,7 @@ public interface RdfQueryParser
 {
     String constructQuery( Class<?> resultType,
                            Predicate<Composite> whereClause,
-                           OrderBy[] orderBySegments,
+                           List<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
                            Map<String, Object> variables

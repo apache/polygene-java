@@ -22,10 +22,10 @@ package org.apache.zest.index.solr.internal;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -39,7 +39,6 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.query.grammar.QuerySpecification;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.solr.EmbeddedSolrService;
 import org.apache.zest.index.solr.SolrSearch;
 import org.apache.zest.spi.query.EntityFinder;
@@ -59,7 +58,12 @@ public class SolrEntityQueryMixin
     private Logger logger = LoggerFactory.getLogger( SolrEntityQueryMixin.class );
 
     @Override
-    public Iterable<EntityReference> findEntities( Class<?> resultType, @Optional Predicate<Composite> whereClause, @Optional OrderBy[] orderBySegments, @Optional Integer firstResult, @Optional Integer maxResults, Map<String, Object> variables ) throws EntityFinderException
+    public Stream<EntityReference> findEntities( Class<?> resultType,
+                                                 Predicate<Composite> whereClause,
+                                                 List<OrderBy> orderBySegments,
+                                                 Integer firstResult,
+                                                 Integer maxResults,
+                                                 Map<String, Object> variables ) throws EntityFinderException
     {
         try
         {
@@ -73,7 +77,7 @@ public class SolrEntityQueryMixin
             list.add( "rows", maxResults != 0 ? maxResults : 10000 );
             list.add( "start", firstResult );
 
-            if( orderBySegments != null && orderBySegments.length > 0 )
+            if( orderBySegments != null && orderBySegments.size() > 0 )
             {
                 for( OrderBy orderBySegment : orderBySegments )
                 {
@@ -96,7 +100,7 @@ public class SolrEntityQueryMixin
             {
                 references.add( EntityReference.parseEntityReference( result.getFirstValue( "id" ).toString() ) );
             }
-            return references;
+            return references.stream();
 
         } catch( SolrServerException e )
         {
@@ -107,18 +111,15 @@ public class SolrEntityQueryMixin
     @Override
     public EntityReference findEntity( Class<?> resultType, @Optional Predicate<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
-        Iterator<EntityReference> iter = findEntities( resultType, whereClause, null, 0, 1, variables ).iterator();
-
-        if( iter.hasNext() )
-            return iter.next();
-        else
-            return null;
+        return findEntities( resultType, whereClause, null, 0, 1, variables )
+            .findFirst().orElse( null );
     }
 
     @Override
     public long countEntities( Class<?> resultType, @Optional Predicate<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
-        return Iterables.count( findEntities( resultType, whereClause, null, 0, 1, variables ) );
+        return findEntities( resultType, whereClause, null, 0, 1, variables )
+            .count();
     }
 
     @Override

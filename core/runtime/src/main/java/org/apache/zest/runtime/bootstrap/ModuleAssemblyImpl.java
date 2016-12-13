@@ -22,7 +22,6 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,7 +31,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -43,7 +41,6 @@ import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.identity.IdentityGenerator;
 import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.service.DuplicateServiceIdentityException;
-import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.type.MatchTypeSpecification;
@@ -88,8 +85,9 @@ import org.apache.zest.runtime.structure.ModuleModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -166,7 +164,7 @@ final class ModuleAssemblyImpl
     @SafeVarargs
     public final ModuleAssembly withActivators(Class<? extends Activator<Module>>... activators)
     {
-        this.activators.addAll(Arrays.asList(activators));
+        this.activators.addAll( asList( activators ) );
         return this;
     }
 
@@ -458,36 +456,36 @@ final class ModuleAssemblyImpl
     public <ThrowableType extends Throwable> void visit(AssemblyVisitor<ThrowableType> visitor)
             throws ThrowableType
     {
-        visitor.visitModule(this);
+        visitor.visitModule( this );
 
-        for (TransientAssemblyImpl compositeDeclaration : transientAssemblies.values())
+        for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
         {
-            visitor.visitComposite(new TransientDeclarationImpl(iterable(compositeDeclaration)));
+            visitor.visitComposite( new TransientDeclarationImpl( singleton( compositeDeclaration ) ) );
         }
 
-        for (EntityAssemblyImpl entityDeclaration : entityAssemblies.values())
+        for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            visitor.visitEntity(new EntityDeclarationImpl(iterable(entityDeclaration)));
+            visitor.visitEntity( new EntityDeclarationImpl( singleton( entityDeclaration ) ) );
         }
 
-        for (ObjectAssemblyImpl objectDeclaration : objectAssemblies.values())
+        for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
         {
-            visitor.visitObject(new ObjectDeclarationImpl(iterable(objectDeclaration)));
+            visitor.visitObject( new ObjectDeclarationImpl( singleton( objectDeclaration ) ) );
         }
 
-        for (ServiceAssemblyImpl serviceDeclaration : serviceAssemblies)
+        for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies )
         {
-            visitor.visitService(new ServiceDeclarationImpl(iterable(serviceDeclaration)));
+            visitor.visitService( new ServiceDeclarationImpl( singleton( serviceDeclaration ) ) );
         }
 
-        for (ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values())
+        for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
         {
-            visitor.visitImportedService(new ImportedServiceDeclarationImpl(iterable(importedServiceDeclaration)));
+            visitor.visitImportedService( new ImportedServiceDeclarationImpl( singleton( importedServiceDeclaration ) ) );
         }
 
-        for (ValueAssemblyImpl valueDeclaration : valueAssemblies.values())
+        for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
         {
-            visitor.visitValue(new ValueDeclarationImpl(iterable(valueDeclaration)));
+            visitor.visitValue( new ValueDeclarationImpl( singleton( valueDeclaration ) ) );
         }
     }
 
@@ -580,15 +578,16 @@ final class ModuleAssemblyImpl
             identities.add(identity);
         }
 
-        importedServiceModels.stream().filter(importedServiceModel ->
-                !StreamSupport.stream(objectModels.spliterator(), false)
-                        .anyMatch(model -> model.types().findFirst().get().equals(importedServiceModel.serviceImporter())))
-                .forEach(importedServiceModel ->
-        {
-            Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
-            ObjectModel objectModel = new ObjectModel(moduleModel, serviceFactoryType, Visibility.module, new MetaInfo());
-            objectModels.add(objectModel);
-        });
+        importedServiceModels
+            .stream()
+            .filter(
+                importedServiceModel ->
+                    objectModels.stream().noneMatch( model -> model.types().findFirst().get()
+                                                                   .equals( importedServiceModel.serviceImporter() ) ) )
+            .forEach(
+                importedServiceModel ->
+                    objectModels.add( new ObjectModel( moduleModel, importedServiceModel.serviceImporter(),
+                                                       Visibility.module, new MetaInfo() ) ) );
 
         return moduleModel;
     }

@@ -19,9 +19,13 @@
  */
 package org.apache.zest.index.elasticsearch;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
@@ -50,7 +54,6 @@ import org.apache.zest.api.query.grammar.PropertyNotNullPredicate;
 import org.apache.zest.api.query.grammar.PropertyNullPredicate;
 import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
@@ -58,7 +61,6 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,12 +88,12 @@ public interface ElasticSearchFinder
         private ElasticSearchSupport support;
 
         @Override
-        public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Predicate<Composite> whereClause,
-                                                       OrderBy[] orderBySegments,
-                                                       Integer firstResult, Integer maxResults,
-                                                       Map<String, Object> variables )
-            throws EntityFinderException
+        public Stream<EntityReference> findEntities( Class<?> resultType,
+                                                     Predicate<Composite> whereClause,
+                                                     List<OrderBy> orderBySegments,
+                                                     Integer firstResult,
+                                                     Integer maxResults,
+                                                     Map<String, Object> variables ) throws EntityFinderException
         {
             // Prepare request
             SearchRequestBuilder request = support.client().prepareSearch( support.index() );
@@ -127,7 +129,8 @@ public interface ElasticSearchFinder
             // Execute
             SearchResponse response = request.execute().actionGet();
 
-            return Iterables.map( (SearchHit from) -> EntityReference.parseEntityReference( from.id() ), response.getHits() );
+            return StreamSupport.stream( response.getHits().spliterator(), false )
+                                .map( hit -> EntityReference.parseEntityReference( hit.id() ) );
         }
 
         @Override
@@ -166,12 +169,12 @@ public interface ElasticSearchFinder
             throws EntityFinderException
         {
             // Prepare request
-            SearchRequestBuilder request = support.client().prepareSearch(support.index()).setSize(0);
+            SearchRequestBuilder request = support.client().prepareSearch( support.index() ).setSize( 0 );
 
             BoolQueryBuilder baseQueryBuilder = baseQuery( resultType );
             QueryBuilder whereQueryBuilder = processWhereSpecification( baseQueryBuilder, whereClause, variables );
 
-            request.setQuery( boolQuery().must(whereQueryBuilder).filter(baseQueryBuilder) );
+            request.setQuery( boolQuery().must( whereQueryBuilder ).filter( baseQueryBuilder ) );
 
             // Log
             LOGGER.debug( "Will count Entities: {}", request );
@@ -271,14 +274,13 @@ public interface ElasticSearchFinder
 
                 NamedAssociationContainsPredicate<?> namedAssContSpec = (NamedAssociationContainsPredicate) spec;
                 processNamedAssociationContainsSpecification( queryBuilder, namedAssContSpec, variables );
-
             }
             else if( spec instanceof NamedAssociationContainsNamePredicate )
             {
 
-                NamedAssociationContainsNamePredicate<?> namedAssContNameSpec = (NamedAssociationContainsNamePredicate) spec;
+                NamedAssociationContainsNamePredicate<?> namedAssContNameSpec
+                    = (NamedAssociationContainsNamePredicate) spec;
                 processNamedAssociationContainsNameSpecification( queryBuilder, namedAssContNameSpec, variables );
-
             }
             else
             {
@@ -396,7 +398,13 @@ public interface ElasticSearchFinder
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
-            Object firstValue = Iterables.first( spec.containedValues() );
+            Collection<?> values = spec.containedValues();
+            if( values.isEmpty() )
+            {
+                // Ignore empty contains all spec
+                return;
+            }
+            Object firstValue = values.iterator().next();
             if( firstValue instanceof ValueComposite )
             {
                 // Query by complex property "example value"
@@ -412,7 +420,7 @@ public interface ElasticSearchFinder
             {
                 String name = spec.collectionProperty().toString();
                 BoolQueryBuilder contAllBuilder = boolQuery();
-                for( Object value : spec.containedValues() )
+                for( Object value : values )
                 {
                     contAllBuilder.must( termQuery( name, resolveVariable( value, variables ) ) );
                 }
@@ -512,5 +520,4 @@ public interface ElasticSearchFinder
             queryBuilder.must( termQuery( name, value ) );
         }
     }
-
 }

@@ -56,7 +56,7 @@ public interface SQLQuerying
     public String constructQuery( //
         Class<?> resultType, //
         @Optional Predicate<Composite> whereClause, //
-        @Optional OrderBy[] orderBySegments, //
+        @Optional List<OrderBy> orderBySegments, //
         @Optional Integer firstResult, //
         @Optional Integer maxResults, //
         Map<String, Object> variables,

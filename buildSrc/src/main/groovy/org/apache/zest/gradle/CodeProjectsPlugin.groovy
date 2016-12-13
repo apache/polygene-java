@@ -21,7 +21,6 @@ import groovy.transform.CompileStatic
 import org.apache.zest.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.zest.gradle.doc.AsciidocBuildInfoPlugin
 import org.apache.zest.gradle.version.VersionClassPlugin
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
@@ -97,17 +96,13 @@ class CodeProjectsPlugin implements Plugin<Project>
 
   private static void configureJacoco( Project project )
   {
-    // ZEST-175
-    if( JavaVersion.current() < JavaVersion.VERSION_1_9 )
-    {
-      def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
-      project.plugins.apply 'jacoco'
-      def jacoco = project.extensions.getByType( JacocoPluginExtension )
-      jacoco.toolVersion = dependencies.buildToolsVersions.jacoco
-      project.tasks.withType( JacocoReport ) { JacocoReport task ->
-        task.group = TaskGroups.VERIFICATION
-        task.description = 'Generates test coverage report.'
-      }
+    def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
+    project.plugins.apply 'jacoco'
+    def jacoco = project.extensions.getByType( JacocoPluginExtension )
+    jacoco.toolVersion = dependencies.buildToolsVersions.jacoco
+    project.tasks.withType( JacocoReport ) { JacocoReport task ->
+      task.group = TaskGroups.VERIFICATION
+      task.description = 'Generates test coverage report.'
     }
   }
 

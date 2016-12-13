@@ -28,20 +28,6 @@ import com.basho.riak.client.core.RiakNode;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.util.HostAndPort;
-import org.apache.zest.api.common.InvalidApplicationException;
-import org.apache.zest.api.configuration.Configuration;
-import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
-import org.apache.zest.spi.entitystore.EntityNotFoundException;
-import org.apache.zest.spi.entitystore.EntityStoreException;
-import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +43,17 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import org.apache.zest.api.common.InvalidApplicationException;
+import org.apache.zest.api.configuration.Configuration;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.api.service.ServiceActivation;
+import org.apache.zest.spi.entitystore.EntityNotFoundException;
+import org.apache.zest.spi.entitystore.EntityStoreException;
+import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 
 /**
  * Riak Protobuf implementation of MapEntityStore.
@@ -334,40 +331,33 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
+        try
         {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                    throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
-                    {
-                        try
-                        {
-                            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
-                            ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
-                            for( Location location : listKeysResponse )
-                            {
-                                FetchValue fetch = new FetchValue.Builder( location ).build();
-                                FetchValue.Response response = riakClient.execute( fetch );
-                                String jsonState = response.getValue( String.class );
-                                receiver.receive( new StringReader( jsonState ) );
-                            }
-                        }
-                        catch( InterruptedException | ExecutionException ex )
-                        {
-                            throw new EntityStoreException( "Unable to apply entity changes.", ex );
-                        }
-                    }
-                } );
-            }
-        };
+            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+            ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
+            return StreamSupport
+                .stream( listKeysResponse.spliterator(), false )
+                .map( location ->
+                      {
+                          try
+                          {
+                              FetchValue fetch = new FetchValue.Builder( location ).build();
+                              FetchValue.Response response = riakClient.execute( fetch );
+                              String jsonState = response.getValue( String.class );
+                              return new StringReader( jsonState );
+                          }
+                          catch( InterruptedException | ExecutionException ex )
+                          {
+                              throw new EntityStoreException( "Unable to get entity states.", ex );
+                          }
+                      } );
+        }
+        catch( InterruptedException | ExecutionException ex )
+        {
+            throw new EntityStoreException( "Unable to get entity states.", ex );
+        }
     }
 
 

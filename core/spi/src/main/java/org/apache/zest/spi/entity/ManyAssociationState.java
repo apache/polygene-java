@@ -20,6 +20,8 @@
 
 package org.apache.zest.spi.entity;
 
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.EntityReference;
 
 /**
@@ -38,4 +40,8 @@ public interface ManyAssociationState
     boolean remove( EntityReference entityReference );
 
     EntityReference get( int index );
+
+    default Stream<EntityReference> stream() {
+        return StreamSupport.stream( spliterator(), false );
+    }
 }

@@ -22,13 +22,13 @@ package org.apache.zest.regression.qi78;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.junit.Assert;
 import org.junit.Test;
 

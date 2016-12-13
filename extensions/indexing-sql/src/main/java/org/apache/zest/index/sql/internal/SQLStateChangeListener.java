@@ -23,17 +23,13 @@ import java.sql.SQLException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
 import org.apache.zest.index.sql.support.api.SQLIndexing;
+import org.apache.zest.library.sql.common.SQLUtil;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.StateChangeListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SQLStateChangeListener
     implements StateChangeListener
 {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger( SQLStateChangeListener.class );
-
     @Service
     private SQLIndexing _indexing;
 
@@ -46,16 +42,8 @@ public class SQLStateChangeListener
         }
         catch( SQLException sqle )
         {
-            SQLException lastException = sqle;
-            while( sqle.getNextException() != null )
-            {
-                sqle = sqle.getNextException();
-            }
-            LOGGER.error( "Error when indexing entities", sqle );
-
             // TODO is UoWException right one for this?
-            throw new UnitOfWorkException( lastException );
+            throw new UnitOfWorkException( SQLUtil.withAllSQLExceptions( sqle ) );
         }
     }
-
 }

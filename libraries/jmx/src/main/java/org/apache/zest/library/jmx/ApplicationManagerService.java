@@ -45,11 +45,9 @@ import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 
 import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Expose the Zest app as a "tree" of MBeans.
@@ -310,27 +308,27 @@ public interface ApplicationManagerService
         public boolean isActive()
         {
             Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
-            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity().toString() ),
-                                                       module.findServices( mainType ) )
-            );
+            ServiceReference<?> first = module.findServices( mainType )
+                                              .filter( withId( serviceDescriptor.identity().toString() ) )
+                                              .findFirst().orElse( null );
             return first != null && first.isActive();
         }
 
         public boolean isAvailable()
         {
             Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
-            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity().toString() ),
-                                                       module.findServices( mainType ) )
-            );
+            ServiceReference<?> first = module.findServices( mainType )
+                                              .filter( withId( serviceDescriptor.identity().toString() ) )
+                                              .findFirst().orElse( null );
             return first != null && first.isAvailable();
         }
 
         public String restart()
         {
-            Iterable<?> services = module.findServices( serviceDescriptor.types().findFirst().orElse( null ) );
-            ServiceReference<?> serviceRef = (ServiceReference) first( filter( withId( serviceDescriptor.identity().toString() ),
-                                                                               services )
-            );
+            ServiceReference<?> serviceRef = module.findServices( serviceDescriptor.types()
+                                                                                   .findFirst().orElse( null ) )
+                                                   .filter( withId( serviceDescriptor.identity().toString() ) )
+                                                   .findFirst().orElse( null );
             if( serviceRef != null )
             {
                 try

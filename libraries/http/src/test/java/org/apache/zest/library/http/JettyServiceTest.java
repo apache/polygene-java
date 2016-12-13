@@ -20,6 +20,7 @@
 package org.apache.zest.library.http;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Test;
@@ -71,7 +72,8 @@ public final class JettyServiceTest
     public final void testInstantiation()
         throws Throwable
     {
-        Iterable<ServiceReference<JettyService>> services = serviceFinder.findServices( JettyService.class );
+        Iterable<ServiceReference<JettyService>> services = serviceFinder.findServices( JettyService.class )
+                                                                         .collect( Collectors.toList() );
         assertNotNull( services );
 
         Iterator<ServiceReference<JettyService>> iterator = services.iterator();

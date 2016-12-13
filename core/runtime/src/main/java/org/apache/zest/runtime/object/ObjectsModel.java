@@ -22,8 +22,8 @@ package org.apache.zest.runtime.object;
 
 import java.util.List;
 import java.util.stream.Stream;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 
 /**
  * JAVADOC

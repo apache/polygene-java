@@ -43,6 +43,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.identity.StringIdentity;
@@ -671,19 +673,19 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 Object entityRefs = stateMap.get( manyAssociation.qualifiedName().name() );
                 if( entityRefs == null )
                 {
-                    return Collections.emptySet();
+                    return Stream.empty();
                 }
                 //noinspection unchecked
-                return (Iterable<EntityReference>) entityRefs;
+                return StreamSupport.stream( ( (Iterable<EntityReference>) entityRefs ).spliterator(), false );
             },
             namedAssociation -> {
                 Object entityRefs = stateMap.get( namedAssociation.qualifiedName().name() );
                 if( entityRefs == null )
                 {
-                    return Collections.emptyMap();
+                    return Stream.empty();
                 }
                 //noinspection unchecked
-                return (Map<String, EntityReference>) entityRefs;
+                return ( (Map<String, EntityReference>) entityRefs ).entrySet().stream();
             } );
     }
 

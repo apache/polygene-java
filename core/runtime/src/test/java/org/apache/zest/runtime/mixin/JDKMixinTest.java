@@ -25,23 +25,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.api.identity.StringIdentity;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Collectors;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.concern.GenericConcern;
+import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.identity.StringIdentity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.hamcrest.core.IsEqual.*;
-import static org.junit.Assert.*;
-import static org.apache.zest.functional.Iterables.*;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Assert that JDK classes are usable as Mixins.
@@ -138,9 +138,9 @@ public class JDKMixinTest
     @Test
     public void testMixinExtendsJDK()
     {
-        List<ServiceReference<JSONSerializableMap>> services = toList(
-            filter( EXTENDS_IDENTITY_SPEC,
-                    serviceFinder.findServices( JSONSerializableMap.class ) ) );
+        List<ServiceReference<JSONSerializableMap>> services = serviceFinder.findServices( JSONSerializableMap.class )
+                                                                            .filter( EXTENDS_IDENTITY_SPEC )
+                                                                            .collect( Collectors.toList() );
 
         assertThat( services.size(), equalTo( 1 ) );
         assertThat( services.get( 0 ).identity(), equalTo( EXTENDS_IDENTITY ) );
@@ -158,9 +158,9 @@ public class JDKMixinTest
     @Test
     public void testComposeJDKMixin()
     {
-        List<ServiceReference<JSONSerializableMap>> services = toList(
-            filter( COMPOSE_IDENTITY_SPEC,
-                    serviceFinder.findServices( JSONSerializableMap.class ) ) );
+        List<ServiceReference<JSONSerializableMap>> services = serviceFinder.findServices( JSONSerializableMap.class )
+                                                                            .filter( COMPOSE_IDENTITY_SPEC )
+                                                                            .collect( Collectors.toList() );
 
         assertThat( services.size(), equalTo( 1 ) );
         assertThat( services.get( 0 ).identity(), equalTo( COMPOSE_IDENTITY ) );

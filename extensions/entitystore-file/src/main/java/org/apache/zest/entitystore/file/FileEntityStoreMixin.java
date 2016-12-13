@@ -29,16 +29,13 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.spi.entitystore.BackupRestore;
 import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
@@ -231,84 +228,43 @@ public class FileEntityStoreMixin
     }
 
     @Override
-    public Input<String, IOException> backup()
+    public Stream<Reader> entityStates()
     {
-        return new Input<String, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<String, IOException>()
-                {
-                    @Override
-                    public <ThrowableType extends Throwable> void sendTo( Receiver<? super String, ThrowableType> receiver )
-                        throws ThrowableType, IOException
-                    {
-                        for( File sliceDirectory : dataDirectory.listFiles() )
-                        {
-                            for( File file : sliceDirectory.listFiles() )
-                            {
-                                receiver.receive( fetch( file ) );
-                            }
-                        }
-                    }
-                } );
-            }
-        };
+        return backup().map( StringReader::new );
     }
 
     @Override
-    public Output<String, IOException> restore()
+    public Stream<String> backup()
     {
-        return new Output<String, IOException>()
+        if( !dataDirectory.exists() )
         {
-            @Override
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
-                throws IOException, SenderThrowableType
-            {
-                sender.sendTo( new Receiver<String, IOException>()
-                {
-                    @Override
-                    public void receive( String item )
-                        throws IOException
-                    {
-                        String id = item.substring( "{\"reference\":\"".length() );
-                        id = id.substring( 0, id.indexOf( '"' ) );
-                        store( getDataFile( id ), item );
-                    }
-                } );
-            }
-        };
+            return Stream.of();
+        }
+        try
+        {
+            return java.nio.file.Files.walk( dataDirectory.toPath(), 3 )
+                                      .skip( 1 )
+                                      .filter( path -> !"slices".equals( path.getFileName().toString() ) )
+                                      .map( Path::toFile )
+                                      .filter( file -> !file.isDirectory() )
+                                      .map( this::uncheckedFetch );
+        }
+        catch( IOException ex )
+        {
+            throw new EntityStoreException( ex );
+        }
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public void restore( final Stream<String> stream )
     {
-        return new Input<Reader, IOException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
+        stream.forEach(
+            item ->
             {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-                    @Override
-                    public <ThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ThrowableType> receiver )
-                        throws ThrowableType, IOException
-                    {
-                        for( File sliceDirectory : dataDirectory.listFiles() )
-                        {
-                            for( File file : sliceDirectory.listFiles() )
-                            {
-                                String state = fetch( file );
-                                receiver.receive( new StringReader( state ) );
-                            }
-                        }
-                    }
-                } );
-            }
-        };
+                String id = item.substring( "{\"reference\":\"".length() );
+                id = id.substring( 0, id.indexOf( '"' ) );
+                uncheckedStore( getDataFile( id ), item );
+            } );
     }
 
     private File getDataFile( String identity )

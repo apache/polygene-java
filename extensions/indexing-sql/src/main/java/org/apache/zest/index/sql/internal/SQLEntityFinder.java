@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
@@ -93,17 +94,15 @@ public class SQLEntityFinder
     }
 
     @Override
-    public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                   @Optional Predicate<Composite> whereClause,
-                                                   @Optional OrderBy[] orderBySegments,
-                                                   @Optional final Integer firstResult,
-                                                   @Optional final Integer maxResults,
-                                                   Map<String, Object> variables )
-        throws EntityFinderException
+    public Stream<EntityReference> findEntities( Class<?> resultType,
+                                                 Predicate<Composite> whereClause,
+                                                 List<OrderBy> orderBySegments,
+                                                 Integer firstResult,
+                                                 Integer maxResults,
+                                                 Map<String, Object> variables ) throws EntityFinderException
     {
         // TODO what is Zest's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
         // these values - does it match with Zest's way?
-        Iterable<EntityReference> result;
         if( maxResults == null || maxResults > 0 )
         {
             final List<Object> values = new ArrayList<>();
@@ -111,10 +110,10 @@ public class SQLEntityFinder
             final String query = this.parser.constructQuery( resultType, whereClause, orderBySegments, firstResult,
                                                              maxResults, variables, values, valueSQLTypes, false );
 
-            result = this.performQuery( new DoQuery<Iterable<EntityReference>>()
+            List<EntityReference> result = this.performQuery( new DoQuery<List<EntityReference>>()
             {
                 @Override
-                public Iterable<EntityReference> doIt( Connection connection )
+                public List<EntityReference> doIt( Connection connection )
                     throws SQLException
                 {
                     PreparedStatement ps = null;
@@ -148,16 +147,13 @@ public class SQLEntityFinder
 
                     return resultList;
                 }
-
             } );
-
+            return result.stream();
         }
         else
         {
-            result = new ArrayList<>( 0 );
+            return Stream.of();
         }
-
-        return result;
     }
 
     @Override
@@ -247,7 +243,7 @@ public class SQLEntityFinder
         }
         catch( SQLException sqle )
         {
-            throw new EntityFinderException( sqle );
+            throw new EntityFinderException( SQLUtil.withAllSQLExceptions( sqle ) );
         }
         finally
         {

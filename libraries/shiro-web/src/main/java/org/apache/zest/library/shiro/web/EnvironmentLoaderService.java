@@ -34,7 +34,6 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.shiro.Shiro;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
 import org.slf4j.Logger;
@@ -68,7 +67,7 @@ public interface EnvironmentLoaderService
             sce.getServletContext().setInitParameter( "shiroConfigLocations", iniResourcePath );
             WebEnvironment env = initEnvironment( sce.getServletContext() );
 
-            if ( realmsRefs != null && Iterables.count( realmsRefs ) > 0 ) {
+            if ( realmsRefs != null && realmsRefs.iterator().hasNext() ) {
 
                 // Register Realms Services
                 RealmSecurityManager realmSecurityManager = ( RealmSecurityManager ) env.getSecurityManager();

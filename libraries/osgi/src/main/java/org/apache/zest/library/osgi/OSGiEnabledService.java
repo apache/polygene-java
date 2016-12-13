@@ -90,16 +90,17 @@ public interface OSGiEnabledService extends ServiceComposite
             {
                 return;
             }
-            for( ServiceReference ref : module.findServices( descriptor.types().findFirst().orElse( null ) ) )
-            {
-                if( ref.identity().equals( identity().get() ) )
-                {
-                    Stream<? extends Type> classesSet = descriptor.types();
-                    Dictionary properties = descriptor.metaInfo( Dictionary.class );
-                    String[] clazzes = fetchInterfacesImplemented( classesSet );
-                    registration = context.registerService( clazzes, ref.get(), properties );
+            module.findServices( descriptor.types().findFirst().orElse( null ) ).forEach(
+                ref -> {
+                    if( ref.identity().equals( identity().get() ) )
+                    {
+                        Stream<? extends Type> classesSet = descriptor.types();
+                        Dictionary properties = descriptor.metaInfo( Dictionary.class );
+                        String[] clazzes = fetchInterfacesImplemented( classesSet );
+                        registration = context.registerService( clazzes, ref.get(), properties );
+                    }
                 }
-            }
+            );
         }
 
         private String[] fetchInterfacesImplemented( Stream<? extends Type> classesSet )

@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -57,10 +58,6 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
@@ -175,43 +172,23 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
+    public Stream<EntityState> entityStates( final ModuleDescriptor module )
     {
-        return new Input<EntityState, EntityStoreException>()
-        {
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
-                throws EntityStoreException, ReceiverThrowableType
-            {
-                output.receiveFrom( new Sender<EntityState, EntityStoreException>()
-                {
-                    @Override
-                    public <RecThrowableType extends Throwable> void sendTo( Receiver<? super EntityState, RecThrowableType> receiver )
-                        throws RecThrowableType, EntityStoreException
-                    {
-                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
-                        Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-                        final EntityStoreUnitOfWork uow =
-                            newUnitOfWork( module, visitUsecase, SystemTime.now() );
+        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
+        Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
+        EntityStoreUnitOfWork uow = newUnitOfWork( module, visitUsecase, SystemTime.now() );
 
-                        try
-                        {
-                            String[] identities = root.childrenNames();
-                            for( String identity : identities )
-                            {
-                                EntityReference reference = EntityReference.parseEntityReference( identity );
-                                EntityState entityState = uow.entityStateOf( module, reference );
-                                receiver.receive( entityState );
-                            }
-                        }
-                        catch( BackingStoreException e )
-                        {
-                            throw new EntityStoreException( e );
-                        }
-                    }
-                } );
-            }
-        };
+        try
+        {
+            return Stream.of( root.childrenNames() )
+                         .map( EntityReference::parseEntityReference )
+                         .map( ref -> uow.entityStateOf( module, ref ) )
+                         .onClose( uow::discard );
+        }
+        catch( BackingStoreException e )
+        {
+            throw new EntityStoreException( e );
+        }
     }
 
     @Override

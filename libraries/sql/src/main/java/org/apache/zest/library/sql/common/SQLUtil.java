@@ -26,43 +26,105 @@ import java.sql.Statement;
 
 public class SQLUtil
 {
+    public static SQLException withAllSQLExceptions( SQLException sqlEx )
+    {
+        SQLException next = sqlEx.getNextException();
+        while( next != null )
+        {
+            sqlEx.addSuppressed( next );
+            next = next.getNextException();
+        }
+        return sqlEx;
+    }
 
     public static void closeQuietly( ResultSet resultSet )
     {
-        if ( resultSet != null ) {
-            try {
+        closeQuietly( resultSet, null );
+    }
+
+    public static void closeQuietly( ResultSet resultSet, Throwable originalException )
+    {
+        if( resultSet != null )
+        {
+            try
+            {
                 resultSet.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
+                if( originalException != null )
+                {
+                    originalException.addSuppressed( ignored );
+                }
             }
         }
     }
 
     public static void closeQuietly( Statement select )
     {
-        if ( select != null ) {
-            try {
+        closeQuietly( select, null );
+    }
+
+    public static void closeQuietly( Statement select, Throwable originalException )
+    {
+        if( select != null )
+        {
+            try
+            {
                 select.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
+                if( originalException != null )
+                {
+                    originalException.addSuppressed( ignored );
+                }
             }
         }
     }
 
     public static void closeQuietly( Connection connection )
     {
-        if ( connection != null ) {
-            try {
+        closeQuietly( connection, null );
+    }
+
+    public static void closeQuietly( Connection connection, Throwable originalException )
+    {
+        if( connection != null )
+        {
+            try
+            {
                 connection.close();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
+                if( originalException != null )
+                {
+                    originalException.addSuppressed( ignored );
+                }
             }
         }
     }
 
     public static void rollbackQuietly( Connection connection )
     {
-        if ( connection != null ) {
-            try {
+        rollbackQuietly( connection, null );
+    }
+
+    public static void rollbackQuietly( Connection connection, Throwable originalException )
+    {
+        if( connection != null )
+        {
+            try
+            {
                 connection.rollback();
-            } catch ( SQLException ignored ) {
+            }
+            catch( SQLException ignored )
+            {
+                if( originalException != null )
+                {
+                    originalException.addSuppressed( ignored );
+                }
             }
         }
     }
@@ -70,5 +132,4 @@ public class SQLUtil
     private SQLUtil()
     {
     }
-
 }

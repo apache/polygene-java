@@ -22,7 +22,6 @@ package org.apache.zest.runtime.query;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -58,24 +57,20 @@ public class IterableQuerySource
     @Override
     public <T> T find( Class<T> resultType,
                        Predicate<Composite> whereClause,
-                       Iterable<OrderBy> orderBySegments,
+                       List<OrderBy> orderBySegments,
                        Integer firstResult,
                        Integer maxResults,
                        Map<String, Object> variables
     )
     {
-        final Iterator<T> iterator = iterator( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
-        if( iterator.hasNext() )
-        {
-            return iterator.next();
-        }
-        return null;
+        return stream( resultType, whereClause, orderBySegments, firstResult, maxResults, variables )
+            .findFirst().orElse( null );
     }
 
     @Override
     public <T> long count( Class<T> resultType,
                            Predicate<Composite> whereClause,
-                           Iterable<OrderBy> orderBySegments,
+                           List<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
                            Map<String, Object> variables
@@ -85,21 +80,21 @@ public class IterableQuerySource
     }
 
     @Override
-    public <T> Iterator<T> iterator( Class<T> resultType,
+    public <T> Stream<T> stream( Class<T> resultType,
                                      Predicate<Composite> whereClause,
-                                     Iterable<OrderBy> orderBySegments,
+                                     List<OrderBy> orderBySegments,
                                      Integer firstResult,
                                      Integer maxResults,
                                      Map<String, Object> variables
     )
     {
-        return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).iterator();
+        return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).stream();
     }
 
     @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> list( Class<T> resultType,
                               Predicate<Composite> whereClause,
-                              Iterable<OrderBy> orderBySegments,
+                              List<OrderBy> orderBySegments,
                               Integer firstResult,
                               Integer maxResults,
                               Map<String, Object> variables
@@ -112,7 +107,7 @@ public class IterableQuerySource
         if( orderBySegments != null )
         {
             // Sort it
-            Collections.sort( list, new OrderByComparator( orderBySegments ) );
+            list.sort( new OrderByComparator( orderBySegments ) );
         }
 
         // Cut results

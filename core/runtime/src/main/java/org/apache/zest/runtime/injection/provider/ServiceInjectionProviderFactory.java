@@ -23,6 +23,7 @@ package org.apache.zest.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -31,13 +32,13 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.Qualifier;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.InjectionProvider;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
 import org.apache.zest.runtime.model.Resolution;
 
+import static java.util.stream.Collectors.toCollection;
 import static org.apache.zest.api.util.Annotations.typeHasAnnotation;
 
 public final class ServiceInjectionProviderFactory
@@ -98,9 +99,7 @@ public final class ServiceInjectionProviderFactory
     private static class IterableServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        private IterableServiceReferenceProvider( Type serviceType,
-                                                  Predicate<ServiceReference<?>> serviceQualifier
-        )
+        private IterableServiceReferenceProvider( Type serviceType, Predicate<ServiceReference<?>> serviceQualifier )
         {
             super( serviceType, serviceQualifier );
         }
@@ -109,7 +108,7 @@ public final class ServiceInjectionProviderFactory
         public synchronized Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            return getServiceReferences( context );
+            return getServiceReferences( context ).collect( toCollection( ArrayList::new ) );
         }
     }
 
@@ -117,9 +116,7 @@ public final class ServiceInjectionProviderFactory
         extends ServiceInjectionProvider
         implements Function<ServiceReference<?>, Object>
     {
-        private IterableServiceProvider( Type serviceType,
-                                         Predicate<ServiceReference<?>> serviceQualifier
-        )
+        private IterableServiceProvider( Type serviceType, Predicate<ServiceReference<?>> serviceQualifier )
         {
             super( serviceType, serviceQualifier );
         }
@@ -128,7 +125,8 @@ public final class ServiceInjectionProviderFactory
         public synchronized Object provideInjection( final InjectionContext context )
             throws InjectionProviderException
         {
-            return Iterables.map( this, getServiceReferences( context ) );
+            return getServiceReferences( context ).map( ServiceReference::get )
+                                                  .collect( toCollection( ArrayList::new ) );
         }
 
         @Override
@@ -185,9 +183,7 @@ public final class ServiceInjectionProviderFactory
         private final Type serviceType;
         private final Predicate<ServiceReference<?>> serviceQualifier;
 
-        private ServiceInjectionProvider( Type serviceType,
-                                          Predicate<ServiceReference<?>> serviceQualifier
-        )
+        private ServiceInjectionProvider( Type serviceType, Predicate<ServiceReference<?>> serviceQualifier )
         {
             this.serviceType = serviceType;
             this.serviceQualifier = serviceQualifier;
@@ -203,8 +199,8 @@ public final class ServiceInjectionProviderFactory
                 }
                 else
                 {
-                    return Iterables.first( Iterables.filter( serviceQualifier, context.module().instance()
-                        .findServices( serviceType ) ) );
+                    return context.module().instance().findServices( serviceType )
+                                  .filter( serviceQualifier ).findFirst().orElse( null );
                 }
             }
             catch( NoSuchServiceException e )
@@ -213,7 +209,7 @@ public final class ServiceInjectionProviderFactory
             }
         }
 
-        protected Iterable<ServiceReference<Object>> getServiceReferences( final InjectionContext context )
+        protected Stream<ServiceReference<Object>> getServiceReferences( final InjectionContext context )
         {
             if( serviceQualifier == null )
             {
@@ -221,7 +217,7 @@ public final class ServiceInjectionProviderFactory
             }
             else
             {
-                return Iterables.filter( serviceQualifier, context.module().instance().findServices( serviceType ) );
+                return context.module().instance().findServices( serviceType ).filter( serviceQualifier );
             }
         }
     }

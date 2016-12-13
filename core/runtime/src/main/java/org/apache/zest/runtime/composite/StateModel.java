@@ -23,8 +23,8 @@ import java.lang.reflect.AccessibleObject;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.StateDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 

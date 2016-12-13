@@ -27,7 +27,7 @@ import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 import org.apache.zest.library.rdf.ZestRdf;
 import org.apache.zest.library.rdf.serializer.SerializerContext;
 

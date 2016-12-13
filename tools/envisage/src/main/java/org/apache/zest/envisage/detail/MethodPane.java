@@ -52,8 +52,6 @@ import org.apache.zest.tools.model.descriptor.MethodSideEffectDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.ObjectDetailDescriptor;
 import org.apache.zest.tools.model.util.DescriptorUtilities;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * Implementation of Composite Method Panel
  */

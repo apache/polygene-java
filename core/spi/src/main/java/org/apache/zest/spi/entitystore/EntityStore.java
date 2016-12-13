@@ -20,9 +20,9 @@
 package org.apache.zest.spi.entitystore;
 
 import java.time.Instant;
+import java.util.stream.Stream;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.io.Input;
 import org.apache.zest.spi.entity.EntityState;
 
 /**
@@ -32,5 +32,11 @@ public interface EntityStore
 {
     EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime );
 
-    Input<EntityState, EntityStoreException> entityStates( ModuleDescriptor module );
+    /**
+     * Stream of all entity states, must be closed.
+     *
+     * @param module Module
+     * @return Stream of all entity states, must be closed
+     */
+    Stream<EntityState> entityStates( ModuleDescriptor module );
 }

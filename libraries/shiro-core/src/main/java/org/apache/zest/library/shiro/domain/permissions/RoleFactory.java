@@ -26,7 +26,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.functional.Iterables;
 
 @Mixins( RoleFactory.Mixin.class )
 public interface RoleFactory
@@ -57,7 +56,7 @@ public interface RoleFactory
             EntityBuilder<Role> roleBuilder = uow.newEntityBuilder( Role.class );
             Role role = roleBuilder.instance();
             role.name().set( name );
-            role.permissions().set( Iterables.toList( permissions ) );
+            permissions.forEach( p -> role.permissions().get().add( p ) );
             return roleBuilder.newInstance();
         }
 

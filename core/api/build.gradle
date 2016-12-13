@@ -21,8 +21,6 @@
 jar { manifest { name = "Apache Zest™ Core API" } }
 
 dependencies {
-  compile zest.core.io
-
   testCompile zest.core.testsupport
   testCompile zest.library( 'constraints' )
   testCompile zest.extension( 'valueserialization-orgjson' )

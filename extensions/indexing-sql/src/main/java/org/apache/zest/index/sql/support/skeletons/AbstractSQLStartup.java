@@ -65,8 +65,8 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.sql.support.api.SQLAppStartup;
 import org.apache.zest.index.sql.support.api.SQLTypeInfo;
@@ -928,7 +928,8 @@ public abstract class AbstractSQLStartup
                         }
                         catch( SQLException e )
                         {
-                            throw new EntityStoreException( "Underlying exception when setting " + pk, e );
+                            throw new EntityStoreException( "Underlying exception when setting " + pk,
+                                                            SQLUtil.withAllSQLExceptions( e ) );
                         }
                         this._state.entityTypePKs().get().put( entityTypeName, (int) pk );
 //                      this._state.entityTypeInfos().get().put( entityTypeName, new EntityTypeInfo( descriptor, (int) pk ) );

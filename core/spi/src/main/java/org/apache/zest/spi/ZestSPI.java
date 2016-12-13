@@ -21,6 +21,7 @@
 package org.apache.zest.spi;
 
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationStateHolder;
@@ -54,22 +55,21 @@ public interface ZestSPI
      * @param assoc The Association for which we want to obtain the EntityReference
      * @return The EntityReference of the given Association.
      */
-    EntityReference entityReferenceOf( Association assoc );
+    EntityReference entityReferenceOf( Association<?> assoc );
 
     /**
      * Fetches the EntityReferences without loading the referenced entities.
      *
      * @param assoc The ManyAssociation for which we want to obtain the EntityReferences.
-     * @return An Iteranble of all the EntityReferences of the given ManyAssociation.
+     * @return A stream of all the EntityReferences of the given ManyAssociation.
      */
-    Iterable<EntityReference> entityReferenceOf( ManyAssociation assoc );
+    Stream<EntityReference> entityReferencesOf( ManyAssociation<?> assoc );
 
     /**
      * Fetches the EntityReferences without loading the referenced entities.
      *
      * @param assoc The NamedAssociation for which we want to obtain the EntityReference
-     * @return An Iteranble of Map.Entry with the name and EntityReference of the given NamedAssociation.
+     * @return A stream of Map.Entry with the names and EntityReferences of the given NamedAssociation.
      */
-    Iterable<Map.Entry<String,EntityReference>> entityReferenceOf( NamedAssociation assoc );
-
+    Stream<Map.Entry<String, EntityReference>> entityReferencesOf( NamedAssociation<?> assoc );
 }

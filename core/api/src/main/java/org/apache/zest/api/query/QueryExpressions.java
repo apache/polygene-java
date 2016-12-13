@@ -24,8 +24,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
@@ -66,8 +70,6 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.util.NullArgumentException;
 
 import static org.apache.zest.api.identity.HasIdentity.IDENTITY_METHOD;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.prepend;
 
 /**
  * Static factory methods for query expressions and operators.
@@ -174,7 +176,8 @@ public final class QueryExpressions
     public static <T> T oneOf( final NamedAssociation<T> association )
     {
         NullArgumentException.validateNotNull( "Association", association );
-        return association.get( first( association ) );
+        Iterator<String> iterator = association.iterator();
+        return association.get( iterator.hasNext() ? iterator.next() : null );
     }
 
     /**
@@ -292,7 +295,11 @@ public final class QueryExpressions
                                     Predicate<Composite>... optionalRight
     )
     {
-        return new AndPredicate( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
+        List<Predicate<Composite>> predicates = new ArrayList<>( 2 + optionalRight.length );
+        predicates.add( left );
+        predicates.add( right );
+        Collections.addAll( predicates, optionalRight );
+        return new AndPredicate( predicates );
     }
 
     /**
@@ -591,7 +598,7 @@ public final class QueryExpressions
      * @return a new CONTAINS ALL specification for a Collection Property.
      */
     public static <T> ContainsAllPredicate<T> containsAll( Property<? extends Collection<T>> collectionProperty,
-                                                               Iterable<T> values )
+                                                           Collection<T> values )
     {
         NullArgumentException.validateNotNull( "Values", values );
         return new ContainsAllPredicate<>( property( collectionProperty ), values );
@@ -608,7 +615,7 @@ public final class QueryExpressions
     @SuppressWarnings( {"raw", "unchecked"} )
     public static <T> ContainsAllPredicate<T> containsAllVariables(
         Property<? extends Collection<T>> collectionProperty,
-        Iterable<Variable> variables )
+        Collection<Variable> variables )
     {
         NullArgumentException.validateNotNull( "Variables", variables );
         return new ContainsAllPredicate( property( collectionProperty ), variables );

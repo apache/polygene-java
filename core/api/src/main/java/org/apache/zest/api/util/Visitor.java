@@ -17,29 +17,23 @@
  *
  *
  */
-
-package org.apache.zest.io;
+package org.apache.zest.api.util;
 
 /**
- * Sender of items for a particular transfer from an Input to an Output
+ * Generic Visitor interface.
  */
-// START SNIPPET: sender
-public interface Sender<T, SenderThrowableType extends Throwable>
+public interface Visitor<T, ThrowableType extends Throwable>
 {
-// END SNIPPET: sender
     /**
-     * The sender should send all items it holds to the receiver by invoking receiveItem for each item.
+     * Visit an instance of T
      *
-     * If the receive fails it should properly close any open resources.
+     * @param visited the visited instance
      *
-     * @param receiver
-     * @param <ReceiverThrowableType>
+     * @return true if the visitor pattern should continue, false if it should be aborted
      *
-     * @throws ReceiverThrowableType
-     * @throws SenderThrowableType
+     * @throws ThrowableType if an exception occurred during processing. Any client call that initiated the visiting should
+     *                       get the exception in order to handle it properly.
      */
-// START SNIPPET: sender
-    <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super T, ReceiverThrowableType> receiver )
-        throws ReceiverThrowableType, SenderThrowableType;
+    boolean visit( T visited )
+        throws ThrowableType;
 }
-// END SNIPPET: sender

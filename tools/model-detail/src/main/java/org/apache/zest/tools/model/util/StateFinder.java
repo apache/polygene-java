@@ -30,8 +30,6 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.tools.model.descriptor.CompositeDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.CompositeMethodDetailDescriptor;
 
-import static org.apache.zest.functional.Iterables.first;
-
 public class StateFinder
 {
     public List<CompositeMethodDetailDescriptor> findState( CompositeDetailDescriptor<?> descriptor )

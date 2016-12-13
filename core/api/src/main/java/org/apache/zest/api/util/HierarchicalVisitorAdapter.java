@@ -17,23 +17,32 @@
  *
  *
  */
-
-package org.apache.zest.io;
+package org.apache.zest.api.util;
 
 /**
- * Input source of data.
- * <p>
- * Invoke transferTo to send data from this input to given output. transferTo can be invoked
- * as many times as you want. The transferTo implementation must ensure that any exceptions thrown
- * by the Input or the Output which transferred data is sent to is handled properly, i.e. that resources
- * are closed. Any client code to transferTo calls should not have to bother with resource management,
- * but may catch exceptions anyway for logging and similar purposes.
- * </p>
+ * Generic Hierarchical Visitor interface.
  */
-// START SNIPPET: input
-public interface Input<T, SenderThrowableType extends Throwable>
+public class HierarchicalVisitorAdapter<NODE, LEAF, ThrowableType extends Throwable>
+    implements HierarchicalVisitor<NODE, LEAF, ThrowableType>
 {
-    <ReceiverThrowableType extends Throwable> void transferTo( Output<? super T, ReceiverThrowableType> output )
-        throws SenderThrowableType, ReceiverThrowableType;
+    @Override
+    public boolean visitEnter( NODE visited )
+        throws ThrowableType
+    {
+        return true;
+    }
+
+    @Override
+    public boolean visitLeave( NODE visited )
+        throws ThrowableType
+    {
+        return true;
+    }
+
+    @Override
+    public boolean visit( LEAF visited )
+        throws ThrowableType
+    {
+        return true;
+    }
 }
-// END SNIPPET: input

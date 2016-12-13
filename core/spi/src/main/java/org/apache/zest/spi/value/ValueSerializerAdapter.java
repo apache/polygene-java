@@ -34,6 +34,7 @@ import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -416,10 +417,10 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onFieldStart( output, associationDescriptor.qualifiedName().name() );
                 onValueStart( output );
                 onArrayStart( output );
-                for( EntityReference ref : manyAssociation.references() )
+                for( Iterator<EntityReference> it = manyAssociation.references().iterator(); it.hasNext(); )
                 {
                     onValueStart( output );
-                    onValue( output, ref.identity().toString() );
+                    onValue( output, it.next().identity().toString() );
                     onValueEnd( output );
                 }
                 onArrayEnd( output );

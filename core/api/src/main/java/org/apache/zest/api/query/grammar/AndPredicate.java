@@ -19,6 +19,7 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.Collection;
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 
@@ -28,7 +29,7 @@ import org.apache.zest.api.composite.Composite;
 public class AndPredicate
     extends BinaryPredicate
 {
-    public AndPredicate( Iterable<Predicate<Composite>> operands )
+    public AndPredicate( Collection<Predicate<Composite>> operands )
     {
         super( operands );
     }

@@ -17,32 +17,13 @@
  *
  *
  */
-package org.apache.zest.functional;
+package org.apache.zest.api.util;
 
 /**
- * Generic Hierarchical Visitor interface.
+ * Interface that visitable hierarchies of objects should implement.
  */
-public class HierarchicalVisitorAdapter<NODE, LEAF, ThrowableType extends Throwable>
-    implements HierarchicalVisitor<NODE, LEAF, ThrowableType>
+public interface VisitableHierarchy<NODE, LEAF>
 {
-    @Override
-    public boolean visitEnter( NODE visited )
-        throws ThrowableType
-    {
-        return true;
-    }
-
-    @Override
-    public boolean visitLeave( NODE visited )
-        throws ThrowableType
-    {
-        return true;
-    }
-
-    @Override
-    public boolean visit( LEAF visited )
-        throws ThrowableType
-    {
-        return true;
-    }
+    <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super NODE, ? super LEAF, ThrowableType> visitor )
+        throws ThrowableType;
 }

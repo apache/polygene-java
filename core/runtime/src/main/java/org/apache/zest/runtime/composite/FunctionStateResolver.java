@@ -19,15 +19,12 @@
  */
 package org.apache.zest.runtime.composite;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.runtime.association.ManyAssociationModel;
-import org.apache.zest.runtime.association.NamedAssociationModel;
 import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.ManyAssociationState;
@@ -41,13 +38,13 @@ public class FunctionStateResolver
 {
     final Function<PropertyDescriptor, Object> propertyFunction;
     final Function<AssociationDescriptor, EntityReference> associationFunction;
-    final Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction;
-    final Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction;
+    final Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction;
+    final Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction;
 
     public FunctionStateResolver( Function<PropertyDescriptor, Object> propertyFunction,
                                   Function<AssociationDescriptor, EntityReference> associationFunction,
-                                  Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                  Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+                                  Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
+                                  Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction )
     {
         this.propertyFunction = propertyFunction;
         this.associationFunction = associationFunction;
@@ -68,52 +65,51 @@ public class FunctionStateResolver
     }
 
     @Override
-    public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+    public Stream<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
     {
-        return Iterables.toList( manyAssociationFunction.apply( associationDescriptor ) );
+        return manyAssociationFunction.apply( associationDescriptor );
     }
 
     @Override
-    public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+    public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState(
+        AssociationDescriptor associationDescriptor )
     {
         return namedAssociationFunction.apply( associationDescriptor );
     }
 
     public void populateState( EntityModel model, EntityState state )
     {
-        model.state().properties().forEach( propDesc -> {
-            Object value = getPropertyState( propDesc );
-            state.setPropertyValue( propDesc.qualifiedName(), value );
-        } );
-        model.state().associations().forEach( assDesc -> {
-            EntityReference ref = getAssociationState( assDesc );
-            state.setAssociationValue( assDesc.qualifiedName(), ref );
-        } );
-        model.state().manyAssociations().forEach( manyAssDesc -> {
-            ManyAssociationState associationState = state.manyAssociationValueOf( manyAssDesc.qualifiedName() );
-            // First clear existing ones
-            for( EntityReference ref : associationState )
+        model.state().properties().forEach(
+            propDesc ->
             {
-                associationState.remove( ref );
-            }
-            // then add the new ones.
-            for( EntityReference ref : getManyAssociationState( manyAssDesc ) )
+                Object value = getPropertyState( propDesc );
+                state.setPropertyValue( propDesc.qualifiedName(), value );
+            } );
+        model.state().associations().forEach(
+            assDesc ->
             {
-                associationState.add( 0, ref );
-            }
-        } );
-        model.state().namedAssociations().forEach( namedAssDesc -> {
-            NamedAssociationState associationState = state.namedAssociationValueOf( namedAssDesc.qualifiedName() );
-            // First clear existing ones
-            for( String name : associationState )
+                EntityReference ref = getAssociationState( assDesc );
+                state.setAssociationValue( assDesc.qualifiedName(), ref );
+            } );
+        model.state().manyAssociations().forEach(
+            manyAssDesc ->
             {
-                associationState.remove( name );
-            }
-            // then add the new ones.
-            for( Map.Entry<String, EntityReference> entry : getNamedAssociationState( namedAssDesc ).entrySet() )
+                ManyAssociationState associationState = state.manyAssociationValueOf( manyAssDesc.qualifiedName() );
+                // First clear existing ones
+                associationState.forEach( associationState::remove );
+                // then add the new ones.
+                getManyAssociationState( manyAssDesc )
+                    .forEach( ref -> associationState.add( 0, ref ) );
+            } );
+        model.state().namedAssociations().forEach(
+            namedAssDesc ->
             {
-                associationState.put( entry.getKey(), entry.getValue() );
-            }
-        } );
+                NamedAssociationState associationState = state.namedAssociationValueOf( namedAssDesc.qualifiedName() );
+                // First clear existing ones
+                associationState.forEach( associationState::remove );
+                // then add the new ones.
+                getNamedAssociationState( namedAssDesc )
+                    .forEach( entry -> associationState.put( entry.getKey(), entry.getValue() ) );
+            } );
     }
 }

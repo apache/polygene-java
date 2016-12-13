@@ -30,9 +30,9 @@ import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.LayerDescriptor;
+import org.apache.zest.api.util.HierarchicalVisitor;
+import org.apache.zest.api.util.VisitableHierarchy;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 

@@ -20,25 +20,26 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.Iterator;
-import org.apache.zest.api.identity.HasIdentity;
-import org.apache.zest.api.identity.Identity;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.AmbiguousTypeException;
+import org.apache.zest.api.identity.HasIdentity;
+import org.apache.zest.api.identity.Identity;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.apache.zest.functional.Iterables;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 /**
  * Theses tests ensure that Type to Composite lookup work as expected for
@@ -379,9 +380,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( 1, Iterables.count( module.findServices( SomeOtherFoo.class ) ) );
-        assertEquals( 2, Iterables.count( module.findServices( BasicFoo.class ) ) );
-        assertEquals( 2, Iterables.count( module.findServices( Foo.class ) ) );
+        assertEquals( 1, module.findServices( SomeOtherFoo.class ).count() );
+        assertEquals( 2, module.findServices( BasicFoo.class ).count() );
+        assertEquals( 2, module.findServices( Foo.class ).count() );
 
         assertEquals( CATHEDRAL, module.findService( SomeOtherFoo.class ).get().bar() );
 

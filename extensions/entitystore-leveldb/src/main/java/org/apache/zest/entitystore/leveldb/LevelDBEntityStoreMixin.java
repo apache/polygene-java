@@ -26,6 +26,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -34,10 +39,6 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.io.Input;
-import org.apache.zest.io.Output;
-import org.apache.zest.io.Receiver;
-import org.apache.zest.io.Sender;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStoreException;
@@ -197,42 +198,38 @@ public class LevelDBEntityStoreMixin
     }
 
     @Override
-    public Input<Reader, IOException> entityStates()
+    public Stream<Reader> entityStates()
     {
-        return new Input<Reader, IOException>()
-        {
-
-            @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                throws IOException, ReceiverThrowableType
+        DBIterator iterator = db.iterator();
+        iterator.seekToFirst();
+        return StreamSupport.stream(
+            new Spliterators.AbstractSpliterator<Reader>( Long.MAX_VALUE, Spliterator.ORDERED )
             {
-                output.receiveFrom( new Sender<Reader, IOException>()
+                @Override
+                public boolean tryAdvance( final Consumer<? super Reader> action )
                 {
-
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                    if( !iterator.hasNext() )
                     {
-                        DBIterator iterator = db.iterator();
-                        try
-                        {
-                            for( iterator.seekToFirst(); iterator.hasNext(); iterator.next() )
-                            {
-                                byte[] state = iterator.peekNext().getValue();
-                                String jsonState = new String( state, charset );
-                                receiver.receive( new StringReader( jsonState ) );
-                            }
-                        }
-                        finally
-                        {
-                            iterator.close();
-                        }
+                        return false;
                     }
-
-                } );
+                    action.accept( new StringReader( new String( iterator.next().getValue(), charset ) ) );
+                    return true;
+                }
+            },
+            false
+        ).onClose(
+            () ->
+            {
+                try
+                {
+                    iterator.close();
+                }
+                catch( IOException ex )
+                {
+                    throw new EntityStoreException( "Unable to close DB iterator" );
+                }
             }
-
-        };
+        );
     }
 
     @Override
