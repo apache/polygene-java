@@ -20,12 +20,16 @@
 
 package org.apache.zest.runtime.value;
 
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueCompositeType;
+import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
 import org.apache.zest.runtime.composite.CompositeModel;
@@ -73,8 +77,19 @@ public final class ValueModel extends CompositeModel
     void checkConstraints( ValueStateInstance state )
         throws ConstraintViolationException
     {
-        stateModel.properties().forEach( propertyModel ->
-            propertyModel.checkConstraints( state.propertyFor( propertyModel.accessor() ).get() )
+        stateModel.properties().forEach(
+            propertyModel ->
+            {
+                try
+                {
+                    propertyModel.checkConstraints( state.propertyFor( propertyModel.accessor() ).get() );
+                }
+                catch( ConstraintViolationException e )
+                {
+                    throw new ConstraintViolationException( "<builder>", propertyModel.valueType()
+                        .types(), (Member) propertyModel.accessor(), e.constraintViolations() );
+                }
+            }
         );
 
         // IF no UnitOfWork is active, then the Association checks shouldn't be done.
@@ -82,16 +97,31 @@ public final class ValueModel extends CompositeModel
         {
             return;
         }
-        ( (ValueStateModel) stateModel ).associations().forEach( associationModel ->
-            associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() )
+        ( (ValueStateModel) stateModel ).associations().forEach(
+            associationModel ->
+            {
+                try
+                {
+                    associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() );
+                }
+                catch( ConstraintViolationException e )
+                {
+                    Stream<? extends Type> types = Classes.interfacesOf( associationModel.type() );
+                    throw new ConstraintViolationException( "<builder>", types, (Member) associationModel.accessor(), e.constraintViolations() );
+                }
+            }
         );
 
         ( (ValueStateModel) stateModel ).manyAssociations().forEach( associationModel ->
-            associationModel.checkAssociationConstraints( state.manyAssociationFor( associationModel.accessor() ) )
+                                                                         associationModel.checkAssociationConstraints( state
+                                                                                                                           .manyAssociationFor( associationModel
+                                                                                                                                                    .accessor() ) )
         );
 
         ( (ValueStateModel) stateModel ).namedAssociations().forEach( associationModel ->
-            associationModel.checkAssociationConstraints( state.namedAssociationFor( associationModel.accessor() ) )
+                                                                          associationModel.checkAssociationConstraints( state
+                                                                                                                            .namedAssociationFor( associationModel
+                                                                                                                                                      .accessor() ) )
         );
     }
 

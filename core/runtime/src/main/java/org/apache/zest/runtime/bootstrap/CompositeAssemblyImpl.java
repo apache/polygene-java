@@ -825,20 +825,28 @@ public abstract class CompositeAssemblyImpl
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for Association references
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
+        ValueConstraintsModel constraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
             .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance valueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
+        ValueConstraintsInstance valueConstraintsInstance;
+        if( constraintsModel.isConstrained() )
         {
-            valueConstraintsInstance = valueConstraintsModel.newInstance();
+            valueConstraintsInstance = constraintsModel.newInstance();
+        }
+        else
+        {
+            valueConstraintsInstance = new ValueConstraintsInstance( Collections.emptyList(), ( (Member) accessor ).getName(), true );
         }
 
         // Constraints for the Association itself
-        valueConstraintsModel = constraintsFor( annotations.stream(), Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance associationValueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
+        constraintsModel = constraintsFor( annotations.stream(), Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance associationValueConstraintsInstance;
+        if( constraintsModel.isConstrained() )
         {
-            associationValueConstraintsInstance = valueConstraintsModel.newInstance();
+            associationValueConstraintsInstance = constraintsModel.newInstance();
+        }
+        else
+        {
+            associationValueConstraintsInstance = new ValueConstraintsInstance( Collections.emptyList(), ( (Member) accessor ).getName(), true );
         }
 
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );

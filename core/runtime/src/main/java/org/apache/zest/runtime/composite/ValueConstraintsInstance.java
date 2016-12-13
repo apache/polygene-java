@@ -59,7 +59,7 @@ public final class ValueConstraintsInstance
         }
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public List<ConstraintViolation> checkConstraints( Object value )
     {
         List<ConstraintViolation> violations = null;
@@ -116,16 +116,13 @@ public final class ValueConstraintsInstance
         return violations;
     }
 
-    public static void checkConstraints( Object value, ValueConstraintsInstance constraintsInstance, AccessibleObject accessor )
+    public void checkConstraints( Object value, AccessibleObject accessor )
     {
-        if( constraintsInstance != null )
+        List<ConstraintViolation> violations = checkConstraints( value );
+        if( !violations.isEmpty() )
         {
-            List<ConstraintViolation> violations = constraintsInstance.checkConstraints( value );
-            if( !violations.isEmpty() )
-            {
-                Stream<Class<?>> empty = Stream.empty();
-                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-            }
+            Stream<Class<?>> empty = Stream.empty();
+            throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
         }
     }
 

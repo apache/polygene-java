@@ -21,6 +21,7 @@ package org.apache.zest.api.constraint;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,9 +31,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.identity.Identity;
+import org.apache.zest.api.util.Classes;
 
 import static java.util.stream.Collectors.joining;
 
@@ -54,18 +55,17 @@ public class ConstraintViolationException
     private String methodName;
     private String mixinTypeName;
     private String instanceToString;
-    private List<Class<?>> instanceTypes;
+    private List<? extends Type> instanceTypes;
 
     public ConstraintViolationException( Composite instance, Member method,
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( instance )
-            .types(), method, constraintViolations );
+        this( instance.toString(), Classes.interfacesOf( instance.getClass() ), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
-                                         Stream<Class<?>> instanceTypes,
+                                         Stream<? extends Type> instanceTypes,
                                          Member method,
                                          Collection<ConstraintViolation> violations
     )
@@ -78,7 +78,7 @@ public class ConstraintViolationException
     }
 
     public ConstraintViolationException( Identity identity,
-                                         List<Class<?>> instanceTypes,
+                                         List<? extends Type> instanceTypes,
                                          String mixinTypeName,
                                          String methodName,
                                          Collection<ConstraintViolation> violations
@@ -192,11 +192,14 @@ public class ConstraintViolationException
             String classes;
             if( instanceTypes.stream().count() == 1 )
             {
-                classes = instanceTypes.stream().findFirst().get().getSimpleName();
+                Type type = instanceTypes.stream().findFirst().get();
+                classes = Classes.RAW_CLASS.apply( type ).getSimpleName();
             }
             else
             {
-                classes = "[" + instanceTypes.stream().map( Class::getSimpleName ).collect( joining( "," ) ) + "]";
+                classes = "[" + instanceTypes.stream()
+                    .map( Classes.RAW_CLASS )
+                    .map( Class::getSimpleName ).collect( joining( "," ) ) + "]";
             }
             Object[] args = new Object[]
                 {

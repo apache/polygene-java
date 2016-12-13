@@ -144,13 +144,13 @@ public final class AssociationModel
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        ValueConstraintsInstance.checkConstraints( value, constraints, accessor );
+        constraints.checkConstraints( value, accessor );
     }
 
     public void checkAssociationConstraints( Association<?> association )
         throws ConstraintViolationException
     {
-        ValueConstraintsInstance.checkConstraints( association, associationConstraints, accessor );
+        associationConstraints.checkConstraints( association, accessor );
     }
 
     @Override

@@ -58,14 +58,7 @@ public interface HasIdentity
 
         private static QualifiedName stateName()
         {
-            try
-            {
-                return QualifiedName.fromAccessor( HasIdentity.class.getMethod( "identity" ) );
-            }
-            catch( NoSuchMethodException e )
-            {
-                throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: EntityBuilderInstance" );
-            }
+            return QualifiedName.fromAccessor( identityMethod() );
         }
 
         private static Method identityMethod()

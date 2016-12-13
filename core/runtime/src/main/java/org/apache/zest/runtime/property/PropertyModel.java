@@ -258,7 +258,11 @@ public class PropertyModel
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        ValueConstraintsInstance.checkConstraints( value, constraints, accessor );
+        if( constraints == null )
+        {
+            return;
+        }
+        constraints.checkConstraints( value, accessor );
     }
 
     @Override

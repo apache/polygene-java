@@ -21,6 +21,7 @@ package org.apache.zest.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -294,7 +295,7 @@ public final class EntityInstance
                         .stream() )
                     .filter( Objects::nonNull )
             )
-        ).distinct().collect( Collectors.toList() ).stream().forEach( unitOfWork::remove );
+        ).distinct().collect( Collectors.toList() ).forEach( unitOfWork::remove );
     }
 
     public void checkConstraints()
@@ -305,7 +306,7 @@ public final class EntityInstance
         }
         catch( ConstraintViolationException e )
         {
-            List<Class<?>> entityModelList = entityModel.types().collect( toList() );
+            List<? extends Type> entityModelList = entityModel.types().collect( toList() );
             throw new ConstraintViolationException( reference.identity(),
                                                     entityModelList,
                                                     e.mixinTypeName(),
