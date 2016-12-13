@@ -53,7 +53,7 @@ public class Main
     {
         if( !contains( args, "-q" ) )
         {
-            System.out.println( "\n\nZest - Classes are Dead. Long Live Interfaces!" );
+            System.out.println( "\n\nPolygene - Classes are Dead. Long Live Interfaces!" );
             System.out.println( "----------------------------------------------\n" );
         }
         if( args.length == 0 )

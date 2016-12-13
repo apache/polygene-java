@@ -38,13 +38,13 @@ public class NullProjectCreatorTest
         throws Exception
     {
 
-        TestHelper.setZestZome();
-        File projectDir = new File( "ZestTest" );
+        TestHelper.setPolygeneZome();
+        File projectDir = new File( "PolygeneTest" );
         Map<String, String> properties = new HashMap<>();
         properties.put( "zest.home", System.getProperty( "zest.home" ) );
         properties.put( "root.package", "org.apache.zest.test" );
         properties.put( "template.dir", "etc/templates/null/files" );
-        underTest.create( "ZestTest", projectDir, properties );
+        underTest.create( "PolygeneTest", projectDir, properties );
 
         assertThat( projectDir.exists(), equalTo( true ) );
         assertThat( new File( projectDir, "src/main/java/org/apache/zest/test/package.html" ).exists(), equalTo( true ) );

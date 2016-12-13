@@ -23,13 +23,13 @@ import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.Assemblers;
-import org.apache.zest.test.metrics.AbstractZestMetricsTest;
+import org.apache.zest.test.metrics.AbstractPolygeneMetricsTest;
 import org.apache.zest.test.metrics.MetricValuesProvider;
 import org.junit.Test;
 
 import java.util.Collection;
 
-public class CodahaleMetricsTest extends AbstractZestMetricsTest
+public class CodahaleMetricsTest extends AbstractPolygeneMetricsTest
 {
     @Override
     protected Assemblers.Visible<? extends Assembler> metricsAssembler()

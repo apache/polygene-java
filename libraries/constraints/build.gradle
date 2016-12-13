@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Constraint Library provides common set of constraints."
+description = "Apache Polygene™ Constraint Library provides common set of constraints."
 
-jar { manifest { name = "Apache Zest™ Library - Constraints"}}
+jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
 
 dependencies {
   compile zest.core.bootstrap

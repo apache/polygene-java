@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.sql.DataSource;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.identity.HasIdentity;
@@ -55,7 +55,7 @@ import org.apache.zest.index.sql.support.common.QNameInfo.QNameType;
 import org.apache.zest.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.apache.zest.index.sql.support.skeletons.SQLSkeletonUtil.Lazy;
 import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.EntityStoreException;
@@ -99,7 +99,7 @@ public abstract class AbstractSQLIndexing
     private Application _app;
 
     @Structure
-    private ZestSPI _qi4SPI;
+    private PolygeneSPI _qi4SPI;
 
     @This
     private SQLDBState _state;
@@ -338,7 +338,7 @@ public abstract class AbstractSQLIndexing
     )
         throws SQLException
     {
-        // TODO build cache: Zest Identity -> PK
+        // TODO build cache: Polygene Identity -> PK
         Long entityPK = null;
         PreparedStatement ps = queryPKPS.getValue();
         ps.setString( 1, state.entityReference().identity().toString() );
@@ -924,7 +924,7 @@ public abstract class AbstractSQLIndexing
         throws SQLException
     {
         ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( property );
-        StateHolder state = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) property ).state();
+        StateHolder state = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) property ).state();
         Integer propertyPK[] = { localPK + 1 };
         vDesc.state().properties().forEach( pDesc -> {
 

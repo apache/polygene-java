@@ -14,7 +14,7 @@
 [[core-api-service,ServiceComposite]]
 = Service Composite =
 Any service added, via the ModuleAssembly.addServices(), ModuleAssembly.services() and ModuleAssembly.importServices()
-methods, will have the ServiceComposite meta type added to it. In Zest, when we speak of _Services_ we mean instances
+methods, will have the ServiceComposite meta type added to it. In Polygene, when we speak of _Services_ we mean instances
 of _ServiceComposite_.
 
 Most programmers are familiar with the term "Service", and after the failure of Object Oriented Programming's promise
@@ -22,8 +22,8 @@ to encapsulate all the behavior together with the object's state, programmers le
 decoupling and re-use was to make the objects into data containers and deploy services that acted upon those data
 containers. Very much what functions did on structs back in the C and Pascal days.
 
-Zest™ will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
-functionality. The Zest™ Service model is fairly simple, yet powerful and flexible enough to accommodate most
+Polygene™ will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
+functionality. The Polygene™ Service model is fairly simple, yet powerful and flexible enough to accommodate most
 service-oriented patterns and ability to integrate well with external systems whether they are in-JVM or remote,
 such as Spring, OSGi, WS-*, Rest and others.
 
@@ -35,7 +35,7 @@ The characteristics of a ServiceComposite compared to other Composite meta types
     * It has an optional Configuration.
 
 
-_Services_ in Zest™ are _singletons_, one instance per definition. That means that there may exist multiple instances
+_Services_ in Polygene™ are _singletons_, one instance per definition. That means that there may exist multiple instances
 of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
 <<core-bootstrap-assembly>>.
 
@@ -44,7 +44,7 @@ will not exist until someone calls a method. If a _Service_ needs to be instanti
 need to declare/call the instantiateOnStartup() method on the _ServiceDescriptor_ during the bootstrap.
 
 == Service Configuration ==
-The configuration for a service is well supported in Zest. See the <<core-api-service-configuration>> chapter for details.
+The configuration for a service is well supported in Polygene. See the <<core-api-service-configuration>> chapter for details.
 
 == Service Activation ==
 Services are activated (injected and instantiated) either on application start-up, or upon first use. This is controlled

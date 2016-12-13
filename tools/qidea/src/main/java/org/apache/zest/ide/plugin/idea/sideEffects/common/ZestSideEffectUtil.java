@@ -33,13 +33,13 @@ import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAn
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectConstants.*;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectConstants.*;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestSideEffectUtil
+public final class PolygeneSideEffectUtil
 {
     /**
      * @param searchContext Search context.
@@ -182,7 +182,7 @@ public final class ZestSideEffectUtil
         return genericSideEffect != null && psiClass.isInheritor( genericSideEffect, true );
     }
 
-    private ZestSideEffectUtil()
+    private PolygeneSideEffectUtil()
     {
     }
 }

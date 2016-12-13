@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Hazelcast EntityStore Extension"
+description = "Apache Polygene™ Hazelcast EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Hazelcast" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Hazelcast" } }
 
 dependencies {
   compile zest.core.bootstrap

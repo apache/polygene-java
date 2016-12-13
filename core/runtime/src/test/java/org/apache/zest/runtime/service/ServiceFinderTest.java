@@ -25,13 +25,13 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class ServiceFinderTest extends AbstractZestTest
+public class ServiceFinderTest extends AbstractPolygeneTest
 {
 
     @Override

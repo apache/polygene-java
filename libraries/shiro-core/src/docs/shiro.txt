@@ -35,20 +35,20 @@ cryptography, and session management. With Shiro’s easy-to-understand API, you
 application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
 Shiro website.
 
-Altough Apache Shiro can be used as-is with Zest™ Applications, this library provides integrations that can come in
+Altough Apache Shiro can be used as-is with Polygene™ Applications, this library provides integrations that can come in
 handy. If your use case do not fit any of theses integrations, look at their respective code. You should find out
 pretty easily how to compose the provided code to write your integration. Don't hesitate to contribute interesting
 integrations to this very library.
 
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
-mostly discuss Zest™ related matters here.
+mostly discuss Polygene™ related matters here.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Basic usage ==
 
 For standalone applications, you can use plain Shiro easily. The only thing to do is to register a configured
-SecurityManager when activating your Zest™ Application. It can be done outside the application, before its activation,
+SecurityManager when activating your Polygene™ Application. It can be done outside the application, before its activation,
 "à là" by-hand ;
 
 [snippet,java]
@@ -78,7 +78,7 @@ tag=config
 
 Remember that this setup use a ThreadLocal SecurityManager singleton. Among other things it means that, althoug the
 IniSecurityManagerService is activated on Application activation, if you need to use Shiro in other Services that are
-activated on Application activation you should tell Zest™ about this dependency by injecting the SecurityManagerService
+activated on Application activation you should tell Polygene™ about this dependency by injecting the SecurityManagerService
 in the laters.
 
 Once started you must remember to register the SecurityManager in Shiro's ThreadContext ;
@@ -116,10 +116,10 @@ Apache Shiro annotations:
 
 All the above is sufficient as long as you use the ini file to store user credentials and permissions or a Realm that
 has no dependency on your application code and can be specified in the ini file to be instanciated by Shiro outside the
-Zest™ scope.
+Polygene™ scope.
 
 One usecase where it's not sufficient comes quickly as you would like to provide user credentials and permissions
-from Entities stored in an EntityStore or perform any custom logic involving your Zest™ Application.
+from Entities stored in an EntityStore or perform any custom logic involving your Polygene™ Application.
 
 Let's look at a complete example using a Realm Service that extends one of the Shiro provided Realm which use in-memory
 credientials and configuring it ;
@@ -235,7 +235,7 @@ libraries. There's support for text files, simple JDBC, LDAP, CAS SSO, OAuth, Op
 
 Take the PasswordRealmService as a start and extend/rewrite it to suit your needs.
 
-If you happen to come with a Zest™ integration that could be valuable in this very library, don't hesitate to
+If you happen to come with a Polygene™ integration that could be valuable in this very library, don't hesitate to
 contribute.
 
 

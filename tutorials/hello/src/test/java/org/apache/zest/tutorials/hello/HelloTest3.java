@@ -23,12 +23,12 @@ import org.junit.Test;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class HelloTest3 extends AbstractZestTest
+public class HelloTest3 extends AbstractPolygeneTest
 {
 
     @Override

@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Migration Extension"
+description = "Apache Polygene™ Migration Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Migration" }}
+jar { manifest { name = "Apache Polygene™ Extension - Migration" }}
 
 dependencies {
   compile zest.core.spi

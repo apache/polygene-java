@@ -25,14 +25,14 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class OSGiServiceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     private BundleContext bundleContext;
@@ -50,7 +50,7 @@ public class OSGiServiceTest
     }
 
     @Test
-    public void givenFelixFrameworkWhenStartingZestApplicationExpectServiceToBeRegisteredToOsgiBundleContext()
+    public void givenFelixFrameworkWhenStartingPolygeneApplicationExpectServiceToBeRegisteredToOsgiBundleContext()
     {
         MyService service = serviceFinder.findService( MyService.class ).get();
         service.value().set( 15 );

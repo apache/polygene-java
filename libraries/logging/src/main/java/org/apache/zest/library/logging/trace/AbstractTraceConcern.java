@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.Instant;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.ConcernOf;
@@ -37,7 +37,7 @@ import org.apache.zest.library.logging.trace.service.TraceService;
 public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @Structure private ZestAPI api;
+    @Structure private PolygeneAPI api;
     @Optional @Service protected TraceService traceService;
     private Composite thisComposite;
     private Class compositeType;

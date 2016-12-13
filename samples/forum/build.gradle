@@ -22,7 +22,7 @@ import org.apache.zest.gradle.TaskGroups
 
 description = "Sample of how to build a web forum"
 
-jar { manifest { name = "Apache Zest™ Sample - Forum" } }
+jar { manifest { name = "Apache Polygene™ Sample - Forum" } }
 
 dependencies {
   compile zest.core.bootstrap

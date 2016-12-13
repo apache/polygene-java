@@ -69,7 +69,7 @@ public interface HasIdentity
             }
             catch( NoSuchMethodException e )
             {
-                throw new InternalError( "Zest Core Runtime codebase is corrupted." );
+                throw new InternalError( "Polygene Core Runtime codebase is corrupted." );
             }
         }
     }

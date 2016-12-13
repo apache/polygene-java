@@ -41,7 +41,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith( SpringJUnit4ClassRunner.class )
 @ContextConfiguration
-public final class ZestImportServiceTest
+public final class PolygeneImportServiceTest
 {
     @Autowired ApplicationContext appContext;
 
@@ -55,7 +55,7 @@ public final class ZestImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.objects( ZestImportServiceTest.class );
+                module.objects( PolygeneImportServiceTest.class );
                 // START SNIPPET: import
                 new SpringImporterAssembler( appContext ).assemble( module );
                 // END SNIPPET: import
@@ -77,7 +77,7 @@ public final class ZestImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.objects( ZestImportServiceTest.class );
+                module.objects( PolygeneImportServiceTest.class );
 
                 new SpringImporterAssembler( appContext ).assemble( module );
             }
@@ -101,7 +101,7 @@ public final class ZestImportServiceTest
         {
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                module.objects( ZestImportServiceTest.class );
+                module.objects( PolygeneImportServiceTest.class );
 
                 new SpringImporterAssembler( appContext ).assemble( module );
             }

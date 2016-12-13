@@ -32,21 +32,21 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
 /**
- * Representation based of Zest ValueComposites. It can serialize and deserialize
+ * Representation based of Polygene ValueComposites. It can serialize and deserialize
  * automatically in JSON only.<br>
  * <br>
  */
 public class FormRepresentation<T> extends OutputRepresentation
 {
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Structure
     private ValueBuilderFactory vbf;
@@ -98,7 +98,7 @@ public class FormRepresentation<T> extends OutputRepresentation
     }
 
     /**
-     * Returns the wrapped object, deserializing the representation with Zest
+     * Returns the wrapped object, deserializing the representation with Polygene
      * if necessary.
      *
      * @return The wrapped object.

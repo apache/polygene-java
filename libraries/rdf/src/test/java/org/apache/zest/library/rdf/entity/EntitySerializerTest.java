@@ -45,7 +45,7 @@ import org.apache.zest.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
@@ -53,7 +53,7 @@ import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssem
  * JAVADOC
  */
 public class EntitySerializerTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Service
     EntityStore entityStore;

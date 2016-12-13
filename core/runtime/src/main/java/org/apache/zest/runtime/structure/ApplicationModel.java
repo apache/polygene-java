@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
@@ -31,7 +31,7 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.util.HierarchicalVisitor;
-import org.apache.zest.bootstrap.ZestRuntime;
+import org.apache.zest.bootstrap.PolygeneRuntime;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
@@ -117,7 +117,7 @@ public final class ApplicationModel
     }
 
     @Override
-    public ApplicationInstance newInstance( ZestAPI runtime, Object... importedServiceInstances )
+    public ApplicationInstance newInstance( PolygeneAPI runtime, Object... importedServiceInstances )
         throws InvalidApplicationException
     {
         MetaInfo instanceMetaInfo = new MetaInfo( metaInfo );
@@ -126,7 +126,7 @@ public final class ApplicationModel
             instanceMetaInfo.set( importedServiceInstance );
         }
 
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, (ZestRuntime) runtime, instanceMetaInfo );
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, (PolygeneRuntime) runtime, instanceMetaInfo );
 
         // Create layer instances
         Map<LayerDescriptor, LayerDescriptor> layerInstanceMap = new HashMap<>();

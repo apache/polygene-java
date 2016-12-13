@@ -31,7 +31,7 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueDeserializer;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ import static org.junit.Assert.assertThat;
  * JAVADOC
  */
 public class UseDefaultsTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

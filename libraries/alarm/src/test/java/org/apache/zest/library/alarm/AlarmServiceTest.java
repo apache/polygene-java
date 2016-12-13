@@ -27,7 +27,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import java.util.List;
 import org.apache.zest.test.EntityTestAssembler;
@@ -35,7 +35,7 @@ import org.apache.zest.test.EntityTestAssembler;
 import static org.junit.Assert.*;
 
 public class AlarmServiceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Override

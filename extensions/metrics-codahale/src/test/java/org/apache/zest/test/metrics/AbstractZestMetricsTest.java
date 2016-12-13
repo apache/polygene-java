@@ -44,7 +44,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.metrics.TimingCapture;
 import org.apache.zest.library.metrics.TimingCaptureAllConcern;
 import org.apache.zest.library.metrics.TimingCaptureConcern;
-import org.apache.zest.test.AbstractZestBaseTest;
+import org.apache.zest.test.AbstractPolygeneBaseTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.JmxFixture;
 import org.junit.Test;
@@ -62,7 +62,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 // TODO Test errors
-public abstract class AbstractZestMetricsTest extends AbstractZestBaseTest
+public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTest
 {
     public interface Person
     {
@@ -224,10 +224,10 @@ public abstract class AbstractZestMetricsTest extends AbstractZestBaseTest
     }
 
     protected static final String UOW_TIMER_NAME = "app.domain.services.UnitOfWork.timer";
-    protected static final String ALL_NAME = "app.domain.services.AbstractZestMetricsTest.Queries.all";
-    protected static final String CREATE_NAME = "app.domain.services.AbstractZestMetricsTest.Commands.create";
-    protected static final String RENAME_NAME = "app.domain.services.AbstractZestMetricsTest.Commands.rename";
-    protected static final String DELETE_NAME = "app.domain.services.AbstractZestMetricsTest.Commands.delete";
+    protected static final String ALL_NAME = "app.domain.services.AbstractPolygeneMetricsTest.Queries.all";
+    protected static final String CREATE_NAME = "app.domain.services.AbstractPolygeneMetricsTest.Commands.create";
+    protected static final String RENAME_NAME = "app.domain.services.AbstractPolygeneMetricsTest.Commands.rename";
+    protected static final String DELETE_NAME = "app.domain.services.AbstractPolygeneMetricsTest.Commands.delete";
 
     protected final void assertUowTimer( MetricValuesProvider metrics ) throws PassivationException, ActivationException
     {

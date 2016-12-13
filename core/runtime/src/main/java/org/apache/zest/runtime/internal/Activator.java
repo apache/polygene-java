@@ -22,9 +22,9 @@ package org.apache.zest.runtime.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.zest.bootstrap.ZestRuntime;
+import org.apache.zest.bootstrap.PolygeneRuntime;
 import org.apache.zest.bootstrap.RuntimeFactory;
-import org.apache.zest.runtime.ZestRuntimeImpl;
+import org.apache.zest.runtime.PolygeneRuntimeImpl;
 
 /**
  *
@@ -41,9 +41,9 @@ public class Activator
         RuntimeFactory factory = new RuntimeFactory()
         {
             @Override
-            public ZestRuntime createRuntime()
+            public PolygeneRuntime createRuntime()
             {
-                return new ZestRuntimeImpl();
+                return new PolygeneRuntimeImpl();
             }
         };
         registration = bundleContext.registerService( RuntimeFactory.class.getName(), factory, null );

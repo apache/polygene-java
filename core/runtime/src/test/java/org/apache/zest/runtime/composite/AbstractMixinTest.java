@@ -34,13 +34,13 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC
  */
 public class AbstractMixinTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

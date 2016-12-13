@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ JClouds EntityStore Extension"
+description = "Apache Polygene™ JClouds EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - JClouds" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JClouds" } }
 
 dependencies {
   compile zest.core.bootstrap

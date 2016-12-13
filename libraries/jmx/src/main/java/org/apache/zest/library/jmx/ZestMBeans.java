@@ -24,14 +24,14 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 /**
- * Helper for working with Zest MBeans.
+ * Helper for working with Polygene MBeans.
  */
-public class ZestMBeans
+public class PolygeneMBeans
 {
     public static ObjectName findServiceName( MBeanServer server, String applicationName, String serviceId )
         throws MalformedObjectNameException
     {
-        ObjectName objectName = new ObjectName( "Zest:application=" + applicationName + ",*,service=" + serviceId );
+        ObjectName objectName = new ObjectName( "Polygene:application=" + applicationName + ",*,service=" + serviceId );
         return server.queryNames( objectName, null ).stream()
                      .filter( item -> item.getKeyPropertyList().size() == 5 )
                      .findFirst().orElse( null );

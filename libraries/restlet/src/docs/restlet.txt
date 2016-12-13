@@ -33,7 +33,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 This library leverages +restlet.org+ which has a very neat way to map resources
 to URIs, and flexible ways to be served the requests. This library defines
 all the plumbing needed to set up Restlet, map resources to URIs, convert
-Zest ValueComposites to resource representations (such as JSON) and
+Polygene ValueComposites to resource representations (such as JSON) and
 create a fully HATEOAS environment, with single bookmarkable URI.
 
 To set up the Restlet Connectivity Module, it is recommended to use the provided

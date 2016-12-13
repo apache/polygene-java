@@ -36,7 +36,7 @@ public class SpringImporterAssembler
     private Visibility defaultVisibility;
 
     /**
-     * Import all beans from the given ApplicationContext as services in Zest,
+     * Import all beans from the given ApplicationContext as services in Polygene,
      * using Module as Visibility.
      *
      * @param context the Spring ApplicationContext
@@ -48,7 +48,7 @@ public class SpringImporterAssembler
 
 
     /**
-     * Import all beans from the given ApplicationContext as services in Zest,
+     * Import all beans from the given ApplicationContext as services in Polygene,
      * using the specified Visibility level.
      *
      * @param context           the Spring ApplicationContext

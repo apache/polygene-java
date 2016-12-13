@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Locking Library provides lock management for methods."
+description = "Apache Polygene™ Locking Library provides lock management for methods."
 
-jar { manifest { name = "Apache Zest™ Library - Locking" } }
+jar { manifest { name = "Apache Polygene™ Library - Locking" } }
 
 dependencies {
   compile zest.core.api

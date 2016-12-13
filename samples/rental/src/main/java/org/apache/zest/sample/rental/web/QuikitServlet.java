@@ -46,7 +46,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
@@ -108,7 +108,7 @@ public class QuikitServlet
         }
         catch( Exception e )
         {
-            throw new ServletException( "Can not initialize Zest.", e );
+            throw new ServletException( "Can not initialize Polygene.", e );
         }
     }
 
@@ -150,7 +150,7 @@ public class QuikitServlet
         }
         catch( Exception e )
         {
-            throw new RuntimeException( "Problem to passivate Zest", e );
+            throw new RuntimeException( "Problem to passivate Polygene", e );
         }
     }
 
@@ -196,7 +196,7 @@ public class QuikitServlet
     {
         @SuppressWarnings( "unchecked" )
         Class<? extends Composite> pageClass =
-            (Class<Composite>) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( page ).types().findFirst().orElse( null );
+            (Class<Composite>) PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( page ).types().findFirst().orElse( null );
 
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();

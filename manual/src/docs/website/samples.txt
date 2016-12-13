@@ -24,16 +24,16 @@
 
 == Overview ==
 
-The Zest™ SDK comes with several sample applications. This is a very good place
+The Polygene™ SDK comes with several sample applications. This is a very good place
 to look for code examples and recipes.
 
-The samples are available in the +samples/+ directory of the Zest™ SDK.
+The samples are available in the +samples/+ directory of the Polygene™ SDK.
 
 [[sample-dci, DCI Sample]]
 == DCI Sample ==
 
 Sample of how DCI (Data, Context & Interaction) pattern is implemented using
-Zest™ core only.
+Polygene™ core only.
 
 https://github.com/apache/zest-java/tree/develop/samples/dci[Browse Source]
 
@@ -41,7 +41,7 @@ https://github.com/apache/zest-java/tree/develop/samples/dci[Browse Source]
 == DCI Cargo Sample ==
 
 Sample of how DCI (Data, Context & Interaction) pattern is implemented with
-Zest™, for Eric Evans DDD sample.
+Polygene™, for Eric Evans DDD sample.
 
 This sample, contributed by Marc Grue, is described in details on his
 website: http://marcgrue.com/
@@ -67,7 +67,7 @@ https://github.com/apache/zest-java/tree/develop/samples/rental[Browse Source]
 // [[sample-scala,Scala Sample]]
 // == Scala Sample ==
 //
-// Sample of how to use Scala with Zest™.
+// Sample of how to use Scala with Polygene™.
 //
 // https://github.com/apache/zest-java/tree/develop/samples/scala[Browse Source]
 
@@ -76,7 +76,7 @@ https://github.com/apache/zest-java/tree/develop/samples/rental[Browse Source]
 
 NOTE: This sample use PostgreSQL and drop all of its data once run in order to be runnable multiple times.
 
-Sample of how to fully use Zest™ SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
+Sample of how to fully use Polygene™ SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
 
 https://github.com/apache/zest-java/tree/develop/samples/sql-support[Browse Source]
 

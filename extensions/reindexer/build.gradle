@@ -18,7 +18,7 @@
  *
  */
 
-jar { manifest { description = "Apache Zest™ Reindexer Extension" } }
+jar { manifest { description = "Apache Polygene™ Reindexer Extension" } }
 
 dependencies {
   compile zest.core.spi

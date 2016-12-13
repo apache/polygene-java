@@ -72,7 +72,7 @@ public class RiakMapEntityStoreWithCacheTest
     public void tearDown()
         throws Exception
     {
-        // Riak don't expose bucket deletion in its API so we empty the Zest Entities bucket.
+        // Riak don't expose bucket deletion in its API so we empty the Polygene Entities bucket.
         Namespace namespace = new Namespace( bucketKey );
         ListKeys listKeys = new ListKeys.Builder( namespace ).build();
         ListKeys.Response listKeysResponse = riakClient.execute( listKeys );

@@ -22,7 +22,7 @@ import org.apache.zest.gradle.TaskGroups
 
 description = "SQL Support Sample."
 
-jar { manifest { name = "Apache Zest™ Sample - SQL Support" } }
+jar { manifest { name = "Apache Polygene™ Sample - SQL Support" } }
 
 dependencies {
 

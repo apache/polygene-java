@@ -22,11 +22,11 @@ package org.apache.zest.ide.plugin.idea.mixins.common;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestMixinConstants
+public final class PolygeneMixinConstants
 {
     public static final String QUALIFIED_NAME_MIXINS = "org.apache.zest.api.mixin.Mixins";
 
-    private ZestMixinConstants()
+    private PolygeneMixinConstants()
     {
     }
 }

@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ SQL Indexing Extension"
+description = "Apache Polygene™ SQL Indexing Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Indexing - SQL" } }
+jar { manifest { name = "Apache Polygene™ Extension - Indexing - SQL" } }
 
 dependencies {
   compile zest.core.bootstrap

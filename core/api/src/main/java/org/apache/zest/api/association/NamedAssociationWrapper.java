@@ -26,7 +26,7 @@ import org.apache.zest.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to NamedAssociations, then create a GenericConcern
- * that wraps the Zest-supplied NamedAssociations instance with NamedAssociationsWrapper. Override
+ * that wraps the Polygene-supplied NamedAssociations instance with NamedAssociationsWrapper. Override
  * methods to perform your custom code.
  */
 public class NamedAssociationWrapper

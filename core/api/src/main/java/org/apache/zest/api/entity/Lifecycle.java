@@ -22,7 +22,7 @@ package org.apache.zest.api.entity;
 /**
  * Lifecycle interface for all Composites.
  * <p>
- * This Lifecycle interface is a built-in feature of the Zest runtime, similar to the Initializable interface.
+ * This Lifecycle interface is a built-in feature of the Polygene runtime, similar to the Initializable interface.
  * Any Mixin that implements this interface AND is part of an EntityComposite will have these two methods called
  * upon creation/removal of the EntityComposite instance to/from the EntityStore. Meaning, the create method is called
  * only when the identifiable EntityComposite is created the first time, and not when it is read from its persisted
@@ -68,7 +68,7 @@ public interface Lifecycle
     /**
      * Creation callback method.
      * <p>
-     * Called by the Zest runtime before the newInstance of the entity completes, before the constraints are checked,
+     * Called by the Polygene runtime before the newInstance of the entity completes, before the constraints are checked,
      * allowing for additional initialization.
      * </p>
      * @throws Exception if the entity could not be created
@@ -78,7 +78,7 @@ public interface Lifecycle
     /**
      * Removal callback method.
      * <p>
-     * Called by the Zest runtime before the entity is removed from the system, allowing
+     * Called by the Polygene runtime before the entity is removed from the system, allowing
      * for clean-up operations.
      * </p>
      * @throws Exception if the entity could not be removed

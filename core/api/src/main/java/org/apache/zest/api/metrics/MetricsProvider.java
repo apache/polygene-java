@@ -23,7 +23,7 @@ package org.apache.zest.api.metrics;
 /**
  * Metrics Provider SPI.
  * <p>
- * The Zest Runtime will automatically look for a service that implements the MetricsProvider interface
+ * The Polygene Runtime will automatically look for a service that implements the MetricsProvider interface
  * and use it for internal Runtime metrics, such as the UnitOfWork measuring the time from creation to close.
  * </p>
  * <p>

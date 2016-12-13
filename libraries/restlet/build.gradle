@@ -20,9 +20,9 @@ import org.apache.zest.gradle.TaskGroups
  *
  */
 
-description = "Apache Zest™ Restlet Library provides automatic CRUD resources as well as custom resources integrated to Zest."
+description = "Apache Polygene™ Restlet Library provides automatic CRUD resources as well as custom resources integrated to Polygene."
 
-jar { manifest { name = "Apache Zest™ Library - Restlet" } }
+jar { manifest { name = "Apache Polygene™ Library - Restlet" } }
 
 dependencies {
 

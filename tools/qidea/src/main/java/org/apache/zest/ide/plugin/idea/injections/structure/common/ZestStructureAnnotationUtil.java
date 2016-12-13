@@ -25,15 +25,15 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static com.intellij.psi.PsiModifier.STATIC;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationConstants.VALID_STRUCTURE_INJECTION_TYPE;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.VALID_STRUCTURE_INJECTION_TYPE;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestStructureAnnotationUtil
+public final class PolygeneStructureAnnotationUtil
 {
     /**
      * Returns {@code Structure} annotation if exists.
@@ -110,7 +110,7 @@ public final class ZestStructureAnnotationUtil
         return binarySearch( VALID_STRUCTURE_INJECTION_TYPE, fieldClassQualifiedName ) > -1;
     }
 
-    private ZestStructureAnnotationUtil()
+    private PolygeneStructureAnnotationUtil()
     {
     }
 

@@ -17,9 +17,9 @@
  */
 import org.apache.zest.gradle.performance.PerformanceTestsPlugin
 
-description = "Apache Zest™ Performance Test Suite."
+description = "Apache Polygene™ Performance Test Suite."
 
-jar { manifest { name = "Apache Zest™ Tests - Performance" } }
+jar { manifest { name = "Apache Polygene™ Tests - Performance" } }
 
 apply plugin: PerformanceTestsPlugin
 

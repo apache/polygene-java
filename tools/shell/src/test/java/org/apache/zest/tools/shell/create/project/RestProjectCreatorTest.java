@@ -38,22 +38,22 @@ public class RestProjectCreatorTest
         throws Exception
     {
 
-        TestHelper.setZestZome();
-        File projectDir = new File( "ZestTest" );
+        TestHelper.setPolygeneZome();
+        File projectDir = new File( "PolygeneTest" );
         Map<String, String> properties = new HashMap<>();
         properties.put( "zest.home", System.getProperty( "zest.home" ) );
         properties.put( "root.package", "org.apache.zest.test" );
-        properties.put( "project.dir", "ZestTest" );
-        properties.put( "project.name", "ZestTest" );
+        properties.put( "project.dir", "PolygeneTest" );
+        properties.put( "project.name", "PolygeneTest" );
         properties.put( "template.dir", "etc/templates/restapp/files" );
-        underTest.create( "ZestTest", projectDir, properties );
+        underTest.create( "PolygeneTest", projectDir, properties );
 
         assertThat( projectDir.exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/build.gradle" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/src" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/src/main/resources" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/src/main/java/org/apache/zest/test/app/package.html" ).exists(), equalTo( true ) );
-        assertThat( new File( projectDir, "app/src/main/java/org/apache/zest/test/app/ZestTest.java" ).exists(), equalTo( true ) );
+        assertThat( new File( projectDir, "app/src/main/java/org/apache/zest/test/app/PolygeneTest.java" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/src/main/webapp/WEB-INF/web.xml" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "app/src/test/java/org/apache/zest/test/package.html" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/config/package.html" ).exists(), equalTo( true ) );
@@ -73,7 +73,7 @@ public class RestProjectCreatorTest
         assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/infrastructure/InfrastructureLayer.java" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/infrastructure/SerializationModule.java" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/infrastructure/StorageModule.java" ).exists(), equalTo( true ) );
-        assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/ZestTestApplicationAssembler.java" ).exists(), equalTo( true ) );
+        assertThat( new File( projectDir, "bootstrap/src/main/java/org/apache/zest/test/bootstrap/PolygeneTestApplicationAssembler.java" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/src/main/resources" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/src/test/java/org/apache/zest/test/package.html" ).exists(), equalTo( true ) );
         assertThat( new File( projectDir, "bootstrap/build.gradle" ).exists(), equalTo( true ) );

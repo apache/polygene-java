@@ -20,7 +20,7 @@
 package org.apache.zest.api.common;
 
 /**
- * Visibility is a core concept in the Zest structure system. It defines the locale of composites and objects, i.e.
+ * Visibility is a core concept in the Polygene structure system. It defines the locale of composites and objects, i.e.
  * how far they can be 'seen' and therefor be used.
  * <p>
  * When a Composite or Object is declared in the assembly phase, and no visibility is set, only other

@@ -27,15 +27,15 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static com.intellij.psi.PsiModifier.STATIC;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.ZestServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.ZestServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.*;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.isInjecteableByStructureAnnotation;
+import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult.*;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestServiceAnnotationUtil
+public final class PolygeneServiceAnnotationUtil
 {
     /**
      * Returns {@code @Service} annotation if exists.
@@ -93,7 +93,7 @@ public final class ZestServiceAnnotationUtil
         valid,
     }
 
-    private ZestServiceAnnotationUtil()
+    private PolygeneServiceAnnotationUtil()
     {
     }
 }

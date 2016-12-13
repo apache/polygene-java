@@ -26,7 +26,7 @@ import org.apache.zest.api.mixin.Initializable;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
  * Test of Initializable interface
  */
 public class InitializableTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

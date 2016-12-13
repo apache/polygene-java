@@ -35,7 +35,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +46,7 @@ import org.junit.rules.TemporaryFolder;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class SolrQueryServiceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Rule
     public final TemporaryFolder tmpDir = new TemporaryFolder();

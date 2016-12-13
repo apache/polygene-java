@@ -27,12 +27,12 @@ import org.apache.zest.library.http.JettyConfiguration;
 import org.apache.zest.library.http.JettyServiceAssembler;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.zest.library.shiro.web.assembly.HttpShiroAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.FreePortFinder;
 
 public class WebHttpShiroTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private int port;
 

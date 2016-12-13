@@ -74,7 +74,7 @@ public class ApplicationWriter
                         "                    e.printStackTrace();\n" +
                         "                }\n" +
                         "            }\n" +
-                        "        }, \"Shutdown Hook for Zest\" ) );\n" );
+                        "        }, \"Shutdown Hook for Polygene\" ) );\n" );
             pw.println( "    }\n" );
             pw.println( "    public static void main( String[] args )" );
             pw.println( "    {" );

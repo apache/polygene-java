@@ -34,15 +34,15 @@ import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAn
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getExtendsDeep;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.isAConcern;
-import static org.apache.zest.ide.plugin.idea.mixins.common.ZestMixinConstants.QUALIFIED_NAME_MIXINS;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.isASideEffect;
+import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.isAConcern;
+import static org.apache.zest.ide.plugin.idea.mixins.common.PolygeneMixinConstants.QUALIFIED_NAME_MIXINS;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestMixinUtil
+public final class PolygeneMixinUtil
 {
     /**
      * Get all valid mixin types of given the {@code psiClass} argument.
@@ -190,7 +190,7 @@ public final class ZestMixinUtil
         return !( psiClass.isInterface() || isAConcern( psiClass ) || isASideEffect( psiClass ) );
     }
 
-    private ZestMixinUtil()
+    private PolygeneMixinUtil()
     {
     }
 }

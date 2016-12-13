@@ -25,9 +25,9 @@ import java.lang.reflect.Method;
 /**
  * Implementations of this interface can be specified in the &#64;AppliesTo.
  * <p>
- * AppliesTo filters are one of the driving technologies in Zest. They allow you to apply fragments (Mixins,
+ * AppliesTo filters are one of the driving technologies in Polygene. They allow you to apply fragments (Mixins,
  * Concerns, SideEffects), often generic ones, depending on the context that they are evaluated under. This
- * mechanism is heavily used internally in Zest to achieve many other features.
+ * mechanism is heavily used internally in Polygene to achieve many other features.
  * </p>
  * <p>
  * The starting point is the basic use of AppliesToFilter, where the &#64;AppliesTo annotation is given an
@@ -63,7 +63,7 @@ public interface AppliesToFilter
      * fragment.
      * <p>
      * There is no reason for user code to use this AppliesToFilter directly, and should be perceived as an
-     * internal class in Zest.
+     * internal class in Polygene.
      * </p>
      */
     AppliesToFilter ALWAYS = new AppliesToFilter()

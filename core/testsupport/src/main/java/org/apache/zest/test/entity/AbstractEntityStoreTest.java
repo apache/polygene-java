@@ -54,7 +54,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.After;
 import org.junit.Test;
 
@@ -69,7 +69,7 @@ import static org.junit.Assert.fail;
  * Abstract satisfiedBy with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Service

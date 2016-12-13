@@ -24,11 +24,11 @@
 
 == JavaDocs ==
 
-In this section you will find links to JavaDocs corresponding to this Apache Zest™ (Java Edition) version ({revnumber}), to some alias versions, and finally, to previous releases.
+In this section you will find links to JavaDocs corresponding to this Apache Polygene™ (Java Edition) version ({revnumber}), to some alias versions, and finally, to previous releases.
 
-=== Apache Zest™ (Java Edition) {revnumber} ===
+=== Apache Polygene™ (Java Edition) {revnumber} ===
 
-// JavaDocs for Apache Zest™ (Java Edition) {revnumber}:
+// JavaDocs for Apache Polygene™ (Java Edition) {revnumber}:
 
 * link:javadocs/index.html[Release {revnumber}]
 

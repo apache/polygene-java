@@ -37,14 +37,14 @@ import org.apache.zest.library.logging.debug.service.DebugServiceConfiguration;
 import org.apache.zest.library.logging.debug.service.DebuggingServiceComposite;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class DebuggingTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

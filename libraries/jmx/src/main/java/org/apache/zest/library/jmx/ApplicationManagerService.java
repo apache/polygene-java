@@ -50,21 +50,21 @@ import org.apache.zest.api.util.HierarchicalVisitorAdapter;
 import static org.apache.zest.api.service.qualifier.ServiceQualifier.withId;
 
 /**
- * Expose the Zest app as a "tree" of MBeans.
+ * Expose the Polygene app as a "tree" of MBeans.
  *
  * Other services should reuse the object names and create
  * nodes under the ones created here. For example:
  * <pre>
- * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
+ * Polygene:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
  * </pre>
  * is exported by this service, so another exporter showing some aspect related to this service should
  * use this as base for the ObjectName, and add their own properties. Example:
  * <pre>
- * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
+ * Polygene:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
  * </pre>
  * Use the following snippet to find the ObjectName of a service with a given reference:
  * <pre>
- * ObjectName serviceName = ZestMBeans.findService(mbeanServer, applicationName, serviceId);
+ * ObjectName serviceName = PolygeneMBeans.findService(mbeanServer, applicationName, serviceId);
  * </pre>
  */
 @Mixins( ApplicationManagerService.Mixin.class )
@@ -129,7 +129,7 @@ public interface ApplicationManagerService
                         layer = application.findLayer( layerDescriptor.name() );
 
                         LayerBean layerBean = new LayerBean( layer, layerDescriptor );
-                        ObjectName objectName = new ObjectName( "Zest:application=" + application.name() + ",layer=" + layer
+                        ObjectName objectName = new ObjectName( "Polygene:application=" + application.name() + ",layer=" + layer
                             .name() );
                         names.push( objectName );
 

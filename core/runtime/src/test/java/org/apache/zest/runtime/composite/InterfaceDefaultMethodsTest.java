@@ -21,7 +21,7 @@ import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.constraints.annotation.NotEmpty;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ import static org.junit.Assert.fail;
 /**
  * Assert that interface default methods are mixed in composites.
  */
-public class InterfaceDefaultMethodsTest extends AbstractZestTest
+public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
     public interface DefaultMethods
     {

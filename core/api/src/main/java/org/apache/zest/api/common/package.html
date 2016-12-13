@@ -21,7 +21,7 @@
     <body>
         <h2>Common API.</h2>
         <p>
-            The Common API package is a collection of really low-level types needed at the core of the Zest™ Runtime. It is also
+            The Common API package is a collection of really low-level types needed at the core of the Polygene™ Runtime. It is also
             a collection of types that are not particularly cohesive, and effectively this package contains the loose ends
             that does not belong elsewhere.
         </p>
@@ -33,7 +33,7 @@
             <li>QualifiedName</li>
             <li>TypeName</li>
         </ul>
-        <p>UNLESS you are into deep integration into the Zest™ Runtime.</p>
+        <p>UNLESS you are into deep integration into the Polygene™ Runtime.</p>
 
         <h3>&#64;AppliesTo and AppliesToFilter</h3>
         <p>
@@ -43,7 +43,7 @@
 
         <h3>&#64;Optional</h3>
         <p>
-            In Zest™, method arguments, property values and injected fields are not allowed to be null by default. To allow
+            In Polygene™, method arguments, property values and injected fields are not allowed to be null by default. To allow
             any of these to be null, i.e. undeclared, it is required that the argument, field or method is marked with the
             &#64;Optional annotation.
         </p>
@@ -51,14 +51,14 @@
         <h3>&#64;UseDefaults</h3>
         <p>
             Since null is not allowed without the &#64;Optional annotation, it can sometimes by tedious to initialize all
-            the property values. And the &#64;UseDefaults annotation allows us to declare that Zest™ should set the Property
+            the property values. And the &#64;UseDefaults annotation allows us to declare that Polygene™ should set the Property
             to a default value. These are either the pre-defined ones, or can be set per property declaration during the
             assembly.
         </p>
 
         <h3>&#64;Visibility</h3>
         <p>
-            Visibility is another innovative concept in Zest™, which leverage the structure system (Application, Layer, Module)
+            Visibility is another innovative concept in Polygene™, which leverage the structure system (Application, Layer, Module)
             to limit the 'reach' when requesting composites and objects. The Visibility is declared per Composite/Object,
             preferably in the most restrictive mode possible, and the visibility resolver will ensure a predictable resolution
             algorithm;

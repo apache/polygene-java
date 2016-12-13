@@ -19,9 +19,9 @@
  */
 
 
-description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Zest™."
+description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Polygene™."
 
-jar { manifest { name = "Apache Zest™ Sample - DCI" } }
+jar { manifest { name = "Apache Polygene™ Sample - DCI" } }
 
 dependencies {
   compile zest.core.bootstrap

@@ -37,7 +37,7 @@ import org.apache.zest.library.restlet.RestForm;
 import org.apache.zest.library.restlet.RestLink;
 import org.apache.zest.library.restlet.crud.EntityRef;
 import org.apache.zest.library.restlet.identity.IdentityManager;
-import org.apache.zest.library.restlet.serialization.ZestConverter;
+import org.apache.zest.library.restlet.serialization.PolygeneConverter;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
@@ -75,14 +75,14 @@ public interface ResourceBuilder
         @Service
         private IdentityManager identityManager;
 
-        private final ZestConverter converter;
+        private final PolygeneConverter converter;
 
         @Structure
         private ValueBuilderFactory vbf;
 
         public Mixin( @Structure ObjectFactory objectFactory )
         {
-            converter = new ZestConverter( objectFactory );
+            converter = new PolygeneConverter( objectFactory );
         }
 
         @Override

@@ -24,14 +24,14 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 /**
  * JAVADOC
  */
 public class QI256Test
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     public static class TestException

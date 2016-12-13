@@ -29,7 +29,7 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AssociationAssignmentTest extends AbstractZestTest
+public class AssociationAssignmentTest extends AbstractPolygeneTest
 {
 
     @Override

@@ -124,7 +124,7 @@ public class PostgreSQLEntityStorePerformanceTest
             {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                    PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-                // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractZestTest
+                // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractPolygeneTest
                 Connection connection = null; // SQLUtil.getConnection( this.serviceLocator );
                 String schemaName = config.schemaName().get();
                 if( schemaName == null )

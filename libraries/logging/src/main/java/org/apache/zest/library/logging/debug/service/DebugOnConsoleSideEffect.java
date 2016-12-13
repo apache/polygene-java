@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.sideeffect.SideEffectOf;
@@ -63,7 +63,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
 
     private String getCompositeName( Composite composite )
     {
-        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
+        return PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 
     @Override

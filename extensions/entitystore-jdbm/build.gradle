@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ JDBM EntityStore Extension"
+description = "Apache Polygene™ JDBM EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - JDBM" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JDBM" } }
 
 dependencies {
   compile zest.core.bootstrap

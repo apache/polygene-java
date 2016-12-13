@@ -27,14 +27,14 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.metrics.MetricValuesProvider;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-abstract class AbstractTimingCaptureTest extends AbstractZestTest {
+abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest {
 
     @Override
     public void assemble( ModuleAssembly module )

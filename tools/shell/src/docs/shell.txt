@@ -18,10 +18,10 @@
 ///////////////////////////////////////////////////////////////
 
 [[tools-shell,Command Line Shell]]
-= Zest Shell =
-If you have installed the Zest SDK, there is a +bin/zest+ command line script,
+= Polygene Shell =
+If you have installed the Polygene SDK, there is a +bin/zest+ command line script,
 which has sub-functions in it. This list of commands will slowly grow
-for various purposes of doing software development with Apache Zest.
+for various purposes of doing software development with Apache Polygene.
 
 The current list of commands are;
 
@@ -40,7 +40,7 @@ zest create-project type name package
 ---------------------------
 
 A directory called _name_ will be created in the current directory, and all
-the necessary structure for a Zest project using Gradle will be created.
+the necessary structure for a Polygene project using Gradle will be created.
 
 The exact layout of the project depends on the _type_ argument and currently the
 following types exists;
@@ -61,7 +61,7 @@ are created, and the developer has to set everything up from scratch.
 [[tools-shell-create-project-singleton,Create Singleton Project]]
 === Create Singleton Project Template ===
 This template creates a so called Singleton application. That is an application with a single Layer and a single
-Module in that layer. In Zest, all applications must have at least one Layer and one Module.
+Module in that layer. In Polygene, all applications must have at least one Layer and one Module.
 
 This is useful for really small applications or demos, not expected to become large in the future. It is
 also currently required that the infrastructure is configuration free, otherwise it is not possible to set up.

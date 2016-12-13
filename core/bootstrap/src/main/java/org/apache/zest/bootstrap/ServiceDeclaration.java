@@ -24,7 +24,7 @@ import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.Visibility;
 
 /**
- * Fluent API for declaring services hosted in Zest. Instances
+ * Fluent API for declaring services hosted in Polygene. Instances
  * of this API are acquired by calling {@link ModuleAssembly#services(Class[])}.
  */
 public interface ServiceDeclaration

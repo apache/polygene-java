@@ -48,7 +48,7 @@ import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.IndexExporter;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -57,7 +57,7 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RDFPerformanceTest extends AbstractZestTest
+public class RDFPerformanceTest extends AbstractPolygeneTest
 {
     private static final Logger LOG = LoggerFactory.getLogger( RDFPerformanceTest.class );
     @Rule

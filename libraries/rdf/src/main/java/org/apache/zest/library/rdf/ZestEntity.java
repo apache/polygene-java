@@ -25,9 +25,9 @@ import org.openrdf.model.impl.URIImpl;
 
 
 /**
- * This is the RDF vocabulary for Zest Entity data.
+ * This is the RDF vocabulary for Polygene Entity data.
  */
-public interface ZestEntity
+public interface PolygeneEntity
 {
     // Model
     String NAMESPACE = "http://zest.apache.org/rdf/entity/1.0/";

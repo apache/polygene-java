@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Jackson ValueSerialization Extension"
+description = "Apache Polygene™ Jackson ValueSerialization Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - Jackson" } }
+jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - Jackson" } }
 
 dependencies {
   compile zest.core.bootstrap

@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Solr Indexing Extension"
+description = "Apache Polygene™ Solr Indexing Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Indexing - Solr" } }
+jar { manifest { name = "Apache Polygene™ Extension - Indexing - Solr" } }
 
 dependencies {
   compile zest.core.bootstrap

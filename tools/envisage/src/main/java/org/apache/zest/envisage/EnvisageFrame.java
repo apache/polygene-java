@@ -126,14 +126,14 @@ public final class EnvisageFrame
         contentPane.add( graphSplitPane, BorderLayout.CENTER );
     }
 
-    public void initZest()
+    public void initPolygene()
     {
         modelSplitPane.setDividerLocation( 300 );
         graphSplitPane.setDividerLocation( 384 );
 
         descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( application );
-        treeModelPane.initZest( descriptor );
-        graphPane.initZest( descriptor );
+        treeModelPane.initPolygene( descriptor );
+        graphPane.initPolygene( descriptor );
     }
 
     /**

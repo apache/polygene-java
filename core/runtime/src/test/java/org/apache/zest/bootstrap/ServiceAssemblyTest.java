@@ -23,13 +23,13 @@ package org.apache.zest.bootstrap;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ServiceAssemblyTest extends AbstractZestTest
+public class ServiceAssemblyTest extends AbstractPolygeneTest
 {
     @Test
     public void givenMyServiceWithTwoDeclarationsWhenActivatingServiceExpectServiceActivatedOnce()

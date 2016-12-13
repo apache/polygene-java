@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
+description = "Apache Polygene™ Regression Tests are added by community members who find bugs and typically reported via Jira issues. These tests are not run as part of the normal build, but is accessible from './gradlew regression' to allow builds to still work."
 
-jar { manifest { name = "Apache Zest™ Tests - Regression" } }
+jar { manifest { name = "Apache Polygene™ Tests - Regression" } }
 
 dependencies {
   compile zest.core.testsupport

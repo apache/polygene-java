@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ ElasticSearch Index/Query Extension"
+description = "Apache Polygene™ ElasticSearch Index/Query Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Index/Query - ElasticSearch" } }
+jar { manifest { name = "Apache Polygene™ Extension - Index/Query - ElasticSearch" } }
 
 dependencies {
   compile zest.core.bootstrap

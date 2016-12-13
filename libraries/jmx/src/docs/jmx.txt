@@ -25,7 +25,7 @@
 source=libraries/jmx/dev-status.xml
 --------------
 
-The JMX library provides a service that exposes a Zest™ application in
+The JMX library provides a service that exposes a Polygene™ application in
 http://www.oracle.com/technetwork/articles/java/docs-jsp-135989.html[JMX]
 automatically, giving you an opportunity to inspect the application much as
 you would with the <<tools-envisage>> tool.
@@ -41,7 +41,7 @@ image:library-jmx.png[]
 
 == Assembly ==
 
-JMX Support for Zest™ applications:
+JMX Support for Polygene™ applications:
 
 [snippet,java]
 ----
@@ -49,7 +49,7 @@ source=libraries/jmx/src/test/java/org/apache/zest/library/jmx/JMXTest.java
 tag=assembly
 ----
 
-Managing the MX Beans Server from your Zest™ application using the `JMXConnectorService`:
+Managing the MX Beans Server from your Polygene™ application using the `JMXConnectorService`:
 
 [snippet,java]
 ----

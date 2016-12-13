@@ -18,7 +18,7 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core SPI" } }
+jar { manifest { name = "Apache Polygene™ Core SPI" } }
 
 dependencies {
   compile zest.core.api

@@ -39,7 +39,7 @@ import org.apache.zest.library.rest.client.spi.ResponseHandler;
 import org.apache.zest.library.rest.client.spi.ResponseReader;
 import org.apache.zest.library.rest.client.spi.ResultHandler;
 import org.apache.zest.library.rest.common.ValueAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Response;
@@ -55,11 +55,11 @@ import static org.apache.zest.test.util.Assume.assumeConnectivity;
 
 /**
  * Reads Qi4j Github commits on develop ATOM feed and prints out all title and detail url for each entry.
- * This is an example of how to use the RSS client for something more generic that was not produced by Zest REST server
+ * This is an example of how to use the RSS client for something more generic that was not produced by Polygene REST server
  * library.
  */
 public class RssReaderTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @BeforeClass

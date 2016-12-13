@@ -25,15 +25,15 @@ import org.jetbrains.annotations.Nullable;
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static com.intellij.psi.PsiModifier.STATIC;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.ZestInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.ZestInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.*;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.isInjecteableByStructureAnnotation;
+import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.*;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestInvocationAnnotationUtil
+public final class PolygeneInvocationAnnotationUtil
 {
     /**
      * Returns {@code @Invocation} annotation if exists.
@@ -123,7 +123,7 @@ public final class ZestInvocationAnnotationUtil
         valid,
     }
 
-    private ZestInvocationAnnotationUtil()
+    private PolygeneInvocationAnnotationUtil()
     {
     }
 }

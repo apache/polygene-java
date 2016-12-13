@@ -30,7 +30,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.AssemblyVisitorAdapter;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
  * Test of declaring concern in assembly
  */
 public class ModuleConcernTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public static boolean ok;
 

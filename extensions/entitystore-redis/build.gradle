@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Redis EntityStore Extension"
+description = "Apache Polygene™ Redis EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Redis" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Redis" } }
 
 dependencies {
   compile zest.core.bootstrap

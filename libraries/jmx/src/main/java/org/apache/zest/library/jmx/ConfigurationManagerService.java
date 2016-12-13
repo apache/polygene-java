@@ -47,7 +47,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.modelmbean.DescriptorSupport;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
@@ -73,7 +73,7 @@ import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 
 /**
  * Expose ConfigurationComposites through JMX.
@@ -123,7 +123,7 @@ public interface ConfigurationManagerService
         Application application;
 
         @Structure
-        ZestSPI spi;
+        PolygeneSPI spi;
 
         @Service
         Iterable<ServiceReference<?>> configurableServices;
@@ -144,7 +144,7 @@ public interface ConfigurationManagerService
                 }
 
                 // Check if service has configuration
-                CompositeInstance compositeInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) service );
+                CompositeInstance compositeInstance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) service );
                 try
                 {
                     Configuration config = compositeInstance.newProxy( Configuration.class );
@@ -209,7 +209,7 @@ public interface ConfigurationManagerService
                         .size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
                     Object mbean = new ConfigurableService( configurableService, mbeanInfo, mbeanName, properties );
                     ObjectName configurableServiceName;
-                    ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), mbeanName );
+                    ObjectName serviceName = PolygeneMBeans.findServiceName( server, application.name(), mbeanName );
                     if( serviceName != null )
                     {
                         configurableServiceName = new ObjectName( serviceName.toString() + ",name=Configuration" );
@@ -391,7 +391,7 @@ public interface ConfigurationManagerService
                         if( serviceRef.isActive() )
                         {
                             // Refresh configuration
-                            CompositeInstance compositeInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+                            CompositeInstance compositeInstance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF
                                 .apply( (Composite) serviceRef.get() );
                             compositeInstance.newProxy( Configuration.class ).refresh();
 

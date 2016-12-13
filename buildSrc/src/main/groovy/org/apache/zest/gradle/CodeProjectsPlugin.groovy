@@ -63,7 +63,7 @@ class CodeProjectsPlugin implements Plugin<Project>
       license    : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
       docURL     : 'https://zest.apache.org/',
       description: project.description ?:
-                   'Apache Zest™ (Java Edition) is a platform for Composite Oriented Programming',
+                   'Apache Polygene™ (Java Edition) is a platform for Composite Oriented Programming',
       vendor     : 'The Apache Software Foundation, https://www.apache.org',
     ] )
     manifest.instruction '-debug', 'true'

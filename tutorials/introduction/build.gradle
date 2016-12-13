@@ -18,9 +18,9 @@
  *
  */
 
-description = "An Introduction to Apache Zest™ in its simplest form."
+description = "An Introduction to Apache Polygene™ in its simplest form."
 
-jar { manifest { name = "Apache Zest™ Tutorial - Introduction" } }
+jar { manifest { name = "Apache Polygene™ Tutorial - Introduction" } }
 
 dependencies {
   compile zest.core.bootstrap

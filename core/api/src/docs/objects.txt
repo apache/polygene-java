@@ -13,10 +13,10 @@
 
 [[core-api-object,Objects]]
 = Objects =
-There are times when Apache Zest needs to interoperate with other systems, which
-does not have interfaces as their abstraction. Zest has a notion of
-Objects, which are Zest-managed classes and can still be injected with
-the Zest runtime model, such as @Structure and @Service.
+There are times when Apache Polygene needs to interoperate with other systems, which
+does not have interfaces as their abstraction. Polygene has a notion of
+Objects, which are Polygene-managed classes and can still be injected with
+the Polygene runtime model, such as @Structure and @Service.
 
 
 The characteristics of an Object compared to Composite meta types are;
@@ -25,7 +25,7 @@ The characteristics of an Object compared to Composite meta types are;
     * It can have injections applied to it after it has been created.
     * No Mixins, Concerns or SideEffects.
     * No Constraints.
-    * Can not have Property instances managed by the Zest runtime.
+    * Can not have Property instances managed by the Polygene runtime.
 
 == Serialization ==
 Objects can be serialized and deserialized using the ValueSerialization API, if and only

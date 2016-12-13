@@ -27,8 +27,8 @@ import org.apache.zest.api.service.ServiceComposite;
 /**
  * JAVADOC
  */
-@Mixins( ZestServerServlet.class )
-public interface ZestServerServletService
+@Mixins( PolygeneServerServlet.class )
+public interface PolygeneServerServletService
     extends Servlet, ServiceComposite
 {
 }

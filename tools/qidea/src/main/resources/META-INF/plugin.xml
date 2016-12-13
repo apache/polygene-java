@@ -22,7 +22,7 @@
 <idea-plugin>
   <id>org.apache.zest</id>
   <name>qidea</name>
-  <description>Apache Zest™ idea plugin</description>
+  <description>Apache Polygene™ idea plugin</description>
   <version>0.1</version>
   <vendor>codedragons</vendor>
   <idea-version since-build="8000"/>
@@ -31,21 +31,21 @@
 
   <application-components>
     <component>
-      <implementation-class>org.apache.zest.ide.plugin.idea.ZestApplicationComponent</implementation-class>
+      <implementation-class>org.apache.zest.ide.plugin.idea.PolygeneApplicationComponent</implementation-class>
     </component>
   </application-components>
 
   <actions>
     <action id="CreateConcernFromMixinTypeOrCompositeAction"
             class="org.apache.zest.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
-            text="New Concern" description="Create new Zest™ concern">
+            text="New Concern" description="Create new Polygene™ concern">
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Zest" class="org.apache.zest.ide.plugin.idea.common.actions.ZestCreateActionGroup" text="Zest™">
-      <action id="Zest.NewConcernOf"
+    <group id="Polygene" class="org.apache.zest.ide.plugin.idea.common.actions.PolygeneCreateActionGroup" text="Polygene™">
+      <action id="Polygene.NewConcernOf"
               class="org.apache.zest.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
-              text="New Concern" description="Create new Zest concern">
+              text="New Concern" description="Create new Polygene concern">
       </action>
       <add-to-group group-id="NewGroup" anchor="last"/>
     </group>

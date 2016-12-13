@@ -24,7 +24,7 @@ We found this very well written blog entry on the Internet, which very well desc
 Programming really is.
 
 The article uses C# and a "show by example" approach to explaining COP, and this shows clearly that COP is not
-Java specific, and although Zest™ was (to our knowledge) first to introduce the name, it applies across languages and
+Java specific, and although Polygene™ was (to our knowledge) first to introduce the name, it applies across languages and
 potentially deserves one or more languages on its own.
 
 
@@ -48,7 +48,7 @@ https://web.archive.org/web/20091222150653/http://www.iridescence.no/post/Implem
 and https://web.archive.org/web/20130417090819/http://www.iridescence.no/post/Implementing-an-AOP-Framework-Part-2.aspx[here]),
 and in the last part I promised to tackle mixins and introductions in a future post.
 When I was doing my research for just that, I came cross a Java framework (just
-humor me :p) called Apache Zest™, written by Swedish Richard Öberg, pioneering the idea of Composite
+humor me :p) called Apache Polygene™, written by Swedish Richard Öberg, pioneering the idea of Composite
 Oriented Programming, which instantly put a spell on me. Essentially, it takes the concepts from Aspect Oriented
 Programming to the extreme, and for the past week I’ve dug into it with a passion. This post is the first fruits of
 my labor.
@@ -56,7 +56,7 @@ my labor.
 === OOP is Not Object Oriented! ===
 
 One of the things that Richard Öberg argues, is that OOP is not really object oriented at all, but rather class
-oriented. As the Zest™ website proclaims, "class is the first class citizen that objects are derived from. Not objects
+oriented. As the Polygene™ website proclaims, "class is the first class citizen that objects are derived from. Not objects
 being the first-class citizen to which one or many classes are assigned". Composite oriented programming (COP) then,
 tries to work around this limitation by building on a set of core principles; that behavior depends on context, that
 decoupling is a virtue, and that business rules matter more. For a short and abstract explanation of COP,
@@ -331,5 +331,5 @@ I hope this post has whet your appetite for more on this subject, as I will cert
 posts. I’ve already implemented a prototype framework that supports the above examples, which builds on my
 http://www.iridescence.no/Posts/Implementing-an-AOP-Framework-Part-2.aspx[previously posted AOP framework], and I’ll
 post the source code for that soon. If you want to dig deeper right now (and don’t mind
-a bit of Java), then I suggest you head over to the Zest™ website and poke about there.
+a bit of Java), then I suggest you head over to the Polygene™ website and poke about there.
 http://rickardoberg.wordpress.com/[Richard Öbergs blog] also provides great insight.

@@ -28,7 +28,7 @@
       <xs:element type="xs:string" name="license">
         <xs:annotation>
           <xs:documentation>
-            Apache Zest itself only uses Apache License ver 2.0 for all its own developed code. We also try to list
+            Apache Polygene itself only uses Apache License ver 2.0 for all its own developed code. We also try to list
             all dependencies' licenses here, so automated tools can bring that into the documentation.
             If the license is OTHER, the documentation will highlight this as a warning, and instruct users
             to carefully examine NOTICE file as well as the dependencies themselves.

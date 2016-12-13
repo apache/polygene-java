@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Predicate;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityComposite;
@@ -70,7 +70,7 @@ import org.apache.zest.index.sql.support.api.SQLQuerying;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
 import org.apache.zest.index.sql.support.postgresql.PostgreSQLTypeHelper;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +112,7 @@ public abstract class AbstractSQLQuerying
     private UnitOfWorkFactory uowf;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     private static class TraversedAssoOrManyAssoRef
     {
@@ -1798,7 +1798,7 @@ public abstract class AbstractSQLQuerying
         {
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
-            ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) value )
+            PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) value )
                 .state().properties()
                 .forEach( property -> {
                     Boolean qNameJoinDone = false;

@@ -22,7 +22,7 @@ package org.apache.zest.api.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.PropertyMapper;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -73,7 +73,7 @@ import org.apache.zest.api.value.ValueSerialization;
  * a request.
  * </p>
  * <p>
- * The Configuration will be automatically refreshed when the Service is activated by the Zest runtime.
+ * The Configuration will be automatically refreshed when the Service is activated by the Polygene runtime.
  * Any refreshes at other points will have to be done manually or triggered through some other
  * mechanism.
  * </p>
@@ -126,7 +126,7 @@ public interface Configuration<T>
     /**
      * Retrieves the user configuration instance managed by this Configuration.
      * <p>
-     * Even if the user configuration is initialized from properties file, the consistency rules of Zest composites
+     * Even if the user configuration is initialized from properties file, the consistency rules of Polygene composites
      * still applies. If the the properties file is missing a value, then the initialization will fail with a
      * RuntimeException. If Constraints has been defined, those will need to be satisfied as well. The user
      * configuration instance returned will fulfill the constraints and consistency normal to all composites, and
@@ -152,7 +152,7 @@ public interface Configuration<T>
     /**
      * Implementation of Configuration.
      * <p>
-     * This is effectively an internal class in Zest and should never be used directly by user code.
+     * This is effectively an internal class in Polygene and should never be used directly by user code.
      * </p>
      *
      * @param <T>
@@ -164,7 +164,7 @@ public interface Configuration<T>
         private UnitOfWork uow;
 
         @Structure
-        private ZestAPI api;
+        private PolygeneAPI api;
 
         @This
         private ServiceComposite me;

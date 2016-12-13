@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ File Configuration Library provides platform specific file locations."
+description = "Apache Polygene™ File Configuration Library provides platform specific file locations."
 
-jar { manifest { name = "Apache Zest™ Library - FileConfig" } }
+jar { manifest { name = "Apache Polygene™ Library - FileConfig" } }
 
 dependencies {
   compile zest.core.bootstrap

@@ -30,13 +30,13 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.sideeffect.GenericSideEffect;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * Test of declaring sideeffect in assembly
  */
 public class ModuleSideEffectTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public static boolean ok = false;
 

@@ -73,7 +73,7 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * This method is called from the <code>initialize</code> method to instantiate the Zest application from the
+     * This method is called from the <code>initialize</code> method to instantiate the Polygene application from the
      * application model.
      *
      * <p>
@@ -83,7 +83,7 @@ public abstract class LayeredApplicationAssembler
      *   application = model.newInstance( zest.spi() );
      * </code></pre>
      *
-     * @param zest  The Zest runtime engine.
+     * @param zest  The Polygene runtime engine.
      * @param model The application model descriptor.
      */
     protected void instantiateApplication( Energy4Java zest, ApplicationDescriptor model )
@@ -92,7 +92,7 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * This method is called after the Application Model has been created, before the instantiation of the Zest
+     * This method is called after the Application Model has been created, before the instantiation of the Polygene
      * application.
      *
      * <p>

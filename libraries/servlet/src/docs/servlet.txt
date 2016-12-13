@@ -25,19 +25,19 @@
 source=libraries/servlet/dev-status.xml
 --------------
 
-This library provide the necessary boilerplate code to bootstrap a Zest™ Application in a Servlet container plus some
+This library provide the necessary boilerplate code to bootstrap a Polygene™ Application in a Servlet container plus some
 facilities. It aims at a very simple need and is provided as an example integration.
 
-If instead you want to run a servlet container inside a Zest™ Application, see <<library-http>>.
+If instead you want to run a servlet container inside a Polygene™ Application, see <<library-http>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Application Bootstrap ==
 
-Extends `AbstractZestServletBootstrap` to easily bind a Zest™ `Application` activation/passivation to your webapp
+Extends `AbstractPolygeneServletBootstrap` to easily bind a Polygene™ `Application` activation/passivation to your webapp
 lifecycle.
 
-Use `ZestServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the
+Use `PolygeneServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the
 `ServletContext`.
 
 Here is an example ServletContextListener:
@@ -51,7 +51,7 @@ tag=bootstrap
 
 == Facilities ==
 
-`ZestServlet` and `ZestFilter` respectively provide base class for easy access to the `Application` from the
+`PolygeneServlet` and `PolygeneFilter` respectively provide base class for easy access to the `Application` from the
 `ServletContext`.
 
 Here is a sample servlet that simply output the assembled Application name:

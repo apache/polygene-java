@@ -126,7 +126,7 @@ include::../test/resources/testds.properties[]
 
 === Importing an existing DataSource ===
 
-Importing an existing DataSource at assembly time is usefull when your Zest
+Importing an existing DataSource at assembly time is usefull when your Polygene
 Application runs in an environment where DataSource are already provided.
 
 [snippet,java]

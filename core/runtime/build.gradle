@@ -18,7 +18,7 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core Runtime" } }
+jar { manifest { name = "Apache Polygene™ Core Runtime" } }
 
 dependencies {
   compileOnly libraries.osgi_core

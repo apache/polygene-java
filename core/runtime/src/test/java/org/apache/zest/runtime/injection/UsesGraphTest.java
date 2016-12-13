@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -34,7 +34,7 @@ import static org.hamcrest.CoreMatchers.not;
  * Test creation of object graph, where @Uses is used to refer to instances
  */
 public class UsesGraphTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

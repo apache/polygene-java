@@ -47,7 +47,7 @@ class AllProjectsPlugin implements Plugin<Project>
                     project.name.substring( 0, project.name.lastIndexOf( '.' ) )
 
     applyDefaultVersion( project )
-    applyZestExtension( project )
+    applyPolygeneExtension( project )
 
     configureJava( project )
     project.plugins.apply DependenciesPlugin
@@ -70,9 +70,9 @@ class AllProjectsPlugin implements Plugin<Project>
     }
   }
 
-  private static void applyZestExtension( Project project )
+  private static void applyPolygeneExtension( Project project )
   {
-    project.extensions.create( "zest", ZestExtension, project )
+    project.extensions.create( "zest", PolygeneExtension, project )
   }
 
   private static void configureJava( Project project )
@@ -200,7 +200,7 @@ class AllProjectsPlugin implements Plugin<Project>
         candidate.license = 'Apache 2'
       }
     }
-    honkerGenNotice.header = 'Apache Zest'
+    honkerGenNotice.header = 'Apache Polygene'
     honkerGenNotice.footer = 'This product includes software developed at\n' +
                              'The Apache Software Foundation (http://www.apache.org/).\n'
     project.tasks.getByName( 'check' ).dependsOn project.tasks.getByName( 'honkerCheck' )

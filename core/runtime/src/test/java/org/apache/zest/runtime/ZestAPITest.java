@@ -28,14 +28,14 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 /**
  * JAVADOC
  */
-public class ZestAPITest
-    extends AbstractZestTest
+public class PolygeneAPITest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

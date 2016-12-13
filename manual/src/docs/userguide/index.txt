@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-= Zest™ v{revnumber} User Guide =
+= Polygene™ v{revnumber} User Guide =
 
 :zest-version: {revnumber}
 :zest-buildnumber: {revnumber}

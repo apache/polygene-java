@@ -59,7 +59,7 @@ import org.apache.zest.library.http.JettyConfiguration;
 import org.apache.zest.library.http.JettyServiceAssembler;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.zest.library.shiro.web.assembly.HttpShiroAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.FreePortFinder;
 
@@ -69,7 +69,7 @@ import static org.apache.zest.library.http.Servlets.addServlets;
 import static org.apache.zest.library.http.Servlets.serve;
 
 public class WebRealmServiceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private final int port = FreePortFinder.findFreePortOnLoopback();
 

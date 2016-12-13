@@ -25,7 +25,7 @@ import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 
 /**
- * The Layer represents a single layer in a Zest application.
+ * The Layer represents a single layer in a Polygene application.
  */
 public interface Layer
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder

@@ -34,7 +34,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.rdf.model.ApplicationSerializer;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -46,7 +46,7 @@ import org.openrdf.rio.rdfxml.RDFXMLWriterFactory;
 /**
  * JAVADOC
  */
-public class ApplicationXmlTest extends AbstractZestTest
+public class ApplicationXmlTest extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -87,7 +87,7 @@ public class ApplicationXmlTest extends AbstractZestTest
         throws RDFHandlerException
     {
         writer.startRDF();
-        writer.handleNamespace( "zest", ZestRdf.ZEST_MODEL );
+        writer.handleNamespace( "zest", PolygeneRdf.ZEST_MODEL );
         writer.handleNamespace( "rdf", Rdfs.RDF );
         writer.handleNamespace( "rdfs", Rdfs.RDFS );
         for( Statement st : graph )

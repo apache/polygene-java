@@ -154,7 +154,7 @@ public class FragmentClassLoader
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }
 
-        // Try the classloader of this classloader -> get classes in Zest such as CompositeInvoker
+        // Try the classloader of this classloader -> get classes in Polygene such as CompositeInvoker
         return getClass().getClassLoader().loadClass( name );
     }
 
@@ -251,7 +251,7 @@ public class FragmentClassLoader
                     String[] exceptions = null;
                     {
                         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, null );
-                        if( isInternalZestMethod( method, baseClass ) )
+                        if( isInternalPolygeneMethod( method, baseClass ) )
                         {
                             // generate a NoOp method...
                             mv.visitInsn( RETURN );
@@ -496,9 +496,9 @@ public class FragmentClassLoader
         {
             // if() used for clarity.
             //noinspection RedundantIfStatement
-            if( isInternalZestMethod( method, baseClass ) )
+            if( isInternalPolygeneMethod( method, baseClass ) )
             {
-                return false; // Skip methods in Zest-internal interfaces
+                return false; // Skip methods in Polygene-internal interfaces
             }
             else
             {
@@ -511,7 +511,7 @@ public class FragmentClassLoader
         }
     }
 
-    private static boolean isInternalZestMethod( Method method, Class baseClass )
+    private static boolean isInternalPolygeneMethod( Method method, Class baseClass )
     {
         return isDeclaredIn( method, Initializable.class, baseClass )
                || isDeclaredIn( method, Lifecycle.class, baseClass );

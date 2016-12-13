@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Geode EntityStore Extension"
+description = "Apache Polygene™ Geode EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Geode" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Geode" } }
 
 dependencies {
   compile zest.core.bootstrap

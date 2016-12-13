@@ -29,12 +29,12 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class ComplexActivatableTest
-        extends AbstractZestTest
+        extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )

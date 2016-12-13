@@ -28,7 +28,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import java.util.Map;
 import org.apache.zest.test.EntityTestAssembler;
@@ -36,7 +36,7 @@ import org.apache.zest.test.EntityTestAssembler;
 import static org.junit.Assert.*;
 
 public class AlarmHistoryImplTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
     implements AlarmListener
 {
     private int eventCounter = 0;
@@ -256,7 +256,7 @@ public class AlarmHistoryImplTest
         int maxsize = hist.maxSize().get();
         assertEquals( 30, maxsize );
 
-        hist.maxSize().set( 3 );    // The Zest version doesn't intercept the maxSize().set() method and purge the old
+        hist.maxSize().set( 3 );    // The Polygene version doesn't intercept the maxSize().set() method and purge the old
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE ); // so we do another event to purge.
         assertEquals( 3, hist.allAlarmEvents().get().size() );
 

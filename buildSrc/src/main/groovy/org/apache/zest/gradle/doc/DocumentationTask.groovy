@@ -21,7 +21,7 @@ import groovy.io.FileType
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import java.security.MessageDigest
-import org.apache.zest.gradle.ZestExtension
+import org.apache.zest.gradle.PolygeneExtension
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.apache.zest.gradle.tasks.ExecLogged
 import org.gradle.api.Action;
@@ -111,7 +111,7 @@ class DocumentationTask extends DefaultTask
           chmod( file, '755' )
         }
       }
-      println "Zest Asciidoc Filters Installed!"
+      println "Polygene Asciidoc Filters Installed!"
     }
   }
 
@@ -134,7 +134,7 @@ class DocumentationTask extends DefaultTask
 
   def void generateAsciidocAccordingToReleaseSpecification()
   {
-    def zest = project.extensions.getByType( ZestExtension )
+    def zest = project.extensions.getByType( PolygeneExtension )
     project.copy { CopySpec spec ->
       spec.from docsDir
       spec.into tempAsciidocDir

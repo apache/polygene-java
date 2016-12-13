@@ -26,7 +26,7 @@
 <script type="text/javascript">
 // DISQUS
   var disqus_identifier = "manual";
-  var disqus_title = "The Apache Zest Manual";
+  var disqus_title = "The Apache Polygene Manual";
   function getIdFromHeading ( headingElement )
   {
     var id = disqus_identifier;

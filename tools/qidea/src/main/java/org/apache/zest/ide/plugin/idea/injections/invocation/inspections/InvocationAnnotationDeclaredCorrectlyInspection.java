@@ -29,11 +29,11 @@ import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInj
 import org.apache.zest.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.ZestInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.ZestInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.invocation.common.ZestInvocationAnnotationUtil.isValidInvocationAnnotationDeclaration;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.getStructureAnnotation;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult;
+import static org.apache.zest.ide.plugin.idea.injections.invocation.common.PolygeneInvocationAnnotationUtil.isValidInvocationAnnotationDeclaration;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
 
 /**
  * {@code InvocationAnnotationDeclaredCorrectlyInspection} validates {@code @Invocation} injection annotation

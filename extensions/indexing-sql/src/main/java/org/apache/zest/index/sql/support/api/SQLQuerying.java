@@ -29,7 +29,7 @@ import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.spi.query.EntityFinderException;
 
 /**
- * This interface provides parsing support from Zest queries to SQL queries. The idea is that this interface produces
+ * This interface provides parsing support from Polygene queries to SQL queries. The idea is that this interface produces
  * SQL which can be used when creating a {@link PreparedStatement}.
  *
  * @author Stanislav Muhametsin
@@ -37,13 +37,13 @@ import org.apache.zest.spi.query.EntityFinderException;
 public interface SQLQuerying
 {
     /**
-     * This method will be called when parsing needs to be done from Zest query to SQL query. This method is supposed to
+     * This method will be called when parsing needs to be done from Polygene query to SQL query. This method is supposed to
      * return one single SQL query, which can be used with {@link PreparedStatement}.
      *
-     * @param resultType The result type of Zest query.
-     * @param whereClause The where clause of Zest query.
-     * @param orderBySegments The order by segments of Zest query.
-     * @param firstResult The first result index of Zest query.
+     * @param resultType The result type of Polygene query.
+     * @param whereClause The where clause of Polygene query.
+     * @param orderBySegments The order by segments of Polygene query.
+     * @param firstResult The first result index of Polygene query.
      * @param maxResults The max amount of returned results.
      * @param values Values to put into {@link PreparedStatement}, in the order of the list. This List is created from
      *            the outside and this method is supposed to fill it with necessary values, if any.

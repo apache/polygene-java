@@ -24,13 +24,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap;
+import org.apache.zest.library.servlet.lifecycle.AbstractPolygeneServletBootstrap;
 
 /**
  * Base Filter providing easy access to the {@link Application} from the {@link ServletContext}.
- * @see AbstractZestServletBootstrap
+ * @see AbstractPolygeneServletBootstrap
  */
-public abstract class ZestFilter
+public abstract class PolygeneFilter
         implements Filter
 {
 
@@ -40,7 +40,7 @@ public abstract class ZestFilter
     public void init( FilterConfig filterConfig )
             throws ServletException
     {
-        application = ZestServletSupport.application( filterConfig.getServletContext() );
+        application = PolygeneServletSupport.application( filterConfig.getServletContext() );
     }
 
     protected final Application application()

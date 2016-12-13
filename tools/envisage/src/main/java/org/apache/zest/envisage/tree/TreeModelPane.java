@@ -130,11 +130,11 @@ public final class TreeModelPane
     }
 
     /**
-     * Initialize Apache Zest for this component
+     * Initialize Apache Polygene for this component
      *
      * @param descriptor the Application descriptor
      */
-    public void initZest( ApplicationDetailDescriptor descriptor )
+    public void initPolygene( ApplicationDetailDescriptor descriptor )
     {
         // traverse the model and build JTree representation
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );

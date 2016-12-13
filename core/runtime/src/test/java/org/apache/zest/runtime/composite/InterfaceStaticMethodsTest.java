@@ -21,7 +21,7 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that interface static methods are ignored when assembling composites.
  */
-public class InterfaceStaticMethodsTest extends AbstractZestTest
+public class InterfaceStaticMethodsTest extends AbstractPolygeneTest
 {
     public interface StaticMethods
     {

@@ -25,7 +25,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
-import org.apache.zest.library.rdf.ZestRdf;
+import org.apache.zest.library.rdf.PolygeneRdf;
 import org.apache.zest.library.rdf.Rdfs;
 
 abstract class AbstractSerializer
@@ -42,7 +42,7 @@ abstract class AbstractSerializer
     public void serialize( Iterable<Statement> graph, Writer out ) throws RDFHandlerException
     {
         String[] prefixes = { "zest", "rdf", "rdfs" };
-        String[] namespaces = { ZestRdf.ZEST_MODEL, Rdfs.RDF, Rdfs.RDFS };
+        String[] namespaces = { PolygeneRdf.ZEST_MODEL, Rdfs.RDF, Rdfs.RDFS };
         serialize( graph, out, prefixes, namespaces );
     }
 

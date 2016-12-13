@@ -24,10 +24,10 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 public class IssueTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private final static Class<?> CLAZZ = Object.class;
     private final static String METHOD_NAME = "toString";

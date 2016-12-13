@@ -18,9 +18,9 @@
  *
  */
 
-description = "Tutorial on how to convert existing application into a Apache Zest™ one, step-by-step."
+description = "Tutorial on how to convert existing application into a Apache Polygene™ one, step-by-step."
 
-jar { manifest { name = "Apache Zest™ Tutorial - Cargo" } }
+jar { manifest { name = "Apache Polygene™ Tutorial - Cargo" } }
 
 dependencies {
   compile zest.core.bootstrap

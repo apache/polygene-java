@@ -340,7 +340,7 @@ final class ModuleAssemblyImpl
         {
             if (objectType.isInterface())
             {
-                throw new AssemblyException("Interfaces can not be Zest Objects.");
+                throw new AssemblyException("Interfaces can not be Polygene Objects.");
             }
             if (objectAssemblies.containsKey(objectType))
             {

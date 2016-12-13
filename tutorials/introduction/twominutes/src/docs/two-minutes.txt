@@ -17,14 +17,14 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[two-minutes-intro,Zest™ in 2 minutes]]
-= Zest™ in 2 minutes =
+[[two-minutes-intro,Polygene™ in 2 minutes]]
+= Polygene™ in 2 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
-To show that Zest™ is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
+To show that Polygene™ is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
 classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
@@ -64,7 +64,7 @@ source=tutorials/introduction/twominutes/src/main/java/org/apache/zest/demo/twom
 tag=documentation
 -----------
 
-. The SingletonAssembler is a convenience class that creates a Zest™ Runtime instance and an application with one layer
+. The SingletonAssembler is a convenience class that creates a Polygene™ Runtime instance and an application with one layer
   and one module in it.
 
 . We declare a TransientComposite of type `Speaker`.

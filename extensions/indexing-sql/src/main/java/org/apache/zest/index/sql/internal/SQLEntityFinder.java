@@ -101,8 +101,8 @@ public class SQLEntityFinder
                                                  Integer maxResults,
                                                  Map<String, Object> variables ) throws EntityFinderException
     {
-        // TODO what is Zest's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
-        // these values - does it match with Zest's way?
+        // TODO what is Polygene's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
+        // these values - does it match with Polygene's way?
         if( maxResults == null || maxResults > 0 )
         {
             final List<Object> values = new ArrayList<>();

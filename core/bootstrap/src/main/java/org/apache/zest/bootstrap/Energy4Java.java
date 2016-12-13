@@ -20,24 +20,24 @@
 
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 
 /**
- * Main bootstrap class for starting Zest and creating new applications.
+ * Main bootstrap class for starting Polygene and creating new applications.
  * <p>
  * Instantiate this and call one of the factory methods to get started.
  * </p>
  * <p>
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
- * the ZestRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
+ * the PolygeneRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
  * </p>
  */
 public final class Energy4Java
 {
-    private ZestRuntime runtime;
+    private PolygeneRuntime runtime;
 
     public Energy4Java( RuntimeFactory runtimeFactory )
     {
@@ -49,11 +49,11 @@ public final class Energy4Java
         this( new RuntimeFactory.StandaloneApplicationRuntimeFactory().createRuntime() );
     }
 
-    public Energy4Java( ZestRuntime runtime )
+    public Energy4Java( PolygeneRuntime runtime )
     {
         if( runtime == null )
         {
-            throw new BootstrapException( "Can not create Zest without a Zest Runtime." );
+            throw new BootstrapException( "Can not create Polygene without a Polygene Runtime." );
         }
         this.runtime = runtime;
     }
@@ -86,12 +86,12 @@ public final class Energy4Java
         return model.newInstance( runtime.spi(), importedServiceInstances );
     }
 
-    public ZestSPI spi()
+    public PolygeneSPI spi()
     {
         return runtime.spi();
     }
 
-    public ZestAPI api()
+    public PolygeneAPI api()
     {
         return runtime.spi();
     }

@@ -18,9 +18,9 @@
  *
  */
 
-description = "IntelliJ IDEA Plugin for Apache Zest™ development."
+description = "IntelliJ IDEA Plugin for Apache Polygene™ development."
 
-jar { manifest { name = "Apache Zest™ IDEA plugin" }}
+jar { manifest { name = "Apache Polygene™ IDEA plugin" }}
 
 dependencies {
   compile zest.core.bootstrap

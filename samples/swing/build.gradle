@@ -22,7 +22,7 @@ import org.apache.zest.gradle.TaskGroups
 
 description = "Sample of how to use the Swing bindings."
 
-jar { manifest { name = "Apache Zest™ Sample - Swing Bindings" } }
+jar { manifest { name = "Apache Polygene™ Sample - Swing Bindings" } }
 
 dependencies {
   compile zest.core.bootstrap

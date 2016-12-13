@@ -23,13 +23,13 @@ import org.junit.Test;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 // START SNIPPET: step1
-public class HelloTest extends AbstractZestTest
+public class HelloTest extends AbstractPolygeneTest
 {
 // END SNIPPET: step1
 

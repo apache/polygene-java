@@ -24,7 +24,7 @@ import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 
 /**
- * The Application represents a whole Zest application.
+ * The Application represents a whole Polygene application.
  */
 public interface Application
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder

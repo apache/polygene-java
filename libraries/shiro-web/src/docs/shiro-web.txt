@@ -37,16 +37,16 @@ application – from the smallest mobile applications to the largest web and ent
 Shiro website.
 
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
-mostly discuss Zest™ related matters here.
+mostly discuss Polygene™ related matters here.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Servlet Context ==
 
-In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Zest™ application
+In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Polygene™ application
 bootstrap, plain Shiro is usable. A WebEnvironment must be globally available and ShiroFilter must be registered.
 
-If you use a custom Zest™ application boostrap or the <<library-servlet>> you can directly use Shiro's provided
+If you use a custom Polygene™ application boostrap or the <<library-servlet>> you can directly use Shiro's provided
 EnvironmentLoaderListener and ShiroFilter.
 
 If you use the <<library-http>> you can either directly use Shiro classes or use the assembly API as follows:

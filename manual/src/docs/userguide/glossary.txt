@@ -24,7 +24,7 @@
 
 == Glossary ==
 
-There are a lot of concepts in Zest™ which may have different meanings in other contexts. So in true DDD-style
+There are a lot of concepts in Polygene™ which may have different meanings in other contexts. So in true DDD-style
 ubiquitous language, we are here listing the definitions of the terms and concepts that are being used.
 
 [glossary]
@@ -34,7 +34,7 @@ ubiquitous language, we are here listing the definitions of the terms and concep
 An Abstract Mixin is an implementation of the <<def-mixin-type>> interface, but is an abstract class and has not
 implemented all the methods.
 
-The Zest™ runtime can use multiple <<def-mixin,Mixins>> for each <<def-mixin-type>> interface. It is also possible to let
+The Polygene™ runtime can use multiple <<def-mixin,Mixins>> for each <<def-mixin-type>> interface. It is also possible to let
 a <<def-generic-mixin>> handle the remaining missing methods.
 --
 
@@ -53,10 +53,10 @@ will not be part of the <<def-invocation-stack>> of those methods.
 [[def-application,Application]]Application::
 +
 --
-Application is the top level concept handled by the Zest™ runtime instance. It holds the information about the
+Application is the top level concept handled by the Polygene™ runtime instance. It holds the information about the
 <<def-layer,Layers>> in the application architecture. See <<def-structure>> for more information.
 
-There is one and only one Application instance per Zest™ Runtime instance.
+There is one and only one Application instance per Polygene™ Runtime instance.
 --
 
 
@@ -102,7 +102,7 @@ by the thread boundaries. Use-cases for this include user credentials on which b
 [[def-composite-metatype,Composite Meta Type]]Composite Meta Type::
 +
 --
-There are 5 Composite Meta Types defined in Zest, which each share the composition features but have distinct
+There are 5 Composite Meta Types defined in Polygene, which each share the composition features but have distinct
 semantic differences.
 
 * <<def-entitycomposite>>
@@ -120,7 +120,7 @@ CompositeType is the Java interface that declares the composition, from which <<
 created.
 
 Composite Type interfaces must be a sub-type of one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in
-Zest™ otherwise it can not be instantiated.
+Polygene™ otherwise it can not be instantiated.
 --
 
 
@@ -140,7 +140,7 @@ involves;
 
 Concerns are established by the use of the @Concerns annotation on composites.
 
-Concern is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Zest.
+Concern is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Polygene.
 --
 
 
@@ -153,7 +153,7 @@ stored permanently in configured Entity Stores. Configuration Composites are als
 properties files first time. Note that on consequent start-ups the properties file is not read, as the configuration is
 read from the EntityStore.
 
-ConfigurationComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Zest.
+ConfigurationComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Polygene.
 
 See <<howto-configure-service>> to learn how to use Configuration Composites.
 --
@@ -162,7 +162,7 @@ See <<howto-configure-service>> to learn how to use Configuration Composites.
 [[def-constraint,Constraint]]Constraint::
 +
 --
-Constraints are a kind of validators, which are consulted prior to invoking the method call. Zest™ currently only
+Constraints are a kind of validators, which are consulted prior to invoking the method call. Polygene™ currently only
 supports ParameterConstraints on methods and value constraints on <<def-property,Properties>>, but future versions will
 include Constraint types for checking complete method calls and return values.
 
@@ -172,7 +172,7 @@ See <<library-constraints>> for ready to use Constraints.
 
 See <<howto-create-constraint>> to learn how to write your own Constraints.
 
-Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Zest.
+Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Polygene.
 --
 
 
@@ -182,7 +182,7 @@ Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Zest.
 An Entity Composite, or just Entity for short, is a persisted composite with an <<def-identity>>. An entity only has
 scope within an <<def-unitofwork>> and is therefor inherently thread-safe.
 
-EntityComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Zest.
+EntityComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Polygene.
 --
 
 
@@ -231,15 +231,15 @@ This term has no definition yet. Learn how to contribute in <<community-docs>>.
 [[def-invocation-stack,Invocation Stack]]Invocation Stack::
 +
 --
-For each method, Zest™ will create and re-use an Invocation Stack. It will be built with the sequence of
+For each method, Polygene™ will create and re-use an Invocation Stack. It will be built with the sequence of
 <<def-modifier,Modifiers>> and an end-point that will link into the stateful <<def-mixin>>.
 
 It is important to recognize that, for memory footprint reasons, Invocation Stacks are shared across
-<<def-composite,Composites>> of the same <<def-composite-type>>. They are however thread-safe, in that Zest™ will never
+<<def-composite,Composites>> of the same <<def-composite-type>>. They are however thread-safe, in that Polygene™ will never
 bind the same Invocation Stack to more than one <<def-composite>> instance during a method call, but that between method
 invocations the <<def-modifier,Modifiers>> in the Invocation Stack can not assume that it is bound to the same
 <<def-composite>> instance. Therefor, <<def-modifier,Modifiers>> are not expected to keep state between method
-invocations, and when it needs to do that, then it should reference a <<def-mixin>> via the @This annotation. Zest™ will
+invocations, and when it needs to do that, then it should reference a <<def-mixin>> via the @This annotation. Polygene™ will
 during the binding of the Invocation Stack to the <<def-composite>>, also ensure that all referenced
 <<def-mixin,Mixins>> are correctly injected in the Invocation Stack.
 --
@@ -248,7 +248,7 @@ during the binding of the Invocation Stack to the <<def-composite>>, also ensure
 [[def-layer,Layer]]Layer::
 +
 --
-Zest™ promotes a Layered application design, where Layers can only access lower Layers and not higher Layers or Layers at
+Polygene™ promotes a Layered application design, where Layers can only access lower Layers and not higher Layers or Layers at
 the same level.
 --
 
@@ -345,7 +345,7 @@ See the <<howto-leverage-properties>> how-to.
 --
 Service Composite is a subtype of <<def-composite>>, and has a range of features built into it.
 
-ServiceComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Zest.
+ServiceComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Polygene.
 
 See the <<core-api-service,Service Composite chapter>>.
 --
@@ -370,24 +370,24 @@ involves;
 
 SideEffects are established by the use of the @SideEffects annotation on composites.
 
-SideEffect is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Zest.
+SideEffect is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Polygene.
 --
 
 
 [[def-structure,Structure]]Structure::
 +
 --
-Zest™ promotes a conventional view of application structure, that computer science has been using for decades.
+Polygene™ promotes a conventional view of application structure, that computer science has been using for decades.
 
 The definition is as follows;
 
-* One <<def-application>> per Zest™ runtime instance.
+* One <<def-application>> per Polygene™ runtime instance.
 * One or more <<def-layer,Layers>> per <<def-application>>.
 * Zero, one or more <<def-module,Modules>> per <<def-layer>>.
 * Zero, one or more Assemblies per <<def-module>>.
 
 The principle of this Structure is to assist the programmer to create well modularized applications, that are easily
-extended and maintained. Zest™ will restrict access between <<def-module,Modules>>, so that code can only reach
+extended and maintained. Polygene™ will restrict access between <<def-module,Modules>>, so that code can only reach
 <<def-composite,Composites>> and Objects in <<def-module,Modules>> (including itself) of the same or lower
 <<def-layer,Layers>>.
 
@@ -424,7 +424,7 @@ immutable and can be compared by value instead of memory reference. Concurrency 
 the value exists or it doesn't, no need for synchronization. Values are typically very easy to test and very robust to
 refactoring.
 
-Zest™ defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
+Polygene™ defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
 The ValueComposite is very light-weight compared to the <<def-entitycomposite>>, and its value can still be persisted as
 part of an <<def-entitycomposite>> via a <<def-property>>.
 

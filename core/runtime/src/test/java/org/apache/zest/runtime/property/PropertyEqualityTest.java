@@ -33,7 +33,7 @@ import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static java.time.ZoneOffset.UTC;
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertThat;
  * Assert that Property equals/hashcode methods combine PropertyDescriptor and State.
  */
 public class PropertyEqualityTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     //

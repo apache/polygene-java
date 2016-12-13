@@ -38,7 +38,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.zest.library.shiro.ini.IniSecurityManagerService;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class StandaloneShiroTest
-        extends AbstractZestTest
+        extends AbstractPolygeneTest
 {
 
     public void documentationSupport_before()

@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.structure.ModuleDescriptor;
 
 /**
@@ -56,7 +56,7 @@ public class CompositeContext<T extends TransientComposite>
     {
         TransientComposite composite = get();
 
-        Stream<Class<?>> types = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).types();
+        Stream<Class<?>> types = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).types();
         return (T) Proxy.newProxyInstance(
             composite.getClass().getClassLoader(),
             types.toArray( Class[]::new ),

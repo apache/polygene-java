@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Alarm Library provides industrial automation style alarm point workflow semantics."
+description = "Apache Polygene™ Alarm Library provides industrial automation style alarm point workflow semantics."
 
-jar { manifest { name = "Apache Zest™ Library - Alarm - APi" } }
+jar { manifest { name = "Apache Polygene™ Library - Alarm - APi" } }
 
 dependencies {
   compile zest.core.bootstrap

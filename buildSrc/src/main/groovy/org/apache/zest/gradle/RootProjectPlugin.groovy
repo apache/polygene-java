@@ -39,8 +39,8 @@ import org.gradle.external.javadoc.StandardJavadocDocletOptions
 @CompileStatic
 class RootProjectPlugin implements Plugin<Project>
 {
-  static final String PROJECT_TITLE = 'Apache Zest™ (Java Edition) SDK'
-  static final String PROJECT_DESCRIPTION = 'Apache Zest™ (Java Edition) is a framework for domain centric ' +
+  static final String PROJECT_TITLE = 'Apache Polygene™ (Java Edition) SDK'
+  static final String PROJECT_DESCRIPTION = 'Apache Polygene™ (Java Edition) is a framework for domain centric ' +
                                             'application development, including evolved concepts from AOP, DI and DDD.'
 
   static class TaskNames
@@ -132,7 +132,7 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureJavadocs( Project project )
   {
-    def zest = project.extensions.getByType( ZestExtension )
+    def zest = project.extensions.getByType( PolygeneExtension )
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
     project.tasks.create( TaskNames.JAVADOCS, Javadoc ) { Javadoc task ->
       task.group = TaskGroups.DOCUMENTATION
@@ -233,7 +233,7 @@ class RootProjectPlugin implements Plugin<Project>
       'manual/**/jquery*.js',
       // W3C XML Schemas - W3C Software License
       'samples/rental/src/main/resources/*.xsd',
-      // Zest Generator Heroes Templates - MIT
+      // Polygene Generator Heroes Templates - MIT
       'tools/generator-zest/app/templates/Heroes/**',
       // templates that will become the user's source files, should not have license headers
       'tools/shell/src/dist/etc/templates/**',
@@ -242,7 +242,7 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureReleaseTask( Project project )
   {
-    def zest = project.extensions.getByType( ZestExtension )
+    def zest = project.extensions.getByType( PolygeneExtension )
     def release = project.tasks.create( 'release' )
     release.description = 'Builds, tests and uploads the release artifacts'
     release.group = TaskGroups.RELEASE

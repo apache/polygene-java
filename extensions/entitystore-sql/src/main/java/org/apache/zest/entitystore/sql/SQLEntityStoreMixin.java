@@ -63,7 +63,7 @@ import org.apache.zest.entitystore.sql.internal.DatabaseSQLService.EntityValueRe
 import org.apache.zest.entitystore.sql.internal.SQLEntityState;
 import org.apache.zest.entitystore.sql.internal.SQLEntityState.DefaultSQLEntityState;
 import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -106,7 +106,7 @@ public class SQLEntityStoreMixin
     private EntityStoreSPI entityStoreSPI;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Structure
     private Application application;

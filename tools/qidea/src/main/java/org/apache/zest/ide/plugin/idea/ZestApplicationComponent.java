@@ -28,7 +28,7 @@ import com.intellij.openapi.fileTypes.FileTypeManager;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.apache.zest.ide.plugin.idea.appliesTo.inspections.AppliesToAnnotationDeclaredCorrectlyInspection;
-import org.apache.zest.ide.plugin.idea.common.facet.ZestFacetType;
+import org.apache.zest.ide.plugin.idea.common.facet.PolygeneFacetType;
 import org.apache.zest.ide.plugin.idea.concerns.inspections.ConcernsAnnotationDeclaredCorrectlyInspection;
 import org.apache.zest.ide.plugin.idea.injections.invocation.inspections.InvocationAnnotationDeclaredCorrectlyInspection;
 import org.apache.zest.ide.plugin.idea.injections.service.inspections.ServiceAnnotationDeclaredCorrectlyInspection;
@@ -39,13 +39,13 @@ import org.apache.zest.ide.plugin.idea.sideEffects.inspections.SideEffectsAnnota
 
 import javax.swing.*;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestApplicationComponent
+public final class PolygeneApplicationComponent
     implements ApplicationComponent, InspectionToolProvider, FileTemplateGroupDescriptorFactory
 {
     @NonNls
@@ -53,17 +53,17 @@ public final class ZestApplicationComponent
         "GenericConcernOf.java"
     };
 
-    private final ZestFacetType zestFacetType;
+    private final PolygeneFacetType zestFacetType;
 
-    public ZestApplicationComponent()
+    public PolygeneApplicationComponent()
     {
-        zestFacetType = new ZestFacetType();
+        zestFacetType = new PolygeneFacetType();
     }
 
     @NotNull
     public final String getComponentName()
     {
-        return "ZestApplicationComponent";
+        return "PolygeneApplicationComponent";
     }
 
     public final void initComponent()

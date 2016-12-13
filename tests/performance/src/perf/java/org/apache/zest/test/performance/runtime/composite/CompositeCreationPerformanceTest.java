@@ -248,7 +248,7 @@ public class CompositeCreationPerformanceTest
         long time = 1000000L * ( end - start ) / iter;
         if( run )
         {
-            System.out.println( "Zest Object Creation Time:" + time + " nanoseconds per object" );
+            System.out.println( "Polygene Object Creation Time:" + time + " nanoseconds per object" );
         }
         return time;
     }

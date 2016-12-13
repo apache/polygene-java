@@ -37,7 +37,7 @@ consequences are to other systems when one fails. The _Alarm Point_ concepts bec
 world of today, where _Alarm Points_ allows for fine-grained notification and view into the health of one or more
 systems.
 
-In Zest, we are building upon this powerful abstraction, from decades of field experience.
+In Polygene, we are building upon this powerful abstraction, from decades of field experience.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
@@ -81,7 +81,7 @@ tag=documentation
 --------------
 
 == Alarm Models ==
-The Zest™ Alarm library comes with 3 _Alarm Models_ which should be sufficient for most uses. These are based on decades
+The Polygene™ Alarm library comes with 3 _Alarm Models_ which should be sufficient for most uses. These are based on decades
 of experience from the industrial automation industry and user feedback.
 
 == Simple Alarm Model ==

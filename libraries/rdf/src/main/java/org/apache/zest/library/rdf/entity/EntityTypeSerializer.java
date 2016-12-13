@@ -34,7 +34,7 @@ import java.util.Map;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.library.rdf.Rdfs;
-import org.apache.zest.library.rdf.ZestEntityType;
+import org.apache.zest.library.rdf.PolygeneEntityType;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -82,10 +82,10 @@ public class EntityTypeSerializer
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
         graph.add( entityTypeUri,
-                   ZestEntityType.TYPE,
+                   PolygeneEntityType.TYPE,
                    values.createLiteral( entityDescriptor.types().findFirst().get().toString() )
         );
-        graph.add( entityTypeUri, ZestEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
+        graph.add( entityTypeUri, PolygeneEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
 

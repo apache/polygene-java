@@ -27,13 +27,13 @@ import org.restlet.Response;
 import org.restlet.resource.Finder;
 import org.restlet.resource.ServerResource;
 
-public class ZestFinder
+public class PolygeneFinder
     extends Finder
 {
     @Structure
     private ObjectFactory factory;
 
-    public ZestFinder()
+    public PolygeneFinder()
     {
     }
 

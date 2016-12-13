@@ -21,7 +21,7 @@
 package org.apache.zest.library.rdf.entity;
 
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -171,7 +171,7 @@ public class EntityStateSerializer
         graph.add( subject, predicate, collection );
 
         ( (ValueCompositeType) valueType ).properties().forEach( persistentProperty -> {
-            Object propertyValue = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+            Object propertyValue = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF
                 .apply( value )
                 .state()
                 .propertyFor( persistentProperty.accessor() )

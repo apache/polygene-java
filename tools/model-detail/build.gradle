@@ -18,9 +18,9 @@
  *
  */
 
-description = "Detailled Model of a Apache Zest™ Application Structure."
+description = "Detailled Model of a Apache Polygene™ Application Structure."
 
-jar { manifest { name = "Apache Zest™ Model Detail" }}
+jar { manifest { name = "Apache Polygene™ Model Detail" }}
 
 dependencies {
   compile zest.core.bootstrap

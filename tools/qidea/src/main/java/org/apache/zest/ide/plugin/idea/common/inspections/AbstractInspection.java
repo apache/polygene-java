@@ -22,7 +22,7 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle;
+import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
 
 import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
 
@@ -36,7 +36,7 @@ public abstract class AbstractInspection extends BaseJavaLocalInspectionTool
 
     @Nls @NotNull public String getGroupDisplayName()
     {
-        return ZestResourceBundle.message( ZEST_IDEA_INSPECTIONS_NAME );
+        return PolygeneResourceBundle.message( ZEST_IDEA_INSPECTIONS_NAME );
     }
 
     @NotNull
@@ -45,7 +45,7 @@ public abstract class AbstractInspection extends BaseJavaLocalInspectionTool
     @Nls @NotNull
     public final String getDisplayName()
     {
-        return ZestResourceBundle.message( resourceBundlePrefixId() + ".name.display" );
+        return PolygeneResourceBundle.message( resourceBundlePrefixId() + ".name.display" );
     }
 
     @NotNull @Override

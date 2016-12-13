@@ -19,7 +19,7 @@
 [[howto-leverage-properties,Leverage Properties]]
 = Leverage Properties =
 
-Zest™ does not follow the JavaBeans standard for property support. Instead, a much more explicit concept is in place. The
+Polygene™ does not follow the JavaBeans standard for property support. Instead, a much more explicit concept is in place. The
 advantages are enormous, and the only real downside is that people are already destroyed, thinking in so called POJO
 terms.
 
@@ -29,7 +29,7 @@ include::../../../../core/api/build/docs/buildinfo/artifact.txt[]
 
 At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
 
-So in Zest, instead of writing;
+So in Polygene, instead of writing;
 
 [snippet,java]
 -----------
@@ -73,7 +73,7 @@ tag=create
 
 == Persistence ==
 
-The Property concept also allows a much better defined persistence model. In Zest, only Property and Association
+The Property concept also allows a much better defined persistence model. In Polygene, only Property and Association
 instances are persisted, and that makes the semantics around the persistence system very clear.
 
 Properties reference values only, and these values must be Serializable, which means that Properties can not contain

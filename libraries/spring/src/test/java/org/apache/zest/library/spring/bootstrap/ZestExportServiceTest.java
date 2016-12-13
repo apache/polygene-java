@@ -27,11 +27,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.*;
-import static org.apache.zest.library.spring.bootstrap.ZestTestBootstrap.COMMENT_SERVICE_ID;
+import static org.apache.zest.library.spring.bootstrap.PolygeneTestBootstrap.COMMENT_SERVICE_ID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public final class ZestExportServiceTest
+public final class PolygeneExportServiceTest
 {
     @Autowired
     private ApplicationContext appContext;

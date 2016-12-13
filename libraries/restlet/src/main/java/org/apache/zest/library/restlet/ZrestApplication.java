@@ -38,7 +38,7 @@ import org.apache.zest.library.restlet.resource.EntryPoint;
 import org.apache.zest.library.restlet.resource.EntryPointResource;
 import org.apache.zest.library.restlet.resource.ResourceFactory;
 import org.apache.zest.library.restlet.resource.ServerResource;
-import org.apache.zest.library.restlet.serialization.ZestConverter;
+import org.apache.zest.library.restlet.serialization.PolygeneConverter;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
@@ -53,7 +53,7 @@ import org.restlet.security.Verifier;
 import org.restlet.util.Series;
 
 /**
- * This class is generic enough to be promoted to Zest's Restlet Library
+ * This class is generic enough to be promoted to Polygene's Restlet Library
  */
 public abstract class ZrestApplication extends org.restlet.Application
 {
@@ -110,8 +110,8 @@ public abstract class ZrestApplication extends org.restlet.Application
         catch( Throwable e )
         {
             e.printStackTrace();
-            getLogger().log( Level.SEVERE, "Unable to start Zest application.", e );
-            throw new InternalError( "Unable to start Zest application.", e );
+            getLogger().log( Level.SEVERE, "Unable to start Polygene application.", e );
+            throw new InternalError( "Unable to start Polygene application.", e );
         }
         getLogger().info( "RestApplication successfully created." );
     }
@@ -128,7 +128,7 @@ public abstract class ZrestApplication extends org.restlet.Application
     public Restlet createInboundRoot()
     {
         Context context = getContext();
-        Engine.getInstance().getRegisteredConverters().add( new ZestConverter( objectFactory ) );
+        Engine.getInstance().getRegisteredConverters().add( new PolygeneConverter( objectFactory ) );
 
         if( zestApplication.mode() == Application.Mode.development )
         {
@@ -137,7 +137,7 @@ public abstract class ZrestApplication extends org.restlet.Application
         router = new Router( context );
 
         addRoutes( router );
-        router.attach( "/", newZestRestlet( EntryPointResource.class, EntryPoint.class ) );
+        router.attach( "/", newPolygeneRestlet( EntryPointResource.class, EntryPoint.class ) );
 
         ChallengeAuthenticator guard = new ChallengeAuthenticator( context, ChallengeScheme.HTTP_BASIC, "Storm Clouds" );
 
@@ -229,18 +229,18 @@ public abstract class ZrestApplication extends org.restlet.Application
     {
         if( createLink )
         {
-            router.attach( basePath + name + "/create", newZestRestlet( CreationResource.class, type ) );
+            router.attach( basePath + name + "/create", newPolygeneRestlet( CreationResource.class, type ) );
         }
-        TemplateRoute route = router.attach( basePath + name + "/", newZestRestlet( EntityListResource.class, type ) );
+        TemplateRoute route = router.attach( basePath + name + "/", newPolygeneRestlet( EntityListResource.class, type ) );
         if( rootRoute )
         {
             route.setName( name );
         }
-        router.attach( basePath + name + "/{id}/", newZestRestlet( EntityResource.class, type ) );
-        router.attach( basePath + name + "/{id}/{invoke}", newZestRestlet( EntityResource.class, type ) );
+        router.attach( basePath + name + "/{id}/", newPolygeneRestlet( EntityResource.class, type ) );
+        router.attach( basePath + name + "/{id}/{invoke}", newPolygeneRestlet( EntityResource.class, type ) );
     }
 
-    private <K extends HasIdentity, T extends ServerResource<K>> Restlet newZestRestlet(Class<T> resourceClass,
+    private <K extends HasIdentity, T extends ServerResource<K>> Restlet newPolygeneRestlet(Class<T> resourceClass,
                                                                                         Class<K> entityClass
     )
     {
@@ -249,8 +249,8 @@ public abstract class ZrestApplication extends org.restlet.Application
         ResourceFactory<K, T> factory = objectFactory.newObject( DefaultResourceFactoryImpl.class,
                                                                  resourceClass, router
         );
-        ZestConverter converter = new ZestConverter( objectFactory );
-        return objectFactory.newObject( ZestEntityRestlet.class,
+        PolygeneConverter converter = new PolygeneConverter( objectFactory );
+        return objectFactory.newObject( PolygeneEntityRestlet.class,
                                         factory,
                                         router,
                                         entityClass,

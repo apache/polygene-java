@@ -24,7 +24,7 @@ import org.apache.zest.api.composite.NoSuchCompositeException;
 import org.apache.zest.api.structure.TypeLookup;
 
 /**
- * Zest exception to be thrown in case that an entity composite
+ * Polygene exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
 public class NoSuchEntityTypeException

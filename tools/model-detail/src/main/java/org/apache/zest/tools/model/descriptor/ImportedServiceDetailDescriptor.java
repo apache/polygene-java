@@ -31,7 +31,7 @@ import static org.apache.zest.api.util.NullArgumentException.validateNotNull;
  * <p>
  * Visitable hierarchy with Activators children.
  */
-// TODO need to refactor later, but wait until Zest core/spi have proper and consistent API for ImportedService.
+// TODO need to refactor later, but wait until Polygene core/spi have proper and consistent API for ImportedService.
 public class ImportedServiceDetailDescriptor
     extends CompositeDetailDescriptor<ImportedServiceCompositeDescriptor>
     implements ActivateeDetailDescriptor, VisitableHierarchy<Object, Object>

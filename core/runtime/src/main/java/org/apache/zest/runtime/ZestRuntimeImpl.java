@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
@@ -55,7 +55,7 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.ApplicationModelFactory;
-import org.apache.zest.bootstrap.ZestRuntime;
+import org.apache.zest.bootstrap.PolygeneRuntime;
 import org.apache.zest.runtime.association.AbstractAssociationInstance;
 import org.apache.zest.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.apache.zest.runtime.bootstrap.ApplicationModelFactoryImpl;
@@ -68,22 +68,22 @@ import org.apache.zest.runtime.service.ServiceInstance;
 import org.apache.zest.runtime.service.ServiceReferenceInstance;
 import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.runtime.value.ValueInstance;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.entity.EntityState;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static org.apache.zest.runtime.composite.TransientInstance.compositeInstanceOf;
 
 /**
- * Incarnation of Zest.
+ * Incarnation of Polygene.
  */
-public final class ZestRuntimeImpl
-    implements ZestSPI, ZestRuntime
+public final class PolygeneRuntimeImpl
+    implements PolygeneSPI, PolygeneRuntime
 {
     private final ApplicationAssemblyFactory applicationAssemblyFactory;
     private final ApplicationModelFactory applicationModelFactory;
 
-    public ZestRuntimeImpl()
+    public PolygeneRuntimeImpl()
     {
         applicationAssemblyFactory = new ApplicationAssemblyFactoryImpl();
         applicationModelFactory = new ApplicationModelFactoryImpl();
@@ -102,13 +102,13 @@ public final class ZestRuntimeImpl
     }
 
     @Override
-    public ZestAPI api()
+    public PolygeneAPI api()
     {
         return this;
     }
 
     @Override
-    public ZestSPI spi()
+    public PolygeneSPI spi()
     {
         return this;
     }

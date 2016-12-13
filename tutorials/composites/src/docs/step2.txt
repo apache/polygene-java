@@ -29,8 +29,8 @@ Constraints. In this tutorial we will only use Mixins. When a TransientComposite
 framework will inspect the interface to determine what the TransientComposite instance should look like in terms of 
 used Fragments.
 
-In Zest™ all method parameters are considered mandatory unless marked as @Optional. Therefore you can remove the null
-checks in the Mixin. If a null value is passed in an exception will be thrown by Zest™.
+In Polygene™ all method parameters are considered mandatory unless marked as @Optional. Therefore you can remove the null
+checks in the Mixin. If a null value is passed in an exception will be thrown by Polygene™.
 
 Steps for this tutorial:
 

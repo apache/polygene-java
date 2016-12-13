@@ -24,15 +24,15 @@
 source=core/testsupport/dev-status.xml
 --------------
 
-Zest™ comes with classes to help with testing. For general development, only a couple of classes are of interest as the
+Polygene™ comes with classes to help with testing. For general development, only a couple of classes are of interest as the
 others are mostly for EntityStore and Index/Query SPI implementations. There is also some mocking support, to allow
-some of Zest's unique aspects to be mocked, but since Zest™ is so flexible at a fine-granular level, we have found that
+some of Polygene's unique aspects to be mocked, but since Polygene™ is so flexible at a fine-granular level, we have found that
 mocking is seldom, if ever, needed.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Your First Testcase ==
-In most cases, you will probably use the AbstractZestTest class to simplify starting a Zest™ test instance.
+In most cases, you will probably use the AbstractPolygeneTest class to simplify starting a Polygene™ test instance.
 
 [snippet,java]
 --------------
@@ -40,7 +40,7 @@ source=tutorials/hello/src/test/java/org/apache/zest/tutorials/hello/HelloTest.j
 tag=step1
 --------------
 
-This will do all the initialization of a Zest™ runtime instance and create a single layer with a single module in it.
+This will do all the initialization of a Polygene™ runtime instance and create a single layer with a single module in it.
 What goes into that module is declared in the assembly() method;
 
 [snippet,java]

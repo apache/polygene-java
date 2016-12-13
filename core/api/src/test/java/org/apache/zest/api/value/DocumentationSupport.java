@@ -40,7 +40,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ import static org.junit.Assert.assertThat;
  * - lookup  : ValueSerialization values module finder
  */
 public class DocumentationSupport
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     // START SNIPPET: default

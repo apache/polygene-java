@@ -25,7 +25,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.restlet.Command;
 import org.apache.zest.library.restlet.FormField;
-import org.apache.zest.library.restlet.ZestEntityRestlet;
+import org.apache.zest.library.restlet.PolygeneEntityRestlet;
 import org.apache.zest.library.restlet.RestForm;
 import org.apache.zest.library.restlet.RestLink;
 import org.apache.zest.library.restlet.crud.EntityList;
@@ -62,7 +62,7 @@ public class RestletCrudConnectivityAssembler
         module.objects( DefaultResourceFactoryImpl.class,
                         JsonRepresentation.class,
                         FormRepresentation.class,
-                        ZestEntityRestlet.class )
+                        PolygeneEntityRestlet.class )
             .visibleIn( Visibility.layer );
         module.services( ResourceBuilder.class ).visibleIn( Visibility.layer );
         new JacksonValueSerializationAssembler().assemble( module );

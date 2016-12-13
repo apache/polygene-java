@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * </p>
  * <pre><code>
  *
- * &#64;AppliesTo( Sessional.class )   // Tells Zest to apply this concern on methods with &#64;Sessional annotation
+ * &#64;AppliesTo( Sessional.class )   // Tells Polygene to apply this concern on methods with &#64;Sessional annotation
  * public class SessionConcern extends GenericConcern
  * {
  *     public Object invoke( Object proxy, Method method, Object[] args )

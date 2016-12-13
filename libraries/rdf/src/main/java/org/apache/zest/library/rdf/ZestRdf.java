@@ -25,9 +25,9 @@ import org.openrdf.model.impl.URIImpl;
 
 
 /**
- * This is the RDF vocabulary for Zest.
+ * This is the RDF vocabulary for Polygene.
  */
-public interface ZestRdf
+public interface PolygeneRdf
 {
 
     // MODEL

@@ -21,13 +21,13 @@ package org.apache.zest.library.spring;
 
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap;
+import org.apache.zest.library.spring.bootstrap.PolygeneApplicationBootstrap;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 // START SNIPPET: code
-public class MyZestBootstrapper extends ZestApplicationBootstrap
+public class MyPolygeneBootstrapper extends PolygeneApplicationBootstrap
         implements ApplicationContextAware
 {
     private ApplicationContext applicationContext;

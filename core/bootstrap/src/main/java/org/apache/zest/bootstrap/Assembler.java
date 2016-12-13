@@ -24,7 +24,7 @@ package org.apache.zest.bootstrap;
  * ModuleAssemblies are configured by Assemblers. This
  * is the interface you would implement in order to provide
  * all configuration and additional metainfo that is needed
- * to instantiate a Zest application.
+ * to instantiate a Polygene application.
  */
 public interface Assembler
 {

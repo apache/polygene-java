@@ -86,7 +86,7 @@ public class SingletonApplicationAssemblerWriter
                         "                    e.printStackTrace();\n" +
                         "                }\n" +
                         "            }\n" +
-                        "        }, \"Shutdown Hook for Zest\" ) );\n" );
+                        "        }, \"Shutdown Hook for Polygene\" ) );\n" );
             pw.println( "    }" );
             pw.println( "}" );
             pw.println();

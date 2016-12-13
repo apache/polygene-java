@@ -21,7 +21,7 @@
     <body>
         <h2>Servlet Library.</h2>
         <p>
-            This library provide the necessary mechanism to bootstrap a Zest™ Application in a Servlet container plus
+            This library provide the necessary mechanism to bootstrap a Polygene™ Application in a Servlet container plus
             some facilities.
         </p>
 
@@ -32,17 +32,17 @@
 
         <h3>Application Bootstrap</h3>
         <p>
-            Extends {@link org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap} to easily bind a Zest™
+            Extends {@link org.apache.zest.library.servlet.lifecycle.AbstractPolygeneServletBootstrap} to easily bind a Polygene™
             {@link org.apache.zest.api.structure.Application} activation/passivation to your webapp lifecycle.
         </p>
         <p>
-            Use {@link org.apache.zest.library.servlet.ZestServletSupport#application(javax.servlet.ServletContext)} to get
+            Use {@link org.apache.zest.library.servlet.PolygeneServletSupport#application(javax.servlet.ServletContext)} to get
             a handle on the {@link org.apache.zest.api.structure.Application} from the {@link javax.servlet.ServletContext}.
         </p>
 
         <h3>Facilities</h3>
         <p>
-            {@link org.apache.zest.library.servlet.ZestServlet} and {@link org.apache.zest.library.servlet.ZestFilter} respectively
+            {@link org.apache.zest.library.servlet.PolygeneServlet} and {@link org.apache.zest.library.servlet.PolygeneFilter} respectively
             provide base class for easy access to the {@link org.apache.zest.api.structure.Application}} from the
             {@link javax.servlet.ServletContext}.
         </p>

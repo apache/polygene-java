@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Metrics Library."
+description = "Apache Polygene™ Metrics Library."
 
-jar { manifest { name = "Apache Zest™ Library - Metrics" } }
+jar { manifest { name = "Apache Polygene™ Library - Metrics" } }
 
 dependencies {
   compile zest.core.bootstrap

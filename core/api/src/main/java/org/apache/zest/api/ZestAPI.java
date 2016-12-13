@@ -39,9 +39,9 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 
 /**
- * Encapsulation of the Zest API.
+ * Encapsulation of the Polygene API.
  */
-public interface ZestAPI
+public interface PolygeneAPI
 {
     /**
      * If a Modifier gets a reference to the Composite using @This,

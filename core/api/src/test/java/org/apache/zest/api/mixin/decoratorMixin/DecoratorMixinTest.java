@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class DecoratorMixinTest extends AbstractZestTest
+public class DecoratorMixinTest extends AbstractPolygeneTest
 {
     // START SNIPPET: assembly
     @Override

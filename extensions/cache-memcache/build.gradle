@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Memcache Cache Extension"
+description = "Apache Polygene™ Memcache Cache Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Cache - Memcache" } }
+jar { manifest { name = "Apache Polygene™ Extension - Cache - Memcache" } }
 
 dependencies {
   compile zest.core.bootstrap

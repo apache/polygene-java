@@ -19,7 +19,7 @@
  */
 package org.apache.zest.library.spring.bootstrap.internal.application;
 
-import org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap;
+import org.apache.zest.library.spring.bootstrap.PolygeneApplicationBootstrap;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -36,7 +36,7 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ro
 import static org.springframework.util.Assert.hasText;
 import static org.springframework.util.ClassUtils.forName;
 
-public final class ZestBootstrapBeanDefinitionParser
+public final class PolygeneBootstrapBeanDefinitionParser
         implements BeanDefinitionParser
 {
 
@@ -45,13 +45,13 @@ public final class ZestBootstrapBeanDefinitionParser
     @Override
     public final BeanDefinition parse( Element anElement, ParserContext aParserContext )
     {
-        ZestApplicationBootstrap bootstrap = createZestApplicationBootstrap( anElement, aParserContext );
-        AbstractBeanDefinition factoryBeanDefinition = createZestApplicationFactoryBeanDefinition( bootstrap );
+        PolygeneApplicationBootstrap bootstrap = createPolygeneApplicationBootstrap( anElement, aParserContext );
+        AbstractBeanDefinition factoryBeanDefinition = createPolygeneApplicationFactoryBeanDefinition( bootstrap );
         registerBean( aParserContext, factoryBeanDefinition );
         return factoryBeanDefinition;
     }
 
-    private ZestApplicationBootstrap createZestApplicationBootstrap( Element anElement, ParserContext aParserContext )
+    private PolygeneApplicationBootstrap createPolygeneApplicationBootstrap( Element anElement, ParserContext aParserContext )
     {
         String bootstrapClassString = anElement.getAttribute( CLASS );
         hasText( bootstrapClassString );
@@ -63,34 +63,34 @@ public final class ZestBootstrapBeanDefinitionParser
             bootstrapClass = forName( bootstrapClassString, getClass().getClassLoader() );
         } catch ( ClassNotFoundException e )
         {
-            readerContext.error( "Zest bootstrap class [" + bootstrapClassString + "] is not found.", anElement );
+            readerContext.error( "Polygene bootstrap class [" + bootstrapClassString + "] is not found.", anElement );
             return null;
         }
 
-        if ( !ZestApplicationBootstrap.class.isAssignableFrom( bootstrapClass ) )
+        if ( !PolygeneApplicationBootstrap.class.isAssignableFrom( bootstrapClass ) )
         {
-            readerContext.error( CLASS + "attribute is not an instance of [" + ZestApplicationBootstrap.class.getName()
+            readerContext.error( CLASS + "attribute is not an instance of [" + PolygeneApplicationBootstrap.class.getName()
                     + "] class", anElement );
             return null;
         }
 
-        ZestApplicationBootstrap bootstrap = null;
+        PolygeneApplicationBootstrap bootstrap = null;
         try
         {
-            bootstrap = (ZestApplicationBootstrap) instantiateClass( bootstrapClass );
+            bootstrap = (PolygeneApplicationBootstrap) instantiateClass( bootstrapClass );
         } catch ( BeanInstantiationException e )
         {
-            readerContext.error( "Fail to instantiate Zest bootstrap class [" + bootstrapClassString + "]", anElement,
+            readerContext.error( "Fail to instantiate Polygene bootstrap class [" + bootstrapClassString + "]", anElement,
                     e );
         }
         return bootstrap;
     }
 
-    private AbstractBeanDefinition createZestApplicationFactoryBeanDefinition(
-        final ZestApplicationBootstrap applicationBootstrap
+    private AbstractBeanDefinition createPolygeneApplicationFactoryBeanDefinition(
+        final PolygeneApplicationBootstrap applicationBootstrap
     )
     {
-        BeanDefinitionBuilder builder = rootBeanDefinition( ZestApplicationFactoryBean.class );
+        BeanDefinitionBuilder builder = rootBeanDefinition( PolygeneApplicationFactoryBean.class );
         builder.addConstructorArgValue( applicationBootstrap );
         return builder.getBeanDefinition();
     }

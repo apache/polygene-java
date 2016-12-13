@@ -21,7 +21,7 @@ package org.apache.zest.library.spring.bootstrap.internal.application;
 
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.bootstrap.*;
-import org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap;
+import org.apache.zest.library.spring.bootstrap.PolygeneApplicationBootstrap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
@@ -32,17 +32,17 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
 /**
- * This class responsible to handle the lifecycle of Zest application.
+ * This class responsible to handle the lifecycle of Polygene application.
  */
-public final class ZestApplicationFactoryBean
+public final class PolygeneApplicationFactoryBean
         implements FactoryBean, DisposableBean, InitializingBean, ApplicationContextAware
 {
 
-    private final ZestApplicationBootstrap applicationBootstrap;
+    private final PolygeneApplicationBootstrap applicationBootstrap;
 
     private Application application;
 
-    public ZestApplicationFactoryBean( final ZestApplicationBootstrap applicationBootstrap )
+    public PolygeneApplicationFactoryBean( final PolygeneApplicationBootstrap applicationBootstrap )
     {
         Assert.notNull( applicationBootstrap, "'applicationBootstrap' must not be null" );
         this.applicationBootstrap = applicationBootstrap;
@@ -95,13 +95,13 @@ public final class ZestApplicationFactoryBean
                         throws AssemblyException
                 {
                     final ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
-                    ZestApplicationFactoryBean.this.applicationBootstrap.assemble( applicationAssembly );
+                    PolygeneApplicationFactoryBean.this.applicationBootstrap.assemble( applicationAssembly );
                     return applicationAssembly;
                 }
             } );
         } catch ( AssemblyException e )
         {
-            throw new BeanInitializationException( "Fail to bootstrap Zest application.", e );
+            throw new BeanInitializationException( "Fail to bootstrap Polygene application.", e );
         }
 
     }

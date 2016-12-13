@@ -22,7 +22,7 @@ package org.apache.zest.tutorials.composites.tutorial3;
 /**
  * This interface contains only the state
  * of the HelloWorld Composite.
- * The exceptions will be thrown by Zest automatically if
+ * The exceptions will be thrown by Polygene automatically if
  * null is sent in as values. The parameters would have to be declared
  * as @Optional if null is allowed.
  */

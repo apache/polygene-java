@@ -21,7 +21,7 @@ WARNING! This guide is written before the code, and may not work yet.
 
 [[quick-start,Quick Start Guide]]
 = Quick Start =
-If you want to test Apache Zest in the smallest amount of time possible,
+If you want to test Apache Polygene in the smallest amount of time possible,
 without getting bogged down by the details, you have come to the right
 place.
 

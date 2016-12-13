@@ -21,7 +21,7 @@ package org.apache.zest.api.property;
 
 /**
  * If you want to catch getting and setting properties, then create a GenericConcern
- * that wraps the Zest-supplied Property instance with PropertyWrappers. Override
+ * that wraps the Polygene-supplied Property instance with PropertyWrappers. Override
  * get() and/or set() to perform your custom code.
  */
 public class PropertyWrapper

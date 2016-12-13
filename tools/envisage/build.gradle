@@ -20,9 +20,9 @@ import org.apache.zest.gradle.TaskGroups
  *
  */
 
-description = "Visualizer of a Apache Zest™ Application Structure."
+description = "Visualizer of a Apache Polygene™ Application Structure."
 
-jar { manifest { name = "Apache Zest™ Envisage" } }
+jar { manifest { name = "Apache Polygene™ Envisage" } }
 
 dependencies {
   compile zest.core.bootstrap

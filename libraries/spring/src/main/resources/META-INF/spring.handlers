@@ -18,4 +18,4 @@
 #
 #
 
-http\://zest.apache.org/schema/zest/spring=org.apache.zest.library.spring.bootstrap.internal.ZestNamespaceHandler
+http\://zest.apache.org/schema/zest/spring=org.apache.zest.library.spring.bootstrap.internal.PolygeneNamespaceHandler

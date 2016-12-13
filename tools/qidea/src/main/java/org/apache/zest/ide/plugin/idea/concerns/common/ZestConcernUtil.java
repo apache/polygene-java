@@ -33,13 +33,13 @@ import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAn
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernConstants.*;
+import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernConstants.*;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestConcernUtil
+public final class PolygeneConcernUtil
 {
 
 
@@ -222,7 +222,7 @@ public final class ZestConcernUtil
         return genericConcern != null && psiClass.isInheritor( genericConcern, true );
     }
 
-    private ZestConcernUtil()
+    private PolygeneConcernUtil()
     {
     }
 }

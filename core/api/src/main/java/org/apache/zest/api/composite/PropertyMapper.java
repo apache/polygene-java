@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.util.Classes;
@@ -534,7 +534,7 @@ public final class PropertyMapper
         @SuppressWarnings( "unchecked" )
         public Object map( Composite composite, Type type, String value )
         {
-            return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
+            return PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
                 .module()
                 .instance()
                 .newValueFromSerializedState( (Class<Object>) type, value );

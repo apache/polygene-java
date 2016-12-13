@@ -19,7 +19,7 @@
  */
 package org.apache.zest.api.structure;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.util.VisitableHierarchy;
 
 /**
@@ -30,11 +30,11 @@ public interface ApplicationDescriptor
 {
     /**
      * Create a new instance of the Application.
-     * @param runtime Zest Runtime
+     * @param runtime Polygene Runtime
      * @param importedServiceInstances Imported Services instances
      * @return a new instance of the Application.
      */
-    Application newInstance( ZestAPI runtime, Object... importedServiceInstances );
+    Application newInstance( PolygeneAPI runtime, Object... importedServiceInstances );
 
     /**
      * @return the Application's name

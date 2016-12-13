@@ -22,7 +22,7 @@ package org.apache.zest.test;
 import org.apache.zest.test.util.NotYetImplemented;
 import org.junit.After;
 import org.junit.Before;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.bootstrap.ApplicationAssembler;
@@ -30,15 +30,15 @@ import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.junit.Rule;
 
-public abstract class AbstractZestBaseTest
+public abstract class AbstractPolygeneBaseTest
 {
     @Rule public NotYetImplemented.Rule notYetImplementedRule = new NotYetImplemented.Rule();
 
-    protected ZestAPI api;
-    protected ZestSPI spi;
+    protected PolygeneAPI api;
+    protected PolygeneSPI spi;
 
     protected Energy4Java zest;
     protected ApplicationDescriptor applicationModel;
@@ -104,7 +104,7 @@ public abstract class AbstractZestBaseTest
     }
 
     /**
-     * This method is called when there was an AssemblyException in the creation of the Zest application model.
+     * This method is called when there was an AssemblyException in the creation of the Polygene application model.
      * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
      * </p>

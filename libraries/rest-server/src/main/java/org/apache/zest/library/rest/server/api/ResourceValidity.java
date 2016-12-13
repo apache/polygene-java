@@ -25,7 +25,7 @@ import java.time.temporal.ChronoField;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -39,10 +39,10 @@ import org.restlet.resource.ResourceException;
 class ResourceValidity
 {
     private EntityComposite entity;
-    private final ZestSPI spi;
+    private final PolygeneSPI spi;
     private Request request;
 
-    ResourceValidity( EntityComposite entity, ZestSPI spi, Request request )
+    ResourceValidity( EntityComposite entity, PolygeneSPI spi, Request request )
     {
         this.entity = entity;
         this.spi = spi;

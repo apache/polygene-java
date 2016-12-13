@@ -27,11 +27,11 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public class EntityTypeTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Test
     public void givenSubclassedEntityWhenRequestingSuperclassExpectResolutionToWork()

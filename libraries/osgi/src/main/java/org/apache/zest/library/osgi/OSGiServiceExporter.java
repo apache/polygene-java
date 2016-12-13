@@ -36,7 +36,7 @@ import org.osgi.framework.ServiceRegistration;
 import static org.apache.zest.api.util.Classes.interfacesOf;
 
 /**
- * Export Zest services to an OSGi Bundle.
+ * Export Polygene services to an OSGi Bundle.
  */
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 @Activators( OSGiServiceExporter.Activator.class )

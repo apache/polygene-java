@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[community-docs,Writing Documentation]]
-= Writing Zest™ Documentation =
+= Writing Polygene™ Documentation =
 
 The documents use the asciidoc format, see:
 

@@ -23,7 +23,7 @@ import java.time.Instant;
 import org.apache.zest.api.time.SystemTime;
 
 /**
- * ActivationEvents are fired during activation and passivation of instances in Zest.
+ * ActivationEvents are fired during activation and passivation of instances in Polygene.
  */
 public final class ActivationEvent
 {

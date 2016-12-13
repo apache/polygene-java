@@ -102,7 +102,7 @@ public final class GraphPane
         } );
     }
 
-    public void initZest( ApplicationDetailDescriptor descriptor )
+    public void initPolygene( ApplicationDetailDescriptor descriptor )
     {
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();

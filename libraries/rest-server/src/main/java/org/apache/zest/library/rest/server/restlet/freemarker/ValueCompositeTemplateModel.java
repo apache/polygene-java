@@ -28,7 +28,7 @@ import freemarker.template.TemplateScalarModel;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -47,7 +47,7 @@ public class ValueCompositeTemplateModel
     {
         this.composite = composite;
         this.wrapper = wrapper;
-        descriptor = (ValueDescriptor) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite );
+        descriptor = (ValueDescriptor) PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite );
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ValueCompositeTemplateModel
     public TemplateCollectionModel values()
         throws TemplateModelException
     {
-        List<Object> values = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
+        List<Object> values = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
             .state().properties()
             .map( (Function<Property<?>, Object>) objectProperty -> {
                 try
@@ -94,7 +94,7 @@ public class ValueCompositeTemplateModel
     {
         try
         {
-            return wrapper.wrap( ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+            return wrapper.wrap( PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF
                                      .apply( composite )
                                      .state()
                                      .propertyFor( descriptor.state().findPropertyModelByName( key ).accessor() )

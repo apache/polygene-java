@@ -34,9 +34,9 @@ import static com.intellij.openapi.actionSystem.DataKeys.PROJECT;
 import static com.intellij.openapi.actionSystem.DataKeys.PSI_ELEMENT;
 import static com.intellij.util.Icons.CLASS_ICON;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernConstants.TEMPLATE_GENERIC_CONCERN_OF;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.getConcernOfClass;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernConstants.TEMPLATE_GENERIC_CONCERN_OF;
+import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.getConcernOfClass;
 
 /**
  * JAVADOC: Non generic concern

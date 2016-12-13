@@ -31,7 +31,7 @@ import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +45,7 @@ import static org.junit.Assume.assumeTrue;
  * </p>
  */
 public class CleanStackTraceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @BeforeClass

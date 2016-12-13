@@ -20,7 +20,7 @@
 
 package org.apache.zest.test;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Module;
@@ -30,18 +30,18 @@ import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * Base class for Zest scenario tests. This will create one Zest application per class instead of per test.
+ * Base class for Polygene scenario tests. This will create one Polygene application per class instead of per test.
  */
-public abstract class AbstractZestScenarioTest
+public abstract class AbstractPolygeneScenarioTest
     implements Assembler
 {
-    static protected ZestAPI api;
-    static protected ZestSPI spi;
+    static protected PolygeneAPI api;
+    static protected PolygeneSPI spi;
 
     static protected Energy4Java zest;
     static protected ApplicationDescriptor applicationModel;
@@ -91,7 +91,7 @@ public abstract class AbstractZestScenarioTest
     }
 
     /**
-     * This method is called when there was an AssemblyException in the creation of the Zest application model.
+     * This method is called when there was an AssemblyException in the creation of the Polygene application model.
      * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
      * </p>

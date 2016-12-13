@@ -48,8 +48,8 @@ import org.apache.zest.library.uowfile.bootstrap.UoWFileAssembler;
 import org.apache.zest.library.uowfile.internal.ConcurrentUoWFileModificationException;
 import org.apache.zest.library.uowfile.singular.HasUoWFileLifecycle;
 import org.apache.zest.library.uowfile.singular.UoWFileLocator;
-import org.apache.zest.spi.ZestSPI;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.spi.PolygeneSPI;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,7 +66,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class HasUoWFileTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFileTest.class );
     private static final URL CREATION_CONTENT_URL = HasUoWFileTest.class.getResource( "creation.txt" );
@@ -95,7 +95,7 @@ public class HasUoWFileTest
         private HasIdentity meAsIdentity;
 
         @Structure
-        private ZestSPI spi;
+        private PolygeneSPI spi;
 
         @Override
         public File locateAttachedFile()

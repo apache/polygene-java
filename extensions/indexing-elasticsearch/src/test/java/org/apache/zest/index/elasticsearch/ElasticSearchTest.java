@@ -36,7 +36,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -54,7 +54,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ElasticSearchTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @BeforeClass
     public static void beforeClass_IBMJDK()

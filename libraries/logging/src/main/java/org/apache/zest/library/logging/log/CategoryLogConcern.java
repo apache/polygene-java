@@ -20,7 +20,7 @@
 package org.apache.zest.library.logging.log;
 
 import java.io.Serializable;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.TransientBuilderFactory;
@@ -32,7 +32,7 @@ import org.apache.zest.library.logging.log.service.LoggingService;
 public final class CategoryLogConcern
     implements CategoryLog
 {
-    @Structure private ZestAPI api;
+    @Structure private PolygeneAPI api;
     @Optional @Service private LoggingService loggingService;
     @This private Composite composite;
 

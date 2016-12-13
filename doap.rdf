@@ -32,11 +32,11 @@
   <Project rdf:about="http://zest.apache.org/">
     <created>2008-12-17</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
-    <name>Apache Zest</name>
+    <name>Apache Polygene</name>
     <homepage rdf:resource="https://zest.apache.org/" />
     <asfext:pmc rdf:resource="https://zest.apache.org" />
-    <shortdesc>Apache Zest is a community based effort exploring Composite Oriented Programming for domain centric application development.</shortdesc>
-    <description>Apache Zest is a community based effort exploring Composite Oriented Programming for domain centric application development. This includes evolved concepts from Aspect Oriented Programming, Dependency Injection and Domain Driven Design. Composite Oriented Programming allows developers to work with 'fragments', smaller than classes, and 'compose' fragments into larger 'composites' which acts like the regular objects. Zest also tackles the enforcement of application composition, i.e. composites are declared in modules, modules are contained in layers and access between layers are controlled/enforced. Apache Zest™ (Java Edition), first Apache Zest sub-project, is an implementation of Composite Oriented Programming, using the standard Java platform, without the use of any pre-processors or new language elements. Everything you know from Java still applies and you can leverage both your experience and toolkits to become more productive with Composite Oriented Programming today.</description>    
+    <shortdesc>Apache Polygene is a community based effort exploring Composite Oriented Programming for domain centric application development.</shortdesc>
+    <description>Apache Polygene is a community based effort exploring Composite Oriented Programming for domain centric application development. This includes evolved concepts from Aspect Oriented Programming, Dependency Injection and Domain Driven Design. Composite Oriented Programming allows developers to work with 'fragments', smaller than classes, and 'compose' fragments into larger 'composites' which acts like the regular objects. Polygene also tackles the enforcement of application composition, i.e. composites are declared in modules, modules are contained in layers and access between layers are controlled/enforced. Apache Polygene™ (Java Edition), first Apache Polygene sub-project, is an implementation of Composite Oriented Programming, using the standard Java platform, without the use of any pre-processors or new language elements. Everything you know from Java still applies and you can leverage both your experience and toolkits to become more productive with Composite Oriented Programming today.</description>
     <bug-database rdf:resource="https://issues.apache.org/jira/browse/ZEST" />
     <mailing-list rdf:resource="https://www.apache.org/foundation/mailinglists.html" />
     <download-page rdf:resource="https://zest.apache.org/download.html" />

@@ -23,7 +23,7 @@ package org.apache.zest.sample.rental.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.injection.scope.Uses;
@@ -90,7 +90,7 @@ public interface Page
             throws RenderException
         {
             Class<? extends Composite> compositeType =
-                (Class<Composite>) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( context.page() ).types().findFirst().orElse( null );
+                (Class<Composite>) PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( context.page() ).types().findFirst().orElse( null );
             try
             {
                 Method method = findMethod( context.methodName(), compositeType );

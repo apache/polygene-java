@@ -30,13 +30,13 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * Tests for GenericConcern
  */
 public class GenericConcernTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )

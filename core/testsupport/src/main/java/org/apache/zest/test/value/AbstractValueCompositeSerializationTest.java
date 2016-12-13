@@ -53,7 +53,7 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -66,7 +66,7 @@ import static org.junit.Assert.assertThat;
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Rule
     public TestName testName = new TestName();
@@ -139,7 +139,7 @@ public abstract class AbstractValueCompositeSerializationTest
         AnotherValue anotherValue3 = createAnotherValue( "Niclas", "Hedhman" );
 
         // FIXME Some Control Chars are not supported in JSON nor in XML, what should we do about it?
-        // Should Zest Core ensure the chars used in strings are supported by the whole stack?
+        // Should Polygene Core ensure the chars used in strings are supported by the whole stack?
         // proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
         proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );

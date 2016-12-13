@@ -33,10 +33,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 public abstract class AbstractJettyTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     protected CloseableHttpClient defaultHttpClient;
     protected ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>()

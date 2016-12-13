@@ -29,15 +29,15 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
-import org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle;
+import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.*;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.concerns.common.PolygeneConcernUtil.*;
 
 
 /**
@@ -117,7 +117,7 @@ public final class ConcernsAnnotationDeclaredCorrectlyInspection extends Abstrac
             // If concern class does not inherit concern class, suggest remove that reference.
             if( !concernClass.isInheritor( concernOfClass, true ) )
             {
-                String message = ZestResourceBundle.message(
+                String message = PolygeneResourceBundle.message(
                     "concerns.annotation.declared.correctly.error.concern.class.does.not.extend.ConcernOf",
                     concernClass.getQualifiedName()
                 );

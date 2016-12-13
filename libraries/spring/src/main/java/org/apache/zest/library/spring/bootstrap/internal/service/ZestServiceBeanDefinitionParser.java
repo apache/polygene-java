@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import static org.apache.zest.library.spring.bootstrap.Constants.BEAN_ID_ZEST_APPLICATION;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 
-public final class ZestServiceBeanDefinitionParser
+public final class PolygeneServiceBeanDefinitionParser
     implements BeanDefinitionParser
 {
     private static final String SERVICE_ID = "id";

@@ -31,7 +31,7 @@ import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceUnavailableException;
 
 /**
- * Import OSGi services in a Zest Module.
+ * Import OSGi services in a Polygene Module.
  */
 public class OSGiServiceImporter
     implements ServiceImporter

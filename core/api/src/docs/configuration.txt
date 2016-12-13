@@ -13,14 +13,14 @@
 
 [[core-api-service-configuration,Service Configuration]]
 = Service Configuration =
-Configuration in Zest™ is for Zest™ <<core-api-service>> only. The Configuration is stored in a visible Entity
+Configuration in Polygene™ is for Polygene™ <<core-api-service>> only. The Configuration is stored in a visible Entity
 Store and is therefor runtime modifiable and not static in properties or XML files as in most other dependency
 injection frameworks.
 
 The Configuration system itself will handle all the details with interfacing with reading and writing the configuration.
 The normal UnitOfWork management is used, but handled internally by the configuration system.
 
-In Zest, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
+In Polygene, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
 it can not be found, then it will try to bootstrap it from a properties file, with the same name as the
 ServiceDescriptor.identifiedBy(), which is set during <<core-bootstrap-assembly>> and defaults to the fully qualified
 classname of the <<core-api-service>> type.

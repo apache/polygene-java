@@ -69,7 +69,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( SimpleProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
 
             for( int i = 0; i < 10000; i++ )
             {
@@ -98,7 +98,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( SimpleProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
 
             profile( () -> {
                 Report report = new Report( storeName );
@@ -134,7 +134,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( SimpleProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
             profile( () -> {
                 Report report = new Report( storeName );
                 report.start( "createEntityInBulkWithSingleProperty" );
@@ -170,7 +170,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( ComplexProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
             profile( () -> {
                 Report report = new Report( storeName );
                 report.start( "createEntityWithComplexType" );
@@ -201,7 +201,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( ComplexProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
             profile( () -> {
                 Report report = new Report( storeName );
                 report.start( "createEntityInBulkWithComplexType" );
@@ -237,7 +237,7 @@ public abstract class AbstractEntityStorePerformanceTest
         try
         {
             Assembler assembler = module -> module.entities( ComplexProduct.class );
-            createZestRuntime( assembler );
+            createPolygeneRuntime( assembler );
             {
                 int bulk = 0;
                 UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
@@ -312,7 +312,7 @@ public abstract class AbstractEntityStorePerformanceTest
         System.out.println( "Report written to " + name );
     }
 
-    private void createZestRuntime( Assembler testSetup )
+    private void createPolygeneRuntime( Assembler testSetup )
         throws Exception
     {
         Energy4Java zest = new Energy4Java();

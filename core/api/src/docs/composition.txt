@@ -18,14 +18,14 @@ Composition is at the heart of COP, and refers to two different levels of constr
 1. the ability to assemble (compose) objects from smaller pieces, called Fragments.
 2. the construction of applications by assembling Composites into Modules and Modules into Layers.
 
-In Zest, we use the term Assembly for the second case of composition. See separate chapter.
+In Polygene, we use the term Assembly for the second case of composition. See separate chapter.
 
 Composition will allow library authors a new level of flexibility in how functionality is provided to client code. More
 on that later.
 
 == Fragments ==
 
-There are 4 types of Fragments in Zest;
+There are 4 types of Fragments in Polygene;
 
     * <<core-api-mixin>> - The state carrying part of a Composite.
     * <<core-api-constraint>> - Rules for in and out arguments, typically used for validation.
@@ -45,14 +45,14 @@ these, so the right meta type is used for the right purpose.
     * Service - Service is injectable to other composites and java objects. They are not persistable, but if
       referenced from an Entity or Value, a new reference to the Service will be injected when the Entity/Value is
       deserialized. Services are singletons. There are 'hosted' and 'imported' Services. The 'hosted' Service has
-      Configuration and its life cycle controlled by the Zest™ runtime, whereas the 'imported' Services are external
+      Configuration and its life cycle controlled by the Polygene™ runtime, whereas the 'imported' Services are external
       references.
     * Transient - Short-lived composites that are not persistable. Equals/hashCode/toString are forwarded to the
       Mixin Type declaring those methods explicitly.
 
-In versions of Zest™ prior to 2.0 (then Qi4j), composite types had to extend one of these 4 meta types, but in 2.0 and later, the
+In versions of Polygene™ prior to 2.0 (then Qi4j), composite types had to extend one of these 4 meta types, but in 2.0 and later, the
 meta type interface is added dynamically during <<core-bootstrap-assembly>>.
-We can therefor get rid of a lot of additional types, and use Zest-free interfaces directly;
+We can therefor get rid of a lot of additional types, and use Polygene-free interfaces directly;
 
 [snippet,java]
 -----------

@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ LevelDB EntityStore Extension"
+description = "Apache Polygene™ LevelDB EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - LevelDB" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - LevelDB" } }
 
 dependencies {
   compile zest.core.bootstrap

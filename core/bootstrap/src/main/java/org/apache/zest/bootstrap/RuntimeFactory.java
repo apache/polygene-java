@@ -20,44 +20,44 @@
 package org.apache.zest.bootstrap;
 
 /**
- * Zest runtime factory.
+ * Polygene runtime factory.
  */
 public interface RuntimeFactory
 {
-    ZestRuntime createRuntime();
+    PolygeneRuntime createRuntime();
 
     /**
-     * Standalone application Zest runtime factory.
+     * Standalone application Polygene runtime factory.
      */
     public final class StandaloneApplicationRuntimeFactory
         implements RuntimeFactory
     {
         @Override
-        public ZestRuntime createRuntime()
+        public PolygeneRuntime createRuntime()
         {
             ClassLoader loader = getClass().getClassLoader();
             try
             {
-                Class<? extends ZestRuntime> runtimeClass = loadRuntimeClass( loader );
+                Class<? extends PolygeneRuntime> runtimeClass = loadRuntimeClass( loader );
                 return runtimeClass.newInstance();
             }
             catch( ClassNotFoundException e )
             {
-                System.err.println( "Zest Runtime jar is not present in the classpath." );
+                System.err.println( "Polygene Runtime jar is not present in the classpath." );
             }
             catch( InstantiationException | IllegalAccessException e )
             {
-                System.err.println( "Invalid Zest Runtime class. If you are providing your own Zest Runtime, please " +
+                System.err.println( "Invalid Polygene Runtime class. If you are providing your own Polygene Runtime, please " +
                                     "contact dev@zest.apache.org mailing list for assistance." );
             }
             return null;
         }
 
         @SuppressWarnings( { "unchecked" } )
-        private Class<? extends ZestRuntime> loadRuntimeClass( ClassLoader loader )
+        private Class<? extends PolygeneRuntime> loadRuntimeClass( ClassLoader loader )
             throws ClassNotFoundException
         {
-            return (Class<? extends ZestRuntime>) loader.loadClass( "org.apache.zest.runtime.ZestRuntimeImpl" );
+            return (Class<? extends PolygeneRuntime>) loader.loadClass( "org.apache.zest.runtime.PolygeneRuntimeImpl" );
         }
     }
 }

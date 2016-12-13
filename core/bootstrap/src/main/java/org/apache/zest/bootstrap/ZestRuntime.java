@@ -20,19 +20,19 @@
 
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.api.ZestAPI;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.api.PolygeneAPI;
+import org.apache.zest.spi.PolygeneSPI;
 
 /**
- * This interface has to be implemented by Zest runtimes.
+ * This interface has to be implemented by Polygene runtimes.
  */
-public interface ZestRuntime
+public interface PolygeneRuntime
 {
     ApplicationAssemblyFactory applicationAssemblyFactory();
 
     ApplicationModelFactory applicationModelFactory();
 
-    ZestAPI api();
+    PolygeneAPI api();
 
-    ZestSPI spi();
+    PolygeneSPI spi();
 }

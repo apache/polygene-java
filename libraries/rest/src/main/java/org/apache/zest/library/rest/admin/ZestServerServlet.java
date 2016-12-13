@@ -27,9 +27,9 @@ import org.restlet.Context;
 import org.restlet.ext.servlet.ServerServlet;
 
 /**
- * Integration with Zest. Register an object extending Application to use.
+ * Integration with Polygene. Register an object extending Application to use.
  */
-public class ZestServerServlet
+public class PolygeneServerServlet
     extends ServerServlet
 {
     @Structure

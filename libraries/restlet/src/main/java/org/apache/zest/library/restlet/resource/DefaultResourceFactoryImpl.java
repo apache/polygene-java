@@ -27,7 +27,7 @@ import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -52,7 +52,7 @@ public class DefaultResourceFactoryImpl<K extends HasIdentity, T extends ServerR
     private ValueBuilderFactory vbf;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Override
     public T create( Class<T> entityType, Request request, Response response, Context context )

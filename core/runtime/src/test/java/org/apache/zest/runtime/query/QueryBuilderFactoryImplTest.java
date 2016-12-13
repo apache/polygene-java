@@ -31,7 +31,7 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +46,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
  * JAVADOC
  */
 public class QueryBuilderFactoryImplTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private List<TestComposite> composites;
 

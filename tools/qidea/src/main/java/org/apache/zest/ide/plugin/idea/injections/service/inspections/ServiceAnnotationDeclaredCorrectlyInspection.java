@@ -29,11 +29,11 @@ import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInj
 import org.apache.zest.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.ZestServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.ZestServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.service.common.ZestServiceAnnotationUtil.isValidServiceAnnotationDeclaration;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.getStructureAnnotation;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult;
+import static org.apache.zest.ide.plugin.idea.injections.service.common.PolygeneServiceAnnotationUtil.isValidServiceAnnotationDeclaration;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.getStructureAnnotation;
 
 /**
  * {@code ServiceAnnotationDeclaredCorrectly} validates {@code @Service} injection annotation declaration.

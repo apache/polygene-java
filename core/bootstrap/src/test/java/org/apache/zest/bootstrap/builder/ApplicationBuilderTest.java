@@ -54,7 +54,7 @@ public class ApplicationBuilderTest
         Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
-        assertThat( service.sayHello(), equalTo( "Hello Zest!" ) );
+        assertThat( service.sayHello(), equalTo( "Hello Polygene!" ) );
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ApplicationBuilderTest
         Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
-        assertThat( service.sayHello(), equalTo( "Hello Zest!" ) );
+        assertThat( service.sayHello(), equalTo( "Hello Polygene!" ) );
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ApplicationBuilderTest
         Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
-        assertThat( service.sayHello(), equalTo( "Hello Zest!" ) );
+        assertThat( service.sayHello(), equalTo( "Hello Polygene!" ) );
     }
 
 
@@ -129,7 +129,7 @@ public class ApplicationBuilderTest
             @Override
             public String sayHello()
             {
-                return "Hello Zest!";
+                return "Hello Polygene!";
             }
         }
     }

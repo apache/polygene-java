@@ -20,9 +20,9 @@ import org.apache.zest.gradle.TaskGroups
  *
  */
 
-description = "Apache Zest™ JMX Library provides Java Management Extension (JMX) integration for Apache Zest™ applications."
+description = "Apache Polygene™ JMX Library provides Java Management Extension (JMX) integration for Apache Polygene™ applications."
 
-jar { manifest { name = "Apache Zest™ Library - JMX" } }
+jar { manifest { name = "Apache Polygene™ Library - JMX" } }
 
 dependencies {
   compile zest.core.bootstrap

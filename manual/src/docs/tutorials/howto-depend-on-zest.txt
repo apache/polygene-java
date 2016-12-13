@@ -17,8 +17,8 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[howto-depend-on-zest,Depend on Zest™ in your build]]
-= Depend on Zest™ in your build =
+[[howto-depend-on-zest,Depend on Polygene™ in your build]]
+= Depend on Polygene™ in your build =
 
 NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
 add other repositories to your build scripts accordingly.
@@ -42,7 +42,7 @@ https://zest.apache.org/download.html[download] the SDK distribution.
 
 == Using Maven ==
 
-You simply declare dependencies on Zest™ artifacts:
+You simply declare dependencies on Polygene™ artifacts:
 
 [source,xml]
 ----
@@ -67,7 +67,7 @@ You simply declare dependencies on Zest™ artifacts:
 </dependencies>
 ----
 
-Where `ZEST_VERSION` is the Zest™ version you want to use.
+Where `ZEST_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -86,7 +86,7 @@ If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapsho
 
 == Using Gradle ==
 
-You simply declare dependencies on Zest™ artifacts:
+You simply declare dependencies on Polygene™ artifacts:
 
 [source,groovy]
 ----
@@ -97,7 +97,7 @@ dependencies {
 }
 ----
 
-Where `ZEST_VERSION` is the Zest™ version you want to use.
+Where `ZEST_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -111,7 +111,7 @@ repositories {
 
 == Using Buildr ==
 
-You simply declare dependencies on Zest™ artifacts:
+You simply declare dependencies on Polygene™ artifacts:
 
 [source,ruby]
 ----
@@ -120,7 +120,7 @@ package(:war).with :libs => 'org.apache.zest.core:org.apache.zest.core.runtime:Z
 test.with 'org.apache.zest.core:org.apache.zest.core.testsupport:ZEST_VERSION'
 ----
 
-Where `ZEST_VERSION` is the Zest™ version you want to use.
+Where `ZEST_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -132,7 +132,7 @@ repositories.remote << 'https://repository.apache.org/snapshots/'
 
 == Using SBT ==
 
-You simply declare dependencies on Zest™ artifacts:
+You simply declare dependencies on Polygene™ artifacts:
 
 [source,scala]
 ----
@@ -147,7 +147,7 @@ libraryDependencies += \
     withSources() withJavadoc()
 ----
 
-Where `ZEST_VERSION` is the Zest™ version you want to use.
+Where `ZEST_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -159,7 +159,7 @@ resolvers += "apache-snapshots" at "https://repository.apache.org/snapshots/"
 
 == Using Ivy ==
 
-You simply declare dependencies on Zest™ artifacts:
+You simply declare dependencies on Polygene™ artifacts:
 
 [source,xml]
 ----
@@ -175,7 +175,7 @@ You simply declare dependencies on Zest™ artifacts:
 </ivy-module>
 ----
 
-Where `ZEST_VERSION` is the Zest™ version you want to use.
+Where `ZEST_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository in a `ivysettings.xml` file:
 

@@ -29,7 +29,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
  * Testing of equality of entity composites.
  */
 public class EntityCompositeEqualityTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private UnitOfWork unitOfWork;
     private EntityBuilder<MyComposite> myCompositeBuilder;

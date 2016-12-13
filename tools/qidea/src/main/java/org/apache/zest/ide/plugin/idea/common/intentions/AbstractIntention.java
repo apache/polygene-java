@@ -30,7 +30,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * This class is based from {@code com.siyeh.ipp.base.Intention}

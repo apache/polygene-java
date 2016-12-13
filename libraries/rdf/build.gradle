@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ RDF Library provides commonalities of various RDF based services in Apache Zest™, such as RDF Indexing."
+description = "Apache Polygene™ RDF Library provides commonalities of various RDF based services in Apache Polygene™, such as RDF Indexing."
 
-jar { manifest { name = "Apache Zest™ Library - RDF" } }
+jar { manifest { name = "Apache Polygene™ Library - RDF" } }
 
 dependencies {
   compile zest.core.spi

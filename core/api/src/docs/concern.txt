@@ -32,12 +32,12 @@ business domain, and can be used for many important things in the domain model, 
 ensure that the state in the entire composite is valid), coordinating services, handling events and much more.
 
 Typed Concerns doesn't have to implement all the methods in the Mixin Type. By making the class abstract and only
-implementing the methods of interest, Zest™ runtime will subclass the concern (otherwise not valid for the JVM), but the
+implementing the methods of interest, Polygene™ runtime will subclass the concern (otherwise not valid for the JVM), but the
 generated methods will never be invoked.
 
 == Generic Concern ==
 In classic AOP, all advice are effectively _generic_. There is no type information in the advice implementation and the
-pointcut can be defined anywhere in the code, and the implementation uses proxy InvocationHandlers. Zest™ supports this
+pointcut can be defined anywhere in the code, and the implementation uses proxy InvocationHandlers. Polygene™ supports this
 construct as well, and we call it *Generic Concern*.
 
 Generic Concerns will be added to all methods that the AppliesToFilter evaluates to true. By default, that is all methods.

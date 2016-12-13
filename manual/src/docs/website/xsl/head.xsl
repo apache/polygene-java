@@ -68,7 +68,7 @@
 
 <script type="text/javascript" src="js/tablestyler.js"></script>
 
-<!-- Apache Zest WebSite Progressive Enhancement -->
+<!-- Apache Polygene WebSite Progressive Enhancement -->
 
 <link href="css/progressive-enhancement.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.scrollTo-1.4.2.js"></script>

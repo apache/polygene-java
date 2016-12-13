@@ -34,8 +34,8 @@ public class Main
     public static void main( String[] args )
             throws Exception
     {
-        // Bootstrap Zest Runtime
-        // Create a Zest Runtime
+        // Bootstrap Polygene Runtime
+        // Create a Polygene Runtime
         zest = new Energy4Java();
 
         // Instantiate the Application Model.

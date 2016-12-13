@@ -25,7 +25,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ import org.openrdf.repository.RepositoryException;
 /**
  * JAVADOC
  */
-public class NativeRepositoryTest extends AbstractZestTest
+public class NativeRepositoryTest extends AbstractPolygeneTest
 {
    @Rule
    public final TemporaryFolder tmpDir = new TemporaryFolder();

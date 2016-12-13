@@ -32,7 +32,7 @@ public class RestAssembler
         throws AssemblyException
     {
         module.objects( RestApplication.class ).visibleIn( visibility() );
-        module.objects( ZestFinder.class,
+        module.objects( PolygeneFinder.class,
                         EntitiesResource.class,
                         EntityResource.class,
                         IndexResource.class,

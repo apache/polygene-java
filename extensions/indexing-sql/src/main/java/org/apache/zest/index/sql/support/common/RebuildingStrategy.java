@@ -48,7 +48,7 @@ public interface RebuildingStrategy
 
     /**
      * The re-building strategy which NEVER re-builds the database schema. Useful when current
-     * Zest-related database schema structure must be preserved at all costs.
+     * Polygene-related database schema structure must be preserved at all costs.
      */
     public class NeverNeed
         implements RebuildingStrategy

@@ -21,23 +21,23 @@ package org.apache.zest.library.servlet;
 
 import javax.servlet.ServletContext;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap;
+import org.apache.zest.library.servlet.lifecycle.AbstractPolygeneServletBootstrap;
 
-public final class ZestServletSupport
+public final class PolygeneServletSupport
 {
 
     public static final String APP_IN_CTX = "zest-application-servlet-context-attribute";
 
     /**
      * @param servletContext    ServletContext
-     * @return                  The Application from the servlet context attribute previously set by {@link AbstractZestServletBootstrap}
+     * @return                  The Application from the servlet context attribute previously set by {@link AbstractPolygeneServletBootstrap}
      */
     public static Application application( ServletContext servletContext )
     {
-        return ( Application ) servletContext.getAttribute( APP_IN_CTX ); // TODO try/catch and find a suitable Zest exception
+        return ( Application ) servletContext.getAttribute( APP_IN_CTX ); // TODO try/catch and find a suitable Polygene exception
     }
 
-    private ZestServletSupport()
+    private PolygeneServletSupport()
     {
     }
 

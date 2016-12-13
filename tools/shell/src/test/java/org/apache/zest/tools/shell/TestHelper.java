@@ -24,7 +24,7 @@ import java.io.File;
 
 public class TestHelper
 {
-    public static void setZestZome()
+    public static void setPolygeneZome()
     {
         String cwd = new File( ".").getAbsolutePath();
         if( cwd.endsWith( "/java/." )) // IDEA default runner

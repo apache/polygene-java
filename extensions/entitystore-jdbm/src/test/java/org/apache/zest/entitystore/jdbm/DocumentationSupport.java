@@ -23,9 +23,9 @@ package org.apache.zest.entitystore.jdbm;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
-public class DocumentationSupport extends AbstractZestTest
+public class DocumentationSupport extends AbstractPolygeneTest
 {
     
     // START SNIPPET: UsingAssembler

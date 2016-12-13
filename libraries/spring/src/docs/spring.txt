@@ -27,35 +27,35 @@ source=libraries/spring/dev-status.xml
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
-== Using Spring Framework in Apache Zest™ ==
-Zest™ supports that Spring Application Context is imported into the Zest™ runtime, and the declared Spring
-beans will be available as Zest™ services. The most important things to remember are;
+== Using Spring Framework in Apache Polygene™ ==
+Polygene™ supports that Spring Application Context is imported into the Polygene™ runtime, and the declared Spring
+beans will be available as Polygene™ services. The most important things to remember are;
 
     1. Only Spring Singletons are currently supported.
-    2. One ApplicationContext per Zest™ Module.
-    3. The Zest™ service will be given the same name as the Spring Bean name.
-    4. Zest™ Configuration is not reacbable from the Spring bean (kind of obvious).
+    2. One ApplicationContext per Polygene™ Module.
+    3. The Polygene™ service will be given the same name as the Spring Bean name.
+    4. Polygene™ Configuration is not reacbable from the Spring bean (kind of obvious).
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/ZestImportServiceTest.java
+source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/PolygeneImportServiceTest.java
 tag=import
 ----
 
-== Using Apache Zest™ in Spring Framework ==
-It is also possible to run a Zest™ Application as a Spring Bean and export its Services to Spring.
+== Using Apache Polygene™ in Spring Framework ==
+It is also possible to run a Polygene™ Application as a Spring Bean and export its Services to Spring.
 
-Steps to export Zest™ service:
+Steps to export Polygene™ service:
 
-    1. Create spring BeanFactory service of Zest services to export.
-    2. Create a class that extends ZestApplicationBootstrap.
+    1. Create spring BeanFactory service of Polygene services to export.
+    2. Create a class that extends PolygeneApplicationBootstrap.
     3. Sets the layer and module that register BeanFactory service.
-    4. Assemble Zest application by implementing #assemble method.
+    4. Assemble Polygene application by implementing #assemble method.
     5. Sets the identity of bean factory service. This identity is the spring bean name.
-    6. Declare Zest bootstrap in spring xml application context.
+    6. Declare Polygene bootstrap in spring xml application context.
 
-To bootstrap the Zest™ runtime in Spring, you should have a bootstrap bean that extends the
-+org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap+ and implement the
+To bootstrap the Polygene™ runtime in Spring, you should have a bootstrap bean that extends the
++org.apache.zest.library.spring.bootstrap.PolygeneApplicationBootstrap+ and implement the
 +org.springframework.context.ApplicationContextAware+.
 
 A new bean will appear in the application context, called +"zestApplication"+ which is only
@@ -73,9 +73,9 @@ Example application context;
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
   http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd">
 
-  <!-- class that implements ZestApplicationBootstrap -->
+  <!-- class that implements PolygeneApplicationBootstrap -->
 
-  <zest:bootstrap class="org.hedhman.niclas.MyZestBootstrapper"/>
+  <zest:bootstrap class="org.hedhman.niclas.MyPolygeneBootstrapper"/>
 
   <bean id="someService" class="org.hedhman.niclas.SomeService">
 
@@ -86,6 +86,6 @@ Example application context;
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/MyZestBootstrapper.java
+source=libraries/spring/src/test/java/org/apache/zest/library/spring/MyPolygeneBootstrapper.java
 tag=code
 ----

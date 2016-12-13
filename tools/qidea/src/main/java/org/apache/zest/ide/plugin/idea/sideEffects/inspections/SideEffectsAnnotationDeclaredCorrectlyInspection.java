@@ -29,16 +29,16 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
-import org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle;
-import org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil;
+import org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle;
+import org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.*;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.*;
 
 /**
  * @author edward.yakop@gmail.com
@@ -91,7 +91,7 @@ public final class SideEffectsAnnotationDeclaredCorrectlyInspection extends Abst
         // If SideEffectOf is not resolved, ignore
         Project project = psiClass.getProject();
         GlobalSearchScope searchScope = determineSearchScope( psiClass );
-        PsiClass sideEffectOfClass = ZestSideEffectUtil.getGenericSideEffectClass( project, searchScope );
+        PsiClass sideEffectOfClass = PolygeneSideEffectUtil.getGenericSideEffectClass( project, searchScope );
         if( sideEffectOfClass == null )
         {
             return null;
@@ -119,7 +119,7 @@ public final class SideEffectsAnnotationDeclaredCorrectlyInspection extends Abst
             // If side effect class does not inherit SideEffectOf class, suggest remove that reference.
             if( !sideEffectClass.isInheritor( sideEffectOfClass, true ) )
             {
-                String message = ZestResourceBundle.message(
+                String message = PolygeneResourceBundle.message(
                     "side.effects.annotation.declared.correctly.error.side.effect.does.not.extend.side.effect.of",
                     sideEffectClass.getQualifiedName()
                 );

@@ -39,7 +39,7 @@ import prefuse.data.Node;
 import prefuse.data.Table;
 
 /**
- * Build Apache Zest application model as Prefuse Tree Graph
+ * Build Apache Polygene application model as Prefuse Tree Graph
  */
 /* package */ final class GraphBuilder
 {

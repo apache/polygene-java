@@ -27,7 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertThat;
  * Test for QI-298.
  */
 public class TransientAsClassTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public static class UnderTestConcern extends ConcernOf<InvocationHandler>
         implements InvocationHandler

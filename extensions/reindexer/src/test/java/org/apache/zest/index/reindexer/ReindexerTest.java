@@ -38,7 +38,7 @@ import org.apache.zest.entitystore.jdbm.JdbmConfiguration;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,7 +49,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.junit.Assert.assertEquals;
 
 public class ReindexerTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private static final String ENTITIES_DIR = "zest-entities";
     private static final String INDEX_DIR = "zest-index";

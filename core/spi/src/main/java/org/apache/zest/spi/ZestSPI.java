@@ -22,7 +22,7 @@ package org.apache.zest.spi;
 
 import java.util.Map;
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
@@ -35,10 +35,10 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.spi.entity.EntityState;
 
 /**
- * Encapsulation of the Zest SPI. This is implemented by the runtime.
+ * Encapsulation of the Polygene SPI. This is implemented by the runtime.
  */
-public interface ZestSPI
-    extends ZestAPI
+public interface PolygeneSPI
+    extends PolygeneAPI
 {
     StateHolder stateOf( TransientComposite composite );
 

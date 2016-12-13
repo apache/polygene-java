@@ -32,7 +32,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.fail;
@@ -41,7 +41,7 @@ import static org.junit.Assert.fail;
  * JAVADOC
  */
 public class AggregatedTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

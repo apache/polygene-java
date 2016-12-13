@@ -54,7 +54,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        Identity id = newZestAccount();
+        Identity id = newPolygeneAccount();
 
         // Make sure there's no unit of work
         assertNull( unitOfWorkFactory.currentUnitOfWork() );
@@ -67,7 +67,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        Identity id = newZestAccount();
+        Identity id = newPolygeneAccount();
 
         // Make sure there's no unit of work
         assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );

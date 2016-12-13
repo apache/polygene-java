@@ -39,7 +39,7 @@ import org.apache.zest.library.logging.trace.records.CompositeTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.EntityTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.ServiceTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.TraceRecord;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import java.util.Iterator;
 import org.apache.zest.test.EntityTestAssembler;
@@ -49,7 +49,7 @@ import static org.apache.zest.api.query.QueryExpressions.orderBy;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 public class TracingTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

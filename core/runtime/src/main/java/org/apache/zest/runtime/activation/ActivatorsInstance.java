@@ -31,7 +31,7 @@ import org.apache.zest.api.activation.PassivationException;
 import static java.util.stream.Collectors.toCollection;
 
 /**
- * Instance of a Zest Activators of one Activation target. Contains ordered
+ * Instance of a Polygene Activators of one Activation target. Contains ordered
  * Activators and roll the Activation on the target.
  *
  * @param <ActivateeType> Type of the activation target

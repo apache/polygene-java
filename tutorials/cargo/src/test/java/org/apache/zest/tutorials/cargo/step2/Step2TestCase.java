@@ -23,12 +23,12 @@ import org.junit.Test;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class Step2TestCase
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private Voyage voyage;
     private ShippingService shippingService;

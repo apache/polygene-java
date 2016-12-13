@@ -17,6 +17,6 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[zest-cop,COP with Java and Zest™]]
-= COP with Java and Zest™ =
+[[zest-cop,COP with Java and Polygene™]]
+= COP with Java and Polygene™ =
 

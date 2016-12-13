@@ -22,21 +22,21 @@ package org.apache.zest.library.servlet.lifecycle;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.library.servlet.ZestServlet;
-import org.apache.zest.library.servlet.ZestServletSupport;
+import org.apache.zest.library.servlet.PolygeneServlet;
+import org.apache.zest.library.servlet.PolygeneServletSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract ServletContextListener implementing ApplicationAssembler.
  *
- * Extends this class to easily bind a Zest Application activation/passivation to your webapp lifecycle.
+ * Extends this class to easily bind a Polygene Application activation/passivation to your webapp lifecycle.
  *
  * The {@link Application} is set as a {@link ServletContext} attribute named using a constant.
  * In your servlets, filters, whatever has access to the {@link ServletContext} use the following code to get a
@@ -45,11 +45,11 @@ import org.slf4j.LoggerFactory;
  * <pre>
  *  org.apache.zest.api.structure.Application application;
  *
- *  application = ( Application ) servletContext.getAttribute( ZestServletSupport.APP_IN_CTX );
+ *  application = ( Application ) servletContext.getAttribute( PolygeneServletSupport.APP_IN_CTX );
  *
  *  // Or, shorter:
  *
- *  application = ZestServletSupport.application( servletContext );
+ *  application = PolygeneServletSupport.application( servletContext );
  *
  * </pre>
  *
@@ -63,15 +63,15 @@ import org.slf4j.LoggerFactory;
  * in a distributed environment, the information should be placed into a session, stored in a database, or set in an
  * Enterprise JavaBeans component.
  */
-public abstract class AbstractZestServletBootstrap
+public abstract class AbstractPolygeneServletBootstrap
         implements ServletContextListener, ApplicationAssembler
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( ZestServlet.class.getPackage().getName() );
-    // Zest Runtime
-    protected ZestAPI api;
+    private static final Logger LOGGER = LoggerFactory.getLogger( PolygeneServlet.class.getPackage().getName() );
+    // Polygene Runtime
+    protected PolygeneAPI api;
     protected Energy4Java zest;
-    // Zest Application
+    // Polygene Application
     protected ApplicationDescriptor applicationModel;
     protected Application application;
 
@@ -94,7 +94,7 @@ public abstract class AbstractZestServletBootstrap
             afterApplicationActivation( application );
 
             LOGGER.trace( "Storing Application in ServletContext" );
-            context.setAttribute( ZestServletSupport.APP_IN_CTX, application );
+            context.setAttribute( PolygeneServletSupport.APP_IN_CTX, application );
 
         } catch ( Exception ex ) {
             if ( application != null ) {
@@ -128,7 +128,7 @@ public abstract class AbstractZestServletBootstrap
                 afterApplicationPassivation( application );
             }
         } catch ( Exception ex ) {
-            LOGGER.warn( "Unable to passivate Zest Application.", ex );
+            LOGGER.warn( "Unable to passivate Polygene Application.", ex );
         }
     }
 

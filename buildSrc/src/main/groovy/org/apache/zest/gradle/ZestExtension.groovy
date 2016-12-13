@@ -22,12 +22,12 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 
 @CompileStatic
-class ZestExtension
+class PolygeneExtension
 {
   private final Project project
   final Core core
 
-  ZestExtension( Project project )
+  PolygeneExtension( Project project )
   {
     this.project = project
     this.core = new Core()

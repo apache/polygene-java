@@ -53,7 +53,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.FreePortFinder;
 import org.junit.Before;
@@ -65,7 +65,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-public class RestTest extends AbstractZestTest
+public class RestTest extends AbstractPolygeneTest
 {
     private static final int ADMIN_PORT = FreePortFinder.findFreePortOnLoopback();
 

@@ -29,11 +29,11 @@ import javax.swing.*;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestFacetEditorTab extends FacetEditorTab
+public final class PolygeneFacetEditorTab extends FacetEditorTab
 {
     private final FacetEditorContext editorContext;
 
-    public ZestFacetEditorTab( FacetEditorContext aContext )
+    public PolygeneFacetEditorTab( FacetEditorContext aContext )
     {
         editorContext = aContext;
     }
@@ -41,7 +41,7 @@ public final class ZestFacetEditorTab extends FacetEditorTab
     @Nls
     public final String getDisplayName()
     {
-        return "Zest";
+        return "Polygene";
     }
 
     public JComponent createComponent()

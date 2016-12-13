@@ -21,7 +21,7 @@
 package org.apache.zest.runtime.bootstrap;
 
 import org.junit.Test;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.concern.Concerns;
@@ -33,12 +33,12 @@ import org.apache.zest.api.mixin.NoopMixin;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class DereferenceForBootstrappedConcernsTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -119,7 +119,7 @@ public class DereferenceForBootstrappedConcernsTest
         implements Other
     {
         @Structure
-        private ZestAPI api;
+        private PolygeneAPI api;
 
         @This
         private Composite me;

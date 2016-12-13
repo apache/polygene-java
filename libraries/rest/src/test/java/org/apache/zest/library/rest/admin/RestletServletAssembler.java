@@ -36,7 +36,7 @@ public class RestletServletAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        addServlets( serve( "/zest/*" ).with( ZestServerServletService.class ) ).to( module );
+        addServlets( serve( "/zest/*" ).with( PolygeneServerServletService.class ) ).to( module );
         // addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );
     }
 }

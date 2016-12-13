@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Logging Library provides an advanced logging framework which separates trace, debug and log systems."
+description = "Apache Polygene™ Logging Library provides an advanced logging framework which separates trace, debug and log systems."
 
-jar { manifest { name = "Apache Zest™ Library - Logging" } }
+jar { manifest { name = "Apache Polygene™ Library - Logging" } }
 
 dependencies {
   compile zest.core.bootstrap

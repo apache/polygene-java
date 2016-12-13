@@ -26,23 +26,23 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public abstract class AbstractIssueTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private static final String DEFAULT_ACCOUNT_NAME = "zest";
 
     /**
-     * Creates a new Apaxhe Zest account.
+     * Creates a new Apaxhe Polygene account.
      *
      * @return The new account reference.
      *
      * @throws org.apache.zest.api.unitofwork.UnitOfWorkCompletionException
      *          Thrown if creational fail.
      */
-    protected final Identity newZestAccount()
+    protected final Identity newPolygeneAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();

@@ -1,4 +1,4 @@
-This file contains the GPG keys of Apache Zest developers.
+This file contains the GPG keys of Apache Polygene developers.
 
 Users:    gpg --import KEYS
 
@@ -24,7 +24,7 @@ Developers:
 ********************************* PLEASE NOTE **********************************
 
   Releases will be signed using one of the keys present in this file. This file
-  will be available with the distributed Apache Zest releases at:
+  will be available with the distributed Apache Polygene releases at:
 
       https://dist.apache.org/repos/dist/zest/KEYS
 

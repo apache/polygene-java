@@ -22,20 +22,20 @@ package org.apache.zest.library.servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap;
+import org.apache.zest.library.servlet.lifecycle.AbstractPolygeneServletBootstrap;
 
 /**
  * Base HttpServlet providing easy access to the {@link org.apache.zest.api.structure.Application} from the
  * {@link javax.servlet.ServletContext}.
  *
- * @see AbstractZestServletBootstrap
+ * @see AbstractPolygeneServletBootstrap
  */
-public class ZestServlet extends HttpServlet
+public class PolygeneServlet extends HttpServlet
 {
 
     private Application application;
 
-    public ZestServlet()
+    public PolygeneServlet()
     {
         super();
     }
@@ -45,7 +45,7 @@ public class ZestServlet extends HttpServlet
             throws ServletException
     {
         super.init();
-        application = ZestServletSupport.application( getServletContext() );
+        application = PolygeneServletSupport.application( getServletContext() );
     }
 
     protected final Application application()

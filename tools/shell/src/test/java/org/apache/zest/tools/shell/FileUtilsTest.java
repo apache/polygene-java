@@ -71,7 +71,7 @@ public class FileUtilsTest
     @Test
     public void readPropertiesResourceTest()
     {
-        TestHelper.setZestZome();
+        TestHelper.setPolygeneZome();
         Map<String, String> map = FileUtils.readTemplateProperties( "restapp" );
         assertThat( map, notNullValue() );
         assertThat( map.get( "template.dir" ), equalTo( "etc/templates/restapp/files" ) );

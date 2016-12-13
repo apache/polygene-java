@@ -41,7 +41,7 @@ as Dalvik.
 To do this, add the +AssemblyHelper+ implementation instance as +metaInfo+ to the +ApplicationAssembly+
 
 We think this is so rare, that the +AssemblyHelper+ class will remain in the +core/runtime+ module and has not
-been promoted to the +core/bootstrap+ module. If you plan to use this feature, please contact the Zest development
+been promoted to the +core/bootstrap+ module. If you plan to use this feature, please contact the Polygene development
 team at +dev@zest.apache.org+ to ensure we can make this a better supported, backed by real usecases.
 
 Fictitious example of using a hypothetical Dalvik capable classloader;

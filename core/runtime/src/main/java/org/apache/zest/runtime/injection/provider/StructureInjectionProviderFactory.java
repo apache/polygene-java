@@ -20,7 +20,7 @@
 package org.apache.zest.runtime.injection.provider;
 
 import java.lang.reflect.Type;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.query.QueryBuilderFactory;
@@ -119,7 +119,7 @@ public final class StructureInjectionProviderFactory
             {
                 return context.module().layer().instance().application().descriptor();
             }
-            else if( ZestAPI.class.isAssignableFrom( clazz ) )
+            else if( PolygeneAPI.class.isAssignableFrom( clazz ) )
             {
                 return (( ApplicationInstance) context.module().layer().instance().application()).runtime();
             }

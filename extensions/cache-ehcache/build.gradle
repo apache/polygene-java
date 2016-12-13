@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Ehcache Cache Extension"
+description = "Apache Polygene™ Ehcache Cache Extension"
 
-jar { manifest { name = "Apache Zest™ Extension: EhCache" } }
+jar { manifest { name = "Apache Polygene™ Extension: EhCache" } }
 
 dependencies {
   compile zest.core.bootstrap

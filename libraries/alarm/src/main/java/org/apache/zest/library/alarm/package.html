@@ -30,7 +30,7 @@
 </p>
 
 <p>
-    This Alarm System, that is based on Zest's excellent persistence support, is an attempt at bringing a first-class
+    This Alarm System, that is based on Polygene's excellent persistence support, is an attempt at bringing a first-class
     model from the industrial automation world into the enterprise of large-scale software systems, that nowadays
     are so large and un-wieldly that log files, syslog and emails can no longer cope with the burden of management
     needs.
@@ -78,8 +78,8 @@
     the behavior of the state machine in the <i>Alarm</i> itself.
 </p>
 <p>
-    The <i>Alarm Model</i> is an Zest™ <code>Service</code> and located via the normal <code>Visibility</code> rules,
-    making it possible to have a different <i>Alarm Model</i> in each Zest™ module.
+    The <i>Alarm Model</i> is an Polygene™ <code>Service</code> and located via the normal <code>Visibility</code> rules,
+    making it possible to have a different <i>Alarm Model</i> in each Polygene™ module.
 </p>
 
 <h2>Alarm Status</h2>
@@ -105,7 +105,7 @@
 </p>
 <h1>State Management</h1>
 <p>
-    <i>Alarm</i> instances are Zest™ Entities, so the <i>Alarm Status</i> is preserved over time in persisted storage.
+    <i>Alarm</i> instances are Polygene™ Entities, so the <i>Alarm Status</i> is preserved over time in persisted storage.
     This in turn means that the <i>Alarm</i> must be accessed within a <code>UnitOfWork</code> and the Alarm is not valid
     outside the <code>UnitOfWork</code>.
     </p>

@@ -31,7 +31,7 @@ import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.api.sideeffect.SideEffects;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertThat;
  * Test the @This annotation
  */
 public class ThisInjectionTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public static boolean sideEffectInjected;
 

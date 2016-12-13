@@ -56,7 +56,7 @@ class AggregatedJacocoReportTask extends DefaultTask
         executiondata {
           coveredProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/jacoco" ) { include( name: '*.exec' ) } }
         }
-        structure( name: "Apache Zest™ (Java Edition) SDK" ) {
+        structure( name: "Apache Polygene™ (Java Edition) SDK" ) {
           group( name: "Core" ) {
             classfiles { coreProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
             sourcefiles { coreProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
@@ -84,7 +84,7 @@ class AggregatedJacocoReportTask extends DefaultTask
         }
         csv destfile: "${ outputDirectory }/jacoco.csv", encoding: "UTF-8"
         xml destfile: "${ outputDirectory }/jacoco.xml", encoding: "UTF-8"
-        html destdir: outputDirectory, encoding: "UTF-8", locale: "en", footer: "Apache Zest™ (Java Edition) SDK"
+        html destdir: outputDirectory, encoding: "UTF-8", locale: "en", footer: "Apache Polygene™ (Java Edition) SDK"
       }
     }
   }

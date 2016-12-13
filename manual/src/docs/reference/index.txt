@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[reference-documentation,Reference Manual]]
-= Apache Zest™ v{revnumber} Reference Manual =
+= Apache Polygene™ v{revnumber} Reference Manual =
 
 :zest-version: {revnumber}
 :zest-buildnumber: {revnumber}

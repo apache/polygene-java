@@ -27,13 +27,13 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ImportedServiceDeclaration;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC
  */
 public class NewObjectImporterTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

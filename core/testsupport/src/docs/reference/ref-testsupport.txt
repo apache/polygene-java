@@ -17,9 +17,9 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-include::AbstractZestTest.txt
+include::AbstractPolygeneTest.txt
 
-include::AbstractZestScenarioTest.txt
+include::AbstractPolygeneScenarioTest.txt
 
 include::AbstractEntityStoreTest.txt
 

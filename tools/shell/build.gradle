@@ -20,12 +20,12 @@
 
 apply plugin: 'application'
 
-description = "Command line tools for building Apache Zest™ applications."
+description = "Command line tools for building Apache Polygene™ applications."
 mainClassName = "org.apache.zest.tools.shell.Main"
 
 jar {
   manifest {
-    name = "Apache Zest™ Command Line"
+    name = "Apache Polygene™ Command Line"
     attributes("Main-Class": mainClassName )
   }
 }

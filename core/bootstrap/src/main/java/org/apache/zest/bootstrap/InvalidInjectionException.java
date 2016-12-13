@@ -20,7 +20,7 @@
 package org.apache.zest.bootstrap;
 
 /**
- * Thrown by the Zest runtime if a dependency injection declaration is invalid.
+ * Thrown by the Polygene runtime if a dependency injection declaration is invalid.
  */
 public class InvalidInjectionException
     extends Exception

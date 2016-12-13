@@ -25,15 +25,15 @@
 == Overview ==
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
-In this section you will find a comprehensive set of tutorials about Composite Oriented Programming using Zest™.
+In this section you will find a comprehensive set of tutorials about Composite Oriented Programming using Polygene™.
 
-[[tutorials-intro,Zest™ in 2 hours 42 minutes]]
-=== Zest™ in 2 hours 42 minutes ===
+[[tutorials-intro,Polygene™ in 2 hours 42 minutes]]
+=== Polygene™ in 2 hours 42 minutes ===
 
-This quite long introduction to Zest™ will start by brushing up an overview of the problems Zest™ solve, teach you what
+This quite long introduction to Polygene™ will start by brushing up an overview of the problems Polygene™ solve, teach you what
 Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
 Hello World example.
 
@@ -42,9 +42,9 @@ Hello World example.
 - <<thirty-minutes-intro>>
 - <<two-hours-intro>>
 
-=== Getting real with Zest™ ===
+=== Getting real with Polygene™ ===
 
-Throughout this set of tutorials it will be shown how to depend on Zest™ in your build, how to assemble a complete
+Throughout this set of tutorials it will be shown how to depend on Polygene™ in your build, how to assemble a complete
 application, how to create and work with Composites and Services, how to use contextual fragments and leverage
 properties.
 
@@ -66,10 +66,10 @@ typical application.
 - <<howto-create-entity>>
 - <<howto-configure-service>>
 
-=== Zest™ Development ===
+=== Polygene™ Development ===
 
-This last set of tutorials you'll learn how to build the Zest™ SDK from sources including this very documentation website
-, the Zest™ manual, binaries and sources distributions.
+This last set of tutorials you'll learn how to build the Polygene™ SDK from sources including this very documentation website
+, the Polygene™ manual, binaries and sources distributions.
 
 - <<build-system>>
 - <<community-docs>>

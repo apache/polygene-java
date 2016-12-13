@@ -24,7 +24,7 @@ import static java.util.Arrays.sort;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestStructureAnnotationConstants
+public final class PolygeneStructureAnnotationConstants
 {
     public static final String QUALIFIED_NAME_STRUCTURE_ANNOTATION = "org.apache.zest.api.injection.scope.Structure";
 
@@ -41,13 +41,13 @@ public final class ZestStructureAnnotationConstants
                 "org.apache.zest.structure.Module",
                 "org.apache.zest.structure.Layer",
                 "org.apache.zest.structure.Application",
-                "org.apache.zest.ZestAPI",
-                "org.apache.zest.spi.ZestSPI"
+                "org.apache.zest.PolygeneAPI",
+                "org.apache.zest.spi.PolygeneSPI"
             };
         sort( VALID_STRUCTURE_INJECTION_TYPE );
     }
 
-    private ZestStructureAnnotationConstants()
+    private PolygeneStructureAnnotationConstants()
     {
     }
 }

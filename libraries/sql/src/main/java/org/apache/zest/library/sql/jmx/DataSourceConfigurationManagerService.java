@@ -63,7 +63,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 
 /**
  * Expose DataSourceConfiguration through JMX.
@@ -112,7 +112,7 @@ public interface DataSourceConfigurationManagerService
         MBeanServer server;
 
         @Structure
-        ZestSPI spi;
+        PolygeneSPI spi;
 
         @Structure
         Application application;
@@ -149,7 +149,7 @@ public interface DataSourceConfigurationManagerService
                 String mbeanName = dataSource.identity().toString();
                 MBeanInfo mbeanInfo = new MBeanInfo( DataSourceConfiguration.class.getName(), mbeanName, attributes.toArray( new MBeanAttributeInfo[ attributes.size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
                 Object mbean = new ConfigurableDataSource( dataSourceService, mbeanInfo, mbeanName, properties );
-                ObjectName configurableDataSourceName = new ObjectName( "Zest:application=" + application.name() + ",class=Datasource,name=" + mbeanName );
+                ObjectName configurableDataSourceName = new ObjectName( "Polygene:application=" + application.name() + ",class=Datasource,name=" + mbeanName );
                 server.registerMBean( mbean, configurableDataSourceName );
                 configurationNames.add( configurableDataSourceName );
             }

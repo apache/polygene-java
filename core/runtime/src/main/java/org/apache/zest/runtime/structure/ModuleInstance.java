@@ -96,7 +96,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Stream.concat;
 
 /**
- * Instance of a Zest Module. Contains the various composites for this Module.
+ * Instance of a Polygene Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
     implements Module, ModuleSpi, Activation

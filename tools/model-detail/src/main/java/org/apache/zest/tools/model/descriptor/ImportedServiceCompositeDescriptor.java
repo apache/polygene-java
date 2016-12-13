@@ -30,7 +30,7 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Classes;
 
 /**
- * XXX Workaround for inconsistency in Zest core-api/spi
+ * XXX Workaround for inconsistency in Polygene core-api/spi
  * ImportedServiceDescriptor wrapper as composite
  */
 public class ImportedServiceCompositeDescriptor

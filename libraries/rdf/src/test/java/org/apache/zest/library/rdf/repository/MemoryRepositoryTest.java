@@ -29,13 +29,13 @@ import org.openrdf.repository.RepositoryException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC
  */
 public class MemoryRepositoryTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Service
     Repository repository;

@@ -24,7 +24,7 @@
 source=core/spi/dev-status.xml
 --------------
 
-The Zest™ Core Runtime has a number of extension points, which we call the _Zest Core Extension SPI_. These are defined
+The Polygene™ Core Runtime has a number of extension points, which we call the _Polygene Core Extension SPI_. These are defined
 interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
 applications during the bootstrap phase.
 
@@ -38,7 +38,7 @@ There are currently 5 Core SPI extensions;
     * <<core-spi-indexing>>
     * <<core-spi-metrics>>
 
-Zest™ Runtime Extensions implementations may depend on Zest™ Libraries, but Libraries are NOT ALLOWED to depend on
+Polygene™ Runtime Extensions implementations may depend on Polygene™ Libraries, but Libraries are NOT ALLOWED to depend on
 Extensions. Applications code is NOT ALLOWED to depend on extensions. And application code SHOULD NOT depend on the
 Core Extension SPI. If you think that is needed, please contact users@dev.apache.org mailing list, to see if your usecase
 can be solved in a support manner, or that we need to extend the Core API to support it.

@@ -28,7 +28,7 @@ import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.HierarchicalVisitorAdapter;
-import org.apache.zest.library.rdf.ZestRdf;
+import org.apache.zest.library.rdf.PolygeneRdf;
 import org.apache.zest.library.rdf.serializer.SerializerContext;
 
 /**
@@ -59,56 +59,56 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
         {
             ApplicationDescriptor applicationDescriptor = (ApplicationDescriptor) visited;
             appUri = context.createApplicationUri( applicationDescriptor.name() );
-            context.setNameAndType( appUri, applicationDescriptor.name(), ZestRdf.TYPE_APPLICATION );
+            context.setNameAndType( appUri, applicationDescriptor.name(), PolygeneRdf.TYPE_APPLICATION );
         }
 
         if( visited instanceof LayerDescriptor )
         {
             LayerDescriptor layerDescriptor = (LayerDescriptor) visited;
             layerUri = context.createLayerUri( appUri, layerDescriptor.name() );
-            context.setNameAndType( layerUri, layerDescriptor.name(), ZestRdf.TYPE_LAYER );
-            context.addRelationship( appUri, ZestRdf.RELATIONSHIP_LAYER, layerUri );
+            context.setNameAndType( layerUri, layerDescriptor.name(), PolygeneRdf.TYPE_LAYER );
+            context.addRelationship( appUri, PolygeneRdf.RELATIONSHIP_LAYER, layerUri );
         }
 
         if( visited instanceof ModuleDescriptor )
         {
             ModuleDescriptor moduleDescriptor = (ModuleDescriptor) visited;
             moduleUri = context.createModuleUri( layerUri, moduleDescriptor.name() );
-            context.setNameAndType( layerUri, moduleDescriptor.name(), ZestRdf.TYPE_MODULE );
+            context.setNameAndType( layerUri, moduleDescriptor.name(), PolygeneRdf.TYPE_MODULE );
 
-            context.addRelationship( layerUri, ZestRdf.RELATIONSHIP_MODULE, moduleUri );
+            context.addRelationship( layerUri, PolygeneRdf.RELATIONSHIP_MODULE, moduleUri );
         }
 
         if( visited instanceof TransientDescriptor )
         {
             TransientDescriptor transientDescriptor = (TransientDescriptor) visited;
             compositeUri = context.createCompositeUri( moduleUri, transientDescriptor.types().findFirst().orElse( null ) );
-            context.addType( compositeUri, ZestRdf.TYPE_COMPOSITE );
-            context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_COMPOSITE, compositeUri );
+            context.addType( compositeUri, PolygeneRdf.TYPE_COMPOSITE );
+            context.addRelationship( moduleUri, PolygeneRdf.RELATIONSHIP_COMPOSITE, compositeUri );
         }
 
         if( visited instanceof EntityDescriptor )
         {
             EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
             compositeUri = context.createCompositeUri( moduleUri, entityDescriptor.types().findFirst().orElse( null ));
-            context.addType( compositeUri, ZestRdf.TYPE_ENTITY );
-            context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_ENTITY, compositeUri );
+            context.addType( compositeUri, PolygeneRdf.TYPE_ENTITY );
+            context.addRelationship( moduleUri, PolygeneRdf.RELATIONSHIP_ENTITY, compositeUri );
         }
 
         if( visited instanceof ObjectDescriptor )
         {
             ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
             compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.types().findFirst().orElse( null ) );
-            context.addType( compositeUri, ZestRdf.TYPE_OBJECT );
-            context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_OBJECT, compositeUri );
+            context.addType( compositeUri, PolygeneRdf.TYPE_OBJECT );
+            context.addRelationship( moduleUri, PolygeneRdf.RELATIONSHIP_OBJECT, compositeUri );
         }
 
         if( visited instanceof MethodDescriptor )
         {
             MethodDescriptor compositeMethodDescriptor = (MethodDescriptor) visited;
             String compositeMethodUri = context.createCompositeMethodUri( compositeUri, compositeMethodDescriptor.method() );
-            context.addType( compositeMethodUri, ZestRdf.TYPE_METHOD );
-            context.addRelationship( compositeUri, ZestRdf.RELATIONSHIP_METHOD, compositeMethodUri );
+            context.addType( compositeMethodUri, PolygeneRdf.TYPE_METHOD );
+            context.addRelationship( compositeUri, PolygeneRdf.RELATIONSHIP_METHOD, compositeMethodUri );
         }
 
         return true;

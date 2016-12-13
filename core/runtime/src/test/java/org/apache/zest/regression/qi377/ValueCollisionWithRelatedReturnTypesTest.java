@@ -30,10 +30,10 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 public class ValueCollisionWithRelatedReturnTypesTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     public static final Identity NICLAS = new StringIdentity( "niclas" );

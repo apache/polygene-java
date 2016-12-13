@@ -56,7 +56,7 @@ import org.apache.zest.library.rest.server.restlet.InteractionConstraints;
 import org.apache.zest.library.rest.server.restlet.RequestReaderDelegator;
 import org.apache.zest.library.rest.server.restlet.ResponseWriterDelegator;
 import org.apache.zest.library.rest.server.spi.ResultConverter;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Uniform;
@@ -98,7 +98,7 @@ public class ContextResource
     private final List<Method> resourceCommands = new ArrayList<>();
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Service
     private ResponseWriterDelegator responseWriter;

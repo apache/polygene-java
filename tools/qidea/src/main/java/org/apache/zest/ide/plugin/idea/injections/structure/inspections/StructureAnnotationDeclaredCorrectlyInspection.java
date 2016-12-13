@@ -28,10 +28,10 @@ import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.validateStructureAnnotationDeclaration;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.validateStructureAnnotationDeclaration;
 
 /**
  * {@code StructureAnnotationUsedCorrectly} validates {@code @Structure} injection annotation declaration.

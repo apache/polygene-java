@@ -42,8 +42,8 @@ import org.apache.zest.library.restlet.resource.DefaultResourceFactoryImpl;
 import org.apache.zest.library.restlet.resource.NotPresentException;
 import org.apache.zest.library.restlet.resource.ResourceFactory;
 import org.apache.zest.library.restlet.resource.ServerResource;
-import org.apache.zest.library.restlet.serialization.ZestConverter;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.library.restlet.serialization.PolygeneConverter;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -57,10 +57,10 @@ import org.restlet.representation.Variant;
 import org.restlet.routing.Router;
 import org.restlet.security.User;
 
-public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
+public class PolygeneEntityRestlet<T extends HasIdentity> extends Restlet
 {
     /**
-     * Creates a new ZestEntityRestlet instance for the given resource and entity classes.
+     * Creates a new PolygeneEntityRestlet instance for the given resource and entity classes.
      * <p>
      * This utility method should be used in your org.restlet.Application to create routes.
      *
@@ -71,7 +71,7 @@ public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
      * @param resourceClass Resource class
      * @param entityClass   Entity class
      *
-     * @return The ZestEntityRestlet instance
+     * @return The PolygeneEntityRestlet instance
      */
     public static <K extends HasIdentity, T extends ServerResource<K>> Restlet newInstance(
         Module module, Router router, Class<T> resourceClass, Class<K> entityClass
@@ -79,7 +79,7 @@ public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
     {
         @SuppressWarnings( "unchecked" )
         ResourceFactory<K, T> factory = module.newObject( DefaultResourceFactoryImpl.class, resourceClass, router );
-        return module.newObject( ZestEntityRestlet.class, factory, router, entityClass, new ZestConverter( module ) );
+        return module.newObject( PolygeneEntityRestlet.class, factory, router, entityClass, new PolygeneConverter( module ) );
     }
 
     @Structure
@@ -99,10 +99,10 @@ public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
     private Class<T> identityType;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Uses
-    private ZestConverter converter;
+    private PolygeneConverter converter;
 
     @Service
     private RepositoryLocator locator;
@@ -306,6 +306,6 @@ public class ZestEntityRestlet<T extends HasIdentity> extends Restlet
     @Override
     public String toString()
     {
-        return "ZestRestlet[" + ( identityType == null ? "<null>" : identityType.getSimpleName() ) + ", " + resourceFactory + "]";
+        return "PolygeneRestlet[" + ( identityType == null ? "<null>" : identityType.getSimpleName() ) + ", " + resourceFactory + "]";
     }
 }

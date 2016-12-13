@@ -41,8 +41,8 @@ import org.apache.zest.api.injection.InjectionScope;
  * - Module
  * - Layer
  * - Application
- * - ZestAPI
- * - ZestSPI
+ * - PolygeneAPI
+ * - PolygeneSPI
  * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )

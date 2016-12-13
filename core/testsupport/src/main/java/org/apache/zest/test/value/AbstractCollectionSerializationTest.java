@@ -41,7 +41,7 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -52,7 +52,7 @@ import static org.junit.Assert.assertEquals;
  */
 // TODO How to assert that given a collection of valuecomposites when serializing and deserializing we have no OOME?
 public class AbstractCollectionSerializationTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Override

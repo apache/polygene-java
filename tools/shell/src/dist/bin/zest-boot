@@ -58,7 +58,7 @@ else
     cd `dirname $0`
     # Up one level
     cd ..
-    # Get the home directory of Zest
+    # Get the home directory of Polygene
     ZESTPATH=`pwd`
 
     # Figure out if we are executing from within the SDK or the QuickStart

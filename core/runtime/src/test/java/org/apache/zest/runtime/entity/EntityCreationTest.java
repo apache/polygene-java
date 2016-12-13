@@ -29,7 +29,7 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ import org.junit.Test;
  * Test case for http://team.ops4j.org/browse/QI-274
  */
 public class EntityCreationTest
-        extends AbstractZestTest
+        extends AbstractPolygeneTest
 {
 
     @Mixins( SomeEntityMixin.class )

@@ -55,7 +55,7 @@ import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.api.value.ValueSerializer.Options;
 import org.apache.zest.index.rdf.query.RdfQueryParser;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
@@ -71,7 +71,7 @@ public class RdfQueryParserImpl
 
     private final Namespaces namespaces = new Namespaces();
     private final Triples triples = new Triples( namespaces );
-    private final ZestSPI spi;
+    private final PolygeneSPI spi;
     private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
@@ -90,7 +90,7 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public RdfQueryParserImpl( ZestSPI spi, ValueSerializer valueSerializer )
+    public RdfQueryParserImpl( PolygeneSPI spi, ValueSerializer valueSerializer )
     {
         this.spi = spi;
         this.valueSerializer = valueSerializer;

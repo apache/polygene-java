@@ -41,8 +41,8 @@ tag=allClass
 Note that we could have implemented the InventoryConcern as an abstract class if we were not interested in __all__ the methods in the Order interface.
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on
 a private field, which can be used in rare occasions when you are not able to extend. This base class defines the next
-field, which is set up by the Zest™ runtime and points to the next fragment in the call stack. We can also see that the
-InventoryService is provided to the concern, which is done with dependency injection. Zest™ also supports dependency
+field, which is set up by the Polygene™ runtime and points to the next fragment in the call stack. We can also see that the
+InventoryService is provided to the concern, which is done with dependency injection. Polygene™ also supports dependency
 injection via constructors and methods.
 
 It can be used as follows;

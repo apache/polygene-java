@@ -32,7 +32,7 @@ import org.apache.zest.index.rdf.query.RdfQueryService;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
 import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -43,7 +43,7 @@ import static org.junit.Assert.fail;
  * Test for Qi-66
  */
 public class Qi66IssueTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private static final String ACCOUNT_NAME = "zest";
 
@@ -51,7 +51,7 @@ public class Qi66IssueTest
     public final void testCompleteAfterFind()
         throws Exception
     {
-        Identity accountIdentity = newZestAccount();
+        Identity accountIdentity = newPolygeneAccount();
 
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
@@ -69,13 +69,13 @@ public class Qi66IssueTest
     }
 
     /**
-     * Creates a new Apache Zest account.
+     * Creates a new Apache Polygene account.
      *
-     * @return The reference of Zest account.
+     * @return The reference of Polygene account.
      *
      * @throws UnitOfWorkCompletionException Thrown if creational fail.
      */
-    private Identity newZestAccount()
+    private Identity newPolygeneAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();

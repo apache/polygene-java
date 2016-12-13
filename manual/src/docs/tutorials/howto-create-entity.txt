@@ -18,9 +18,9 @@
 
 [[howto-create-entity,Create an Entity]]
 = Create an Entity =
-One of the most common tasks in Zest™ is the management of the life cycle of Entities. Since Zest™ is capable of
+One of the most common tasks in Polygene™ is the management of the life cycle of Entities. Since Polygene™ is capable of
 delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people
-use Entities more frequently in Zest™ applications, so it is a very important topic to cover.
+use Entities more frequently in Polygene™ applications, so it is a very important topic to cover.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
 
@@ -42,7 +42,7 @@ Domain code typically don't need to know of the EntityComposite types directly, 
 interface. The Visibility rules will be applied to associate the right EntityComposite when a domain type is requested.
 Ambiguities are not accepted and will result in runtime exceptions.
 
-Zest™ supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
+Polygene™ supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
 is beyond the scope of this HowTO and will be covered subsequently.
 
 == Good Practice ==
@@ -128,7 +128,7 @@ available as services.
 
 == The Entity Factory ==
 
-The entity factory is something you need to write yourself, but as with most things in Zest™ it will end up being a
+The entity factory is something you need to write yourself, but as with most things in Polygene™ it will end up being a
 fairly small implementation. So how is that done?
 
 [snippet,java]
@@ -137,7 +137,7 @@ source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntit
 tag=carFactory
 -----------
 
-That is just the domain interface. We now need to make the service interface, which Zest™ needs to identify services and
+That is just the domain interface. We now need to make the service interface, which Polygene™ needs to identify services and
 make it possible for the service injection later.
 
 [snippet,java]
@@ -154,7 +154,7 @@ source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntit
 tag=carFactoryMixin1
 -----------
 
-And doing that, first of all we need to request Zest™ runtime to give us the Module
+And doing that, first of all we need to request Polygene™ runtime to give us the Module
 that our code belongs to, and the UnitOfWork current context the execution is happening in.
 
 Injections that are related to the Visibility rules are handled by the @Structure annotation. And the easiest way for us
@@ -166,7 +166,7 @@ source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntit
 tag=carFactoryMixin2
 -----------
 
-Here Zest™ will inject the member module with the correct Module. In case we only need the Module
+Here Polygene™ will inject the member module with the correct Module. In case we only need the Module
 during the construction, we can also request it in the same manner as constructor argument.
 
 [snippet,java]

@@ -28,7 +28,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
  * Test for the Lifecycle interface
  */
 public class LifecycleTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     public static boolean create;
     public static boolean remove;

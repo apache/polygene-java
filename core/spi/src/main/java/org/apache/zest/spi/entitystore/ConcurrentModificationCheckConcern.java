@@ -23,7 +23,7 @@ package org.apache.zest.spi.entitystore;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -52,7 +52,7 @@ public abstract class ConcurrentModificationCheckConcern
     private EntityStateVersions versions;
 
     @Structure
-    private ZestAPI api;
+    private PolygeneAPI api;
 
     @Override
     public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, Instant currentTime )

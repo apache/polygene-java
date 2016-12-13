@@ -66,7 +66,7 @@ public class Main
                 try {
                     application.passivate();
                 } catch ( Exception ex ) {
-                    System.err.println( "Unable to passivate Zest application!" );
+                    System.err.println( "Unable to passivate Polygene application!" );
                     ex.printStackTrace();
                 }
             }

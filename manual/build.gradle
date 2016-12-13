@@ -19,7 +19,7 @@ import org.apache.zest.gradle.doc.ManualPlugin
 
 apply plugin: ManualPlugin
 
-description = "Apache Zest™ Manuals and Website."
+description = "Apache Polygene™ Manuals and Website."
 
 dependencies {
   compile zest.core.bootstrap

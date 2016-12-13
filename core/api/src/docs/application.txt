@@ -13,13 +13,13 @@
 
 [[core-api-application,Application]]
 = Application =
-There is one and only one Application instance per Zest™ runtime instance. But there is nothing preventing code to
-create additional Zest™ Runtime instances inside the same JVM. However, these runtimes are isolated from each other.
+There is one and only one Application instance per Polygene™ runtime instance. But there is nothing preventing code to
+create additional Polygene™ Runtime instances inside the same JVM. However, these runtimes are isolated from each other.
 
 The main purpose of the Application structure artifact is to keep everything in the same box, and allowing us to
 navigate the Structure. So, from a client code perspective, the Application is of no use, other than being part of
-bring Zest™ to life. Zest™ doesn't start automatically and can be run in most environments, by requiring that the
-bootstrapping of Zest™ is done by client code. We call this the Bootstrap Phase. The code in the custom bootstrapper
+bring Polygene™ to life. Polygene™ doesn't start automatically and can be run in most environments, by requiring that the
+bootstrapping of Polygene™ is done by client code. We call this the Bootstrap Phase. The code in the custom bootstrapper
 will need to access additional Jars from the regular domain code, and we strongly recommend that you make this
 separation in your project as well.
 
@@ -47,7 +47,7 @@ Recap of sequence;
 
     * Create, obtain or lookup Assemblers.
     * Establish the application structures.
-    * Create a Zest™ Runtime instance.
+    * Create a Polygene™ Runtime instance.
     * Create an ApplicationAssemblyFactory.
     * Create an ApplicationFactory.
     * Call ApplicationFactory.newApplication() to create an ApplicationContext.
@@ -70,7 +70,7 @@ tag=application1
 = Single Module Layering =
 
 Behind the scenes of the SingletonAssembler a little bit more elaborate bootstrap sequence is happening. The code below
-shows what is the actual required sequence to start up Zest.
+shows what is the actual required sequence to start up Polygene.
 
 [snippet,java]
 -----------
@@ -81,7 +81,7 @@ tag=actual
 In the above example we are only creating an Application with a single Layer and a single Module in that Layer. This is
 derived from the fact that the factory.newApplicationAssembly() method takes a single Assembler argument.
 
-The Assembler.assemble( ModuleAssembly assembly ) method is called when the Zest™ Runtime needs to populate the
+The Assembler.assemble( ModuleAssembly assembly ) method is called when the Polygene™ Runtime needs to populate the
 ModuleAssembly with its Composites, Objects, Services and other information.
 
 == "Pancake" Layering ==

@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ UID Library contains various Identity generation services."
+description = "Apache Polygene™ UID Library contains various Identity generation services."
 
-jar { manifest { name = "Apache Zest™ Library - UID" } }
+jar { manifest { name = "Apache Polygene™ Library - UID" } }
 
 dependencies {
   compile zest.core.bootstrap

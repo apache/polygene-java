@@ -23,7 +23,7 @@ import org.apache.zest.api.entity.EntityReference;
 
 /**
  * If you want to catch getting and setting association, then create a GenericConcern
- * that wraps the Zest-supplied Association instance with AssociationWrappers. Override
+ * that wraps the Polygene-supplied Association instance with AssociationWrappers. Override
  * get() and/or set() to perform your custom code.
  */
 public class AssociationWrapper

@@ -37,7 +37,7 @@ import org.apache.zest.migration.assembly.MigrationOperation;
 import org.apache.zest.spi.entitystore.BackupRestore;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.StateStore;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
@@ -51,7 +51,7 @@ import static org.junit.Assert.assertThat;
  * JAVADOC
  */
 public class MigrationTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

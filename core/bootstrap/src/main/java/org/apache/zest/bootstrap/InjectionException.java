@@ -21,7 +21,7 @@
 package org.apache.zest.bootstrap;
 
 /**
- * Thrown by the Zest runtime if a dependency can not be injected.
+ * Thrown by the Polygene runtime if a dependency can not be injected.
  */
 public class InjectionException
     extends RuntimeException

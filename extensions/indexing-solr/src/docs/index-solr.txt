@@ -27,7 +27,7 @@ source=extensions/indexing-solr/dev-status.xml
 
 Index/Query services backed by an embedded http://lucene.apache.org/solr/[Apache Solr Search].
 
-WARNING: Solr Index/Query service do not support the Zest™ Query API but only native Solr queries.
+WARNING: Solr Index/Query service do not support the Polygene™ Query API but only native Solr queries.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 

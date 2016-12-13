@@ -20,7 +20,7 @@
 package org.apache.zest.library.logging.log;
 
 import java.io.Serializable;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Service;
@@ -32,7 +32,7 @@ public final class SimpleLogConcern
     implements SimpleLog
 {
     @Structure
-    private ZestAPI api;
+    private PolygeneAPI api;
     @Optional
     @Service
     private LoggingService loggingService;
@@ -42,7 +42,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().orElse( null );
+        Class<?> type = PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().orElse( null );
         category = type.getName();
     }
 

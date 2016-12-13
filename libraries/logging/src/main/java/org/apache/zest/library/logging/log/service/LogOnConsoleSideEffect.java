@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.sideeffect.SideEffectOf;
@@ -55,7 +55,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
 
     private String getCompositeName( Composite composite )
     {
-        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
+        return PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )

@@ -18,7 +18,7 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Memory" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Memory" } }
 
 dependencies {
   compile zest.core.bootstrap

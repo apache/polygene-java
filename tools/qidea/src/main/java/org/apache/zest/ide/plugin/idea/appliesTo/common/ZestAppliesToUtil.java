@@ -29,8 +29,8 @@ import java.util.List;
 
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import static java.util.Collections.emptyList;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.ZestAppliesToConstants.QUALIFIED_NAME_APPLIES_TO;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.ZestAppliesToConstants.QUALIFIED_NAME_APPLIES_TO_FILTER;
+import static org.apache.zest.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO;
+import static org.apache.zest.ide.plugin.idea.appliesTo.common.PolygeneAppliesToConstants.QUALIFIED_NAME_APPLIES_TO_FILTER;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
@@ -40,7 +40,7 @@ import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScop
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestAppliesToUtil
+public final class PolygeneAppliesToUtil
 {
     /**
      * @param searchContext Search context.
@@ -132,7 +132,7 @@ public final class ZestAppliesToUtil
         return !psiClass.isInterface() && psiClass.isInheritor( appliesToFilterClass, true );
     }
 
-    private ZestAppliesToUtil()
+    private PolygeneAppliesToUtil()
     {
     }
 }

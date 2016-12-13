@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NonNls;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestConcernConstants
+public final class PolygeneConcernConstants
 {
     public static final String QUALIFIED_NAME_CONCERNS = "org.apache.zest.api.concern.Concerns";
 
@@ -34,7 +34,7 @@ public final class ZestConcernConstants
     @NonNls
     public static final String TEMPLATE_GENERIC_CONCERN_OF = "GenericConcernOf.java";
 
-    private ZestConcernConstants()
+    private PolygeneConcernConstants()
     {
     }
 }

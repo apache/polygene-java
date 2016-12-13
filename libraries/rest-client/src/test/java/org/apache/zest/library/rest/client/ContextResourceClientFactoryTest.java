@@ -70,7 +70,7 @@ import org.apache.zest.library.rest.server.api.dci.Role;
 import org.apache.zest.library.rest.server.assembler.RestServerAssembler;
 import org.apache.zest.library.rest.server.restlet.NullCommandResult;
 import org.apache.zest.library.rest.server.spi.CommandResult;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.util.FreePortFinder;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.hamcrest.CoreMatchers;
@@ -100,7 +100,7 @@ import static org.apache.zest.library.rest.client.api.HandlerCommand.query;
 import static org.apache.zest.library.rest.client.api.HandlerCommand.refresh;
 
 public class ContextResourceClientFactoryTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     private Server server;
     private ContextResourceClient crc;

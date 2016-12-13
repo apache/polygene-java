@@ -27,12 +27,12 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class HelloTest4 extends AbstractZestTest
+public class HelloTest4 extends AbstractPolygeneTest
 {
 
     public static final Identity TEST_IDENTITY = new StringIdentity( "123" );

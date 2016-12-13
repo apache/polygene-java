@@ -27,12 +27,12 @@ import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.fail;
 
 public class ConstraintTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Override

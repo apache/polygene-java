@@ -27,15 +27,15 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiDirectory;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestCreateActionGroup extends DefaultActionGroup
+public final class PolygeneCreateActionGroup extends DefaultActionGroup
 {
-    public ZestCreateActionGroup()
+    public PolygeneCreateActionGroup()
     {
         super( message( "zest.action.group.title" ), true );
         getTemplatePresentation().setDescription( message( "zest.action.group.description" ) );
@@ -55,8 +55,8 @@ public final class ZestCreateActionGroup extends DefaultActionGroup
             return false;
         }
 
-        // TODO: Enable this once ZestFacet can be automatically added/removed
-//        if( ZestFacet.getInstance( module ) == null )
+        // TODO: Enable this once PolygeneFacet can be automatically added/removed
+//        if( PolygeneFacet.getInstance( module ) == null )
 //        {
 //            return false;
 //        }

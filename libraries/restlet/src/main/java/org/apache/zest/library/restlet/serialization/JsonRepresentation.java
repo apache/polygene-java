@@ -29,13 +29,13 @@ import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
 /**
- * Representation based of Zest ValueComposites. It can serialize and deserialize
+ * Representation based of Polygene ValueComposites. It can serialize and deserialize
  * automatically in JSON only.<br>
  * <br>
  */
@@ -45,7 +45,7 @@ public class JsonRepresentation<T> extends OutputRepresentation
     private static final ValueSerializer.Options OPTIONS_NO_TYPE = new ValueSerializer.Options().withoutTypeInfo().withMapEntriesAsObjects();
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Service
     private ValueSerialization serializer;
@@ -80,7 +80,7 @@ public class JsonRepresentation<T> extends OutputRepresentation
     }
 
     /**
-     * Returns the wrapped object, deserializing the representation with Zest
+     * Returns the wrapped object, deserializing the representation with Polygene
      * if necessary.
      *
      * @return The wrapped object.

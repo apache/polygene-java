@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ RDF Index/Query Extension"
+description = "Apache Polygene™ RDF Index/Query Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Index/Query - RDF" } }
+jar { manifest { name = "Apache Polygene™ Extension - Index/Query - RDF" } }
 
 dependencies {
   compile zest.core.bootstrap

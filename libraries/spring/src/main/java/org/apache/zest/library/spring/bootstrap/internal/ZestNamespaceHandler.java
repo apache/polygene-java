@@ -19,16 +19,16 @@
  */
 package org.apache.zest.library.spring.bootstrap.internal;
 
-import org.apache.zest.library.spring.bootstrap.internal.application.ZestBootstrapBeanDefinitionParser;
-import org.apache.zest.library.spring.bootstrap.internal.service.ZestServiceBeanDefinitionParser;
+import org.apache.zest.library.spring.bootstrap.internal.application.PolygeneBootstrapBeanDefinitionParser;
+import org.apache.zest.library.spring.bootstrap.internal.service.PolygeneServiceBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-public final class ZestNamespaceHandler extends NamespaceHandlerSupport
+public final class PolygeneNamespaceHandler extends NamespaceHandlerSupport
 {
     @Override
     public final void init()
     {
-        registerBeanDefinitionParser( "bootstrap", new ZestBootstrapBeanDefinitionParser() );
-        registerBeanDefinitionParser( "service", new ZestServiceBeanDefinitionParser() );
+        registerBeanDefinitionParser( "bootstrap", new PolygeneBootstrapBeanDefinitionParser() );
+        registerBeanDefinitionParser( "service", new PolygeneServiceBeanDefinitionParser() );
     }
 }

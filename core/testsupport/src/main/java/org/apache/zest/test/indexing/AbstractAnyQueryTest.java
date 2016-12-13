@@ -23,7 +23,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.model.Account;
 import org.apache.zest.test.indexing.model.Address;
@@ -43,7 +43,7 @@ import org.apache.zest.test.indexing.model.URL;
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.
  */
 public class AbstractAnyQueryTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     protected UnitOfWork unitOfWork;
 

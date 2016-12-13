@@ -22,11 +22,11 @@ package org.apache.zest.ide.plugin.idea.injections.service.common;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestServiceAnnotationConstants
+public final class PolygeneServiceAnnotationConstants
 {
     public static final String QUALIFIED_NAME_SERVICE_ANNOTATION = "org.apache.zest.api.injection.scope.Service";
 
-    private ZestServiceAnnotationConstants()
+    private PolygeneServiceAnnotationConstants()
     {
     }
 }

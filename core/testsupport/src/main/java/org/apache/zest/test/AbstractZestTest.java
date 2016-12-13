@@ -42,7 +42,7 @@ import org.junit.Before;
 /**
  * Base class for Composite tests.
  */
-public abstract class AbstractZestTest extends AbstractZestBaseTest
+public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
     implements Assembler
 {
     @Structure
@@ -87,7 +87,7 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
         LayerAssembly layer = applicationAssembly.layer( "Layer 1" );
         ModuleAssembly module = layer.module( "Module 1" );
         new DefaultUnitOfWorkAssembler().assemble( module );
-        module.objects( AbstractZestTest.this.getClass() );
+        module.objects( AbstractPolygeneTest.this.getClass() );
         assemble( module );
     }
 

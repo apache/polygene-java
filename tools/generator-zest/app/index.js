@@ -146,39 +146,39 @@ module.exports = generators.Base.extend(
 
         writing: function ()
         {
-            copyZestBootstrap( this, "config", "ConfigurationLayer", !zest.singeltonApp );
-            copyZestBootstrap( this, "infrastructure", "InfrastructureLayer", !zest.singeltonApp );
-            copyZestBootstrap( this, "domain", "DomainLayer", !zest.singeltonApp );
-            copyZestBootstrap( this, "connectivity", "ConnectivityLayer", !zest.singeltonApp );
+            copyPolygeneBootstrap( this, "config", "ConfigurationLayer", !zest.singeltonApp );
+            copyPolygeneBootstrap( this, "infrastructure", "InfrastructureLayer", !zest.singeltonApp );
+            copyPolygeneBootstrap( this, "domain", "DomainLayer", !zest.singeltonApp );
+            copyPolygeneBootstrap( this, "connectivity", "ConnectivityLayer", !zest.singeltonApp );
 
-            copyZestBootstrap( this, "config", "ConfigModule", true );
+            copyPolygeneBootstrap( this, "config", "ConfigModule", true );
 
-            copyZestBootstrap( this, "infrastructure", "FileConfigurationModule", true );
+            copyPolygeneBootstrap( this, "infrastructure", "FileConfigurationModule", true );
 
             copyEntityStore( this, zest.entitystore );
 
-            copyZestBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
-            copyZestBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
-            copyZestBootstrap( this, "infrastructure", "SolrIndexingModule", hasIndexing( 'Solr' ) );
-            copyZestBootstrap( this, "infrastructure", "SqlIndexingModule", hasIndexing( 'Sql' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "SolrIndexingModule", hasIndexing( 'Solr' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "SqlIndexingModule", hasIndexing( 'Sql' ) );
 
-            copyZestBootstrap( this, "infrastructure", "NoCachingModule", hasCaching( 'none' ) );
-            copyZestBootstrap( this, "infrastructure", "MemcacheCachingModule", hasCaching( 'Memcache' ) );
-            copyZestBootstrap( this, "infrastructure", "EhCacheCachingModule", hasCaching( 'Ehcache' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "NoCachingModule", hasCaching( 'none' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "MemcacheCachingModule", hasCaching( 'Memcache' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "EhCacheCachingModule", hasCaching( 'Ehcache' ) );
 
-            copyZestBootstrap( this, "infrastructure", "JacksonSerializationModule", hasSerialization( 'Jackson' ) );
-            copyZestBootstrap( this, "infrastructure", "StaxSerializationModule", hasSerialization( 'Stax' ) );
-            copyZestBootstrap( this, "infrastructure", "OrgJsonSerializationModule", hasSerialization( 'Orgjson' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "JacksonSerializationModule", hasSerialization( 'Jackson' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "StaxSerializationModule", hasSerialization( 'Stax' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "OrgJsonSerializationModule", hasSerialization( 'Orgjson' ) );
 
-            copyZestBootstrap( this, "connectivity", "RestApiModule", hasFeature( 'rest api' ) );
-            copyZestBootstrap( this, "infrastructure", "ReindexerModule", hasFeature( 'reindexer' ) );
-            copyZestBootstrap( this, "infrastructure", "MetricsModule", hasFeature( 'metrics' ) );
-            copyZestBootstrap( this, "infrastructure", "JmxModule", hasFeature( 'jmx' ) );
-            copyZestBootstrap( this, "infrastructure", "MigrationModule", hasFeature( 'version migration' ) );
+            copyPolygeneBootstrap( this, "connectivity", "RestApiModule", hasFeature( 'rest api' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "ReindexerModule", hasFeature( 'reindexer' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "MetricsModule", hasFeature( 'metrics' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "JmxModule", hasFeature( 'jmx' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "MigrationModule", hasFeature( 'version migration' ) );
 
-            copyZestBootstrap( this, "domain", "CrudModule", true );
+            copyPolygeneBootstrap( this, "domain", "CrudModule", true );
             copyHeroesSampleApp( this );
-            copyZestDomain( this, "security", "RestApiModule", "SecurityRepository", hasFeature( 'rest api' ) );
+            copyPolygeneDomain( this, "security", "RestApiModule", "SecurityRepository", hasFeature( 'rest api' ) );
 
             copyRestFeature( this, hasFeature( 'rest api' ) );
 
@@ -196,7 +196,7 @@ module.exports = generators.Base.extend(
     }
 );
 
-function copyZestBootstrap( ctx, layer, moduleName, condition )
+function copyPolygeneBootstrap( ctx, layer, moduleName, condition )
 {
     if( condition )
     {
@@ -213,7 +213,7 @@ function copyEntityStore( ctx, entityStoreName )
                   'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/infrastructure/' + entityStoreName + 'StorageModule.java' );
 }
 
-function copyZestApp( ctx, name, condition )
+function copyPolygeneApp( ctx, name, condition )
 {
     if( condition )
     {
@@ -231,7 +231,7 @@ function copyZestApp( ctx, name, condition )
     }
 }
 
-function copyZestDomain( ctx, model, module, clazz, condition )
+function copyPolygeneDomain( ctx, model, module, clazz, condition )
 {
     if( condition )
     {
@@ -245,7 +245,7 @@ function copyRestFeature( ctx, condition )
 {
     if( condition )
     {
-        copyZestBootstrap( ctx, "domain", "SecurityModule", true );
+        copyPolygeneBootstrap( ctx, "domain", "SecurityModule", true );
 
         copyTemplate( ctx,
                       'RestApiModule/SimpleEnroler.tmpl',
@@ -263,8 +263,8 @@ function copyRestFeature( ctx, condition )
 
 function copyHeroesSampleApp( ctx )
 {
-    copyZestDomain( ctx, "heroes", "Heroes", "Hero", hasFeature( 'sample (heroes) web application' ) );
-    copyZestApp( ctx, "Heroes", hasFeature( 'sample (heroes) web application' ) );
+    copyPolygeneDomain( ctx, "heroes", "Heroes", "Hero", hasFeature( 'sample (heroes) web application' ) );
+    copyPolygeneApp( ctx, "Heroes", hasFeature( 'sample (heroes) web application' ) );
     copyTemplate( ctx,
                   'Heroes/web.tmpl',
                   'app/src/main/webapp/WEB-INF/web.xml' );

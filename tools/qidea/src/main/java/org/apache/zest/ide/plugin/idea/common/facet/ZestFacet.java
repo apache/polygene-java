@@ -29,12 +29,12 @@ import org.jetbrains.annotations.Nullable;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestFacet extends Facet<ZestFacetConfiguration>
+public final class PolygeneFacet extends Facet<PolygeneFacetConfiguration>
 {
-    public ZestFacet( @NotNull FacetType facetType,
+    public PolygeneFacet( @NotNull FacetType facetType,
                       @NotNull Module module,
                       String name,
-                      @NotNull ZestFacetConfiguration configuration,
+                      @NotNull PolygeneFacetConfiguration configuration,
                       Facet underlyingFacet
     )
     {
@@ -42,9 +42,9 @@ public final class ZestFacet extends Facet<ZestFacetConfiguration>
     }
 
     @Nullable
-    public static ZestFacet getInstance( @NotNull Module module )
+    public static PolygeneFacet getInstance( @NotNull Module module )
     {
-        return FacetManager.getInstance( module ).getFacetByType( ZestFacetType.ID );
+        return FacetManager.getInstance( module ).getFacetByType( PolygeneFacetType.ID );
     }
 
 }

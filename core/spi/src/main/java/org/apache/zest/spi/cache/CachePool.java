@@ -22,8 +22,8 @@ package org.apache.zest.spi.cache;
 /**
  * A CachePool is a service that manages the Persistence Caches.
  * <p>
- * The CachePool is typically implemented as a Zest Extension, and is an optional extension in the persistence
- * subsystem of Zest. If a Cache Extension is not provided, caching will be turned off. However, since caching
+ * The CachePool is typically implemented as a Polygene Extension, and is an optional extension in the persistence
+ * subsystem of Polygene. If a Cache Extension is not provided, caching will be turned off. However, since caching
  * operate on EntityStore level, and is an optional component at that, just because you have defined a Cache
  * Extension does not necessary mean that your system will use it. Check the EntityStore implementations for
  * details if they are Cache enabled. Most EntityStore implementations has this enabled, often via the MapEntityStore

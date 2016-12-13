@@ -29,12 +29,12 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
 
-public class FunctionalListTest extends AbstractZestTest
+public class FunctionalListTest extends AbstractPolygeneTest
 {
 
     @Override

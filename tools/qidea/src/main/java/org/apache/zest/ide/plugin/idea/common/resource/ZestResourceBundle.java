@@ -30,15 +30,15 @@ import java.util.ResourceBundle;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestResourceBundle
+public final class PolygeneResourceBundle
 {
 
     @NonNls
-    private static final String RESOURCE_BUNDLE_NAME = "org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle";
+    private static final String RESOURCE_BUNDLE_NAME = "org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle";
 
     private static Reference<ResourceBundle> BUNDLE_REF;
 
-    private ZestResourceBundle()
+    private PolygeneResourceBundle()
     {
     }
 
@@ -59,7 +59,7 @@ public final class ZestResourceBundle
 
         if( bundle == null )
         {
-            bundle = ResourceBundle.getBundle( ZestResourceBundle.class.getName() );
+            bundle = ResourceBundle.getBundle( PolygeneResourceBundle.class.getName() );
             BUNDLE_REF = new SoftReference<ResourceBundle>( bundle );
         }
 

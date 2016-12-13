@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Invocation Cache Library provides caching framework for methods."
+description = "Apache Polygene™ Invocation Cache Library provides caching framework for methods."
 
-jar { manifest { name = "Apache Zest™ Library - Invocation Cache" } }
+jar { manifest { name = "Apache Polygene™ Library - Invocation Cache" } }
 
 dependencies {
   compile zest.core.api

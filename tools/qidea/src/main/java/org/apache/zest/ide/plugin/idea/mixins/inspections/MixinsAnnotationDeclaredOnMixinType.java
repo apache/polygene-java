@@ -29,8 +29,8 @@ import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.mixins.common.ZestMixinUtil.getMixinsAnnotation;
+import static org.apache.zest.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.mixins.common.PolygeneMixinUtil.getMixinsAnnotation;
 
 /**
  * @author edward.yakop@gmail.com

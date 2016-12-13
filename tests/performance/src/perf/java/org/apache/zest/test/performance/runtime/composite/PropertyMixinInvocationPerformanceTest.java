@@ -29,7 +29,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * PropertyMixin invocation performance test.
@@ -38,7 +38,7 @@ import org.apache.zest.test.AbstractZestTest;
  * </p>
  */
 public class PropertyMixinInvocationPerformanceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

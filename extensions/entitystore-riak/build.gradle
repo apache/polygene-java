@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Riak EntityStore Extension"
+description = "Apache Polygene™ Riak EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Riak" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Riak" } }
 
 dependencies {
   compile zest.core.bootstrap

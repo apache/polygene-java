@@ -21,7 +21,7 @@
 package org.apache.zest.library.restlet.repository;
 
 import java.util.function.Predicate;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.identity.HasIdentity;
 import org.apache.zest.api.identity.Identity;
@@ -53,7 +53,7 @@ public class SmallCrudRepositoryMixin<T extends HasIdentity>
     private final Class<T> entityType;
 
     @SuppressWarnings( "unchecked" )
-    public SmallCrudRepositoryMixin( @Structure ZestAPI api, @This ServiceComposite me )
+    public SmallCrudRepositoryMixin( @Structure PolygeneAPI api, @This ServiceComposite me )
     {
         entityType = api.serviceDescriptorFor( me ).metaInfo( EntityTypeDescriptor.class ).entityType();
     }

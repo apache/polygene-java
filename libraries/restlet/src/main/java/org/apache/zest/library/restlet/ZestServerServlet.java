@@ -30,8 +30,8 @@ import org.restlet.ext.servlet.ServerServlet;
 /**
  * Restlet ServerServlet backed by a org.restlet.Application object.
  */
-@Mixins( ZestServerServlet.Mixin.class )
-public interface ZestServerServlet
+@Mixins( PolygeneServerServlet.Mixin.class )
+public interface PolygeneServerServlet
     extends Servlet
 {
     class Mixin

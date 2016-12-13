@@ -29,7 +29,7 @@ import org.apache.zest.runtime.property.PropertyEqualityTest.AnotherSome;
 import org.apache.zest.runtime.property.PropertyEqualityTest.Other;
 import org.apache.zest.runtime.property.PropertyEqualityTest.PrimitivesValue;
 import org.apache.zest.runtime.property.PropertyEqualityTest.Some;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -45,7 +45,7 @@ import static org.apache.zest.runtime.property.PropertyEqualityTest.buildSomeVal
  * Assert that Value equals/hashcode methods combine ValueDescriptor and ValueState.
  */
 public class ValueEqualityTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     //

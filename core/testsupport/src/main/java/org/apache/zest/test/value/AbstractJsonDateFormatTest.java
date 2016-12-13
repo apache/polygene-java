@@ -36,7 +36,7 @@ import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -47,7 +47,7 @@ import static org.junit.Assert.assertThat;
  */
 @SuppressWarnings( "ProtectedField" )
 public class AbstractJsonDateFormatTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     private final ValueType offsetDateTimeType = new ValueType( OffsetDateTime.class );

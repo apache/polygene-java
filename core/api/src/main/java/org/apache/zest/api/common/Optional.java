@@ -42,8 +42,8 @@ import java.lang.annotation.Target;
  * </li>
  * </ul>
  * <p>
- * Optionality is not the default in Zest, and if injections, property values and parameters in methods are not
- * non-null, the Zest runtime will throw an {@link org.apache.zest.api.constraint.ConstraintViolationException}, indicating
+ * Optionality is not the default in Polygene, and if injections, property values and parameters in methods are not
+ * non-null, the Polygene runtime will throw an {@link org.apache.zest.api.constraint.ConstraintViolationException}, indicating
  * which field/property/parameter in which composite and mixin the problem has been detected.
  * </p>
  * <p>
@@ -56,7 +56,7 @@ import java.lang.annotation.Target;
  *
  * &#64;Service
  * YourService other;   // If no YourService instance is declared and visible to this service injection point
- *                      // the Zest runtime will throw a ConstraintViolationException.
+ *                      // the Polygene runtime will throw a ConstraintViolationException.
  *
  * </code></pre>
  */

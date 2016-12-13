@@ -28,7 +28,7 @@ import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 /**
  * Invocation performance test.
@@ -41,7 +41,7 @@ import org.apache.zest.test.AbstractZestTest;
  * </p>
  */
 public class InvocationPerformanceTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

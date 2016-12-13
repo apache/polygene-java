@@ -30,7 +30,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -38,7 +38,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class InterfaceCollisionWithRelatedReturnTypesTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Override

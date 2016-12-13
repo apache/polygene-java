@@ -27,7 +27,7 @@ import org.apache.zest.api.injection.scope.This;
  * This is the implementation of the HelloWorld
  * behaviour interface.
  * <p>
- * This version access the state using Zest Properties.
+ * This version access the state using Polygene Properties.
  * </p>
  */
 public class HelloWorldBehaviourMixin

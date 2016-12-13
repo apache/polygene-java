@@ -48,15 +48,15 @@ public class CreateProjectTest
     @Test( expected = HelpNeededException.class )
     public void givenCommandWhenTemplateDoesNotExistExpectException()
     {
-        new CreateProject().execute( new String[]{ "habba", "ZestTest", "org.apache.zest" }, null, null );
+        new CreateProject().execute( new String[]{ "habba", "PolygeneTest", "org.apache.zest" }, null, null );
     }
 
     @Test
     public void givenCommandWhenTemplateExistExpectCreatedProject() throws IOException
     {
-        TestHelper.setZestZome();
-        File dest = new File( "ZestTest" );
-        new CreateProject().execute( new String[]{ "create-project", "null", "ZestTest", "org.apache.zest" }, null, null );
+        TestHelper.setPolygeneZome();
+        File dest = new File( "PolygeneTest" );
+        new CreateProject().execute( new String[]{ "create-project", "null", "PolygeneTest", "org.apache.zest" }, null, null );
 
         assertThat( dest.exists(), equalTo( true ) );
         File file = new File( dest, "src/main/java/org/apache/zest/package.html" );

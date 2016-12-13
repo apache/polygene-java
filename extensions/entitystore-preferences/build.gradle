@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Preferences EntityStore Extension"
+description = "Apache Polygene™ Preferences EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - Preferences" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Preferences" } }
 
 dependencies {
   compile zest.core.bootstrap

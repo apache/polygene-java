@@ -23,14 +23,14 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd">
 
-    <zest:bootstrap class="org.apache.zest.library.spring.bootstrap.ZestTestBootstrap" />
+    <zest:bootstrap class="org.apache.zest.library.spring.bootstrap.PolygeneTestBootstrap" />
     <zest:service id="commentService" />
 
     <bean id="commentServiceHolder" class="org.apache.zest.library.spring.bootstrap.CommentServiceHolder">
         <constructor-arg ref="commentService" />
     </bean>
 
-    <!-- This Spring bean is injected as a service to the Apache Zest application -->
+    <!-- This Spring bean is injected as a service to the Apache Polygene application -->
     <bean id="toUppercaseService" class="org.apache.zest.library.spring.bootstrap.ToUppercaseService" />
 
 </beans>

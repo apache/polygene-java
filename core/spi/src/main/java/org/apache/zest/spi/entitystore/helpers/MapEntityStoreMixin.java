@@ -47,7 +47,7 @@ import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -80,7 +80,7 @@ public class MapEntityStoreMixin
     private EntityStoreSPI entityStoreSpi;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Structure
     private Application application;

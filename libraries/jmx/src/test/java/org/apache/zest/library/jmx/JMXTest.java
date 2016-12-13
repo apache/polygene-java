@@ -35,7 +35,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.JmxFixture;
 import org.junit.Test;
@@ -44,7 +44,7 @@ import org.junit.Test;
  * Start a simple server so that it can be accessed through JMX remotely.
  * Run this with -Dcom.sun.management.jmxremote so that the JVM starts the MBeanServer
  */
-public class JMXTest extends AbstractZestTest
+public class JMXTest extends AbstractPolygeneTest
 {
     @Override
     public void assemble(ModuleAssembly module) throws AssemblyException
@@ -94,7 +94,7 @@ public class JMXTest extends AbstractZestTest
     @Test
     public void servicesAndConfiguration()
     {
-        JmxFixture jmx = new JmxFixture("Zest:application=Application,layer=Layer 1,module=Module 1,class=Service,");
+        JmxFixture jmx = new JmxFixture("Polygene:application=Application,layer=Layer 1,module=Module 1,class=Service,");
         jmx.assertObjectPresent("service=TestService");
         jmx.assertObjectPresent("service=TestService,name=Configuration");
         jmx.assertObjectPresent("service=TestService2");

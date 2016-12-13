@@ -31,7 +31,7 @@ import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -42,7 +42,7 @@ import static org.junit.Assert.assertThat;
  * Assert that injections on Activators works.
  */
 public class ActivatorInjectionTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Mixins( MixinA.class )

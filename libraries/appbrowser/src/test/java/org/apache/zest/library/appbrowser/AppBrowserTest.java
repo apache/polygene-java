@@ -36,9 +36,9 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.library.appbrowser.json.JsonFormatterFactory;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
-public class AppBrowserTest extends AbstractZestTest
+public class AppBrowserTest extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

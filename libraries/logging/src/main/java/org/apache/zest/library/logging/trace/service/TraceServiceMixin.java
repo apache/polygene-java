@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -129,7 +129,7 @@ public class TraceServiceMixin
         {
             EntityComposite entity = (EntityComposite) object;
             EntityComposite source = (EntityComposite) uow.get(
-                ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity )
+                PolygeneAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity )
                     .types()
                     .findFirst()
                     .orElse( null ), entity.identity().get() );

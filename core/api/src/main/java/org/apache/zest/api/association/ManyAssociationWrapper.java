@@ -27,7 +27,7 @@ import org.apache.zest.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to ManyAssociations, then create a GenericConcern
- * that wraps the Zest-supplied ManyAssociation instance with ManyAssociationWrappers. Override
+ * that wraps the Polygene-supplied ManyAssociation instance with ManyAssociationWrappers. Override
  * methods to perform your custom code.
  */
 public class ManyAssociationWrapper

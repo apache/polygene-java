@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ Codahale Metrics Extension"
+description = "Apache Polygene™ Codahale Metrics Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - Metrics - Codahale" } }
+jar { manifest { name = "Apache Polygene™ Extension - Metrics - Codahale" } }
 
 dependencies {
   compile zest.core.bootstrap

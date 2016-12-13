@@ -35,7 +35,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * EntityBuilder With State Test.
  */
 public class EntityBuilderWithStateTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

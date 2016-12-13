@@ -39,7 +39,7 @@ public class DocumentationSupport
     public static void main( String[] args )
         throws Exception
     {
-        // Create a Zest Runtime
+        // Create a Polygene Runtime
         zest = new Energy4Java();
         application = zest.newApplication( new ApplicationAssembler()
         {

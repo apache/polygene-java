@@ -32,7 +32,7 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.library.rest.client.spi.RequestWriter;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
@@ -49,7 +49,7 @@ public class ValueCompositeRequestWriter
    implements RequestWriter
 {
    @Structure
-   private ZestSPI spi;
+   private PolygeneSPI spi;
 
    @Service
    @Tagged( ValueSerialization.Formats.JSON )

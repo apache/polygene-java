@@ -18,7 +18,7 @@
 package org.apache.zest.gradle.publish
 
 import groovy.transform.CompileStatic
-import org.apache.zest.gradle.ZestExtension
+import org.apache.zest.gradle.PolygeneExtension
 import org.apache.zest.gradle.release.ReleaseSpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -91,7 +91,7 @@ class PublishingPlugin implements Plugin<Project>
 
   private static Config configFor( Project project )
   {
-    def zest = project.extensions.getByType( ZestExtension )
+    def zest = project.extensions.getByType( PolygeneExtension )
     def config = new Config()
     config.snapshots = zest.developmentVersion
     config.releases = zest.releaseVersion

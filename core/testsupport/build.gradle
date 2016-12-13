@@ -18,7 +18,7 @@
  *
  */
 
-jar { manifest { name = "Apache Zest™ Core TestSupport" } }
+jar { manifest { name = "Apache Polygene™ Core TestSupport" } }
 
 dependencies {
   compile zest.core.bootstrap

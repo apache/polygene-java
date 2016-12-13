@@ -30,7 +30,7 @@ description = "Sample of implementation of a Car Rental application."
 // And then go to:
 //      http://localhost:8080/org.apache.zest.sample.rental/rental/main
 
-jar { manifest { name = "Apache Zest™ Sample - Car Rental" } }
+jar { manifest { name = "Apache Polygene™ Sample - Car Rental" } }
 
 dependencies {
   compile zest.core.bootstrap

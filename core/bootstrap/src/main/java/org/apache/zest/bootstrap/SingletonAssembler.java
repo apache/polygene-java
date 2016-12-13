@@ -20,7 +20,7 @@
 
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.object.ObjectFactory;
@@ -46,7 +46,7 @@ public abstract class SingletonAssembler
     private final Module moduleInstance;
 
     /**
-     * Creates a Zest Runtime instance containing one Layer with one Module.
+     * Creates a Polygene Runtime instance containing one Layer with one Module.
      * The Layer will be named "Layer 1" and the Module will be named "Module 1". It is possible to add
      * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
      * class.
@@ -82,7 +82,7 @@ public abstract class SingletonAssembler
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }
 
-    public final ZestAPI runtime()
+    public final PolygeneAPI runtime()
     {
         return zest.spi();
     }

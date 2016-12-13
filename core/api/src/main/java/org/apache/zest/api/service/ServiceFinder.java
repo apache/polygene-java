@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * should be included</li>
  * </ol>
  * <p>
- * Both native Zest services and imported services are considered, with preference to native services.
+ * Both native Polygene services and imported services are considered, with preference to native services.
  * </p>
  */
 public interface ServiceFinder

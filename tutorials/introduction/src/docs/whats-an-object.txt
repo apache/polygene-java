@@ -47,7 +47,7 @@ is the OBSERVER of the object, meaning, the algorithm, that gets to decide what 
 
 This is the same in real life. I don't get to decide how I communicate with you. I have to use english, and I have to
 use email, and I have to send it to a specific mailing list. It is the algorithm of the interaction between us, the
-Zest™ dev mailing list, that has set these rules, not *I* as a participant in this interaction. The same should,
+Polygene™ dev mailing list, that has set these rules, not *I* as a participant in this interaction. The same should,
 obviously, be the case for objects.
 
 So, with the understanding that algorithms should define roles for collaborating objects, and objects should then
@@ -63,7 +63,7 @@ This "solution", which is caused by this fundamental flaw in "class oriented pro
 causes a number of other problems, such as the "self schizophrenia" problem, whereby there is no way to tell where the
 object really is. There is no "this" pointer that has any relevant meaning.
 
-The Composite pattern, as implemented in COP and Zest™, gets around this by simply saying that the composite, as a
+The Composite pattern, as implemented in COP and Polygene™, gets around this by simply saying that the composite, as a
 whole, is an object. Tada, we now have a "this" pointer, and a coherent way to deal with the object graph as though it
 was a single object. We are now able to get back to the strengths of the procedural approach, which allows the
 implementer of the algorithm to define the roles needed for the algorithm. The roles can either be specific to an
@@ -77,7 +77,7 @@ necessary to read composite code when trying to understand algorithms. The assum
 more algorithms than composites, therefore it has to be easy to ready algorithms, and only when necessary dive down into
 composite code.
 
-When talking about Composites as Objects in Zest™ it is most relevant to look at Entities, since these represent physical
+When talking about Composites as Objects in Polygene™ it is most relevant to look at Entities, since these represent physical
 objects in a model, rather than algorithms or services, or other non-instance-oriented things.
 
 If Entities should implement roles, via mixins, in order to interact with each other through algorithms, then the
@@ -134,7 +134,7 @@ code and read it. If we have read the mixin code once, and the same mixin is reu
 it easier for us to understand it the next time we see it being used in another algorithm.
 
 To summarize thus far, we have looked at why OOP so far has not worked out, why this is the case, and how COP deals
-with it, and how we can implement a better solution of Entities using Zest™. All is well!
+with it, and how we can implement a better solution of Entities using Polygene™. All is well!
 
 The next step is to start using these Entities in algorithms. Algorithms are usually stateless, or at least they don't
 have any state that survives the execution of the algorithm. There is input, some calculation, and then output. In
@@ -189,15 +189,15 @@ The interaction method "delegate" is testable, both with mocks of the input, and
 roles. The implementations are also testable, and if the same mixin is used over and over for the implementation, then
 only one set of tests is needed for each role interface.
 
-To summarize we have in COP/Zest™ a way to get the best from procedural and object-oriented programming. As we have seen
+To summarize we have in COP/Polygene™ a way to get the best from procedural and object-oriented programming. As we have seen
 the functionality falls into three categories, the entities implementing objects, the services implementing
 interactions, and the user interface implementing the context. This also maps well to the ideas of ModelViewController,
 which in turn maps well to the new ideas from Mr Reenskaug (inventor of MVC) called DCI: Data-Context-Interaction. As a
-side-effect of this discussion we have therefore also seen how COP/Zest™ can be used to implement DCI, which is an
+side-effect of this discussion we have therefore also seen how COP/Polygene™ can be used to implement DCI, which is an
 important next step in understanding objects and their interactions, the fundamentals of which (I believe) are captured
 on this page.
 
 That's it. Well done if you've read this far :-)
 
 Comments and thoughts to dev@zest.apache.org mailing list on this are highly appreciated. This is very very important
-topics, and crucial to understanding/explaining why COP/Zest™ is so great! :-)
+topics, and crucial to understanding/explaining why COP/Polygene™ is so great! :-)

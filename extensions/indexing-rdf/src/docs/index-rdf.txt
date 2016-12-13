@@ -88,7 +88,7 @@ tag=config
 
 == Named RDF Queries ==
 RDF queries are rather difficult to create manually. Not only do you need to learn a difficult language and a new
-syntax, but also need to understand the indexing model that happens in Apache Zest RDF indexing system.
+syntax, but also need to understand the indexing model that happens in Apache Polygene RDF indexing system.
 
 Below follows a large set of working queries, which can be used as a starting point. See the testcases for
 details of the Entity model that is being indexed.

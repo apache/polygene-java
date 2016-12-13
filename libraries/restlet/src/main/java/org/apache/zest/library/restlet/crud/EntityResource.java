@@ -41,7 +41,7 @@ import org.apache.zest.library.restlet.RestLink;
 import org.apache.zest.library.restlet.repository.RepositoryLocator;
 import org.apache.zest.library.restlet.resource.ResourceBuilder;
 import org.apache.zest.library.restlet.resource.ServerResource;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.data.Reference;
 
 @Mixins( EntityResource.Mixin.class )
@@ -58,7 +58,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
     {
 
         @Structure
-        private ZestSPI spi;
+        private PolygeneSPI spi;
 
         @Structure
         private ValueBuilderFactory vbf;

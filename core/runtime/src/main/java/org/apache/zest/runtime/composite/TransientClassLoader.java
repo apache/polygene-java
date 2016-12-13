@@ -150,7 +150,7 @@ import static org.objectweb.asm.Type.getInternalName;
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }
 
-        // Try the classloader of this classloader -> get classes in Zest such as CompositeInvoker
+        // Try the classloader of this classloader -> get classes in Polygene such as CompositeInvoker
         return getClass().getClassLoader().loadClass( name );
     }
 
@@ -223,7 +223,7 @@ import static org.objectweb.asm.Type.getInternalName;
                 String[] exceptions = null;
                 {
                     MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
-                    if( isInternalZestMethod( method, baseClass ) )
+                    if( isInternalPolygeneMethod( method, baseClass ) )
                     {
                         // generate a NoOp method...
                         mv.visitInsn( RETURN );
@@ -440,7 +440,7 @@ import static org.objectweb.asm.Type.getInternalName;
         return !Modifier.isFinal( method.getModifiers() );
     }
 
-    private static boolean isInternalZestMethod( Method method, Class baseClass )
+    private static boolean isInternalPolygeneMethod( Method method, Class baseClass )
     {
         return isDeclaredIn( method, Initializable.class, baseClass )
                || isDeclaredIn( method, Lifecycle.class, baseClass );

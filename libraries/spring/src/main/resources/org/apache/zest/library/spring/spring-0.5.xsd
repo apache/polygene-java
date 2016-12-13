@@ -30,7 +30,7 @@
   <xsd:element name="bootstrap">
     <xsd:annotation>
       <xsd:documentation><![CDATA[
-Defines Apache Zest application bootstrap.
+Defines Apache Polygene application bootstrap.
 			]]></xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>
@@ -38,7 +38,7 @@ Defines Apache Zest application bootstrap.
     </xsd:complexType>
   </xsd:element>
 
-  <!-- Zest application attributes -->
+  <!-- Polygene application attributes -->
   <xsd:attributeGroup name="bootstrapAttributes">
     <xsd:attribute name="class" type="xsd:string" use="required">
       <xsd:annotation>
@@ -52,7 +52,7 @@ Full class name of bootstrap class.
   <xsd:element name="service">
     <xsd:annotation>
       <xsd:documentation><![CDATA[
-Defines Apache Zest service to be exposed as spring bean.
+Defines Apache Polygene service to be exposed as spring bean.
 			]]></xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>

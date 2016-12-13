@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ MongoDB EntityStore Extension"
+description = "Apache Polygene™ MongoDB EntityStore Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - MongoDB" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - MongoDB" } }
 
 dependencies {
   compile zest.core.bootstrap

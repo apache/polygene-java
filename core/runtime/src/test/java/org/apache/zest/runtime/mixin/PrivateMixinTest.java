@@ -25,7 +25,7 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
  * Unit tests related to private mixins.
  */
 public class PrivateMixinTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )

@@ -25,20 +25,20 @@ import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
-import org.apache.zest.ide.plugin.idea.common.facet.ui.ZestFacetEditorTab;
+import org.apache.zest.ide.plugin.idea.common.facet.ui.PolygeneFacetEditorTab;
 
 /**
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestFacetConfiguration
+public final class PolygeneFacetConfiguration
     implements FacetConfiguration
 {
     public FacetEditorTab[] createEditorTabs( FacetEditorContext editorContext,
                                               FacetValidatorsManager validatorsManager )
     {
         return new FacetEditorTab[]{
-            new ZestFacetEditorTab( editorContext )
+            new PolygeneFacetEditorTab( editorContext )
         };
     }
 

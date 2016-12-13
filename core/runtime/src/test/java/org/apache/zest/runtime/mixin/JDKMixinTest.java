@@ -35,7 +35,7 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ import static org.junit.Assert.assertThat;
  * Assert that JDK classes are usable as Mixins.
  */
 public class JDKMixinTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
 
     @Concerns( JDKMixinConcern.class )

@@ -24,7 +24,7 @@ package org.apache.zest.tutorials.composites.tutorial3;
 /**
  * This is the implementation of the HelloWorld
  * interface. The behaviour and state is mixed. Since parameters
- * are mandatory as default in Zest there's no need to do null checks.
+ * are mandatory as default in Polygene there's no need to do null checks.
  */
 public class HelloWorldMixin
     implements HelloWorld

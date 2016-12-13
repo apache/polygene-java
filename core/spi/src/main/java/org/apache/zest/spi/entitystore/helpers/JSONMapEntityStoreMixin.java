@@ -48,7 +48,7 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.apache.zest.spi.cache.Cache;
 import org.apache.zest.spi.cache.CachePool;
 import org.apache.zest.spi.cache.NullCache;
@@ -82,7 +82,7 @@ public class JSONMapEntityStoreMixin
     private EntityStoreSPI entityStoreSpi;
 
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     @Structure
     private Application application;

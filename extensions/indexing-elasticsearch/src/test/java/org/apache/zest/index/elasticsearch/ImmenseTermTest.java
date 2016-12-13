@@ -34,7 +34,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -55,7 +55,7 @@ import static org.junit.Assert.assertThat;
  * See <a href="https://ops4j1.jira.com/browse/QI-412">QI-412</a>.
  */
 public class ImmenseTermTest
-    extends AbstractZestTest
+    extends AbstractPolygeneTest
 {
     @ClassRule
     public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();

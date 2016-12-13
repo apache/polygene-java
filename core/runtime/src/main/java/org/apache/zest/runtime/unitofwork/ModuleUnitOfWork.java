@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
@@ -94,7 +94,7 @@ public class ModuleUnitOfWork
     private UnitOfWorkInstance uow;
 
     @Structure
-    private ZestAPI api;
+    private PolygeneAPI api;
 
     @Structure
     private ModuleDescriptor module;

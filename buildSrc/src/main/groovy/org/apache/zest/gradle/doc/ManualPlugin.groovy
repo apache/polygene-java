@@ -19,7 +19,7 @@ package org.apache.zest.gradle.doc
 
 import groovy.transform.CompileStatic
 import org.apache.zest.gradle.TaskGroups
-import org.apache.zest.gradle.ZestExtension
+import org.apache.zest.gradle.PolygeneExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -39,7 +39,7 @@ class ManualPlugin implements Plugin<Project>
   @Override
   void apply( final Project project )
   {
-    def zest = project.extensions.getByType( ZestExtension )
+    def zest = project.extensions.getByType( PolygeneExtension )
     project.tasks.create( TaskNames.WEBSITE, DocumentationTask ) { DocumentationTask task ->
       task.group = TaskGroups.DOCUMENTATION
       task.description = 'Generates documentation website'
@@ -86,7 +86,7 @@ class ManualPlugin implements Plugin<Project>
   // Force when building a release version
   // Skip if skipAsciidocIfAbsent property is set
   // Skip if asciidoc is not found in PATH when building a development version
-  private static boolean isAsciidocInstalled( Project project, ZestExtension zest )
+  private static boolean isAsciidocInstalled( Project project, PolygeneExtension zest )
   {
     if( asciidocInstalled == null )
     {

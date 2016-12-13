@@ -36,7 +36,7 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 import org.apache.zest.library.circuitbreaker.service.ServiceCircuitBreaker;
-import org.apache.zest.library.jmx.ZestMBeans;
+import org.apache.zest.library.jmx.PolygeneMBeans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +125,7 @@ public interface CircuitBreakerManagement
         {
             ObjectName mbeanObjectName;
 
-            ObjectName serviceName = ZestMBeans.findServiceName( server, application.name(), name.toString() );
+            ObjectName serviceName = PolygeneMBeans.findServiceName( server, application.name(), name.toString() );
             if ( serviceName != null )
             {
                 mbeanObjectName = new ObjectName( serviceName.toString() + ",name=Circuit breaker" );

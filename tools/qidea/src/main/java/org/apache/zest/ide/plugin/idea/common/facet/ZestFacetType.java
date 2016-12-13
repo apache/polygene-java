@@ -42,26 +42,26 @@ import java.util.Collection;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestFacetType extends FacetType<ZestFacet, ZestFacetConfiguration>
+public final class PolygeneFacetType extends FacetType<PolygeneFacet, PolygeneFacetConfiguration>
 {
-    public static final FacetTypeId<ZestFacet> ID = new FacetTypeId<ZestFacet>();
+    public static final FacetTypeId<PolygeneFacet> ID = new FacetTypeId<PolygeneFacet>();
 
-    public ZestFacetType()
+    public PolygeneFacetType()
     {
-        super( ID, "ZestFacet", "Zest Facet" );
+        super( ID, "PolygeneFacet", "Polygene Facet" );
     }
 
-    public final ZestFacetConfiguration createDefaultConfiguration()
+    public final PolygeneFacetConfiguration createDefaultConfiguration()
     {
-        return new ZestFacetConfiguration();
+        return new PolygeneFacetConfiguration();
     }
 
-    public final ZestFacet createFacet( @NotNull Module module,
+    public final PolygeneFacet createFacet( @NotNull Module module,
                                         String name,
-                                        @NotNull ZestFacetConfiguration configuration,
+                                        @NotNull PolygeneFacetConfiguration configuration,
                                         @Nullable Facet underlyingFacet )
     {
-        return new ZestFacet( this, module, name, configuration, underlyingFacet );
+        return new PolygeneFacet( this, module, name, configuration, underlyingFacet );
     }
 
     public final boolean isSuitableModuleType( ModuleType moduleType )
@@ -70,15 +70,15 @@ public final class ZestFacetType extends FacetType<ZestFacet, ZestFacetConfigura
     }
 
     @Override
-    public final void registerDetectors( FacetDetectorRegistry<ZestFacetConfiguration> registry )
+    public final void registerDetectors( FacetDetectorRegistry<PolygeneFacetConfiguration> registry )
     {
         registry.registerOnTheFlyDetector(
-            StdFileTypes.JAVA, VirtualFileFilter.ALL, new HasZestImportPackageCondition(),
-            new FacetDetector<PsiFile, ZestFacetConfiguration>( "ZestFacetDetector" )
+            StdFileTypes.JAVA, VirtualFileFilter.ALL, new HasPolygeneImportPackageCondition(),
+            new FacetDetector<PsiFile, PolygeneFacetConfiguration>( "PolygeneFacetDetector" )
             {
                 @Override
-                public ZestFacetConfiguration detectFacet( PsiFile source,
-                                                           Collection<ZestFacetConfiguration> existingConfigurations )
+                public PolygeneFacetConfiguration detectFacet( PsiFile source,
+                                                           Collection<PolygeneFacetConfiguration> existingConfigurations )
                 {
                     if( !existingConfigurations.isEmpty() )
                     {
@@ -91,12 +91,12 @@ public final class ZestFacetType extends FacetType<ZestFacet, ZestFacetConfigura
         );
     }
 
-    private static class HasZestImportPackageCondition
+    private static class HasPolygeneImportPackageCondition
         implements Condition<PsiFile>
     {
         public final boolean value( PsiFile psiFile )
         {
-            final boolean[] hasZestImportPackage = new boolean[]{ false };
+            final boolean[] hasPolygeneImportPackage = new boolean[]{ false };
 
             psiFile.accept( new JavaElementVisitor()
             {
@@ -106,7 +106,7 @@ public final class ZestFacetType extends FacetType<ZestFacet, ZestFacetConfigura
                     String packageName = statement.getQualifiedName();
                     if( packageName != null && packageName.startsWith( "org.apache.zest" ) )
                     {
-                        hasZestImportPackage[ 0 ] = true;
+                        hasPolygeneImportPackage[ 0 ] = true;
                     }
                 }
 
@@ -116,7 +116,7 @@ public final class ZestFacetType extends FacetType<ZestFacet, ZestFacetConfigura
                     // Ignore
                 }
             } );
-            return hasZestImportPackage[ 0 ];
+            return hasPolygeneImportPackage[ 0 ];
         }
     }
 }

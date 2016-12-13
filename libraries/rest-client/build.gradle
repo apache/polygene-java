@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ REST Client Library provides a client library for the Apache Zest™ REST Server library"
+description = "Apache Polygene™ REST Client Library provides a client library for the Apache Polygene™ REST Server library"
 
-jar { manifest { name = "Apache Zest™ Library - REST Client" } }
+jar { manifest { name = "Apache Polygene™ Library - REST Client" } }
 
 dependencies {
   compile zest.library( 'rest-common' )

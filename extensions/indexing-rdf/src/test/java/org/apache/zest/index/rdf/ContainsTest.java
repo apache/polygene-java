@@ -38,14 +38,14 @@ import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractPolygeneTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class ContainsTest extends AbstractZestTest
+public class ContainsTest extends AbstractPolygeneTest
 {
     @Rule
     public TemporaryFolder tmpDir = new TemporaryFolder();

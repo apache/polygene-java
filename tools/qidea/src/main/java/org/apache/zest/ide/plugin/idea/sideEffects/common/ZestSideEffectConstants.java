@@ -22,14 +22,14 @@ package org.apache.zest.ide.plugin.idea.sideEffects.common;
  * @author edward.yakop@gmail.com
  * @since 0.1
  */
-public final class ZestSideEffectConstants
+public final class PolygeneSideEffectConstants
 {
     public static final String QUALIFIED_NAME_SIDE_EFFECTS = "org.apache.zest.api.sideeffect.SideEffects";
 
     public static final String QUALIFIED_NAME_SIDE_EFFECT_OF = "org.apache.zest.api.sideeffect.SideEffectOf";
     public static final String QUALIFIED_NAME_GENERIC_SIDE_EFFECT = "org.apache.zest.api.sideeffect.GenericSideEffect";
 
-    private ZestSideEffectConstants()
+    private PolygeneSideEffectConstants()
     {
     }
 }

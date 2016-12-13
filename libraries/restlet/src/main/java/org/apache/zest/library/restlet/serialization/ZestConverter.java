@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.object.ObjectFactory;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
 import org.restlet.data.Preference;
 import org.restlet.engine.converter.ConverterHelper;
@@ -34,12 +34,12 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.Resource;
 
 /**
- * Converter between Apache Zest and JSON.
+ * Converter between Apache Polygene and JSON.
  */
-public class ZestConverter extends ConverterHelper
+public class PolygeneConverter extends ConverterHelper
 {
     @Structure
-    private ZestSPI spi;
+    private PolygeneSPI spi;
 
     /**
      * Variant with media type application/json.
@@ -49,7 +49,7 @@ public class ZestConverter extends ConverterHelper
 
     private final ObjectFactory objectFactory;
 
-    public ZestConverter( ObjectFactory objectFactory )
+    public PolygeneConverter( ObjectFactory objectFactory )
     {
         this.objectFactory = objectFactory;
     }

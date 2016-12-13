@@ -18,9 +18,9 @@
  *
  */
 
-description = "Apache Zest™ StaX ValueSerialization Extension"
+description = "Apache Polygene™ StaX ValueSerialization Extension"
 
-jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - StaX" } }
+jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - StaX" } }
 
 dependencies {
   compile zest.core.bootstrap

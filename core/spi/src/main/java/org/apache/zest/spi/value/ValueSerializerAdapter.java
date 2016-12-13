@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.PolygeneAPI;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
@@ -356,7 +356,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
         throws Exception
     {
-        CompositeInstance valueInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) object );
+        CompositeInstance valueInstance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) object );
         ValueDescriptor descriptor = (ValueDescriptor) valueInstance.descriptor();
         AssociationStateHolder state = (AssociationStateHolder) valueInstance.state();
 
