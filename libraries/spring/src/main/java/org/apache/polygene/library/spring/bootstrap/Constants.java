@@ -21,7 +21,7 @@ package org.apache.polygene.library.spring.bootstrap;
 
 public final class Constants
 {
-    public static final String BEAN_ID_ZEST_APPLICATION = "zestApplication";
+    public static final String BEAN_ID_ZEST_APPLICATION = "polygeneApplication";
 
     private Constants()
     {

@@ -41,7 +41,7 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private Energy4Java zest;
+    private Energy4Java polygene;
     private Application applicationInstance;
     private final Module moduleInstance;
 
@@ -59,8 +59,8 @@ public abstract class SingletonAssembler
         throws AssemblyException, ActivationException
     {
 // START SNIPPET: actual
-        zest = new Energy4Java();
-        applicationInstance = zest.newApplication(
+        polygene = new Energy4Java();
+        applicationInstance = polygene.newApplication(
             applicationFactory -> applicationFactory.newApplicationAssembly( SingletonAssembler.this )
         );
 
@@ -84,7 +84,7 @@ public abstract class SingletonAssembler
 
     public final PolygeneAPI runtime()
     {
-        return zest.spi();
+        return polygene.spi();
     }
 
     public final Application application()

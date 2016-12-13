@@ -23,11 +23,11 @@ description = "Tutorial on how to use Apache Polygene™ service concept."
 jar { manifest { name = "Apache Polygene™ Tutorial - Services" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

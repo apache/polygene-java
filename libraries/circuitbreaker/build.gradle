@@ -24,12 +24,12 @@ description = "Apache Polygene™ Circuit Breaker Library provides a framework f
 jar { manifest { name = "Apache Polygene™ Library - Circuit Breaker" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'jmx' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'jmx' )
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.awaitility
 
   testRuntime libraries.logback

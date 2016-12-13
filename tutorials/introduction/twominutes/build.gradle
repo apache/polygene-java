@@ -23,11 +23,11 @@ description = "A 2-minute Introduction Tutorial to Apache Polygene™ in its sim
 jar { manifest { name = "Apache Polygene™ Tutorial - 2 minute Introduction" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

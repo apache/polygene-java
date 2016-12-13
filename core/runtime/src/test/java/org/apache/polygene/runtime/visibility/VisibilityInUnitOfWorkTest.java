@@ -141,8 +141,8 @@ public class VisibilityInUnitOfWorkTest
     private Application createApplication()
         throws AssemblyException
     {
-        Energy4Java zest = new Energy4Java();
-        return zest.newApplication( appFactory -> {
+        Energy4Java polygene = new Energy4Java();
+        return polygene.newApplication( appFactory -> {
             ApplicationAssembly appAssembly = appFactory.newApplicationAssembly();
             LayerAssembly layer1 = appAssembly.layer( "layer1" );
             ModuleAssembly myModule = layer1.module( "My Module" );

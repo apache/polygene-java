@@ -23,12 +23,12 @@ description = "Detailled Model of a Apache Polygene™ Application Structure."
 jar { manifest { name = "Apache Polygene™ Model Detail" }}
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.extension( 'indexing-rdf' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.extension( 'indexing-rdf' )
 
   testRuntime libraries.logback
 }

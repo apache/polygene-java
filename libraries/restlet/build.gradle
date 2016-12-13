@@ -26,17 +26,17 @@ jar { manifest { name = "Apache Polygene™ Library - Restlet" } }
 
 dependencies {
 
-  compile zest.core.bootstrap
-  compile zest.extension( 'valueserialization-jackson' )
-  compile zest.extension( 'indexing-rdf' )
-  compile zest.extension( 'entitystore-file' )
+  compile polygene.core.bootstrap
+  compile polygene.extension( 'valueserialization-jackson' )
+  compile polygene.extension( 'indexing-rdf' )
+  compile polygene.extension( 'entitystore-file' )
   compile libraries.restlet
   compile libraries.servlet_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'http' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'http' )
   testCompile libraries.http_client
 
   testRuntime libraries.logback

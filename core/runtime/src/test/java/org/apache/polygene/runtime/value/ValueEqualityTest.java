@@ -65,10 +65,10 @@ public class ValueEqualityTest
     public void givenValuesOfTheSameTypeWhenTestingValueDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue(valueBuilderFactory);
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
 
         Some other = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = polygene.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors equal",
                     someDescriptor,
@@ -82,10 +82,10 @@ public class ValueEqualityTest
     public void givenValuesOfCommonTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
 
         PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
-        ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
+        ValueDescriptor primitiveDescriptor = polygene.api().valueDescriptorFor( primitive );
 
         assertThat( "ValueDescriptors not equal",
                     someDescriptor,
@@ -99,10 +99,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
 
         Other other = buildOtherValue( valueBuilderFactory );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = polygene.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors not equal",
                     someDescriptor,
@@ -119,10 +119,10 @@ public class ValueEqualityTest
     public void givenValuesOfSameTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = polygene.spi().stateOf( (ValueComposite) some );
 
         Some some2 = buildSomeValue( valueBuilderFactory );
-        AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
+        AssociationStateHolder some2State = polygene.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates equal",
                     someState,
@@ -136,10 +136,10 @@ public class ValueEqualityTest
     public void givenValuesOfSameTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = polygene.spi().stateOf( (ValueComposite) some );
 
         Some some2 = buildSomeValueWithDifferentState( valueBuilderFactory );
-        AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
+        AssociationStateHolder some2State = polygene.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates not equal",
                     someState,
@@ -153,10 +153,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = polygene.spi().stateOf( (ValueComposite) some );
 
         AnotherSome anotherSome = buildAnotherSomeValue( valueBuilderFactory );
-        AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
+        AssociationStateHolder anotherSomeState = polygene.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates equal",
                     someState,
@@ -170,10 +170,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = polygene.spi().stateOf( (ValueComposite) some );
 
         AnotherSome anotherSome = buildAnotherSomeValueWithDifferentState( valueBuilderFactory );
-        AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
+        AssociationStateHolder anotherSomeState = polygene.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates not equal",
                     someState,

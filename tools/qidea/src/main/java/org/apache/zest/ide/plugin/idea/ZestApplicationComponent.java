@@ -53,11 +53,11 @@ public final class PolygeneApplicationComponent
         "GenericConcernOf.java"
     };
 
-    private final PolygeneFacetType zestFacetType;
+    private final PolygeneFacetType polygeneFacetType;
 
     public PolygeneApplicationComponent()
     {
-        zestFacetType = new PolygeneFacetType();
+        polygeneFacetType = new PolygeneFacetType();
     }
 
     @NotNull
@@ -75,7 +75,7 @@ public final class PolygeneApplicationComponent
     private void registerFacet()
     {
         FacetTypeRegistry facetTypeRegistry = FacetTypeRegistry.getInstance();
-        facetTypeRegistry.registerFacetType( zestFacetType );
+        facetTypeRegistry.registerFacetType( polygeneFacetType );
     }
 
     private void registerIntentions()
@@ -92,7 +92,7 @@ public final class PolygeneApplicationComponent
     private void unregisterFacet()
     {
         FacetTypeRegistry facetTypeRegistry = FacetTypeRegistry.getInstance();
-        facetTypeRegistry.unregisterFacetType( zestFacetType );
+        facetTypeRegistry.unregisterFacetType( polygeneFacetType );
     }
 
     public final Class[] getInspectionClasses()
@@ -117,7 +117,7 @@ public final class PolygeneApplicationComponent
     public final FileTemplateGroupDescriptor getFileTemplatesDescriptor()
     {
         FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(
-            message( "zest.file.template.group.title" ), null
+            message( "polygene.file.template.group.title" ), null
         );
 
         FileTypeManager fileTypeManager = FileTypeManager.getInstance();

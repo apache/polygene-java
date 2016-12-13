@@ -20,9 +20,9 @@
 [[reference-documentation,Reference Manual]]
 = Apache Polygene™ v{revnumber} Reference Manual =
 
-:zest-version: {revnumber}
-:zest-buildnumber: {revnumber}
-:zest-git-tag: {gitversion}
+:polygene-version: {revnumber}
+:polygene-buildnumber: {revnumber}
+:polygene-git-tag: {gitversion}
 
 
 :leveloffset: 2

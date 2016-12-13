@@ -57,7 +57,7 @@ import org.restlet.util.Series;
  */
 public abstract class ZrestApplication extends org.restlet.Application
 {
-    protected org.apache.polygene.api.structure.Application zestApplication;
+    protected org.apache.polygene.api.structure.Application polygeneApplication;
     protected ServiceFinder serviceFinder;
     protected ObjectFactory objectFactory;
     protected TransientBuilderFactory transientBuilderFactory;
@@ -88,8 +88,8 @@ public abstract class ZrestApplication extends org.restlet.Application
         Series<Parameter> parameters = getContext().getParameters();
         String mode = parameters.getFirstValue( "org.apache.polygene.runtime.mode" );
         createApplication( mode );
-        zestApplication.activate();
-        Module module = zestApplication.findModule( getConnectivityLayer(), getConnectivityModule() );
+        polygeneApplication.activate();
+        Module module = polygeneApplication.findModule( getConnectivityLayer(), getConnectivityModule() );
         serviceFinder = module;
         objectFactory = module;
         transientBuilderFactory = module;
@@ -104,8 +104,8 @@ public abstract class ZrestApplication extends org.restlet.Application
         {
             LayeredApplicationAssembler assembler = createApplicationAssembler(mode);
             assembler.initialize();
-            zestApplication = assembler.application();
-            setName( zestApplication.name() );
+            polygeneApplication = assembler.application();
+            setName( polygeneApplication.name() );
         }
         catch( Throwable e )
         {
@@ -121,7 +121,7 @@ public abstract class ZrestApplication extends org.restlet.Application
         throws Exception
     {
         super.stop();
-        zestApplication.passivate();
+        polygeneApplication.passivate();
     }
 
     @Override
@@ -130,7 +130,7 @@ public abstract class ZrestApplication extends org.restlet.Application
         Context context = getContext();
         Engine.getInstance().getRegisteredConverters().add( new PolygeneConverter( objectFactory ) );
 
-        if( zestApplication.mode() == Application.Mode.development )
+        if( polygeneApplication.mode() == Application.Mode.development )
         {
             setDebugging( true );
         }

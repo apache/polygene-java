@@ -40,7 +40,7 @@ public abstract class AbstractPolygeneBaseTest
     protected PolygeneAPI api;
     protected PolygeneSPI spi;
 
-    protected Energy4Java zest;
+    protected Energy4Java polygene;
     protected ApplicationDescriptor applicationModel;
     protected Application application;
 
@@ -48,7 +48,7 @@ public abstract class AbstractPolygeneBaseTest
     public void setUp()
         throws Exception
     {
-        zest = new Energy4Java();
+        polygene = new Energy4Java();
         applicationModel = newApplication();
         if( applicationModel == null )
         {
@@ -57,7 +57,7 @@ public abstract class AbstractPolygeneBaseTest
         }
         application = newApplicationInstance( applicationModel );
         initApplication( application );
-        api = spi = zest.spi();
+        api = spi = polygene.spi();
         application.activate();
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractPolygeneBaseTest
 
     protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
     {
-        return applicationModel.newInstance( zest.api() );
+        return applicationModel.newInstance( polygene.api() );
     }
 
     protected ApplicationDescriptor newApplication()
@@ -94,7 +94,7 @@ public abstract class AbstractPolygeneBaseTest
 
         try
         {
-            return zest.newApplicationModel( assembler );
+            return polygene.newApplicationModel( assembler );
         }
         catch( AssemblyException e )
         {

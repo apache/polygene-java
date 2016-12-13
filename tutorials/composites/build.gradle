@@ -23,12 +23,12 @@ description = "Basic tutorial on how to covert a simple 'Hello World' applicatio
 jar { manifest { name = "Apache Polygene™ Tutorial - Composites" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'constraints' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'constraints' )
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

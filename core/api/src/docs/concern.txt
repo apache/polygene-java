@@ -58,21 +58,21 @@ of the JDBC Connection class;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/concern/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/concern/DocumentationSupport.java
 tag=class
 --------------
 
 We can also use an AppliesToFilter to define which methods should be wrapped with the concern, like this;
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/concern/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/concern/DocumentationSupport.java
 tag=filter
 --------------
 
 And finally an example of how to use annotations to mark indvidual methods for being wrapped by the concern.
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/concern/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/concern/DocumentationSupport.java
 tag=annotation
 --------------
 

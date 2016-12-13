@@ -31,9 +31,9 @@ public abstract class AbstractElasticSearchSupport
     implements ElasticSearchSupport
 {
     protected static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchSupport.class );
-    protected static final String DEFAULT_CLUSTER_NAME = "zest_cluster";
-    protected static final String DEFAULT_INDEX_NAME = "zest_index";
-    protected static final String ENTITIES_TYPE = "zest_entities";
+    protected static final String DEFAULT_CLUSTER_NAME = "polygene_cluster";
+    protected static final String DEFAULT_INDEX_NAME = "polygene_index";
+    protected static final String ENTITIES_TYPE = "polygene_entities";
 
     protected Client client;
     protected String index;

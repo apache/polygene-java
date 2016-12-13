@@ -132,7 +132,7 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureJavadocs( Project project )
   {
-    def zest = project.extensions.getByType( PolygeneExtension )
+    def polygene = project.extensions.getByType( PolygeneExtension )
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
     project.tasks.create( TaskNames.JAVADOCS, Javadoc ) { Javadoc task ->
       task.group = TaskGroups.DOCUMENTATION
@@ -184,7 +184,7 @@ class RootProjectPlugin implements Plugin<Project>
       task.description = 'Copy SDK public Javadoc to ../polygene-web'
       task.dependsOn TaskNames.JAVADOCS
       task.from 'build/docs/javadoc/'
-      if( zest.developmentVersion )
+      if( polygene.developmentVersion )
       {
         task.into( "$project.projectDir/../polygene-web/site/content/java/develop/javadocs/" )
       }
@@ -242,12 +242,12 @@ class RootProjectPlugin implements Plugin<Project>
 
   private static void configureReleaseTask( Project project )
   {
-    def zest = project.extensions.getByType( PolygeneExtension )
+    def polygene = project.extensions.getByType( PolygeneExtension )
     def release = project.tasks.create( 'release' )
     release.description = 'Builds, tests and uploads the release artifacts'
     release.group = TaskGroups.RELEASE
     release.doFirst {
-      if( zest.developmentVersion )
+      if( polygene.developmentVersion )
       {
         throw new GradleException( "Cannot release development version $project.version, use '-Dversion=X.Y.Z'" )
       }

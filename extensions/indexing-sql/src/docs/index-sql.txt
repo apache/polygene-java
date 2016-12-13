@@ -43,7 +43,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 == Configuration ==
 
 SQL Index/Query Configuration is optional and provides only one configuration property: `schemaName` defaulted to
-'zest_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
+'polygene_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
 
 The assembly snippets below show the DataSource assembly alongside the SQL Index/Query assembly. Remember to configure
 the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
@@ -55,7 +55,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-sql/src/test/java/org/apache/zest/index/sql/postgresql/SQLTestHelper.java
+source=extensions/indexing-sql/src/test/java/org/apache/polygene/index/sql/postgresql/SQLTestHelper.java
 tag=assembly
 ----
 

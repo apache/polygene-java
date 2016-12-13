@@ -23,14 +23,14 @@ description = "Apache Polygene™ Redis EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Redis" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'locking' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'locking' )
   compile libraries.jedis
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.extension( 'valueserialization-orgjson' )
 
   testRuntime libraries.logback
 }

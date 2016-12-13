@@ -23,11 +23,11 @@ description = "Apache Polygene™ Constraint Library provides common set of cons
 jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

@@ -32,7 +32,7 @@ Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/configuration/MailServiceConfiguration.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailServiceConfiguration.java
 tag=configuration
 --------------
 
@@ -47,7 +47,7 @@ changes take effect. Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/configuration/MailService.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailService.java
 tag=read
 --------------
 
@@ -57,7 +57,7 @@ must be called. Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/apache/zest/api/configuration/MailService.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailService.java
 tag=write
 --------------
 

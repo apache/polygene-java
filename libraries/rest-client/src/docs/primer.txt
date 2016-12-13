@@ -51,7 +51,7 @@ requests, or it may abort. "refresh" does not return any value, and usually does
 Example:
 [snippet,java]
 -----------
-source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/docsupport/RestPrimerDocs.java
+source=libraries/rest-client/src/test/java/org/apache/polygene/library/rest/client/docsupport/RestPrimerDocs.java
 tag=1
 -----------
 
@@ -68,7 +68,7 @@ handlers. Here is the setup of crc:
 
 [snippet,java]
 -----------
-source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/docsupport/RestPrimerDocs.java
+source=libraries/rest-client/src/test/java/org/apache/polygene/library/rest/client/docsupport/RestPrimerDocs.java
 tag=2
 -----------
 

@@ -54,7 +54,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/polygene/index/elasticsearch/DocumentationSupport.java
 tag=filesystem
 ----
 
@@ -67,7 +67,7 @@ Here are the configuration properties for the filesystem ElasticSearch Index/Que
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchConfiguration.java
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/polygene/index/elasticsearch/ElasticSearchConfiguration.java
 tag=config
 ----
 
@@ -82,7 +82,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/polygene/index/elasticsearch/DocumentationSupport.java
 tag=cluster
 ----
 
@@ -94,7 +94,7 @@ properties defined in the filesystem configuration, see above.
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchClusterConfiguration.java
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/polygene/index/elasticsearch/ElasticSearchClusterConfiguration.java
 tag=config
 ----
 
@@ -109,7 +109,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/polygene/index/elasticsearch/DocumentationSupport.java
 tag=client
 ----
 
@@ -121,7 +121,7 @@ Note that the `clusterName` is ignored as this is managed by the client.
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchConfiguration.java
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/polygene/index/elasticsearch/ElasticSearchConfiguration.java
 tag=client
 ----
 

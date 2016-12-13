@@ -103,7 +103,7 @@ public class PostgreSQLEntityStorePerformanceTest
         finally
         {
 
-            Energy4Java zest = new Energy4Java();
+            Energy4Java polygene = new Energy4Java();
             Assembler[][][] assemblers = new Assembler[][][]
             {
                 {
@@ -112,7 +112,7 @@ public class PostgreSQLEntityStorePerformanceTest
                     }
                 }
             };
-            Application application = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            Application application = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
             {
             } );
             application.activate();

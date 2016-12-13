@@ -18,10 +18,10 @@
   ~
   ~
   -->
-<xsd:schema xmlns="http://zest.apache.org/schema/zest/spring"
+<xsd:schema xmlns="http://polygene.apache.org/schema/polygene/spring"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://zest.apache.org/schema/zest/spring"
+            targetNamespace="http://polygene.apache.org/schema/polygene/spring"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 

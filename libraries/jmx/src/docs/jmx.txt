@@ -45,7 +45,7 @@ JMX Support for Polygene™ applications:
 
 [snippet,java]
 ----
-source=libraries/jmx/src/test/java/org/apache/zest/library/jmx/JMXTest.java
+source=libraries/jmx/src/test/java/org/apache/polygene/library/jmx/JMXTest.java
 tag=assembly
 ----
 
@@ -53,6 +53,6 @@ Managing the MX Beans Server from your Polygene™ application using the `JMXCon
 
 [snippet,java]
 ----
-source=libraries/jmx/src/test/java/org/apache/zest/library/jmx/JMXTest.java
+source=libraries/jmx/src/test/java/org/apache/polygene/library/jmx/JMXTest.java
 tag=connector
 ----

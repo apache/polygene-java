@@ -24,20 +24,20 @@ jar { manifest { name = "Apache Polygene™ Tests - Performance" } }
 apply plugin: PerformanceTestsPlugin
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.junit
   compile libraries.slf4j_api
 
-  perfCompile zest.core.testsupport
-  perfCompile zest.library( 'sql-dbcp' )
-  perfCompile zest.extension( 'valueserialization-orgjson' )
-  perfCompile zest.extension( 'entitystore-memory' )
-  perfCompile zest.extension( 'entitystore-jdbm' )
-  perfCompile zest.extension( 'entitystore-sql' )
-  perfCompile zest.extension( 'cache-ehcache' )
-  perfCompile zest.extension( 'indexing-rdf' )
+  perfCompile polygene.core.testsupport
+  perfCompile polygene.library( 'sql-dbcp' )
+  perfCompile polygene.extension( 'valueserialization-orgjson' )
+  perfCompile polygene.extension( 'entitystore-memory' )
+  perfCompile polygene.extension( 'entitystore-jdbm' )
+  perfCompile polygene.extension( 'entitystore-sql' )
+  perfCompile polygene.extension( 'cache-ehcache' )
+  perfCompile polygene.extension( 'indexing-rdf' )
   perfCompile libraries.derby
 
-  perfRuntime zest.core.runtime
+  perfRuntime polygene.core.runtime
   perfRuntime libraries.logback
 }

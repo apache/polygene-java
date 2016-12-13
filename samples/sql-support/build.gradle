@@ -26,13 +26,13 @@ jar { manifest { name = "Apache Polygene™ Sample - SQL Support" } }
 
 dependencies {
 
-  compile zest.core.bootstrap
-  compile zest.library( 'sql-dbcp' )
-  compile zest.extension( 'entitystore-preferences' )
-  compile zest.extension( 'entitystore-sql' )
-  compile zest.extension( 'indexing-sql' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'sql-dbcp' )
+  compile polygene.extension( 'entitystore-preferences' )
+  compile polygene.extension( 'entitystore-sql' )
+  compile polygene.extension( 'indexing-sql' )
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
   runtime libraries.postgres
   runtime libraries.logback
 }

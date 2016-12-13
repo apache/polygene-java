@@ -52,7 +52,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 == Configuration ==
 
 SQL EntityStore Configuration is optional and provides only one configuration property: `schemaName` defaulted to
-'zest_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
+'polygene_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
 
 The assembly snippets below show the DataSource assembly alongside the SQL EntityStore assembly. Remember to configure
 the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
@@ -66,7 +66,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-sql/src/test/java/org/apache/zest/entitystore/sql/PostgreSQLEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/PostgreSQLEntityStoreTest.java
 tag=assembly
 ----
 
@@ -86,7 +86,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-sql/src/test/java/org/apache/zest/entitystore/sql/MySQLEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/MySQLEntityStoreTest.java
 tag=assembly
 ----
 
@@ -109,7 +109,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-sql/src/test/java/org/apache/zest/entitystore/sql/SQLiteEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/SQLiteEntityStoreTest.java
 tag=assembly
 ----
 
@@ -129,7 +129,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-sql/src/test/java/org/apache/zest/entitystore/sql/H2SQLEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/H2SQLEntityStoreTest.java
 tag=assembly
 ----
 
@@ -150,7 +150,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-sql/src/test/java/org/apache/zest/entitystore/sql/DerbySQLEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/DerbySQLEntityStoreTest.java
 tag=assembly
 ----
 

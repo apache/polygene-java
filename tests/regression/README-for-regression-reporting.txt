@@ -10,7 +10,7 @@ Regression Test reporting follows the following steps;
 
 4. Commit and push this to the 'origin develop' branch.
 
-5. Ping the community on the dev@zest.apache.org mailing list.
+5. Ping the community on the dev@polygene.apache.org mailing list.
 
 
 Once the reported problem has been solved, the test will be moved to the sub-project's unit test area.

@@ -20,7 +20,7 @@
 
 var generators = require( 'yeoman-generator' );
 
-var zest = {};
+var polygene = {};
 
 module.exports = generators.Base.extend(
     {
@@ -133,12 +133,12 @@ module.exports = generators.Base.extend(
                         this.log( 'Caching:', answers.caching );
                         this.log( 'Serialization:', answers.serialization );
                         this.log( 'Features:', answers.features );
-                        zest = answers;
-                        zest.javaPackageDir = zest.packagename.replace( '.', '/' );
-                        zest.singletonApp = false;
+                        polygene = answers;
+                        polygene.javaPackageDir = polygene.packagename.replace( '.', '/' );
+                        polygene.singletonApp = false;
                         if( hasFeature( 'sample (heroes) web application' ) )
                         {
-                            zest.features.push( 'rest api' );
+                            polygene.features.push( 'rest api' );
                         }
                     }.bind( this )
             );
@@ -146,16 +146,16 @@ module.exports = generators.Base.extend(
 
         writing: function ()
         {
-            copyPolygeneBootstrap( this, "config", "ConfigurationLayer", !zest.singeltonApp );
-            copyPolygeneBootstrap( this, "infrastructure", "InfrastructureLayer", !zest.singeltonApp );
-            copyPolygeneBootstrap( this, "domain", "DomainLayer", !zest.singeltonApp );
-            copyPolygeneBootstrap( this, "connectivity", "ConnectivityLayer", !zest.singeltonApp );
+            copyPolygeneBootstrap( this, "config", "ConfigurationLayer", !polygene.singeltonApp );
+            copyPolygeneBootstrap( this, "infrastructure", "InfrastructureLayer", !polygene.singeltonApp );
+            copyPolygeneBootstrap( this, "domain", "DomainLayer", !polygene.singeltonApp );
+            copyPolygeneBootstrap( this, "connectivity", "ConnectivityLayer", !polygene.singeltonApp );
 
             copyPolygeneBootstrap( this, "config", "ConfigModule", true );
 
             copyPolygeneBootstrap( this, "infrastructure", "FileConfigurationModule", true );
 
-            copyEntityStore( this, zest.entitystore );
+            copyEntityStore( this, polygene.entitystore );
 
             copyPolygeneBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
             copyPolygeneBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
@@ -202,7 +202,7 @@ function copyPolygeneBootstrap( ctx, layer, moduleName, condition )
     {
         copyTemplate( ctx,
                       moduleName + '/bootstrap.tmpl',
-                      'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/' + layer + '/' + moduleName + '.java' );
+                      'bootstrap/src/main/java/' + polygene.javaPackageDir + '/bootstrap/' + layer + '/' + moduleName + '.java' );
     }
 }
 
@@ -210,7 +210,7 @@ function copyEntityStore( ctx, entityStoreName )
 {
     copyTemplate( ctx,
                   'StorageModule/bootstrap.tmpl',
-                  'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/infrastructure/' + entityStoreName + 'StorageModule.java' );
+                  'bootstrap/src/main/java/' + polygene.javaPackageDir + '/bootstrap/infrastructure/' + entityStoreName + 'StorageModule.java' );
 }
 
 function copyPolygeneApp( ctx, name, condition )
@@ -219,11 +219,11 @@ function copyPolygeneApp( ctx, name, condition )
     {
         copyTemplate( ctx,
                       name + '/bootstrap.tmpl',
-                      'bootstrap/src/main/java/' + zest.javaPackageDir + '/bootstrap/' + name + 'ApplicationAssembler.java' );
+                      'bootstrap/src/main/java/' + polygene.javaPackageDir + '/bootstrap/' + name + 'ApplicationAssembler.java' );
 
         copyTemplate( ctx,
                       name + '/app.tmpl',
-                      'app/src/main/java/' + zest.javaPackageDir + '/app/' + name + '.java' );
+                      'app/src/main/java/' + polygene.javaPackageDir + '/app/' + name + '.java' );
 
         copyTemplate( ctx,
                       name + '/webapp/',
@@ -237,7 +237,7 @@ function copyPolygeneDomain( ctx, model, module, clazz, condition )
     {
         copyTemplate( ctx,
                       module + '/' + clazz + '.tmpl',
-                      'model/src/main/java/' + zest.javaPackageDir + '/model/' + model + '/' + clazz + '.java' );
+                      'model/src/main/java/' + polygene.javaPackageDir + '/model/' + model + '/' + clazz + '.java' );
     }
 }
 
@@ -249,15 +249,15 @@ function copyRestFeature( ctx, condition )
 
         copyTemplate( ctx,
                       'RestApiModule/SimpleEnroler.tmpl',
-                      'rest/src/main/java/' + zest.javaPackageDir + '/rest/security/SimpleEnroler.java' );
+                      'rest/src/main/java/' + polygene.javaPackageDir + '/rest/security/SimpleEnroler.java' );
 
         copyTemplate( ctx,
                       'RestApiModule/SimpleVerifier.tmpl',
-                      'rest/src/main/java/' + zest.javaPackageDir + '/rest/security/SimpleVerifier.java' );
+                      'rest/src/main/java/' + polygene.javaPackageDir + '/rest/security/SimpleVerifier.java' );
 
         copyTemplate( ctx,
                       'RestApiModule/HardcodedSecurityRepositoryMixin.tmpl',
-                      'model/src/main/java/' + zest.javaPackageDir + '/model/security/HardcodedSecurityRepositoryMixin.java' );
+                      'model/src/main/java/' + polygene.javaPackageDir + '/model/security/HardcodedSecurityRepositoryMixin.java' );
     }
 }
 
@@ -276,39 +276,39 @@ function copyTemplate( ctx, from, to )
         ctx.templatePath( from ),
         ctx.destinationPath( to ),
         {
-            packageName: zest.packagename,
+            packageName: polygene.packagename,
             hasFeature: hasFeature,
             hasEntityStore: hasEntityStore,
             hasIndexing: hasIndexing,
             hasCaching: hasCaching,
-            zest: zest
+            polygene: polygene
         }
     );
 }
 
 function hasEntityStore( esType )
 {
-    return zest.entitystore === esType;
+    return polygene.entitystore === esType;
 }
 
 function hasIndexing( indexingType )
 {
-    return zest.indexing === indexingType;
+    return polygene.indexing === indexingType;
 }
 
 function hasCaching( cachingType )
 {
-    return zest.caching === cachingType;
+    return polygene.caching === cachingType;
 }
 
 function hasSerialization( serializer )
 {
-    return zest.serialization === serializer;
+    return polygene.serialization === serializer;
 }
 
 function hasFeature( feature )
 {
-    return zest.features.indexOf( feature ) >= 0;
+    return polygene.features.indexOf( feature ) >= 0;
 }
 
 function firstUpper( text )

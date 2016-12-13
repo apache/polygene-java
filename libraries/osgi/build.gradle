@@ -23,13 +23,13 @@ description = "Apache Polygene™ OSGi Library provides integration of OSGi and 
 jar { manifest { name = "Apache Polygene™ Library - OSGi Integration" } }
 
 dependencies {
-  compile zest.core.api
+  compile polygene.core.api
   compile libraries.osgi_core
   compile libraries.osgi_compendium
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.mockito
 
   testRuntime libraries.logback

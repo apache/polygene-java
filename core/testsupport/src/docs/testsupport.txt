@@ -36,7 +36,7 @@ In most cases, you will probably use the AbstractPolygeneTest class to simplify 
 
 [snippet,java]
 --------------
-source=tutorials/hello/src/test/java/org/apache/zest/tutorials/hello/HelloTest.java
+source=tutorials/hello/src/test/java/org/apache/polygene/tutorials/hello/HelloTest.java
 tag=step1
 --------------
 
@@ -45,7 +45,7 @@ What goes into that module is declared in the assembly() method;
 
 [snippet,java]
 --------------
-source=tutorials/hello/src/test/java/org/apache/zest/tutorials/hello/HelloTest.java
+source=tutorials/hello/src/test/java/org/apache/polygene/tutorials/hello/HelloTest.java
 tag=step2
 --------------
 
@@ -53,7 +53,7 @@ In this case we declare that we have a ValueComposite of type org.apache.polygen
 
 [snippet,java]
 --------------
-source=tutorials/hello/src/main/java/org/apache/zest/tutorials/hello/Hello.java
+source=tutorials/hello/src/main/java/org/apache/polygene/tutorials/hello/Hello.java
 tag=body
 --------------
 
@@ -64,7 +64,7 @@ And then we create the actual test;
 
 [snippet,java]
 --------------
-source=tutorials/hello/src/test/java/org/apache/zest/tutorials/hello/HelloTest.java
+source=tutorials/hello/src/test/java/org/apache/polygene/tutorials/hello/HelloTest.java
 tag=step3
 --------------
 

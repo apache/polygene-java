@@ -23,16 +23,16 @@ description = "Apache Polygene™ REST Server Library provides a server componen
 jar { manifest { name = "Apache Polygene™ Library - REST server" } }
 
 dependencies {
-  compile zest.library( 'rest-common' )
+  compile polygene.library( 'rest-common' )
   compile libraries.servlet_api
   compile libraries.slf4j_api
   compile libraries.velocity
   compile libraries.restlet
   compile libraries.freemarker
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

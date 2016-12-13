@@ -37,6 +37,6 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-preferences/src/test/java/org/apache/zest/entitystore/DocumentationSupport.java
+source=extensions/entitystore-preferences/src/test/java/org/apache/polygene/entitystore/DocumentationSupport.java
 tag=assembly
 ----

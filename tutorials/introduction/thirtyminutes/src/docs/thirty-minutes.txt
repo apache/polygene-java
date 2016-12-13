@@ -21,7 +21,7 @@
 = Polygene™ in 30 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
+https://polygene.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
@@ -36,12 +36,12 @@ include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-See the <<howto-depend-on-zest>> tutorial for details.
+See the <<howto-depend-on-polygene>> tutorial for details.
 
 We will go back to the OrderEntity example;
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -52,7 +52,7 @@ First we need to create (or also find in a library) the mechanics of the audit t
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=2
 -----------
 
@@ -66,7 +66,7 @@ We also need a Concern to hang into the methods of the Order interface.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=3
 -----------
 
@@ -81,7 +81,7 @@ the re-use value. It could look like this;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=4
 -----------
 
@@ -93,7 +93,7 @@ Finally, we need to declare the Concern in the OrderEntity;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=5
 -----------
 
@@ -115,7 +115,7 @@ Let's say that we want to find a particular Order from its SequenceNumber.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=6
 -----------
 
@@ -132,7 +132,7 @@ Another example,
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=7
 -----------
 
@@ -144,7 +144,7 @@ that has made an Order in the last 30 days;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/zest/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=8
 -----------
 

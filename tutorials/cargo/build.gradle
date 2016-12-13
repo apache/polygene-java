@@ -23,11 +23,11 @@ description = "Tutorial on how to convert existing application into a Apache Pol
 jar { manifest { name = "Apache Polygene™ Tutorial - Cargo" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.easymock
 
   testRuntime libraries.logback

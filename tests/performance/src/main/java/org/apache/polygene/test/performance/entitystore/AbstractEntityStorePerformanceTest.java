@@ -315,7 +315,7 @@ public abstract class AbstractEntityStorePerformanceTest
     private void createPolygeneRuntime( Assembler testSetup )
         throws Exception
     {
-        Energy4Java zest = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 {
@@ -324,7 +324,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     }
                 }
             };
-        application = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        application = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         application.activate();

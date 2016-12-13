@@ -28,7 +28,7 @@ import org.apache.polygene.bootstrap.*;
 // START SNIPPET: main
 public class Main
 {
-    private static Energy4Java zest;
+    private static Energy4Java polygene;
     private static Application application;
 
     public static void main( String[] args )
@@ -36,10 +36,10 @@ public class Main
     {
         // Bootstrap Polygene Runtime
         // Create a Polygene Runtime
-        zest = new Energy4Java();
+        polygene = new Energy4Java();
 
         // Instantiate the Application Model.
-        application = zest.newApplication( new ApplicationAssembler()
+        application = polygene.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble(
                     ApplicationAssemblyFactory factory )

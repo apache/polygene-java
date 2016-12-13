@@ -20,9 +20,9 @@
   -->
 <xs:schema attributeFormDefault="unqualified"
            elementFormDefault="qualified"
-           targetNamespace="http://zest.apache.org/schemas/2008/dev-status/1"
+           targetNamespace="http://polygene.apache.org/schemas/2008/dev-status/1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="module" type="ns:moduleType" xmlns:ns="http://zest.apache.org/schemas/2008/dev-status/1"/>
+  <xs:element name="module" type="ns:moduleType" xmlns:ns="http://polygene.apache.org/schemas/2008/dev-status/1"/>
   <xs:complexType name="licensesType">
     <xs:sequence>
       <xs:element type="xs:string" name="license">
@@ -48,8 +48,8 @@
   </xs:complexType>
   <xs:complexType name="moduleType">
     <xs:sequence>
-      <xs:element type="ns:statusType" name="status" xmlns:ns="http://zest.apache.org/schemas/2008/dev-status/1"/>
-      <xs:element type="ns:licensesType" name="licenses" xmlns:ns="http://zest.apache.org/schemas/2008/dev-status/1"/>
+      <xs:element type="ns:statusType" name="status" xmlns:ns="http://polygene.apache.org/schemas/2008/dev-status/1"/>
+      <xs:element type="ns:licensesType" name="licenses" xmlns:ns="http://polygene.apache.org/schemas/2008/dev-status/1"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="statusType">

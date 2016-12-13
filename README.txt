@@ -14,7 +14,7 @@ cool, new and challenging technology. We are especially interested in
 people willing to help improve the SDK, samples, tutorials, documentation
 and other supporting material.
 
-Please see https://zest.apache.org for more information.
+Please see https://polygene.apache.org for more information.
 
 
 Licensing
@@ -38,7 +38,7 @@ If you need to go offline type `./gradlew goOffline` to ensure all needed
 dependencies are cached by Gradle.
 
 If you prefer to use a dependency management system, go to:
-https://zest.apache.org/java/latest/howto-depend-on-zest.html
+https://polygene.apache.org/java/latest/howto-depend-on-polygene.html
 
 
 Building Apache Polygene
@@ -54,7 +54,7 @@ Here is how to run a full build with checks:
     ./gradlew check assemble
 
 Read the Polygene™ Build System tutorial for more details:
-https://zest.apache.org/java/latest/build-system.html
+https://polygene.apache.org/java/latest/build-system.html
 
 
 Thank you for trying out Apache Polygene™ and Composite Oriented Programming.

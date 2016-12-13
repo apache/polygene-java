@@ -44,7 +44,7 @@ Here is an example ServletContextListener:
 
 [snippet,java]
 ----
-source=libraries/servlet/src/test/java/org/apache/zest/library/servlet/ServletTest.java
+source=libraries/servlet/src/test/java/org/apache/polygene/library/servlet/ServletTest.java
 tag=bootstrap
 ----
 
@@ -58,7 +58,7 @@ Here is a sample servlet that simply output the assembled Application name:
 
 [snippet,java]
 ----
-source=libraries/servlet/src/test/java/org/apache/zest/library/servlet/ServletTest.java
+source=libraries/servlet/src/test/java/org/apache/polygene/library/servlet/ServletTest.java
 tag=usage
 ----
 

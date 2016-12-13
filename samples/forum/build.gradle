@@ -25,18 +25,18 @@ description = "Sample of how to build a web forum"
 jar { manifest { name = "Apache Polygene™ Sample - Forum" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'rest-server' )
-  compile zest.library( 'fileconfig' )
-  compile zest.extension( 'valueserialization-orgjson' )
-  compile zest.extension( 'entitystore-memory' )
-  compile zest.extension( 'entitystore-file' )
-  compile zest.extension( 'indexing-rdf' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'rest-server' )
+  compile polygene.library( 'fileconfig' )
+  compile polygene.extension( 'valueserialization-orgjson' )
+  compile polygene.extension( 'entitystore-memory' )
+  compile polygene.extension( 'entitystore-file' )
+  compile polygene.extension( 'indexing-rdf' )
   compile libraries.servlet_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

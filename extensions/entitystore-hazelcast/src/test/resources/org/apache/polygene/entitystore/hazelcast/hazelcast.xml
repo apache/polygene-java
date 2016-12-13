@@ -19,7 +19,7 @@
   ~
   -->
 <hazelcast>
-  <map name="zest.data">
+  <map name="polygene.data">
     <map-store enabled="true">
       <!--
          Name of the class implementing MapLoader and/or MapStore.

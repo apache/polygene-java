@@ -29,7 +29,7 @@ include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == Basics First ==
 
@@ -68,17 +68,17 @@ Entity management.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/Car.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Car.java
 tag=entity
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/Manufacturer.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Manufacturer.java
 tag=entity
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/Accident.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Accident.java
 tag=entity
 -----------
 
@@ -93,17 +93,17 @@ We will also need to define the composites for the above domain structure;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntity.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntity.java
 tag=composite
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/ManufacturerEntity.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerEntity.java
 tag=composite
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/AccidentValue.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/AccidentValue.java
 tag=composite
 -----------
 
@@ -117,7 +117,7 @@ We must also assemble an EntityStore for the entire application, but that is out
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/MyAssembler.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/MyAssembler.java
 tag=assembler1
 -----------
 
@@ -133,7 +133,7 @@ fairly small implementation. So how is that done?
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactory.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactory.java
 tag=carFactory
 -----------
 
@@ -142,7 +142,7 @@ make it possible for the service injection later.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactoryService.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryService.java
 tag=carFactoryService
 -----------
 
@@ -150,7 +150,7 @@ Then we need an implementation of the mixin.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin1
 -----------
 
@@ -162,7 +162,7 @@ to obtain a Module is simply to;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin2
 -----------
 
@@ -171,7 +171,7 @@ during the construction, we can also request it in the same manner as constructo
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin3
 -----------
 
@@ -182,7 +182,7 @@ We then need to provide the implementation for the create() method.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=create
 -----------
 
@@ -194,7 +194,7 @@ re-usable. So let's create one for the Manufacturer type.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/ManufacturerRepository.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepository.java
 tag=repo
 -----------
 
@@ -202,7 +202,7 @@ And then we repeat the process for creating a Service...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/ManufacturerRepositoryService.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepositoryService.java
 tag=manufacturerRepositoryService
 -----------
 
@@ -210,7 +210,7 @@ and a Mixin that implements it...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/ManufacturerRepositoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepositoryMixin.java
 tag=repo
 -----------
 
@@ -219,7 +219,7 @@ Services to be available to the application layer above, and not restricted to w
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/apache/zest/manual/recipes/createEntity/MyAssembler.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/MyAssembler.java
 tag=assembler2
 -----------
 

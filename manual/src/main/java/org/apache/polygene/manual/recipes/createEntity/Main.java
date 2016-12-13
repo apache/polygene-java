@@ -27,10 +27,10 @@ public class Main
     public static void main(String[] args) throws Exception
     {
 
-        Energy4Java zest = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
 
         // Instantiate the Application Model.
-        Application application = zest.newApplication( new ApplicationAssembler()
+        Application application = polygene.newApplication( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException

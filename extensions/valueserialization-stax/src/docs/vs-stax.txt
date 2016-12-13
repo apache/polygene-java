@@ -35,7 +35,7 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=extensions/valueserialization-stax/src/test/java/org/apache/zest/valueserialization/stax/StaxPlainValueSerializationTest.java
+source=extensions/valueserialization-stax/src/test/java/org/apache/polygene/valueserialization/stax/StaxPlainValueSerializationTest.java
 tag=assembly
 ----
 

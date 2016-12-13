@@ -36,7 +36,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-geode/src/test/java/org/apache/zest/entitystore/geode/GeodeEntityStoreTest.java
+source=extensions/entitystore-geode/src/test/java/org/apache/polygene/entitystore/geode/GeodeEntityStoreTest.java
 tag=assembly
 ----
 
@@ -46,6 +46,6 @@ Here are the configuration properties for the Geode EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-geode/src/main/java/org/apache/zest/entitystore/geode/GeodeConfiguration.java
+source=extensions/entitystore-geode/src/main/java/org/apache/polygene/entitystore/geode/GeodeConfiguration.java
 tag=config
 ----

@@ -209,7 +209,7 @@ public class ContextResourceClientFactoryTest
     @Override
     protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
     {
-        return applicationModel.newInstance( zest.api(), new MetadataService() );
+        return applicationModel.newInstance( polygene.api(), new MetadataService() );
     }
 
     @Test

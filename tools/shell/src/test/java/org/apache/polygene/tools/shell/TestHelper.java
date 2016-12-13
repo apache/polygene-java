@@ -29,18 +29,18 @@ public class TestHelper
         String cwd = new File( ".").getAbsolutePath();
         if( cwd.endsWith( "/java/." )) // IDEA default runner
         {
-            String zestHome = new File( new File(".").getAbsoluteFile(), "tools/shell/src/dist" ).getAbsolutePath();
-            System.setProperty( "polygene.home", zestHome );
+            String polygeneHome = new File( new File(".").getAbsoluteFile(), "tools/shell/src/dist" ).getAbsolutePath();
+            System.setProperty( "polygene.home", polygeneHome );
         }
         if( cwd.endsWith( "tools/shell/." )) // Gradle build
         {
-            String zestHome = new File( new File(".").getAbsoluteFile(), "src/dist" ).getAbsolutePath();
-            System.setProperty( "polygene.home", zestHome );
+            String polygeneHome = new File( new File(".").getAbsoluteFile(), "src/dist" ).getAbsolutePath();
+            System.setProperty( "polygene.home", polygeneHome );
         }
         if( cwd.endsWith( "test/work/." ) ) // Parallel Gradle build
         {
-            String zestHome = new File( cwd + "./../../../../src/dist" ).getAbsolutePath();
-            System.setProperty( "polygene.home", zestHome );
+            String polygeneHome = new File( cwd + "./../../../../src/dist" ).getAbsolutePath();
+            System.setProperty( "polygene.home", polygeneHome );
         }
     }
 }

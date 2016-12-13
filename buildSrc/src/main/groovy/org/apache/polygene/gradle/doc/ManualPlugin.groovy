@@ -39,14 +39,14 @@ class ManualPlugin implements Plugin<Project>
   @Override
   void apply( final Project project )
   {
-    def zest = project.extensions.getByType( PolygeneExtension )
+    def polygene = project.extensions.getByType( PolygeneExtension )
     project.tasks.create( TaskNames.WEBSITE, DocumentationTask ) { DocumentationTask task ->
       task.group = TaskGroups.DOCUMENTATION
       task.description = 'Generates documentation website'
       task.dependsOn project.rootProject.allprojects.findResults { Project p ->
         p.tasks.findByName AsciidocBuildInfoPlugin.TASK_NAME
       }
-      task.onlyIf { isAsciidocInstalled( project, zest ) }
+      task.onlyIf { isAsciidocInstalled( project, polygene ) }
       task.docName = 'website'
       task.docType = 'article'
     }
@@ -54,8 +54,8 @@ class ManualPlugin implements Plugin<Project>
       task.group = TaskGroups.DOCUMENTATION
       task.description = 'Copy website to ../polygene-web'
       task.dependsOn TaskNames.WEBSITE
-      task.onlyIf { isAsciidocInstalled( project, zest ) }
-      if( zest.developmentVersion )
+      task.onlyIf { isAsciidocInstalled( project, polygene ) }
+      if( polygene.developmentVersion )
       {
         task.into "$project.rootProject.projectDir/../polygene-web/site/content/java/develop"
       }
@@ -69,7 +69,7 @@ class ManualPlugin implements Plugin<Project>
       task.group = TaskGroups.RELEASE
       task.description = 'Copy website to ../polygene-web LATEST'
       task.dependsOn TaskNames.ARCHIVE_WEBSITE
-      task.onlyIf { zest.releaseVersion }
+      task.onlyIf { polygene.releaseVersion }
       task.from "$project.rootProject.projectDir/../polygene-web/site/content/java/$project.version/"
       task.into "$project.rootProject.projectDir/../polygene-web/site/content/java/latest/"
     }
@@ -77,7 +77,7 @@ class ManualPlugin implements Plugin<Project>
       task.group = TaskGroups.DOCUMENTATION
       task.description = 'Generates all documentation'
       task.dependsOn TaskNames.COPY_WEBSITE
-      task.onlyIf { isAsciidocInstalled( project, zest ) }
+      task.onlyIf { isAsciidocInstalled( project, polygene ) }
     }
   }
 
@@ -86,12 +86,12 @@ class ManualPlugin implements Plugin<Project>
   // Force when building a release version
   // Skip if skipAsciidocIfAbsent property is set
   // Skip if asciidoc is not found in PATH when building a development version
-  private static boolean isAsciidocInstalled( Project project, PolygeneExtension zest )
+  private static boolean isAsciidocInstalled( Project project, PolygeneExtension polygene )
   {
     if( asciidocInstalled == null )
     {
       def skipAsciidocIfAbsent = project.findProperty 'skipAsciidocIfAbsent'
-      if( !skipAsciidocIfAbsent && zest.releaseVersion )
+      if( !skipAsciidocIfAbsent && polygene.releaseVersion )
       {
         project.logger.info 'Asciidoc tasks forced for building a release version, hope you have Asciidoc installed'
         asciidocInstalled = true

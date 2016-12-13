@@ -28,15 +28,15 @@ description = "Sample of implementation of a Car Rental application."
 // To run in an embedded Jetty use:
 //      ../../gradlew appRun
 // And then go to:
-//      http://localhost:8080/org.apache.zest.sample.rental/rental/main
+//      http://localhost:8080/org.apache.polygene.sample.rental/rental/main
 
 jar { manifest { name = "Apache Polygene™ Sample - Car Rental" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.extension( 'valueserialization-orgjson' )
+  compile polygene.core.bootstrap
+  compile polygene.extension( 'valueserialization-orgjson' )
 
   providedCompile libraries.servlet_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 }

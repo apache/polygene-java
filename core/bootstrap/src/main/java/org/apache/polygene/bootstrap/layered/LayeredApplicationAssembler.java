@@ -39,7 +39,7 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 public abstract class LayeredApplicationAssembler
     implements ApplicationAssembler
 {
-    protected final Energy4Java zest;
+    protected final Energy4Java polygene;
     protected final String name;
     protected final String version;
 
@@ -56,15 +56,15 @@ public abstract class LayeredApplicationAssembler
         this.name = name;
         this.version = version;
         this.mode = mode;
-        zest = new Energy4Java();
+        polygene = new Energy4Java();
     }
 
     public void initialize()
         throws AssemblyException
     {
-        model = zest.newApplicationModel( this );
+        model = polygene.newApplicationModel( this );
         onModelCreated( model );
-        instantiateApplication( zest, model );
+        instantiateApplication( polygene, model );
     }
 
     public ApplicationAssembly assembly()
@@ -83,12 +83,12 @@ public abstract class LayeredApplicationAssembler
      *   application = model.newInstance( polygene.spi() );
      * </code></pre>
      *
-     * @param zest  The Polygene runtime engine.
+     * @param polygene  The Polygene runtime engine.
      * @param model The application model descriptor.
      */
-    protected void instantiateApplication( Energy4Java zest, ApplicationDescriptor model )
+    protected void instantiateApplication( Energy4Java polygene, ApplicationDescriptor model )
     {
-        application = model.newInstance( zest.spi() );
+        application = model.newInstance( polygene.spi() );
     }
 
     /**

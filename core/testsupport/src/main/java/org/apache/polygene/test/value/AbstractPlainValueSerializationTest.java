@@ -232,7 +232,7 @@ public abstract class AbstractPlainValueSerializationTest
     }
 
     @Test
-    public void zest142RegressionTest()
+    public void polygene142RegressionTest()
         throws Exception
     {
         if( getClass().getName().equals( "org.apache.polygene.valueserialization.stax.StaxPlainValueSerializationTest" ) )

@@ -134,13 +134,13 @@ class DocumentationTask extends DefaultTask
 
   def void generateAsciidocAccordingToReleaseSpecification()
   {
-    def zest = project.extensions.getByType( PolygeneExtension )
+    def polygene = project.extensions.getByType( PolygeneExtension )
     project.copy { CopySpec spec ->
       spec.from docsDir
       spec.into tempAsciidocDir
       spec.include '**'
     }
-    if( zest.releaseVersion )
+    if( polygene.releaseVersion )
     {
       def licenseFile = new File( tempAsciidocDir, 'userguide/libraries.txt' )
       def extensionsFile = new File( tempAsciidocDir, 'userguide/extensions.txt' )

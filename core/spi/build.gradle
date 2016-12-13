@@ -21,11 +21,11 @@
 jar { manifest { name = "Apache Polygene™ Core SPI" } }
 
 dependencies {
-  compile zest.core.api
+  compile polygene.core.api
   compile libraries.org_json
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
-  testRuntime zest.core.runtime
+  testRuntime polygene.core.runtime
   testRuntime libraries.logback
 }

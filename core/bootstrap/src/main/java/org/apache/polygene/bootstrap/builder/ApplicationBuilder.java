@@ -103,8 +103,8 @@ public class ApplicationBuilder
     public Application newApplication()
         throws AssemblyException, ActivationException
     {
-        Energy4Java zest = new Energy4Java();
-        ApplicationDescriptor model = zest.newApplicationModel( new ApplicationAssembler()
+        Energy4Java polygene = new Energy4Java();
+        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory factory )
@@ -137,7 +137,7 @@ public class ApplicationBuilder
                 return assembly;
             }
         } );
-        Application application = model.newInstance( zest.api() );
+        Application application = model.newInstance( polygene.api() );
         for( ActivationEventListener activationListener : activationListeners )
         {
             application.registerActivationEventListener( activationListener );

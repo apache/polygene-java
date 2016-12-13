@@ -39,8 +39,8 @@ public class Main
     public Main()
         throws Exception
     {
-        Energy4Java zest = new Energy4Java();
-        application = zest.newApplication( new MainAssembler() );
+        Energy4Java polygene = new Energy4Java();
+        application = polygene.newApplication( new MainAssembler() );
         application.activate();
     }
 

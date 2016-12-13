@@ -24,7 +24,7 @@
  */
 $( document ).ready( function($){
 
-    var atHome = window.location.hostname == "zest.apache.org"
+    var atHome = window.location.hostname == "polygene.apache.org"
 
     /**
      * Glossary.
@@ -95,7 +95,7 @@ $( document ).ready( function($){
                 }
                 else
                 {
-                    return "https://zest.apache.org/java/" + versions[ displayName ];
+                    return "https://polygene.apache.org/java/" + versions[ displayName ];
                 }
             }
             $( "div.logo select" ).change( function()

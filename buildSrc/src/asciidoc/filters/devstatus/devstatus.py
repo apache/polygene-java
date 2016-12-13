@@ -23,7 +23,7 @@ import sys
 import xml.dom.minidom
 
 PATH_PATTERN="%(source)s"
-NS="http://zest.apache.org/schemas/2008/dev-status/1"
+NS="http://polygene.apache.org/schemas/2008/dev-status/1"
 
 def configuration(indata):
     config = {}

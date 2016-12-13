@@ -31,13 +31,13 @@ public interface ElasticSearchConfiguration
 
     /**
      * Cluster name.
-     * Defaults to 'zest_cluster'.
+     * Defaults to 'polygene_cluster'.
      */
     @Optional Property<String> clusterName();
 
     /**
      * Index name.
-     * Defaults to 'zest_index'.
+     * Defaults to 'polygene_index'.
      */
     @Optional Property<String> index();
 

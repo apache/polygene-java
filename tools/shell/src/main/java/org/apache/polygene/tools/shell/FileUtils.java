@@ -74,7 +74,7 @@ public class FileUtils
 
     public static Map<String, String> readTemplateProperties( String templateName )
     {
-        File propertiesFile = new File( zestHome(), "etc/templates/" + templateName + "/template.properties" );
+        File propertiesFile = new File( polygeneHome(), "etc/templates/" + templateName + "/template.properties" );
         try( InputStream in = new BufferedInputStream( new FileInputStream( propertiesFile ) ) )
         {
             Properties properties = readProperties( in );
@@ -112,7 +112,7 @@ public class FileUtils
         Files.copy( srcFile.toPath(), dest.toPath() );
     }
 
-    public static File zestHome()
+    public static File polygeneHome()
     {
         String home = System.getProperty( "polygene.home" );
         return new File( home ).getAbsoluteFile();

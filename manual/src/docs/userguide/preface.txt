@@ -20,7 +20,7 @@
 [[preface, Preface]]
 = Preface =
 
-This is the reference manual for Polygene™ version {zest-version}, written by members of the Polygene™ Community.
+This is the reference manual for Polygene™ version {polygene-version}, written by members of the Polygene™ Community.
 
 The main parts of the manual are:
 

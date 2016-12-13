@@ -177,8 +177,8 @@ public class Qi95IssueTest
     )
         throws AssemblyException
     {
-        Energy4Java zest = new Energy4Java();
-        Application application = zest.newApplication( new ApplicationAssembler()
+        Energy4Java polygene = new Energy4Java();
+        Application application = polygene.newApplication( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )

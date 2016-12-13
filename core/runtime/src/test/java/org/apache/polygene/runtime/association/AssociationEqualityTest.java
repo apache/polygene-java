@@ -93,14 +93,14 @@ public class AssociationEqualityTest
             AnEntity anEntity = uow.newEntity( AnEntity.class );
 
             SomeWithAssociations some = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = polygene.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = polygene.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = polygene.api().associationDescriptorFor( some.namedEntities() );
 
             SomeWithAssociations some2 = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor some2AssocDesc = zest.api().associationDescriptorFor( some2.anEntity() );
-            AssociationDescriptor some2ManyAssocDesc = zest.api().associationDescriptorFor( some2.manyEntities() );
-            AssociationDescriptor some2NamedAssocDesc = zest.api().associationDescriptorFor( some2.namedEntities() );
+            AssociationDescriptor some2AssocDesc = polygene.api().associationDescriptorFor( some2.anEntity() );
+            AssociationDescriptor some2ManyAssocDesc = polygene.api().associationDescriptorFor( some2.manyEntities() );
+            AssociationDescriptor some2NamedAssocDesc = polygene.api().associationDescriptorFor( some2.namedEntities() );
 
             assertThat( "AssociationDescriptor equal",
                         someAssocDesc,
@@ -134,14 +134,14 @@ public class AssociationEqualityTest
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
-            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = polygene.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = polygene.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = polygene.api().associationDescriptorFor( some.namedEntities() );
 
             SomeWithAssociations some2 = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
-            AssociationDescriptor some2AssocDesc = zest.api().associationDescriptorFor( some2.anEntity() );
-            AssociationDescriptor some2ManyAssocDesc = zest.api().associationDescriptorFor( some2.manyEntities() );
-            AssociationDescriptor some2NamedAssocDesc = zest.api().associationDescriptorFor( some2.namedEntities() );
+            AssociationDescriptor some2AssocDesc = polygene.api().associationDescriptorFor( some2.anEntity() );
+            AssociationDescriptor some2ManyAssocDesc = polygene.api().associationDescriptorFor( some2.manyEntities() );
+            AssociationDescriptor some2NamedAssocDesc = polygene.api().associationDescriptorFor( some2.namedEntities() );
 
             assertThat( "AssociationDescriptor equal",
                         someAssocDesc,
@@ -177,14 +177,14 @@ public class AssociationEqualityTest
             AnEntity anEntity = uow.newEntity( AnEntity.class );
 
             SomeWithAssociations some = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = polygene.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = polygene.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = polygene.api().associationDescriptorFor( some.namedEntities() );
 
             OtherWithAssociations other = buildOtherWithAssociation( anEntity );
-            AssociationDescriptor otherAssocDesc = zest.api().associationDescriptorFor( other.anEntity() );
-            AssociationDescriptor otherManyAssocDesc = zest.api().associationDescriptorFor( other.manyEntities() );
-            AssociationDescriptor otherNamedAssocDesc = zest.api().associationDescriptorFor( other.namedEntities() );
+            AssociationDescriptor otherAssocDesc = polygene.api().associationDescriptorFor( other.anEntity() );
+            AssociationDescriptor otherManyAssocDesc = polygene.api().associationDescriptorFor( other.manyEntities() );
+            AssociationDescriptor otherNamedAssocDesc = polygene.api().associationDescriptorFor( other.namedEntities() );
 
             assertThat( "AssociationDescriptor not equal",
                         someAssocDesc,

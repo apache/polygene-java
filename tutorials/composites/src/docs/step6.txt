@@ -62,28 +62,28 @@ These ones remain unchanged:
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial7/HelloWorldBehaviour.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial7/HelloWorldBehaviour.java
 tag=solution
 ----
 
 *HelloWorldBehaviourSideEffect.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial7/HelloWorldBehaviourSideEffect.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial7/HelloWorldBehaviourSideEffect.java
 tag=solution
 ----
 
 *HelloWorldComposite.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial7/HelloWorldComposite.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial7/HelloWorldComposite.java
 tag=solution
 ----
 
 *HelloWorldState.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial7/HelloWorldState.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial7/HelloWorldState.java
 tag=solution
 ----
 

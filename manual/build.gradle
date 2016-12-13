@@ -22,11 +22,11 @@ apply plugin: ManualPlugin
 description = "Apache Polygene™ Manuals and Website."
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'constraints' )
-  compile zest.library( 'logging' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'constraints' )
+  compile polygene.library( 'logging' )
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
   runtime( libraries.logback )
 }
 

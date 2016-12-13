@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 #
-# This files copies itself to $HOME/bin, renames itself to "zest"
+# This files copies itself to $HOME/bin, renames itself to "polygene"
 # and from then on pretends to be the tools.shell script.
 #
 
@@ -25,13 +25,13 @@ JARNAME=org.apache.polygene.tool.shell-@version@.jar
 MYNAME=`basename $0`
 
 # check if it is executing as boot script or regular script.
-if [ "$MYNAME" == "zest-boot" ] ; then
+if [ "$MYNAME" == "polygene-boot" ] ; then
     mkdir $HOME/bin >/dev/null 2>&1
-    cp $0 $HOME/bin/zest
+    cp $0 $HOME/bin/polygene
     if [ -f $HOME/bin/$JARNAME ] ; then
         echo "JAR file exists."
     else
-        JAR_URL=http://repo1.maven.org/maven2/org/apache/zest/$JARNAME
+        JAR_URL=http://repo1.maven.org/maven2/org/apache/polygene/$JARNAME
 
         # check for wget
         WGET=`which wget`
@@ -47,7 +47,7 @@ if [ "$MYNAME" == "zest-boot" ] ; then
                 curl --output $HOME/bin/ $JAR_URL
             fi
         else
-            wget --output-document=$HOME/bin/ $HOME/bin/zest $JAR_URL
+            wget --output-document=$HOME/bin/ $HOME/bin/polygene $JAR_URL
         fi
     fi
 else
@@ -73,7 +73,7 @@ else
     # Restore the current directory
     cd $CWD
 
-    java -Dzest.home=$ZESTPATH -jar $ZESTPATH/$JARFILE "$@"
+    java -Dpolygene.home=$ZESTPATH -jar $ZESTPATH/$JARFILE "$@"
 fi
 
 

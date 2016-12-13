@@ -37,8 +37,8 @@ public final class PolygeneCreateActionGroup extends DefaultActionGroup
 {
     public PolygeneCreateActionGroup()
     {
-        super( message( "zest.action.group.title" ), true );
-        getTemplatePresentation().setDescription( message( "zest.action.group.description" ) );
+        super( message( "polygene.action.group.title" ), true );
+        getTemplatePresentation().setDescription( message( "polygene.action.group.description" ) );
     }
 
     public void update( AnActionEvent e )

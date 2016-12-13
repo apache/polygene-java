@@ -61,7 +61,7 @@ To produce debugging output in your code you just need to add the field
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/apache/zest/library/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging1
 -----------
 
@@ -69,7 +69,7 @@ and then check for null at each usage
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/apache/zest/library/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging2
 -----------
 
@@ -93,7 +93,7 @@ interface or the mixin implementation. You will also need to add the TraceConcer
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/apache/zest/library/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging3
 -----------
 
@@ -110,6 +110,6 @@ sideeffects and mixins to composites during the bootstrap phase instead of hard-
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/apache/zest/library/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging4
 -----------

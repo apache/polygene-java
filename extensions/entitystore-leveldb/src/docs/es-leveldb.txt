@@ -43,7 +43,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-leveldb/src/test/java/org/apache/zest/entitystore/leveldb/JavaLevelDBEntityStoreTest.java
+source=extensions/entitystore-leveldb/src/test/java/org/apache/polygene/entitystore/leveldb/JavaLevelDBEntityStoreTest.java
 tag=assembly
 ----
 
@@ -53,7 +53,7 @@ Here are the configuration properties for the LevelDB EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-leveldb/src/main/java/org/apache/zest/entitystore/leveldb/LevelDBEntityStoreConfiguration.java
+source=extensions/entitystore-leveldb/src/main/java/org/apache/polygene/entitystore/leveldb/LevelDBEntityStoreConfiguration.java
 tag=config
 ----
 

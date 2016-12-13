@@ -23,13 +23,13 @@ description = "Apache Polygene™ Preferences EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Preferences" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.slf4j_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.extension( 'valueserialization-orgjson' )
 
   testRuntime libraries.logback
 }

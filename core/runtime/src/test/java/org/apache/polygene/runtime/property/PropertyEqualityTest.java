@@ -127,11 +127,11 @@ public class PropertyEqualityTest
     public void givenValuesOfTheSameTypeWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         Some other = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = polygene.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors equal",
@@ -146,11 +146,11 @@ public class PropertyEqualityTest
     public void givenValuesOfCommonTypesWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
-        ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
+        ValueDescriptor primitiveDescriptor = polygene.api().valueDescriptorFor( primitive );
         PropertyDescriptor primitiveCharPropDesc = primitiveDescriptor.state()
             .findPropertyModelByName( "characterProperty" );
 
@@ -166,11 +166,11 @@ public class PropertyEqualityTest
     public void givenValuesOfDifferentTypesWhenTestingPropertyDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( valueBuilderFactory );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = polygene.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         Other other = buildOtherValue( valueBuilderFactory );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = polygene.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors not equal",

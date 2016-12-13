@@ -133,8 +133,8 @@ public class QueryPerformanceTest
     public void setup()
         throws Exception
     {
-        Energy4Java zest = new Energy4Java();
-        application = zest.newApplication( this );
+        Energy4Java polygene = new Energy4Java();
+        application = polygene.newApplication( this );
         module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
         application.activate();
         indexingDataDir = module.findService( RdfIndexingService.class ).get().dataDir();

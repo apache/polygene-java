@@ -19,9 +19,9 @@
 
 = Polygene™ v{revnumber} User Guide =
 
-:zest-version: {revnumber}
-:zest-buildnumber: {revnumber}
-:zest-git-tag: {gitversion}
+:polygene-version: {revnumber}
+:polygene-buildnumber: {revnumber}
+:polygene-git-tag: {gitversion}
 
 
 :leveloffset: {level2}

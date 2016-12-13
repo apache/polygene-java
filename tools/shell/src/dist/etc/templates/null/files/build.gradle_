@@ -2,7 +2,7 @@
 version = 1.0
 
 rootProject.ext {
-  zestVersion = @version@
+  polygeneVersion = @version@
 }
 
 allprojects() {
@@ -15,8 +15,8 @@ allprojects() {
   }
 
   dependencies {
-    compile "org.apache.polygene.core:org.apache.polygene.core.api:$zestVersion"
-    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$zestVersion"
+    compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
+    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   }
 }
 

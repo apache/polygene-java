@@ -33,7 +33,7 @@ The `Reindexer` is totally under your control and doesn't kick in automatically 
 
 [snippet,java]
 ----
-source=extensions/reindexer/src/test/java/org/apache/zest/index/reindexer/ReindexerTest.java
+source=extensions/reindexer/src/test/java/org/apache/polygene/index/reindexer/ReindexerTest.java
 tag=assembly
 ----
 
@@ -42,7 +42,7 @@ It will be bound to the `EntityStore` that is Visible, ask for all Entities, by 
 
 [snippet,java]
 ----
-source=extensions/reindexer/src/test/java/org/apache/zest/index/reindexer/ReindexerTest.java
+source=extensions/reindexer/src/test/java/org/apache/polygene/index/reindexer/ReindexerTest.java
 tag=usage
 ----
 

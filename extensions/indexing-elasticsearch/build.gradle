@@ -23,13 +23,13 @@ description = "Apache Polygene™ ElasticSearch Index/Query Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Index/Query - ElasticSearch" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'fileconfig' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'fileconfig' )
   compile libraries.elasticsearch
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

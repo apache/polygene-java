@@ -83,7 +83,7 @@ Let's see how it works in practice.
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
 tag=default
 ----
 
@@ -107,7 +107,7 @@ Let's see how to use the ValueSerialization Services.
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
 tag=service
 ----
 
@@ -125,7 +125,7 @@ Many applications need to stream data. The ValueSerialization API support such u
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
 tag=stream
 ----
 

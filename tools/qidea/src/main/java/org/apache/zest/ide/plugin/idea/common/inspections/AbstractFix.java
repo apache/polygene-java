@@ -46,6 +46,6 @@ public abstract class AbstractFix
     @NotNull
     public final String getFamilyName()
     {
-        return message( "zest.quick.fixes.family.name" );
+        return message( "polygene.quick.fixes.family.name" );
     }
 }

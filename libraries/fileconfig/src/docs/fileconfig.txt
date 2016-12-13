@@ -35,7 +35,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/fileconfig/src/main/java/org/apache/zest/library/fileconfig/FileConfiguration.java
+source=libraries/fileconfig/src/main/java/org/apache/polygene/library/fileconfig/FileConfiguration.java
 tag=fileconfig
 ----
 
@@ -43,7 +43,7 @@ To use it you simply need to use the FileConfigurationAssembler in your applicat
 
 [snippet,java]
 ----
-source=libraries/fileconfig/src/test/java/org/apache/zest/library/fileconfig/FileConfigurationTest.java
+source=libraries/fileconfig/src/test/java/org/apache/polygene/library/fileconfig/FileConfigurationTest.java
 tag=simple
 ----
 
@@ -57,7 +57,7 @@ as meta info of this service:
 
 [snippet,java]
 ----
-source=libraries/fileconfig/src/test/java/org/apache/zest/library/fileconfig/FileConfigurationTest.java
+source=libraries/fileconfig/src/test/java/org/apache/polygene/library/fileconfig/FileConfigurationTest.java
 tag=override
 ----
 

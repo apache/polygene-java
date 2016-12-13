@@ -39,7 +39,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakMapEntityStoreTest.java
+source=extensions/entitystore-riak/src/test/java/org/apache/polygene/entitystore/riak/RiakMapEntityStoreTest.java
 tag=assembly
 ----
 
@@ -49,7 +49,7 @@ Here are the available configuration properties:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakEntityStoreConfiguration.java
+source=extensions/entitystore-riak/src/main/java/org/apache/polygene/entitystore/riak/RiakEntityStoreConfiguration.java
 tag=config
 ----
 

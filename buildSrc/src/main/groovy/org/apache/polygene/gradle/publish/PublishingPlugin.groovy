@@ -91,10 +91,10 @@ class PublishingPlugin implements Plugin<Project>
 
   private static Config configFor( Project project )
   {
-    def zest = project.extensions.getByType( PolygeneExtension )
+    def polygene = project.extensions.getByType( PolygeneExtension )
     def config = new Config()
-    config.snapshots = zest.developmentVersion
-    config.releases = zest.releaseVersion
+    config.snapshots = polygene.developmentVersion
+    config.releases = polygene.releaseVersion
     config.signed = project.findProperty( 'uploadSigned' ) ?: config.releases
     config.releaseSpec = project.findProperty( 'uploadReleaseSpec' ) ?: config.releases
     config.wagon = project.findProperty( 'uploadWagon' ) ?: WAGON_HTTP

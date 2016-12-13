@@ -23,11 +23,11 @@ jar { manifest { name = "Apache Polygene™ Core Runtime" } }
 dependencies {
   compileOnly libraries.osgi_core
 
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.asm
   compile libraries.asm_util
   compile libraries.asm_commons
 
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'constraints' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'constraints' )
 }

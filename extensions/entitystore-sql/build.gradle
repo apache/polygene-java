@@ -23,18 +23,18 @@ description = "Apache Polygene™ SQL EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'sql' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'sql' )
   compile libraries.javaSqlGenerator
   compile( libraries.javaSqlGeneratorImpl ) {
     exclude group: 'junit'
   }
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'sql-dbcp' )
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'sql-dbcp' )
+  testCompile polygene.extension( 'valueserialization-orgjson' )
   testCompile libraries.derby // Needed at compile time for polite test shutdown
 
   testRuntime libraries.logback

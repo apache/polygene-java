@@ -49,16 +49,16 @@ Clone/checkout all needed repositories, next to each other:
 
 [source,shell]
 ----
-mkdir zest-repos
-cd zest-repos
-git clone https://git-wip-us.apache.org/repos/asf/zest-java.git zest-java
-svn checkout https://svn.apache.org/repos/asf/zest/ zest-web
-svn checkout --depth empty https://dist.apache.org/repos/dist/ zest-dist
-cd zest-dist
+mkdir polygene-repos
+cd polygene-repos
+git clone https://git-wip-us.apache.org/repos/asf/polygene-java.git polygene-java
+svn checkout https://svn.apache.org/repos/asf/polygene/ polygene-web
+svn checkout --depth empty https://dist.apache.org/repos/dist/ polygene-dist
+cd polygene-dist
 svn update --set-depth immediates dev
 svn update --set-depth immediates release
-svn update --set-depth infinity dev/zest
-svn update --set-depth infinity release/zest
+svn update --set-depth infinity dev/polygene
+svn update --set-depth infinity release/polygene
 ----
 
 You should then get the following directory tree:
@@ -66,20 +66,20 @@ You should then get the following directory tree:
 [source,text]
 ----
 .
-└── zest-repos
-    ├── zest-java           # Apache Polygene™ (Java Edition) source
-    ├── zest-web            # https://zest.apache.org/ website
-    └── zest-dist
+└── polygene-repos
+    ├── polygene-java           # Apache Polygene™ (Java Edition) source
+    ├── polygene-web            # https://polygene.apache.org/ website
+    └── polygene-dist
         ├── dev
-        |   └── zest        # Releases candidate distributions
+        |   └── polygene        # Releases candidate distributions
         └── release
-            └── zest        # Releases distributions
+            └── polygene        # Releases distributions
 ----
 
 
 [TIP]
 ====
-From now on, all command line snippets start from the `zest-repos` directory.
+From now on, all command line snippets start from the `polygene-repos` directory.
 ====
 
 
@@ -91,7 +91,7 @@ Here is what should pass before going further:
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 ./gradlew -Dversion="<RELEASE-VERSION>" website signArchives
 ----
 
@@ -100,7 +100,7 @@ See the <<build-system, Build System>> tutorial for details.
 
 === Install Jekyll
 
-Moreover, you will need to have a valid http://jekyllrb.com/[Jekyll] installation as the Apache Polygene™ https://zest.apache.org/[website] is generated using it.
+Moreover, you will need to have a valid http://jekyllrb.com/[Jekyll] installation as the Apache Polygene™ https://polygene.apache.org/[website] is generated using it.
 
 
 === Setup git flow
@@ -128,26 +128,26 @@ See the Apache https://www.apache.org/dev/publishing-maven-artifacts.html[Publis
 
 === Update the `KEYS` files if needed.
 
-The reference `KEYS` file can be found at the `zest-java` repository's root, that is `zest-java/KEYS`.
+The reference `KEYS` file can be found at the `polygene-java` repository's root, that is `polygene-java/KEYS`.
 Ensure that it contains your public key.
 
 Next, diff it against the ones present in the `dev` and `release` distribution areas:
 
 [source,shell]
 ----
-diff zest-java/KEYS zest-dist/dev/zest/KEYS
-diff zest-java/KEYS zest-dist/release/zest/KEYS
+diff polygene-java/KEYS polygene-dist/dev/polygene/KEYS
+diff polygene-java/KEYS polygene-dist/release/polygene/KEYS
 ----
 
 And update them if needed:
 
 [source,shell]
 ----
-cp zest-java/KEYS zest-dist/dev/zest/KEYS
-cp zest-java/KEYS zest-dist/release/zest/KEYS
-cd zest-dist/dev/zest
-svn add dev/zest/KEYS release/zest/KEYS
-svn commit -m "zest: updating Polygene KEYS"
+cp polygene-java/KEYS polygene-dist/dev/polygene/KEYS
+cp polygene-java/KEYS polygene-dist/release/polygene/KEYS
+cd polygene-dist/dev/polygene
+svn add dev/polygene/KEYS release/polygene/KEYS
+svn commit -m "polygene: updating Polygene KEYS"
 ----
 
 
@@ -179,27 +179,27 @@ Set it up to generate plain-text release-notes.
 We will need these in several formats.
 Starting from the plain-text one we will generate the others.
 
-First save the text-plain release-notes in a file named `apache-zest-java-<RELEASE-VERSION>-release-notes.txt`.
-A good place for this file would be in the `zest-repos` directory created earlier, alongside all repositories.
+First save the text-plain release-notes in a file named `apache-polygene-java-<RELEASE-VERSION>-release-notes.txt`.
+A good place for this file would be in the `polygene-repos` directory created earlier, alongside all repositories.
 
 Convert to Asciidoc:
 
 [source,shell]
 ----
-cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
+cat "apache-polygene-java-<RELEASE-VERSION>-release-notes.txt" | \
   sed -e "s/\[ZEST-\([0-9]\)*\]/https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1[ZEST-\1]/" | \
   sed -e "s/    \* /- /" | sed -e "s/^\*\*/====/" \
-  > "apache-zest-java-<RELEASE-VERSION>-release-notes.adoc"
+  > "apache-polygene-java-<RELEASE-VERSION>-release-notes.adoc"
 ----
 
 Convert to Markdown:
 
 [source,shell]
 ----
-cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
+cat "apache-polygene-java-<RELEASE-VERSION>-release-notes.txt" | \
   sed -e "s/\[ZEST-\([0-9]*\)\]/[ZEST-\1](https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1)/" | \
   sed -e "s/    \* /- /" | sed -e "s/^\*\*/####/" \
-  > "apache-zest-java-<RELEASE-VERSION>-release-notes.md"
+  > "apache-polygene-java-<RELEASE-VERSION>-release-notes.md"
 ----
 
 You should then have the following files:
@@ -207,9 +207,9 @@ You should then have the following files:
 [source,shell]
 ----
 .
-├── apache-zest-java-<RELEASE-VERSION>-release-notes.txt
-├── apache-zest-java-<RELEASE-VERSION>-release-notes.adoc
-└── apache-zest-java-<RELEASE-VERSION>-release-notes.md
+├── apache-polygene-java-<RELEASE-VERSION>-release-notes.txt
+├── apache-polygene-java-<RELEASE-VERSION>-release-notes.adoc
+└── apache-polygene-java-<RELEASE-VERSION>-release-notes.md
 ----
 
 We will use them later.
@@ -221,7 +221,7 @@ We use `<RELEASE-VERSION>-RC#` where `RELEASE-VERSION` is the target release ver
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git flow release start "<RELEASE-VERSION>-RC#"
 ----
 
@@ -234,34 +234,34 @@ Make a complete build, deploying maven artifacts locally:
 
 [source,shell]
 ----
-cd zest-java
-./gradlew -Dversion="<RELEASE-VERSION>" -PuploadRepository="file://$(pwd)/build/repositories/zest-java" \
+cd polygene-java
+./gradlew -Dversion="<RELEASE-VERSION>" -PuploadRepository="file://$(pwd)/build/repositories/polygene-java" \
     clean assemble checkDists uploadArchives
 ----
 
-Review maven artifacts in `build/repositories/zest-java`.
+Review maven artifacts in `build/repositories/polygene-java`.
 
 Also review the release distributions in `build/distributions` where you should find the following files:
 
 [source,shell]
 ----
 .
-├── apache-zest-java-<RELEASE-VERSION>-bin.tgz
-├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5
-├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512
-├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc
-├── apache-zest-java-<RELEASE-VERSION>-bin.zip
-├── apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5
-├── apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512
-├── apache-zest-java-<RELEASE-VERSION>-bin.zip.asc
-├── apache-zest-java-<RELEASE-VERSION>-src.tgz
-├── apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5
-├── apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512
-├── apache-zest-java-<RELEASE-VERSION>-src.tgz.asc
-├── apache-zest-java-<RELEASE-VERSION>-src.zip
-├── apache-zest-java-<RELEASE-VERSION>-src.zip.MD5
-├── apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512
-└── apache-zest-java-<RELEASE-VERSION>-src.zip.asc
+├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz
+├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5
+├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512
+├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc
+├── apache-polygene-java-<RELEASE-VERSION>-bin.zip
+├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5
+├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512
+├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc
+├── apache-polygene-java-<RELEASE-VERSION>-src.tgz
+├── apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5
+├── apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512
+├── apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc
+├── apache-polygene-java-<RELEASE-VERSION>-src.zip
+├── apache-polygene-java-<RELEASE-VERSION>-src.zip.MD5
+├── apache-polygene-java-<RELEASE-VERSION>-src.zip.SHA-512
+└── apache-polygene-java-<RELEASE-VERSION>-src.zip.asc
 ----
 
 If any, make the required changes, commit them and iterate.
@@ -273,7 +273,7 @@ Once you are satisfied with the produced artifacts, close the release candidate 
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git flow release finish "<RELEASE-VERSION>-RC#"
 ----
 
@@ -284,7 +284,7 @@ To build the release candidate bits, we need to checkout the release candidate t
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git checkout "<RELEASE-VERSION>-RC#"
 ----
 
@@ -293,7 +293,7 @@ git checkout "<RELEASE-VERSION>-RC#"
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 ./gradlew -Dversion="<RELEASE-VERSION>" clean assemble
 ----
 
@@ -304,7 +304,7 @@ Stage artifacts to https://repository.apache.org/[repository.apache.org] :
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 ./gradlew -Dversion="<RELEASE-VERSION>" uploadArchives
 ----
 
@@ -313,63 +313,63 @@ Close the staging Nexus repository by following the https://www.apache.org/dev/p
 
 === Upload RC distributions
 
-Source and binary distributions, checksums and signatures must be uploaded to https://dist.apache.org/repos/dist/dev/zest/[dist.apache.org/repos/dist/dev/zest].
-This build created these in the `buid/distributions` directory, named `apache-zest-java-<RELEASE-VERSION>-[src|bin]*.*`.
+Source and binary distributions, checksums and signatures must be uploaded to https://dist.apache.org/repos/dist/dev/polygene/[dist.apache.org/repos/dist/dev/polygene].
+This build created these in the `buid/distributions` directory, named `apache-polygene-java-<RELEASE-VERSION>-[src|bin]*.*`.
 As this release still is a simple candidate, we'll rename them before upload to advertise this in their names.
 
 [source,shell]
 ----
 # Source ZIP
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.MD5" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.SHA-512" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.asc" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc"
 # Source TAR.GZ
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
 # Binary ZIP
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
 # Binary TAR.GZ
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" \
-   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
+cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
+   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
 ----
 
 And then upload them:
 
 [source,shell]
 ----
-cd zest-dist/dev/zest
+cd polygene-dist/dev/polygene
 svn add * --force
-svn commit -m "zest: upload <RELEASE-VERSION> to dist/dev/zest"
+svn commit -m "polygene: upload <RELEASE-VERSION> to dist/dev/polygene"
 ----
 
 
 == Run the vote
 
-Send a "VOTE" to the mailto:dev@zest.apache.org[developer mailing list] including links to release artifacts. A VOTE always contains two parts. Send an email to the developer mailing list with the subject line:
+Send a "VOTE" to the mailto:dev@polygene.apache.org[developer mailing list] including links to release artifacts. A VOTE always contains two parts. Send an email to the developer mailing list with the subject line:
 
 [source,text]
 ----
@@ -386,13 +386,13 @@ I am happy to start the VOTE thread for Apache Polygene (Java Edition) <RELEASE-
 
 The changelog for this release can be found here: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12316820&version=12332997
 
-Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=refs/tags/<RELEASE-VERSION>-RC#
+Tag: https://git-wip-us.apache.org/repos/asf?p=polygene-java.git;a=tag;h=refs/tags/<RELEASE-VERSION>-RC#
 
-The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
+The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/polygene/
 
-Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/apache/zest/
+Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/apache/polygene/
 
-Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/zest/KEYS
+Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/polygene/KEYS
 
 Please vote on releasing this package as Apache Polygene (Java Edition) <RELEASE-VERSION>.
 
@@ -420,8 +420,8 @@ Here is a sample template:
 
 [source,text]
 ----
-To: "Polygene Developers List" <dev@zest.apache.org>
-CC: "Polygene Project Management Committee List" <private@zest.apache.org>
+To: "Polygene Developers List" <dev@polygene.apache.org>
+CC: "Polygene Project Management Committee List" <private@polygene.apache.org>
 Subject: [RESULT][VOTE] Release Polygene (Java Edition) version <RELEASE-VERSION>
 
 Hi,
@@ -448,29 +448,29 @@ A single check is better than none.
 
 === Download RC
 
-First go downloading the release candidate distributions from https://dist.apache.org/repos/dist/dev/zest/[dist.a.o/repos/dist/dev/zest].
+First go downloading the release candidate distributions from https://dist.apache.org/repos/dist/dev/polygene/[dist.a.o/repos/dist/dev/polygene].
 Including `*.MD5`, `*.SHA-512` and `*.asc` files.
 Put them in a directory:
 
 [source,shell]
 ----
-cd zest-check-rc
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512
-wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc
+cd polygene-check-rc
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512
+wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc
 ----
 
 
@@ -480,11 +480,11 @@ Verify PGP signatures:
 
 [source,shell]
 ----
-cd zest-check-rc
-gpg apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
-gpg apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc
-gpg apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc
-gpg apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc
+cd polygene-check-rc
+gpg apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
+gpg apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc
+gpg apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc
+gpg apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc
 ----
 
 This must output `gpg: Good signature from "Signer Name <signer@ema.il>"` for each distribution.
@@ -494,11 +494,11 @@ Verify MD5 checksum:
 
 [source,shell]
 ----
-cd zest-check-rc
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" | md5sum -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" | md5sum -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" | md5sum -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" | md5sum -c -
+cd polygene-check-rc
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" | md5sum -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" | md5sum -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz" | md5sum -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" | md5sum -c -
 ----
 
 This must output `some-filename: OK` for each distribution.
@@ -508,11 +508,11 @@ Verify SHA-512 checksum:
 
 [source,shell]
 ----
-cd zest-check-rc
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" | shasum -a 512 -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" | shasum -a 512 -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" | shasum -a 512 -c -
-echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" | shasum -a 512 -c -
+cd polygene-check-rc
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" | shasum -a 512 -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" | shasum -a 512 -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz" | shasum -a 512 -c -
+echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" | shasum -a 512 -c -
 ----
 
 This also must output `some-filename: OK` for each distribution.
@@ -524,9 +524,9 @@ Unpack the source distributions, we will use the `zip` distribution here, both s
 
 [source,shell]
 ----
-cd zest-check-rc
-unzip apache-zest-java-<RELEASE-VERSION>-RC#-src.zip
-cd apache-zest-java-<RELEASE-VERSION>-RC#-src
+cd polygene-check-rc
+unzip apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip
+cd apache-polygene-java-<RELEASE-VERSION>-RC#-src
 ----
 
 
@@ -543,7 +543,7 @@ You can also `grep` the whole source tree.
 
 [source,shell]
 ----
-cd zest-check-rc/apache-zest-java-<RELEASE-VERSION>-RC#-src
+cd polygene-check-rc/apache-polygene-java-<RELEASE-VERSION>-RC#-src
 ./gradlew check assemble
 ----
 
@@ -557,7 +557,7 @@ Create and sign the release git tag from the unsigned release candidate tag:
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git tag -s "<RELEASE-VERSION>" "<RELEASE-VERSION>-RC#"
 ----
 
@@ -565,7 +565,7 @@ Push all git changes:
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git checkout master
 git push origin master
 git checkout develop
@@ -578,65 +578,65 @@ git push origin --tags
 
 Promote the staged Nexus repository so it gets synched to Maven Central by following the https://www.apache.org/dev/publishing-maven-artifacts.html#promote[Promoting a repo] guide.
 
-Move the release distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[zest-dist/dev/zest] to https://dist.apache.org/repos/dist/release/zest/[zest-dist/release/zest]:
+Move the release distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/polygene/[polygene-dist/dev/polygene] to https://dist.apache.org/repos/dist/release/polygene/[polygene-dist/release/polygene]:
 
 [source,shell]
 ----
-cd zest-dist
+cd polygene-dist
 # Source ZIP
-export DIST_DEV_URL="https://dist.apache.org/repos/dist/dev/zest"
-export DIST_RELEASE_URL="https://dist.apache.org/repos/dist/release/zest"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
+export DIST_DEV_URL="https://dist.apache.org/repos/dist/dev/polygene"
+export DIST_RELEASE_URL="https://dist.apache.org/repos/dist/release/polygene"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.zip" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.zip.MD5" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.zip.SHA-512" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.zip.asc" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
 # Source TAR.GZ
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.tgz" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
 # Binary ZIP
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
 # Binary TAR.GZ
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" \
-     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" \
-     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" \
+     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
+     -m "polygene: promoting release <RELEASE-VERSION> distributions"
 ----
 
 This produces one commit per file but keep svn history and runs fast, without re-uploading the distributions.
@@ -665,24 +665,24 @@ Generate the documentation and javadoc minisite:
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 ./gradlew -Dversion="<RELEASE-VERSION>" archiveJavadocs manuals
 ----
 
-This will automatically put all files into the `zest-web` website repository.
+This will automatically put all files into the `polygene-web` website repository.
 
 Create a new post on the Polygene™ website by creating a new Markdown file:
 
 [source,shell]
 ----
-cd zest-web
-touch "site/src/_posts/YYYY-MM-DD-apache-zest-java-<RELEASE-VERSION>.md"
+cd polygene-web
+touch "site/src/_posts/YYYY-MM-DD-apache-polygene-java-<RELEASE-VERSION>.md"
 open !$
 ----
 
 You can reuse the Markdown formatted announcement content.
 
-Add the new released version in `zest-web/site/content/java/versions.json` below the `latest` entry:
+Add the new released version in `polygene-web/site/content/java/versions.json` below the `latest` entry:
 
 [source,js]
 ----
@@ -695,13 +695,13 @@ Add the new released version in `zest-web/site/content/java/versions.json` below
 }
 ----
 
-Finally, edit `zest-web/site/src/_data/releases.yml` with the new release data.
+Finally, edit `polygene-web/site/src/_data/releases.yml` with the new release data.
 Upmost is the latest:
 
 [source,text]
 ----
 - version: <RELEASE-VERSION>
-  announcement: YYYY/MM/DD/apache-zest-java-<RELEASE-VERSION>
+  announcement: YYYY/MM/DD/apache-polygene-java-<RELEASE-VERSION>
   signer: John Doe
   pgpId: FB751943
 ----
@@ -710,7 +710,7 @@ You can run the Polygene™ website locally:
 
 [source,shell]
 ----
-cd zest-web
+cd polygene-web
 jekyll serve
 ----
 
@@ -720,7 +720,7 @@ Once you are satisfied with the changes, build the production website:
 
 [source,shell]
 ----
-cd zest-web
+cd polygene-web
 jekyll build
 ----
 
@@ -729,7 +729,7 @@ And publish it:
 [source,shell]
 ----
 svn add * --force
-svn commit -m "zest: update website"
+svn commit -m "polygene: update website"
 ----
 
 
@@ -740,14 +740,14 @@ Register the new release at https://reporter.apache.org/[reporter.apache.org]
 
 === Announce
 
-Finally, send an announcement to mailto:dev@zest.apache.org[dev@] and mailto:users@zest.apache.org[users@] mailing lists. Email announcements should have the subject line:
+Finally, send an announcement to mailto:dev@polygene.apache.org[dev@] and mailto:users@polygene.apache.org[users@] mailing lists. Email announcements should have the subject line:
 
 [source,text]
 ----
 [ANNOUNCE] Released Polygene (Java Edition) version <RELEASE-VERSION>
 ----
 
-The announcement email should contains the release-notes as text, remember they are in the `apache-zest-java-<RELEASE-VERSION>-release-notes.txt` file you created earlier.
+The announcement email should contains the release-notes as text, remember they are in the `apache-polygene-java-<RELEASE-VERSION>-release-notes.txt` file you created earlier.
 
 
 
@@ -762,7 +762,7 @@ Remember, we created a release candidate branch and tags, no signed release tag.
 
 [source,shell]
 ----
-cd zest-java
+cd polygene-java
 git checkout master
 git push origin master
 git checkout develop
@@ -775,14 +775,14 @@ git push origin --tags
 
 Drop the Nexus staging repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#drop[Dropping a repo] guide.
 
-Drop distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[zest-dist/dev/zest]
+Drop distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/polygene/[polygene-dist/dev/polygene]
 
 [source,shell]
 ----
-cd zest-dist/dev/zest/
+cd polygene-dist/dev/polygene/
 rm "*<RELEASE-VERSION>-RC#*.*"
 svn add * --force
-svn commit -m "zest: dropping <RELEASE-VERSION>-RC# from dist/dev/zest as the vote failed"
+svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene as the vote failed"
 ----
 
 

@@ -55,7 +55,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=objects
 --------------
 
@@ -64,7 +64,7 @@ tag=objects
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=transients
 --------------
 
@@ -73,7 +73,7 @@ tag=transients
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=values
 --------------
 
@@ -82,7 +82,7 @@ tag=values
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=entities
 --------------
 
@@ -91,7 +91,7 @@ tag=entities
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=services
 --------------
 
@@ -99,7 +99,7 @@ tag=services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=tagged-services
 --------------
 
@@ -107,7 +107,7 @@ tag=tagged-services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=imported-services
 --------------
 
@@ -115,7 +115,7 @@ tag=imported-services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=properties-defaults
 --------------
 
@@ -138,7 +138,7 @@ such as;
 
 [snippet,java]
 --------------
-source=libraries/rest-server/src/test/java/org/apache/zest/library/rest/server/DocumentationSupport.java
+source=libraries/rest-server/src/test/java/org/apache/polygene/library/rest/server/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
@@ -162,7 +162,7 @@ used like;
 
 [snippet,java]
 --------------
-source=extensions/entitystore-jdbm/src/test/java/org/apache/zest/entitystore/jdbm/DocumentationSupport.java
+source=extensions/entitystore-jdbm/src/test/java/org/apache/polygene/entitystore/jdbm/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
@@ -216,7 +216,7 @@ Let's take a closer look at how it is put together.
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=singleton
 --------------
 
@@ -270,7 +270,7 @@ Let's look at an example;
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=pancake
 --------------
 
@@ -285,7 +285,7 @@ ApplicationAssemblyFactory, which is used to create an ApplicationAssembly descr
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/polygene/bootstrap/DocumentationSupport.java
 tag=full
 --------------
 

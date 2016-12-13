@@ -313,7 +313,7 @@ public class FragmentClassLoader
                             }
 
                             // Call method
-                            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/api/composite/CompositeInvoker",
+                            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/api/composite/CompositeInvoker",
                                                 "invokeComposite",
                                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
 

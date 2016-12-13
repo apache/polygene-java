@@ -23,14 +23,14 @@ description = "Apache Polygene™ Codahale Metrics Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Metrics - Codahale" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.codahale_metrics
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'jmx' )
-  testCompile zest.library( 'metrics' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'jmx' )
+  testCompile polygene.library( 'metrics' )
 
   testRuntime libraries.logback
 }

@@ -36,7 +36,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/metrics-codahale/src/test/java/org/apache/zest/metrics/codahale/CodahaleMetricsTest.java
+source=extensions/metrics-codahale/src/test/java/org/apache/polygene/metrics/codahale/CodahaleMetricsTest.java
 tag=assembly
 ----
 
@@ -50,6 +50,6 @@ provide accessor to it:
 
 [snippet,java]
 ----
-source=extensions/metrics-codahale/src/test/java/org/apache/zest/metrics/codahale/CodahaleMetricsTest.java
+source=extensions/metrics-codahale/src/test/java/org/apache/polygene/metrics/codahale/CodahaleMetricsTest.java
 tag=registry
 ----

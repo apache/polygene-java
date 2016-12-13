@@ -37,24 +37,24 @@ In this section you will find links to JavaDocs corresponding to this Apache Pol
 
 Links to _"alias versions"_ JavaDocs:
 
-* https://zest.apache.org/java/latest/javadocs/[Latest Release (`master` branch)]
-* https://zest.apache.org/java/develop/javadocs/[Development (`develop` branch)]
+* https://polygene.apache.org/java/latest/javadocs/[Latest Release (`master` branch)]
+* https://polygene.apache.org/java/develop/javadocs/[Development (`develop` branch)]
 
 
 === Previous Releases ===
 
 Archived JavaDocs of previous releases:
 
-* https://zest.apache.org/java/2.0/javadocs/[Release 2.0]
-* https://zest.apache.org/java/1.4.1/javadocs/[Release 1.4.1]
-* https://zest.apache.org/java/1.4/javadocs/[Release 1.4]
-* https://zest.apache.org/java/1.3/javadocs/[Release 1.3]
+* https://polygene.apache.org/java/2.0/javadocs/[Release 2.0]
+* https://polygene.apache.org/java/1.4.1/javadocs/[Release 1.4.1]
+* https://polygene.apache.org/java/1.4/javadocs/[Release 1.4]
+* https://polygene.apache.org/java/1.3/javadocs/[Release 1.3]
 * Release 1.2
-** https://zest.apache.org/java/1.2/javadocs/api[Core API]
-** https://zest.apache.org/java/1.2/javadocs/bootstrap[Core Bootstrap]
-** https://zest.apache.org/java/1.2/javadocs/spi[Core SPI]
+** https://polygene.apache.org/java/1.2/javadocs/api[Core API]
+** https://polygene.apache.org/java/1.2/javadocs/bootstrap[Core Bootstrap]
+** https://polygene.apache.org/java/1.2/javadocs/spi[Core SPI]
 * Release 1.0
-** https://zest.apache.org/java/1.0/javadocs/api[Core API]
-** https://zest.apache.org/java/1.0/javadocs/bootstrap[Core Bootstrap]
-** https://zest.apache.org/java/1.0/javadocs/spi[Core SPI]
+** https://polygene.apache.org/java/1.0/javadocs/api[Core API]
+** https://polygene.apache.org/java/1.0/javadocs/bootstrap[Core Bootstrap]
+** https://polygene.apache.org/java/1.0/javadocs/spi[Core SPI]
 

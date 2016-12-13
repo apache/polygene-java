@@ -18,13 +18,13 @@
   ~
   ~
   -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zest="http://zest.apache.org/schema/zest/spring"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:polygene="http://polygene.apache.org/schema/polygene/spring"
     xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd">
+       http://polygene.apache.org/schema/polygene/spring http://polygene.apache.org/schema/polygene/spring/spring-0.5.xsd">
 
-    <zest:bootstrap class="org.apache.polygene.library.spring.bootstrap.PolygeneTestBootstrap" />
-    <zest:service id="commentService" />
+    <polygene:bootstrap class="org.apache.polygene.library.spring.bootstrap.PolygeneTestBootstrap" />
+    <polygene:service id="commentService" />
 
     <bean id="commentServiceHolder" class="org.apache.polygene.library.spring.bootstrap.CommentServiceHolder">
         <constructor-arg ref="commentService" />

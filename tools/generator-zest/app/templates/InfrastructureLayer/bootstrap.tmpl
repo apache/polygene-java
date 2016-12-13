@@ -47,9 +47,9 @@ public class InfrastructureLayer extends LayeredLayerAssembler
     {
         createModule( layer, FileConfigurationModule.class );
 
-        new <%= zest.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= zest.entitystore %>StorageModule.NAME ) );
-        new <%= zest.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= zest.indexing %>IndexingModule.NAME ) );
-        new <%= zest.serialization %>SerializationModule( typeFinder ).assemble( layer, layer.module( <%= zest.serialization %>SerializationModule.NAME ) );
+        new <%= polygene.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= polygene.entitystore %>StorageModule.NAME ) );
+        new <%= polygene.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= polygene.indexing %>IndexingModule.NAME ) );
+        new <%= polygene.serialization %>SerializationModule( typeFinder ).assemble( layer, layer.module( <%= polygene.serialization %>SerializationModule.NAME ) );
         return layer;
     }
 }

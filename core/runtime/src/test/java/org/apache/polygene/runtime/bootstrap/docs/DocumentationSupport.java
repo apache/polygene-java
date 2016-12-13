@@ -32,7 +32,7 @@ import org.apache.polygene.runtime.composite.FragmentClassLoader;
 public class DocumentationSupport
 {
     // START SNIPPET: customAssemblyHelper
-    private static Energy4Java zest;
+    private static Energy4Java polygene;
 
     private static Application application;
 
@@ -40,8 +40,8 @@ public class DocumentationSupport
         throws Exception
     {
         // Create a Polygene Runtime
-        zest = new Energy4Java();
-        application = zest.newApplication( new ApplicationAssembler()
+        polygene = new Energy4Java();
+        application = polygene.newApplication( new ApplicationAssembler()
         {
 
             @Override

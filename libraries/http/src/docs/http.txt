@@ -39,7 +39,7 @@ EventListeners in HttpService are assembled as Services, so one have to declare 
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/FooServletContextListenerService.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/FooServletContextListenerService.java
 tag=context-listener
 ----
 
@@ -49,7 +49,7 @@ Servlets in HttpService are assembled as Services, so one have to declare a Serv
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/HelloWorldServletService.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/HelloWorldServletService.java
 tag=servletservice
 ----
 
@@ -59,7 +59,7 @@ It's the same for Filters. As an example here is the bundled UnitOfWorkFilterSer
 
 [snippet,java]
 ----
-source=libraries/http/src/main/java/org/apache/zest/library/http/UnitOfWorkFilterService.java
+source=libraries/http/src/main/java/org/apache/polygene/library/http/UnitOfWorkFilterService.java
 tag=filterservice
 ----
 
@@ -71,7 +71,7 @@ The HTTP library provide a JettyServiceAssembler and a fluent API to easily asse
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/JettyServiceTest.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/JettyServiceTest.java
 tag=assembly
 ----
 
@@ -84,7 +84,7 @@ Module for the sake of clarity:
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/JettyJMXStatisticsTest.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/JettyJMXStatisticsTest.java
 tag=jmx
 ----
 
@@ -106,7 +106,7 @@ Simply change from JettyServiceAssembler to SecureJettyServiceAssembler:
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/SecureJettyServiceTest.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/SecureJettyServiceTest.java
 tag=assemblyssl
 ----
 
@@ -123,7 +123,7 @@ SecureJettyConfiguration default during assembly:
 
 [snippet,java]
 ----
-source=libraries/http/src/test/java/org/apache/zest/library/http/MutualSecureJettyServiceTest.java
+source=libraries/http/src/test/java/org/apache/polygene/library/http/MutualSecureJettyServiceTest.java
 tag=config
 ----
 

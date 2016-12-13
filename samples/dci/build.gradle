@@ -24,11 +24,11 @@ description = "Sample of how DCI (Data, Context & Interaction) pattern is implem
 jar { manifest { name = "Apache Polygene™ Sample - DCI" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.core.runtime  /* TODO: Get rid of this dependency */
-  compile zest.library( 'constraints' )
+  compile polygene.core.bootstrap
+  compile polygene.core.runtime  /* TODO: Get rid of this dependency */
+  compile polygene.library( 'constraints' )
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.easymock
 
   testRuntime libraries.logback

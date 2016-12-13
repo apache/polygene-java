@@ -91,7 +91,7 @@ import org.apache.polygene.tools.model.descriptor.ImportedServiceDetailDescripto
         contentPane = new JPanel();
         contentPane.setLayout( new GridBagLayout() );
         final JLabel label1 = new JLabel();
-        this.$$$loadLabelText$$$( label1, ResourceBundle.getBundle( "org/apache/zest/envisage/detail/ImportedByPane" ).getString( "CTL_Name.Text" ) );
+        this.$$$loadLabelText$$$( label1, ResourceBundle.getBundle( "org/apache/polygene/envisage/detail/ImportedByPane" ).getString( "CTL_Name.Text" ) );
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -118,7 +118,7 @@ import org.apache.polygene.tools.model.descriptor.ImportedServiceDetailDescripto
         gbc.anchor = GridBagConstraints.WEST;
         contentPane.add( nameLabel, gbc );
         final JLabel label2 = new JLabel();
-        this.$$$loadLabelText$$$( label2, ResourceBundle.getBundle( "org/apache/zest/envisage/detail/ImportedByPane" ).getString( "CTL_Class.Text" ) );
+        this.$$$loadLabelText$$$( label2, ResourceBundle.getBundle( "org/apache/polygene/envisage/detail/ImportedByPane" ).getString( "CTL_Class.Text" ) );
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;

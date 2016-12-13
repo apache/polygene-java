@@ -29,7 +29,7 @@
     <servlet-name>QuikitServlet</servlet-name>
     <servlet-class>org.apache.polygene.sample.rental.web.QuikitServlet</servlet-class>
     <init-param>
-      <param-name>zest-assembler</param-name>
+      <param-name>polygene-assembler</param-name>
       <param-value>org.apache.polygene.sample.rental.web.assembly.RentalApplicationAssembler</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>

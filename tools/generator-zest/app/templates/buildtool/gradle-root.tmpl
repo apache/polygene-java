@@ -21,7 +21,7 @@
 version = 1.0
 
 rootProject.ext {
-  zestVersion = 0
+  polygeneVersion = 0
 }
 
 allprojects() {
@@ -34,13 +34,13 @@ allprojects() {
     mavenLocal()
     mavenCentral()
     maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
-<% if( zest.entitystore == 'Jdbm' ) { -%>
+<% if( polygene.entitystore == 'Jdbm' ) { -%>
     maven { name 'clojure-repo'; url 'http://clojars.org/repo/' }
 <% } -%>
   }
 
   dependencies {
-    compile "org.apache.polygene.core:org.apache.polygene.core.api:$zestVersion"
-    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$zestVersion"
+    compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
+    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   }
 }

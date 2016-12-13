@@ -35,7 +35,7 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=extensions/valueserialization-orgjson/src/test/java/org/apache/zest/valueserialization/orgjson/OrgJsonPlainValueSerializationTest.java
+source=extensions/valueserialization-orgjson/src/test/java/org/apache/polygene/valueserialization/orgjson/OrgJsonPlainValueSerializationTest.java
 tag=assembly
 ----
 

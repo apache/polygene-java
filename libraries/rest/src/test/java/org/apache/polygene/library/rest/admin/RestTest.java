@@ -73,7 +73,7 @@ public class RestTest extends AbstractPolygeneTest
     protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
-        return zest.newApplicationModel( new ApplicationAssemblerAdapter(
+        return polygene.newApplicationModel( new ApplicationAssemblerAdapter(
             new Assembler[][][]
                 {
                     {

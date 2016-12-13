@@ -39,7 +39,7 @@ abstract class AbstractProjectCreator
     )
         throws IOException
     {
-        File templateDir = new File( FileUtils.zestHome(), properties.get( "template.dir" ) );
+        File templateDir = new File( FileUtils.polygeneHome(), properties.get( "template.dir" ) );
         copyFiles( templateDir, projectDir, properties.get( "root.package" ) );
         File gradlewFile = new File( projectDir, "gradlew" );
         Path gradlewPath = gradlewFile.toPath();

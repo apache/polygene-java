@@ -21,9 +21,9 @@
 jar { manifest { name = "Apache Polygene™ Core API" } }
 
 dependencies {
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'constraints' )
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'constraints' )
+  testCompile polygene.extension( 'valueserialization-orgjson' )
 
-  testRuntime zest.core.runtime
+  testRuntime polygene.core.runtime
 }

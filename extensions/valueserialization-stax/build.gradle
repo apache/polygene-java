@@ -23,12 +23,12 @@ description = "Apache Polygene™ StaX ValueSerialization Extension"
 jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - StaX" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.commons_lang
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

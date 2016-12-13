@@ -46,7 +46,7 @@ public class WebXmlWriter
                     "         version=\"3.0\">\n" +
                     "\n" +
                     "  <servlet>\n" +
-                    "    <servlet-name>zestrest</servlet-name>\n" +
+                    "    <servlet-name>polygenerest</servlet-name>\n" +
                     "    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>\n" +
                     "    <init-param>\n" +
                     "      <param-name>org.apache.polygene.runtime.mode</param-name>\n" +
@@ -66,7 +66,7 @@ public class WebXmlWriter
                     "  </servlet>\n" +
                     "\n" +
                     "  <servlet-mapping>\n" +
-                    "    <servlet-name>zestrest</servlet-name>\n" +
+                    "    <servlet-name>polygenerest</servlet-name>\n" +
                     "    <url-pattern>/api/*</url-pattern>\n" +
                     "  </servlet-mapping>\n" +
                     "\n" +

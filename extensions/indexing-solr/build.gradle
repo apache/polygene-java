@@ -23,14 +23,14 @@ description = "Apache Polygene™ Solr Indexing Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Indexing - Solr" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'fileconfig' )
-  compile zest.library( 'rdf' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'fileconfig' )
+  compile polygene.library( 'rdf' )
   compile libraries.solr
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.servlet_api
   testRuntime libraries.logback

@@ -40,7 +40,7 @@ include::../../../../tutorials/introduction/src/docs/what-is-composite-oriented-
 
 :leveloffset: 2
 
-// include::../../../../tutorials/introduction/src/docs/zest-cop.txt[]
+// include::../../../../tutorials/introduction/src/docs/polygene-cop.txt[]
 //
 // :leveloffset: 2
 

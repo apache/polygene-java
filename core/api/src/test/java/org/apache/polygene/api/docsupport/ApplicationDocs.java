@@ -38,7 +38,7 @@ public class ApplicationDocs
     {
         {
 // START SNIPPET: application1
-            SingletonAssembler zest = new SingletonAssembler()
+            SingletonAssembler polygene = new SingletonAssembler()
             {
                 public void assemble( ModuleAssembly assembly )
                     throws AssemblyException
@@ -81,8 +81,8 @@ public class ApplicationDocs
                       }
                     }
                 };
-            Energy4Java zest = new Energy4Java();
-            Application app = zest.newApplication( new ApplicationAssembler()
+            Energy4Java polygene = new Energy4Java();
+            Application app = polygene.newApplication( new ApplicationAssembler()
             {
 
                 @Override
@@ -112,13 +112,13 @@ public class ApplicationDocs
     }
 
     // START SNIPPET: application3
-    private static Energy4Java zest;
+    private static Energy4Java polygene;
 
     public static void main( String[] args )
         throws Exception
     {
-        zest = new Energy4Java();
-        ApplicationDescriptor model = zest.newApplicationModel( new ApplicationAssembler()
+        polygene = new Energy4Java();
+        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
@@ -127,7 +127,7 @@ public class ApplicationDocs
                 return createAssembly( applicationFactory );
             }
         } );
-        Application application = model.newInstance( zest.spi() );
+        Application application = model.newInstance( polygene.spi() );
     }
 
     private static ApplicationAssembly createAssembly( ApplicationAssemblyFactory factory )

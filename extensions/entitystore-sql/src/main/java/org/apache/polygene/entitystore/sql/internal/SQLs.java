@@ -22,9 +22,9 @@ package org.apache.polygene.entitystore.sql.internal;
 public interface SQLs
 {
 
-    String DEFAULT_SCHEMA_NAME = "zest_es";
+    String DEFAULT_SCHEMA_NAME = "polygene_es";
 
-    String TABLE_NAME = "zest_entities";
+    String TABLE_NAME = "polygene_entities";
 
     String ENTITY_PK_COLUMN_NAME = "entity_pk";
 

@@ -86,8 +86,8 @@ public class QuikitServlet
 
             ApplicationAssembler assembler = createApplicationAssembler( config );
 
-            Energy4Java zest = new Energy4Java();
-            application = zest.newApplication( assembler );
+            Energy4Java polygene = new Energy4Java();
+            application = polygene.newApplication( assembler );
             application.activate();
             Module module = application.findModule( "WebLayer", "PagesModule" );
             finder = module;

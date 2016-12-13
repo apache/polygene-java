@@ -70,7 +70,7 @@ public abstract class AbstractPolygeneServletBootstrap
     private static final Logger LOGGER = LoggerFactory.getLogger( PolygeneServlet.class.getPackage().getName() );
     // Polygene Runtime
     protected PolygeneAPI api;
-    protected Energy4Java zest;
+    protected Energy4Java polygene;
     // Polygene Application
     protected ApplicationDescriptor applicationModel;
     protected Application application;
@@ -83,12 +83,12 @@ public abstract class AbstractPolygeneServletBootstrap
             ServletContext context = sce.getServletContext();
 
             LOGGER.trace( "Assembling Application" );
-            zest = new Energy4Java();
-            applicationModel = zest.newApplicationModel( this );
+            polygene = new Energy4Java();
+            applicationModel = polygene.newApplicationModel( this );
 
             LOGGER.trace( "Instanciating and activating Application" );
-            application = applicationModel.newInstance( zest.api() );
-            api = zest.api();
+            application = applicationModel.newInstance( polygene.api() );
+            api = polygene.api();
             beforeApplicationActivation( application );
             application.activate();
             afterApplicationActivation( application );

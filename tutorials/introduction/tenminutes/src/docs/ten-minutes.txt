@@ -21,7 +21,7 @@
 = Polygene™ in 10 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
+https://polygene.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
@@ -41,12 +41,12 @@ include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-See the <<howto-depend-on-zest>> tutorial for details.
+See the <<howto-depend-on-polygene>> tutorial for details.
 
 Composition is done with Java interfaces and Annotations. Example;
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -56,7 +56,7 @@ methods that they declare, for instance;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/InventoryConcern.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/InventoryConcern.java
 tag=allClass
 -----------
 
@@ -80,7 +80,7 @@ will execute after the Constraints, Concerns and Mixins. We add the SideEffect t
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=sideEffect
 -----------
 
@@ -88,7 +88,7 @@ The SideEffect implementation is fairly simple.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/MailNotifySideEffect.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/MailNotifySideEffect.java
 tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.

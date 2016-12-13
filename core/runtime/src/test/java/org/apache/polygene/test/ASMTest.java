@@ -172,8 +172,8 @@ public class ASMTest
         MethodVisitor mv;
         AnnotationVisitor av0;
 
-        cw.visit( V1_6, ACC_PUBLIC + ACC_SUPER, "org/apache/zest/satisfiedBy/SomeMixin_Stub", null,
-                  "org/apache/zest/satisfiedBy/SomeMixin", null );
+        cw.visit( V1_6, ACC_PUBLIC + ACC_SUPER, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", null,
+                  "org/apache/polygene/satisfiedBy/SomeMixin", null );
 
         {
             fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/polygene/spi/composite/CompositeInvoker;", null, null );
@@ -203,7 +203,7 @@ public class ASMTest
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/apache/zest/satisfiedBy/SomeMixin", "<init>", "()V", false );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/apache/polygene/satisfiedBy/SomeMixin", "<init>", "()V", false );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 1, 1 );
             mv.visitEnd();
@@ -213,7 +213,7 @@ public class ASMTest
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/apache/zest/satisfiedBy/SomeMixin", "<init>", "(Ljava/lang/String;)V", false );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/apache/polygene/satisfiedBy/SomeMixin", "<init>", "(Ljava/lang/String;)V", false );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();
@@ -227,11 +227,11 @@ public class ASMTest
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "_instance",
+            mv.visitFieldInsn( GETFIELD, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "_instance",
                                "Lorg/apache/polygene/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/spi/composite/CompositeInvoker", "invokeComposite",
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/spi/composite/CompositeInvoker", "invokeComposite",
                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
@@ -260,9 +260,9 @@ public class ASMTest
             mv.visitTryCatchBlock( l0, l1, l3, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "_instance",
+            mv.visitFieldInsn( GETFIELD, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "_instance",
                                "Lorg/apache/polygene/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ICONST_2 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
@@ -274,7 +274,7 @@ public class ASMTest
             mv.visitVarInsn( ILOAD, 2 );
             mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/spi/composite/CompositeInvoker", "invokeComposite",
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/spi/composite/CompositeInvoker", "invokeComposite",
                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
@@ -305,9 +305,9 @@ public class ASMTest
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "_instance",
+            mv.visitFieldInsn( GETFIELD, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "_instance",
                                "Lorg/apache/polygene/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
             mv.visitIntInsn( BIPUSH, 11 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
@@ -362,7 +362,7 @@ public class ASMTest
             mv.visitIntInsn( BIPUSH, 10 );
             mv.visitVarInsn( ALOAD, 13 );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/spi/composite/CompositeInvoker", "invokeComposite",
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/spi/composite/CompositeInvoker", "invokeComposite",
                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
@@ -385,40 +385,40 @@ public class ASMTest
         }
         {
             mv = cw.visitMethod( ACC_PUBLIC, "multiEx", "(Ljava/lang/String;)V", null,
-                                 new String[]{ "org/apache/zest/satisfiedBy/Exception1", "org/apache/zest/satisfiedBy/Exception2" } );
+                                 new String[]{ "org/apache/polygene/satisfiedBy/Exception1", "org/apache/polygene/satisfiedBy/Exception2" } );
             mv.visitCode();
             Label l0 = new Label();
             Label l1 = new Label();
             Label l2 = new Label();
-            mv.visitTryCatchBlock( l0, l1, l2, "org/apache/zest/satisfiedBy/Exception1" );
+            mv.visitTryCatchBlock( l0, l1, l2, "org/apache/polygene/satisfiedBy/Exception1" );
             Label l3 = new Label();
-            mv.visitTryCatchBlock( l0, l1, l3, "org/apache/zest/satisfiedBy/Exception2" );
+            mv.visitTryCatchBlock( l0, l1, l3, "org/apache/polygene/satisfiedBy/Exception2" );
             Label l4 = new Label();
             mv.visitTryCatchBlock( l0, l1, l4, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "_instance",
+            mv.visitFieldInsn( GETFIELD, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "_instance",
                                "Lorg/apache/polygene/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ICONST_1 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Object" );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitInsn( AASTORE );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/spi/composite/CompositeInvoker", "invokeComposite",
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/spi/composite/CompositeInvoker", "invokeComposite",
                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
             Label l5 = new Label();
             mv.visitJumpInsn( GOTO, l5 );
             mv.visitLabel( l2 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/apache/zest/satisfiedBy/Exception1" } );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/apache/polygene/satisfiedBy/Exception1" } );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l3 );
-            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/apache/zest/satisfiedBy/Exception2" } );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "org/apache/polygene/satisfiedBy/Exception2" } );
             mv.visitVarInsn( ASTORE, 2 );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitInsn( ATHROW );
@@ -446,11 +446,11 @@ public class ASMTest
             mv.visitTryCatchBlock( l0, l1, l2, "java/lang/Throwable" );
             mv.visitLabel( l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "_instance",
+            mv.visitFieldInsn( GETFIELD, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "_instance",
                                "Lorg/apache/polygene/spi/composite/CompositeInvoker;" );
-            mv.visitFieldInsn( GETSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( GETSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
-            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/spi/composite/CompositeInvoker", "invokeComposite",
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/spi/composite/CompositeInvoker", "invokeComposite",
                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/Integer" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false );
@@ -482,7 +482,7 @@ public class ASMTest
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
                                 "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
-            mv.visitFieldInsn( PUTSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/apache/polygene/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "foo" );
             mv.visitInsn( ICONST_2 );
@@ -497,7 +497,7 @@ public class ASMTest
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
                                 "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
-            mv.visitFieldInsn( PUTSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/apache/polygene/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "bar" );
             mv.visitIntInsn( BIPUSH, 11 );
@@ -548,7 +548,7 @@ public class ASMTest
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
                                 "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
-            mv.visitFieldInsn( PUTSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/apache/polygene/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "multiEx" );
             mv.visitInsn( ICONST_1 );
@@ -559,14 +559,14 @@ public class ASMTest
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
                                 "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
-            mv.visitFieldInsn( PUTSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/apache/polygene/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "unwrapResult" );
             mv.visitInsn( ICONST_0 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
                                 "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
-            mv.visitFieldInsn( PUTSTATIC, "org/apache/zest/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
+            mv.visitFieldInsn( PUTSTATIC, "org/apache/polygene/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitLabel( l1 );
             Label l3 = new Label();
             mv.visitJumpInsn( GOTO, l3 );

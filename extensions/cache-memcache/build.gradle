@@ -23,13 +23,13 @@ description = "Apache Polygene™ Memcache Cache Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Cache - Memcache" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.spymemcached
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.extension( 'valueserialization-orgjson' )
 
   testRuntime libraries.logback
 }

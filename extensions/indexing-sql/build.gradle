@@ -23,18 +23,18 @@ description = "Apache Polygene™ SQL Indexing Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Indexing - SQL" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'sql' )
-  compile zest.extension( 'reindexer' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'sql' )
+  compile polygene.extension( 'reindexer' )
   compile libraries.javaSqlGenerator
   compile( libraries.javaSqlGeneratorImpl ) {
     exclude group: 'junit'
   }
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.library( 'sql-dbcp' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.library( 'sql-dbcp' )
 
   testRuntime libraries.logback
   testRuntime libraries.derby

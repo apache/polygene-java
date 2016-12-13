@@ -161,7 +161,7 @@ import static org.objectweb.asm.Type.getInternalName;
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
         // Class definition start
-        cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, new String[] { "org/apache/zest/api/composite/Composite" } );
+        cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, new String[] { "org/apache/polygene/api/composite/Composite" } );
 
         // Composite reference
         {
@@ -283,7 +283,7 @@ import static org.objectweb.asm.Type.getInternalName;
                         }
 
                         // Call method
-                        mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/api/composite/CompositeInvoker",
+                        mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/polygene/api/composite/CompositeInvoker",
                                             "invokeComposite",
                                             "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
 

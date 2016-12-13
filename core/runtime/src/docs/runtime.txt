@@ -25,7 +25,7 @@ source=core/runtime/dev-status.xml
 --------------
 
 First of all, your code should never, ever, have a dependency on Core Runtime. If you think you need this, you should
-probably contact users@zest.apache.org mailing list and see if your usecase can either be solved in a existing way or
+probably contact users@polygene.apache.org mailing list and see if your usecase can either be solved in a existing way or
 perhaps that a new Core SPI Extension is needed.
 
 include::../../build/docs/buildinfo/artifact.txt[]
@@ -42,12 +42,12 @@ To do this, add the +AssemblyHelper+ implementation instance as +metaInfo+ to th
 
 We think this is so rare, that the +AssemblyHelper+ class will remain in the +core/runtime+ module and has not
 been promoted to the +core/bootstrap+ module. If you plan to use this feature, please contact the Polygene development
-team at +dev@zest.apache.org+ to ensure we can make this a better supported, backed by real usecases.
+team at +dev@polygene.apache.org+ to ensure we can make this a better supported, backed by real usecases.
 
 Fictitious example of using a hypothetical Dalvik capable classloader;
 
 [source,java]
 --------------
-source=core/runtime/src/test/java/org/apache/zest/runtime/bootstrap/docs/DocumentationSupport.java
+source=core/runtime/src/test/java/org/apache/polygene/runtime/bootstrap/docs/DocumentationSupport.java
 tag=customAssemblyHelper
 --------------

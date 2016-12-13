@@ -50,7 +50,7 @@ public class EntityVisibilityTest
 
     public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
 
-    private Energy4Java zest;
+    private Energy4Java polygene;
     private Module module;
     private Application app;
     private UnitOfWorkFactory uowf;
@@ -59,7 +59,7 @@ public class EntityVisibilityTest
     public void setup()
         throws Exception
     {
-        zest = new Energy4Java();
+        polygene = new Energy4Java();
 
         Assembler[][][] assemblers = new Assembler[][][]
             {
@@ -82,7 +82,7 @@ public class EntityVisibilityTest
                   }
                 }
             };
-        app = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();

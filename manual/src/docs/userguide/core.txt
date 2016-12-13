@@ -78,7 +78,7 @@ applications during the bootstrap phase.
 === Core Runtime ===
 //____
 Your code should *never*, *ever*, have a dependency on Polygene™ Core Runtime. If you think you need this, you should
-probably contact dev@zest.apache.org and see if your usecase can either be solved in a existing way or
+probably contact dev@polygene.apache.org and see if your usecase can either be solved in a existing way or
 perhaps that a new Core Extension SPI is needed.
 
 <<core-runtime,Learn more>>

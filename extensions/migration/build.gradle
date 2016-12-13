@@ -23,12 +23,12 @@ description = "Apache Polygene™ Migration Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Migration" }}
 
 dependencies {
-  compile zest.core.spi
+  compile polygene.core.spi
   compile libraries.slf4j_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

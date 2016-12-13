@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=uuid-assembly
 ----
 
@@ -43,7 +43,7 @@ Usage is quite simple:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=uuid-usage
 ----
 
@@ -64,7 +64,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=seq-assembly
 ----
 
@@ -72,7 +72,7 @@ Usage is quite simple:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=seq-usage
 ----
 
@@ -82,7 +82,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=perseq-assembly
 ----
 
@@ -90,7 +90,7 @@ Usage is quite simple:
 
 [snippet,java]
 ----
-source=libraries/uid/src/test/java/org/apache/zest/library/uid/DocumentationSupport.java
+source=libraries/uid/src/test/java/org/apache/polygene/library/uid/DocumentationSupport.java
 tag=seq-usage
 ----
 

@@ -25,7 +25,7 @@
 == Overview ==
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
+https://polygene.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 In this section you will find a comprehensive set of tutorials about Composite Oriented Programming using Polygene™.
@@ -48,7 +48,7 @@ Throughout this set of tutorials it will be shown how to depend on Polygene™ i
 application, how to create and work with Composites and Services, how to use contextual fragments and leverage
 properties.
 
-- <<howto-depend-on-zest>>
+- <<howto-depend-on-polygene>>
 - <<howto-assemble-application>>
 - <<tut-composites>>
 - <<tut-services>>
@@ -94,7 +94,7 @@ include::../../../../tutorials/introduction/twohours/src/docs/two-hours.txt[]
 
 :leveloffset: 2
 
-include::../tutorials/howto-depend-on-zest.txt[]
+include::../tutorials/howto-depend-on-polygene.txt[]
 
 :leveloffset: 2
 

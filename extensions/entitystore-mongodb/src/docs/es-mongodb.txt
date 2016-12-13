@@ -36,7 +36,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-mongodb/src/test/java/org/apache/zest/entitystore/mongodb/MongoMapEntityStoreTest.java
+source=extensions/entitystore-mongodb/src/test/java/org/apache/polygene/entitystore/mongodb/MongoMapEntityStoreTest.java
 tag=assembly
 ----
 
@@ -46,6 +46,6 @@ Here are the configuration properties for the MongoDB EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-mongodb/src/main/java/org/apache/zest/entitystore/mongodb/MongoEntityStoreConfiguration.java
+source=extensions/entitystore-mongodb/src/main/java/org/apache/polygene/entitystore/mongodb/MongoEntityStoreConfiguration.java
 tag=config
 ----

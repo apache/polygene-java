@@ -21,24 +21,24 @@ THIS FILE CONTAINS SNIPPETS for quick-start.txt and shell.txt. DO NOT INCLUDE IN
 
 
 START SNIPPET: boot-quick
-wget http://zest.apache.org/latest/shell/zest-boot
-sh zest-boot
+wget http://polygene.apache.org/latest/shell/polygene-boot
+sh polygene-boot
 END SNIPPET: boot-quick
 
 START SNIPPET: boot-sdk
-wget http://zest.apache.org/latest/shell/zest-boot
-sh zest-boot sdk
+wget http://polygene.apache.org/latest/shell/polygene-boot
+sh polygene-boot sdk
 END SNIPPET: boot-sdk
 
 START SNIPPET: create-singleton
-zest create-project singleton com.acme.quick quickstart
+polygene create-project singleton com.acme.quick quickstart
 cd quickstart
 ./gradlew assemble
 ./gradlew run
 END SNIPPET: create-singleton
 
 START SNIPPET: create-ngheroes
-zest create-project ng-heroes com.acme.heroes heroes
+polygene create-project ng-heroes com.acme.heroes heroes
 cd heroes
 ./gradlew assemble
 ./gradlew run

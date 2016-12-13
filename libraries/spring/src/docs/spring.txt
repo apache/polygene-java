@@ -38,7 +38,7 @@ beans will be available as Polygene™ services. The most important things to re
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/PolygeneImportServiceTest.java
+source=libraries/spring/src/test/java/org/apache/polygene/library/spring/importer/PolygeneImportServiceTest.java
 tag=import
 ----
 
@@ -58,7 +58,7 @@ To bootstrap the Polygene™ runtime in Spring, you should have a bootstrap bean
 +org.apache.polygene.library.spring.bootstrap.PolygeneApplicationBootstrap+ and implement the
 +org.springframework.context.ApplicationContextAware+.
 
-A new bean will appear in the application context, called +"zestApplication"+ which is only
+A new bean will appear in the application context, called +"polygeneApplication"+ which is only
 intended for internal use of this library.
 
 Example application context;
@@ -68,24 +68,24 @@ Example application context;
 
  <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:zest="http://zest.apache.org/schema/zest/spring"
+  xmlns:polygene="http://polygene.apache.org/schema/polygene/spring"
   xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-  http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd">
+  http://polygene.apache.org/schema/polygene/spring http://polygene.apache.org/schema/polygene/spring/spring-0.5.xsd">
 
   <!-- class that implements PolygeneApplicationBootstrap -->
 
-  <zest:bootstrap class="org.hedhman.niclas.MyPolygeneBootstrapper"/>
+  <polygene:bootstrap class="org.hedhman.niclas.MyPolygeneBootstrapper"/>
 
   <bean id="someService" class="org.hedhman.niclas.SomeService">
 
-  <constructor-arg ref="someService"/> <!-- Reference zest comment service -->
+  <constructor-arg ref="someService"/> <!-- Reference polygene comment service -->
 
  </bean>
 ----
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/MyPolygeneBootstrapper.java
+source=libraries/spring/src/test/java/org/apache/polygene/library/spring/MyPolygeneBootstrapper.java
 tag=code
 ----

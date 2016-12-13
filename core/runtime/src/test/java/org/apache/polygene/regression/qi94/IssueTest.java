@@ -50,7 +50,7 @@ public class IssueTest
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );
-            assertEquals( ItemType.class, zest.api()
+            assertEquals( ItemType.class, polygene.api()
                 .entityDescriptorFor( builder.instance() )
                 .state()
                 .getAssociationByName( "typeOfItem" )

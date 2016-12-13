@@ -25,7 +25,7 @@ It describe the Polygene™ SDK Build System from compilation to publication of 
 applications.
 
 If instead you want to setup your project build system to depend on modules of the Polygene™ SDK see the
-<<howto-depend-on-zest,dedicated tutorial>>.
+<<howto-depend-on-polygene,dedicated tutorial>>.
 
 
 == Gradle ==

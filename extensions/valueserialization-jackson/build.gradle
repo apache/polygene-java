@@ -23,12 +23,12 @@ description = "Apache Polygene™ Jackson ValueSerialization Extension"
 jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - Jackson" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.jackson_mapper
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

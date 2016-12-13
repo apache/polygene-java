@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[howto-depend-on-zest,Depend on Polygene™ in your build]]
+[[howto-depend-on-polygene,Depend on Polygene™ in your build]]
 = Depend on Polygene™ in your build =
 
 NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
@@ -37,7 +37,7 @@ http://repository.apache.org/snapshots/
 == Manually ==
 
 If you don't rely on your build scripts dependency resolution mechanism you should
-https://zest.apache.org/download.html[download] the SDK distribution.
+https://polygene.apache.org/download.html[download] the SDK distribution.
 
 
 == Using Maven ==

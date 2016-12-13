@@ -25,12 +25,12 @@ jar { manifest { name = "Apache Polygene™ Library - Scripting - Groovy" } }
 apply plugin: 'groovy'
 
 dependencies {
-  compile zest.core.api
+  compile polygene.core.api
   compile libraries.groovy
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

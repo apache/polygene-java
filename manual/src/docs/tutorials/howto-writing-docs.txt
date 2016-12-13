@@ -127,28 +127,28 @@ External links are added like this:
 
 [source]
 ----
-https://zest.apache.org/[Link text here]
+https://polygene.apache.org/[Link text here]
 ----
 
-Which renders like: https://zest.apache.org/[Link text here]
+Which renders like: https://polygene.apache.org/[Link text here]
 
 For short links it may be better not to add a link text, just do:
 
 [source]
 ----
-https://zest.apache.org/
+https://polygene.apache.org/
 ----
 
-Which renders like: https://zest.apache.org/
+Which renders like: https://polygene.apache.org/
 
 It's ok to have a dot right after the URL, it won't be part of the link.
 
 [source]
 ----
-https://zest.apache.org/.
+https://polygene.apache.org/.
 ----
 
-Which renders like: https://zest.apache.org/.
+Which renders like: https://polygene.apache.org/.
 
 == Text Formatting ==
 
@@ -226,7 +226,7 @@ Most source code that is included in the documentation should be extract via +SN
 ----
  [snippet,java]
  -----------
- source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+ source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
  tag=mainClass
  -----------
 ----
@@ -259,7 +259,7 @@ which will be rendered as;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -322,8 +322,8 @@ For other highlighters we could add see http://alexgorbatchev.com/SyntaxHighligh
 
 Common attributes you can use in documents:
 
-* \{zest-revnumber} - rendered as "{zest-revnumber}"
-* \{zest-importdir} - rendered as "{zest-importdir}"
+* \{polygene-revnumber} - rendered as "{polygene-revnumber}"
+* \{polygene-importdir} - rendered as "{polygene-importdir}"
 
 These can substitute part of URLs that point to for example APIdocs or source code.
 

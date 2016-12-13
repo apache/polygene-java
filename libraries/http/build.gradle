@@ -23,16 +23,16 @@ description = "Apache Polygene™ Http Library provides embedded Jetty for Apach
 jar { manifest { name = "Apache Polygene™ Library - Http" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'jmx' )
-  compile zest.library( 'constraints' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'jmx' )
+  compile polygene.library( 'constraints' )
   compile libraries.bouncy_castle
   compile libraries.jetty_webapp
   compile libraries.jetty_jmx
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.http_client
 
   testRuntime libraries.logback

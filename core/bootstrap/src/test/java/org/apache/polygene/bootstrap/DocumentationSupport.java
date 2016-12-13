@@ -236,13 +236,13 @@ public class DocumentationSupport
         public static class PricingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
         public static class ProductAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
-        private static Energy4Java zest;
+        private static Energy4Java polygene;
 
         // START SNIPPET: pancake
         public static void main( String[] args )
                 throws Exception
         {
-            zest = new Energy4Java();
+            polygene = new Energy4Java();
             Assembler[][][] assemblers = new Assembler[][][]{
                 { // View Layer
                     { // Login Module
@@ -282,14 +282,14 @@ public class DocumentationSupport
                 }
             };
             ApplicationDescriptor model = newApplication( assemblers );
-            Application runtime = model.newInstance( zest.spi() );
+            Application runtime = model.newInstance( polygene.spi() );
             runtime.activate();
         }
 
         private static ApplicationDescriptor newApplication( final Assembler[][][] assemblers )
                 throws AssemblyException
         {
-            return zest.newApplicationModel( new ApplicationAssembler()
+            return polygene.newApplicationModel( new ApplicationAssembler()
             {
 
                 @Override
@@ -321,7 +321,7 @@ public class DocumentationSupport
         public static class NeoAssembler implements Assembler{ NeoAssembler( String path ) {} public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
         // START SNIPPET: full
-        private static Energy4Java zest;
+        private static Energy4Java polygene;
 
         private static Application application;
 
@@ -329,8 +329,8 @@ public class DocumentationSupport
                 throws Exception
         {
             // Create a Polygene Runtime
-            zest = new Energy4Java();
-            application = zest.newApplication( new ApplicationAssembler()
+            polygene = new Energy4Java();
+            application = polygene.newApplication( new ApplicationAssembler()
             {
 
                 @Override

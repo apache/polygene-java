@@ -23,13 +23,13 @@ description = "Apache Polygene™ Servlet Library provides integration of Apache
 jar { manifest { name = "Apache Polygene™ Library - Servlet" } }
 
 dependencies {
-  compile zest.core.bootstrap
+  compile polygene.core.bootstrap
   compile libraries.servlet_api
   compile libraries.slf4j_api
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
   testCompile libraries.jetty_webapp
   testCompile libraries.http_client
 

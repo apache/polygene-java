@@ -14,7 +14,7 @@ cool, new and challenging technology. We are especially interested in
 people willing to help improve the SDK, samples, tutorials, documentation
 and other supporting material.
 
-Please see https://zest.apache.org for more information.
+Please see https://polygene.apache.org for more information.
 
 
 Licensing
@@ -40,7 +40,7 @@ distribution's root, you'll find both Maven (go-offline.pom) and Gradle
 needed dependencies jars. Instructions are given into theses files.
 
 If you prefer to use a dependency management system, go to:
-https://zest.apache.org/java/latest/howto-depend-on-zest.html
+https://polygene.apache.org/java/latest/howto-depend-on-polygene.html
 
 
 Thank you for trying out Apache Polygene™ and Composite Oriented Programming.

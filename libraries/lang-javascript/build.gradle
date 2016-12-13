@@ -24,13 +24,13 @@ jar { manifest { name = "Apache Polygene™ Library - Scripting - JavaScript" } 
 
 
 dependencies {
-  compile zest.core.api
-  compile zest.library( 'scripting' )
+  compile polygene.core.api
+  compile polygene.library( 'scripting' )
   compile libraries.javascript
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
+  testCompile polygene.core.testsupport
 
   testRuntime libraries.logback
 }

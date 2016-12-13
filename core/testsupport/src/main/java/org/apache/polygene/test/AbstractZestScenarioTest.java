@@ -43,7 +43,7 @@ public abstract class AbstractPolygeneScenarioTest
     static protected PolygeneAPI api;
     static protected PolygeneSPI spi;
 
-    static protected Energy4Java zest;
+    static protected Energy4Java polygene;
     static protected ApplicationDescriptor applicationModel;
     static protected Application application;
 
@@ -56,16 +56,16 @@ public abstract class AbstractPolygeneScenarioTest
     public static void setUp()
         throws Exception
     {
-        zest = new Energy4Java();
+        polygene = new Energy4Java();
         applicationModel = newApplication();
         if( applicationModel == null )
         {
             // An AssemblyException has occurred that the Test wants to check for.
             return;
         }
-        application = applicationModel.newInstance( zest.spi() );
+        application = applicationModel.newInstance( polygene.spi() );
         initApplication( application );
-        api = spi = zest.spi();
+        api = spi = polygene.spi();
         application.activate();
 
         // Assume only one module
@@ -81,7 +81,7 @@ public abstract class AbstractPolygeneScenarioTest
         ApplicationAssembler assembler = applicationFactory -> applicationFactory.newApplicationAssembly( asm );
         try
         {
-            return zest.newApplicationModel( assembler );
+            return polygene.newApplicationModel( assembler );
         }
         catch( AssemblyException e )
         {

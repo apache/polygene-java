@@ -23,15 +23,15 @@ description = "Apache Polygene™ Riak EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Riak" } }
 
 dependencies {
-  compile zest.core.bootstrap
-  compile zest.library( 'locking' )
-  compile zest.library( 'constraints' )
+  compile polygene.core.bootstrap
+  compile polygene.library( 'locking' )
+  compile polygene.library( 'constraints' )
   compile libraries.riak
 
-  runtime zest.core.runtime
+  runtime polygene.core.runtime
 
-  testCompile zest.core.testsupport
-  testCompile zest.extension( 'valueserialization-orgjson' )
+  testCompile polygene.core.testsupport
+  testCompile polygene.extension( 'valueserialization-orgjson' )
 
   testRuntime libraries.logback
 }

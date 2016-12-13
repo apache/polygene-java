@@ -41,7 +41,7 @@ Here are some examples:
 
 [snippet,java]
 ----
-source=libraries/constraints/src/test/java/org/apache/zest/library/constraints/TestCaseComposite.java
+source=libraries/constraints/src/test/java/org/apache/polygene/library/constraints/TestCaseComposite.java
 tag=constraints
 ----
 

@@ -19,7 +19,7 @@
 
 [[tools-shell,Command Line Shell]]
 = Polygene Shell =
-If you have installed the Polygene SDK, there is a +bin/zest+ command line script,
+If you have installed the Polygene SDK, there is a +bin/polygene+ command line script,
 which has sub-functions in it. This list of commands will slowly grow
 for various purposes of doing software development with Apache Polygene.
 
@@ -36,7 +36,7 @@ might want to create. Full list of types to follow below. The command
 takes at least 3 additional arguments;
 
 ---------------------------
-zest create-project type name package
+polygene create-project type name package
 ---------------------------
 
 A directory called _name_ will be created in the current directory, and all
@@ -66,8 +66,8 @@ Module in that layer. In Polygene, all applications must have at least one Layer
 This is useful for really small applications or demos, not expected to become large in the future. It is
 also currently required that the infrastructure is configuration free, otherwise it is not possible to set up.
 
-The template will configure the File EntityStore and RDF Indexing subsystems, hardcoded to the +zest/store+ and
-+zest/index+ respectively in the current directory where the application is started. This may not be suitable, in
+The template will configure the File EntityStore and RDF Indexing subsystems, hardcoded to the +polygene/store+ and
++polygene/index+ respectively in the current directory where the application is started. This may not be suitable, in
 which case you should look at the <<tools-shell-create-project-default>> template.
 
 [[tools-shell-create-project-default,Create Default Project]]

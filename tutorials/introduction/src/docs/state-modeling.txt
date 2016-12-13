@@ -48,7 +48,7 @@ Here's an example of how you could define an EntityComposite:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=intro1
 -----------
 
@@ -72,7 +72,7 @@ context instead of classes you would probably do something like this instead:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=roles
 -----------
 
@@ -108,7 +108,7 @@ checks when they are updated. What you want are ValueComposites:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=values
 -----------
 
@@ -142,7 +142,7 @@ you write role mixins which map domain methods to that internal state. Here's an
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=private
 -----------
 
@@ -171,7 +171,7 @@ To end with, here's a sample of how some other state modeling concepts can be ex
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=more
 -----------
 

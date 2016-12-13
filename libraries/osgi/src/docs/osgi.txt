@@ -34,7 +34,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/osgi/src/test/java/org/apache/zest/library/osgi/DocumentationSupport.java
+source=libraries/osgi/src/test/java/org/apache/polygene/library/osgi/DocumentationSupport.java
 tag=export
 ----
 
@@ -43,7 +43,7 @@ tag=export
 
 [snippet,java]
 ----
-source=libraries/osgi/src/test/java/org/apache/zest/library/osgi/DocumentationSupport.java
+source=libraries/osgi/src/test/java/org/apache/polygene/library/osgi/DocumentationSupport.java
 tag=import
 ----
 

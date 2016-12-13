@@ -18,4 +18,4 @@
 #
 #
 
-http\://zest.apache.org/schema/zest/spring/spring-0.5.xsd=org/apache/zest/library/spring/spring-0.5.xsd
+http\://polygene.apache.org/schema/polygene/spring/spring-0.5.xsd=org/apache/polygene/library/spring/spring-0.5.xsd

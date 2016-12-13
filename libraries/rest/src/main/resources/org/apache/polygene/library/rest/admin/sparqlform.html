@@ -43,12 +43,12 @@
 <body>
 <form method="GET" action="">
     <label>Query:</label><br/>
-    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
+    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?entityType ?identity
         WHERE {
-        ?entityType rdfs:subClassOf &lt;urn:zest:type:org.apache.zest.api.entity.Entity&gt;.
+        ?entityType rdfs:subClassOf &lt;urn:polygene:type:org.apache.polygene.api.entity.Entity&gt;.
         ?entity rdf:type ?entityType.
         ?entity ns0:identity ?identity.
         }
@@ -60,12 +60,12 @@
 
 <h3>Get all entities</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?entityType ?identity
         WHERE {
-        ?entityType rdfs:subClassOf &lt;urn:zest:type:org.apache.zest.api.entity.Entity&gt;.
+        ?entityType rdfs:subClassOf &lt;urn:polygene:type:org.apache.polygene.api.entity.Entity&gt;.
         ?entity rdf:type ?entityType.
         ?entity ns0:identity ?identity.
         }
@@ -73,26 +73,26 @@ PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
 </pre>
 <h3>Get entities of a given type</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?identity
         WHERE {
-        ?entity rdf:type &lt;urn:zest:type:org.apache.zest.rest.TestEntity&gt;.
+        ?entity rdf:type &lt;urn:polygene:type:org.apache.polygene.rest.TestEntity&gt;.
         ?entity ns0:identity ?identity.
         }
 </pre>
 
 <h3>Get entities with a given property value</h3>
 <pre>
-PREFIX ns0: &lt;urn:zest:type:org.apache.zest.api.identity.HasIdentity#&gt;
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
         PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
         PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
         SELECT DISTINCT ?identity
         WHERE {
-        ?entity rdf:type &lt;urn:zest:type:org.apache.zest.rest.TestEntity&gt;.
+        ?entity rdf:type &lt;urn:polygene:type:org.apache.polygene.rest.TestEntity&gt;.
         ?entity ns0:identity ?identity.
-        ?entity &lt;urn:zest:type:org.apache.zest.rest.Named#name&gt; "Foo bar"
+        ?entity &lt;urn:polygene:type:org.apache.polygene.rest.Named#name&gt; "Foo bar"
         }
 </pre>
 </body>

@@ -21,7 +21,7 @@
 jar { manifest { name = "Apache Polygene™ Core Bootstrap" } }
 
 dependencies {
-  compile zest.core.spi
+  compile polygene.core.spi
 
-  testRuntime zest.core.runtime
+  testRuntime polygene.core.runtime
 }

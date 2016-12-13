@@ -42,10 +42,10 @@ import org.springframework.context.ApplicationContextAware;
  *
  * &lt;beans xmlns="http://www.springframework.org/schema/beans"
  * xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- * xmlns:polygene="http://zest.apache.org/schema/zest/spring"
+ * xmlns:polygene="http://polygene.apache.org/schema/polygene/spring"
  * xsi:schemaLocation="
  * http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
- * http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd"&gt;
+ * http://polygene.apache.org/schema/polygene/spring http://polygene.apache.org/schema/polygene/spring/spring-0.5.xsd"&gt;
  *
  * &lt;!-- class that implements PolygeneApplicationBootstrap --&gt;
  *
