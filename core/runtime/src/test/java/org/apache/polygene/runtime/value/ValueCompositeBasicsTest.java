@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.runtime.value;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 import org.apache.polygene.api.injection.scope.This;
@@ -27,7 +28,6 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

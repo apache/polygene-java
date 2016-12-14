@@ -29,11 +29,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 public abstract class AbstractJettyTest
     extends AbstractPolygeneTest

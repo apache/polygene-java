@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.library.rest.client;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.util.FreePortFinder;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -52,7 +53,6 @@ import org.apache.polygene.library.rest.server.api.ContextRestlet;
 import org.apache.polygene.library.rest.server.assembler.RestServerAssembler;
 import org.apache.polygene.library.rest.server.restlet.NullCommandResult;
 import org.apache.polygene.library.rest.server.spi.CommandResult;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Request;

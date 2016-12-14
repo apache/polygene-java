@@ -20,12 +20,12 @@
 
 package org.apache.polygene.runtime.service;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;

@@ -21,13 +21,13 @@ package org.apache.polygene.test.cache;
 
 import java.util.Collection;
 import java.util.Random;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

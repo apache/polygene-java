@@ -21,6 +21,7 @@
 package org.apache.polygene.api.common;
 
 import java.util.List;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
@@ -33,7 +34,6 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;

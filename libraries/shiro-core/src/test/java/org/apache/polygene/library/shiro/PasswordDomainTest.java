@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.library.shiro;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
@@ -39,13 +40,12 @@ import org.apache.polygene.library.shiro.assembly.PasswordDomainAssembler;
 import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.polygene.library.shiro.domain.passwords.PasswordSecurable;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
 
 public class PasswordDomainTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     // START SNIPPET: domain

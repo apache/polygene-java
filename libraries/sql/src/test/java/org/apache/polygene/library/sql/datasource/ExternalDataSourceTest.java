@@ -32,7 +32,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 public class ExternalDataSourceTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     @Override

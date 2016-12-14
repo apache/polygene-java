@@ -22,12 +22,12 @@ package org.apache.polygene.library.constraints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.junit.Assert.fail;
 

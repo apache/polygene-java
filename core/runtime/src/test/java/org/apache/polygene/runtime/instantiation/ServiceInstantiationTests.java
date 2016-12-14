@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.runtime.instantiation;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.api.configuration.Configuration;
@@ -28,7 +29,6 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 public class ServiceInstantiationTests

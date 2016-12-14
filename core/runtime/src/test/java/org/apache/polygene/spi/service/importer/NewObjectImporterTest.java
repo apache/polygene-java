@@ -20,6 +20,7 @@
 
 package org.apache.polygene.spi.service.importer;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ImportedServiceDeclaration;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC

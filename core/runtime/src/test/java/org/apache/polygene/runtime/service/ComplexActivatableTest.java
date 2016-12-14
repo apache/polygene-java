@@ -34,7 +34,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import static org.junit.Assert.assertEquals;
 
 public class ComplexActivatableTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )

@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.library.shiro;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -38,7 +39,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.polygene.library.shiro.ini.IniSecurityManagerService;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class StandaloneShiroTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     public void documentationSupport_before()

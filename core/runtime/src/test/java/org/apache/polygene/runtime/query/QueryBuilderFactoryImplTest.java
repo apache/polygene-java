@@ -22,6 +22,7 @@ package org.apache.polygene.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
@@ -31,7 +32,6 @@ import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;

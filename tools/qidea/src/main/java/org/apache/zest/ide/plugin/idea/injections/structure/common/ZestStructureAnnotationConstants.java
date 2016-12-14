@@ -41,7 +41,7 @@ public final class PolygeneStructureAnnotationConstants
                 "org.apache.polygene.structure.Module",
                 "org.apache.polygene.structure.Layer",
                 "org.apache.polygene.structure.Application",
-                "org.apache.polygene.PolygeneAPI",
+                "org.apache.polygene.api.PolygeneAPI",
                 "org.apache.polygene.spi.PolygeneSPI"
             };
         sort( VALID_STRUCTURE_INJECTION_TYPE );

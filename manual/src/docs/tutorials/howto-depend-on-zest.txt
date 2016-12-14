@@ -50,24 +50,24 @@ You simply declare dependencies on Polygene™ artifacts:
     <dependency>
         <groupId>org.apache.polygene.core</groupId>
         <artifactId>org.apache.polygene.core.bootstrap</artifactId>
-        <version>ZEST_VERSION</version>
+        <version>POLYGENE_VERSION</version>
     </dependency>
     <dependency>
         <groupId>org.apache.polygene.core</groupId>
         <artifactId>org.apache.polygene.core.runtime</artifactId>
-        <version>ZEST_VERSION</version>
+        <version>POLYGENE_VERSION</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.polygene.core</groupId>
         <artifactId>org.apache.polygene.core.testsupport</artifactId>
-        <version>ZEST_VERSION</version>
+        <version>POLYGENE_VERSION</version>
         <scope>test</scope>
     </dependency>
 </dependencies>
 ----
 
-Where `ZEST_VERSION` is the Polygene™ version you want to use.
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -91,13 +91,13 @@ You simply declare dependencies on Polygene™ artifacts:
 [source,groovy]
 ----
 dependencies {
-    compile     "org.apache.polygene.core:org.apache.polygene.core.bootstrap:ZEST_VERSION"
-    runtime     "org.apache.polygene.core:org.apache.polygene.core.runtime:ZEST_VERSION"
-    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:ZEST_VERSION"
+    compile     "org.apache.polygene.core:org.apache.polygene.core.bootstrap:POLYGENE_VERSION"
+    runtime     "org.apache.polygene.core:org.apache.polygene.core.runtime:POLYGENE_VERSION"
+    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:POLYGENE_VERSION"
 }
 ----
 
-Where `ZEST_VERSION` is the Polygene™ version you want to use.
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -115,12 +115,12 @@ You simply declare dependencies on Polygene™ artifacts:
 
 [source,ruby]
 ----
-compile.with 'org.apache.polygene.core:org.apache.polygene.core.bootstrap:ZEST_VERSION'
-package(:war).with :libs => 'org.apache.polygene.core:org.apache.polygene.core.runtime:ZEST_VERSION'
-test.with 'org.apache.polygene.core:org.apache.polygene.core.testsupport:ZEST_VERSION'
+compile.with 'org.apache.polygene.core:org.apache.polygene.core.bootstrap:POLYGENE_VERSION'
+package(:war).with :libs => 'org.apache.polygene.core:org.apache.polygene.core.runtime:POLYGENE_VERSION'
+test.with 'org.apache.polygene.core:org.apache.polygene.core.testsupport:POLYGENE_VERSION'
 ----
 
-Where `ZEST_VERSION` is the Polygene™ version you want to use.
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -137,17 +137,17 @@ You simply declare dependencies on Polygene™ artifacts:
 [source,scala]
 ----
 libraryDependencies += \
-    "org.apache.polygene.core" % "org.apache.polygene.core.bootstrap" % "ZEST_VERSION" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.bootstrap" % "POLYGENE_VERSION" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.polygene.core" % "org.apache.polygene.core.runtime" % "ZEST_VERSION" % "runtime" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.runtime" % "POLYGENE_VERSION" % "runtime" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.polygene.core" % "org.apache.polygene.core.testsupport" % "ZEST_VERSION" % "test" \
+    "org.apache.polygene.core" % "org.apache.polygene.core.testsupport" % "POLYGENE_VERSION" % "test" \
     withSources() withJavadoc()
 ----
 
-Where `ZEST_VERSION` is the Polygene™ version you want to use.
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
 
@@ -166,16 +166,16 @@ You simply declare dependencies on Polygene™ artifacts:
 <ivy-module>
     <dependencies>
         <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.bootstrap"
-                    rev="ZEST_VERSION"  conf="default" />
+                    rev="POLYGENE_VERSION"  conf="default" />
         <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.runtime"
-                    rev="ZEST_VERSION"  conf="runtime" />
+                    rev="POLYGENE_VERSION"  conf="runtime" />
         <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.testsupport"
-                    rev="ZEST_VERSION"  conf="test" />
+                    rev="POLYGENE_VERSION"  conf="test" />
     </dependencies>
 </ivy-module>
 ----
 
-Where `ZEST_VERSION` is the Polygene™ version you want to use.
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
 
 If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository in a `ivysettings.xml` file:
 

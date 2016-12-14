@@ -20,6 +20,7 @@
 package org.apache.polygene.regression.qi383;
 
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.unitofwork.EntityCompositeAlreadyExistsException;
@@ -29,7 +30,6 @@ import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class Qi383Test extends AbstractPolygeneTest

@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.library.shiro;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
@@ -44,7 +45,6 @@ import org.apache.polygene.library.shiro.domain.permissions.Role;
 import org.apache.polygene.library.shiro.domain.permissions.RoleAssignee;
 import org.apache.polygene.library.shiro.domain.permissions.RoleFactory;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -52,7 +52,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class PermissionsDomainTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     // START SNIPPET: domain

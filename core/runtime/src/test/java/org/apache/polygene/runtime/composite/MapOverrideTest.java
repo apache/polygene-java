@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.polygene.api.composite.Composite;
@@ -33,7 +34,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

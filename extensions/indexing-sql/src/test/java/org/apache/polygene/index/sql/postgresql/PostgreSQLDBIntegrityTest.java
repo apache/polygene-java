@@ -21,6 +21,7 @@ package org.apache.polygene.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +38,6 @@ import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer.Data
 import org.apache.polygene.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 

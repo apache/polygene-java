@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.polygene.api.concern.Concerns;
@@ -31,7 +32,6 @@ import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;

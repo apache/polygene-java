@@ -20,6 +20,7 @@
 
 package org.apache.polygene.api.common;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.composite.TransientBuilder;
@@ -32,7 +33,6 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.notNullValue;

@@ -19,11 +19,11 @@
  */
 package org.apache.polygene.library.groovy;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 public class GroovyMixinTest extends AbstractPolygeneTest
 {

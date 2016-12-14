@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.runtime.association;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.AssociationDescriptor;
@@ -29,7 +30,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;

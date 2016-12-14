@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.library.http;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.util.FreePortFinder;
 import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.jmx.JMXAssembler;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.apache.polygene.library.http.Servlets.addServlets;

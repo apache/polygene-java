@@ -32,11 +32,11 @@ import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
  */
 public abstract class AbstractInspection extends BaseJavaLocalInspectionTool
 {
-    private static final String ZEST_IDEA_INSPECTIONS_NAME = "polygene.inspections.name";
+    private static final String POLYGENE_IDEA_INSPECTIONS_NAME = "polygene.inspections.name";
 
     @Nls @NotNull public String getGroupDisplayName()
     {
-        return PolygeneResourceBundle.message( ZEST_IDEA_INSPECTIONS_NAME );
+        return PolygeneResourceBundle.message( POLYGENE_IDEA_INSPECTIONS_NAME );
     }
 
     @NotNull

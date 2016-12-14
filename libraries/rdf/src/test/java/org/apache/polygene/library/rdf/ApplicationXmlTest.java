@@ -87,7 +87,7 @@ public class ApplicationXmlTest extends AbstractPolygeneTest
         throws RDFHandlerException
     {
         writer.startRDF();
-        writer.handleNamespace( "polygene", PolygeneRdf.ZEST_MODEL );
+        writer.handleNamespace( "polygene", PolygeneRdf.POLYGENE_MODEL );
         writer.handleNamespace( "rdf", Rdfs.RDF );
         writer.handleNamespace( "rdfs", Rdfs.RDFS );
         for( Statement st : graph )

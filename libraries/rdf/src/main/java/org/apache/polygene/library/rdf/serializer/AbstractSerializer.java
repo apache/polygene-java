@@ -42,7 +42,7 @@ abstract class AbstractSerializer
     public void serialize( Iterable<Statement> graph, Writer out ) throws RDFHandlerException
     {
         String[] prefixes = { "polygene", "rdf", "rdfs" };
-        String[] namespaces = { PolygeneRdf.ZEST_MODEL, Rdfs.RDF, Rdfs.RDFS };
+        String[] namespaces = { PolygeneRdf.POLYGENE_MODEL, Rdfs.RDF, Rdfs.RDFS };
         serialize( graph, out, prefixes, namespaces );
     }
 

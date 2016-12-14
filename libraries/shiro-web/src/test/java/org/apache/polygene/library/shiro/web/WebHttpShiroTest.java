@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.library.shiro.web;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -27,7 +28,6 @@ import org.apache.polygene.library.http.JettyConfiguration;
 import org.apache.polygene.library.http.JettyServiceAssembler;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.polygene.library.shiro.web.assembly.HttpShiroAssembler;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
 

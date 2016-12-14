@@ -21,6 +21,7 @@ package org.apache.polygene.runtime.concerns;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.common.InvalidApplicationException;
 import org.apache.polygene.api.common.UseDefaults;
@@ -30,7 +31,6 @@ import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

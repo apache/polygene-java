@@ -34,7 +34,8 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest {
+abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
+{
 
     @Override
     public void assemble( ModuleAssembly module )

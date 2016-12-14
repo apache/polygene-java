@@ -20,6 +20,7 @@
 package org.apache.polygene.runtime.appliesto;
 
 import java.lang.reflect.Method;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
@@ -30,7 +31,6 @@ import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 /**
  * Test of the AppliesToFilter

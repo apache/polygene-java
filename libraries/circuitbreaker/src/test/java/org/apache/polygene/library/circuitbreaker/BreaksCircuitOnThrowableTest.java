@@ -35,7 +35,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
  * Test @BreaksCircuitOnThrowable annotation
  */
 public class BreaksCircuitOnThrowableTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     // START SNIPPET: service

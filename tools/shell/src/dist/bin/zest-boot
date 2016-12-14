@@ -59,7 +59,7 @@ else
     # Up one level
     cd ..
     # Get the home directory of Polygene
-    ZESTPATH=`pwd`
+    POLYGENEPATH=`pwd`
 
     # Figure out if we are executing from within the SDK or the QuickStart
     if [ -f libs/$JARNAME ] ; then
@@ -73,7 +73,7 @@ else
     # Restore the current directory
     cd $CWD
 
-    java -Dpolygene.home=$ZESTPATH -jar $ZESTPATH/$JARFILE "$@"
+    java -Dpolygene.home=$POLYGENEPATH -jar $POLYGENEPATH/$JARFILE "$@"
 fi
 
 

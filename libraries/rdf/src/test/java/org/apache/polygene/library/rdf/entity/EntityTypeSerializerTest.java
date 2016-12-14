@@ -21,6 +21,7 @@
 package org.apache.polygene.library.rdf.entity;
 
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -39,7 +40,6 @@ import org.apache.polygene.library.rdf.PolygeneEntityType;
 import org.apache.polygene.library.rdf.Rdfs;
 import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entitystore.EntityStore;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import java.io.PrintWriter;
 import org.apache.polygene.test.EntityTestAssembler;

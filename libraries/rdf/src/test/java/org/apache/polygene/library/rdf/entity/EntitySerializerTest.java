@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.time.Instant;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.time.SystemTime;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -45,7 +46,6 @@ import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 

@@ -20,6 +20,7 @@
 
 package org.apache.polygene.library.rdf.repository;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import org.openrdf.repository.RepositoryException;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC

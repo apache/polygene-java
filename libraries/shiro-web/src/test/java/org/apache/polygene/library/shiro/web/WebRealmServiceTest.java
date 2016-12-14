@@ -43,6 +43,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.authc.credential.PasswordService;
@@ -59,7 +60,6 @@ import org.apache.polygene.library.http.JettyConfiguration;
 import org.apache.polygene.library.http.JettyServiceAssembler;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.polygene.library.shiro.web.assembly.HttpShiroAssembler;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
 

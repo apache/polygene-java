@@ -37,7 +37,7 @@ import org.junit.Test;
  * Test case for http://team.ops4j.org/browse/QI-274
  */
 public class EntityCreationTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     @Mixins( SomeEntityMixin.class )

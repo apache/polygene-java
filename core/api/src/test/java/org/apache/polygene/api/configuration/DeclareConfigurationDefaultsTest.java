@@ -31,7 +31,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 public class DeclareConfigurationDefaultsTest
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     @Mixins( FooServiceMixin.class )

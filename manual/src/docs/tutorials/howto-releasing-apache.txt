@@ -164,14 +164,14 @@ They can be resolved by:
 - marking them as `INVALID` or `WONTFIX`
 - changing their fix version to another unreleased version
 
-See the https://issues.apache.org/jira/browse/ZEST[ZEST] project on JIRA.
+See the https://issues.apache.org/jira/browse/POLYGENE[POLYGENE] project on JIRA.
 
 
 === Prepare Release-Notes
 
 Apache Polygene™ release-notes are generated from JIRA issues.
 
-Open the target Polygene™ version's release-notes in https://issues.apache.org/jira/browse/ZEST/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel[JIRA] and review them.
+Open the target Polygene™ version's release-notes in https://issues.apache.org/jira/browse/POLYGENE/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel[JIRA] and review them.
 
 JIRA can produces release-notes as HTML or plain-text.
 Set it up to generate plain-text release-notes.
@@ -187,7 +187,7 @@ Convert to Asciidoc:
 [source,shell]
 ----
 cat "apache-polygene-java-<RELEASE-VERSION>-release-notes.txt" | \
-  sed -e "s/\[ZEST-\([0-9]\)*\]/https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1[ZEST-\1]/" | \
+  sed -e "s/\[POLYGENE-\([0-9]\)*\]/https:\/\/issues.apache.org\/jira\/browse\/POLYGENE-\1[POLYGENE-\1]/" | \
   sed -e "s/    \* /- /" | sed -e "s/^\*\*/====/" \
   > "apache-polygene-java-<RELEASE-VERSION>-release-notes.adoc"
 ----
@@ -197,7 +197,7 @@ Convert to Markdown:
 [source,shell]
 ----
 cat "apache-polygene-java-<RELEASE-VERSION>-release-notes.txt" | \
-  sed -e "s/\[ZEST-\([0-9]*\)\]/[ZEST-\1](https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1)/" | \
+  sed -e "s/\[POLYGENE-\([0-9]*\)\]/[POLYGENE-\1](https:\/\/issues.apache.org\/jira\/browse\/POLYGENE-\1)/" | \
   sed -e "s/    \* /- /" | sed -e "s/^\*\*/####/" \
   > "apache-polygene-java-<RELEASE-VERSION>-release-notes.md"
 ----

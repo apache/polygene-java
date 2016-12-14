@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -53,7 +54,6 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;

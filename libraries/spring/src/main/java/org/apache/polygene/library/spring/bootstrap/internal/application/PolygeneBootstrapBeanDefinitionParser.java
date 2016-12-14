@@ -30,7 +30,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.xml.XmlReaderContext;
 import org.w3c.dom.Element;
 
-import static org.apache.polygene.library.spring.bootstrap.Constants.BEAN_ID_ZEST_APPLICATION;
+import static org.apache.polygene.library.spring.bootstrap.Constants.BEAN_ID_POLYGENE_APPLICATION;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 import static org.springframework.util.Assert.hasText;
@@ -98,6 +98,6 @@ public final class PolygeneBootstrapBeanDefinitionParser
     private void registerBean( ParserContext aParserContext, BeanDefinition aBeanDefinition )
     {
         BeanDefinitionRegistry registry = aParserContext.getRegistry();
-        registry.registerBeanDefinition( BEAN_ID_ZEST_APPLICATION, aBeanDefinition );
+        registry.registerBeanDefinition( BEAN_ID_POLYGENE_APPLICATION, aBeanDefinition );
     }
 }

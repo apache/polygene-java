@@ -33,7 +33,7 @@ class MavenMetadata
         inceptionYear '2007'
         issueManagement {
           system 'jira'
-          url 'https://issues.apache.org/jira/browse/ZEST'
+          url 'https://issues.apache.org/jira/browse/POLYGENE'
         }
         scm {
           url "https://github.com/apache/polygene-java"

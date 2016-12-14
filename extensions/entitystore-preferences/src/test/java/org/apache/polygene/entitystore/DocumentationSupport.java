@@ -25,7 +25,7 @@ import org.apache.polygene.entitystore.prefs.assembly.PreferenceEntityStoreAssem
 import org.apache.polygene.test.AbstractPolygeneTest;
 
 public class DocumentationSupport
-        extends AbstractPolygeneTest
+    extends AbstractPolygeneTest
 {
 
     // START SNIPPET: assembly

@@ -19,10 +19,10 @@
  */
 package org.apache.polygene.tutorials.services.step3;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 public class LibraryTest
     extends AbstractPolygeneTest

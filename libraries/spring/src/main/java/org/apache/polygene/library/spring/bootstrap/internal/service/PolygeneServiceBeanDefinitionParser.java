@@ -27,7 +27,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-import static org.apache.polygene.library.spring.bootstrap.Constants.BEAN_ID_ZEST_APPLICATION;
+import static org.apache.polygene.library.spring.bootstrap.Constants.BEAN_ID_POLYGENE_APPLICATION;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 
 public final class PolygeneServiceBeanDefinitionParser
@@ -42,7 +42,7 @@ public final class PolygeneServiceBeanDefinitionParser
 
         // Service factory bean
         BeanDefinitionBuilder builder = rootBeanDefinition( ServiceFactoryBean.class );
-        builder.addConstructorArgReference( BEAN_ID_ZEST_APPLICATION );
+        builder.addConstructorArgReference( BEAN_ID_POLYGENE_APPLICATION );
         builder.addConstructorArgValue( serviceId );
         AbstractBeanDefinition definition = builder.getBeanDefinition();
 

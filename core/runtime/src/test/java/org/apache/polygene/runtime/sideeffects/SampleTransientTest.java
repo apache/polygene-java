@@ -20,6 +20,7 @@
 
 package org.apache.polygene.runtime.sideeffects;
 
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -30,7 +31,6 @@ import org.apache.polygene.api.sideeffect.SideEffectOf;
 import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;

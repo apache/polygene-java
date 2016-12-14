@@ -21,6 +21,7 @@
 package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.Method;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
@@ -34,7 +35,6 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 
 /**
  * JAVADOC
