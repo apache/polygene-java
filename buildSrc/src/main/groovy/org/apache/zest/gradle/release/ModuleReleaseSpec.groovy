@@ -15,13 +15,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.gradle.release;
+package org.apache.zest.gradle.release
 
 import org.gradle.api.Project
 
 class ModuleReleaseSpec
 {
-  def boolean satisfiedBy( Project project )
+  boolean satisfiedBy( Project project )
   {
     def devStatusFile = new File( project.projectDir, "dev-status.xml" )
     if( !devStatusFile.exists() )
@@ -29,12 +29,21 @@ class ModuleReleaseSpec
       return false
     }
     def module = new XmlSlurper().parse( devStatusFile )
-    def codebase = module.status.codebase.text()
-    def docs = module.status.documentation.text()
-    def tests = module.status.unittests.text()
-    def satisfied = ( codebase == 'none' && docs == 'complete' && tests != 'complete' )
-    satisfied |= ( codebase == 'early' && ( docs == 'complete' || docs == 'good') && (tests == 'complete' || tests == 'good' ) )
-    satisfied |= ( codebase == 'beta' && (docs == 'complete' || docs == 'good' || docs == 'brief') && (tests == 'complete' || tests == 'good' || tests == 'some') )
+    def codebase = module.status.codebase.text() as String
+    def docs = module.status.documentation.text() as String
+    def tests = module.status.unittests.text() as String
+    return satisfiedBy( codebase, docs, tests )
+  }
+
+  boolean satisfiedBy( String codebase, String docs, String tests )
+  {
+    def satisfied = ( codebase == 'none' && docs == 'complete' )
+    satisfied |= ( codebase == 'early'
+      && ( docs == 'complete' || docs == 'good' )
+      && ( tests == 'complete' || tests == 'good' ) )
+    satisfied |= ( codebase == 'beta'
+      && ( docs == 'complete' || docs == 'good' || docs == 'brief' )
+      && ( tests == 'complete' || tests == 'good' || tests == 'some' ) )
     satisfied |= ( codebase == 'stable' )
     satisfied |= ( codebase == 'mature' )
     // TODO Add a task to report this easily
