@@ -175,15 +175,6 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
-    @Deprecated
-    public final <T> Function<T, String> serialize( final boolean includeTypeInfo )
-    {
-        return object -> serialize(
-            includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-            object );
-    }
-
-    @Override
     public final String serialize( Object object )
         throws ValueSerializationException
     {
@@ -211,15 +202,6 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
-    @Deprecated
-    public final String serialize( Object object, boolean includeTypeInfo )
-        throws ValueSerializationException
-    {
-        return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-                          object );
-    }
-
-    @Override
     public final void serialize( Object object, OutputStream output )
         throws ValueSerializationException
     {
@@ -242,15 +224,6 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             throw new ValueSerializationException( "Could not serialize value", ex );
         }
-    }
-
-    @Override
-    @Deprecated
-    public final void serialize( Object object, OutputStream output, boolean includeTypeInfo )
-        throws ValueSerializationException
-    {
-        serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-                   object, output );
     }
 
     private void serializeRoot( Options options, Object object, OutputStream output )

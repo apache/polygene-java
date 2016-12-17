@@ -93,16 +93,6 @@ public interface ValueSerializer
     <T> Function<T, String> serialize( Options options );
 
     /**
-     * Factory method for a serialize function.
-     *
-     * @param <T> the parametrized function input type
-     * @param includeTypeInfo if type information should be included in the output
-     * @return a serialization function.
-     */
-    @Deprecated
-    <T> Function<T, String> serialize( boolean includeTypeInfo );
-
-    /**
      * Serialize the state of a value with type information.
      *
      * @param object an Object to serialize
@@ -124,18 +114,6 @@ public interface ValueSerializer
         throws ValueSerializationException;
 
     /**
-     * Serialize the state of a value.
-     *
-     * @param object an Object to serialize
-     * @param includeTypeInfo if type information should be included in the output
-     * @return the state
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    @Deprecated
-    String serialize( Object object, boolean includeTypeInfo )
-        throws ValueSerializationException;
-
-    /**
      * Serialize the state of a value with type information.
      *
      * @param object an Object to serialize
@@ -154,18 +132,6 @@ public interface ValueSerializer
      * @throws ValueSerializationException if the Value serialization failed
      */
     void serialize( Options options, Object object, OutputStream output )
-        throws ValueSerializationException;
-
-    /**
-     * Serialize the state of a value.
-     *
-     * @param object an Object to serialize
-     * @param output that will be used as output
-     * @param includeTypeInfo if type information should be included in the output
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    @Deprecated
-    void serialize( Object object, OutputStream output, boolean includeTypeInfo )
         throws ValueSerializationException;
 
     /**
