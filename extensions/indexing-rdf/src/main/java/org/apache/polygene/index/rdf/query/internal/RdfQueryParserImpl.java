@@ -376,7 +376,7 @@ public class RdfQueryParserImpl
             String jsonStr = "";
             if( item != null )
             {
-                String serialized = valueSerializer.serialize( item, false );
+                String serialized = valueSerializer.serialize( new Options().withoutTypeInfo(), item );
                 if( item instanceof String )
                 {
                     serialized = "\"" + StringEscapeUtils.escapeJava( serialized ) + "\"";
