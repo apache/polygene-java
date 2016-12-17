@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.zest.gradle.release
+package org.apache.polygene.gradle.release
 
 import spock.lang.Specification
 import spock.lang.Unroll

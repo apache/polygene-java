@@ -22,7 +22,7 @@ package org.apache.polygene.test.indexing.model;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueComposite;
 
-public interface Address extends ValueComposite // necessary, @See ZEST-137
+public interface Address extends ValueComposite // necessary, @See POLYGENE-137
 {
     Property<String> line1();
 

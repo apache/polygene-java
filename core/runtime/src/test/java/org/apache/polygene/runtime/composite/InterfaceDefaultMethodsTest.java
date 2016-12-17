@@ -101,7 +101,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
                            DefaultMethodsSideEffects.class );
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethods()
     {
@@ -109,7 +109,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void overrideDefaultMethods()
     {
@@ -117,7 +117,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, overridden John!" ) );
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void mixinDefaultMethods()
     {
@@ -125,7 +125,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, mixed in John!" ) );
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsConstraints()
     {
@@ -140,14 +140,14 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsConcerns()
     {
         fail( "Test not implemented" );
     }
 
-    @Ignore( "ZEST-120" )
+    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsSideEffects()
     {

@@ -19,9 +19,9 @@ package org.apache.polygene.gradle.doc
 
 import groovy.transform.CompileStatic
 import org.gradle.api.file.EmptyFileVisitor
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.file.FileVisitDetails
@@ -71,11 +71,10 @@ class XsltTask extends SourceTask
 {
 
   @OutputDirectory
-  @Optional
   File destDir
 
-  @Optional
-  String extension
+  @Input
+  String extension = 'html'
 
   @InputFile
   File stylesheetFile
@@ -92,10 +91,6 @@ class XsltTask extends SourceTask
       {
         // Remove the extension from the file name
         def name = fvd.file.name.replaceAll( '[.][^\\.]*$', '' )
-        if( extension == null )
-        {
-          extension = 'html'
-        }
         name += '.' + extension
         def destFile = new File( destDir, name )
         transformer.transform( new StreamSource( fvd.file ), new StreamResult( destFile ) )
