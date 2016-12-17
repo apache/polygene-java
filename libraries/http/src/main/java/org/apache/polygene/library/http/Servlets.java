@@ -31,7 +31,6 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.http.ConstraintInfo.Constraint;
 import org.apache.polygene.library.http.ConstraintInfo.HttpMethod;
-import org.apache.polygene.library.http.Dispatchers.Dispatcher;
 
 import static org.apache.polygene.api.common.Visibility.layer;
 
@@ -234,24 +233,6 @@ public final class Servlets
         public FilterAssembler on( DispatcherType first, DispatcherType... rest )
         {
             dispatchers = EnumSet.of( first, rest );
-            return this;
-        }
-
-        @Deprecated
-        public FilterAssembler on( Dispatcher first, Dispatcher... rest )
-        {
-            EnumSet<DispatcherType> dispatch = EnumSet.noneOf( DispatcherType.class );
-            for ( Dispatcher each : Dispatchers.dispatchers( first, rest ) ) {
-                switch ( each ) {
-                    case FORWARD:
-                        dispatch.add( DispatcherType.FORWARD );
-                        break;
-                    case REQUEST:
-                        dispatch.add( DispatcherType.REQUEST );
-                        break;
-                }
-            }
-            dispatchers = dispatch;
             return this;
         }
 

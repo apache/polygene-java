@@ -23,20 +23,20 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.servlet.lifecycle.AbstractPolygeneServletBootstrap;
 import org.apache.polygene.test.util.FreePortFinder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ServletTest
 {
@@ -100,9 +100,12 @@ public class ServletTest
             server.setHandler( context );
             server.start();
 
-            HttpClient client = new DefaultHttpClient();
-            String result = client.execute( new HttpGet( "http://127.0.0.1:" + port + "/" ), new BasicResponseHandler() );
-            Assert.assertEquals( APP_NAME, result.trim() );
+            try( CloseableHttpClient client = HttpClientBuilder.create().build() )
+            {
+                String result = client.execute( new HttpGet( "http://127.0.0.1:" + port + "/" ),
+                                                new BasicResponseHandler() );
+                Assert.assertEquals( APP_NAME, result.trim() );
+            }
 
         } finally {
             server.stop();
