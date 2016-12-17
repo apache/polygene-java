@@ -27,6 +27,8 @@ public interface MetricsTimer extends Metric
 {
     /**
      * Start the Timer Metrics.
+     *
+     * @return the timer context
      */
     Context start();
 

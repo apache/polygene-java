@@ -49,6 +49,7 @@ public class ValueType
      *     Date, BigInteger, BigDecimal and JodaTime types are not considered as Primitive Value Types.
      * </p>
      *
+     * @param object Object
      * @return true if object is a primitive value or an array of primitive values
      * @throws IllegalArgumentException if object is null
      */
@@ -102,7 +103,9 @@ public class ValueType
     }
 
     /**
-     * @see ValueType#isPrimitiveValue(java.lang.Object) 
+     * @see ValueType#isPrimitiveValue(java.lang.Object)
+     * @param type Type
+     * @return true if object is a primitive value or an array of primitive values
      */
     public static boolean isPrimitiveValueType( Class<?> type )
     {

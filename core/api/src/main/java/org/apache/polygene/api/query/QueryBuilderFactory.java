@@ -29,6 +29,7 @@ public interface QueryBuilderFactory
     /**
      * Create a new QueryBuilder.
      *
+     * @param <T> Result type
      * @param resultType the type of the result that you want
      *
      * @return a QueryBuilder

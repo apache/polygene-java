@@ -27,6 +27,8 @@ import org.apache.polygene.api.common.ConstructionException;
  * to provide additional settings before instantiating the Composite.
  *
  * After calling newInstance() the builder becomes invalid, and may not be called again.
+ *
+ * @param <T> Entity type
  */
 public interface EntityBuilder<T>
 {
@@ -43,6 +45,7 @@ public interface EntityBuilder<T>
      * Get a representation of the state of the given type for the new Composite.
      * This is primarily used if you want to provide state for a private mixin type.
      *
+     * @param <K> Mixin type
      * @param mixinType the mixin which you want to provide state for
      *
      * @return a proxy implementing the given mixin type

@@ -25,6 +25,8 @@ import org.apache.polygene.api.common.ConstructionException;
 
 /**
  * Builder for Values.
+ *
+ * @param <T> Value type
  */
 public interface ValueBuilder<T>
 {
@@ -43,6 +45,7 @@ public interface ValueBuilder<T>
      * Get a representation of the state of the given type for the new ValueComposite.
      * This is primarily used if you want to provide state for a private mixin type.
      *
+     * @param <K> Mixin type
      * @param mixinType the mixin which you want to provide state for
      *
      * @return a proxy implementing the given mixin type

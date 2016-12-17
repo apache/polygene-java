@@ -32,6 +32,8 @@ import org.apache.polygene.api.composite.Composite;
  * should be constructed in the domain model and handed over to
  * the UI, which can then further constrain it before actual
  * execution.
+ *
+ * @param <T> Entity type
  */
 public interface QueryBuilder<T>
 {

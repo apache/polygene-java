@@ -118,6 +118,8 @@ import org.apache.polygene.api.value.ValueSerialization;
  *     :
  * }
  * </code></pre>
+ *
+ * @param <T> Configuration type
  */
 @SuppressWarnings( "JavadocReference" )
 @Mixins( Configuration.ConfigurationMixin.class )
@@ -155,9 +157,9 @@ public interface Configuration<T>
      * This is effectively an internal class in Polygene and should never be used directly by user code.
      * </p>
      *
-     * @param <T>
+     * @param <T> Configuration type
      */
-    public class ConfigurationMixin<T>
+    class ConfigurationMixin<T>
         implements Configuration<T>
     {
         private T configuration;

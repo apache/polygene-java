@@ -29,7 +29,9 @@ public interface ObjectFactory
     /**
      * Create new objects of the given type.
      *
-     * @param type an object class which will be instantiated.
+     * @param <T> Object type
+     * @param type an object class which will be instantiated
+     * @param uses objects that can be injected into mixins
      *
      * @return new objects.
      *

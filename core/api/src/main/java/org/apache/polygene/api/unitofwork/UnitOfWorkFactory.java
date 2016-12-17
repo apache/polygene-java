@@ -46,6 +46,9 @@ public interface UnitOfWorkFactory
      * <p>
      * The UnitOfWork will use the default Usecase settings.
      * </p>
+     *
+     * @param currentTime the current time for this UnitOfWork
+     *
      * @return a new UnitOfWork
      */
     UnitOfWork newUnitOfWork( Instant currentTime );
@@ -65,6 +68,8 @@ public interface UnitOfWorkFactory
      * Create a new UnitOfWork for the given Usecase and associate it with the current thread.
      *
      * @param usecase the Usecase for this UnitOfWork
+     * @param currentTime the current time for this UnitOfWork
+     *
      *
      * @return a new UnitOfWork
      */

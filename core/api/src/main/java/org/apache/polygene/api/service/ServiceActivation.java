@@ -33,12 +33,16 @@ public interface ServiceActivation
 
     /**
      * Called after ServiceComposite Activation.
+     *
+     * @throws Exception if unable to activate
      */
     void activateService()
         throws Exception;
 
     /**
      * Called before ServiceComposite Passivation.
+     *
+     * @throws Exception if unable to passivate
      */
     void passivateService()
         throws Exception;

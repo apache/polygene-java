@@ -45,6 +45,7 @@ public interface ServiceFinder
     /**
      * Find a ServiceReference that implements the given type.
      *
+     * @param <T> Service type
      * @param serviceType the type that the Service must implement
      *
      * @return a ServiceReference if one is found
@@ -57,6 +58,7 @@ public interface ServiceFinder
     /**
      * Find a ServiceReference that implements the given type.
      *
+     * @param <T> Service type
      * @param serviceType the type that the Service must implement
      *
      * @return a ServiceReference if one is found
@@ -73,6 +75,7 @@ public interface ServiceFinder
      * Module is earlier in the list.
      * </p>
      *
+     * @param <T> Service type
      * @param serviceType the type that the Services must implement
      *
      * @return a stream of ServiceReferences for the given type. It is empty if none exist
@@ -86,6 +89,7 @@ public interface ServiceFinder
      * Module is earlier in the list.
      * </p>
      *
+     * @param <T> Service type
      * @param serviceType the type that the Services must implement
      *
      * @return a stream of ServiceReferences for the given type. It is empty if none exist

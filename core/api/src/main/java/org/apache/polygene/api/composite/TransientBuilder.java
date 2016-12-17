@@ -25,6 +25,8 @@ import org.apache.polygene.api.common.ConstructionException;
  * TransientBuilders are used to instantiate TransientComposites. They can be acquired from
  * {@link TransientBuilderFactory#newTransientBuilder(Class)} and allows the client
  * to provide additional settings before instantiating the TransientComposite.
+ *
+ * @param <T> Transient type
  */
 public interface TransientBuilder<T>
 {
@@ -53,6 +55,7 @@ public interface TransientBuilder<T>
      * Get a representation of the state of the given type for the new Composite.
      * This is primarily used if you want to provide state for a private mixin type.
      *
+     * @param <K> Mixin type
      * @param mixinType the mixin which you want to provide state for
      *
      * @return a proxy implementing the given mixin type

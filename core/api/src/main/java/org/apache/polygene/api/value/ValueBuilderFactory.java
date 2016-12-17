@@ -36,6 +36,7 @@ public interface ValueBuilderFactory
     /**
      * Instantiate a Value of the given type.
      *
+     * @param <T> Value type
      * @param valueType the Value type to instantiate
      *
      * @return a new Value instance
@@ -50,6 +51,7 @@ public interface ValueBuilderFactory
      * Create a builder for creating new Values that implements the given Value type.
      * <p>The returned ValueBuilder can be reused to create several Values instances.</p>
      *
+     * @param <T> Value type
      * @param valueType an interface that describes the Composite to be instantiated
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface
@@ -63,6 +65,7 @@ public interface ValueBuilderFactory
      * Create a builder for creating a new Value starting with the given prototype.
      * <p>The returned ValueBuilder can only be used ONCE.</p>
      *
+     * @param <T> Value type
      * @param prototype a prototype the builder will use
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface of the prototype
@@ -75,6 +78,7 @@ public interface ValueBuilderFactory
      * Create a builder for creating a new Value starting with the given state.
      * <p>The returned ValueBuilder can only be used ONCE.</p>
      *
+     * @param <T> Value type
      * @param mixinType an interface that describes the Composite to be instantiated
      * @param propertyFunction a function providing the state of properties
      * @param associationFunction a function providing the state of associations
@@ -94,6 +98,7 @@ public interface ValueBuilderFactory
     /**
      * Instantiate a Value of the given type using the serialized state given as String.
      *
+     * @param <T> Value type
      * @param valueType the Value type to instantiate
      * @param serializedState  the state of the Value
      *

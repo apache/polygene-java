@@ -31,6 +31,7 @@ public interface StateHolder
     /**
      * Get a property for a specific accessor
      *
+     * @param <T> Property type
      * @param accessor of the property
      *
      * @return the property

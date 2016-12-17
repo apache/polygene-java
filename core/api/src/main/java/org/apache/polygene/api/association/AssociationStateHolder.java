@@ -32,6 +32,7 @@ public interface AssociationStateHolder
     /**
      * Get an association for a specific accessor method.
      *
+     * @param <T> Association type
      * @param associationMethod for the association
      *
      * @return the association
@@ -48,6 +49,7 @@ public interface AssociationStateHolder
     /**
      * Get a many-association for a specific accessor method.
      *
+     * @param <T> Association type
      * @param manyassociationMethod for the many-association
      *
      * @return the association
@@ -64,6 +66,7 @@ public interface AssociationStateHolder
     /**
      * Get a named-association for a specific accessor method.
      *
+     * @param <T> Association type
      * @param namedassociationMethod for the named-association
      *
      * @return the association

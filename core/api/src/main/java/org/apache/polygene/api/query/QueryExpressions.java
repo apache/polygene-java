@@ -332,6 +332,7 @@ public final class QueryExpressions
     /**
      * Create a new EQUALS specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -345,6 +346,7 @@ public final class QueryExpressions
     /**
      * Create a new EQUALS specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -359,6 +361,7 @@ public final class QueryExpressions
     /**
      * Create a new EQUALS specification for an Association.
      *
+     * @param <T> Association type
      * @param association an Association
      * @param value its value
      *
@@ -379,6 +382,7 @@ public final class QueryExpressions
     /**
      * Create a new GREATER OR EQUALS specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -392,6 +396,7 @@ public final class QueryExpressions
     /**
      * Create a new GREATER OR EQUALS specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -406,6 +411,7 @@ public final class QueryExpressions
     /**
      * Create a new GREATER THAN specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -419,6 +425,7 @@ public final class QueryExpressions
     /**
      * Create a new GREATER THAN specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -433,6 +440,7 @@ public final class QueryExpressions
     /**
      * Create a new LESS OR EQUALS specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -446,6 +454,7 @@ public final class QueryExpressions
     /**
      * Create a new LESS OR EQUALS specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -460,6 +469,7 @@ public final class QueryExpressions
     /**
      * Create a new LESSER THAN specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -473,6 +483,7 @@ public final class QueryExpressions
     /**
      * Create a new LESSER THAN specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -487,6 +498,7 @@ public final class QueryExpressions
     /**
      * Create a new NOT EQUALS specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param value its value
      *
@@ -500,6 +512,7 @@ public final class QueryExpressions
     /**
      * Create a new NOT EQUALS specification for a Property using a named Variable.
      *
+     * @param <T> Property type
      * @param property a Property
      * @param variable a Query Variable
      *
@@ -542,6 +555,7 @@ public final class QueryExpressions
     /**
      * Create a new NOT NULL specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      *
      * @return a new NOT NULL specification for a Property.
@@ -554,6 +568,7 @@ public final class QueryExpressions
     /**
      * Create a new NULL specification for a Property.
      *
+     * @param <T> Property type
      * @param property a Property
      *
      * @return a new NULL specification for a Property.
@@ -566,6 +581,7 @@ public final class QueryExpressions
     /**
      * Create a new NOT NULL specification for an Association.
      *
+     * @param <T> Association type
      * @param association an Association
      *
      * @return a new NOT NULL specification for an Association.
@@ -578,6 +594,7 @@ public final class QueryExpressions
     /**
      * Create a new NULL specification for an Association.
      *
+     * @param <T> Association type
      * @param association an Association
      *
      * @return a new NULL specification for an Association.
@@ -592,6 +609,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS ALL specification for a Collection Property.
      *
+     * @param <T> Collection property type
      * @param collectionProperty a Collection Property
      * @param values its values
      *
@@ -607,6 +625,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS ALL specification for a Collection Property using named Variables.
      *
+     * @param <T> Collection property type
      * @param collectionProperty a Collection Property
      * @param variables named Variables
      *
@@ -624,6 +643,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS specification for a Collection Property.
      *
+     * @param <T> Collection property type
      * @param collectionProperty a Collection Property
      * @param value the value
      *
@@ -639,6 +659,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS specification for a Collection Property using named Variables.
      *
+     * @param <T> Collection property type
      * @param collectionProperty a Collection Property
      * @param variable named Variable
      *
@@ -655,6 +676,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS specification for a ManyAssociation.
      *
+     * @param <T> ManyAssociation type
      * @param manyAssoc  a ManyAssociation
      * @param value the value
      *
@@ -668,6 +690,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS specification for a NamedAssociation.
      *
+     * @param <T> NamedAssociation type
      * @param namedAssoc  a NamedAssociation
      * @param value the value
      *
@@ -681,6 +704,7 @@ public final class QueryExpressions
     /**
      * Create a new CONTAINS NAME specification for a NamedAssociation.
      *
+     * @param <T> NamedAssociation type
      * @param namedAssoc  a NamedAssociation
      * @param name the name
      *

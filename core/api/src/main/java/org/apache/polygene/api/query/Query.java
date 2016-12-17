@@ -36,6 +36,8 @@ import org.apache.polygene.api.query.grammar.OrderBy;
  * DDD tip: typically Queries are created in the Domain Model and passed to the UI,
  * which sets the order and paging before executing it.
  * </p>
+ *
+ * @param <T> Entity type
  */
 public interface Query<T>
     extends Iterable<T>, Serializable
@@ -112,6 +114,7 @@ public interface Query<T>
     /**
      * Get the value of a named variable.
      *
+     * @param <V> Variable type
      * @param name of the variable
      *
      * @return value of the variable

@@ -79,8 +79,9 @@ public interface ValueDeserializer
      *
      * <p>The returned Function may throw {@link ValueSerializationException}.</p>
      *
-     * @param type the value type
      * @param <T>  the parametrized function return type
+     * @param module the module
+     * @param type the value type
      *
      * @return a deserialization function
      */
@@ -91,8 +92,9 @@ public interface ValueDeserializer
      *
      * <p>The returned Function may throw {@link ValueSerializationException}.</p>
      *
+     * @param <T> the parametrized function return type
+     * @param module the module
      * @param valueType the value type
-     * @param <T>       the parametrized function return type
      *
      * @return a deserialization function
      */
@@ -112,6 +114,7 @@ public interface ValueDeserializer
      * Deserialize a value from a state.
      *
      * @param <T>   the parametrized returned type
+     * @param module the module
      * @param type  the value type
      * @param input the state
      *
@@ -126,6 +129,7 @@ public interface ValueDeserializer
      * Deserialize a value from a state.
      *
      * @param <T>       the parametrized returned type
+     * @param module the module
      * @param valueType the value type
      * @param input     the state
      *
@@ -140,6 +144,7 @@ public interface ValueDeserializer
      * Deserialize a value from a state.
      *
      * @param <T>   the parametrized returned type
+     * @param module the module
      * @param type  the value type
      * @param input the state stream
      *
@@ -154,6 +159,7 @@ public interface ValueDeserializer
      * Deserialize a value from a state.
      *
      * @param <T>       the parametrized returned type
+     * @param module the module
      * @param valueType the value type
      * @param input     the state stream
      *

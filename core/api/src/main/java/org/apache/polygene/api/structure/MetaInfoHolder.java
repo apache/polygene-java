@@ -30,6 +30,7 @@ public interface MetaInfoHolder
      * Get metadata that implements the given type.
      * The info is registered during assembly of the application.
      *
+     * @param <T> metadata type
      * @param infoType the type of metadata to be returned
      *
      * @return the metadata for the given type, or <code>null</code> if

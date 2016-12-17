@@ -30,11 +30,10 @@ public interface UnitOfWorkCallback
 {
     /**
      * This is called before the completion of the UnitOfWork.
-     * The callback may do any validation checks and throw
-     * UnitOfWorkCompletionException if there is any reason
-     * why the UnitOfWork is not in a valid state to be completed.
+     * The callback may do any validation checks.
      *
-     * @throws UnitOfWorkCompletionException
+     * @throws UnitOfWorkCompletionException if there is any reason why the UnitOfWork is not in a valid state to be
+     *                                       completed
      */
     void beforeCompletion()
         throws UnitOfWorkCompletionException;
@@ -46,7 +45,7 @@ public interface UnitOfWorkCallback
      * UnitOfWork is no longer active when this method is
      * called, so no methods on it may be invoked.
      *
-     * @param status
+     * @param status the UnitOfWork status
      */
     void afterCompletion( UnitOfWorkStatus status );
 

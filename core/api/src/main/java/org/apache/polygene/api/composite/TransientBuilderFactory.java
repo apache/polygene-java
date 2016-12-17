@@ -34,6 +34,7 @@ public interface TransientBuilderFactory
     /**
      * Create a builder for creating new TransientComposites that implements the given TransientComposite type.
      *
+     * @param <T> Transient type
      * @param mixinType an interface that describes the TransientComposite to be instantiated
      *
      * @return a TransientBuilder for creation of TransientComposites implementing the interface
@@ -46,7 +47,9 @@ public interface TransientBuilderFactory
     /**
      * Instantiate a TransientComposite of the given type.
      *
+     * @param <T> Transient type
      * @param mixinType the TransientComposite type to instantiate
+     * @param uses The objects that can be injected into mixins
      *
      * @return a new TransientComposite instance
      *
