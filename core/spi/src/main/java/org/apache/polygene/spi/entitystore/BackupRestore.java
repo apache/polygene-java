@@ -29,17 +29,21 @@ import java.util.stream.Stream;
 public interface BackupRestore
 {
     /**
-     * Backup as a stream of serialized entity states, must be closed.
+     * Backup entity states.
+     *
+     * @return Stream of serialized entity states, must be closed
      */
     Stream<String> backup();
 
     /**
-     * Restore from a stream of serialized entity states.
+     * Restore entity states.
+     *
+     * @param states Stream of serialized entity states
      */
     void restore( Stream<String> states );
 
     /**
-     * Restore from streams of serialized entity states.
+     * Restore entity states.
      *
      * @return A consumer of streams of serialized entity states
      */
