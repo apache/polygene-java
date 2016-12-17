@@ -55,19 +55,24 @@ public class FreePortFinder
     private static final List<Range> LEAST_USED_RANGES = Arrays.asList(
         new Range( 29170, 29998 ),
         new Range( 38866, 39680 ),
-        // new Range( 41798, 42507 ), // 42187 seen busy
+        new Range( 41798, 42507 ),
         new Range( 43442, 44122 ),
         new Range( 46337, 46997 ),
         new Range( 35358, 36000 ),
-        // new Range( 36866, 37474 ), // 37334 seen busy
+        new Range( 36866, 37474 ),
         new Range( 38204, 38799 ),
-        // new Range( 33657, 34248 ), // 33951 seen busy
+        new Range( 33657, 34248 ),
         new Range( 30261, 30831 ),
-        // new Range( 41231, 41793 ), // 41652 seen busy
+        new Range( 41231, 41793 ),
         new Range( 21011, 21552 ),
         new Range( 28590, 29117 ),
         new Range( 14415, 14935 ),
         new Range( 26490, 26999 )
+    );
+
+    // Seen busy on builds.apache.org
+    private static final List<Integer> BLACKLIST = Arrays.asList(
+        42187, 37334, 38615, 33951, 41652
     );
 
     private static final int MAX_PORT_CHECKS = 20;
@@ -142,6 +147,7 @@ public class FreePortFinder
             .boxed()
             .collect( collectingAndThen( toList(), collected ->
             {
+                collected.removeAll( BLACKLIST );
                 shuffle( collected );
                 return collected.stream();
             } ) )
