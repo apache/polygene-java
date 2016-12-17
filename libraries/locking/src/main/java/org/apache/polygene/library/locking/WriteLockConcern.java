@@ -21,7 +21,6 @@ package org.apache.polygene.library.locking;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.polygene.api.common.AppliesTo;
@@ -32,20 +31,17 @@ import org.apache.polygene.api.injection.scope.This;
  * Applies write-lock to Composite
  */
 @AppliesTo( WriteLock.class )
-public class WriteLockConcern
-    extends ConcernOf<InvocationHandler>
+public class WriteLockConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    private
     @This
-    ReadWriteLock lock;
+    private ReadWriteLock lock;
 
     @Override
     public Object invoke( Object o, Method method, Object[] objects )
         throws Throwable
     {
         Lock writeLock = lock.writeLock();
-        lock(writeLock);
         try
         {
             return next.invoke( o, method, objects );
@@ -53,30 +49,6 @@ public class WriteLockConcern
         finally
         {
             writeLock.unlock();
-        }
-    }
-
-    /**
-     * Fix for this bug:
-     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
-     */
-    protected void lock(Lock lock)
-    {
-        while(true)
-        {
-            try
-            {
-                //noinspection StatementWithEmptyBody
-                while( !lock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
-                {
-                    // On timeout, try again
-                }
-                return; // Finally got a lock
-            }
-            catch( InterruptedException e )
-            {
-                // Try again
-            }
         }
     }
 }
