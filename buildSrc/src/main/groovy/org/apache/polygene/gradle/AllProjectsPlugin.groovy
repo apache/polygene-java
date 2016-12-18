@@ -50,17 +50,23 @@ class AllProjectsPlugin implements Plugin<Project>
     applyDefaultVersion( project )
     applyPolygeneExtension( project )
 
-    configureJava( project )
-    project.plugins.apply DependenciesPlugin
-    configureJavadoc( project )
-    configureTest( project )
+    if( project.rootProject == project || CodeProjectsPlugin.isCodeProject( project ) )
+    {
+      configureJava( project )
+      project.plugins.apply DependenciesPlugin
+      configureJavadoc( project )
+      configureTest( project )
+    }
     if( CodeProjectsPlugin.isCodeProject( project ) )
     {
       project.plugins.apply CodeProjectsPlugin
     }
-    configureDependencyReport( project )
-    configureHonker( project )
-    project.plugins.apply PublishingPlugin
+    if( project.rootProject == project || CodeProjectsPlugin.isCodeProject( project ) )
+    {
+      configureDependencyReport( project )
+      configureHonker( project )
+      project.plugins.apply PublishingPlugin
+    }
   }
 
   private static void applyDefaultVersion( Project project )

@@ -93,8 +93,12 @@ class RootProjectPlugin implements Plugin<Project>
     buildAll.group = TaskGroups.BUILD
     buildAll.description = 'Builds all'
     buildAll.dependsOn 'javadocs', 'check', 'jar',
-                       project.subprojects.collect { p -> p.tasks.getByName( 'dependencyReport' ) },
-                       project.subprojects.collect { p -> p.tasks.getByName( 'assemble' ) },
+                       project.subprojects
+                              .findAll { p -> CodeProjectsPlugin.isCodeProject( p ) }
+                              .collect { p -> p.tasks.getByName( 'dependencyReport' ) },
+                       project.subprojects
+                              .findAll { p -> CodeProjectsPlugin.isCodeProject( p ) }
+                              .collect { p -> p.tasks.getByName( 'assemble' ) },
                        ':manual:website'
   }
 
@@ -111,7 +115,9 @@ class RootProjectPlugin implements Plugin<Project>
     def task = project.tasks.create( 'coverageReport', AggregatedJacocoReportTask ) { AggregatedJacocoReportTask task ->
       task.group = TaskGroups.VERIFICATION
       task.description = 'Generates global coverage report'
-      task.dependsOn project.subprojects.collect( { Project p -> p.tasks.getByName( 'test' ) } )
+      task.dependsOn project.subprojects
+                            .findAll { p -> CodeProjectsPlugin.isCodeProject( p ) }
+                            .collect( { Project p -> p.tasks.getByName( 'test' ) } )
     }
     project.tasks.getByName( 'check' ).dependsOn task
   }
@@ -122,7 +128,9 @@ class RootProjectPlugin implements Plugin<Project>
       task.group = TaskGroups.VERIFICATION
       task.description = 'Generates global test report'
       task.destinationDir = project.file( "$project.buildDir/reports/tests" )
-      task.reportOn project.subprojects.collect { it.tasks.getByName( 'test' ) }
+      task.reportOn project.subprojects
+                           .findAll { p -> CodeProjectsPlugin.isCodeProject( p ) }
+                           .collect { it.tasks.getByName( 'test' ) }
     }
     def test = project.tasks.getByName( 'test' ) as Test
     test.dependsOn project.subprojects.collect { it.tasks.getByName( 'test' ) }
@@ -256,7 +264,10 @@ class RootProjectPlugin implements Plugin<Project>
                       'rat',
                       'archiveJavadocs',
                       ':org.apache.polygene.manual:copyWebsite',
-                      project.allprojects.collect { it.tasks.getByName( 'uploadArchives' ) },
+                      project.allprojects
+                             .findAll { p -> CodeProjectsPlugin.isCodeProject( p ) }
+                             .collect { it.tasks.getByName( 'uploadArchives' ) },
+                      'uploadArchives',
                       'dist'
   }
 }
