@@ -25,6 +25,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.api.tasks.diagnostics.DependencyReportTask
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -157,9 +158,8 @@ class AllProjectsPlugin implements Plugin<Project>
   private static void configureDependencyReport( Project project )
   {
     project.plugins.apply 'project-report'
-    // TODO Fails with no task found
-    // def dependencyReport = project.tasks.getByName( 'dependencyReport' ) as DependencyReportTask
-    // dependencyReport.configurations = [ project.configurations.getByName( 'runtime' ) ] as Set
+    def dependencyReport = project.tasks.getByName( 'dependencyReport' ) as DependencyReportTask
+    dependencyReport.configurations = [ project.configurations.getByName( 'runtime' ) ] as Set
   }
 
   private static void configureHonker( Project project )
