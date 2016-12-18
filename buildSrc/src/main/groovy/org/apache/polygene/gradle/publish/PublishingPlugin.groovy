@@ -135,7 +135,7 @@ class PublishingPlugin implements Plugin<Project>
     }
     uploadArchives.onlyIf {
       def notSkipped = !project.hasProperty( 'skipUpload' )
-      def approvedProject = project.extensions.getByType( ReleaseSpecExtension ).approvedProjects.contains( project )
+      def approvedProject = project.rootProject.extensions.getByType( ReleaseSpecExtension ).approvedProjects.contains( project )
       return notSkipped && ( !config.releaseSpec || ( approvedProject || project == project.rootProject ) )
     }
     uploadArchives.dependsOn project.tasks.getByName( 'check' )
