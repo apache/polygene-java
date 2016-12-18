@@ -24,7 +24,7 @@ jar { manifest { name = "Apache Polygene™ Tutorial - 30 minute Introduction" }
 
 dependencies {
   compile polygene.core.bootstrap
-  compile project( ':org.apache.polygene.tutorials:org.apache.polygene.tutorial.introduction:org.apache.polygene.tutorial.introduction.tenminutes' )
+  compile project( ':tutorials:introduction:tenminutes' )
 
   runtime polygene.core.runtime
 

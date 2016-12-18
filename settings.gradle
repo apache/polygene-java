@@ -14,9 +14,9 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+
+rootProject.name = 'polygene-java'
 
 include 'core:api',
         'core:spi',
@@ -98,31 +98,3 @@ include 'core:api',
         'tutorials:services',
         'tests:regression',
         'tests:performance'
-
-rootProject.name = "org.apache.polygene"
-
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
-{
-    assert project.projectDir.isDirectory()
-    if( new File("$project.projectDir/src/main/java").exists() )
-    {
-        assert project.buildFile.isFile()
-    }
-    if( parentName == 'org.apache.polygene.libraries' )
-    {
-        parentName = 'org.apache.polygene.library'
-    }
-    if( parentName.endsWith('s') )
-    {
-        parentName = parentName.substring(0, parentName.length() - 1)
-    }
-    if( parentName.length() > 0 )
-    {
-        project.name = parentName + "." + project.name
-    }
-    project.children.each { child ->
-        validateProject(child, project.name)
-    }
-}

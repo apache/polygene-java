@@ -54,22 +54,22 @@ class PolygeneExtension
 
   private Dependency core( String name )
   {
-    return dependency( 'org.apache.polygene.core', "org.apache.polygene.core.$name" )
+    return dependency( 'core', name )
   }
 
   Dependency library( String name )
   {
-    return dependency( 'org.apache.polygene.libraries', "org.apache.polygene.library.$name" )
+    return dependency( 'libraries', name )
   }
 
   Dependency extension( String name )
   {
-    return dependency( 'org.apache.polygene.extensions', "org.apache.polygene.extension.$name" )
+    return dependency( 'extensions', name )
   }
 
   Dependency tool( String name )
   {
-    return dependency( 'org.apache.polygene.tools', "org.apache.polygene.tool.$name" )
+    return dependency( 'tools', name )
   }
 
   private Dependency dependency( String group, String name )

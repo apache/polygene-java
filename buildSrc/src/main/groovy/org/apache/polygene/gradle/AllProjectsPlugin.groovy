@@ -42,9 +42,9 @@ class AllProjectsPlugin implements Plugin<Project>
   void apply( final Project project )
   {
     project.defaultTasks = [ 'classes', 'test' ]
-    project.group = project.name == 'org.apache.polygene' ?
+    project.group = project.rootProject == project ?
                     'org.apache.polygene' :
-                    project.name.substring( 0, project.name.lastIndexOf( '.' ) )
+                    "org.apache.polygene.${ project.path.split( ':' ).drop( 1 ).dropRight( 1 ).join( '.' ) }"
 
     applyDefaultVersion( project )
     applyPolygeneExtension( project )

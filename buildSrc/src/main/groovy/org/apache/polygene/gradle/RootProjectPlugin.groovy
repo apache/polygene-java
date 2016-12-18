@@ -95,7 +95,7 @@ class RootProjectPlugin implements Plugin<Project>
     buildAll.dependsOn 'javadocs', 'check', 'jar',
                        project.subprojects.collect { p -> p.tasks.getByName( 'dependencyReport' ) },
                        project.subprojects.collect { p -> p.tasks.getByName( 'assemble' ) },
-                       ':org.apache.polygene.manual:website'
+                       ':manual:website'
   }
 
   private static void applyPlugins( Project project )

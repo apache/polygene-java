@@ -25,6 +25,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.osgi.OsgiManifest
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
@@ -49,6 +50,7 @@ class CodeProjectsPlugin implements Plugin<Project>
 
     configureJar( project )
     configureSupplementaryArchives( project )
+    configureArchivesBaseName( project )
 
     configureJacoco( project )
     configureCheckstyle( project )
@@ -92,6 +94,30 @@ class CodeProjectsPlugin implements Plugin<Project>
     project.artifacts.add( 'archives', sourceJar )
     project.artifacts.add( 'archives', testSourceJar )
     project.artifacts.add( 'archives', javadocJar )
+  }
+
+  private static void configureArchivesBaseName( Project project )
+  {
+    project.tasks.withType( AbstractArchiveTask ) { AbstractArchiveTask task ->
+      def toName = { List<String> path -> path.drop( 1 ).join( '.' ) }
+      def path = project.path.split( ':' ).drop( 1 ) as List<String>
+      if( path[ 0 ] == 'libraries' )
+      {
+        task.baseName = "org.apache.polygene.library.${ toName( path ) }"
+      }
+      else if( path[ 0 ].endsWith( 's' ) )
+      {
+        task.baseName = "org.apache.polygene.${ path[ 0 ].substring( 0, path[ 0 ].length() - 1 ) }.${ toName( path ) }"
+      }
+      else if( path.size() > 1 )
+      {
+        task.baseName = "org.apache.polygene.${ path[ 0 ] }.${ toName( path ) }"
+      }
+      else
+      {
+        task.baseName = "org.apache.polygene.${ path[ 0 ] }"
+      }
+    }
   }
 
   private static void configureJacoco( Project project )
