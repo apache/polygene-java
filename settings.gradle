@@ -16,6 +16,8 @@
  *  limitations under the License.
  */
 
+apply plugin: 'polygene-settings'
+
 rootProject.name = 'polygene-java'
 
 include 'core:api',
@@ -77,16 +79,12 @@ include 'core:api',
         'extensions:valueserialization-orgjson',
         'extensions:valueserialization-jackson',
         'extensions:valueserialization-stax',
-        'manual',
-        'samples:dci',
-        'samples:forum',
-        'samples:rental',
-        'samples:sql-support',
-        'samples:swing',
         'tools:model-detail',
         'tools:envisage',
         'tools:shell',
 //        'tools:qidea',
+        'tests:regression',
+        'tests:performance',
         'tutorials:cargo',
         'tutorials:composites',
         'tutorials:hello',
@@ -96,5 +94,10 @@ include 'core:api',
         'tutorials:introduction:thirtyminutes',
 //        'tutorials:introduction:twohours',
         'tutorials:services',
-        'tests:regression',
-        'tests:performance'
+        'samples:dci',
+        'samples:forum',
+        'samples:rental',
+        'samples:sql-support',
+        'samples:swing'
+
+include 'manual', 'reports', 'distributions', 'release'

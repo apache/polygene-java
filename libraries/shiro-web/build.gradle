@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Shiro Library integrates Apache Shiro security framework into Apache Polygene™. This bundle provides Servlet support."
 
 jar { manifest { name = "Apache Polygene™ Library - Shiro Web" } }

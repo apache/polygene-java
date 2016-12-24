@@ -18,6 +18,8 @@
 package org.apache.polygene.gradle.tasks
 
 import groovy.transform.CompileStatic
+import java.nio.file.Files
+import java.util.function.BiConsumer
 import org.gradle.api.Action
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -27,14 +29,19 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.ConsoleRenderer
 import org.gradle.process.ExecSpec
 
+/**
+ * Execute command and log standard output and error to files.
+ *
+ * See the {@literal stdoutFile} and {@literal stderrFile} properties.
+ */
 @CompileStatic
 class ExecLogged extends AbstractExecTask<ExecLogged>
 {
   @OutputFile
-  File stdoutFile = project.file( "$project.buildDir/tmp/${ getName() }/stdout.log" )
+  File stdoutFile = project.file "$project.buildDir/log/${ getName() }/${ getName() }-stdout.log"
 
   @OutputFile
-  File stderrFile = project.file( "$project.buildDir/tmp/${ getName() }/stderr.log" )
+  File stderrFile = project.file "$project.buildDir/log/${ getName() }/${ getName() }-stderr.log"
 
   ExecLogged()
   {
@@ -44,35 +51,50 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
   @TaskAction
   protected void exec()
   {
-    [ stdoutFile, stderrFile ].each { it.parentFile.mkdirs() }
-    def outStream = stdoutFile.newOutputStream()
-    def errStream = stderrFile.newOutputStream()
-    try
-    {
+    doExecLogged stdoutFile, stderrFile, { OutputStream outStream, OutputStream errStream ->
+      standardOutput = outStream
+      errorOutput = errStream
       super.exec()
-    }
-    catch( Exception ex )
-    {
-      throw new GradleException( errorMessage( ex, stdoutFile, stderrFile ), ex )
-    }
-    finally
-    {
-      close outStream, errStream
     }
   }
 
+  /**
+   * Execute command and log standard output and error to files.
+   *
+   * @param project Project reference
+   * @param stdoutFile Standard output log file
+   * @param stderrFile Standard error log file
+   * @param specAction Execution specification
+   */
   static void execLogged( Project project, File stdoutFile, File stderrFile, Action<? super ExecSpec> specAction )
   {
-    [ stdoutFile, stderrFile ].each { it.parentFile.mkdirs() }
-    def outStream = stdoutFile.newOutputStream()
-    def errStream = stderrFile.newOutputStream()
-    try
-    {
+    doExecLogged stdoutFile, stderrFile, { OutputStream outStream, OutputStream errStream ->
       project.exec { ExecSpec spec ->
-        specAction.execute( spec )
         spec.standardOutput = outStream
         spec.errorOutput = errStream
+        specAction.execute spec
       }
+    }
+  }
+
+  private static void doExecLogged( File stdoutFile, File stderrFile,
+                                    BiConsumer<OutputStream, OutputStream> exec )
+  {
+    [ stdoutFile, stderrFile ].each { Files.createDirectories( it.parentFile.toPath() ) }
+    def outStream, errStream
+    if( stdoutFile.absolutePath == stderrFile.absolutePath )
+    {
+      outStream = stdoutFile.newOutputStream()
+      errStream = outStream
+    }
+    else
+    {
+      outStream = stdoutFile.newOutputStream()
+      errStream = stderrFile.newOutputStream()
+    }
+    try
+    {
+      exec.accept( outStream, errStream )
     }
     catch( Exception ex )
     {
@@ -88,8 +110,7 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
     throws IOException
   {
     def errors = [ ] as List<IOException>
-    for( Closeable closeable : closeables )
-    {
+    closeables.each { Closeable closeable ->
       try
       {
         closeable.close()
@@ -101,7 +122,7 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
     }
     if( !errors.empty )
     {
-      def ex = new IOException( 'Failed to close some' )
+      def ex = new IOException( 'Failed to close some stream(s)' )
       errors.each { ex.addSuppressed it }
       throw ex
     }
@@ -109,6 +130,7 @@ class ExecLogged extends AbstractExecTask<ExecLogged>
 
   private static String errorMessage( Exception ex, File stdoutFile, File stderrFile )
   {
+    // TODO Remove use of Gradle internals
     def consoleRenderer = new ConsoleRenderer()
     return "${ ex.message }\n" +
            "\tSTDOUT ${ consoleRenderer.asClickableFileUrl( stdoutFile ) }\n" +

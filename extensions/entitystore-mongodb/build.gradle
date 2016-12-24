@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ MongoDB EntityStore Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - MongoDB" } }

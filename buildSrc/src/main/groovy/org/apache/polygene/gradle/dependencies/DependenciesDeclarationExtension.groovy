@@ -18,9 +18,9 @@
 package org.apache.polygene.gradle.dependencies
 
 import groovy.transform.CompileStatic
+import java.util.function.BiConsumer
 import org.gradle.api.artifacts.DependencySubstitution
 import org.gradle.api.artifacts.component.ModuleComponentSelector
-import org.gradle.internal.BiAction
 
 @CompileStatic
 class DependenciesDeclarationExtension
@@ -28,6 +28,6 @@ class DependenciesDeclarationExtension
   final Map<String, String> repositoriesUrls = [ : ]
   final Map<String, Object> libraries = [ : ]
   final Map<String, List<Object>> defaultDependencies = [ : ]
-  BiAction<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
+  BiConsumer<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
   final Map<String, String> buildToolsVersions = [ : ]
 }

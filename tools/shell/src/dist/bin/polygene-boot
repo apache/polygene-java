@@ -63,7 +63,7 @@ else
 
     # Figure out if we are executing from within the SDK or the QuickStart
     if [ -f libs/$JARNAME ] ; then
-        JARFILE=libs/$JARNAME
+        JARFILE=libs/org/apache/polygene/tools/org.apache.polygene.tool.shell/@version@/$JARNAME
     else
         if [ -f bin/$JARNAME ] ; then
             JARFILE=bin/$JARNAME

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Memory" } }
 
 dependencies {

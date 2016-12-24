@@ -18,10 +18,9 @@
  *
  */
 
-plugins {
-  id 'war'
-  id "org.akhikhl.gretty" version "1.4.0"
-}
+apply plugin: 'polygene-sample'
+apply plugin: 'war'
+apply plugin: 'jetty'
 
 description = "Sample of implementation of a Car Rental application."
 

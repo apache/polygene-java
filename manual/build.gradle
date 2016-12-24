@@ -15,9 +15,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import org.apache.polygene.gradle.doc.ManualPlugin
 
-apply plugin: ManualPlugin
+apply plugin: 'polygene-manual'
 
 description = "Apache Polygene™ Manuals and Website."
 
@@ -27,6 +26,6 @@ dependencies {
   compile polygene.library( 'logging' )
 
   runtime polygene.core.runtime
-  runtime( libraries.logback )
+  runtime libraries.logback
 }
 

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ File Configuration Library provides platform specific file locations."
 
 jar { manifest { name = "Apache Polygene™ Library - FileConfig" } }

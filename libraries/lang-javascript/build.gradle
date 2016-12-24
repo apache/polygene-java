@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
 
 jar { manifest { name = "Apache Polygene™ Library - Scripting - JavaScript" } }

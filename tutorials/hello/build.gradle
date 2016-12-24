@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-tutorial'
+
 description = "Basic tutorial on how to covert a simple 'Hello World' application to Apache Polygene™, using more and more features for each step."
 
 jar { manifest { name = "Apache Polygene™ Tutorial - Composites" } }

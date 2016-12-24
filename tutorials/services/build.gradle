@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-tutorial'
+
 description = "Tutorial on how to use Apache Polygene™ service concept."
 
 jar { manifest { name = "Apache Polygene™ Tutorial - Services" } }

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ SQL EntityStore Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL" } }

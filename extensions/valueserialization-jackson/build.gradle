@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Jackson ValueSerialization Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - Jackson" } }

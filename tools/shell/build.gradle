@@ -18,6 +18,7 @@
  *
  */
 
+apply plugin: 'polygene-tool'
 apply plugin: 'application'
 
 description = "Command line tools for building Apache Polygene™ applications."
@@ -29,6 +30,9 @@ jar {
     attributes("Main-Class": mainClassName )
   }
 }
+
+[ distZip, distTar ].each { dist -> dist.classifier = 'bin' }
+distTar.compression = Compression.GZIP
 
 dependencies {
   testRuntime libraries.logback

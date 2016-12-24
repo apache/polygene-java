@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-tool'
+
 description = "Detailled Model of a Apache Polygene™ Application Structure."
 
 jar { manifest { name = "Apache Polygene™ Model Detail" }}

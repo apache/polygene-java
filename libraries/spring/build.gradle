@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Spring Library allows for tight integration of Spring Framework and Apache Polygene™ applications."
 
 jar { manifest { name = "Apache Polygene™ Library - Spring" } }

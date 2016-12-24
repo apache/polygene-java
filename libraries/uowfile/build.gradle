@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ UoWFile Library provides file operations binding to UoWs."
 
 jar { manifest { name = "Apache Polygene™ Library - UoWFile" } }

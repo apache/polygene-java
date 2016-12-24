@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Migration Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - Migration" }}

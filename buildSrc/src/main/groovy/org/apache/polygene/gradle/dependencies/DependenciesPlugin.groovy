@@ -18,9 +18,11 @@
 package org.apache.polygene.gradle.dependencies
 
 import groovy.transform.CompileStatic
+import org.apache.polygene.gradle.TaskGroups
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencySubstitution
 import org.gradle.api.artifacts.component.ModuleComponentSelector
@@ -29,14 +31,19 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 @CompileStatic
 class DependenciesPlugin implements Plugin<Project>
 {
+  static class TaskNames
+  {
+    static final String DOWNLOAD_DEPENDENCIES = 'downloadDependencies'
+  }
+
   @Override
   void apply( final Project project )
   {
-    def dependenciesDeclaration = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
-    applyRepositories( project, dependenciesDeclaration )
-    applyLibraries( project, dependenciesDeclaration )
-    applyDependencyResolutionRules( project, dependenciesDeclaration )
-    applyDefaultDependencies( project, dependenciesDeclaration )
+    def dependenciesDeclaration = project.rootProject.extensions.getByType DependenciesDeclarationExtension
+    applyRepositories project, dependenciesDeclaration
+    applyLibraries project, dependenciesDeclaration
+    applyDependencyResolutionRules project, dependenciesDeclaration
+    applyDependenciesDownloadTask project
   }
 
   private static void applyRepositories( Project project, DependenciesDeclarationExtension declaration )
@@ -54,36 +61,32 @@ class DependenciesPlugin implements Plugin<Project>
     project.extensions.extraProperties.set 'libraries', declaration.libraries
   }
 
-  private static void applyDependencyResolutionRules( Project project, DependenciesDeclarationExtension declaration )
+  static void applyDependencyResolutionRules( Project project, DependenciesDeclarationExtension declaration )
   {
     project.configurations.all(
       { Configuration configuration ->
-        configuration.resolutionStrategy.dependencySubstitution.all(
-          { DependencySubstitution dep ->
-            if( dep.requested instanceof ModuleComponentSelector )
-            {
-              def selector = dep.requested as ModuleComponentSelector
-              declaration.dependencySubstitutionSpec.execute dep, selector
-            }
-          } as Action<DependencySubstitution> )
+        applyDependencyResolutionRules configuration, declaration
       } as Action<Configuration> )
   }
 
-  private static void applyDefaultDependencies( Project project, DependenciesDeclarationExtension declaration )
+  static void applyDependencyResolutionRules( Configuration configuration,
+                                                     DependenciesDeclarationExtension declaration )
   {
-    declaration.defaultDependencies.each { String configuration, List<Object> dependencies ->
-      dependencies.each { dependency ->
-        if( dependency instanceof Collection )
+    configuration.resolutionStrategy.dependencySubstitution.all(
+      { DependencySubstitution dep ->
+        if( dep.requested instanceof ModuleComponentSelector )
         {
-          dependency.each { subdep ->
-            project.dependencies.add( configuration, subdep )
-          }
+          def selector = dep.requested as ModuleComponentSelector
+          declaration.dependencySubstitutionSpec.accept dep, selector
         }
-        else
-        {
-          project.dependencies.add( configuration, dependency )
-        }
-      }
+      } as Action<DependencySubstitution> )
+  }
+
+  private static void applyDependenciesDownloadTask( Project project )
+  {
+    project.tasks.create( TaskNames.DOWNLOAD_DEPENDENCIES, DependenciesDownloadTask ) { Task task ->
+      task.group = TaskGroups.HELP
+      task.description = 'Download all dependencies'
     }
   }
 }

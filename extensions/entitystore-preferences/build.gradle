@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Preferences EntityStore Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Preferences" } }

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-tool'
+
 description = "IntelliJ IDEA Plugin for Apache Polygene™ development."
 
 jar { manifest { name = "Apache Polygene™ IDEA plugin" }}

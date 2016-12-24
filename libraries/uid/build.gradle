@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ UID Library contains various Identity generation services."
 
 jar { manifest { name = "Apache Polygene™ Library - UID" } }

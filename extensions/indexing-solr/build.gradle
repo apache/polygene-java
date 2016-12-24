@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Solr Indexing Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - Indexing - Solr" } }

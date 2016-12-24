@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ OSGi Library provides integration of OSGi and Apache Polygene™, so that services in each system can be shared."
 
 jar { manifest { name = "Apache Polygene™ Library - OSGi Integration" } }

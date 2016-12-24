@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ JClouds EntityStore Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JClouds" } }

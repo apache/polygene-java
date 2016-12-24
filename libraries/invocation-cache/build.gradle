@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Invocation Cache Library provides caching framework for methods."
 
 jar { manifest { name = "Apache Polygene™ Library - Invocation Cache" } }

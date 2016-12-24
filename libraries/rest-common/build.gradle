@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ REST Library provides various Restlet resources that can be used to expose Apache Polygene™ entities and indexes. Mostly for debugging."
 
 jar { manifest { name = "Apache Polygene™ Library - REST" } }

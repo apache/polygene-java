@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Groovy Library allows for Mixins to be implemented in Groovy scripts instead of directly in compiled Java."
 
 jar { manifest { name = "Apache Polygene™ Library - Scripting - Groovy" } }

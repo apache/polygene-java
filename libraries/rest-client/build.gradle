@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ REST Client Library provides a client library for the Apache Polygene™ REST Server library"
 
 jar { manifest { name = "Apache Polygene™ Library - REST Client" } }

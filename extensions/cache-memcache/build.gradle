@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Memcache Cache Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - Cache - Memcache" } }

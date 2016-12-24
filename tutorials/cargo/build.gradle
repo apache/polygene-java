@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-tutorial'
+
 description = "Tutorial on how to convert existing application into a Apache Polygene™ one, step-by-step."
 
 jar { manifest { name = "Apache Polygene™ Tutorial - Cargo" } }

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Http Library provides embedded Jetty for Apache Polygene™ application use."
 
 jar { manifest { name = "Apache Polygene™ Library - Http" } }

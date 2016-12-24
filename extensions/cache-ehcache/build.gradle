@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ Ehcache Cache Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension: EhCache" } }

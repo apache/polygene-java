@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-core'
+
 jar { manifest { name = "Apache Polygene™ Core Bootstrap" } }
 
 dependencies {

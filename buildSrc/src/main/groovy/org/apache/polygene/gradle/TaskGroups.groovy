@@ -17,19 +17,20 @@
  */
 package org.apache.polygene.gradle
 
-import org.gradle.api.plugins.ApplicationPlugin
+import groovy.transform.CompileStatic
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.HelpTasksPlugin
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
+@CompileStatic
 class TaskGroups
 {
   static final String HELP = HelpTasksPlugin.HELP_GROUP
   static final String BUILD = LifecycleBasePlugin.BUILD_GROUP
   static final String VERIFICATION = LifecycleBasePlugin.VERIFICATION_GROUP
   static final String DOCUMENTATION = JavaBasePlugin.DOCUMENTATION_GROUP
-  static final String DISTRIBUTION = ApplicationPlugin.APPLICATION_GROUP
+  static final String DISTRIBUTION = 'distribution'
   static final String DISTRIBUTION_VERIFICATION = 'distribution verification'
   static final String PERFORMANCE = 'performance'
   static final String PERFORMANCE_VERIFICATION = 'performance verification'

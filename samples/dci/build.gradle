@@ -18,6 +18,7 @@
  *
  */
 
+apply plugin: 'polygene-sample'
 
 description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Polygene™."
 

@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 description = "Apache Polygene™ ElasticSearch Index/Query Extension"
 
 jar { manifest { name = "Apache Polygene™ Extension - Index/Query - ElasticSearch" } }

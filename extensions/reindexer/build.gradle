@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-extension'
+
 jar { manifest { description = "Apache Polygene™ Reindexer Extension" } }
 
 dependencies {

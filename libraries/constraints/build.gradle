@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ Constraint Library provides common set of constraints."
 
 jar { manifest { name = "Apache Polygene™ Library - Constraints"}}

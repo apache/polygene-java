@@ -17,9 +17,11 @@
  */
 package org.apache.polygene.gradle.dependencies
 
+import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+@CompileStatic
 class DependenciesDeclarationPlugin implements Plugin<Project>
 {
   @Override

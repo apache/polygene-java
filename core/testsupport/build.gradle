@@ -18,7 +18,9 @@
  *
  */
 
-jar { manifest { name = "Apache Polygene™ Core TestSupport" } }
+apply plugin: 'polygene-core'
+
+jar { manifest { name = "Apache Polygene™ Core Test Support" } }
 
 dependencies {
   compile polygene.core.bootstrap

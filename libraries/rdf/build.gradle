@@ -18,6 +18,8 @@
  *
  */
 
+apply plugin: 'polygene-library'
+
 description = "Apache Polygene™ RDF Library provides commonalities of various RDF based services in Apache Polygene™, such as RDF Indexing."
 
 jar { manifest { name = "Apache Polygene™ Library - RDF" } }

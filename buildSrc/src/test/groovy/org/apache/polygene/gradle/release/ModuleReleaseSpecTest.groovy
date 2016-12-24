@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.gradle.release
 
+import org.apache.polygene.gradle.structure.release.ModuleReleaseSpec
 import spock.lang.Specification
 import spock.lang.Unroll
 
