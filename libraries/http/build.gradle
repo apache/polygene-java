@@ -63,6 +63,16 @@ if( JavaVersion.current() < JavaVersion.VERSION_1_9 )
     vhostTestCompile( libraries.dnsjava )
   }
   task vhostTest( type: Test ) {
+    // TODO Test JVM won't start when offline
+    try
+    {
+      new URL( 'https://polygene.apache.org/' ).text
+      enabled = true
+    }
+    catch( Exception ex )
+    {
+      enabled = false
+    }
     testClassesDir = sourceSets.vhostTest.output.classesDir
     classpath = sourceSets.vhostTest.runtimeClasspath
     systemProperties 'networkaddress.cache.ttl': '0'
