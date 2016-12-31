@@ -146,7 +146,7 @@ $( document ).ready( function($){
             // Tutorials
             case "Polygene\u2122 in 2 hours":
             case "Leverage Properties":
-            case "Use I/O API":
+            case "Use @Invocation":
                 $dt.attr( "style", "margin-bottom: 24px" );
                 break;
             // JavaDocs

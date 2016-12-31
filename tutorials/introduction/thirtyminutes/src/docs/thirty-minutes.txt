@@ -29,7 +29,7 @@ This introduction will deepen your understanding of Polygene™, as we touches o
 is expected that you have gone through and understood the "Polygene™ in 10 minutes" introduction.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 

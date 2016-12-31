@@ -34,7 +34,7 @@ this tutorial, run it and play with it.
     * Only Mixins carry Composite state. The others are shared between Composite instances.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 

@@ -48,7 +48,7 @@ At the bottom of each tutorial step, the is Solutions section, which list the fi
 have followed the instructions.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 

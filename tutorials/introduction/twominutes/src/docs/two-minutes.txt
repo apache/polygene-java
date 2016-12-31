@@ -28,7 +28,7 @@ To show that Polygene™ is not necessarily complex, not hard to get going with 
 classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
