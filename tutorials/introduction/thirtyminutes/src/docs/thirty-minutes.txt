@@ -163,4 +163,4 @@ to create applications from scratch, how to structure applications, and how the 
 We have looked at how to add a Concern that uses a private Mixin, we have touched a bit on Generic Concerns, and
 finally a short introduction to the Query API.
 
-Next step, <<two-hours-intro>>.
+// Next step, <<two-hours-intro>>.

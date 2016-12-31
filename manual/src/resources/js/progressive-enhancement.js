@@ -144,7 +144,7 @@ $( document ).ready( function($){
             case "Overview":
                 $dt.attr( "style", "margin-bottom: 24px" );
             // Tutorials
-            case "Polygene\u2122 in 2 hours":
+            case "Polygene\u2122 in 30 minutes":
             case "Leverage Properties":
             case "Use @Invocation":
                 $dt.attr( "style", "margin-bottom: 24px" );
