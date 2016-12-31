@@ -85,11 +85,11 @@ class ReleasePlugin implements Plugin<Project>
       throw new InvalidUserDataException(
         'Development version is unreleasable, please clean and retry with a -Dversion=' )
     }
-    def polygeneWeb = new File( project.rootProject.projectDir.parentFile, 'polygene-web' )
+    def polygeneWeb = new File( project.rootProject.projectDir.parentFile, 'polygene-website' )
     if( !polygeneWeb.exists() )
     {
       throw new InvalidUserDataException(
-        'To perform ASF releases you need to checkout the SVN web site directory under ../polygene-web' )
+        'To perform ASF releases you need to clone the `polygene-website` repository under ../polygene-website' )
     }
     def polygeneDist = new File( project.rootProject.projectDir.parentFile, 'polygene-dist' )
     if( !polygeneDist.exists() )
@@ -241,20 +241,20 @@ class ReleasePlugin implements Plugin<Project>
       // TODO Consume documentation and reports through configurations
       task.dependsOn "${ manual.path }:${ ManualPlugin.TaskNames.WEBSITE }"
       task.dependsOn "${ reports.path }:${ ReportsPlugin.TaskNames.JAVADOCS }"
-      def webRoot = new File( project.rootProject.projectDir.parentFile, 'polygene-web' )
+      def webRoot = new File( project.rootProject.projectDir.parentFile, 'polygene-website' )
       def dirName = releaseSpec.releaseVersion ? project.version : 'develop'
       task.destinationDir = webRoot
       task.from( new File( manual.buildDir, 'docs/website' ) ) { CopySpec spec ->
-        spec.into "site/content/java/$dirName"
+        spec.into "content/java/$dirName"
       }
       task.from( new File( reports.buildDir, 'docs/javadocs' ) ) { CopySpec spec ->
-        spec.into "site/content/java/$dirName/javadocs"
+        spec.into "content/java/$dirName/javadocs"
       }
     }
     project.tasks.create( TaskNames.COPY_ASF_DOC_LATEST, Copy ) { Copy task ->
-      def webRoot = new File( project.rootProject.projectDir.parentFile, 'polygene-web' )
-      task.from new File( webRoot, "site/content/java/$project.version" )
-      task.into new File( webRoot, "site/content/java/latest" )
+      def webRoot = new File( project.rootProject.projectDir.parentFile, 'polygene-website' )
+      task.from new File( webRoot, "content/java/$project.version" )
+      task.into new File( webRoot, "content/java/latest" )
       task.doFirst {
         if( !releaseSpec.releaseVersion )
         {
