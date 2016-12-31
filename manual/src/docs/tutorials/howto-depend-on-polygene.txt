@@ -17,8 +17,8 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[howto-depend-on-polygene,Depend on Polygene™ in your build]]
-= Depend on Polygene™ in your build =
+[[howto-depend-on-polygene,Depend on Polygene™]]
+= Depend on Polygene™ =
 
 NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
 add other repositories to your build scripts accordingly.
