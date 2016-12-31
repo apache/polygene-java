@@ -37,17 +37,6 @@ Polygene™ core only.
 
 https://github.com/apache/polygene-java/tree/develop/samples/dci[Browse Source]
 
-[[sample-dci-cargo,DCI Cargo Sample]]
-== DCI Cargo Sample ==
-
-Sample of how DCI (Data, Context & Interaction) pattern is implemented with
-Polygene™, for Eric Evans DDD sample.
-
-This sample, contributed by Marc Grue, is described in details on his
-website: http://marcgrue.com/
-
-https://github.com/apache/polygene-java/tree/develop/samples/dci-cargo[Browse Source]
-
 [[sample-forum,Forum Sample]]
 == Forum Sample ==
 
