@@ -45,6 +45,7 @@ Links to _"alias versions"_ JavaDocs:
 
 Archived JavaDocs of previous releases:
 
+* https://polygene.apache.org/java/2.1/javadocs/[Release 2.1]
 * https://polygene.apache.org/java/2.0/javadocs/[Release 2.0]
 * https://polygene.apache.org/java/1.4.1/javadocs/[Release 1.4.1]
 * https://polygene.apache.org/java/1.4/javadocs/[Release 1.4]
