@@ -91,6 +91,16 @@ public interface LayerAssembly
     @SuppressWarnings( { "unchecked","varargs" } )
     LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators );
 
+    /**
+     * The visitor pattern to inspect the entire pre-instantiated model.
+     *
+     * @deprecated New mechanism is considered, using Java 8 Stream API.
+     *
+     * @param visitor The visitor to be called.
+     * @param <ThrowableType> The exceptions that may be thrown.
+     * @throws ThrowableType when there is an underlying problem in the model.
+     */
+    @Deprecated
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;
 
