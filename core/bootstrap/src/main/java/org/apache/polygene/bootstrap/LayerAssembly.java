@@ -39,14 +39,46 @@ public interface LayerAssembly
      */
     ModuleAssembly module( String name );
 
+    /**
+     *
+     * @return the {@link ApplicationAssembly} that this {@code LayerAssembly} belongs to.
+     */
     ApplicationAssembly application();
 
+    /**
+     *
+     * @return the name of the {@code Layer} that is being assembled.
+     */
     String name();
 
+    /**
+     * Sets the name of the {@code Layer} being assembled.
+     * By convention, a {@code Layer} should include the word "Layer" as the suffix, e.g "DomainLayer", so tooling
+     * can use camel-case detection and present the name and not require it to explicitly say that it is a layer.
+     *
+     * @param name The name that the Layer should have.
+     * @return this {@code LayerAssembly} instance to support fluent APIs
+     */
     LayerAssembly setName( String name );
 
+    /** Set metadata for the {@code Layer}.
+     * Any arbitrary object can be attached as metainfo on a {@code Layer} that is available in runtime, by calling
+     * {@link org.apache.polygene.api.structure.Layer#metaInfo(Class)}. Multiple registrations of the same type is
+     * not possible, and the lookup will search registered meta-info objects against the lookup type, prioritizing
+     * interfaces over classes and the most sub-typed nterface first.
+     *
+     * @param info The meta-info type to be looked up. Typically a type that is explicitly used for meta-info.
+     * @return this {@code LayerAssembly} instance to support fluent APIs
+     */
     LayerAssembly setMetaInfo( Object info );
 
+    /** Declaration of which other {@code Layers} that this {@code Layer} is able to use.
+     * This is how architecture reinforcement works. Any composites that are declared
+     * {@link org.apache.polygene.api.common.Visibility#application} in a "used" layer can be reached from this Layer.
+     *
+     * @param layerAssembly The {@code Layer(s)} that this {@code Layer} can reach/see.
+     * @return this {@code LayerAssembly} instance to support fluent APIs
+     */
     LayerAssembly uses( LayerAssembly... layerAssembly );
 
     /**
