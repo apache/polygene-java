@@ -22,6 +22,7 @@ package org.apache.polygene.index.sql.postgresql;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.apache.polygene.api.service.ServiceFinder;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.junit.Assume;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -35,21 +36,18 @@ import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 
-public class SQLTestHelper
+class SQLTestHelper
 {
-
-    public static final String SEPARATE_MODULE_NAME = "actual_module";
-
-    public static void assembleWithMemoryEntityStore( ModuleAssembly mainModule )
+    static void assembleWithMemoryEntityStore( ModuleAssembly mainModule, String host, int port )
         throws AssemblyException
     {
         // EntityStore
         new EntityTestAssembler().visibleIn( Visibility.application ).assemble( mainModule );
 
-        doCommonAssembling( mainModule );
+        doCommonAssembling( mainModule, host, port );
     }
 
-    protected static void doCommonAssembling( ModuleAssembly mainModule )
+    private static void doCommonAssembling( ModuleAssembly mainModule, String host, int port )
         throws AssemblyException
     {
         ModuleAssembly config = mainModule.layer().module( "config" );
@@ -78,6 +76,9 @@ public class SQLTestHelper
             assemble( mainModule );
         // END SNIPPET: assembly
 
+        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
+              .url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
+
         // Always re-build schema in test scenarios because of possibly different app structure in
         // various tests
         mainModule.services( RebuildingStrategy.class ).
@@ -92,7 +93,7 @@ public class SQLTestHelper
             visibleIn( Visibility.layer );
     }
 
-    public static void setUpTest( ServiceFinder serviceFinder )
+    static void setUpTest( ServiceFinder serviceFinder )
     {
         Connection connection = null;
         try

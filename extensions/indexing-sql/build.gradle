@@ -35,7 +35,7 @@ dependencies {
 
   runtime polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testCompile polygene.internals.testsupport
   testCompile polygene.library( 'sql-dbcp' )
 
   testRuntime libraries.logback
