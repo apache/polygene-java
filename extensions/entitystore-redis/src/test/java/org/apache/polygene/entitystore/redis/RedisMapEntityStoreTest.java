@@ -19,27 +19,23 @@
  */
 package org.apache.polygene.entitystore.redis;
 
-import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.ClassRule;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 public class RedisMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @BeforeClass
-    public static void beforeRedisMapEntityStoreTests()
-    {
-        assumeConnectivity( "localhost", 6379 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "redis", 6379 );
 
     @Override
     // START SNIPPET: assembly
@@ -53,6 +49,12 @@ public class RedisMapEntityStoreTest
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
+        RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
+                                                          .declareDefaults();
+        redisConfig.host().set( DOCKER.getDockerHost() );
+        redisConfig.port().set( DOCKER.getExposedContainerPort( "6379/tcp" ) );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 
