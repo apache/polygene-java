@@ -102,6 +102,7 @@ include 'core:api',
 
 include 'internals:testsupport-internal',
         'internals:docker-memcached',
+        'internals:docker-mysql',
         'internals:docker-redis'
 
 include 'manual', 'reports', 'distributions', 'release'
