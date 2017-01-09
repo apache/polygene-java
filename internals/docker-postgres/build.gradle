@@ -16,18 +16,4 @@
  *  limitations under the License.
  */
 
-apply plugin: 'polygene-internal'
-
-dependencies {
-  compile polygene.core.testsupport
-  compile libraries.docker_junit
-
-  runtime polygene.core.runtime
-}
-
-// Ensure that all Docker images are built alongside this project
-// This is a bit of a stretch but works for now
-classes.dependsOn ':internals:docker-memcached:docker'
-classes.dependsOn ':internals:docker-mysql:docker'
-classes.dependsOn ':internals:docker-postgres:docker'
-classes.dependsOn ':internals:docker-redis:docker'
+apply plugin: 'polygene-internal-docker'
