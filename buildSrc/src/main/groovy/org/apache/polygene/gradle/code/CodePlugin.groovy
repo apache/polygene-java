@@ -122,6 +122,7 @@ class CodePlugin implements Plugin<Project>
           project.delete testDir
         }
       }
+      testTask.inputs.property( 'polygeneTestSupportDockerHostEnv', System.getenv( 'DOCKER_HOST' ) )
     }
   }
 

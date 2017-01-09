@@ -170,6 +170,7 @@ dependencies.libraries << [
 def antVersion = '1.9.7'
 def awaitilityVersion = '2.0.0'
 def dnsJavaVersion = '2.1.7'
+def dockerJUnitVersion = '0.3'
 def easyMockVersion = '3.4'
 def embedMongoVersion = '1.50.5'
 def h2Version = '1.4.193'
@@ -186,6 +187,7 @@ dependencies.libraries << [
   awaitility        : "org.awaitility:awaitility:$awaitilityVersion",
   derby             : "org.apache.derby:derby:$derbyVersion",
   dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
+  docker_junit      : "com.github.tdomzal:junit-docker-rule:$dockerJUnitVersion",
   easymock          : "org.easymock:easymock:$easyMockVersion",
   embed_mongo       : "de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embedMongoVersion",
   h2                : "com.h2database:h2:$h2Version",
