@@ -14,24 +14,6 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 
-apply plugin: 'polygene-extension'
-
-description = "Apache Polygene™ Memcache Cache Extension"
-
-jar { manifest { name = "Apache Polygene™ Extension - Cache - Memcache" } }
-
-dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.spymemcached
-
-  runtime polygene.core.runtime
-
-  testCompile polygene.internals.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-
-  testRuntime libraries.logback
-}
+apply plugin: 'polygene-internal-docker'

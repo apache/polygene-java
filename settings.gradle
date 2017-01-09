@@ -101,6 +101,7 @@ include 'core:api',
         'samples:swing'
 
 include 'internals:testsupport-internal',
+        'internals:docker-memcached',
         'internals:docker-redis'
 
 include 'manual', 'reports', 'distributions', 'release'

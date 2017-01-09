@@ -27,4 +27,5 @@ dependencies {
 
 // Ensure that all Docker images are built alongside this project
 // This is a bit of a stretch but works for now
+classes.dependsOn ':internals:docker-memcached:docker'
 classes.dependsOn ':internals:docker-redis:docker'
