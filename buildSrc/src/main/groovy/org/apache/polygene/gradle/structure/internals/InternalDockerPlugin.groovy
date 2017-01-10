@@ -17,36 +17,62 @@
  */
 package org.apache.polygene.gradle.structure.internals
 
-import com.palantir.gradle.docker.DockerExtension
-import com.palantir.gradle.docker.PalantirDockerPlugin
+import com.bmuschko.gradle.docker.DockerExtension
+import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.code.PublishNaming
+import org.apache.polygene.gradle.dependencies.DependenciesPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 @CompileStatic
 class InternalDockerPlugin implements Plugin<Project>
 {
+  private final String dockerMachineName = System.getenv( 'DOCKER_MACHINE_NAME' )
+  private final String dockerHost = System.getenv( 'DOCKER_HOST' )
+  private final String dockerCertPath = System.getenv( 'DOCKER_CERT_PATH' )
+
   @Override
   void apply( Project project )
   {
     project.plugins.apply BasePlugin
-    project.plugins.apply PalantirDockerPlugin
-    def dockerExtension = project.extensions.getByType( DockerExtension )
-    dockerExtension.name = "org.apache.polygene:${ PublishNaming.publishedNameFor( project.path ) }"
-    dockerExtension.dockerfile = 'src/main/docker/Dockerfile'
-    dockerExtension.files 'src/main/docker'
-    def dockerHost = System.getenv( 'DOCKER_HOST' ) as Object
-    [ project.tasks.getByName( 'dockerClean' ),
-      project.tasks.getByName( 'dockerPrepare' ),
-      project.tasks.getByName( 'docker' )
-    ].each { Task dockerTask ->
-      dockerTask.inputs.property 'dockerHostEnv', dockerHost
-      dockerTask.onlyIf { dockerHost }
+    project.plugins.apply DependenciesPlugin
+    applyDockerPlugin( project )
+    applyDockerBuildImage( project )
+  }
+
+  private void applyDockerPlugin( Project project )
+  {
+    project.plugins.apply DockerRemoteApiPlugin
+    def dockerExtension = project.extensions.getByType DockerExtension
+    dockerExtension.certPath = dockerCertPath ?
+                               new File( dockerCertPath ) :
+                               new File( System.getProperty( 'user.home' ), '.boot2docker/certs/boot2docker-vm' )
+  }
+
+  private void applyDockerBuildImage( Project project )
+  {
+    def classesTask = project.tasks.getByName 'classes'
+    def dockers = project.file( 'src/main/docker' )
+    dockers.eachDir { File dockerDir ->
+      def dockerName = dockerDir.name
+      def taskName = "build${ dockerName.capitalize() }DockerImage"
+      project.tasks.create( taskName, DockerBuildImage ) { DockerBuildImage task ->
+        task.group = 'docker'
+        task.description = "Build $dockerName Docker image"
+        task.onlyIf { dockerHost }
+        task.inputs.property 'dockerMachineName', dockerMachineName
+        task.inputs.property 'dockerHostEnv', dockerHost
+        task.inputs.property 'dockerCertPath', dockerCertPath
+        task.inputDir = dockerDir
+        task.dockerFile = new File( dockerDir, 'Dockerfile' )
+        task.tag = "org.apache.polygene:${ PublishNaming.publishedNameFor ":internals:docker-$dockerName" }"
+        // Ensure that all Docker images are built alongside this project
+        // This is a bit of a stretch but works for now
+        classesTask.dependsOn task
+      }
     }
-    project.tasks.getByName( LifecycleBasePlugin.BUILD_TASK_NAME ).dependsOn 'docker'
   }
 }

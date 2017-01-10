@@ -17,6 +17,7 @@
  */
 
 apply plugin: 'polygene-internal'
+apply plugin: 'polygene-internal-docker'
 
 dependencies {
   compile polygene.core.testsupport
@@ -24,10 +25,3 @@ dependencies {
 
   runtime polygene.core.runtime
 }
-
-// Ensure that all Docker images are built alongside this project
-// This is a bit of a stretch but works for now
-classes.dependsOn ':internals:docker-memcached:docker'
-classes.dependsOn ':internals:docker-mysql:docker'
-classes.dependsOn ':internals:docker-postgres:docker'
-classes.dependsOn ':internals:docker-redis:docker'

@@ -126,6 +126,7 @@ class DistributionsPlugin implements Plugin<Project>
         def relPath = new File( project.rootProject.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
         spec.include "$relPath/**"
       }
+      spec.include 'internals/**'
       spec.include 'manual/**'
       spec.include 'samples/**'
       spec.include 'tests/**'

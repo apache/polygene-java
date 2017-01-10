@@ -100,10 +100,6 @@ include 'core:api',
         'samples:sql-support',
         'samples:swing'
 
-include 'internals:testsupport-internal',
-        'internals:docker-memcached',
-        'internals:docker-mysql',
-        'internals:docker-postgres',
-        'internals:docker-redis'
+include 'internals:testsupport-internal'
 
 include 'manual', 'reports', 'distributions', 'release'
