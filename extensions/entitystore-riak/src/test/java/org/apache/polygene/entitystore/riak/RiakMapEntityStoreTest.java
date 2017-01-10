@@ -22,25 +22,34 @@ import com.basho.riak.client.api.commands.kv.DeleteValue;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
+import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.BeforeClass;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.junit.ClassRule;
 
 public class RiakMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "riak", 8087 );
+
     @BeforeClass
-    public static void beforeRiakProtobufMapEntityStoreTests()
+    public static void waitForRiak() throws InterruptedException
     {
-        assumeConnectivity( "localhost", 8087 );
+        // TODO:flakiness Properly wait for Riak to be ready
+        // Riak listen to its network port before being ready to serve clients
+        // This breaks the test-support integration
+        // Wait a bit to give it a chance to be ready
+        Thread.sleep( 10_000 );
     }
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -53,6 +62,13 @@ public class RiakMapEntityStoreTest
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
+        RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
+                                                        .declareDefaults();
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
+        riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 

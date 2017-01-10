@@ -32,7 +32,7 @@ dependencies {
 
   runtime polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testCompile polygene.internals.testsupport
   testCompile polygene.extension( 'valueserialization-orgjson' )
 
   testRuntime libraries.logback
