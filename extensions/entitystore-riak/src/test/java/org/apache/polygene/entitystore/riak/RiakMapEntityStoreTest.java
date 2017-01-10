@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 public class RiakMapEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
     @BeforeClass
     public static void beforeRiakProtobufMapEntityStoreTests()
@@ -44,7 +44,7 @@ public class RiakMapEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -60,8 +60,7 @@ public class RiakMapEntityStoreTest
     private String bucketKey;
 
     @Override
-    public void setUp()
-            throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
@@ -70,17 +69,19 @@ public class RiakMapEntityStoreTest
     }
 
     @Override
-    public void tearDown()
-            throws Exception
+    public void tearDown() throws Exception
     {
         // Riak don't expose bucket deletion in its API so we empty the Polygene Entities bucket.
-        Namespace namespace = new Namespace( bucketKey );
-        ListKeys listKeys = new ListKeys.Builder( namespace ).build();
-        ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
-        for( Location location : listKeysResponse )
+        if( bucketKey != null )
         {
-            DeleteValue delete = new DeleteValue.Builder( location ).build();
-            riakClient.execute( delete );
+            Namespace namespace = new Namespace( bucketKey );
+            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+            ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
+            for( Location location : listKeysResponse )
+            {
+                DeleteValue delete = new DeleteValue.Builder( location ).build();
+                riakClient.execute( delete );
+            }
         }
         super.tearDown();
     }
