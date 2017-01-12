@@ -14,26 +14,14 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 
-apply plugin: 'polygene-extension'
-
-description = "Apache Polygene™ Redis EntityStore Extension"
-
-jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Redis" } }
+apply plugin: 'polygene-internal'
+apply plugin: 'polygene-internal-docker'
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile libraries.jedis
+  compile polygene.core.testsupport
+  compile libraries.docker_junit
 
   runtime polygene.core.runtime
-
-  testCompile polygene.internals.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-
-  testRuntime libraries.logback
 }
-

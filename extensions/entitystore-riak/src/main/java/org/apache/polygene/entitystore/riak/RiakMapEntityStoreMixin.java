@@ -42,6 +42,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -70,7 +71,8 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     private Namespace namespace;
 
     @Override
-    public void activateService() throws Exception {
+    public void activateService() throws Exception
+    {
         // Load configuration
         configuration.refresh();
         RiakEntityStoreConfiguration config = configuration.get();
@@ -88,7 +90,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
             nodes.add( nodeBuilder.withRemoteAddress( host ).build() );
         }
         RiakCluster.Builder clusterBuilder = RiakCluster.builder( nodes );
-        clusterBuilder = configureCluster(config, clusterBuilder);
+        clusterBuilder = configureCluster( config, clusterBuilder );
 
         // Start Riak Cluster
         RiakCluster cluster = clusterBuilder.build();
@@ -127,8 +129,9 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
         return nodeBuilder;
     }
 
-    private RiakNode.Builder configureAuthentication( RiakEntityStoreConfiguration config, RiakNode.Builder nodeBuilder )
-            throws IOException, GeneralSecurityException
+    private RiakNode.Builder configureAuthentication( RiakEntityStoreConfiguration config,
+                                                      RiakNode.Builder nodeBuilder )
+        throws IOException, GeneralSecurityException
     {
         String username = config.username().get();
         String password = config.password().get();
@@ -154,7 +157,8 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                     }
                     catch( Exception ex )
                     {
-                        throw new InvalidApplicationException( "Need to open a PKCS#12 but was unable to register BouncyCastle, check your classpath", ex );
+                        throw new InvalidApplicationException(
+                            "Need to open a PKCS#12 but unable to register BouncyCastle, check your classpath", ex );
                     }
                 }
             }
@@ -183,7 +187,8 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
         }
     }
 
-    private RiakCluster.Builder configureCluster( RiakEntityStoreConfiguration config, RiakCluster.Builder clusterBuilder )
+    private RiakCluster.Builder configureCluster( RiakEntityStoreConfiguration config,
+                                                  RiakCluster.Builder clusterBuilder )
     {
         Integer clusterExecutionAttempts = config.clusterExecutionAttempts().get();
         if( clusterExecutionAttempts != null )
@@ -195,7 +200,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
 
     @Override
     public void passivateService()
-            throws Exception
+        throws Exception
     {
         riakClient.shutdown();
         riakClient = null;
@@ -215,8 +220,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     }
 
     @Override
-    public Reader get(EntityReference entityReference )
-            throws EntityStoreException
+    public Reader get( EntityReference entityReference )
     {
         try
         {
@@ -238,28 +242,25 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
 
     @Override
     public void applyChanges( MapChanges changes )
-            throws IOException
     {
         try
         {
             changes.visitMap( new MapChanger()
             {
                 @Override
-                public Writer newEntity(final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
+                public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 {
                     return new StringWriter( 1000 )
                     {
                         @Override
-                        public void close()
-                                throws IOException
+                        public void close() throws IOException
                         {
                             try
                             {
                                 super.close();
                                 StoreValue store = new StoreValue.Builder( toString() )
-                                        .withLocation( new Location( namespace, ref.identity().toString() ) )
-                                        .build();
+                                    .withLocation( new Location( namespace, ref.identity().toString() ) )
+                                    .build();
                                 riakClient.execute( store );
                             }
                             catch( InterruptedException | ExecutionException ex )
@@ -272,13 +273,11 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
 
                 @Override
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
                         @Override
-                        public void close()
-                                throws IOException
+                        public void close() throws IOException
                         {
                             try
                             {
@@ -290,7 +289,9 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                                 {
                                     throw new EntityNotFoundException( ref );
                                 }
-                                StoreValue store = new StoreValue.Builder( toString() ).withLocation( location ).build();
+                                StoreValue store = new StoreValue.Builder( toString() )
+                                    .withLocation( location )
+                                    .build();
                                 riakClient.execute( store );
                             }
                             catch( InterruptedException | ExecutionException ex )
@@ -303,7 +304,6 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
 
                 @Override
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws EntityNotFoundException
                 {
                     try
                     {
@@ -345,21 +345,21 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                           {
                               FetchValue fetch = new FetchValue.Builder( location ).build();
                               FetchValue.Response response = riakClient.execute( fetch );
-                              String jsonState = response.getValue( String.class );
-                              return new StringReader( jsonState );
+                              return response.getValue( String.class );
                           }
                           catch( InterruptedException | ExecutionException ex )
                           {
                               throw new EntityStoreException( "Unable to get entity states.", ex );
                           }
-                      } );
+                      } )
+                .filter( Objects::nonNull )
+                .map( StringReader::new );
         }
         catch( InterruptedException | ExecutionException ex )
         {
             throw new EntityStoreException( "Unable to get entity states.", ex );
         }
     }
-
 
     private List<HostAndPort> parseHosts( List<String> hosts )
     {
@@ -374,8 +374,8 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
             int port = DEFAULT_PORT;
             if( splitted.length > 1 )
             {
-                host = splitted[0];
-                port = Integer.valueOf( splitted[1] );
+                host = splitted[ 0 ];
+                port = Integer.valueOf( splitted[ 1 ] );
             }
             addresses.add( HostAndPort.fromParts( host, port ) );
         }

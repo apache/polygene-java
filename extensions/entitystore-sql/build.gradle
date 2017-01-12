@@ -34,7 +34,7 @@ dependencies {
 
   runtime polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testCompile polygene.internals.testsupport
   testCompile polygene.library( 'sql-dbcp' )
   testCompile polygene.extension( 'valueserialization-orgjson' )
   testCompile libraries.derby // Needed at compile time for polite test shutdown

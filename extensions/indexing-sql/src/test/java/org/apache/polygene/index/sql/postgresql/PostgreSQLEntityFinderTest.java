@@ -19,28 +19,28 @@
  */
 package org.apache.polygene.index.sql.postgresql;
 
-import org.junit.BeforeClass;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
+import org.junit.ClassRule;
 
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 public class PostgreSQLEntityFinderTest
     extends AbstractEntityFinderTest
 {
-    @BeforeClass
-    public static void beforePostgreSQLQueryTests()
-    {
-        assumeConnectivity( "localhost", 5432 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "postgres", 5432 );
 
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
     {
         super.assemble( mainModule );
-        SQLTestHelper.assembleWithMemoryEntityStore( mainModule );
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        SQLTestHelper.assembleWithMemoryEntityStore( mainModule, host, port );
     }
 
     @Override

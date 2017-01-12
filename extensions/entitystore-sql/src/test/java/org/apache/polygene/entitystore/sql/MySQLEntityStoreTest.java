@@ -21,8 +21,8 @@ package org.apache.polygene.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.HashMap;
 import javax.sql.DataSource;
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
@@ -30,23 +30,30 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.internal.SQLs;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.junit.ClassRule;
 
 public class MySQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @BeforeClass
-    public static void beforeMySQLEntityStoreTests()
-    {
-        assumeConnectivity( "localhost", 3306 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule(
+        "mysql",
+        new HashMap<String, String>()
+        {{
+            put( "MYSQL_ROOT_PASSWORD", "" );
+            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
+            put( "MYSQL_DATABASE", "jdbc_test_db" );
+            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
+        }},
+        3306
+    );
 
     @Override
     // START SNIPPET: assembly
@@ -80,33 +87,29 @@ public class MySQLEntityStoreTest
             visibleIn( Visibility.application ).
             withConfig( config, Visibility.layer ).
             assemble( module );
+        // END SNIPPET: assembly
+        String mysqlHost = DOCKER.getDockerHost();
+        int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
+        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
+              .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
+                          + "/jdbc_test_db?profileSQL=true&useLegacyDatetimeCode=false&serverTimezone=UTC" );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 
     @Override
-    public void tearDown()
-        throws Exception
+    public void tearDown() throws Exception
     {
-        if( true )
-        {
-            return;
-        }
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork(
             UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
         );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
-            String schemaName = config.schemaName().get();
-            if( schemaName == null )
-            {
-                schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-            }
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
+                stmt.execute( String.format( "DELETE FROM %s", SQLs.TABLE_NAME ) );
                 connection.commit();
             }
         }
@@ -116,5 +119,4 @@ public class MySQLEntityStoreTest
             super.tearDown();
         }
     }
-
 }

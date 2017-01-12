@@ -19,14 +19,13 @@
  */
 package org.apache.polygene.cache.memcache;
 
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractCachePoolTest;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.junit.ClassRule;
 
 /**
  * Memcache CachePool Test.
@@ -34,11 +33,8 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 public class MemcacheCachePoolTest
     extends AbstractCachePoolTest
 {
-    @BeforeClass
-    public static void beforeMemcacheCacheTests()
-    {
-        assumeConnectivity( "localhost", 11211 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "memcached", 11211 );
 
     @Override
     // START SNIPPET: assembly
@@ -55,9 +51,10 @@ public class MemcacheCachePoolTest
             assemble( module );
         // END SNIPPET: assembly
         MemcacheConfiguration memcacheConf = confModule.forMixin( MemcacheConfiguration.class ).declareDefaults();
+        String dockerHost = DOCKER.getDockerHost();
+        int dockerPort = DOCKER.getExposedContainerPort( "11211/tcp" );
+        memcacheConf.addresses().set( dockerHost + ':' + dockerPort );
         memcacheConf.protocol().set( "binary" );
-        //memcacheConf.username().set( "foo" );
-        //memcacheConf.password().set( "bar" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

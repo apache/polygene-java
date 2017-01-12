@@ -72,7 +72,7 @@ public class FreePortFinder
 
     // Seen busy on builds.apache.org
     private static final List<Integer> BLACKLIST = Arrays.asList(
-        42187, 37334, 38615, 33951, 41652
+        42187, 37334, 38615, 33951, 41652, 41841
     );
 
     private static final int MAX_PORT_CHECKS = 20;

@@ -22,6 +22,7 @@ import org.apache.polygene.gradle.dependencies.PolygeneExtension
 import org.apache.polygene.gradle.structure.release.ReleaseSpecPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 /**
  * Plugin applied to all Polygene projects.
@@ -36,6 +37,7 @@ class BasePlugin implements Plugin<Project>
     applyVersion project
     project.plugins.apply ReleaseSpecPlugin
     applyPolygeneExtension project
+    project.plugins.apply LifecycleBasePlugin
     project.defaultTasks 'classes', 'test'
   }
 

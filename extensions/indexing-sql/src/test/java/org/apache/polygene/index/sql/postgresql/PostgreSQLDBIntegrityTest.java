@@ -21,10 +21,6 @@ package org.apache.polygene.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
@@ -36,21 +32,21 @@ import org.apache.polygene.index.sql.support.common.DBNames;
 import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer;
 import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
 import org.apache.polygene.index.sql.support.postgresql.PostgreSQLAppStartup;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 public class PostgreSQLDBIntegrityTest
     extends AbstractPolygeneTest
 {
-    @BeforeClass
-    public static void beforePostgreSQLQueryTests()
-    {
-        assumeConnectivity( "localhost", 5432 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "postgres", 5432 );
 
     public static interface TestEntity
         extends EntityComposite
@@ -66,7 +62,9 @@ public class PostgreSQLDBIntegrityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        SQLTestHelper.assembleWithMemoryEntityStore( module );
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        SQLTestHelper.assembleWithMemoryEntityStore( module, host, port );
         module.entities( TestEntity.class );
     }
 

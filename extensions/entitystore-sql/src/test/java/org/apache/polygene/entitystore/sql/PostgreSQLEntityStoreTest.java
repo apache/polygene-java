@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.sql;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
@@ -30,14 +29,15 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.internal.SQLs;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.junit.ClassRule;
 
 /**
  * WARN This test run only if localhost:5432 is listening.
@@ -76,11 +76,8 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 public class PostgreSQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @BeforeClass
-    public static void beforePostgreSQLEntityStoreTests()
-    {
-        assumeConnectivity( "localhost", 5432 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "postgres", 5432 );
 
     @Override
     // START SNIPPET: assembly
@@ -114,6 +111,12 @@ public class PostgreSQLEntityStoreTest
             visibleIn( Visibility.application ).
             withConfig( config, Visibility.layer ).
             assemble( module );
+        // END SNIPPET: assembly
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
+              .url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 

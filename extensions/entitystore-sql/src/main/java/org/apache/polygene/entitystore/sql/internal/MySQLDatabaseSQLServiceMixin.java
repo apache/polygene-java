@@ -45,7 +45,7 @@ public abstract class MySQLDatabaseSQLServiceMixin
         ResultSet rs = null;
         try
         {
-            String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
+            String tableNameForQuery = SQLs.TABLE_NAME;
             rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]
             {
                 "TABLE"

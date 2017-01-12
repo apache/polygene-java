@@ -24,24 +24,32 @@ import com.basho.riak.client.api.commands.kv.DeleteValue;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
+import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.BeforeClass;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.junit.ClassRule;
 
 public class RiakMapEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
 {
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "riak", 8087 );
+
     @BeforeClass
-    public static void beforeRiakMapEntityStoreTests()
+    public static void waitForRiak() throws InterruptedException
     {
-        assumeConnectivity( "localhost", 8087 );
+        // TODO:flakiness Properly wait for Riak to be ready
+        // Riak listen to its network port before being ready to serve clients
+        // This breaks the test-support integration
+        // Wait a bit to give it a chance to be ready
+        Thread.sleep( 10_000 );
     }
 
     @Override
@@ -53,14 +61,18 @@ public class RiakMapEntityStoreWithCacheTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
+                                                        .declareDefaults();
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
+        riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
     }
 
     private RiakClient riakClient;
     private String bucketKey;
 
     @Override
-    public void setUp()
-        throws Exception
+    public void setUp() throws Exception
     {
         super.setUp();
         RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
@@ -69,17 +81,19 @@ public class RiakMapEntityStoreWithCacheTest
     }
 
     @Override
-    public void tearDown()
-        throws Exception
+    public void tearDown() throws Exception
     {
         // Riak don't expose bucket deletion in its API so we empty the Polygene Entities bucket.
-        Namespace namespace = new Namespace( bucketKey );
-        ListKeys listKeys = new ListKeys.Builder( namespace ).build();
-        ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
-        for( Location location : listKeysResponse )
+        if( bucketKey != null )
         {
-            DeleteValue delete = new DeleteValue.Builder( location ).build();
-            riakClient.execute( delete );
+            Namespace namespace = new Namespace( bucketKey );
+            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+            ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
+            for( Location location : listKeysResponse )
+            {
+                DeleteValue delete = new DeleteValue.Builder( location ).build();
+                riakClient.execute( delete );
+            }
         }
         super.tearDown();
     }
