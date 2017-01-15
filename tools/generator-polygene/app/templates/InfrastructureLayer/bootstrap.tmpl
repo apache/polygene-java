@@ -19,9 +19,6 @@
 -%>
 package <%= packageName %>.bootstrap.infrastructure;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -33,12 +30,10 @@ public class InfrastructureLayer extends LayeredLayerAssembler
 {
     public static final String NAME = "Infrastructure Layer";
     private final ModuleAssembly configModule;
-    private final Function<Application, Module> typeFinder;
 
-    public InfrastructureLayer( ModuleAssembly configModule, Function<Application, Module> typeFinder )
+    public InfrastructureLayer( ModuleAssembly configModule )
     {
         this.configModule = configModule;
-        this.typeFinder = typeFinder;
     }
 
     @Override
@@ -49,7 +44,7 @@ public class InfrastructureLayer extends LayeredLayerAssembler
 
         new <%= polygene.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= polygene.entitystore %>StorageModule.NAME ) );
         new <%= polygene.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= polygene.indexing %>IndexingModule.NAME ) );
-        new <%= polygene.serialization %>SerializationModule( typeFinder ).assemble( layer, layer.module( <%= polygene.serialization %>SerializationModule.NAME ) );
+        new <%= polygene.serialization %>SerializationModule().assemble( layer, layer.module( <%= polygene.serialization %>SerializationModule.NAME ) );
         return layer;
     }
 }

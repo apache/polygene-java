@@ -229,17 +229,7 @@ public class DocumentationSupport
                         {
                             servicesModule -> {
                                 servicesModule.setName( "SERVICES-Module" );
-
-                                Function<Application, Module> valuesModuleFinder = new Function<Application, Module>()
-                                {
-                                    @Override
-                                    public Module apply( Application app1 )
-                                    {
-                                        return app1.findModule( "SINGLE-Layer", "VALUES-Module" );
-                                    }
-                                };
                                 new OrgJsonValueSerializationAssembler().
-                                    withValuesModuleFinder( valuesModuleFinder ).
                                     assemble( servicesModule );
                             }
                         }

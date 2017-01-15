@@ -23,10 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.function.Function;
-
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -57,8 +53,7 @@ public class HeroesApplicationAssembler extends LayeredApplicationAssembler
         LayerAssembly configLayer = createLayer( ConfigurationLayer.class );
         ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();
         LayerAssembly domainLayer = createLayer( DomainLayer.class );
-        Function<Application, Module> typeFinder = DomainLayer.typeFinder();
-        LayerAssembly infraLayer = new InfrastructureLayer( configModule, typeFinder ).assemble( assembly.layer( InfrastructureLayer.NAME ) );
+        LayerAssembly infraLayer = new InfrastructureLayer( configModule ).assemble( assembly.layer( InfrastructureLayer.NAME ) );
         LayerAssembly connectivityLayer = createLayer( ConnectivityLayer.class );
         connectivityLayer.uses( domainLayer );
         domainLayer.uses( infraLayer );

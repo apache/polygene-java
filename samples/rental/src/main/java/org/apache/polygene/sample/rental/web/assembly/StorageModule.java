@@ -37,7 +37,6 @@ public class StorageModule
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
         new OrgJsonValueSerializationAssembler().
             visibleIn( Visibility.application ).
-            withValuesModuleFinder( app -> app.findModule( "DomainLayer", "RentalModule" ) ).
             assemble( module );
     }
 }

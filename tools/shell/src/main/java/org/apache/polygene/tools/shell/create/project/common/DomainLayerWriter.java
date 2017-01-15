@@ -40,9 +40,6 @@ public class DomainLayerWriter
             pw.println( ".bootstrap.domain;" );
             pw.println();
             pw.println(
-                "import java.util.function.Function;\n" +
-                "import org.apache.polygene.api.structure.Application;\n" +
-                "import org.apache.polygene.api.structure.Module;\n" +
                 "import org.apache.polygene.bootstrap.AssemblyException;\n" +
                 "import org.apache.polygene.bootstrap.LayerAssembly;\n" +
                 "import org.apache.polygene.bootstrap.layered.LayerAssembler;\n" +
@@ -59,11 +56,6 @@ public class DomainLayerWriter
                 "        createModule( layer, OrderModule.class );   // This is a simple sample that you typically remove.\n" +
                 "        createModule( layer, SecurityModule.class );   // This is a simple sample that you typically remove.\n" +
                 "        return layer;\n" +
-                "    }\n" +
-                "\n" +
-                "    public static Function<Application, Module> typeFinder()\n" +
-                "    {\n" +
-                "        return application -> application.findModule( \"Domain Layer\", \"Assets Module\" );\n" +
                 "    }\n" +
                 "}\n"
             );

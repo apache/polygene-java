@@ -20,10 +20,7 @@
 
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
-import java.util.function.Function;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -34,12 +31,6 @@ public class SerializationModule
     implements ModuleAssembler
 {
     public static final String NAME = "Serialization Module";
-    private final Function<Application, Module> typeFinder;
-
-    public SerializationModule( Function<Application, Module> typeFinder )
-    {
-        this.typeFinder = typeFinder;
-    }
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
@@ -47,7 +38,6 @@ public class SerializationModule
     {
         new JacksonValueSerializationAssembler()
             .visibleIn( Visibility.layer )
-            .withValuesModuleFinder( typeFinder )
             .assemble( module );
         return module;
     }

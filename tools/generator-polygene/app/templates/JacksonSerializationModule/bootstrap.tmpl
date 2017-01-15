@@ -19,10 +19,7 @@
 -%>
 package <%= packageName %>.bootstrap.infrastructure;
 
-import java.util.function.Function;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -33,12 +30,6 @@ public class JacksonSerializationModule
     implements ModuleAssembler
 {
     public static final String NAME = "Jackson Serialization Module";
-    private final Function<Application, Module> typeFinder;
-
-    public JacksonSerializationModule( Function<Application, Module> typeFinder )
-    {
-        this.typeFinder = typeFinder;
-    }
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
@@ -46,7 +37,6 @@ public class JacksonSerializationModule
     {
         new JacksonValueSerializationAssembler()
             .visibleIn( Visibility.application )
-            .withValuesModuleFinder( typeFinder )
             .assemble( module );
         return module;
     }

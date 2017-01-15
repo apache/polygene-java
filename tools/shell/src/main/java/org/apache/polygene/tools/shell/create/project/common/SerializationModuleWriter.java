@@ -40,10 +40,7 @@ public class SerializationModuleWriter
             pw.println( ".bootstrap.infrastructure;" );
             pw.println();
             pw.println(
-                "import java.util.function.Function;\n" +
                 "import org.apache.polygene.api.common.Visibility;\n" +
-                "import org.apache.polygene.api.structure.Application;\n" +
-                "import org.apache.polygene.api.structure.Module;\n" +
                 "import org.apache.polygene.bootstrap.AssemblyException;\n" +
                 "import org.apache.polygene.bootstrap.LayerAssembly;\n" +
                 "import org.apache.polygene.bootstrap.ModuleAssembly;\n" +
@@ -54,12 +51,6 @@ public class SerializationModuleWriter
                 "    implements ModuleAssembler\n" +
                 "{\n" +
                 "    public static final String NAME = \"Serialization Module\";\n" +
-                "    private final Function<Application, Module> typeFinder;\n" +
-                "\n" +
-                "    public SerializationModule( Function<Application, Module> typeFinder )\n" +
-                "    {\n" +
-                "        this.typeFinder = typeFinder;\n" +
-                "    }\n" +
                 "\n" +
                 "    @Override\n" +
                 "    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )\n" +
@@ -67,7 +58,6 @@ public class SerializationModuleWriter
                 "    {\n" +
                 "        new JacksonValueSerializationAssembler()\n" +
                 "            .visibleIn( Visibility.application )\n" +
-                "            .withValuesModuleFinder( typeFinder )\n" +
                 "            .assemble( module );\n" +
                 "        return module;\n" +
                 "    }\n" +

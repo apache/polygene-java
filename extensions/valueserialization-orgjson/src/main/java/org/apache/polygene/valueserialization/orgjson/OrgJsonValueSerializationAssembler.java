@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.valueserialization.orgjson;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -33,30 +30,12 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 public class OrgJsonValueSerializationAssembler
     extends Assemblers.Visibility<OrgJsonValueSerializationAssembler>
 {
-    private Function<Application, Module> valuesModuleFinder;
-
-    public OrgJsonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
-    {
-        this.valuesModuleFinder = valuesModuleFinder;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( valuesModuleFinder == null )
-        {
-            module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON );
-        }
-        else
-        {
-            module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON ).
-                setMetaInfo( valuesModuleFinder );
-        }
+        module.services( OrgJsonValueSerializationService.class ).
+            visibleIn( visibility() ).
+                  taggedWith( ValueSerialization.Formats.JSON );
     }
 }

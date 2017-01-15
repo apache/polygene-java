@@ -85,7 +85,6 @@ public class ForumAssembler
             ModuleAssembly serialization = infrastructure.module( "Serialization" );
             new OrgJsonValueSerializationAssembler().
                 visibleIn( Visibility.application ).
-                withValuesModuleFinder( app -> app.findModule( "REST", "Values" ) ).
                 assemble( serialization );
 
             ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
