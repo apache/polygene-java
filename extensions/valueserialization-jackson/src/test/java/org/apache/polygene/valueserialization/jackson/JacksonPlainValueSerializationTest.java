@@ -19,23 +19,17 @@
  */
 package org.apache.polygene.valueserialization.jackson;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractPlainValueSerializationTest;
 
 public class JacksonPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
 {
-
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         new JacksonValueSerializationAssembler().assemble( module );
-        // END SNIPPET: assembly
-        // START SNIPPET: assembly
-        super.assemble( module );
     }
     // END SNIPPET: assembly
 }

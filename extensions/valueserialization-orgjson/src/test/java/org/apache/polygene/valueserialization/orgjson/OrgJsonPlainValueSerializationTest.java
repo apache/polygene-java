@@ -19,23 +19,17 @@
  */
 package org.apache.polygene.valueserialization.orgjson;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractPlainValueSerializationTest;
 
 public class OrgJsonPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
 {
-
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         new OrgJsonValueSerializationAssembler().assemble( module );
-        // END SNIPPET: assembly
-        super.assemble( module );
-        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 }
