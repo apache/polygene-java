@@ -326,34 +326,34 @@ public class ModuleModel
     public Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility )
     {
         return objectsModel.models()
-            .filter( new Visibilitypredicate( visibility ) );
+            .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends TransientDescriptor> visibleTransients( Visibility visibility )
     {
         return transientsModel.models()
-            .filter( new Visibilitypredicate( visibility ) );
+            .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends EntityDescriptor> visibleEntities( Visibility visibility )
     {
         return entitiesModel.models()
-            .filter( new Visibilitypredicate( visibility ) );
+            .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends ValueDescriptor> visibleValues( Visibility visibility )
     {
         return valuesModel.models()
-            .filter( new Visibilitypredicate( visibility ) );
+            .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends ModelDescriptor> visibleServices( Visibility visibility )
     {
         return concat(
             servicesModel.models()
-                .filter( new Visibilitypredicate( visibility ) ),
+                .filter( new VisibilityPredicate( visibility ) ),
             importedServicesModel.models()
-                .filter( new Visibilitypredicate( visibility ) )
+                .filter( new VisibilityPredicate( visibility ) )
         );
     }
 
