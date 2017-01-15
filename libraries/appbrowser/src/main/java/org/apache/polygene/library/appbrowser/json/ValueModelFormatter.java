@@ -35,7 +35,7 @@ public class ValueModelFormatter extends AbstractJsonFormatter<ValueDescriptor,V
         throws JSONException
     {
         object();
-        field( "type", visited.valueType().mainType().getName() );
+        field( "type", visited.valueType().primaryType().getName() );
         field( "visibility", visited.visibility().toString() );
     }
 

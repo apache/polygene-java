@@ -168,7 +168,7 @@ public interface ConfigurationManagerService
                         if( !persistentProperty.isImmutable() )
                         {
                             String propertyName = persistentProperty.qualifiedName().name();
-                            String type = persistentProperty.valueType().mainType().getName();
+                            String type = persistentProperty.valueType().primaryType().getName();
 
                             Descriptor attrDescriptor = new DescriptorSupport();
                             attrDescriptor.setField( "name", propertyName );
@@ -183,7 +183,7 @@ public interface ConfigurationManagerService
                                 {
                                     Set<String> legalValues = new LinkedHashSet<>();
                                     Class<?> enumType = getClass().getClassLoader()
-                                        .loadClass( persistentProperty.valueType().mainType().getName() );
+                                        .loadClass( persistentProperty.valueType().primaryType().getName() );
                                     for( Field field : enumType.getFields() )
                                     {
                                         legalValues.add( field.getName() );

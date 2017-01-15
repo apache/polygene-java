@@ -99,7 +99,7 @@ public class ValueType
 
     public static boolean isPrimitiveValueType( ValueType valueType )
     {
-        return isPrimitiveValueType( valueType.mainType() );
+        return isPrimitiveValueType( valueType.primaryType() );
     }
 
     /**
@@ -133,7 +133,7 @@ public class ValueType
         this.types = types;
     }
 
-    public Class<?> mainType()
+    public Class<?> primaryType()
     {
         return types.stream().findFirst().orElse( null );
     }
