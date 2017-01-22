@@ -68,7 +68,7 @@ public final class TransientBuilderInstance<T>
             prototypeInstance = model.newInstance( uses, state );
         }
 
-        return prototypeInstance.<T>proxy();
+        return prototypeInstance.proxy();
     }
 
     @Override
@@ -97,6 +97,6 @@ public final class TransientBuilderInstance<T>
         model.checkConstraints( state );
 
         CompositeInstance compositeInstance = model.newInstance( uses, state );
-        return compositeInstance.<T>proxy();
+        return compositeInstance.proxy();
     }
 }

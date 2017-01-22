@@ -515,7 +515,7 @@ public abstract class CompositeAssemblyImpl
 
         if( !constrained )
         {
-            return new ConstraintsModel( Collections.<ValueConstraintsModel>emptyList() );
+            return new ConstraintsModel( Collections.emptyList() );
         }
         else
         {

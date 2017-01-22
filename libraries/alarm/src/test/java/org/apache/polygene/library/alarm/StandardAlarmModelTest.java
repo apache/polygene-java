@@ -124,7 +124,7 @@ public class StandardAlarmModelTest
     public void testTriggers()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         List<String> triggers = provider.alarmTriggers();
         assertEquals( 3, triggers.size() );
@@ -168,7 +168,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromNormal()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
@@ -186,7 +186,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromActivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         alarm.activate();
 
@@ -208,7 +208,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromAcknowledged()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         alarm.activate();
         alarm.acknowledge();
@@ -233,7 +233,7 @@ public class StandardAlarmModelTest
     public void testStateChangeFromDeactivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         alarm.activate();
         alarm.deactivate();
@@ -259,7 +259,7 @@ public class StandardAlarmModelTest
     {
         try
         {
-            AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+            AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
             AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
             provider.evaluate( underTest, "my-trigger" );
             fail( "IllegalArgumentException not thrown." );
@@ -417,7 +417,7 @@ public class StandardAlarmModelTest
     public void testComputeCondition()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
         assertFalse( provider.computeCondition( s1 ) );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
@@ -432,7 +432,7 @@ public class StandardAlarmModelTest
     public void testComputeTrigger()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
+        AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
         AlarmStatus s3 = createStatus( AlarmPoint.STATUS_DEACTIVATED );

@@ -35,7 +35,7 @@ public final class ConstraintsModel
 {
     private List<ValueConstraintsModel> parameterConstraintModels;
 
-    private static ConstraintsInstance EMPTY_CONSTRAINTS = new ConstraintsInstance( Collections.<ValueConstraintsInstance>emptyList() );
+    private static ConstraintsInstance EMPTY_CONSTRAINTS = new ConstraintsInstance( Collections.emptyList() );
 
     public ConstraintsModel( List<ValueConstraintsModel> parameterConstraintModels )
     {

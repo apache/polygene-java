@@ -49,7 +49,7 @@ public class BreaksCircuitOnThrowableTest
     @Test
     public void testSuccess()
     {
-        TestService service = ( TestService ) serviceFinder.findService( TestService.class ).get();
+        TestService service = serviceFinder.findService( TestService.class ).get();
         service.successfulMethod();
         service.successfulMethod();
         service.successfulMethod();

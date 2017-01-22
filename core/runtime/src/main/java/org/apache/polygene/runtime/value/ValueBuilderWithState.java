@@ -46,7 +46,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
     public T prototype()
     {
         verifyUnderConstruction();
-        return prototypeInstance.<T>proxy();
+        return prototypeInstance.proxy();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
 
         try
         {
-            return prototypeInstance.<T>proxy();
+            return prototypeInstance.proxy();
         }
         finally
         {

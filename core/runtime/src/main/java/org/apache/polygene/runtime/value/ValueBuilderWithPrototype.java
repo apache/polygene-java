@@ -84,7 +84,7 @@ public class ValueBuilderWithPrototype<T>
     public T prototype()
     {
         verifyUnderConstruction();
-        return prototypeInstance.<T>proxy();
+        return prototypeInstance.proxy();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ValueBuilderWithPrototype<T>
 
         try
         {
-            return prototypeInstance.<T>proxy();
+            return prototypeInstance.proxy();
         }
         finally
         {

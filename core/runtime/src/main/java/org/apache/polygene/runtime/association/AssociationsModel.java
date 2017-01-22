@@ -111,7 +111,7 @@ public final class AssociationsModel
     {
         for( AssociationModel associationModel : mapAccessorAssociationModel.values() )
         {
-            Association<Object> association = state.<Object>associationFor( associationModel.accessor() );
+            Association<Object> association = state.associationFor( associationModel.accessor() );
             associationModel.checkAssociationConstraints( association );
             associationModel.checkConstraints( association.get() );
         }

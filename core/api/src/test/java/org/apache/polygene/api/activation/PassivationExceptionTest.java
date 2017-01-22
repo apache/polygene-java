@@ -52,7 +52,7 @@ public class PassivationExceptionTest
     @Test
     public void testEmptyPassivationException()
     {
-        PassivationException empty = new PassivationException( Collections.<Exception>emptyList() );
+        PassivationException empty = new PassivationException( Collections.emptyList() );
         assertThat( empty.getMessage(), containsString( "has 0 cause" ) );
     }
 
