@@ -25,8 +25,6 @@ import java.io.PrintWriter;
 import java.util.Map;
 import org.apache.polygene.tools.shell.FileUtils;
 
-import static java.lang.String.format;
-
 public class SecurityRepositoryWriter
 {
 

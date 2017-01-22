@@ -34,7 +34,7 @@ public class AlarmSystemAssembler
         ServiceDeclaration alarmSystem = module.services( AlarmSystemService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            alarmSystem.identifiedBy( identity().toString() );
+            alarmSystem.identifiedBy( identity() );
         }
         module.services( SimpleAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Simple", false ) );
         module.services( StandardAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Standard", true ) );

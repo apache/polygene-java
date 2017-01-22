@@ -35,7 +35,7 @@ public class ESFilesystemIndexQueryAssembler
         throws AssemblyException
     {
         module.services( ESFilesystemIndexQueryService.class ).
-            identifiedBy( identity().toString() ).
+            identifiedBy( identity() ).
             visibleIn( visibility() ).
             instantiateOnStartup();
 

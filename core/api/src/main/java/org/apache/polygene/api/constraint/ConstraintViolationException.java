@@ -190,7 +190,7 @@ public class ConstraintViolationException
             String name = violation.name();
             Object value = violation.value();
             String classes;
-            if( instanceTypes.stream().count() == 1 )
+            if( instanceTypes.size() == 1 )
             {
                 Type type = instanceTypes.stream().findFirst().get();
                 classes = Classes.RAW_CLASS.apply( type ).getSimpleName();

@@ -36,7 +36,7 @@ public class LiquibaseAssembler
             instantiateOnStartup();
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {

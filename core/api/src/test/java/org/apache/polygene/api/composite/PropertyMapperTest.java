@@ -46,9 +46,7 @@ public class PropertyMapperTest
         }
         catch( NoSuchMethodException e )
         {
-            InternalError error = new InternalError();
-            error.initCause( e );
-            throw error;
+            throw new InternalError( e );
         }
     }
 

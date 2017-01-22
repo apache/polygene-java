@@ -40,7 +40,7 @@ public class PasswordDomainAssembler
             visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {
