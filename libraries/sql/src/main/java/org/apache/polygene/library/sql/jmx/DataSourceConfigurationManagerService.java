@@ -137,7 +137,7 @@ public interface DataSourceConfigurationManagerService
                 descriptor.state().properties().forEach(persistentProperty -> {
                     if ( !persistentProperty.isImmutable() ) {
                         String propertyName = persistentProperty.qualifiedName().name();
-                        String type = persistentProperty.valueType().mainType().getName();
+                        String type = persistentProperty.valueType().primaryType().getName();
                         attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ) ) );
                         properties.put( propertyName, persistentProperty.accessor() );
                     }

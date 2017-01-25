@@ -159,7 +159,7 @@ public class EntityTypeSerializer
             graph.add( propertyURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
             // TODO Support more types
-            URI type = dataTypes.get( persistentProperty.valueType().mainType().getName() );
+            URI type = dataTypes.get( persistentProperty.valueType().primaryType().getName() );
             if( type != null )
             {
                 graph.add( propertyURI, Rdfs.RANGE, type );

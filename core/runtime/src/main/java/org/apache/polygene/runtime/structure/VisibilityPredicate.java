@@ -26,16 +26,16 @@ import org.apache.polygene.api.composite.ModelDescriptor;
 /**
  * TODO
  */
-public class Visibilitypredicate
+public class VisibilityPredicate
     implements Predicate<ModelDescriptor>
 {
-    public static final Predicate<ModelDescriptor> MODULE = new Visibilitypredicate( Visibility.module );
-    public static final Predicate<ModelDescriptor> LAYER = new Visibilitypredicate( Visibility.layer );
-    public static final Predicate<ModelDescriptor> APPLICATION = new Visibilitypredicate( Visibility.application );
+    public static final Predicate<ModelDescriptor> MODULE = new VisibilityPredicate( Visibility.module );
+    public static final Predicate<ModelDescriptor> LAYER = new VisibilityPredicate( Visibility.layer );
+    public static final Predicate<ModelDescriptor> APPLICATION = new VisibilityPredicate( Visibility.application );
 
     private final Visibility visibility;
 
-    public Visibilitypredicate( Visibility visibility )
+    public VisibilityPredicate( Visibility visibility )
     {
         this.visibility = visibility;
     }

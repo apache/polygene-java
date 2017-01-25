@@ -237,25 +237,25 @@ public class PreferencesEntityStoreMixin
                     else
                     {
                         ValueType propertyType = persistentPropertyDescriptor.valueType();
-                        Class<?> mainType = propertyType.mainType();
-                        if( Number.class.isAssignableFrom( mainType ) )
+                        Class<?> primaryType = propertyType.primaryType();
+                        if( Number.class.isAssignableFrom( primaryType ) )
                         {
-                            if( mainType.equals( Long.class ) )
+                            if( primaryType.equals( Long.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
                                                 this.getNumber( propsPrefs, persistentPropertyDescriptor, LONG_PARSER ) );
                             }
-                            else if( mainType.equals( Integer.class ) )
+                            else if( primaryType.equals( Integer.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
                                                 this.getNumber( propsPrefs, persistentPropertyDescriptor, INT_PARSER ) );
                             }
-                            else if( mainType.equals( Double.class ) )
+                            else if( primaryType.equals( Double.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
                                                 this.getNumber( propsPrefs, persistentPropertyDescriptor, DOUBLE_PARSER ) );
                             }
-                            else if( mainType.equals( Float.class ) )
+                            else if( primaryType.equals( Float.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
                                                 this.getNumber( propsPrefs, persistentPropertyDescriptor, FLOAT_PARSER ) );
@@ -277,7 +277,7 @@ public class PreferencesEntityStoreMixin
                                 properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                             }
                         }
-                        else if( mainType.equals( Boolean.class ) )
+                        else if( primaryType.equals( Boolean.class ) )
                         {
                             Boolean initialValue = (Boolean) persistentPropertyDescriptor.initialValue( module );
                             properties.put( persistentPropertyDescriptor.qualifiedName(),
@@ -503,24 +503,24 @@ public class PreferencesEntityStoreMixin
                               else
                               {
                                   ValueType valueType = persistentProperty.valueType();
-                                  Class<?> mainType = valueType.mainType();
-                                  if( Number.class.isAssignableFrom( mainType ) )
+                                  Class<?> primaryType = valueType.primaryType();
+                                  if( Number.class.isAssignableFrom( primaryType ) )
                                   {
-                                      if( mainType.equals( Long.class ) )
+                                      if( primaryType.equals( Long.class ) )
                                       {
                                           propsPrefs.putLong( persistentProperty.qualifiedName().name(), (Long) value );
                                       }
-                                      else if( mainType.equals( Integer.class ) )
+                                      else if( primaryType.equals( Integer.class ) )
                                       {
                                           propsPrefs.putInt( persistentProperty.qualifiedName()
                                                                  .name(), (Integer) value );
                                       }
-                                      else if( mainType.equals( Double.class ) )
+                                      else if( primaryType.equals( Double.class ) )
                                       {
                                           propsPrefs.putDouble( persistentProperty.qualifiedName()
                                                                     .name(), (Double) value );
                                       }
-                                      else if( mainType.equals( Float.class ) )
+                                      else if( primaryType.equals( Float.class ) )
                                       {
                                           propsPrefs.putFloat( persistentProperty.qualifiedName()
                                                                    .name(), (Float) value );
@@ -532,7 +532,7 @@ public class PreferencesEntityStoreMixin
                                           propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                                       }
                                   }
-                                  else if( mainType.equals( Boolean.class ) )
+                                  else if( primaryType.equals( Boolean.class ) )
                                   {
                                       propsPrefs.putBoolean( persistentProperty.qualifiedName()
                                                                  .name(), (Boolean) value );

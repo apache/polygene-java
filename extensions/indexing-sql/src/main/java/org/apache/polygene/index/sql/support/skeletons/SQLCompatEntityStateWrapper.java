@@ -75,16 +75,16 @@ class SQLCompatEntityStateWrapper
                 CollectionType collectionType = (CollectionType) valueType;
                 return isSupported( collectionType.collectedType() );
             }
-            Class<?> mainType = valueType.mainType();
-            return Number.class.isAssignableFrom( mainType )
-                   || Boolean.class.isAssignableFrom( mainType )
-                   || Character.class.isAssignableFrom( mainType )
-                   || Enum.class.isAssignableFrom( mainType )
-                   || String.class.isAssignableFrom( mainType )
-                   // || Date.class.isAssignableFrom( mainType )
-                   // || DateTime.class.isAssignableFrom( mainType )
-                   // || LocalDateTime.class.isAssignableFrom( mainType )
-                   // || LocalDate.class.isAssignableFrom( mainType )
+            Class<?> primaryType = valueType.primaryType();
+            return Number.class.isAssignableFrom( primaryType )
+                   || Boolean.class.isAssignableFrom( primaryType )
+                   || Character.class.isAssignableFrom( primaryType )
+                   || Enum.class.isAssignableFrom( primaryType )
+                   || String.class.isAssignableFrom( primaryType )
+                   // || Date.class.isAssignableFrom( primaryType )
+                   // || DateTime.class.isAssignableFrom( primaryType )
+                   // || LocalDateTime.class.isAssignableFrom( primaryType )
+                   // || LocalDate.class.isAssignableFrom( primaryType )
                    || valueType instanceof ValueCompositeType;
         }
     };

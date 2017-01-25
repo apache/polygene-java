@@ -26,19 +26,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
@@ -52,20 +42,8 @@ import static org.junit.Assert.assertThat;
 public abstract class AbstractPlainValueSerializationTest
     extends AbstractPolygeneTest
 {
-
     @Service
-    @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
-
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.values( Regression142Type.class );
-        module.entities( Regression142Type.class );
-
-        module.services( MemoryEntityStoreService.class );
-    }
 
     @Test
     public void givenCharacterValueWhenSerializingAndDeserializingExpectEquals()
@@ -229,67 +207,5 @@ public abstract class AbstractPlainValueSerializationTest
 
         EntityReference deserialized = valueSerialization.deserialize( module, EntityReference.class, serialized );
         assertThat( deserialized, equalTo( EntityReference.parseEntityReference( "ABCD-1234" ) ) );
-    }
-
-    @Test
-    public void polygene142RegressionTest()
-        throws Exception
-    {
-        if( getClass().getName().equals( "org.apache.polygene.valueserialization.stax.StaxPlainValueSerializationTest" ) )
-        {
-            // This test is disabled, as this test expect a JSON capable serializer as it uses
-            // the JSONMapEntityStoreMixin in MemoryEntityStore.
-            return;
-        }
-        ValueSerialization serialization = serviceFinder.findService( ValueSerialization.class ).get();
-
-        Regression142Type value;
-        {
-            ValueBuilder<Regression142Type> builder = valueBuilderFactory.newValueBuilder( Regression142Type.class );
-            builder.prototype().price().set( 23.45 );
-            builder.prototype().testenum().set( Regression142Enum.B );
-            value = builder.newInstance();
-            String serialized = serialization.serialize( value );
-            System.out.println( serialized ); // ok
-            value = serialization.deserialize( module, Regression142Type.class, serialized ); // ok
-        }
-        {
-            Identity valueId = new StringIdentity( "abcdefg" );
-            {
-                try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ))
-                {
-                    EntityBuilder<Regression142Type> builder = uow.newEntityBuilder( Regression142Type.class, valueId );
-                    builder.instance().price().set( 45.67 );
-                    builder.instance().testenum().set( Regression142Enum.A );
-                    value = builder.newInstance();
-                    System.out.println( value.testenum().get() );
-                    uow.complete();
-                }
-                catch( Exception e_ )
-                {
-                    e_.printStackTrace();
-                }
-            }
-            {
-                try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ))
-                {
-                    value = uow.get( Regression142Type.class, valueId );
-                    System.out.println( value.price().get() );
-                    System.out.println( value.testenum().get() ); // FAIL
-                }
-            }
-        }
-    }
-
-    private enum Regression142Enum
-    {
-        A, B, C, D
-    }
-
-    interface Regression142Type
-    {
-        Property<Double> price();
-
-        Property<Regression142Enum> testenum();
     }
 }

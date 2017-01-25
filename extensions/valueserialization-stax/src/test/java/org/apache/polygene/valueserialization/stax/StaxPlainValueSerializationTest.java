@@ -19,17 +19,15 @@
  */
 package org.apache.polygene.valueserialization.stax;
 
-import org.junit.BeforeClass;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractPlainValueSerializationTest;
+import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
 public class StaxPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
 {
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
@@ -39,12 +37,8 @@ public class StaxPlainValueSerializationTest
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         new StaxValueSerializationAssembler().assemble( module );
-        // END SNIPPET: assembly
-        super.assemble( module );
-        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 }

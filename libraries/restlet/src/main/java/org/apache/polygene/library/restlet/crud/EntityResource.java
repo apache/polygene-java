@@ -150,7 +150,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
                     {
                         return null;
                     }
-                    Class<?> propertyType = descriptor.valueType().mainType();
+                    Class<?> propertyType = descriptor.valueType().primaryType();
                     Property<String> value = field.value();
                     if( value == null )
                     {
