@@ -29,7 +29,6 @@ dependencies {
   implementation polygene.core.bootstrap
   implementation polygene.library( 'rest-server' )
   implementation polygene.library( 'fileconfig' )
-  implementation polygene.extension( 'valueserialization-orgjson' )
   implementation polygene.extension( 'entitystore-memory' )
   implementation polygene.extension( 'entitystore-file' )
   implementation polygene.extension( 'indexing-rdf' )

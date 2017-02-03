@@ -26,7 +26,6 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * JAVADOC
@@ -37,7 +36,6 @@ class RDFAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        new OrgJsonValueSerializationAssembler().assemble( module );
         module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
         module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
     }

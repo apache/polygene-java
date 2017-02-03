@@ -19,14 +19,12 @@
  */
 package org.apache.polygene.index.rdf;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfEntityFinderTest extends AbstractEntityFinderTest
 {
@@ -37,7 +35,6 @@ public class RdfEntityFinderTest extends AbstractEntityFinderTest
         super.assemble( module );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
         // module.services( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
         // module.addComposites( NativeRdfConfiguration.class );

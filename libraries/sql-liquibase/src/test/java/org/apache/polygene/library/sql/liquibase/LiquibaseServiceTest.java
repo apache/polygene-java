@@ -20,14 +20,10 @@
 package org.apache.polygene.library.sql.liquibase;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.sql.DataSource;
-import org.apache.polygene.api.activation.ActivationEvent;
-import org.apache.polygene.api.activation.ActivationEventListener;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.property.Property;
@@ -39,13 +35,22 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.Databases;
-import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.SQLDialect;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.junit.Test;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.table;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -68,23 +73,23 @@ public class LiquibaseServiceTest
                 // Create in-memory store for configurations
                 new EntityTestAssembler().assemble( configModule );
 
-                new DBCPDataSourceServiceAssembler().
-                    identifiedBy( "datasource-service" ).
-                    withConfig( configModule, Visibility.layer ).
-                    assemble( module );
-                new DataSourceAssembler().
-                    withDataSourceServiceIdentity( "datasource-service" ).
-                    identifiedBy( "testds-liquibase" ).
-                    withCircuitBreaker().
-                    assemble( module );
+                new DBCPDataSourceServiceAssembler()
+                    .identifiedBy( "datasource-service" )
+                    .withConfig( configModule, Visibility.layer )
+                    .assemble( module );
+                new DataSourceAssembler()
+                    .withDataSourceServiceIdentity( "datasource-service" )
+                    .identifiedBy( "testds-liquibase" )
+                    .withCircuitBreaker()
+                    .assemble( module );
 
                 module.values( SomeValue.class );
 
                 // Set up Liquibase service that will create the tables
                 // START SNIPPET: assembly
-                new LiquibaseAssembler().
-                    withConfig( configModule, Visibility.layer ).
-                    assemble( module );
+                new LiquibaseAssembler()
+                    .withConfig( configModule, Visibility.layer )
+                    .assemble( module );
                 // END SNIPPET: assembly
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
@@ -93,78 +98,48 @@ public class LiquibaseServiceTest
             @Override
             public void beforeActivation( Application application )
             {
-                application.registerActivationEventListener( new ActivationEventListener()
-                {
-
-                    @Override
-                    public void onEvent( ActivationEvent event )
-                    {
-                        System.out.println( event );
-                    }
-
-                } );
+                application.registerActivationEventListener( System.out::println );
             }
-
         };
 
         Module module = assembler.module();
 
-        // START SNIPPET: io
         // Look up the DataSource
         DataSource ds = module.findService( DataSource.class ).get();
 
-        // Instanciate Databases helper
-        Databases database = new Databases( ds );
+        // Prepare jOOQ and the schema model
+        DSLContext jooq = DSL.using( ds, SQLDialect.DERBY );
+        Table<Record> testTable = table( "TEST" );
+        Field<String> idColumn = field( "ID", String.class );
+        Field<String> fooColumn = field( "FOO", String.class );
 
         // Assert that insertion works
-        assertTrue( database.update( "insert into test values ('someid', 'bar')" ) == 1 );
-        // END SNIPPET: io
+        InsertValuesStep2 insert = jooq.insertInto( testTable )
+                                       .columns( idColumn, fooColumn )
+                                       .values( "someid", "bar" );
+        assertTrue( insert.execute() == 1 );
 
-        database.query( "select * from test", new Databases.ResultSetVisitor()
+        List<Record> records = jooq.selectFrom( testTable ).stream().collect( toList() );
+        assertThat( records.size(), is( 1 ) );
+        assertThat( records.get( 0 ).get( idColumn ), equalTo( "someid" ) );
+        assertThat( records.get( 0 ).get( fooColumn ), equalTo( "bar" ) );
+
+        Function<Record, SomeValue> toValue = record ->
         {
-            @Override
-            public boolean visit( ResultSet visited )
-                throws SQLException
-            {
-                assertThat( visited.getString( "id" ), equalTo( "someid" ) );
-                assertThat( visited.getString( "foo" ), equalTo( "bar" ) );
-
-                return true;
-            }
-        } );
-
-        Function<ResultSet, SomeValue> toValue = new Function<ResultSet, SomeValue>()
-        {
-            @Override
-            public SomeValue apply( ResultSet resultSet )
-            {
-                ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
-                try
-                {
-                    builder.prototype().id().set( resultSet.getString( "id" ) );
-                    builder.prototype().foo().set( resultSet.getString( "foo" ) );
-                }
-                catch( SQLException e )
-                {
-                    throw new IllegalArgumentException( "Could not convert to SomeValue",
-                                                        SQLUtil.withAllSQLExceptions( e ) );
-                }
-
-                return builder.newInstance();
-            }
+            ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
+            builder.prototype().id().set( record.get( idColumn ) );
+            builder.prototype().foo().set( record.get( fooColumn ) );
+            return builder.newInstance();
         };
 
-        List<SomeValue> rows = new ArrayList<SomeValue>();
-        database.query( "select * from test", new Databases.ResultSetVisitor() {
-            @Override
-            public boolean visit( final ResultSet resultSet ) throws SQLException
-            {
-                rows.add( toValue.apply( resultSet ) );
-                return true;
-            }
-        } );
+        List<SomeValue> values = jooq.selectFrom( testTable ).stream()
+                                     .map( toValue )
+                                     .peek( System.out::println )
+                                     .collect( toList() );
 
-        rows.forEach( System.out::println );
+        assertThat( values.size(), is( 1 ) );
+        assertThat( values.get( 0 ).id().get(), equalTo( "someid" ) );
+        assertThat( values.get( 0 ).foo().get(), equalTo( "bar" ) );
     }
 
     interface SomeValue
@@ -174,5 +149,4 @@ public class LiquibaseServiceTest
 
         Property<String> foo();
     }
-
 }

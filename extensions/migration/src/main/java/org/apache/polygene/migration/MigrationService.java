@@ -22,9 +22,12 @@ package org.apache.polygene.migration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.configuration.Configuration;
@@ -39,13 +42,17 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.migration.assembly.EntityMigrationRule;
 import org.apache.polygene.migration.assembly.MigrationBuilder;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.migration.assembly.MigrationRule;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.Migration;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
+import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
 
 /**
  * Migration service. This is used by MapEntityStore EntityStore implementations to
@@ -63,24 +70,21 @@ import org.slf4j.LoggerFactory;
 public interface MigrationService
     extends Migration
 {
-
     void initialize()
         throws Exception;
 
     class Activator
         extends ActivatorAdapter<ServiceReference<MigrationService>>
     {
-
         @Override
         public void afterActivation( ServiceReference<MigrationService> activated )
             throws Exception
         {
             activated.get().initialize();
         }
-
     }
 
-    public class MigrationMixin
+    class MigrationMixin
         implements MigrationService, Migrator
     {
         @Structure
@@ -98,6 +102,9 @@ public interface MigrationService
         @Service
         EntityStore entityStore;
 
+        @Service
+        JsonSerialization serialization;
+
         @Structure
         UnitOfWorkFactory uowf;
 
@@ -111,38 +118,61 @@ public interface MigrationService
         Iterable<MigrationEvents> migrationEvents;
 
         @Override
-        public boolean migrate( JSONObject state, String toVersion, StateStore stateStore )
-            throws JSONException
+        public JsonObject migrate( final JsonObject state, String toVersion, StateStore stateStore )
+            throws JsonException
         {
             // Get current version
-            String fromVersion = state.optString( JSONKeys.APPLICATION_VERSION, "0.0" );
+            String fromVersion = state.getString( JSONKeys.APPLICATION_VERSION, "0.0" );
 
-            Iterable<EntityMigrationRule> matchedRules = builder.entityMigrationRules().rulesBetweenVersions( fromVersion, toVersion );
+            Iterable<EntityMigrationRule> matchedRules = builder.entityMigrationRules()
+                                                                .rulesBetweenVersions( fromVersion, toVersion );
 
+            JsonObject migratedState = state;
             boolean changed = false;
+            List<String> failures = new ArrayList<>();
             if( matchedRules != null )
             {
                 for( EntityMigrationRule matchedRule : matchedRules )
                 {
-                    boolean ruleExecuted = matchedRule.upgrade( state, stateStore, migrator );
+                    MigrationContext context = new MigrationContext();
 
-                    if( ruleExecuted && log.isDebugEnabled() )
+                    migratedState = matchedRule.upgrade( context, migratedState, stateStore, migrator );
+
+                    if( context.isSuccess() && context.hasChanged() && log.isDebugEnabled() )
                     {
                         log.debug( matchedRule.toString() );
                     }
 
-                    changed = ruleExecuted || changed;
+                    failures.addAll( context.failures() );
+                    changed = context.hasChanged() || changed;
                 }
             }
 
-            state.put( JSONKeys.APPLICATION_VERSION, toVersion );
+            JsonObjectBuilder appVersionBuilder = Json.createObjectBuilder();
+            for( Map.Entry<String, JsonValue> entry : migratedState.entrySet() )
+            {
+                appVersionBuilder.add( entry.getKey(), entry.getValue() );
+            }
+            appVersionBuilder.add( JSONKeys.APPLICATION_VERSION, toVersion );
+            migratedState = appVersionBuilder.build();
+
+            if( failures.size() > 0 )
+            {
+                log.warn( "Migration of {} from {} to {} aborted, failed operation(s):\n{}",
+                          state.getString( JSONKeys.IDENTITY ), fromVersion, toVersion,
+                          String.join( "\n\t", failures ) );
+                return state;
+            }
 
             if( changed )
             {
-                log.info( "Migrated " + state.getString( JSONKeys.IDENTITY ) + " from " + fromVersion + " to " + toVersion );
+                log.info( "Migrated {} from {} to {}",
+                          migratedState.getString( JSONKeys.IDENTITY ), fromVersion, toVersion );
+                return migratedState;
             }
 
-            return changed;
+            // Nothing done
+            return state;
         }
 
         @Override
@@ -193,304 +223,571 @@ public interface MigrationService
 
         // Migrator implementation
         @Override
-        public boolean addProperty( JSONObject state, String name, Object defaultValue )
-            throws JSONException
+        public JsonObject addProperty( MigrationContext context, JsonObject state, String name, Object defaultValue )
+            throws JsonException
         {
-            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
-            if( !properties.has( name ) )
+            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
+            if( !properties.containsKey( name ) )
             {
-                if( defaultValue == null )
+                JsonValue value = serialization.toJson( defaultValue );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
                 {
-                    properties.put( name, JSONObject.NULL );
+                    String key = entry.getKey();
+                    if( !JSONKeys.PROPERTIES.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
                 }
-                else
+                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
                 {
-                    properties.put( name, defaultValue );
+                    propBuilder.add( entry.getKey(), entry.getValue() );
                 }
+                propBuilder.add( name, value );
+                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
+                context.markAsChanged();
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.propertyAdded( state.getString( JSONKeys.IDENTITY ), name, defaultValue );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Add property " + name + ", default:" + defaultValue );
+                return state;
             }
         }
 
         @Override
-        public boolean removeProperty( JSONObject state, String name )
-            throws JSONException
+        public JsonObject removeProperty( MigrationContext context, JsonObject state, String name )
+            throws JsonException
         {
-            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
-            if( properties.has( name ) )
+            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
+            if( properties.containsKey( name ) )
             {
-                properties.remove( name );
-                for( MigrationEvents migrationEvent : migrationEvents )
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
                 {
-                    migrationEvent.propertyRemoved( state.getString( JSONKeys.IDENTITY ), name );
+                    String key = entry.getKey();
+                    if( !JSONKeys.PROPERTIES.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !name.equals( key ) )
+                    {
+                        propBuilder.add( key, entry.getValue() );
+                    }
+                    else
+                    {
+                        context.markAsChanged();
+                    }
+                }
+                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
+
+                if( context.hasChanged() )
+                {
+                    for( MigrationEvents migrationEvent : migrationEvents )
+                    {
+                        migrationEvent.propertyRemoved( state.getString( JSONKeys.IDENTITY ), name );
+                    }
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Remove property " + name );
+                return state;
             }
         }
 
         @Override
-        public boolean renameProperty( JSONObject state, String from, String to )
-            throws JSONException
+        public JsonObject renameProperty( MigrationContext context, JsonObject state, String from, String to )
+            throws JsonException
         {
-            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
-            if( properties.has( from ) )
+            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
+            if( properties.containsKey( from ) )
             {
-                Object value = properties.remove( from );
-                properties.put( to, value );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.PROPERTIES.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( from.equals( key ) )
+                    {
+                        propBuilder.add( to, entry.getValue() );
+                        context.markAsChanged();
+                    }
+                    else
+                    {
+                        propBuilder.add( key, entry.getValue() );
+                    }
+                }
+                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
+
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.propertyRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Rename property " + from + " to " + to );
+                return state;
             }
         }
 
         @Override
-        public boolean addAssociation( JSONObject state, String name, String defaultReference )
-            throws JSONException
+        public JsonObject addAssociation( MigrationContext context, JsonObject state, String name,
+                                          String defaultReference )
+            throws JsonException
         {
-            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
-            if( !associations.has( name ) )
+            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
+            if( !associations.containsKey( name ) )
             {
-                if( defaultReference == null )
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
                 {
-                    associations.put( name, JSONObject.NULL );
+                    String key = entry.getKey();
+                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
                 }
-                else
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
                 {
-                    associations.put( name, defaultReference );
+                    assocBuilder.add( entry.getKey(), entry.getValue() );
                 }
+                JsonValue value = serialization.toJson( defaultReference );
+                assocBuilder.add( name, value );
+                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
+                context.markAsChanged();
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReference );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Add association " + name + ", default:" + defaultReference );
+                return state;
             }
         }
 
         @Override
-        public boolean removeAssociation( JSONObject state, String name )
-            throws JSONException
+        public JsonObject removeAssociation( MigrationContext context, JsonObject state, String name )
+            throws JsonException
         {
-            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
-            if( associations.has( name ) )
+            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
+            if( associations.containsKey( name ) )
             {
-                associations.remove( name );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !name.equals( key ) )
+                    {
+                        assocBuilder.add( key, entry.getValue() );
+                    }
+                    else
+                    {
+                        context.markAsChanged();
+                    }
+                }
+                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
+
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Remove association " + name );
+                return state;
             }
         }
 
         @Override
-        public boolean renameAssociation( JSONObject state, String from, String to )
-            throws JSONException
+        public JsonObject renameAssociation( MigrationContext context, JsonObject state, String from, String to )
+            throws JsonException
         {
-            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
-            if( associations.has( from ) )
+            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
+            if( associations.containsKey( from ) )
             {
-                Object value = associations.remove( from );
-                associations.put( to, value );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( from.equals( key ) )
+                    {
+                        assocBuilder.add( to, entry.getValue() );
+                        context.markAsChanged();
+                    }
+                    else
+                    {
+                        assocBuilder.add( to, entry.getValue() );
+                    }
+                }
+                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Rename association " + from + " to " + to );
+                return state;
             }
         }
 
         @Override
-        public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
-            throws JSONException
+        public JsonObject addManyAssociation( MigrationContext context, JsonObject state, String name,
+                                              String... defaultReferences )
+            throws JsonException
         {
-            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( !manyAssociations.has( name ) )
+            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
+            if( !manyAssociations.containsKey( name ) )
             {
-                JSONArray references = new JSONArray();
-                for( String reference : defaultReferences )
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
                 {
-                    references.put( reference );
+                    String key = entry.getKey();
+                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
                 }
-                manyAssociations.put( name, references );
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
+                {
+                    assocBuilder.add( entry.getKey(), entry.getValue() );
+                }
+                JsonValue value = serialization.toJson( defaultReferences );
+                assocBuilder.add( name, value );
+                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
+                context.markAsChanged();
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReferences );
+                    migrationEvent.manyAssociationAdded( state.getString( JSONKeys.IDENTITY ), name,
+                                                         defaultReferences );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Add many-association " + name + ", default:" + asList( defaultReferences ) );
+                return state;
             }
         }
 
         @Override
-        public boolean removeManyAssociation( JSONObject state, String name )
-            throws JSONException
+        public JsonObject removeManyAssociation( MigrationContext context, JsonObject state, String name )
+            throws JsonException
         {
-            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( manyAssociations.has( name ) )
+            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
+            if( manyAssociations.containsKey( name ) )
             {
-                manyAssociations.remove( name );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !name.equals( key ) )
+                    {
+                        assocBuilder.add( key, entry.getValue() );
+                    }
+                    else
+                    {
+                        context.markAsChanged();
+                    }
+                }
+                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
+
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Remove many-association " + name );
+                return state;
             }
         }
 
         @Override
-        public boolean renameManyAssociation( JSONObject state, String from, String to )
-            throws JSONException
+        public JsonObject renameManyAssociation( MigrationContext context, JsonObject state, String from, String to )
+            throws JsonException
         {
-            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( manyAssociations.has( from ) )
+            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
+            if( manyAssociations.containsKey( from ) )
             {
-                Object value = manyAssociations.remove( from );
-                manyAssociations.put( to, value );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( from.equals( key ) )
+                    {
+                        context.markAsChanged();
+                        assocBuilder.add( to, entry.getValue() );
+                    }
+                    else
+                    {
+                        assocBuilder.add( key, entry.getValue() );
+                    }
+                }
+                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Rename many-association " + from + " to " + to );
+                return state;
             }
         }
 
         @Override
-        public boolean addNamedAssociation( JSONObject state, String name, Map<String, String> defaultReferences )
-            throws JSONException
+        public JsonObject addNamedAssociation( MigrationContext context, JsonObject state, String name,
+                                               Map<String, String> defaultReferences )
+            throws JsonException
         {
-            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( !namedAssociations.has( name ) )
+            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( !namedAssociations.containsKey( name ) )
             {
-                JSONObject references = new JSONObject();
-                for( Map.Entry<String, String> namedRef : defaultReferences.entrySet() )
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
                 {
-                    references.put( namedRef.getKey(), namedRef.getValue() );
+                    String key = entry.getKey();
+                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
                 }
-                namedAssociations.put( name, references );
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
+                {
+                    assocBuilder.add( entry.getKey(), entry.getValue() );
+                }
+                JsonValue value = serialization.toJson( defaultReferences );
+                assocBuilder.add( name, value );
+                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
+                context.markAsChanged();
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.namedAssociationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReferences );
+                    migrationEvent.namedAssociationAdded( state.getString( JSONKeys.IDENTITY ), name,
+                                                          defaultReferences );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Add named-association " + name + ", default:" + defaultReferences );
+                return state;
             }
         }
 
         @Override
-        public boolean removeNamedAssociation( JSONObject state, String name )
-            throws JSONException
+        public JsonObject removeNamedAssociation( MigrationContext context, JsonObject state, String name )
+            throws JsonException
         {
-            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( namedAssociations.has( name ) )
+            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( namedAssociations.containsKey( name ) )
             {
-                namedAssociations.remove( name );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !name.equals( key ) )
+                    {
+                        assocBuilder.add( key, entry.getValue() );
+                    }
+                    else
+                    {
+                        context.markAsChanged();
+                    }
+                }
+                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.namedAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Remove named-association " + name );
+                return state;
             }
         }
 
         @Override
-        public boolean renameNamedAssociation( JSONObject state, String from, String to )
-            throws JSONException
+        public JsonObject renameNamedAssociation( MigrationContext context, JsonObject state, String from, String to )
+            throws JsonException
         {
-            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( namedAssociations.has( from ) )
+            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( namedAssociations.containsKey( from ) )
             {
-                Object value = namedAssociations.remove( from );
-                namedAssociations.put( to, value );
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
+                    {
+                        builder.add( key, entry.getValue() );
+                    }
+                }
+                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
+                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
+                {
+                    String key = entry.getKey();
+                    if( from.equals( key ) )
+                    {
+                        assocBuilder.add( to, entry.getValue() );
+                        context.markAsChanged();
+                    }
+                    else
+                    {
+                        assocBuilder.add( key, entry.getValue() );
+                    }
+                }
+                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.namedAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
-                return true;
+                return builder.build();
             }
             else
             {
-                return false;
+                context.addFailure( "Rename named-association " + from + " to " + to );
+                return state;
             }
         }
 
         @Override
-        public void changeEntityType( JSONObject state, String newEntityType )
-            throws JSONException
+        public JsonObject changeEntityType( MigrationContext context, JsonObject state,
+                                            String fromType, String toType )
+            throws JsonException
         {
-            state.put( JSONKeys.TYPE, newEntityType );
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+            {
+                String key = entry.getKey();
+                if( JSONKeys.TYPE.equals( key ) )
+                {
+                    String oldValue = entry.getValue().getValueType() == JsonValue.ValueType.STRING
+                                      ? ( (JsonString) entry.getValue() ).getString()
+                                      : entry.getValue().toString();
+                    if( !fromType.equals( oldValue ) )
+                    {
+                        context.addFailure( "Change entity type from " + fromType + " to " + toType );
+                        return state;
+                    }
+                    builder.add( JSONKeys.TYPE, toType );
+                    context.markAsChanged();
+                }
+                else
+                {
+                    builder.add( key, entry.getValue() );
+                }
+            }
 
             for( MigrationEvents migrationEvent : migrationEvents )
             {
-                migrationEvent.entityTypeChanged( state.getString( JSONKeys.IDENTITY ), newEntityType );
+                migrationEvent.entityTypeChanged( state.getString( JSONKeys.IDENTITY ), toType );
             }
+
+            return builder.build();
         }
     }
-
 }

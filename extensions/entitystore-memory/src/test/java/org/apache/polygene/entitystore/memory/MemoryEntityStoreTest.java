@@ -19,24 +19,19 @@
  */
 package org.apache.polygene.entitystore.memory;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class MemoryEntityStoreTest
     extends AbstractEntityStoreTest
 {
-
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         new MemoryEntityStoreAssembler().assemble( module );
         // END SNIPPET: assembly
-        new OrgJsonValueSerializationAssembler().assemble( module );
         super.assemble( module );
         // START SNIPPET: assembly
     }

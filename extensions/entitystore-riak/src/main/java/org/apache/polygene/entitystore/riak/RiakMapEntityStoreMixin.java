@@ -199,8 +199,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     }
 
     @Override
-    public void passivateService()
-        throws Exception
+    public void passivateService() throws Exception
     {
         riakClient.shutdown();
         riakClient = null;
@@ -248,7 +247,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
             changes.visitMap( new MapChanger()
             {
                 @Override
-                public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer newEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 {
                     return new StringWriter( 1000 )
                     {
@@ -272,7 +271,7 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer updateEntity( MapChange mapChange )
                 {
                     return new StringWriter( 1000 )
                     {
@@ -282,12 +281,13 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
                             try
                             {
                                 super.close();
-                                Location location = new Location( namespace, ref.identity().toString() );
+                                EntityReference reference = mapChange.reference();
+                                Location location = new Location( namespace, reference.identity().toString() );
                                 FetchValue fetch = new FetchValue.Builder( location ).build();
                                 FetchValue.Response response = riakClient.execute( fetch );
                                 if( response.isNotFound() )
                                 {
-                                    throw new EntityNotFoundException( ref );
+                                    throw new EntityNotFoundException( reference );
                                 }
                                 StoreValue store = new StoreValue.Builder( toString() )
                                     .withLocation( location )

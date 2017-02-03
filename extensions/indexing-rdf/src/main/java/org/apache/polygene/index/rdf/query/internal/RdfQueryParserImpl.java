@@ -47,15 +47,14 @@ import org.apache.polygene.api.query.grammar.NePredicate;
 import org.apache.polygene.api.query.grammar.Notpredicate;
 import org.apache.polygene.api.query.grammar.OrPredicate;
 import org.apache.polygene.api.query.grammar.OrderBy;
-import org.apache.polygene.api.query.grammar.PropertyFunction;
 import org.apache.polygene.api.query.grammar.PropertyNotNullPredicate;
 import org.apache.polygene.api.query.grammar.PropertyNullPredicate;
 import org.apache.polygene.api.query.grammar.QuerySpecification;
 import org.apache.polygene.api.query.grammar.Variable;
-import org.apache.polygene.api.value.ValueSerializer;
-import org.apache.polygene.api.value.ValueSerializer.Options;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.index.rdf.query.RdfQueryParser;
 import org.apache.polygene.spi.PolygeneSPI;
+import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
@@ -72,7 +71,7 @@ public class RdfQueryParserImpl
     private final Namespaces namespaces = new Namespaces();
     private final Triples triples = new Triples( namespaces );
     private final PolygeneSPI spi;
-    private final ValueSerializer valueSerializer;
+    private final JsonSerializer stateSerializer;
     private Map<String, Object> variables;
 
     static
@@ -90,10 +89,10 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public RdfQueryParserImpl( PolygeneSPI spi, ValueSerializer valueSerializer )
+    public RdfQueryParserImpl( PolygeneSPI spi, JsonSerializer stateSerializer )
     {
         this.spi = spi;
-        this.valueSerializer = valueSerializer;
+        this.stateSerializer = stateSerializer;
     }
 
     @Override
@@ -328,7 +327,8 @@ public class RdfQueryParserImpl
 
     private String createAndEscapeJSONString( Object value )
     {
-        return escapeJSONString( valueSerializer.serialize( new Options().withoutTypeInfo(), value ) );
+        String serialized = stateSerializer.serialize( Serializer.Options.NO_TYPE_INFO, value );
+        return escapeJSONString( serialized );
     }
 
     private String createRegexStringForContaining( String valueVariable, String containedString )
@@ -376,7 +376,7 @@ public class RdfQueryParserImpl
             String jsonStr = "";
             if( item != null )
             {
-                String serialized = valueSerializer.serialize( new Options().withoutTypeInfo(), item );
+                String serialized = stateSerializer.serialize( Serializer.Options.NO_TYPE_INFO, item );
                 if( item instanceof String )
                 {
                     serialized = "\"" + StringEscapeUtils.escapeJava( serialized ) + "\"";
@@ -424,7 +424,7 @@ public class RdfQueryParserImpl
         if( predicate instanceof ComparisonPredicate )
         {
             ComparisonPredicate<?> comparisonPredicate = (ComparisonPredicate<?>) predicate;
-            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonPredicate.property(), false );
+            Triples.Triple triple = triples.addTriple( comparisonPredicate.property(), false );
 
             // Don't use FILTER for equals-comparison. Do direct match instead
             if( predicate instanceof EqPredicate && allowInline )

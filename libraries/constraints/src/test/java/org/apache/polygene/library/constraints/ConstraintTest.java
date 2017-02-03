@@ -20,14 +20,14 @@
 package org.apache.polygene.library.constraints;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
@@ -236,8 +236,8 @@ public class ConstraintTest
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().notEmptyString().set( "X" );
-        cb.prototype().notEmptyCollection().set( Arrays.asList( "X" ) );
-        cb.prototype().notEmptyList().set( Arrays.asList( "X" ) );
+        cb.prototype().notEmptyCollection().set( Collections.singletonList( "X" ) );
+        cb.prototype().notEmptyList().set( Collections.singletonList( "X" ) );
     }
 
     @Test( expected = ConstraintViolationException.class )

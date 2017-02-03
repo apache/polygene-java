@@ -19,11 +19,10 @@
  */
 package org.apache.polygene.migration.operation;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
-import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
 
 /**
@@ -42,37 +41,15 @@ public class RenameEntity
     }
 
     @Override
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        String type = state.getString( JSONKeys.TYPE );
-
-        if( type.equals( fromName ) )
-        {
-            migrator.changeEntityType( state, toName );
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return migrator.changeEntityType( context, state, fromName, toName );
     }
 
     @Override
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        String type = state.getString( JSONKeys.TYPE );
-
-        if( type.equals( toName ) )
-        {
-            migrator.changeEntityType( state, fromName );
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return migrator.changeEntityType( context, state, fromName, fromName );
     }
 
     @Override

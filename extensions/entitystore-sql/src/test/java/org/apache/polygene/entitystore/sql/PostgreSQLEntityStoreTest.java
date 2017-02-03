@@ -36,7 +36,6 @@ import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 /**
@@ -88,29 +87,28 @@ public class PostgreSQLEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         // DataSourceService
-        new DBCPDataSourceServiceAssembler().
-            identifiedBy( "postgresql-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "postgresql-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
 
         // DataSource
-        new DataSourceAssembler().
-            withDataSourceServiceIdentity( "postgresql-datasource-service" ).
-            identifiedBy( "postgresql-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( module );
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "postgresql-datasource-service" )
+            .identifiedBy( "postgresql-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
         // SQL EntityStore
-        new PostgreSQLEntityStoreAssembler().
-            visibleIn( Visibility.application ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new PostgreSQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         // END SNIPPET: assembly
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "5432/tcp" );
@@ -129,7 +127,8 @@ public class PostgreSQLEntityStoreTest
         );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLConfiguration config = uow.get( SQLConfiguration.class,
+                                               PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();
@@ -139,7 +138,7 @@ public class PostgreSQLEntityStoreTest
             }
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
+                stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
                 connection.commit();
             }
         }
@@ -149,5 +148,4 @@ public class PostgreSQLEntityStoreTest
             super.tearDown();
         }
     }
-
 }

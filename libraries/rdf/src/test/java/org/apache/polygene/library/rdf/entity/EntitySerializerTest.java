@@ -22,17 +22,12 @@ package org.apache.polygene.library.rdf.entity;
 
 import java.io.PrintWriter;
 import java.time.Instant;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.api.time.SystemTime;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Before;
-import org.junit.Test;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.time.SystemTime;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.usecase.Usecase;
@@ -46,8 +41,12 @@ import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Before;
+import org.junit.Test;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
 
 /**
  * JAVADOC
@@ -64,7 +63,6 @@ public class EntitySerializerTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         module.entities( TestEntity.class );
         module.values( TestValue.class, Test2Value.class );

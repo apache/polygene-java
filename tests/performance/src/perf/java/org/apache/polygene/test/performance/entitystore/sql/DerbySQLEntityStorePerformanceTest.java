@@ -34,7 +34,6 @@ import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * Performance test for DerbySQLEntityStore.
@@ -58,8 +57,6 @@ public class DerbySQLEntityStorePerformanceTest
             {
                 ModuleAssembly config = module.layer().module( "config" );
                 new EntityTestAssembler().assemble( config );
-
-                new OrgJsonValueSerializationAssembler().assemble( module );
 
                 // DataSourceService
                 new DBCPDataSourceServiceAssembler().

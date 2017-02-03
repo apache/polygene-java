@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.sql.internal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Instant;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 
@@ -89,30 +88,26 @@ public abstract class DatabaseSQLServiceStatementsMixin
     }
 
     @Override
-    public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Instant lastModified )
+    public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity )
             throws SQLException
     {
         ps.setString( 1, ref.identity().toString() );
         ps.setString( 2, entity );
-        ps.setLong( 3, lastModified.toEpochMilli() );
     }
 
     @Override
-    public void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )
+    public void populateRemoveEntityStatement( PreparedStatement ps, EntityReference ref )
             throws SQLException
     {
-        ps.setLong( 1, entityPK );
+        ps.setString( 1, ref.identity().toString() );
     }
 
     @Override
-    public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Instant lastModified )
+    public void populateUpdateEntityStatement( PreparedStatement ps, EntityReference ref, String entity )
             throws SQLException
     {
-        ps.setLong( 1, entityOptimisticLock + 1 );
+        ps.setString( 1, ref.identity().toString() );
         ps.setString( 2, entity );
-        ps.setLong( 3, lastModified.toEpochMilli() );
-        ps.setLong( 4, entityPK );
-        ps.setLong( 5, entityOptimisticLock );
     }
 
 }

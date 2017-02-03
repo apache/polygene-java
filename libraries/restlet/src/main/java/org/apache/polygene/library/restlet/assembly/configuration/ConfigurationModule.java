@@ -26,7 +26,6 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class ConfigurationModule
     implements ModuleAssembler
@@ -37,7 +36,6 @@ public class ConfigurationModule
         throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-        new JacksonValueSerializationAssembler().visibleIn( Visibility.layer ).assemble( module );
         return module;
     }
 }

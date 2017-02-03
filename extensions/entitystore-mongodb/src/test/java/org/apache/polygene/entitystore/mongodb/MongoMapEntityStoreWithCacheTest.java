@@ -20,14 +20,13 @@
 package org.apache.polygene.entitystore.mongodb;
 
 import com.mongodb.Mongo;
-import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
@@ -52,8 +51,6 @@ public class MongoMapEntityStoreWithCacheTest
 
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 

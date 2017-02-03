@@ -20,28 +20,23 @@
 
 package org.apache.polygene.index.solr.assembly;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.index.solr.EmbeddedSolrService;
 import org.apache.polygene.index.solr.SolrQueryService;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class SolrIndexingAssembler extends Assemblers.VisibilityIdentityConfig<SolrIndexingAssembler>
 {
     @Override
-   public void assemble( ModuleAssembly module ) throws AssemblyException
-   {
-      module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
-      ServiceDeclaration queryService = module.services( SolrQueryService.class );
-      queryService.
-            taggedWith( "solr", "search", "indexing", "query" ).
-            identifiedBy( identity() ).
-            visibleIn( visibility() ).
-            instantiateOnStartup();
-      module.objects( EntityStateSerializer.class );
-   }
+    public void assemble( ModuleAssembly module )
+    {
+        module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
+        module.services( SolrQueryService.class )
+              .taggedWith( "solr", "search", "indexing", "query" )
+              .identifiedBy( identity() )
+              .visibleIn( visibility() )
+              .instantiateOnStartup();
+        module.objects( EntityStateSerializer.class );
+    }
 }

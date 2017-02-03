@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.service.qualifier.Tagged;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -53,8 +53,8 @@ public class ValueCompositeResponseWriter extends AbstractResponseWriter
     private Configuration cfg;
 
     @Service
-    @Tagged( ValueSerialization.Formats.JSON )
-    private ValueSerializer valueSerializer;
+    @Tagged( Serialization.Formats.JSON )
+    private Serializer serializer;
 
     @Override
     public boolean writeResponse( final Object result, final Response response )
@@ -65,7 +65,7 @@ public class ValueCompositeResponseWriter extends AbstractResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                StringRepresentation representation = new StringRepresentation( valueSerializer.serialize( result ),
+                StringRepresentation representation = new StringRepresentation( serializer.serialize( result ),
                                                                                 MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
                 return true;

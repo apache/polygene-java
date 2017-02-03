@@ -19,11 +19,7 @@
  */
 package org.apache.polygene.api.value;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -32,16 +28,16 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.serialization.Deserializer;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
@@ -52,17 +48,14 @@ import static org.junit.Assert.assertThat;
  * Snippets:
  * - default : default ValueSerialization
  * - service : assembled service ValueSerialization
- * - lookup  : ValueSerialization values module finder
+ * - io : i/o usage
  */
-public class DocumentationSupport
-    extends AbstractPolygeneTest
+public class DocumentationSupport extends AbstractPolygeneTest
 {
-
     // START SNIPPET: default
     // START SNIPPET: service
     public interface SomeValue // (1)
     {
-
         Property<String> foo();
     }
 
@@ -71,10 +64,6 @@ public class DocumentationSupport
         throws AssemblyException
     {
         module.values( SomeValue.class ); // (2)
-        // END SNIPPET: default
-        new OrgJsonValueSerializationAssembler().assemble( module ); // (3)
-        new DefaultUnitOfWorkAssembler().assemble( module );
-        // START SNIPPET: default
     }
     // END SNIPPET: default
     // END SNIPPET: service
@@ -97,9 +86,9 @@ public class DocumentationSupport
     // END SNIPPET: default
     // START SNIPPET: service
     @Service
-    private ValueSerializer valueSerializer; // (4)
+    private Serializer serializer; // (4)
     @Service
-    private ValueDeserializer valueDeserializer; // (4)
+    private Deserializer deserializer; // (4)
 
     // END SNIPPET: service
     @Test
@@ -107,8 +96,8 @@ public class DocumentationSupport
     public void assembledDefaultServiceSerialization()
     {
         SomeValue someValue = someNewValueInstance(); // (5)
-        String json = valueSerializer.serialize( someValue ); // (6)
-        SomeValue someNewValue = valueDeserializer.deserialize( module, SomeValue.class, json ); // (7)
+        String json = serializer.serialize( someValue ); // (6)
+        SomeValue someNewValue = deserializer.deserialize( module, SomeValue.class, json ); // (7)
         // END SNIPPET: service
 
         assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
@@ -120,44 +109,9 @@ public class DocumentationSupport
 
     static enum AcmeValue
     {
-
-        foo, bar
+        foo,
+        bar
     }
-
-    @Test
-    // START SNIPPET: stream
-    public void assembledServiceStreamingSerialization()
-    {
-        // END SNIPPET: stream
-
-        List<AcmeValue> dataSource = Arrays.asList( AcmeValue.values() );
-        ByteArrayOutputStream targetStream = new ByteArrayOutputStream();
-
-        // START SNIPPET: stream
-        // (1)
-        Iterable<AcmeValue> data = dataSource; // Eg. Entities converted to Values
-        OutputStream output = targetStream; // Eg. streaming JSON over HTTP
-
-        // (2)
-        valueSerializer.serialize( data, output );
-        // END SNIPPET: stream
-
-        byte[] serialized = targetStream.toByteArray();
-        ByteArrayInputStream sourceStream = new ByteArrayInputStream( serialized );
-
-        // START SNIPPET: stream
-        // (3)
-        InputStream input = sourceStream; // Eg. reading incoming JSON
-
-        // (4)
-        List<AcmeValue> values = valueDeserializer.deserialize( module, CollectionType.listOf( AcmeValue.class ), input );
-        // END SNIPPET: stream
-
-        assertThat( values, equalTo( dataSource ) );
-
-        // START SNIPPET: stream
-    }
-    // END SNIPPET: stream
 
     @Test
     // START SNIPPET: io
@@ -177,7 +131,7 @@ public class DocumentationSupport
         Stream<AcmeValue> queryResult = dataSource.stream();
 
         // (2)
-        Function<AcmeValue, String> serialize = valueSerializer.serialize();
+        Function<AcmeValue, String> serialize = serializer.serializeFunction();
 
         // (3)
         // Eg. pipe data to another process or to a file
@@ -193,7 +147,7 @@ public class DocumentationSupport
         Stream<String> lines = input.stream();
 
         // (5)
-        Function<String, AcmeValue> deserialize = valueDeserializer.deserialize( module, AcmeValue.class );
+        Function<String, AcmeValue> deserialize = deserializer.deserializeFunction( module, AcmeValue.class );
 
         // Deserialization of a collection of AcmeValue from a String.
         // One serialized AcmeValue per line.
@@ -209,47 +163,44 @@ public class DocumentationSupport
 
     @Test
     // TODO Move to SPI !
-    // TODO Include in each ValueSerialization extensions documentation
+    // TODO Include in each Serialization extensions documentation
     public void assembledWithValuesModuleSerialization()
         throws Exception
     {
-        Application app = new Energy4Java().newApplication( applicationFactory -> {
-            Assembler[][][] pancakes = new Assembler[][][]
-                {
+        Application app = new Energy4Java().newApplication(
+            applicationFactory ->
+            {
+                Assembler[][][] pancakes = new Assembler[][][]
                     {
                         {
-                            valuesModule -> {
-                                valuesModule.layer().setName( "SINGLE-Layer" );
-                                valuesModule.setName( "VALUES-Module" );
+                            {
+                                valuesModule ->
+                                {
+                                    valuesModule.layer().setName( "SINGLE-Layer" );
+                                    valuesModule.setName( "VALUES-Module" );
 
-                                valuesModule.values( SomeValue.class );
-                                new DefaultUnitOfWorkAssembler().assemble( valuesModule );
-                            }
-                        },
-                        {
-                            servicesModule -> {
-                                servicesModule.setName( "SERVICES-Module" );
-                                new OrgJsonValueSerializationAssembler().
-                                    assemble( servicesModule );
+                                    valuesModule.values( SomeValue.class );
+                                }
+                            },
+                            {
+                                servicesModule -> servicesModule.setName( "SERVICES-Module" )
                             }
                         }
-                    }
-                };
-            return applicationFactory.newApplicationAssembly( pancakes );
-        } );
+                    };
+                return applicationFactory.newApplicationAssembly( pancakes );
+            } );
         app.activate();
         try
         {
-            Module valuesModule = app.findModule( "SINGLE-Layer", "VALUES-Module" );
             SomeValue someValue = someNewValueInstance();
 
             Module servicesModule = app.findModule( "SINGLE-Layer", "SERVICES-Module" );
-            ValueSerialization valueSerialization = servicesModule.findService( ValueSerialization.class ).get();
+            Serialization stateSerialization = servicesModule.findService( Serialization.class ).get();
 
-            String json = valueSerialization.serialize( someValue );
+            String json = stateSerialization.serialize( someValue );
             assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
 
-            SomeValue someNewValue = valueSerialization.deserialize( module, SomeValue.class, json );
+            SomeValue someNewValue = stateSerialization.deserialize( module, SomeValue.class, json );
             assertThat( someNewValue, equalTo( someValue ) );
         }
         finally
@@ -258,7 +209,7 @@ public class DocumentationSupport
         }
     }
 
-    private SomeValue someNewValueInstance(  )
+    private SomeValue someNewValueInstance()
     {
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototype().foo().set( "bar" );

@@ -47,14 +47,11 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.api.service.qualifier.Tagged;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializer;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entity.ManyAssociationState;
@@ -66,6 +63,7 @@ import org.apache.polygene.spi.entitystore.EntityStoreSPI;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.StateCommitter;
 import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
+import org.apache.polygene.spi.serialization.JsonSerialization;
 
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.polygene.entitystore.cassandra.CassandraCluster.APP_VERSION_COLUMN;
@@ -88,7 +86,6 @@ public class CassandraEntityStoreMixin
     implements EntityStore, EntityStoreSPI, ServiceActivation
 {
 
-    private static final ValueSerializer.Options MAP_OPTIONS = new ValueSerializer.Options().withMapEntriesAsObjects();
     @This
     private CassandraCluster cluster;
 
@@ -100,8 +97,7 @@ public class CassandraEntityStoreMixin
     private CassandraMigration migration;
 
     @Service
-    @Tagged( ValueSerialization.Formats.JSON )
-    private ValueSerialization valueSerialization;
+    private JsonSerialization valueSerialization;
 
     @Optional
     @Service
@@ -414,7 +410,7 @@ public class CassandraEntityStoreMixin
                                       .collect(
                                           Collectors.toMap( Map.Entry::getKey,
                                                             entry -> entry.getValue().toString() ) );
-                        String serialized = valueSerialization.serialize( MAP_OPTIONS, refs );
+                        String serialized = valueSerialization.serialize( refs );
                         named.put( descriptor.qualifiedName().name(), serialized );
                     } );
             }

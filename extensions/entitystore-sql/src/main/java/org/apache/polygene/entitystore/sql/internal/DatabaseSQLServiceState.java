@@ -25,11 +25,9 @@ import org.sql.generation.api.vendor.SQLVendor;
 
 public interface DatabaseSQLServiceState
 {
+    @Optional
+    Property<String> schemaName();
 
     @Optional
-    public Property<String> schemaName();
-
-    @Optional
-    public Property<SQLVendor> vendor();
-
+    Property<SQLVendor> vendor();
 }

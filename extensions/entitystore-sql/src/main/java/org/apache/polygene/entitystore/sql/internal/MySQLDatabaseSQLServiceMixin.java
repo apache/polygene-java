@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.entitystore.sql.internal;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,7 +29,7 @@ import org.apache.polygene.library.sql.common.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("ProtectedField")
+@SuppressWarnings( "ProtectedField" )
 public abstract class MySQLDatabaseSQLServiceMixin
     implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
@@ -45,11 +46,9 @@ public abstract class MySQLDatabaseSQLServiceMixin
         ResultSet rs = null;
         try
         {
-            String tableNameForQuery = SQLs.TABLE_NAME;
-            rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]
-            {
-                "TABLE"
-            } );
+            String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
+            rs = connection.getMetaData().getTables( null, null, tableNameForQuery,
+                                                     new String[] { "TABLE" } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", tableNameForQuery, tableExists );
             return tableExists;
@@ -61,12 +60,9 @@ public abstract class MySQLDatabaseSQLServiceMixin
     }
 
     @Override
-    public EntityValueResult getEntityValue( ResultSet rs )
+    public Reader getEntityStateReader( ResultSet rs )
         throws SQLException
     {
-        return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
-            rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ), new StringReader(
-                rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
+        return new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) );
     }
-
 }

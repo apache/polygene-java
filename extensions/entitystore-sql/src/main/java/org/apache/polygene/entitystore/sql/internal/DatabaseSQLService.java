@@ -24,49 +24,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.service.ServiceComposite;
 
 @SuppressWarnings( "PublicInnerClass" )
 public interface DatabaseSQLService
 {
-
-    public interface DatabaseSQLServiceComposite
-        extends DatabaseSQLService, ServiceComposite
+    interface DatabaseSQLServiceComposite extends DatabaseSQLService, ServiceComposite
     {
     }
 
-    public final class EntityValueResult
+    final class EntityValueResult
     {
-
-        private final Long entityPK;
-
-        private final Long entityOptimisticLock;
-
         private final Reader reader;
 
-        public EntityValueResult( Long entityPK, Long entityOptimisticLock, Reader reader )
+        EntityValueResult( Reader reader )
         {
-            this.entityPK = entityPK;
-            this.entityOptimisticLock = entityOptimisticLock;
             this.reader = reader;
-        }
-
-        /**
-         * @return the entityPK
-         */
-        public Long getEntityPK()
-        {
-            return entityPK;
-        }
-
-        /**
-         * @return the entityOptimisticLock
-         */
-        public Long getEntityOptimisticLock()
-        {
-            return entityOptimisticLock;
         }
 
         /**
@@ -76,7 +50,6 @@ public interface DatabaseSQLService
         {
             return reader;
         }
-
     }
 
     void startDatabase()
@@ -109,16 +82,15 @@ public interface DatabaseSQLService
     void populateGetAllEntitiesStatement( PreparedStatement ps )
         throws SQLException;
 
-    void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Instant lastModified )
+    void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity )
         throws SQLException;
 
-    void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Instant lastModified )
+    void populateUpdateEntityStatement( PreparedStatement ps, EntityReference ref, String entity )
         throws SQLException;
 
-    void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )
+    void populateRemoveEntityStatement( PreparedStatement ps, EntityReference ref )
         throws SQLException;
 
-    EntityValueResult getEntityValue( ResultSet rs )
+    Reader getEntityStateReader( ResultSet rs )
         throws SQLException;
-
 }

@@ -27,8 +27,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rest.client.api.ContextResourceClient;
@@ -40,7 +38,8 @@ import org.apache.polygene.library.rest.client.spi.ResponseReader;
 import org.apache.polygene.library.rest.client.spi.ResultHandler;
 import org.apache.polygene.library.rest.common.ValueAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restlet.Client;
 import org.restlet.Response;
 import org.restlet.data.Protocol;
@@ -75,7 +74,6 @@ public class RssReaderTest
         throws AssemblyException
     {
         // General setup of client
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
     }

@@ -17,13 +17,11 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
 import org.apache.polygene.index.elasticsearch.client.ESClientIndexQueryService;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.elasticsearch.client.Client;
 
 public class ESClientIndexQueryAssembler
@@ -45,9 +43,6 @@ public class ESClientIndexQueryAssembler
               .setMetaInfo( client )
               .visibleIn( visibility() )
               .instantiateOnStartup();
-
-        module.services( OrgJsonValueSerializationService.class )
-              .taggedWith( ValueSerialization.Formats.JSON );
 
         if( hasConfig() )
         {

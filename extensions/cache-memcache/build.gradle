@@ -32,7 +32,6 @@ dependencies {
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.internals.testsupport
-  testImplementation polygene.extension( 'valueserialization-orgjson' )
 
   testRuntimeOnly libraries.logback
 }

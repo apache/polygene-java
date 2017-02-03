@@ -20,14 +20,13 @@
 
 package org.apache.polygene.spi.entitystore.helpers;
 
-import java.io.IOException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
+import org.apache.polygene.spi.entitystore.EntityStoreException;
 
 /**
  * StateStore SPI.
  */
 public interface StateStore
 {
-    JSONObject jsonStateOf( String id )
-        throws IOException;
+    JsonObject jsonStateOf( String id ) throws EntityStoreException;
 }

@@ -32,7 +32,6 @@ dependencies {
 
   perfImplementation polygene.core.testsupport
   perfImplementation polygene.library( 'sql-dbcp' )
-  perfImplementation polygene.extension( 'valueserialization-orgjson' )
   perfImplementation polygene.extension( 'entitystore-memory' )
   perfImplementation polygene.extension( 'entitystore-jdbm' )
   perfImplementation polygene.extension( 'entitystore-sql' )

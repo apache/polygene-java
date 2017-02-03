@@ -23,10 +23,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -37,13 +33,22 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.bootstrap.*;
+import org.apache.polygene.bootstrap.ApplicationAssembler;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
+import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.Energy4Java;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
 import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertTrue;
@@ -221,7 +226,6 @@ public class Qi95IssueTest
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
-            addModule( layer, name, new JacksonValueSerializationAssembler() );
             return addModule( layer, name, new RdfNativeSesameStoreAssembler() );
         }
     };
@@ -242,7 +246,6 @@ public class Qi95IssueTest
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
-            addModule( layer, name, new JacksonValueSerializationAssembler() );
             return addModule( layer, name, new RdfMemoryStoreAssembler() );
         }
     };
@@ -282,7 +285,6 @@ public class Qi95IssueTest
                     throws AssemblyException
                 {
                     module.entities( ItemTypeEntity.class );
-                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             } );
             return domainLayer;
@@ -298,7 +300,6 @@ public class Qi95IssueTest
                 throws AssemblyException
             {
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
 
                 module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( NativeConfiguration.class )
@@ -324,9 +325,7 @@ public class Qi95IssueTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new JacksonValueSerializationAssembler().assemble( module );
                 new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
     }
@@ -336,7 +335,6 @@ public class Qi95IssueTest
     {
         ModuleAssembly moduleAssembly = layerAssembly.module( name );
         assembler.assemble( moduleAssembly );
-        new DefaultUnitOfWorkAssembler().assemble( moduleAssembly );
         return moduleAssembly;
     }
 

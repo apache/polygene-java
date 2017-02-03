@@ -38,12 +38,11 @@ import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.time.SystemTime;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializationException;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entity.EntityState;
@@ -54,6 +53,7 @@ import org.apache.polygene.spi.entitystore.EntityNotFoundException;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.helpers.JSONEntityState;
+import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.restlet.data.CharacterSet;
@@ -79,7 +79,7 @@ public class EntityResource
     private EntityStore entityStore;
 
     @Service
-    private ValueSerialization valueSerialization;
+    private JsonSerialization serialization;
 
     @Structure
     private ModuleDescriptor module;
@@ -231,7 +231,7 @@ public class EntityResource
                                  + "type=\"text\" "
                                  + ( persistentProperty.isImmutable() ? "readonly=\"true\" " : "" )
                                  + "name=\"" + persistentProperty.qualifiedName() + "\" "
-                                 + "value=\"" + ( value == null ? "" : valueSerialization.serialize( value ) )
+                                 + "value=\"" + ( value == null ? "" : serialization.serialize( value ) )
                                  + "\"/></td></tr>" );
                 } );
                 out.println( "</table></fieldset>\n" );
@@ -308,6 +308,7 @@ public class EntityResource
 
     private Representation representJson( EntityState entityState )
     {
+        // TODO This guy needs to represent an Entity as JSON
         if( entityState instanceof JSONEntityState )
         {
             JSONEntityState jsonState = (JSONEntityState) entityState;
@@ -377,7 +378,7 @@ public class EntityResource
                     {
                         entity.setPropertyValue(
                             persistentProperty.qualifiedName(),
-                            valueSerialization.deserialize( module, persistentProperty.valueType(), formValue ) );
+                            serialization.deserialize( module, persistentProperty.valueType(), formValue ) );
                     }
                 }
             } );
@@ -503,7 +504,7 @@ public class EntityResource
                 }
             } );
         }
-        catch( ValueSerializationException | IllegalArgumentException e )
+        catch( SerializationException | IllegalArgumentException e )
         {
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
         }

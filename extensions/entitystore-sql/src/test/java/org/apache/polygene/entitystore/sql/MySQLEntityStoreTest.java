@@ -36,7 +36,6 @@ import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 public class MySQLEntityStoreTest
@@ -65,29 +64,28 @@ public class MySQLEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         // DataSourceService
-        new DBCPDataSourceServiceAssembler().
-            identifiedBy( "mysql-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "mysql-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
 
         // DataSource
-        new DataSourceAssembler().
-            withDataSourceServiceIdentity( "mysql-datasource-service" ).
-            identifiedBy( "mysql-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( module );
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "mysql-datasource-service" )
+            .identifiedBy( "mysql-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
         // SQL EntityStore
-        new MySQLEntityStoreAssembler().
-            visibleIn( Visibility.application ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new MySQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         // END SNIPPET: assembly
         String mysqlHost = DOCKER.getDockerHost();
         int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );

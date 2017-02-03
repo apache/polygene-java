@@ -1,10 +1,10 @@
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
+ *  distributed with work for additional information
+ *  regarding copyright ownership.  The ASF licenses file
  *  to you under the Apache License, Version 2.0 (the
- *  "License"); you may not use this file except in compliance
+ *  "License"); you may not use file except in compliance
  *  with the License.  You may obtain a copy of the License at
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
@@ -29,7 +29,6 @@ import org.sql.generation.api.grammar.builders.modification.DeleteBySearchBuilde
 import org.sql.generation.api.grammar.builders.modification.UpdateBySearchBuilder;
 import org.sql.generation.api.grammar.common.SQLStatement;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
-import org.sql.generation.api.grammar.definition.table.AutoGenerationPolicy;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
 import org.sql.generation.api.grammar.factories.BooleanFactory;
 import org.sql.generation.api.grammar.factories.ColumnsFactory;
@@ -60,91 +59,68 @@ public interface DatabaseSQLStringsBuilder
 
     String buildSQLForRemoveEntityStatement();
 
-    @SuppressWarnings("PublicInnerClass")
     abstract class CommonMixin
         implements DatabaseSQLStringsBuilder
     {
-
         private static final Logger LOGGER = LoggerFactory.getLogger( DatabaseSQLStringsBuilder.class );
 
         @This
-        private DatabaseSQLServiceState _state;
+        private DatabaseSQLServiceState dbState;
 
         private SQLVendor vendor;
-
         private String schemaName;
 
         private String[] schemaCreationSQLs;
-
         private String[] indexCreationSQLs;
-
         private String[] tableCreationSQLs;
 
         private String selectAllEntitiesSQL;
-
         private String selectEntitySQL;
-
         private String insertEntitySQL;
-
         private String updateEntitySQL;
-
         private String removeEntitySQL;
 
         @Override
         public void init()
         {
-            this.vendor = this._state.vendor().get();
+            vendor = dbState.vendor().get();
+            schemaName = dbState.schemaName().get();
+            schemaCreationSQLs = toString( createSchemaStatements( vendor ) );
+            indexCreationSQLs = toString( createIndicesStatements( vendor ) );
+            tableCreationSQLs = toString( createTableStatements( vendor ) );
+            selectAllEntitiesSQL = vendor.toString( createSelectAllEntitiesStatement( vendor ) );
+            selectEntitySQL = vendor.toString( createSelectEntityStatement( vendor ) );
+            insertEntitySQL = vendor.toString( createInsertEntityStatement( vendor ) );
+            updateEntitySQL = vendor.toString( createUpdateEntityStatement( vendor ) );
+            removeEntitySQL = vendor.toString( createRemoveEntityStatement( vendor ) );
 
-            this.schemaName = this._state.schemaName().get();
-
-            this.schemaCreationSQLs = this.toString( this.createSchemaStatements( this.vendor ) );
             if( LOGGER.isTraceEnabled() )
             {
-                LOGGER.trace( "SQL for schema creation: {}", Arrays.asList( this.schemaCreationSQLs ) );
+                LOGGER.trace( "SQL for schema creation: {}", Arrays.asList( schemaCreationSQLs ) );
+                LOGGER.trace( "SQL for index creation: {}", Arrays.asList( indexCreationSQLs ) );
+                LOGGER.trace( "SQL for table creation: {}", Arrays.asList( tableCreationSQLs ) );
+                LOGGER.trace( "SQL for select all entities: {}", selectAllEntitiesSQL );
+                LOGGER.trace( "SQL for select entity: {}", selectEntitySQL );
+                LOGGER.trace( "SQL for insert entity: {}", insertEntitySQL );
+                LOGGER.trace( "SQL for update entity: {}", updateEntitySQL );
+                LOGGER.trace( "SQL for remove entity: {}", removeEntitySQL );
             }
-
-            this.indexCreationSQLs = this.toString( this.createIndicesStatements( this.vendor ) );
-            if( LOGGER.isTraceEnabled() )
-            {
-                LOGGER.trace( "SQL for index creation: {}", Arrays.asList( this.indexCreationSQLs ) );
-            }
-
-            this.tableCreationSQLs = this.toString( this.createTableStatements( this.vendor ) );
-            if( LOGGER.isTraceEnabled() )
-            {
-                LOGGER.trace( "SQL for table creation: {}", Arrays.asList( this.tableCreationSQLs ) );
-            }
-
-            this.selectAllEntitiesSQL = this.vendor.toString( this.createSelectAllEntitiesStatement( this.vendor ) );
-            LOGGER.trace( "SQL for select all entities: {}", this.selectAllEntitiesSQL );
-
-            this.selectEntitySQL = this.vendor.toString( this.createSelectEntityStatement( this.vendor ) );
-            LOGGER.trace( "SQL for select entity: {}", this.selectEntitySQL );
-
-            this.insertEntitySQL = this.vendor.toString( this.createInsertEntityStatement( this.vendor ) );
-            LOGGER.trace( "SQL for insert entity: {}", this.insertEntitySQL );
-
-            this.updateEntitySQL = this.vendor.toString( this.createUpdateEntityStatement( this.vendor ) );
-            LOGGER.trace( "SQL for update entity: {}", this.updateEntitySQL );
-
-            this.removeEntitySQL = this.vendor.toString( this.createRemoveEntityStatement( this.vendor ) );
-            LOGGER.trace( "SQL for remove entity: {}", this.removeEntitySQL );
         }
 
         protected String[] toString( SQLStatement[] stmts )
         {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             if( stmts != null )
             {
                 for( Integer idx = 0; idx < stmts.length; ++idx )
                 {
-                    SQLStatement statement = stmts[idx];
+                    SQLStatement statement = stmts[ idx ];
                     if( statement != null )
                     {
-                        String stringStatement = this.vendor.toString( statement );
+                        String stringStatement = vendor.toString( statement );
                         if( stringStatement != null && stringStatement.length() > 0 )
                         {
-                            result.add( this.vendor.toString( statement ) );
+                            result.add( vendor.toString( statement ) );
                         }
                     }
                 }
@@ -154,29 +130,24 @@ public interface DatabaseSQLStringsBuilder
 
         protected SQLVendor getVendor()
         {
-            return this.vendor;
+            return vendor;
         }
 
         protected String getSchemaName()
         {
-            return this.schemaName;
+            return schemaName;
         }
 
         protected SQLStatement[] createSchemaStatements( SQLVendor vendor )
         {
-            // @formatter:off
-            return new SQLStatement[]
-            {
+            return new SQLStatement[] {
                 vendor.getDefinitionFactory().createSchemaDefinitionBuilder()
-                .setSchemaName( this.schemaName )
-                .createExpression()
+                      .setSchemaName( schemaName ).createExpression()
             };
-            // @formatter:on
         }
 
         protected SQLStatement[] createIndicesStatements( SQLVendor vendor )
         {
-            // TODO
             return new SQLStatement[] {};
         }
 
@@ -185,31 +156,25 @@ public interface DatabaseSQLStringsBuilder
             DefinitionFactory d = vendor.getDefinitionFactory();
             TableReferenceFactory t = vendor.getTableReferenceFactory();
 
-
-            // @formatter:off
-            return new SQLStatement[]
-            {
+            return new SQLStatement[] {
                 d.createTableDefinitionBuilder()
-                    .setTableName( t.tableName( this.getSchemaName(), SQLs.TABLE_NAME ) )
-                    .setTableContentsSource( d.createTableElementListBuilder()
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_PK_COLUMN_NAME, this.getPKType(), false, AutoGenerationPolicy.BY_DEFAULT ) )
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME, this.getOptimisticLockType(), false ) )
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_IDENTITY_COLUMN_NAME, this.getIDType(), false ) )
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_STATE_COLUMN_NAME, this.getStateType(), false ) )
-                        .addTableElement( d.createColumnDefinition( SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME, this.getLastModifiedType(), false ) )
-                        .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                            .setUniqueness( UniqueSpecification.PRIMARY_KEY )
-                            .addColumns( SQLs.ENTITY_PK_COLUMN_NAME )
-                            .createExpression() ) )
-                        .addTableElement( d.createTableConstraintDefinition( d.createUniqueConstraintBuilder()
-                            .setUniqueness( UniqueSpecification.UNIQUE )
-                            .addColumns( SQLs.ENTITY_IDENTITY_COLUMN_NAME )
-                            .createExpression() ) )
-                        .createExpression()
-                        )
-                   .createExpression()
+                 .setTableName( t.tableName( getSchemaName(), SQLs.TABLE_NAME ) )
+                 .setTableContentsSource(
+                     d.createTableElementListBuilder()
+                      .addTableElement( d.createColumnDefinition( SQLs.ENTITY_IDENTITY_COLUMN_NAME,
+                                                                  getIDType(), false ) )
+                      .addTableElement( d.createColumnDefinition( SQLs.ENTITY_VERSION_COLUMN_NAME,
+                                                                  getVersionType(), false ) )
+                      .addTableElement( d.createColumnDefinition( SQLs.ENTITY_STATE_COLUMN_NAME,
+                                                                  getStateType(), false ) )
+                      .addTableElement( d.createTableConstraintDefinition(
+                          d.createUniqueConstraintBuilder()
+                           .setUniqueness( UniqueSpecification.PRIMARY_KEY )
+                           .addColumns( SQLs.ENTITY_IDENTITY_COLUMN_NAME )
+                           .createExpression() )
+                      ).createExpression()
+                 ).createExpression()
             };
-            // @formatter:on
         }
 
         protected SQLStatement createSelectAllEntitiesStatement( SQLVendor vendor )
@@ -217,12 +182,10 @@ public interface DatabaseSQLStringsBuilder
             QueryFactory q = vendor.getQueryFactory();
             TableReferenceFactory t = vendor.getTableReferenceFactory();
 
-            // @formatter:off
             return q.simpleQueryBuilder()
-                .select( SQLs.ENTITY_PK_COLUMN_NAME, SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME, SQLs.ENTITY_STATE_COLUMN_NAME )
-                .from( t.tableName( this.schemaName, SQLs.TABLE_NAME ) )
-                .createExpression();
-            // @formatter:on
+                    .select( SQLs.ENTITY_STATE_COLUMN_NAME )
+                    .from( t.tableName( schemaName, SQLs.TABLE_NAME ) )
+                    .createExpression();
         }
 
         protected SQLStatement createSelectEntityStatement( SQLVendor vendor )
@@ -233,13 +196,11 @@ public interface DatabaseSQLStringsBuilder
             ColumnsFactory c = vendor.getColumnsFactory();
             LiteralFactory l = vendor.getLiteralFactory();
 
-            // @formatter:off
             return q.simpleQueryBuilder()
-                .select( SQLs.ENTITY_PK_COLUMN_NAME, SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME, SQLs.ENTITY_STATE_COLUMN_NAME )
-                .from( t.tableName( this.schemaName, SQLs.TABLE_NAME ) )
-                .where( b.eq( c.colName( SQLs.ENTITY_IDENTITY_COLUMN_NAME ), l.param() ) )
-                .createExpression();
-            // @formatter:on
+                    .select( SQLs.ENTITY_STATE_COLUMN_NAME )
+                    .from( t.tableName( schemaName, SQLs.TABLE_NAME ) )
+                    .where( b.eq( c.colName( SQLs.ENTITY_IDENTITY_COLUMN_NAME ), l.param() ) )
+                    .createExpression();
         }
 
         protected SQLStatement createInsertEntityStatement( SQLVendor vendor )
@@ -248,26 +209,15 @@ public interface DatabaseSQLStringsBuilder
             TableReferenceFactory t = vendor.getTableReferenceFactory();
             LiteralFactory l = vendor.getLiteralFactory();
 
-            // @formatter:off
             return m.insert()
-                .setTableName( t.tableName( this.schemaName, SQLs.TABLE_NAME ) )
-                .setColumnSource( m.columnSourceByValues()
-                    .addColumnNames(
-                        SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME,
-                        SQLs.ENTITY_IDENTITY_COLUMN_NAME,
-                        SQLs.ENTITY_STATE_COLUMN_NAME,
-                        SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME
-                        )
-                    .addValues(
-                        l.n( 0 ),
-                        l.param(),
-                        l.param(),
-                        l.param()
-                        )
-                    .createExpression()
-                    )
-                 .createExpression();
-            // @formatter:on
+                    .setTableName( t.tableName( schemaName, SQLs.TABLE_NAME ) )
+                    .setColumnSource( m.columnSourceByValues()
+                                       .addColumnNames( SQLs.ENTITY_IDENTITY_COLUMN_NAME,
+                                                        SQLs.ENTITY_STATE_COLUMN_NAME )
+                                       .addValues( l.param(),
+                                                   l.param() )
+                                       .createExpression()
+                    ).createExpression();
         }
 
         protected SQLStatement createUpdateEntityStatement( SQLVendor vendor )
@@ -278,20 +228,18 @@ public interface DatabaseSQLStringsBuilder
             BooleanFactory b = vendor.getBooleanFactory();
             ColumnsFactory c = vendor.getColumnsFactory();
 
-            // @formatter:off
-            UpdateBySearchBuilder builder = m.updateBySearch()
-                .setTargetTable( m.createTargetTable( t.tableName( this.schemaName, SQLs.TABLE_NAME ) ) )
-                .addSetClauses(
-                    m.setClause( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME, m.updateSourceByExp( l.param() ) ),
-                    m.setClause( SQLs.ENTITY_STATE_COLUMN_NAME, m.updateSourceByExp( l.param() ) ),
-                    m.setClause( SQLs.ENTITY_LAST_MODIFIED_COLUMN_NAME, m.updateSourceByExp( l.param() ) )
-                    );
-            builder
-                .getWhereBuilder()
-                    .reset( b.eq( c.colName( SQLs.ENTITY_PK_COLUMN_NAME ), l.param() ) )
-                    .and( b.eq( c.colName( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ), l.param() ) );
+            UpdateBySearchBuilder builder = m.updateBySearch().setTargetTable(
+                m.createTargetTable( t.tableName( schemaName, SQLs.TABLE_NAME ) )
+            ).addSetClauses(
+                m.setClause( SQLs.ENTITY_VERSION_COLUMN_NAME, m.updateSourceByExp( l.param() ) ),
+                m.setClause( SQLs.ENTITY_STATE_COLUMN_NAME, m.updateSourceByExp( l.param() ) )
+            );
+            builder.getWhereBuilder().reset(
+                b.eq( c.colName( SQLs.ENTITY_IDENTITY_COLUMN_NAME ), l.param() )
+            ).and(
+                b.eq( c.colName( SQLs.ENTITY_VERSION_COLUMN_NAME ), l.param() )
+            );
             return builder.createExpression();
-            // @formatter:on
         }
 
         protected SQLStatement createRemoveEntityStatement( SQLVendor vendor )
@@ -302,88 +250,76 @@ public interface DatabaseSQLStringsBuilder
             BooleanFactory b = vendor.getBooleanFactory();
             ColumnsFactory c = vendor.getColumnsFactory();
 
-            // @formatter:off
-            DeleteBySearchBuilder builder = m.deleteBySearch()
-                .setTargetTable( m.createTargetTable( t.tableName( this.schemaName, SQLs.TABLE_NAME ) ) );
-            builder.getWhere()
-                .reset( b.eq( c.colName( SQLs.ENTITY_PK_COLUMN_NAME ), l.param() ) );
+            DeleteBySearchBuilder builder = m.deleteBySearch().setTargetTable(
+                m.createTargetTable( t.tableName( schemaName, SQLs.TABLE_NAME ) )
+            );
+            builder.getWhere().reset(
+                b.eq( c.colName( SQLs.ENTITY_IDENTITY_COLUMN_NAME ), l.param() )
+            );
             return builder.createExpression();
-            // @formatter:on
-        }
-
-        protected SQLDataType getPKType()
-        {
-            return this.vendor.getDataTypeFactory().bigInt();
-        }
-
-        protected SQLDataType getOptimisticLockType()
-        {
-            return this.vendor.getDataTypeFactory().bigInt();
         }
 
         protected SQLDataType getIDType()
         {
-            return this.vendor.getDataTypeFactory().sqlVarChar( 64 );
+            return vendor.getDataTypeFactory().sqlVarChar( 64 );
+        }
+
+        protected SQLDataType getVersionType()
+        {
+            return vendor.getDataTypeFactory().sqlVarChar( 64 );
         }
 
         protected SQLDataType getStateType()
         {
-            return this.vendor.getDataTypeFactory().sqlVarChar( 10000 );
-        }
-
-        protected SQLDataType getLastModifiedType()
-        {
-            return this.vendor.getDataTypeFactory().bigInt();
+            return vendor.getDataTypeFactory().sqlVarChar( 10000 );
         }
 
         @Override
         public String[] buildSQLForSchemaCreation()
         {
-            return this.schemaCreationSQLs;
+            return schemaCreationSQLs;
         }
 
         @Override
         public String[] buildSQLForIndexCreation()
         {
-            return this.indexCreationSQLs;
+            return indexCreationSQLs;
         }
 
         @Override
         public String buildSQLForSelectAllEntitiesStatement()
         {
-            return this.selectAllEntitiesSQL;
+            return selectAllEntitiesSQL;
         }
 
         @Override
         public String buildSQLForSelectEntityStatement()
         {
-            return this.selectEntitySQL;
+            return selectEntitySQL;
         }
 
         @Override
         public String buildSQLForInsertEntityStatement()
         {
-            return this.insertEntitySQL;
+            return insertEntitySQL;
         }
 
         @Override
         public String buildSQLForUpdateEntityStatement()
         {
-            return this.updateEntitySQL;
+            return updateEntitySQL;
         }
 
         @Override
         public String buildSQLForRemoveEntityStatement()
         {
-            return this.removeEntitySQL;
+            return removeEntitySQL;
         }
 
         @Override
         public String[] buildSQLForTableCreation()
         {
-            return this.tableCreationSQLs;
+            return tableCreationSQLs;
         }
-
     }
-
 }

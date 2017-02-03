@@ -31,7 +31,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
@@ -47,7 +46,6 @@ public class AppBrowserTest extends AbstractPolygeneTest
         module.entities( Person.class );
         module.values( Age.class );
         module.services( MemoryEntityStoreService.class );
-        module.importedServices( ValueSerialization.class );
     }
 
     @Test

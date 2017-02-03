@@ -51,6 +51,8 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.NoSuchServiceException;
 import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.service.ServiceReference;
@@ -66,8 +68,6 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializationException;
 import org.apache.polygene.runtime.activation.ActivationDelegate;
 import org.apache.polygene.runtime.composite.FunctionStateResolver;
 import org.apache.polygene.runtime.composite.StateResolver;
@@ -83,6 +83,7 @@ import org.apache.polygene.runtime.service.ImportedServicesInstance;
 import org.apache.polygene.runtime.service.ImportedServicesModel;
 import org.apache.polygene.runtime.service.ServicesInstance;
 import org.apache.polygene.runtime.service.ServicesModel;
+import org.apache.polygene.runtime.type.ValueTypeFactoryInstance;
 import org.apache.polygene.runtime.value.ValueBuilderInstance;
 import org.apache.polygene.runtime.value.ValueBuilderWithPrototype;
 import org.apache.polygene.runtime.value.ValueBuilderWithState;
@@ -112,7 +113,7 @@ public class ModuleInstance
     // Lazy assigned on accessors
     private EntityStore store;
     private IdentityGenerator generator;
-    private ValueSerialization valueSerialization;
+    private Serialization serialization;
     private MetricsProvider metrics;
     private UnitOfWorkFactory uowf;
 
@@ -296,7 +297,7 @@ public class ModuleInstance
         @Override
         public Object getPropertyState( PropertyDescriptor propertyDescriptor )
         {
-            return propertyDescriptor.resolveInitialValue(module);
+            return propertyDescriptor.resolveInitialValue( module );
         }
 
         @Override
@@ -312,7 +313,8 @@ public class ModuleInstance
         }
 
         @Override
-        public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+        public Stream<Map.Entry<String, EntityReference>>
+        getNamedAssociationState( AssociationDescriptor associationDescriptor )
         {
             return new HashMap<String, EntityReference>().entrySet().stream();
         }
@@ -351,9 +353,9 @@ public class ModuleInstance
 
         try
         {
-            return valueSerialization().deserialize( model.module(), model.valueType(), serializedState );
+            return serialization().deserialize( model.module(), model.valueType(), serializedState );
         }
-        catch( ValueSerializationException ex )
+        catch( SerializationException ex )
         {
             throw new ConstructionException( "Could not create value from serialized state", ex );
         }
@@ -379,7 +381,7 @@ public class ModuleInstance
         ModelDescriptor serviceModel = typeLookup.lookupServiceModel( serviceType );
         if( serviceModel == null )
         {
-            throw new NoSuchServiceException( serviceType.getTypeName(), name(),typeLookup );
+            throw new NoSuchServiceException( serviceType.getTypeName(), name(), typeLookup );
         }
         return findServiceReferenceInstance( serviceModel );
     }
@@ -423,7 +425,6 @@ public class ModuleInstance
 
     // Implementation of Activation
     @Override
-    @SuppressWarnings( "unchecked" )
     public void activate()
         throws ActivationException
     {
@@ -455,6 +456,7 @@ public class ModuleInstance
         return model;
     }
 
+    @Override
     public LayerDescriptor layer()
     {
         return layer;
@@ -466,6 +468,7 @@ public class ModuleInstance
         return typeLookup;
     }
 
+    @Override
     public EntityStore entityStore()
     {
         if( store == null )
@@ -489,6 +492,7 @@ public class ModuleInstance
         return store;
     }
 
+    @Override
     public UnitOfWorkFactory unitOfWorkFactory()
     {
         if( uowf == null )
@@ -536,6 +540,7 @@ public class ModuleInstance
         return this;
     }
 
+    @Override
     public IdentityGenerator identityGenerator()
     {
         if( generator == null )
@@ -552,29 +557,24 @@ public class ModuleInstance
         return generator;
     }
 
-    public ValueSerialization valueSerialization()
+    @Override
+    public Serialization serialization()
     {
-        if( valueSerialization == null )
+        if( serialization == null )
         {
             synchronized( this )
             {
-                if( valueSerialization == null )
+                if( serialization == null )
                 {
-                    try
-                    {
-                        ServiceReference<ValueSerialization> service = findService( ValueSerialization.class );
-                        valueSerialization = service.get();
-                    }
-                    catch( NoSuchServiceException e )
-                    {
-                        throw new ValueSerializationException( "No ValueSeriaservice available in module " + name() );
-                    }
+                    ServiceReference<Serialization> service = findService( Serialization.class );
+                    serialization = service.get();
                 }
             }
         }
-        return valueSerialization;
+        return serialization;
     }
 
+    @Override
     public MetricsProvider metricsProvider()
     {
         if( metrics == null )
@@ -596,5 +596,11 @@ public class ModuleInstance
             }
         }
         return metrics;
+    }
+
+    @Override
+    public ValueTypeFactoryInstance valueTypeFactory()
+    {
+        return ValueTypeFactoryInstance.instance();
     }
 }

@@ -21,19 +21,9 @@ package org.apache.polygene.entitystore.sql.internal;
 
 public interface SQLs
 {
-
-    String DEFAULT_SCHEMA_NAME = "polygene_es";
-
-    String TABLE_NAME = "polygene_entities";
-
-    String ENTITY_PK_COLUMN_NAME = "entity_pk";
-
-    String ENTITY_IDENTITY_COLUMN_NAME = "entity_id";
-
-    String ENTITY_STATE_COLUMN_NAME = "entity_state";
-
-    String ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME = "entity_optimistic_lock";
-
-    String ENTITY_LAST_MODIFIED_COLUMN_NAME = "entity_last_modified";
-
+    String DEFAULT_SCHEMA_NAME = "POLYGENE_ES";
+    String TABLE_NAME = "POLYGENE_ENTITIES";
+    String ENTITY_IDENTITY_COLUMN_NAME = "ENTITY_IDENTITY";
+    String ENTITY_VERSION_COLUMN_NAME = "ENTITY_VERSION";
+    String ENTITY_STATE_COLUMN_NAME = "ENTITY_STATE";
 }

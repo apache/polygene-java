@@ -29,7 +29,6 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.json.JSONException;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
@@ -59,7 +58,7 @@ public class ApplicationBuilderTest
 
     @Test
     public void givenJsonWhenBuildingApplicationExpectSuccess()
-        throws JSONException, ActivationException, AssemblyException
+        throws ActivationException, AssemblyException
     {
         ApplicationBuilder builder = ApplicationBuilder.fromJson( APPLICATION );
         Application application = builder.newApplication();
@@ -70,7 +69,7 @@ public class ApplicationBuilderTest
 
     @Test
     public void givenJsonInputStreamWhenBuildingApplicationExpectSuccess()
-        throws IOException, JSONException, ActivationException, AssemblyException
+        throws IOException, ActivationException, AssemblyException
     {
         InputStream input = new ByteArrayInputStream( APPLICATION.getBytes( "UTF-8" ) );
         ApplicationBuilder builder = ApplicationBuilder.fromJson( input );

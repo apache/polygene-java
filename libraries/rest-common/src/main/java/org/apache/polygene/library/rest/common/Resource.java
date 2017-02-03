@@ -55,7 +55,7 @@ public interface Resource
     Link resource(String relation);
 
     @Optional
-    Property<ValueComposite> index();
+    Property<Object> index();
 
     abstract class Mixin
         implements Resource

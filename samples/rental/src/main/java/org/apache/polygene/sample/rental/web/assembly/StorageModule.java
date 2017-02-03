@@ -24,19 +24,14 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class StorageModule
     implements Assembler
 {
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
-        new OrgJsonValueSerializationAssembler().
-            visibleIn( Visibility.application ).
-            assemble( module );
     }
 }

@@ -22,6 +22,7 @@ package org.apache.polygene.api.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.PropertyMapper;
@@ -37,15 +38,16 @@ import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.service.qualifier.ServiceTags;
+import org.apache.polygene.api.serialization.Deserializer;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
+import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.api.value.ValueSerialization;
 
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
@@ -175,8 +177,7 @@ public interface Configuration<T>
         private UnitOfWorkFactory uowf;
 
         @Service
-        private Iterable<ServiceReference<ValueSerialization>> valueSerialization;
-
+        private Iterable<ServiceReference<Deserializer>> stateDeserializers;
 
         public ConfigurationMixin()
         {
@@ -247,16 +248,17 @@ public interface Configuration<T>
             }
             catch( NoSuchEntityException | NoSuchEntityTypeException e )
             {
-                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel, serviceComposite.identity().get() );
+                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel,
+                                                            serviceComposite.identity().get() );
             }
             return configuration;
         }
 
         @SuppressWarnings( "unchecked" )
-        private <V extends HasIdentity> V initializeConfigurationInstance(ServiceComposite serviceComposite,
-                                                                          UnitOfWork uow,
-                                                                          ServiceDescriptor serviceModel,
-                                                                          Identity identity
+        private <V extends HasIdentity> V initializeConfigurationInstance( ServiceComposite serviceComposite,
+                                                                           UnitOfWork uow,
+                                                                           ServiceDescriptor serviceModel,
+                                                                           Identity identity
         )
             throws InstantiationException
         {
@@ -282,7 +284,8 @@ public interface Configuration<T>
                         {
                             try
                             {
-                                EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+                                EntityBuilder<V> configBuilder = buildUow.newEntityBuilder(
+                                    serviceModel.<V>configurationType(), identity );
                                 configBuilder.newInstance();
                             }
                             catch( ConstraintViolationException e )
@@ -304,7 +307,8 @@ public interface Configuration<T>
             catch( Exception e1 )
             {
                 InstantiationException ex = new InstantiationException(
-                    "Could not instantiate configuration, and no configuration initialization file was found (" + identity + ")" );
+                    "Could not instantiate configuration, and no configuration initialization file was found ("
+                    + identity + ")" );
                 ex.initCause( e1 );
                 throw ex;
             }
@@ -319,23 +323,29 @@ public interface Configuration<T>
         {
             EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( configType, identity );
             String resourceName = identity + ".properties";
-            InputStream asStream = getResource( compositeType, resourceName );
-            if( asStream != null )
+            try( InputStream asStream = getResource( compositeType, resourceName ) )
             {
-                try
+                if( asStream != null )
                 {
-                    PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
-                    return configBuilder.newInstance();
+                    try
+                    {
+                        PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                        return configBuilder.newInstance();
+                    }
+                    catch( IOException e1 )
+                    {
+                        InstantiationException exception = new InstantiationException(
+                            "Could not read underlying Properties file." );
+                        exception.initCause( e1 );
+                        throw exception;
+                    }
                 }
-                catch( IOException e1 )
-                {
-                    InstantiationException exception = new InstantiationException(
-                        "Could not read underlying Properties file." );
-                    exception.initCause( e1 );
-                    throw exception;
-                }
+                return null;
             }
-            return null;
+            catch( IOException ignored )
+            {
+                return null;
+            }
         }
 
         private InputStream getResource( Class<?> type, String resourceName )
@@ -348,53 +358,57 @@ public interface Configuration<T>
             return type.getResourceAsStream( resourceName );
         }
 
-        private <C, V extends HasIdentity> V tryLoadJsonFile(UnitOfWork uow,
+        private <C, V extends HasIdentity> V tryLoadJsonFile( UnitOfWork uow,
+                                                              Class<C> compositeType,
+                                                              Class<V> configType,
+                                                              Identity identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.JSON, ".json" );
+        }
+
+        private <C, V extends HasIdentity> V tryLoadYamlFile( UnitOfWork uow,
+                                                              Class<C> compositeType,
+                                                              Class<V> configType,
+                                                              Identity identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.YAML, ".yaml" );
+        }
+
+        private <C, V extends HasIdentity> V tryLoadXmlFile( UnitOfWork uow,
                                                              Class<C> compositeType,
                                                              Class<V> configType,
                                                              Identity identity
         )
         {
-            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.JSON, ".json" );
+            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.XML, ".xml" );
         }
 
-        private <C, V extends HasIdentity> V tryLoadYamlFile(UnitOfWork uow,
-                                                             Class<C> compositeType,
-                                                             Class<V> configType,
-                                                             Identity identity
+        private <C, V extends HasIdentity> V readConfig( UnitOfWork uow,
+                                                         Class<C> compositeType,
+                                                         Class<V> configType,
+                                                         Identity identity,
+                                                         String format,
+                                                         String extension
         )
         {
-            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.YAML, ".yaml" );
-        }
-
-        private <C, V extends HasIdentity> V tryLoadXmlFile(UnitOfWork uow,
-                                                            Class<C> compositeType,
-                                                            Class<V> configType,
-                                                            Identity identity
-        )
-        {
-            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.XML, ".xml" );
-        }
-
-        private <C, V extends HasIdentity> V readConfig(UnitOfWork uow,
-                                                        Class<C> compositeType,
-                                                        Class<V> configType,
-                                                        Identity identity,
-                                                        String format,
-                                                        String extension
-        )
-        {
-            for( ServiceReference<ValueSerialization> serializerRef : valueSerialization )
+            for( ServiceReference<Deserializer> serializerRef : stateDeserializers )
             {
                 ServiceTags serviceTags = serializerRef.metaInfo( ServiceTags.class );
                 if( serviceTags.hasTag( format ) )
                 {
                     String resourceName = identity + extension;
-                    InputStream asStream = getResource( compositeType, resourceName );
-                    if( asStream != null )
+                    try( InputStream asStream = getResource( compositeType, resourceName ) )
                     {
-                        V configObject = serializerRef.get().deserialize( uow.module(), configType, asStream );
-                        return uow.toEntity( configType, configObject );
+                        if( asStream != null )
+                        {
+                            V configObject = serializerRef.get().deserialize( uow.module(), configType,
+                                                                              new InputStreamReader( asStream ) );
+                            return uow.toEntity( configType, configObject );
+                        }
                     }
+                    catch( IOException ignored ) {}
                 }
             }
             return null;

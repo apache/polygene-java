@@ -27,8 +27,9 @@ jar { manifest { name = "Apache Polygene™ Library - REST" } }
 dependencies {
   compileOnly libraries.servlet_api
 
+  api libraries.restlet
+
   implementation polygene.extension( 'indexing-rdf' )
-  implementation libraries.restlet
   implementation libraries.sparql
   implementation libraries.velocity
 
@@ -36,7 +37,6 @@ dependencies {
 
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'http' )
-  testImplementation polygene.extension( 'valueserialization-orgjson' )
   testImplementation libraries.http_client
 
   testRuntimeOnly libraries.logback

@@ -20,10 +20,11 @@
 
 package org.apache.polygene.library.rest.client.responsereader;
 
-import java.io.IOException;
-import org.json.JSONException;
-import org.json.JSONTokener;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.library.rest.client.spi.ResponseReader;
+import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ResourceException;
@@ -32,34 +33,31 @@ import org.restlet.resource.ResourceException;
  * ResponseReader for simple types from JSON
  */
 public class DefaultResponseReader
-   implements ResponseReader
+    implements ResponseReader
 {
-    @Override
-   public Object readResponse(Response response, Class<?> resultType) throws ResourceException
-   {
-      if (MediaType.APPLICATION_JSON.equals(response.getEntity().getMediaType()))
-         if (resultType.equals(String.class))
-         {
-            try
-            {
-               return response.getEntity().getText();
-            } catch (IOException e)
-            {
-               throw new ResourceException(e);
-            }
-         } else if (Number.class.isAssignableFrom(resultType))
-         {
-            try
-            {
-               Number value = (Number) new JSONTokener(response.getEntityAsText()).nextValue();
-               if (resultType.equals(Integer.class))
-                  return Integer.valueOf(value.intValue());
-            } catch (JSONException e)
-            {
-               throw new ResourceException(e);
-            }
-         }
+    @Structure
+    private ModuleDescriptor module;
 
-      return null;
-   }
+    @Service
+    private JsonDeserializer jsonDeserializer;
+
+    @Override
+    public Object readResponse( Response response, Class<?> resultType ) throws ResourceException
+    {
+        if( MediaType.APPLICATION_JSON.equals( response.getEntity().getMediaType() ) )
+        {
+            if( resultType.equals( String.class ) || Number.class.isAssignableFrom( resultType ) )
+            {
+                try
+                {
+                    return jsonDeserializer.deserialize( module, resultType, response.getEntityAsText() );
+                }
+                catch( Exception e )
+                {
+                    throw new ResourceException( e );
+                }
+            }
+        }
+        return null;
+    }
 }

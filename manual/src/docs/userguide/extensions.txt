@@ -28,7 +28,7 @@ We try to keep the Polygene™ Core Runtime as lean as possible, and a lot of th
 Extension SPI, which defines clear ways to extend the platform. There are currently the following Extensions types,
 each with possibly more than one implementation;
 
-   * Value Serialization
+   * Serialization
    * Entity Stores
    * Index / Query Engines
    * Entity Caches
@@ -45,23 +45,15 @@ for our users.
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-orgjson/src/docs/vs-orgjson.txt[]
+include::../../../../extensions/serialization-javaxjson/src/docs/serialization-javaxjson.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-jackson/src/docs/vs-jackson.txt[]
+include::../../../../extensions/serialization-javaxxml/src/docs/serialization-javaxxml.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-stax/src/docs/vs-stax.txt[]
-
-:leveloffset: 2
-
-include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
-
-:leveloffset: 2
-
-include::../../../../extensions/cache-memcache/src/docs/cache-memcache.txt[]
+include::../../../../extensions/serialization-msgpack/src/docs/serialization-msgpack.txt[]
 
 :leveloffset: 2
 
@@ -110,6 +102,14 @@ include::../../../../extensions/entitystore-riak/src/docs/es-riak.txt[]
 :leveloffset: 2
 
 include::../../../../extensions/entitystore-sql/src/docs/es-sql.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/cache-memcache/src/docs/cache-memcache.txt[]
 
 :leveloffset: 2
 

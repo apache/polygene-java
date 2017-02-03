@@ -20,19 +20,15 @@
 
 package org.apache.polygene.api.value;
 
-import org.apache.polygene.api.association.AssociationStateDescriptor;
 import org.apache.polygene.api.composite.CompositeDescriptor;
-import org.apache.polygene.api.composite.StatefulCompositeDescriptor;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.type.ValueCompositeType;
 
 /**
  * Descriptor for ValueComposites.
  */
 public interface ValueDescriptor
-    extends CompositeDescriptor, StatefulCompositeDescriptor
+    extends CompositeDescriptor, StatefulAssociationCompositeDescriptor
 {
     ValueCompositeType valueType();
-
-    @Override
-    AssociationStateDescriptor state();
 }

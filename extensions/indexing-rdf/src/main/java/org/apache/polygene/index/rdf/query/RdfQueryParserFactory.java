@@ -20,17 +20,15 @@
 
 package org.apache.polygene.index.rdf.query;
 
-import org.openrdf.query.QueryLanguage;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
-import org.apache.polygene.api.service.qualifier.Tagged;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializer;
 import org.apache.polygene.index.rdf.UnsupportedLanguageException;
 import org.apache.polygene.index.rdf.query.internal.RdfQueryParserImpl;
 import org.apache.polygene.spi.PolygeneSPI;
+import org.apache.polygene.spi.serialization.JsonSerializer;
+import org.openrdf.query.QueryLanguage;
 
 @Mixins( RdfQueryParserFactory.RdfQueryParserFactoryMixin.class )
 public interface RdfQueryParserFactory
@@ -45,15 +43,14 @@ public interface RdfQueryParserFactory
         private PolygeneSPI spi;
 
         @Service
-        @Tagged( ValueSerialization.Formats.JSON )
-        private ValueSerializer valueSerializer;
+        private JsonSerializer stateSerializer;
 
         @Override
         public RdfQueryParser newQueryParser( QueryLanguage language )
         {
             if( language.equals( QueryLanguage.SPARQL ) )
             {
-                return new RdfQueryParserImpl( spi, valueSerializer );
+                return new RdfQueryParserImpl( spi, stateSerializer );
             }
             throw new UnsupportedLanguageException( language );
         }

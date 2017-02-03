@@ -28,13 +28,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonException;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.library.rest.common.table.Cell;
 import org.apache.polygene.library.rest.common.table.Column;
 import org.apache.polygene.library.rest.common.table.Row;
 import org.apache.polygene.library.rest.common.table.Table;
-import org.json.JSONException;
-import org.json.JSONWriter;
+import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
@@ -47,7 +52,14 @@ import org.restlet.resource.ResourceException;
  */
 public class TableResponseWriter extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML,
+                                                                              MediaType.APPLICATION_JSON );
+
+    @Structure
+    private ModuleDescriptor module;
+
+    @Service
+    private JsonSerializer jsonSerializer;
 
     @Service
     private Configuration cfg;
@@ -61,7 +73,6 @@ public class TableResponseWriter extends AbstractResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-
                 response.setEntity( new WriterRepresentation( MediaType.APPLICATION_JSON )
                 {
                     @Override
@@ -70,11 +81,12 @@ public class TableResponseWriter extends AbstractResponseWriter
                     {
                         try
                         {
-                            JSONWriter json = new JSONWriter( writer );
+                            JsonObjectBuilder builder = Json.createObjectBuilder();
                             Table tableValue = (Table) result;
 
                             // Parse parameters
-                            String tqx = response.getRequest().getResourceRef().getQueryAsForm().getFirstValue( "tqx" );
+                            String tqx = response.getRequest().getResourceRef().getQueryAsForm()
+                                                 .getFirstValue( "tqx" );
                             String reqId = null;
                             if( tqx != null )
                             {
@@ -92,77 +104,71 @@ public class TableResponseWriter extends AbstractResponseWriter
                                 }
                             }
 
-                            json.object().key( "version" ).value( "0.6" );
+                            builder.add( "version", "0.6" );
                             if( reqId != null )
                             {
-                                json.key( "reqId" ).value( reqId );
+                                builder.add( "reqId", reqId );
                             }
-                            json.key( "status" ).value( "ok" );
-                            json.key( "table" ).object();
+                            builder.add( "status", "ok" );
+
+                            JsonObjectBuilder tableBuilder = Json.createObjectBuilder();
+                            JsonArrayBuilder colsBuilder = Json.createArrayBuilder();
                             List<Column> columnList = tableValue.cols().get();
-                            json.key( "cols" ).array();
                             for( Column columnValue : columnList )
                             {
-                                json.object().
-                                    key( "id" ).value( columnValue.id().get() ).
-                                    key( "label" ).value( columnValue.label().get() ).
-                                    key( "type" ).value( columnValue.columnType().get() ).
-                                    endObject();
+                                colsBuilder.add( Json.createObjectBuilder()
+                                                     .add( "id", columnValue.id().get() )
+                                                     .add( "label", columnValue.label().get() )
+                                                     .add( "type", columnValue.columnType().get() )
+                                                     .build() );
                             }
-                            json.endArray();
+                            tableBuilder.add( "cols", colsBuilder.build() );
 
-                            json.key( "rows" ).array();
+                            JsonArrayBuilder rowsBuilder = Json.createArrayBuilder();
                             for( Row rowValue : tableValue.rows().get() )
                             {
-                                json.object();
-                                json.key( "c" ).array();
+                                JsonArrayBuilder cellsBuilder = Json.createArrayBuilder();
                                 int idx = 0;
                                 for( Cell cellValue : rowValue.c().get() )
                                 {
-                                    json.object();
                                     Object value = cellValue.v().get();
-                                    if( columnList.get( idx )
-                                            .columnType()
-                                            .get()
-                                            .equals( Table.DATETIME ) && value != null )
+                                    if( columnList.get( idx ).columnType().get().equals( Table.DATETIME )
+                                        && value != null )
                                     {
                                         value = value.toString();
                                     }
-                                    else if( columnList.get( idx )
-                                                 .columnType()
-                                                 .get()
-                                                 .equals( Table.DATE ) && value != null )
+                                    else if( columnList.get( idx ).columnType().get().equals( Table.DATE )
+                                             && value != null )
                                     {
                                         value = value.toString();
                                     }
-                                    else if( columnList.get( idx )
-                                                 .columnType()
-                                                 .get()
-                                                 .equals( Table.TIME_OF_DAY ) && value != null )
+                                    else if( columnList.get( idx ).columnType().get().equals( Table.TIME_OF_DAY )
+                                             && value != null )
                                     {
                                         value = value.toString();
                                     }
 
+                                    JsonObjectBuilder cellBuilder = Json.createObjectBuilder();
                                     if( value != null )
                                     {
-                                        json.key( "v" ).value( value );
+                                        cellBuilder.add( "v", jsonSerializer.toJson( value ) );
                                     }
                                     if( cellValue.f().get() != null )
                                     {
-                                        json.key( "f" ).value( cellValue.f().get() );
+                                        cellBuilder.add( "f", cellValue.f().get() );
                                     }
-                                    json.endObject();
-
+                                    cellsBuilder.add( cellBuilder.build() );
                                     idx++;
                                 }
-                                json.endArray();
-                                json.endObject();
+                                JsonObjectBuilder rowBuilder = Json.createObjectBuilder();
+                                rowBuilder.add( "c", cellsBuilder.build() );
+                                rowsBuilder.add( rowBuilder.build() );
                             }
-                            json.endArray();
-                            json.endObject();
-                            json.endObject();
+                            tableBuilder.add( "rows", rowsBuilder.build() );
+                            builder.add( "table", tableBuilder.build() );
+                            writer.write( builder.build().toString() );
                         }
-                        catch( JSONException e )
+                        catch( JsonException e )
                         {
                             throw new IOException( e );
                         }

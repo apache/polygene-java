@@ -19,10 +19,21 @@
  */
 package org.apache.polygene.api.type;
 
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.Identity;
 
 import static java.util.stream.Collectors.joining;
@@ -30,105 +41,44 @@ import static java.util.stream.Collectors.joining;
 /**
  * Base class for types of values in ValueComposites and Properties.
  */
-public class ValueType
-    implements HasTypes
+public class ValueType implements HasTypes
 {
+    public static final ValueType OBJECT = ValueType.of( Object.class );
+    public static final ValueType STRING = ValueType.of( String.class );
+    public static final ValueType CHARACTER = ValueType.of( Character.class, char.class );
+    public static final ValueType BOOLEAN = ValueType.of( Boolean.class, boolean.class );
+    public static final ValueType INTEGER = ValueType.of( Integer.class, int.class );
+    public static final ValueType LONG = ValueType.of( Long.class, long.class );
+    public static final ValueType SHORT = ValueType.of( Short.class, short.class );
+    public static final ValueType BYTE = ValueType.of( Byte.class, byte.class );
+    public static final ValueType FLOAT = ValueType.of( Float.class, float.class );
+    public static final ValueType DOUBLE = ValueType.of( Double.class, double.class );
+    public static final ValueType BIG_DECIMAL = ValueType.of( BigDecimal.class );
+    public static final ValueType BIG_INTEGER = ValueType.of( BigInteger.class );
+    public static final ValueType INSTANT = ValueType.of( Instant.class );
+    public static final ValueType ZONED_DATE_TIME = ValueType.of( ZonedDateTime.class );
+    public static final ValueType OFFSET_DATE_TIME = ValueType.of( OffsetDateTime.class );
+    public static final ValueType LOCAL_DATE_TIME = ValueType.of( LocalDateTime.class );
+    public static final ValueType LOCAL_DATE = ValueType.of( LocalDate.class );
+    public static final ValueType LOCAL_TIME = ValueType.of( LocalTime.class );
+    public static final ValueType DURATION = ValueType.of( Duration.class );
+    public static final ValueType PERIOD = ValueType.of( Period.class );
+    public static final ValueType IDENTITY = ValueType.of( Identity.class );
+    public static final ValueType ENTITY_REFERENCE = ValueType.of( EntityReference.class );
 
-    public static ValueType of( Class<?> type )
+    public static ValueType of( Class<?>... types )
     {
-        return new ValueType( type );
+        return new ValueType( types );
     }
 
-    /**
-     * Check if a non-null object is of any of the Primitive Value Types or an array of them.
-     * <p>
-     *     String, Boolean, Integer, Double, Float, Long, Byte, Short and Character and their Java primitive types
-     *     counterparts are considered as Primitive Value Types.
-     * </p>
-     * <p>
-     *     Date, BigInteger, BigDecimal and JodaTime types are not considered as Primitive Value Types.
-     * </p>
-     *
-     * @param object Object
-     * @return true if object is a primitive value or an array of primitive values
-     * @throws IllegalArgumentException if object is null
-     */
-    public static boolean isPrimitiveValue( Object object )
-    {
-        Objects.requireNonNull( object, "object" );
-        if( object instanceof String
-            || object instanceof Character
-            || object instanceof Boolean
-            || object instanceof Integer
-            || object instanceof Double
-            || object instanceof Float
-            || object instanceof Long
-            || object instanceof Byte
-            || object instanceof Short )
-        {
-            return true;
-        }
-        if( object.getClass().isArray() )
-        {
-            return isArrayOfPrimitiveValues( object );
-        }
-        return false;
-    }
-
-    public static boolean isIdentity( Object object )
-    {
-        return object instanceof Identity;
-    }
-
-    private static boolean isArrayOfPrimitiveValues( Object array )
-    {
-        if( array instanceof String[]
-            || array instanceof char[] || array instanceof Character[]
-            || array instanceof boolean[] || array instanceof Boolean[]
-            || array instanceof int[] || array instanceof Integer[]
-            || array instanceof double[] || array instanceof Double[]
-            || array instanceof float[] || array instanceof Float[]
-            || array instanceof long[] || array instanceof Long[]
-            || array instanceof byte[] || array instanceof Byte[]
-            || array instanceof short[] || array instanceof Short[] )
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isPrimitiveValueType( ValueType valueType )
-    {
-        return isPrimitiveValueType( valueType.primaryType() );
-    }
-
-    /**
-     * @see ValueType#isPrimitiveValue(java.lang.Object)
-     * @param type Type
-     * @return true if object is a primitive value or an array of primitive values
-     */
-    public static boolean isPrimitiveValueType( Class<?> type )
-    {
-        Objects.requireNonNull( type, "type" );
-        if( String.class.isAssignableFrom( type ) )
-        {
-            return true;
-        }
-        if( type.isArray() )
-        {
-            return isPrimitiveValueType( type.getComponentType() );
-        }
-        return false;
-    }
     protected final List<Class<?>> types;
 
-    public ValueType( Class<?> type )
+    protected ValueType( Class<?>... types )
     {
-        this( Collections.singletonList( type ) );
+        this( Arrays.asList( types ) );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public ValueType( List<Class<?>> types )
+    protected ValueType( List<Class<?>> types )
     {
         this.types = types;
     }
@@ -142,6 +92,21 @@ public class ValueType
     public Stream<Class<?>> types()
     {
         return types.stream();
+    }
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o ) { return true; }
+        if( o == null || getClass() != o.getClass() ) { return false; }
+        ValueType valueType = (ValueType) o;
+        return Objects.equals( types, valueType.types );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( types );
     }
 
     @Override

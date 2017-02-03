@@ -22,12 +22,10 @@ package org.apache.polygene.entitystore.jclouds;
 
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -40,12 +38,10 @@ public class JCloudsFilesystemTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class )
                                                             .declareDefaults();

@@ -50,7 +50,6 @@ import org.apache.polygene.sample.forum.domainevent.ParameterValue;
 import org.apache.polygene.sample.forum.rest.ForumRestlet;
 import org.apache.polygene.sample.forum.rest.resource.RootResource;
 import org.apache.polygene.sample.forum.service.BootstrapData;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.service.MetadataService;
 
 import static java.util.stream.Collectors.toList;
@@ -75,18 +74,12 @@ public class ForumAssembler
         LayerAssembly configuration = assembly.layer( "Configuration" );
         {
             configModule = configuration.module( "Configuration" );
-            new OrgJsonValueSerializationAssembler().assemble( configModule );
             new MemoryEntityStoreAssembler().assemble( configModule );
             new FileConfigurationAssembler().visibleIn( Visibility.application ).assemble( configModule );
         }
 
         LayerAssembly infrastructure = assembly.layer( "Infrastructure" ).uses( configuration );
         {
-            ModuleAssembly serialization = infrastructure.module( "Serialization" );
-            new OrgJsonValueSerializationAssembler().
-                visibleIn( Visibility.application ).
-                assemble( serialization );
-
             ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
             new FileEntityStoreAssembler()
                 .visibleIn( Visibility.application )
@@ -133,8 +126,8 @@ public class ForumAssembler
             contexts.services( EventsService.class );
 
             context.module( "Domain events" )
-                .values( DomainEventValue.class, ParameterValue.class )
-                .visibleIn( Visibility.application );
+                   .values( DomainEventValue.class, ParameterValue.class )
+                   .visibleIn( Visibility.application );
         }
 
         LayerAssembly services = assembly.layer( "Service" ).uses( data );
@@ -154,12 +147,12 @@ public class ForumAssembler
             {
                 new RestServerAssembler().assemble( transformation );
                 transformation.objects( RequestReaderDelegator.class, ResponseWriterDelegator.class )
-                    .visibleIn( Visibility.layer );
-                new OrgJsonValueSerializationAssembler().assemble( transformation );
+                              .visibleIn( Visibility.layer );
             }
 
             ModuleAssembly resources = rest.module( "Resources" );
-            List<? extends Class<?>> resourceClasses = ClassScanner.findClasses( RootResource.class ).collect( toList() );
+            List<? extends Class<?>> resourceClasses = ClassScanner.findClasses( RootResource.class )
+                                                                   .collect( toList() );
             for( Class<?> resourceClass : resourceClasses )
             {
                 resources.objects( resourceClass ).visibleIn( Visibility.layer );

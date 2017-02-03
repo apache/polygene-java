@@ -19,30 +19,17 @@
  */
 package org.apache.polygene.entitystore.sql.assembly;
 
-import java.io.IOException;
-import org.apache.polygene.entitystore.sql.internal.SQLiteDatabaseSQLServiceMixin;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
-import org.sql.generation.api.vendor.SQLiteVendor;
+import org.jooq.SQLDialect;
 
 /**
  * SQLite EntityStore assembly.
  */
 public class SQLiteEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler<SQLiteEntityStoreAssembler>
+    extends AbstractSQLMapEntityStoreAssembler<SQLiteEntityStoreAssembler>
 {
-
     @Override
-    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    protected SQLDialect getSQLDialect()
     {
-        return SQLiteDatabaseSQLServiceMixin.class;
+        return SQLDialect.SQLITE;
     }
-
-    @Override
-    protected SQLVendor getSQLVendor()
-            throws IOException
-    {
-        return SQLVendorProvider.createVendor( SQLiteVendor.class );
-    }
-
 }

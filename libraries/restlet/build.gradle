@@ -30,9 +30,8 @@ dependencies {
 
   api polygene.core.bootstrap
 
-  implementation polygene.extension( 'valueserialization-jackson' )
-  implementation polygene.extension( 'indexing-rdf' )
   implementation polygene.extension( 'entitystore-file' )
+  implementation polygene.extension( 'indexing-rdf' )
   implementation libraries.restlet
 
   runtimeOnly polygene.core.runtime

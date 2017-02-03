@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.entitystore.sql.internal;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,9 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class SQLiteDatabaseSQLServiceMixin
-        implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
+    implements DatabaseSQLService, DatabaseSQLStringsBuilder, DatabaseSQLServiceSpi
 {
-
     private static final Logger LOGGER = LoggerFactory.getLogger( SQLiteDatabaseSQLServiceMixin.class );
 
     @This
@@ -39,27 +39,28 @@ public abstract class SQLiteDatabaseSQLServiceMixin
 
     @Override
     public boolean tableExists( Connection connection )
-            throws SQLException
+        throws SQLException
     {
         ResultSet rs = null;
-        try {
+        try
+        {
             String tableNameForQuery = SQLs.TABLE_NAME.toUpperCase();
-            rs = connection.getMetaData().getTables( null, null, tableNameForQuery, new String[]{ "TABLE" } );
+            rs = connection.getMetaData().getTables( null, null, tableNameForQuery,
+                                                     new String[] { "TABLE" } );
             boolean tableExists = rs.next();
             LOGGER.trace( "Found table {}? {}", tableNameForQuery, tableExists );
             return tableExists;
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
         }
     }
 
     @Override
-    public EntityValueResult getEntityValue( ResultSet rs )
-            throws SQLException
+    public Reader getEntityStateReader( ResultSet rs )
+        throws SQLException
     {
-        return new EntityValueResult( rs.getLong( SQLs.ENTITY_PK_COLUMN_NAME ),
-                                      rs.getLong( SQLs.ENTITY_OPTIMISTIC_LOCK_COLUMN_NAME ),
-                                      new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) ) );
+        return new StringReader( rs.getString( SQLs.ENTITY_STATE_COLUMN_NAME ) );
     }
-
 }

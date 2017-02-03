@@ -30,13 +30,11 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 public class ValueNestedBuilderTest
     extends AbstractPolygeneTest
 {
-
     private interface InnerValue
         extends ValueComposite
     {
@@ -75,7 +73,6 @@ public class ValueNestedBuilderTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class );
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
     }
 

@@ -38,9 +38,8 @@ var cachings = [
 ];
 
 var serializations = [
-    'Jackson',
-    // 'Johnzon',
-    'Stax'
+    'JavaxJson',
+    'JavaxXml'
 ];
 
 var metricses = [
@@ -56,11 +55,11 @@ var featuresset = [
 ];
 
 entityStores.forEach(function (entityStore) {
-    test(entityStore, "Rdf", "Jackson", "Memcache", "Codahale", "[]");
+    test(entityStore, "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
 });
 
 indexings.forEach(function (indexing) {
-    test("Memory", indexing, "Jackson", "Memcache", "Codahale", "[]");
+    test("Memory", indexing, "JavaxJson", "Memcache", "Codahale", "[]");
 });
 
 serializations.forEach(function (serialization) {
@@ -68,15 +67,15 @@ serializations.forEach(function (serialization) {
 });
 
 cachings.forEach(function (caching) {
-    test("Memory", "Rdf", "Jackson", caching, "Codahale", "[]");
+    test("Memory", "Rdf", "JavaxJson", caching, "Codahale", "[]");
 });
 
 metricses.forEach(function (metrics) {
-    test("Memory", "Rdf", "Jackson", "Memcache", metrics, "[]");
+    test("Memory", "Rdf", "JavaxJson", "Memcache", metrics, "[]");
 });
 
 featuresset.forEach(function (feature) {
-    test("Memory", "Rdf", "Jackson", "Memcache", "Codahale", feature);
+    test("Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", feature);
 });
 
 // All Tests !!!!

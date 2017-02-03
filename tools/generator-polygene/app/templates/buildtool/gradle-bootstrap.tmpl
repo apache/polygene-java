@@ -31,7 +31,7 @@ dependencies {
 <% } %>
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystore.toLowerCase() %>:$polygeneVersion"
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.valueserialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
+  compile "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
 
 <% if( polygene.caching !== "None" ) { %>
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"

@@ -120,7 +120,7 @@ class ReportsPlugin implements Plugin<Project>
         "Core SPI"      : [ "org.apache.polygene.spi",
                             "org.apache.polygene.spi.*" ],
         "Libraries"     : [ "org.apache.polygene.library.*" ],
-        "Extensions"    : [ "org.apache.polygene.valueserialization.*",
+        "Extensions"    : [ "org.apache.polygene.serialization.*",
                             "org.apache.polygene.entitystore.*",
                             "org.apache.polygene.index.*",
                             "org.apache.polygene.metrics.*",

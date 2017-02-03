@@ -27,7 +27,6 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 /**
@@ -51,7 +50,6 @@ public class CassandraMapEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         module.services( CassandraEntityStoreService.class ).withTypes( CanRemoveAll.class ).withMixins( EmptyCassandraTableMixin.class );
-        new JacksonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         new CassandraEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );

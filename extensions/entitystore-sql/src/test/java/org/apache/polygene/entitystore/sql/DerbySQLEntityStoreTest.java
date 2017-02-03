@@ -19,11 +19,9 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.apache.derby.iapi.services.io.FileUtil;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
@@ -36,7 +34,6 @@ import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class DerbySQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -50,29 +47,28 @@ public class DerbySQLEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         // DataSourceService
-        new DBCPDataSourceServiceAssembler().
-            identifiedBy( "derby-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "derby-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
 
         // DataSource
-        new DataSourceAssembler().
-            withDataSourceServiceIdentity( "derby-datasource-service" ).
-            identifiedBy( "derby-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( module );
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "derby-datasource-service" )
+            .identifiedBy( "derby-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
         // SQL EntityStore
-        new DerbySQLEntityStoreAssembler().
-            visibleIn( Visibility.application ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DerbySQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
     }
     // END SNIPPET: assembly
 
@@ -84,7 +80,8 @@ public class DerbySQLEntityStoreTest
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLConfiguration config = uow.get( SQLConfiguration.class,
+                                               DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();
@@ -94,10 +91,9 @@ public class DerbySQLEntityStoreTest
             }
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
+                stmt.execute( String.format( "DELETE FROM %s.%s", schemaName, SQLs.TABLE_NAME ) );
                 connection.commit();
             }
-            FileUtil.removeDirectory( new File( "target/polygene-data" ) );
         }
         finally
         {
@@ -105,5 +101,4 @@ public class DerbySQLEntityStoreTest
             super.tearDown();
         }
     }
-
 }

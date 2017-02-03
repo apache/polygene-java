@@ -19,15 +19,13 @@
  */
 package org.apache.polygene.index.rdf;
 
-import org.junit.Ignore;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 import org.apache.polygene.test.indexing.AbstractComplexQueryTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Ignore;
 
 @Ignore( "RDF Index/Query do not support Complex Queries, ie. queries by 'example values'" )
 public class RdfComplexQueryTest
@@ -40,7 +38,6 @@ public class RdfComplexQueryTest
     {
         super.assemble( module );
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
     }

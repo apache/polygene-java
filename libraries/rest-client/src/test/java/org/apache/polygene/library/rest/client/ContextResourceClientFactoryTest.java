@@ -26,14 +26,12 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.constraint.Name;
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.type.HasTypes;
 import org.apache.polygene.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCallback;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
@@ -72,7 +70,6 @@ import org.apache.polygene.library.rest.server.restlet.NullCommandResult;
 import org.apache.polygene.library.rest.server.spi.CommandResult;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -112,7 +109,6 @@ public class ContextResourceClientFactoryTest
         throws AssemblyException
     {
         // General setup of client and server
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
         new RestServerAssembler().assemble( module );
@@ -568,12 +564,12 @@ public class ContextResourceClientFactoryTest
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return vbf.newValueFromSerializedState( TestResult.class, "{'xyz':'"+query.abc().get()+"'}" );
+            return vbf.newValueFromSerializedState( TestResult.class, "{\"xyz\":\""+query.abc().get()+"\"}" );
         }
 
         public TestResult queryWithoutValue()
         {
-            return vbf.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
+            return vbf.newValueFromSerializedState( TestResult.class, "{\"xyz\":\"bar\"}" );
         }
 
         public String queryWithStringResult( TestQuery query )
@@ -609,7 +605,7 @@ public class ContextResourceClientFactoryTest
                     public void beforeCompletion()
                         throws UnitOfWorkCompletionException
                     {
-                        throw new ConcurrentEntityModificationException( Collections.<EntityComposite, HasTypes>emptyMap(),
+                        throw new ConcurrentEntityModificationException( Collections.emptyMap(),
                                                                          UsecaseBuilder.newUsecase( "Testing" ) );
                     }
 
@@ -642,7 +638,7 @@ public class ContextResourceClientFactoryTest
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{\"xyz\":\"bar\"}" );
         }
 
         // Test interaction constraints
@@ -650,7 +646,7 @@ public class ContextResourceClientFactoryTest
         @Requires( File.class )
         public TestResult queryWithRoleRequirement( TestQuery query )
         {
-            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{\"xyz\":\"bar\"}" );
         }
 
         @Requires( File.class )
@@ -697,7 +693,7 @@ public class ContextResourceClientFactoryTest
 
         public TestResult genericQuery( TestQuery query )
         {
-            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{\"xyz\":\"bar\"}" );
         }
     }
 

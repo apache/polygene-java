@@ -22,6 +22,7 @@ package org.apache.polygene.library.rest.admin;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.value.ValueSerialization;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.spi.query.EntityFinder;
 import org.apache.polygene.spi.query.EntityFinderException;
 import org.restlet.data.CharacterSet;
@@ -64,7 +65,7 @@ public class EntitiesResource
     @Service
     private EntityFinder entityFinder;
     @Service
-    private ValueSerialization valueSerialization;
+    private Serialization stateSerialization;
 
     public EntitiesResource()
     {
@@ -117,7 +118,7 @@ public class EntitiesResource
                 public void write( OutputStream outputStream )
                     throws IOException
                 {
-                    valueSerialization.serialize( query, outputStream );
+                    stateSerialization.serialize( new OutputStreamWriter( outputStream ), query );
                 }
             };
         }

@@ -19,30 +19,17 @@
  */
 package org.apache.polygene.entitystore.sql.assembly;
 
-import java.io.IOException;
-import org.apache.polygene.entitystore.sql.internal.DerbySQLDatabaseSQLServiceMixin;
-import org.sql.generation.api.vendor.DerbyVendor;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
+import org.jooq.SQLDialect;
 
 /**
  * Derby EntityStore assembly.
  */
 public class DerbySQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler<DerbySQLEntityStoreAssembler>
+    extends AbstractSQLMapEntityStoreAssembler<DerbySQLEntityStoreAssembler>
 {
-
     @Override
-    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    protected SQLDialect getSQLDialect()
     {
-        return DerbySQLDatabaseSQLServiceMixin.class;
+        return SQLDialect.DERBY;
     }
-
-    @Override
-    protected SQLVendor getSQLVendor()
-            throws IOException
-    {
-        return SQLVendorProvider.createVendor( DerbyVendor.class );
-    }
-
 }
