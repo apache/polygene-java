@@ -37,7 +37,7 @@ public class MemcacheAssembler
         ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {

@@ -205,10 +205,7 @@ import org.apache.polygene.tools.model.util.DescriptorUtilities;
             clear();
 
             // mixin type
-            rows.add( new TableRow( 2, new Object[]
-            {
-                "return", Classes.simpleGenericNameOf( method.getGenericReturnType() )
-            } ) );
+            rows.add( new TableRow( 2, "return", Classes.simpleGenericNameOf( method.getGenericReturnType() ) ) );
 
             // method
             StringBuilder parameters = new StringBuilder();

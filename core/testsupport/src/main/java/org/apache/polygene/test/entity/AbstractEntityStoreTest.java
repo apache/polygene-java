@@ -114,7 +114,7 @@ public abstract class AbstractEntityStoreTest
         instance.bigDecimalValue().set( new BigDecimal( "42" ) );
         instance.instantValue().set( refDate.toInstant() );
         instance.dateTimeValue().set( refDate );
-        instance.localDateTimeValue().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 00 ) );
+        instance.localDateTimeValue().set( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) );
         instance.localDateValue().set( LocalDate.of( 2020, 3, 4 ) );
         instance.localTimeValue().set( LocalTime.of( 19, 20, 21 ) );
 

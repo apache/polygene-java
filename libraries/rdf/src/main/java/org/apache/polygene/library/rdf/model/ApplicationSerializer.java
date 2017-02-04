@@ -34,7 +34,7 @@ public class ApplicationSerializer
         Graph graph = new GraphImpl();
         SerializerContext context = new SerializerContext( graph );
         ApplicationVisitor applicationVisitor = new ApplicationVisitor( context );
-        ( (Application) app ).descriptor().accept( applicationVisitor );
+        app.descriptor().accept( applicationVisitor );
         return graph;
     }
 

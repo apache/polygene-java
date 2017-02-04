@@ -38,19 +38,19 @@ public class DefaultValuesTest
     @Test
     public void givenDefaultValuesWhenRequestStringThenGetEmptyString()
     {
-        assertThat( "Empty string", (String) DefaultValues.getDefaultValueOf( String.class ), equalTo( "" ) );
+        assertThat( "Empty string", DefaultValues.getDefaultValueOf( String.class ), equalTo( "" ) );
     }
 
     @Test
     public void givenDefaultValuesWhenRequestListThenGetEmptyList()
     {
-        assertThat( "Empty list", (List<Object>) DefaultValues.getDefaultValueOf( List.class ), equalTo( Collections.emptyList() ) );
+        assertThat( "Empty list", DefaultValues.getDefaultValueOf( List.class ), equalTo( Collections.emptyList() ) );
     }
 
     @Test
     public void givenDefaultValuesWhenRequestSetThenGetEmptySet()
     {
-        assertThat( "Empty set", (Set<Object>) DefaultValues.getDefaultValueOf( Set.class ), equalTo( Collections.emptySet() ) );
+        assertThat( "Empty set", DefaultValues.getDefaultValueOf( Set.class ), equalTo( Collections.emptySet() ) );
     }
 
     @Test

@@ -61,7 +61,7 @@ public class UnitOfWorkInjectionTest
             UnitOfWork uow2 = unitOfWorkFactory.newUnitOfWork( usecase );
             trial = uow.get( trial );
             trial.doSomething();
-            assertEquals( "123", ( (EntityComposite) trial ).identity().get() );
+            assertEquals( "123", ( (EntityComposite) trial ).identity().get().toString() );
             assertEquals( "usecase1", trial.usecaseName() );
             uow2.discard();
         }

@@ -100,13 +100,13 @@ public class ClassesTest
             switch( method.getName() )
             {
             case "type":
-                assertThat( resolvedType, equalTo( (Type) String.class ) );
+                assertThat( resolvedType, equalTo( String.class ) );
                 break;
             case "type1":
-                assertThat( resolvedType, equalTo( (Type) String.class ) );
+                assertThat( resolvedType, equalTo( String.class ) );
                 break;
             case "type2":
-                assertThat( resolvedType, equalTo( (Type) Long.class ) );
+                assertThat( resolvedType, equalTo( Long.class ) );
                 break;
             }
         }

@@ -157,9 +157,7 @@ public abstract class AbstractJettyMixin
                         }
                         catch( UnknownHostException e )
                         {
-                            InternalError error = new InternalError( "UnknownHost for local interface." );
-                            error.initCause( e );
-                            throw error;
+                            throw new InternalError( "UnknownHost for local interface.", e );
                         }
                     }
                 }

@@ -45,7 +45,7 @@ public class FileConfigurationAssembler
         ServiceDeclaration service = module.services( FileConfigurationService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
-            service.identifiedBy( identity().toString() );
+            service.identifiedBy( identity() );
         }
         if( override != null )
         {

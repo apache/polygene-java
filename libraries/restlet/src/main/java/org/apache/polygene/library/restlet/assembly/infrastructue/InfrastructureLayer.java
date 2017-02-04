@@ -20,9 +20,6 @@
 
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -30,26 +27,22 @@ import org.apache.polygene.bootstrap.layered.LayerAssembler;
 import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
 import org.apache.polygene.library.restlet.assembly.configuration.ConfigurationLayer;
 import org.apache.polygene.library.restlet.assembly.configuration.ConfigurationModule;
-import org.apache.polygene.library.restlet.assembly.domain.DomainLayer;
 
 public class InfrastructureLayer extends LayeredLayerAssembler
     implements LayerAssembler
 {
     public static final String NAME = "Infrastructure Layer";
     private final ModuleAssembly configModule;
-    private final Function<Application, Module> typeFinder;
 
     public static InfrastructureLayer create( LayerAssembly layer )
     {
-        Function<Application, Module> typeFinder = DomainLayer.typeFinder();
         ModuleAssembly config = layer.application().layer( ConfigurationLayer.NAME ).module( ConfigurationModule.NAME );
-        return new InfrastructureLayer( config, typeFinder );
+        return new InfrastructureLayer( config );
     }
 
-    public InfrastructureLayer( ModuleAssembly configModule, Function<Application, Module> typeFinder )
+    public InfrastructureLayer( ModuleAssembly configModule )
     {
         this.configModule = configModule;
-        this.typeFinder = typeFinder;
     }
 
     @Override
@@ -57,7 +50,7 @@ public class InfrastructureLayer extends LayeredLayerAssembler
         throws AssemblyException
     {
         new IndexingModule( configModule ).assemble( layer, layer.module( IndexingModule.NAME ) );
-        new SerializationModule( typeFinder ).assemble( layer, layer.module( SerializationModule.NAME ) );
+        new SerializationModule().assemble( layer, layer.module( SerializationModule.NAME ) );
         return layer;
     }
 }

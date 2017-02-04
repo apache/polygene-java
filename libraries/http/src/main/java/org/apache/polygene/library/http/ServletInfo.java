@@ -37,7 +37,7 @@ public class ServletInfo
 
     public ServletInfo( String mountPath )
     {
-        this( mountPath, Collections.<String, String>emptyMap() );
+        this( mountPath, Collections.emptyMap() );
     }
 
     public ServletInfo( String mountPath, Map<String, String> initParams )

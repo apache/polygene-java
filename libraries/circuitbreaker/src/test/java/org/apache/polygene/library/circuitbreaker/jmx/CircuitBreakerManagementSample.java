@@ -65,7 +65,7 @@ public class CircuitBreakerManagementSample
 
         };
 
-        TestService service = assembler.module().<TestService>findService( TestService.class ).get();
+        TestService service = assembler.module().findService( TestService.class ).get();
 
         int interval = 1; // Seconds
         System.out.println( "CircuitBreaker JMX Support sample is now started." );

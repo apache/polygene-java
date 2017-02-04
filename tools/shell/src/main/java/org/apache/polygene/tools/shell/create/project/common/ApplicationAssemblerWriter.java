@@ -43,10 +43,7 @@ public class ApplicationAssemblerWriter
             pw.println( "import java.nio.file.Files;" );
             pw.println( "import java.nio.file.Path;" );
             pw.println( "import java.nio.file.Paths;" );
-            pw.println( "import java.util.function.Function;" );
             pw.println();
-            pw.println( "import org.apache.polygene.api.structure.Application;" );
-            pw.println( "import org.apache.polygene.api.structure.Module;\n" );
             pw.println( "import org.apache.polygene.bootstrap.ApplicationAssembly;" );
             pw.println( "import org.apache.polygene.bootstrap.AssemblyException;" );
             pw.println( "import org.apache.polygene.bootstrap.LayerAssembly;" );
@@ -82,8 +79,7 @@ public class ApplicationAssemblerWriter
             pw.println( "        LayerAssembly configLayer = createLayer( ConfigurationLayer.class );" );
             pw.println( "        ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();" );
             pw.println( "        LayerAssembly domainLayer = createLayer( DomainLayer.class );" );
-            pw.println( "        Function<Application, Module> typeFinder = DomainLayer.typeFinder();" );
-            pw.println( "        LayerAssembly infraLayer = new InfrastructureLayer( configModule, typeFinder ).assemble( assembly.layer( InfrastructureLayer.NAME ) );" );
+            pw.println( "        LayerAssembly infraLayer = new InfrastructureLayer( configModule ).assemble( assembly.layer( InfrastructureLayer.NAME ) );" );
             pw.println( "        LayerAssembly connectivityLayer = createLayer( ConnectivityLayer.class );" );
             pw.println( "        connectivityLayer.uses( domainLayer );" );
             pw.println( "        domainLayer.uses( infraLayer );" );

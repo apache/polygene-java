@@ -72,7 +72,7 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
             module.services( getIndexQueryServiceType() )
-                .identifiedBy( identity().toString() )
+                .identifiedBy( identity() )
                 .setMetaInfo( sqlVendor )
                 .visibleIn( visibility() )
                 .instantiateOnStartup();

@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.library.restlet.assembly.domain;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.layered.LayerAssembler;
@@ -38,10 +35,5 @@ public class DomainLayer extends LayeredLayerAssembler
     {
         createModule( layer, CrudModule.class );
         return layer;
-    }
-
-    public static Function<Application, Module> typeFinder()
-    {
-        return application -> application.findModule( "Domain Layer", "TypeFinder Module" );
     }
 }

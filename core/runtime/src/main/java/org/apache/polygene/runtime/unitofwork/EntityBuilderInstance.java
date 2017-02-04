@@ -86,7 +86,7 @@ public final class EntityBuilderInstance<T>
     public T instance()
     {
         checkValid();
-        return prototypeInstance.<T>proxy();
+        return prototypeInstance.proxy();
     }
 
     @Override

@@ -53,7 +53,7 @@ public final class ValueBuilderInstance<T>
     @Override
     public T prototype()
     {
-        return prototypeInstance.<T>proxy();
+        return prototypeInstance.proxy();
     }
 
     @Override

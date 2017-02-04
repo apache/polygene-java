@@ -61,7 +61,7 @@ public class LinksResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedLinkMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                response.setEntity( new StringRepresentation( ( (Link) result ).toString(), MediaType.APPLICATION_JSON ) );
+                response.setEntity( new StringRepresentation( result.toString(), MediaType.APPLICATION_JSON ) );
                 return true;
             }
             else

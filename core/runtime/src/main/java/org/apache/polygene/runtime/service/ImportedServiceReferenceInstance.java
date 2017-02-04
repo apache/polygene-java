@@ -156,7 +156,7 @@ public final class ImportedServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    serviceInstance = serviceModel.<T>importInstance( module );
+                    serviceInstance = serviceModel.importInstance( module );
                     instance = serviceInstance.instance();
 
                     try

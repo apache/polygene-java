@@ -87,7 +87,7 @@ public class AlarmServiceTest
     @Test
     public void testGetAlarmModels()
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -97,7 +97,7 @@ public class AlarmServiceTest
     public void testDefaultModel()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -110,7 +110,7 @@ public class AlarmServiceTest
     public void testListeners()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = serviceFinder.findService( AlarmSystem.class ).get();
         AlarmPoint alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
 
         CountingListener listener1 = new CountingListener();

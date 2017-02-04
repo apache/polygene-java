@@ -40,9 +40,6 @@ public class InfrastructureLayerWriter
             pw.println( ".bootstrap.infrastructure;" );
             pw.println();
             pw.println(
-                "import java.util.function.Function;\n" +
-                "import org.apache.polygene.api.structure.Application;\n" +
-                "import org.apache.polygene.api.structure.Module;\n" +
                 "import org.apache.polygene.bootstrap.AssemblyException;\n" +
                 "import org.apache.polygene.bootstrap.LayerAssembly;\n" +
                 "import org.apache.polygene.bootstrap.ModuleAssembly;\n" +
@@ -54,12 +51,10 @@ public class InfrastructureLayerWriter
                 "{\n" +
                 "    public static final String NAME = \"Infrastructure Layer\";\n" +
                 "    private final ModuleAssembly configModule;\n" +
-                "    private final Function<Application, Module> typeFinder;\n" +
                 "\n" +
-                "    public InfrastructureLayer( ModuleAssembly configModule, Function<Application, Module> typeFinder )\n" +
+                "    public InfrastructureLayer( ModuleAssembly configModule )\n" +
                 "    {\n" +
                 "        this.configModule = configModule;\n" +
-                "        this.typeFinder = typeFinder;\n" +
                 "    }\n" +
                 "\n" +
                 "    @Override\n" +
@@ -70,7 +65,7 @@ public class InfrastructureLayerWriter
                 "\n" +
                 "        new StorageModule( configModule ).assemble( layer, layer.module( StorageModule.NAME ) );\n" +
                 "        new IndexingModule( configModule ).assemble( layer, layer.module( IndexingModule.NAME ) );\n" +
-                "        new SerializationModule( typeFinder ).assemble( layer, layer.module( SerializationModule.NAME ) );\n" +
+                "        new SerializationModule().assemble( layer, layer.module( SerializationModule.NAME ) );\n" +
                 "\n" +
                 "        return layer;\n" +
                 "    }\n" +

@@ -38,7 +38,7 @@ import org.apache.polygene.runtime.injection.DependencyModel;
 public final class ConcernsModel
     implements ConcernsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
-    public static final ConcernsModel EMPTY_CONCERNS = new ConcernsModel( Collections.<ConcernModel>emptyList() );
+    public static final ConcernsModel EMPTY_CONCERNS = new ConcernsModel( Collections.emptyList() );
 
     private List<ConcernModel> concernsFor;
 

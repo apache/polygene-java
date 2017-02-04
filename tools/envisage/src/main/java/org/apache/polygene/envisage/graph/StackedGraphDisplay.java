@@ -504,7 +504,7 @@ import prefuse.visual.sort.TreeDepthItemSorter;
             }
             else
             {
-                Dimension size = ( (Component) container ).getSize();
+                Dimension size = container.getSize();
                 displayBounds.setRect( 0, 0, size.getWidth(), size.getHeight() );
             }
 

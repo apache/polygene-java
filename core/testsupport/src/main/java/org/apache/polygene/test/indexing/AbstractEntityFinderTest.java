@@ -357,7 +357,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             ALL,
-            Arrays.asList(orderBy( nameable.name() )),
+            Collections.singletonList( orderBy( nameable.name() ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
             NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, allNames );
@@ -380,7 +380,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Nameable.class,
             gt( nameable.name(), "B" ),
-            Arrays.asList( orderBy( nameable.name() ) ),
+            Collections.singletonList( orderBy( nameable.name() ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
             NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, largerThanB.toArray( new String[ largerThanB.size() ] ) );
@@ -394,7 +394,7 @@ public abstract class AbstractEntityFinderTest
         Iterable<EntityReference> entities = entityFinder.findEntities(
             Person.class,
             gt( person.yearOfBirth(), 1973 ),
-            Arrays.asList( orderBy( person.name(), OrderBy.Order.DESCENDING ) ),
+            Collections.singletonList( orderBy( person.name(), OrderBy.Order.DESCENDING ) ),
             NO_FIRST_RESULT, NO_MAX_RESULTS,
             NO_VARIABLES ).collect( toList() );
         assertNames( false, entities, JOE, ANN );

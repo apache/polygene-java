@@ -39,7 +39,7 @@ import org.apache.polygene.runtime.injection.DependencyModel;
 public final class SideEffectsModel
     implements SideEffectsDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
-    public static final SideEffectsModel EMPTY_SIDEEFFECTS = new SideEffectsModel( Collections.<SideEffectModel>emptyList() );
+    public static final SideEffectsModel EMPTY_SIDEEFFECTS = new SideEffectsModel( Collections.emptyList() );
 
     private List<SideEffectModel> sideEffectModels = null;
 

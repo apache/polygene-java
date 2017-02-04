@@ -51,11 +51,8 @@ public abstract class TraceOnConsoleSideEffect extends SideEffectOf<TraceService
     @Override
     public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, Instant entryTime, Duration duration )
     {
-        StringBuffer buf = new StringBuffer();
-        buf.append( "Exception: " );
-        buf.append( duration );
-        buf.append( " : " );
-        OUT.println( buf.toString() );
+        String trace = "Exception: " + duration + " : ";
+        OUT.println( trace );
         t.printStackTrace( OUT );
     }
 

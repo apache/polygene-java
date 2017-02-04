@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.valueserialization.stax;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -33,30 +30,12 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 public class StaxValueSerializationAssembler
     extends Assemblers.Visibility<StaxValueSerializationAssembler>
 {
-    private Function<Application, Module> valuesModuleFinder;
-
-    public StaxValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
-    {
-        this.valuesModuleFinder = valuesModuleFinder;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( valuesModuleFinder == null )
-        {
-            module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.XML );
-        }
-        else
-        {
-            module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.XML ).
-                setMetaInfo( valuesModuleFinder );
-        }
+        module.services( StaxValueSerializationService.class ).
+            visibleIn( visibility() ).
+                  taggedWith( ValueSerialization.Formats.XML );
     }
 }

@@ -269,7 +269,7 @@ public class PluginTest
                     LayerAssembly layer = module.layer();
 
                     // In a real case you would "detect" the plugins somehow. Here the plugin assembler is hardcoded
-                    List<Assembler> pluginAssemblers = Collections.<Assembler>singletonList( new SimonAssembler() );
+                    List<Assembler> pluginAssemblers = Collections.singletonList( new SimonAssembler() );
 
                     for( int i = 0; i < pluginAssemblers.size(); i++ )
                     {

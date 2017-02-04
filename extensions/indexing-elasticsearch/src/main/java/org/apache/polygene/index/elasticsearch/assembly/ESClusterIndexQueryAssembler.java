@@ -35,7 +35,7 @@ public class ESClusterIndexQueryAssembler
         throws AssemblyException
     {
         module.services( ESClusterIndexQueryService.class ).
-            identifiedBy( identity().toString() ).
+            identifiedBy( identity() ).
             visibleIn( visibility() ).
             instantiateOnStartup();
 

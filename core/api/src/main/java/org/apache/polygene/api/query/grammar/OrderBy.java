@@ -84,10 +84,6 @@ public class OrderBy
     @Override
     public String toString()
     {
-        return new StringBuilder()
-            .append( propertyReference )
-            .append( " " )
-            .append( order )
-            .toString();
+        return String.valueOf( propertyReference ) + " " + order;
     }
 }

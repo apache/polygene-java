@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.valueserialization.jackson;
 
-import java.util.function.Function;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -33,30 +30,12 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 public class JacksonValueSerializationAssembler
     extends Assemblers.Visibility<JacksonValueSerializationAssembler>
 {
-    private Function<Application, Module> valuesModuleFinder;
-
-    public JacksonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
-    {
-        this.valuesModuleFinder = valuesModuleFinder;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( valuesModuleFinder == null )
-        {
-            module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON );
-        }
-        else
-        {
-            module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON ).
-                setMetaInfo( valuesModuleFinder );
-        }
+        module.services( JacksonValueSerializationService.class ).
+            visibleIn( visibility() ).
+                  taggedWith( ValueSerialization.Formats.JSON );
     }
 }
