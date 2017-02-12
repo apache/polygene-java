@@ -89,7 +89,7 @@ module.exports = generators.Base.extend(
                             'Solr',
                             'SQL'
                         ],
-                        message: 'Which caching system do you want to use?'
+                        message: 'Which indexing system do you want to use?'
                     },
                     {
                         type: 'list',
@@ -99,7 +99,7 @@ module.exports = generators.Base.extend(
                             'memcache',
                             'ehcache'
                         ],
-                        message: 'Which serialization system do you want to use?'
+                        message: 'Which caching system do you want to use?'
                     },
                     {
                         type: 'list',
@@ -109,7 +109,7 @@ module.exports = generators.Base.extend(
                             'Stax',
                             'OrgJson'
                         ],
-                        message: 'Which indexing system do you want to use?'
+                        message: 'Which serialization system do you want to use?'
                     },
                     {
                         type: 'checkbox',
@@ -157,7 +157,7 @@ module.exports = generators.Base.extend(
 
             copyEntityStore( this, polygene.entitystore );
 
-            copyPolygeneBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "RDFIndexingModule", hasIndexing( 'Rdf' ) );
             copyPolygeneBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
             copyPolygeneBootstrap( this, "infrastructure", "SolrIndexingModule", hasIndexing( 'Solr' ) );
             copyPolygeneBootstrap( this, "infrastructure", "SqlIndexingModule", hasIndexing( 'Sql' ) );
