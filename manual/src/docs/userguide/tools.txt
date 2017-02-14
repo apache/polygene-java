@@ -32,7 +32,7 @@ The tools are available in the +tools/+ directory of the Polygene™ SDK.
 
 :leveloffset: 2
 
-include::../../../../tools/shell/src/docs/shell.txt[]
+include::../../../../tools/src/docs/yeoman_polygene.txt[]
 
 :leveloffset: 2
 
