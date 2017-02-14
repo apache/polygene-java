@@ -18,22 +18,21 @@
  *
  */
 
-apply plugin: 'polygene-tool'
-apply plugin: 'application'
+apply plugin: 'polygene-extension'
 
-description = "Command line tools for building Apache Polygene™ applications."
-mainClassName = "org.apache.polygene.tools.shell.Main"
+description = "Apache Polygene™ Cassandra EntityStore Extension"
 
-jar {
-  manifest {
-    name = "Apache Polygene™ Command Line"
-    attributes("Main-Class": mainClassName )
-  }
-}
-
-[ distZip, distTar ].each { dist -> dist.classifier = 'bin' }
-distTar.compression = Compression.GZIP
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Cassandra" } }
 
 dependencies {
+  compile polygene.core.bootstrap
+  compile polygene.library( 'locking' )
+  compile libraries.cassandra_client
+
+  runtime polygene.core.runtime
+
+  testCompile polygene.internals.testsupport
+  testCompile polygene.extension( 'valueserialization-orgjson' )
+
   testRuntime libraries.logback
 }

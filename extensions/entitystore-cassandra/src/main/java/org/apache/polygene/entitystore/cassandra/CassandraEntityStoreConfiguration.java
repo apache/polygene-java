@@ -17,21 +17,34 @@
  *
  *
  */
+package org.apache.polygene.entitystore.cassandra;
 
-package org.apache.polygene.tools.shell.create.project;
+import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.configuration.ConfigurationComposite;
+import org.apache.polygene.api.property.Property;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-
-public class NullProjectCreator extends AbstractProjectCreator
-    implements ProjectCreator
+// START SNIPPET: config
+public interface CassandraEntityStoreConfiguration
+    extends ConfigurationComposite
 {
 
-    @Override
-    public void create( String projectName, File projectDir, Map<String, String> properties )
-        throws IOException
-    {
-        super.create( projectName, projectDir, properties );    // creates the directory structures.
-    }
+    @Optional
+    Property<String> hostnames();
+
+    @Optional
+    Property<Integer> replicationFactor();
+
+    @UseDefaults
+    Property<String> username();
+
+    @UseDefaults
+    Property<String> password();
+
+    @Optional
+    Property<String> keySpace();
+
+    @Optional
+    Property<String> table();
 }
+// END SNIPPET: config

@@ -23,16 +23,16 @@
         xsi:schemaLocation="http://polygene.apache.org/schemas/2008/dev-status/1
         http://polygene.apache.org/schemas/2008/dev-status/1/dev-status.xsd">
   <status>
-    <!--none,early,beta,stable,mature-->
-    <codebase>beta</codebase>
+        <!--none,early,beta,stable,mature-->
+        <codebase>beta</codebase>
 
-    <!-- none, brief, good, complete -->
-    <documentation>brief</documentation>
+        <!-- none, brief, good, complete -->
+        <documentation>none</documentation>
 
-    <!-- none, some, good, complete -->
-    <unittests>good</unittests>
-  </status>
-  <licenses>
-    <license>ALv2</license>
-  </licenses>
+        <!-- none, some, good, complete -->
+        <unittests>good</unittests>
+    </status>
+    <licenses>
+        <license>ALv2</license>
+    </licenses>
 </module>

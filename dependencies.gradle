@@ -41,6 +41,7 @@ dependencies.libraries << [
 // Extensions, Libraries and Tools dependencies
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.55'
+def cassandraClientVersion = '3.1.3'
 def codahaleMetricsVersion = '3.1.2'
 def commonsDbcpVersion = '2.1.1'
 def commonsLangVersion = '3.5'
@@ -77,6 +78,8 @@ def velocityVersion = '1.7'
 dependencies.libraries << [
   bonecp              : "com.jolbox:bonecp:$bonecpVersion",
   bouncy_castle       : "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
+  cassandra_client    : [ "com.datastax.cassandra:cassandra-driver-core:$cassandraClientVersion",
+          ],
   codahale_metrics    : [ "io.dropwizard.metrics:metrics-core:$codahaleMetricsVersion",
                           "io.dropwizard.metrics:metrics-healthchecks:$codahaleMetricsVersion" ],
   commons_dbcp        : "org.apache.commons:commons-dbcp2:$commonsDbcpVersion",
