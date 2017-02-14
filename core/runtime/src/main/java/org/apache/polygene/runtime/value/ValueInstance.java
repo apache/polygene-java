@@ -39,10 +39,7 @@ public final class ValueInstance
         return (ValueInstance) Proxy.getInvocationHandler( composite );
     }
 
-    public ValueInstance( ValueModel compositeModel,
-                          Object[] mixins,
-                          ValueStateInstance state
-    )
+    public ValueInstance( ValueModel compositeModel, Object[] mixins, ValueStateInstance state )
     {
         super( compositeModel, mixins, state );
     }

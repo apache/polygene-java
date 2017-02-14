@@ -61,6 +61,7 @@ import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.GenericPropertyInfo;
 import org.apache.polygene.api.property.Immutable;
+import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.api.type.HasTypes;
@@ -465,13 +466,15 @@ public abstract class CompositeAssemblyImpl
         }
         boolean useDefaults = useDefaultsDeclaration != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
+        InitialValueProvider initialValueProvider = metaInfo.get(InitialValueProvider.class);
         return new PropertyModel(
             accessor,
             immutable,
             useDefaults,
             valueConstraintsInstance,
             metaInfo,
-            initialValue
+            initialValue,
+            initialValueProvider
         );
     }
 
@@ -492,8 +495,9 @@ public abstract class CompositeAssemblyImpl
                                                .findFirst().orElse( null );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
-            boolean optional = Stream.of( parameterAnnotation ).filter( isType( Optional.class ) )
-                                     .findFirst().isPresent();
+            boolean optional = Stream.of( parameterAnnotation )
+                    .filter( isType( Optional.class ) )
+                    .findFirst().isPresent();
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
                 Arrays.stream( parameterAnnotation ),
                 parameterTypes[ i ],

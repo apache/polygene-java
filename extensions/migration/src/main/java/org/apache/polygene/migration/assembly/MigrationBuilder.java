@@ -25,15 +25,15 @@ package org.apache.polygene.migration.assembly;
  */
 public class MigrationBuilder
 {
-    MigrationRules<EntityMigrationRule> entityRules;
-    MigrationRules<MigrationRule> rules;
+    private MigrationRules<EntityMigrationRule> entityRules;
+    private MigrationRules<MigrationRule> rules;
 
-    String fromVersion;
+    private String fromVersion;
 
     public MigrationBuilder( String fromVersion )
     {
-        this.entityRules = new MigrationRules<EntityMigrationRule>();
-        this.rules = new MigrationRules<MigrationRule>();
+        this.entityRules = new MigrationRules<>();
+        this.rules = new MigrationRules<>();
         this.fromVersion = fromVersion;
     }
 

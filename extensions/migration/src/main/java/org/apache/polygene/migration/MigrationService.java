@@ -94,8 +94,10 @@ public interface MigrationService
 
         @Service
         StateStore store;
+
         @Service
         EntityStore entityStore;
+
         @Structure
         UnitOfWorkFactory uowf;
 

@@ -880,7 +880,7 @@ public class ContextResource
                 String value = getValue( propertyDescriptor.qualifiedName().name(), queryAsForm, entityAsForm );
                 if( value == null )
                 {
-                    Object initialValue = propertyDescriptor.initialValue( module.descriptor() );
+                    Object initialValue = propertyDescriptor.resolveInitialValue(module.descriptor());
                     if( initialValue != null )
                     {
                         value = initialValue.toString();

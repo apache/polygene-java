@@ -29,6 +29,7 @@ import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
@@ -81,6 +82,7 @@ class SQLCompatEntityStateWrapper
                    || Character.class.isAssignableFrom( primaryType )
                    || Enum.class.isAssignableFrom( primaryType )
                    || String.class.isAssignableFrom( primaryType )
+                   || Identity.class.isAssignableFrom( primaryType )
                    // || Date.class.isAssignableFrom( primaryType )
                    // || DateTime.class.isAssignableFrom( primaryType )
                    // || LocalDateTime.class.isAssignableFrom( primaryType )

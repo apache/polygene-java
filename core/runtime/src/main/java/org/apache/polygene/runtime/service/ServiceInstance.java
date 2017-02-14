@@ -35,8 +35,7 @@ import org.apache.polygene.runtime.composite.TransientStateInstance;
 /**
  * JAVADOC
  */
-public class ServiceInstance
-    extends TransientInstance
+public class ServiceInstance extends TransientInstance
     implements Activation
 {
     public static TransientInstance serviceInstanceOf( ServiceComposite composite )
@@ -54,8 +53,7 @@ public class ServiceInstance
     {
         super( compositeModel, mixins, state );
 
-        implementsServiceAvailable =
-            Classes.assignableTypeSpecification( Availability.class ).test( descriptor() );
+        implementsServiceAvailable = Classes.assignableTypeSpecification( Availability.class ).test( descriptor() );
         hasEnabledConfiguration = compositeModel.configurationType() != null
                                   && Enabled.class.isAssignableFrom( compositeModel.configurationType() );
     }

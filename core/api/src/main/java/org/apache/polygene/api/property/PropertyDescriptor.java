@@ -24,6 +24,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.structure.MetaInfoHolder;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
 
@@ -54,7 +55,9 @@ public interface PropertyDescriptor extends MetaInfoHolder
 
     AccessibleObject accessor();
 
-    Object initialValue( ModuleDescriptor module );
+    InitialValueProvider initialValueProvider();
+
+    Object resolveInitialValue(ModuleDescriptor moduleDescriptor);
 
     ValueType valueType();
 

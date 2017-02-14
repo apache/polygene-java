@@ -157,7 +157,6 @@ public final class EntityInstance
         {
             initState();
         }
-
         return state;
     }
 

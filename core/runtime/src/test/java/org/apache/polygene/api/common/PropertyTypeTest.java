@@ -22,6 +22,7 @@ package org.apache.polygene.api.common;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.apache.polygene.api.injection.scope.Invocation;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;

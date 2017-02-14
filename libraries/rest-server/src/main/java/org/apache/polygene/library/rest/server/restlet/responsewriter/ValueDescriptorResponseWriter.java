@@ -68,7 +68,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
                 vd.state().properties().forEach( propertyDescriptor -> {
                     try
                     {
-                        Object o = propertyDescriptor.initialValue( module );
+                        Object o = propertyDescriptor.resolveInitialValue(module);
                         if( o == null )
                         {
                             json.put( propertyDescriptor.qualifiedName().name(), JSONObject.NULL );

@@ -132,7 +132,7 @@ public final class EntityModel extends CompositeModel
     {
         // Set new properties to default value
         state().properties().forEach( propertyDescriptor -> {
-            entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
+            entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.resolveInitialValue(module) );
         } );
 
         // Set new associations to null

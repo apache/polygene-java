@@ -134,7 +134,7 @@ public final class ServiceModel extends CompositeModel
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
         stateModel.properties().forEach( propertyModel -> {
-            Object initialValue = propertyModel.initialValue( module );
+            Object initialValue = propertyModel.resolveInitialValue(module);
             if( propertyModel.accessor().equals( HasIdentity.IDENTITY_METHOD ) )
             {
                 initialValue = identity;

@@ -35,7 +35,7 @@ public final class EntityReference
         implements Serializable
 {
     /**
-     * Parse an Entity reference to an EntityReference.
+     * Parse an Entity reference string to an EntityReference.
      *
      * @param identityString the EntityReference reference
      * @return the EntityReference represented by the given reference

@@ -149,19 +149,19 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
-                    instance = serviceModel.newInstance( module );
+                    ServiceInstance newInstance = serviceModel.newInstance( module );
 
                     try
                     {
                         activation.activate( serviceModel.newActivatorsInstance( module ),
-                                             instance,
+                                             newInstance,
                                              () -> active = true );
                     }
                     catch( Exception e )
                     {
-                        instance = null;
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
+                    instance = newInstance;
                 }
             }
         }
@@ -262,16 +262,7 @@ public final class ServiceReferenceInstance<T>
                         return serviceModel.toString().hashCode();
                 }
             }
-
             ServiceInstance instance = getInstance();
-
-/*
-            if (!instance.isAvailable())
-            {
-                throw new ServiceUnavailableException("Service is currently not available");
-            }
-
-*/
             return instance.invoke( object, method, objects );
         }
 

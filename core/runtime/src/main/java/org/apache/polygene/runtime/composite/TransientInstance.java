@@ -57,7 +57,6 @@ public class TransientInstance
         this.compositeModel = compositeModel;
         this.mixins = mixins;
         this.state = state;
-
         proxy = compositeModel.newProxy( this );
     }
 

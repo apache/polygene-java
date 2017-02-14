@@ -243,22 +243,22 @@ public class PreferencesEntityStoreMixin
                             if( primaryType.equals( Long.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, LONG_PARSER ) );
+                                                this.getNumber( propsPrefs, module, persistentPropertyDescriptor, LONG_PARSER ) );
                             }
                             else if( primaryType.equals( Integer.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, INT_PARSER ) );
+                                                this.getNumber( propsPrefs, module, persistentPropertyDescriptor, INT_PARSER ) );
                             }
                             else if( primaryType.equals( Double.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, DOUBLE_PARSER ) );
+                                                this.getNumber( propsPrefs, module, persistentPropertyDescriptor, DOUBLE_PARSER ) );
                             }
                             else if( primaryType.equals( Float.class ) )
                             {
                                 properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, FLOAT_PARSER ) );
+                                                this.getNumber( propsPrefs, module, persistentPropertyDescriptor, FLOAT_PARSER ) );
                             }
                             else
                             {
@@ -279,7 +279,7 @@ public class PreferencesEntityStoreMixin
                         }
                         else if( primaryType.equals( Boolean.class ) )
                         {
-                            Boolean initialValue = (Boolean) persistentPropertyDescriptor.initialValue( module );
+                            Boolean initialValue = (Boolean) persistentPropertyDescriptor.resolveInitialValue(module);
                             properties.put( persistentPropertyDescriptor.qualifiedName(),
                                             propsPrefs.getBoolean( persistentPropertyDescriptor.qualifiedName().name(),
                                                                    initialValue == null ? false : initialValue ) );
@@ -306,10 +306,10 @@ public class PreferencesEntityStoreMixin
                             String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
                             if( json == null )
                             {
-                                if( persistentPropertyDescriptor.initialValue( module ) != null )
+                                if( persistentPropertyDescriptor.resolveInitialValue( module ) != null )
                                 {
-                                    properties.put( persistentPropertyDescriptor.qualifiedName(), persistentPropertyDescriptor
-                                        .initialValue( module ) );
+                                    properties.put( persistentPropertyDescriptor.qualifiedName(),
+                                            persistentPropertyDescriptor.resolveInitialValue( module ) );
                                 }
                                 else
                                 {
@@ -640,9 +640,9 @@ public class PreferencesEntityStoreMixin
 
     private static final NumberParser<Float> FLOAT_PARSER = Float::parseFloat;
 
-    private <T> T getNumber( Preferences prefs, PropertyDescriptor pDesc, NumberParser<T> parser )
+    private <T> T getNumber( Preferences prefs, ModuleDescriptor module, PropertyDescriptor pDesc, NumberParser<T> parser )
     {
-        Object initialValue = pDesc.initialValue( null );
+        Object initialValue = pDesc.resolveInitialValue( module );
         String str = prefs.get( pDesc.qualifiedName().name(), initialValue == null ? null : initialValue.toString() );
         T result = null;
         if( str != null )

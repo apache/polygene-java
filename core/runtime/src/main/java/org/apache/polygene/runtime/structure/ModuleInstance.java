@@ -216,8 +216,9 @@ public class ModuleInstance
         model.state().properties().forEach(
             propertyModel ->
             {
+                Object initialValue = propertyModel.resolveInitialValue( model.module() );
                 Property<?> property = new PropertyInstance<>( ( (PropertyModel) propertyModel ).getBuilderInfo(),
-                                                               propertyModel.initialValue( model.module() ) );
+                                                               initialValue );
                 properties.put( propertyModel.accessor(), property );
             } );
 
@@ -296,7 +297,7 @@ public class ModuleInstance
         @Override
         public Object getPropertyState( PropertyDescriptor propertyDescriptor )
         {
-            return propertyDescriptor.initialValue( module );
+            return propertyDescriptor.resolveInitialValue(module);
         }
 
         @Override
@@ -468,18 +469,21 @@ public class ModuleInstance
 
     public EntityStore entityStore()
     {
-        synchronized( this )
+        if( store == null )
         {
-            if( store == null )
+            synchronized( this )
             {
-                try
+                if( store == null )
                 {
-                    ServiceReference<EntityStore> service = findService( EntityStore.class );
-                    store = service.get();
-                }
-                catch( NoSuchServiceException e )
-                {
-                    throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
+                    try
+                    {
+                        ServiceReference<EntityStore> service = findService( EntityStore.class );
+                        store = service.get();
+                    }
+                    catch( NoSuchServiceException e )
+                    {
+                        throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
+                    }
                 }
             }
         }
@@ -488,18 +492,21 @@ public class ModuleInstance
 
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        synchronized( this )
+        if( uowf == null )
         {
-            if( uowf == null )
+            synchronized( this )
             {
-                try
+                if( uowf == null )
                 {
-                    ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
-                    uowf = service.get();
-                }
-                catch( NoSuchServiceException e )
-                {
-                    throw new UnitOfWorkException( "No UnitOfWorkFactory service available in module " + name() );
+                    try
+                    {
+                        ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
+                        uowf = service.get();
+                    }
+                    catch( NoSuchServiceException e )
+                    {
+                        throw new UnitOfWorkException( "No UnitOfWorkFactory service available in module " + name() );
+                    }
                 }
             }
         }
@@ -532,31 +539,37 @@ public class ModuleInstance
 
     public IdentityGenerator identityGenerator()
     {
-        synchronized( this )
+        if( generator == null )
         {
-            if( generator == null )
+            synchronized( this )
             {
-                ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
-                generator = service.get();
+                if( generator == null )
+                {
+                    ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
+                    generator = service.get();
+                }
             }
-            return generator;
         }
+        return generator;
     }
 
     public ValueSerialization valueSerialization()
     {
-        synchronized( this )
+        if( valueSerialization == null )
         {
-            if( valueSerialization == null )
+            synchronized( this )
             {
-                try
+                if( valueSerialization == null )
                 {
-                    ServiceReference<ValueSerialization> service = findService( ValueSerialization.class );
-                    valueSerialization = service.get();
-                }
-                catch( NoSuchServiceException e )
-                {
-                    throw new ValueSerializationException( "No ValueSeriaservice available in module " + name() );
+                    try
+                    {
+                        ServiceReference<ValueSerialization> service = findService( ValueSerialization.class );
+                        valueSerialization = service.get();
+                    }
+                    catch( NoSuchServiceException e )
+                    {
+                        throw new ValueSerializationException( "No ValueSeriaservice available in module " + name() );
+                    }
                 }
             }
         }
@@ -565,42 +578,24 @@ public class ModuleInstance
 
     public MetricsProvider metricsProvider()
     {
-        synchronized( this )
+        if( metrics == null )
         {
-            if( metrics == null )
+            synchronized( this )
             {
-                try
+                if( metrics == null )
                 {
-                    ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
-                    metrics = service.get();
-                }
-                catch( NoSuchServiceException e )
-                {
-                    metrics = new MetricsProviderAdapter();
+                    try
+                    {
+                        ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
+                        metrics = service.get();
+                    }
+                    catch( NoSuchServiceException e )
+                    {
+                        metrics = new MetricsProviderAdapter();
+                    }
                 }
             }
         }
         return metrics;
     }
-
-//    public Stream<ServiceReference<?>> visibleServices( Visibility visibility )
-//    {
-//        return concat( services.visibleServices( visibility ),
-//                       importedServices.visibleServices( visibility ) );
-//    }
-//
-//
-//
-//    public Stream<ServiceReference<?>> findVisibleServiceTypes()
-//    {
-//        return concat( visibleServices( Visibility.module ),
-//                       concat(
-//                           layer().visibleServices( Visibility.layer ),
-//                           concat(
-//                               layer().visibleServices( Visibility.application ),
-//                               layer().usedLayers().layers().flatMap( layer -> layer.visibleServices(Visibility.application) )
-//                           )
-//                       )
-//        );
-//    }
 }

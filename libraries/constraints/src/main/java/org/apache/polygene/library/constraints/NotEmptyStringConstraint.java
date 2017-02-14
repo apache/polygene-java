@@ -28,13 +28,9 @@ import org.apache.polygene.library.constraints.annotation.NotEmpty;
 public class NotEmptyStringConstraint
     implements Constraint<NotEmpty, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( NotEmpty annotation, String value )
     {
         return value.trim().length() > 0;
     }
-
 }

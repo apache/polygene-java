@@ -29,6 +29,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.polygene.api.common.MetaInfo;
+import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -215,6 +216,13 @@ public final class MetaInfoDeclaration
                 metaInfo = new MetaInfo();
             }
             metaInfo.set( info );
+            return this;
+        }
+
+        @Override
+        public MixinDeclaration<T> declareInitialValueProvider(InitialValueProvider provider)
+        {
+            metaInfo.add( InitialValueProvider.class, provider);
             return this;
         }
     }

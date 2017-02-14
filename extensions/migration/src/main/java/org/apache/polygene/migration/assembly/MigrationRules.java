@@ -31,10 +31,10 @@ import org.apache.polygene.api.util.ListMap;
 public class MigrationRules<T extends AbstractMigrationRule>
 {
     // to-version -> List of from-versions
-    ListMap<String, String> versionChanges = new ListMap<String, String>();
+    private ListMap<String, String> versionChanges = new ListMap<>();
 
     // key=fromversion->toversion value=list of rules for that transition
-    ListMap<String, T> rules = new ListMap<String, T>();
+    private ListMap<String, T> rules = new ListMap<>();
 
     public void addRule( T migrationRule )
     {
@@ -70,7 +70,7 @@ public class MigrationRules<T extends AbstractMigrationRule>
             if( fromVersion.equals( possibleFromVersion ) )
             {
                 // We found the end of the version transitions - return rules, but filter on entity type
-                return new ArrayList<T>( getRulesForTransition( fromVersion, toVersion ) );
+                return new ArrayList<>( getRulesForTransition( fromVersion, toVersion ) );
             }
             else
             {
@@ -99,8 +99,8 @@ public class MigrationRules<T extends AbstractMigrationRule>
     {
         if( versionChanges.get( toVersion ) == null )
         {
-            List<String> toVersions = new ArrayList<String>( versionChanges.keySet() );
-            Collections.sort( toVersions, Collections.reverseOrder() );
+            List<String> toVersions = new ArrayList<>(versionChanges.keySet());
+            toVersions.sort(Collections.reverseOrder());
             for( String version : toVersions )
             {
                 if( version.compareTo( toVersion ) <= 0 )

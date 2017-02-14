@@ -389,7 +389,7 @@ public class SQLEntityStoreMixin
                     catch( JSONException e )
                     {
                         // Value not found, default it
-                        Object initialValue = propertyDescriptor.initialValue( module );
+                        Object initialValue = propertyDescriptor.resolveInitialValue( module );
                         properties.put( propertyDescriptor.qualifiedName(), initialValue );
                         status[ 0 ] = EntityStatus.UPDATED;
                     }

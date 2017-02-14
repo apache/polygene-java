@@ -156,23 +156,22 @@ public final class ImportedServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    serviceInstance = serviceModel.importInstance( module );
-                    instance = serviceInstance.instance();
-
+                    ImportedServiceInstance<T> newServiceInstance = serviceModel.importInstance( module );
                     try
                     {
                         activation.activate(
                             serviceModel.newActivatorsInstance( module ),
-                            serviceInstance, () -> {
+                            newServiceInstance, () -> {
                                 active = true;
                             }
                         );
                     }
                     catch( Exception e )
                     {
-                        serviceInstance = null;
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
+                    serviceInstance = newServiceInstance;
+                    instance = newServiceInstance.instance();
                 }
             }
         }

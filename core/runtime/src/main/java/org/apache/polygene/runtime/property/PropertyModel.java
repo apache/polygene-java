@@ -35,10 +35,12 @@ import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.DefaultValues;
 import org.apache.polygene.api.property.GenericPropertyInfo;
+import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.service.NoSuchServiceException;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.Serialization;
 import org.apache.polygene.api.type.ValueCompositeType;
@@ -63,7 +65,6 @@ public class PropertyModel
     implements PropertyDescriptor, PropertyInfo, Binder, Visitable<PropertyModel>
 {
     private Type type;
-
     private transient AccessibleObject accessor; // Interface accessor
 
     private final QualifiedName qualifiedName;
@@ -72,9 +73,7 @@ public class PropertyModel
 
     protected final MetaInfo metaInfo;
 
-    private final Object initialValue;
-
-    private final boolean useDefaults;
+    private final InitialValueProvider initialValueProvider;
 
     private final boolean immutable;
 
@@ -89,7 +88,8 @@ public class PropertyModel
                           boolean useDefaults,
                           ValueConstraintsInstance constraints,
                           MetaInfo metaInfo,
-                          Object initialValue
+                          Object initialValue,
+                          InitialValueProvider initialValueProvider
     )
     {
         if( accessor instanceof Method )
@@ -105,13 +105,15 @@ public class PropertyModel
         type = GenericPropertyInfo.propertyTypeOf( accessor );
         this.accessor = accessor;
         qualifiedName = QualifiedName.fromAccessor( accessor );
-
-        this.useDefaults = useDefaults;
-
-        this.initialValue = initialValue;
-
+        if( initialValueProvider != null )
+        {
+            this.initialValueProvider = initialValueProvider;
+        }
+        else
+        {
+            this.initialValueProvider = new DefaultInitialValueProvider(useDefaults, initialValue);
+        }
         this.constraints = constraints;
-
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
     }
@@ -169,52 +171,17 @@ public class PropertyModel
     }
 
     @Override
-    public Object initialValue( ModuleDescriptor module )
+    public InitialValueProvider initialValueProvider()
     {
-        // Use supplied value from assembly
-        Object value = initialValue;
-
-        // Check for @UseDefaults annotation
-        if( useDefaults )
-        {
-            if( value == null || ( ( value instanceof String ) && ( (String) value ).length() == 0 ) )
-            {
-                if( valueType instanceof ValueCompositeType )
-                {
-                    Class<?> propertyType = valueType().types().findFirst().orElse( null );
-                    value = module.instance().newValue( propertyType );
-                }
-                else
-                {
-                    value = DefaultValues.getDefaultValueOf( type );
-                }
-            }
-            else
-            {
-                Class<?> propertyType = valueType().types().findFirst().orElse( null );
-                if( value instanceof String && !propertyType.equals( String.class ) )
-                {
-                    try
-                    {
-                        // here we could possibly deserialize json to other types...
-                        ValueDeserializer deserializer = module.instance()
-                            .serviceFinder()
-                            .findService( ValueDeserializer.class )
-                            .get();
-                        if( deserializer != null )
-                        {
-                            value = deserializer.deserialize( module, propertyType ).apply( (String) value );
-                        }
-                    }
-                    catch( NoSuchServiceException e )
-                    {
-                        throw new MissingValueSerializationException( "@UseDefaults with initialization value requires that there is a visible ValueDeserializer service available.", e);
-                    }
-                }
-            }
-        }
-        return value;
+        return initialValueProvider;
     }
+
+    @Override
+    public Object resolveInitialValue(ModuleDescriptor moduleDescriptor)
+    {
+        return initialValueProvider.apply(moduleDescriptor.instance(), this);
+    }
+
 
     @Override
     public void bind( Resolution resolution )
@@ -333,6 +300,82 @@ public class PropertyModel
                     throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
                 }
             }
+        }
+    }
+
+    private static class NullInitialValueProvider
+        implements InitialValueProvider
+    {
+        @Override
+        public Object apply(Module module, PropertyDescriptor property)
+        {
+            return null;
+        }
+    }
+
+    private class DefaultInitialValueProvider
+        implements InitialValueProvider
+    {
+        private final boolean useDefaults;
+        private final Object initialValue;
+
+        private DefaultInitialValueProvider(boolean useDefaults, Object initialValue)
+        {
+            this.useDefaults = useDefaults;
+            this.initialValue = initialValue;
+        }
+
+        @Override
+        public Object apply(Module module, PropertyDescriptor property)
+        {
+            return initialValue(module.descriptor(), initialValue, useDefaults);
+        }
+
+        private Object initialValue( ModuleDescriptor module, Object initialValue, boolean useDefaults )
+        {
+            // Use supplied value from assembly
+            Object value = initialValue;
+
+            // Check for @UseDefaults annotation
+            if( useDefaults )
+            {
+                if( value == null || ( ( value instanceof String ) && ( (String) value ).length() == 0 ) )
+                {
+                    if( valueType instanceof ValueCompositeType )
+                    {
+                        Class<?> propertyType = valueType().types().findFirst().orElse( null );
+                        value = module.instance().newValue( propertyType );
+                    }
+                    else
+                    {
+                        value = DefaultValues.getDefaultValueOf( type );
+                    }
+                }
+                else
+                {
+                    Class<?> propertyType = valueType().types().findFirst().orElse( null );
+                    if( value instanceof String && !propertyType.equals( String.class ) )
+                    {
+                        try
+                        {
+                            // here we could possibly deserialize json to other types...
+                            ValueDeserializer deserializer = module.instance()
+                                    .serviceFinder()
+                                    .findService( ValueDeserializer.class )
+                                    .get();
+                            if( deserializer != null )
+                            {
+                                value = deserializer.deserialize( module, propertyType ).apply( (String) value );
+                            }
+                        }
+                        catch( NoSuchServiceException e )
+                        {
+                            throw new MissingValueSerializationException( "@UseDefaults with initialization value requires that there is a visible ValueDeserializer service available.", e);
+                        }
+                    }
+                }
+            }
+            return value;
         }
     }
 }
