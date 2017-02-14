@@ -25,9 +25,9 @@ dependencies {
   compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
 
 
-  compile "org.apache.polygene.library:org.apache.polygene.library.fileconfig:$polygeneVersion"
+  compile "org.apache.polygene.libraries:org.apache.polygene.library.fileconfig:$polygeneVersion"
 <% if( hasFeature( 'rest api' ) ) { %>
-  compile "org.apache.polygene.library:org.apache.polygene.library.restlet:$polygeneVersion"
+  compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
   compile "org.apache.polygene.extension:org.apache.polygene.extension.entitystore-<%= polygene.entitystore.toLowerCase() %>:$polygeneVersion"
   compile "org.apache.polygene.extension:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"

@@ -18,25 +18,23 @@
 ///////////////////////////////////////////////////////////////
 
 [[tools-shell,Command Line Shell]]
-= Polygene Shell =
-If you have installed the Polygene SDK, there is a +bin/polygene+ command line script,
-which has sub-functions in it. This list of commands will slowly grow
-for various purposes of doing software development with Apache Polygene.
+= Polygene Generator =
+Apache Polygene comes with a Yeoman code generator, to quickly set up a development
+environment for Polygene applications.
 
 The current list of commands are;
 
-    * <<tools-shell-create-project>>
+    * <<tools-yeoman-create-project>>
 
-[[tools-shell-create-project,Create Project Script]]
+[[tools-yeoman-create-project,Create Project Script]]
 == Create Project ==
 
-This command creates a brand new project, in current directory, with a name
-provided. There are more than one template of the type of project that one
-might want to create. Full list of types to follow below. The command
-takes at least 3 additional arguments;
+This command creates a brand new project, in current directory. The generator
+will ask a lot of questions. If you are new to Polygene and only want to try
+it out, it is safe to hit ENTER on all questions.
 
 ---------------------------
-polygene create-project type name package
+yo polygene create-project
 ---------------------------
 
 A directory called _name_ will be created in the current directory, and all

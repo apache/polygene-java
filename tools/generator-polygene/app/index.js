@@ -61,22 +61,23 @@ module.exports = generators.Base.extend(
                         type: 'list',
                         name: 'entitystore',
                         choices: [
+                            'Cassandra',
                             'File',
+                            'DerbySQL',
                             'Geode',
+                            'H2SQL',
                             'Hazelcast',
                             'JClouds',
                             'Jdbm',
                             'LevelDB',
                             'Memory',
                             'MongoDB',
+                            'MySQL',
                             'Preferences',
                             'Redis',
                             'Riak',
-                            'MySQL',
                             'PostgresSQL',
-                            'SQLite',
-                            'H2SQL',
-                            'DerbySQL'
+                            'SQLite'
                         ],
                         message: 'Which entity store do you want to use?'
                     },

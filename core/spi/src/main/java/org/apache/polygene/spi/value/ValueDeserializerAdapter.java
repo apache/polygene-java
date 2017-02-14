@@ -48,6 +48,7 @@ import java.util.stream.StreamSupport;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
@@ -462,20 +463,20 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         final Map<String, Object> stateMap = new HashMap<>();
 
         // Properties
-        valueCompositeType.properties().forEach( property -> {
+        valueCompositeType.properties().forEach( propertyDescriptor -> {
             String propertyName = null;
             Object value;
             try
             {
-                propertyName = property.qualifiedName().name();
+                propertyName = propertyDescriptor.qualifiedName().name();
                 if( objectHasField( module, inputNode, propertyName ) )
                 {
                     value = getObjectFieldValue(
                         module,
                         inputNode,
                         propertyName,
-                        buildDeserializeInputNodeFunction( module, property.valueType() ) );
-                    if( property.isImmutable() )
+                        buildDeserializeInputNodeFunction( module, propertyDescriptor.valueType() ) );
+                    if( propertyDescriptor.isImmutable() )
                     {
                         if( value instanceof Set )
                         {
@@ -494,12 +495,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 else
                 {
                     // Serialized object does not contain the field, try to default it
-                    value = property.initialValue( module );
+                    value = propertyDescriptor.resolveInitialValue(module);
                 }
             }
             catch( Exception e )
             {
-                throw new ValueSerializationException( "Unable to deserialize property " + property, e );
+                throw new ValueSerializationException( "Unable to deserialize property " + propertyDescriptor, e );
             }
             stateMap.put( propertyName, value );
         } );
