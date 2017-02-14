@@ -1,8 +1,0 @@
-
-dependencies {
-  compile project( ":model" )
-
-  compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
-  compile "org.apache.polygene.library:org.apache.polygene.library.restlet:$polygeneVersion"
-
-}
