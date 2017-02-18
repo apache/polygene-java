@@ -70,7 +70,9 @@ public interface CassandraCluster
     String tableName();
 
     PreparedStatement entityRetrieveStatement();
+
     PreparedStatement versionRetrieveStatement();
+
     PreparedStatement entityUpdateStatement();
 
     String keyspaceName();
@@ -118,7 +120,7 @@ public interface CassandraCluster
             return keyspaceName;
         }
 
-        public  String tableName(  )
+        public String tableName()
         {
             CassandraEntityStoreConfiguration config = configuration.get();
             String tableName = config.table().get();
@@ -200,16 +202,17 @@ public interface CassandraCluster
         private void createPolygeneStateTable( String tableName )
         {
             session.execute( "CREATE TABLE " + tableName + "(\n"
-                             + "   " + IDENTITY_COLUMN + " text PRIMARYKEY,\n"
+                             + "   " + IDENTITY_COLUMN + " text,\n"
                              + "   " + VERSION_COLUMN + " text,\n"
                              + "   " + APP_VERSION_COLUMN + " text,\n"
                              + "   " + STORE_VERSION_COLUMN + " text,\n"
                              + "   " + LASTMODIFIED_COLUMN + " timestamp,\n"
                              + "   " + USECASE_COLUMN + " text,\n"
-                             + "   " + PROPERTIES_COLUMN + " map,\n"
-                             + "   " + ASSOCIATIONS_COLUMN + " map,\n"
-                             + "   " + MANYASSOCIATIONS_COLUMN + " map,\n"
-                             + "   " + NAMEDASSOCIATIONS_COLUMN + " map,\n"
+                             + "   " + PROPERTIES_COLUMN + " map<text,text>,\n"
+                             + "   " + ASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                             + "   " + MANYASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                             + "   " + NAMEDASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                             + "   PRIMARY KEY (" + IDENTITY_COLUMN + ")\n"
                              + "   )" );
         }
 
