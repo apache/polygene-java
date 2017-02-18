@@ -17,6 +17,25 @@
  *
  *
  */
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+ */
 package org.apache.polygene.entitystore.cassandra;
 
 import com.datastax.driver.core.Cluster;
@@ -34,17 +53,17 @@ public interface CassandraCluster
     String CURRENT_STORAGE_VERSION = "1";
     String DEFAULT_KEYSPACE_NAME = "polygene:entitystore";
     String DEFAULT_TABLE_NAME = "polygene:entitystore:entities";
-    String IDENTITY_COLUMN = "_id";
-    String VERSION_COLUMN = "_version";
-    String USECASE_COLUMN = "_usecase";
-    String LASTMODIFIED_COLUMN = "_modified";
-    String APP_VERSION_COLUMN = "_appversion";
-    String STORE_VERSION_COLUMN = "_storeversion";
-    String TYPE_COLUMN = "_type";
-    String PROPERTIES_COLUMN = "_props";
-    String ASSOCIATIONS_COLUMN = "_assocs";
-    String MANYASSOCIATIONS_COLUMN = "_manyassocs";
-    String NAMEDASSOCIATIONS_COLUMN = "_namedassocs";
+    String IDENTITY_COLUMN = "id";
+    String VERSION_COLUMN = "version";
+    String USECASE_COLUMN = "usecase";
+    String LASTMODIFIED_COLUMN = "modified";
+    String APP_VERSION_COLUMN = "appversion";
+    String STORE_VERSION_COLUMN = "storeversion";
+    String TYPE_COLUMN = "type";
+    String PROPERTIES_COLUMN = "props";
+    String ASSOCIATIONS_COLUMN = "assocs";
+    String MANYASSOCIATIONS_COLUMN = "manyassocs";
+    String NAMEDASSOCIATIONS_COLUMN = "namedassocs";
 
     Session session();
 
@@ -198,7 +217,7 @@ public interface CassandraCluster
         {
             try( Session defaultSession = cluster.connect() )
             {
-                String query = "CREATE KEYSPACE " + keyspaceName + "WITH replication = {'class':'SimpleStrategy', 'replication_factor' : " + replication + "};";
+                String query = "CREATE KEYSPACE " + keyspaceName + " WITH replication = {'class':'SimpleStrategy', 'replication_factor' : " + replication + "};";
                 defaultSession.execute( query );
             }
         }
