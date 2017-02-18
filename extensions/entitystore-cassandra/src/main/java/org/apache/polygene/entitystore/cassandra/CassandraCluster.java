@@ -46,13 +46,14 @@ import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
+import org.apache.polygene.spi.entitystore.EntityStoreException;
 
 @Mixins( CassandraCluster.Mixin.class )
 public interface CassandraCluster
 {
     String CURRENT_STORAGE_VERSION = "1";
-    String DEFAULT_KEYSPACE_NAME = "polygene:entitystore";
-    String DEFAULT_TABLE_NAME = "polygene:entitystore:entities";
+    String DEFAULT_KEYSPACE_NAME = "polygene";
+    String DEFAULT_TABLE_NAME = "entitystore";
     String IDENTITY_COLUMN = "id";
     String VERSION_COLUMN = "version";
     String USECASE_COLUMN = "usecase";
@@ -123,7 +124,7 @@ public interface CassandraCluster
         public String tableName()
         {
             CassandraEntityStoreConfiguration config = configuration.get();
-            String tableName = config.table().get();
+            String tableName = config.entityTableName().get();
             if( tableName == null )
             {
                 tableName = DEFAULT_TABLE_NAME;
@@ -154,9 +155,16 @@ public interface CassandraCluster
             KeyspaceMetadata keyspace = cluster.getMetadata().getKeyspace( keyspaceName );
             if( keyspace == null )
             {
-                createKeyspace( keyspaceName, config.replicationFactor().get() );
-                session = cluster.connect( keyspaceName );
-                createPolygeneStateTable( tableName );
+                if( config.createIfMissing().get() )
+                {
+                    createKeyspace( keyspaceName, config.replicationFactor().get() );
+                    session = cluster.connect( keyspaceName );
+                    createPolygeneStateTable( tableName );
+                }
+                else
+                {
+                    throw new EntityStoreException( "Keyspace '" + keyspaceName + "' does not exist." );
+                }
             }
             else
             {

@@ -65,7 +65,7 @@ public class CassandraMapEntityStoreTest
 
         CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
         cassandraConfig.keySpace().set( "polygene:test" );
-        cassandraConfig.table().set( "polygene:test:entities" );
+        cassandraConfig.entityTableName().set( "polygene:test:entities" );
         cassandraConfig.replicationFactor().set( 1 );
         // START SNIPPET: assembly
     }
