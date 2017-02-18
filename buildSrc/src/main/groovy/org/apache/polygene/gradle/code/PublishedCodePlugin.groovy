@@ -97,6 +97,9 @@ class PublishedCodePlugin implements Plugin<Project>
       {
         candidate.license = 'BSD 3-Clause'
       }
+      if( candidate.group == 'com.github.jnr' ) {
+        candidate.license = 'EPL'
+      }
       if( candidate.group == 'javax.json'
         || candidate.group == 'javax.websocket'
         || candidate.group == 'javax.xml.bind' )
