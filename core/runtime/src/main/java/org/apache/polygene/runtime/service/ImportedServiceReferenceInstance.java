@@ -51,6 +51,7 @@ public final class ImportedServiceReferenceInstance<T>
     private final ImportedServiceModel serviceModel;
     private final ActivationDelegate activation = new ActivationDelegate( this );
     private boolean active = false;
+    private ImportedServiceInstance<T> serviceInstanceBeingActivated;
 
     public ImportedServiceReferenceInstance( ImportedServiceModel serviceModel, ModuleDescriptor module )
     {
@@ -156,12 +157,21 @@ public final class ImportedServiceReferenceInstance<T>
             {
                 if( serviceInstance == null )
                 {
-                    ImportedServiceInstance<T> newServiceInstance = serviceModel.importInstance( module );
+                    if( serviceInstanceBeingActivated != null )
+                    {
+                        // needed because activation may request its own service.
+                        // There is possible complication with this, as activation may use another service, which in turn
+                        // uses the service under activation before it is being ready. This is a problem left to the
+                        // developer to be aware of and avoid. It is similar to what can happen when pass 'this' inside
+                        // constructors to objects, which may then use an uninitilized object.
+                        return serviceInstanceBeingActivated.instance();
+                    }
+                    serviceInstanceBeingActivated = serviceModel.importInstance( module );
                     try
                     {
                         activation.activate(
                             serviceModel.newActivatorsInstance( module ),
-                            newServiceInstance, () -> {
+                            serviceInstanceBeingActivated, () -> {
                                 active = true;
                             }
                         );
@@ -170,8 +180,9 @@ public final class ImportedServiceReferenceInstance<T>
                     {
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
-                    serviceInstance = newServiceInstance;
-                    instance = newServiceInstance.instance();
+                    serviceInstance = serviceInstanceBeingActivated;
+                    instance = serviceInstanceBeingActivated.instance();
+                    serviceInstanceBeingActivated = null;
                 }
             }
         }
