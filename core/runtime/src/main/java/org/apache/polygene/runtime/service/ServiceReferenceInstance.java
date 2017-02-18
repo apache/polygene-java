@@ -58,6 +58,7 @@ public final class ServiceReferenceInstance<T>
     private final ServiceModel serviceModel;
     private final ActivationDelegate activation = new ActivationDelegate( this );
     private boolean active = false;
+    private ServiceInstance instanceBeingActivated;
 
     ServiceReferenceInstance( ServiceModel serviceModel, ModuleDescriptor module )
     {
@@ -149,19 +150,29 @@ public final class ServiceReferenceInstance<T>
             {
                 if( instance == null )
                 {
-                    ServiceInstance newInstance = serviceModel.newInstance( module );
+                    if( instanceBeingActivated != null )
+                    {
+                        // needed because activation may request its own service.
+                        // There is possible complication with this, as activation may use another service, which in turn
+                        // uses the service under activation before it is being ready. This is a problem left to the
+                        // developer to be aware of and avoid. It is similar to what can happen when pass 'this' inside
+                        // constructors to objects, which may then use an uninitilized object.
+                        return instanceBeingActivated;
+                    }
+                    instanceBeingActivated = serviceModel.newInstance( module );
 
                     try
                     {
                         activation.activate( serviceModel.newActivatorsInstance( module ),
-                                             newInstance,
+                                             instanceBeingActivated,
                                              () -> active = true );
                     }
                     catch( Exception e )
                     {
                         throw new ServiceUnavailableException( "Could not activate service " + serviceModel.identity(), e );
                     }
-                    instance = newInstance;
+                    instance = instanceBeingActivated;
+                    instanceBeingActivated = null;
                 }
             }
         }
