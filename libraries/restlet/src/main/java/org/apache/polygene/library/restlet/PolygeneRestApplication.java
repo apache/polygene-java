@@ -55,7 +55,7 @@ import org.restlet.util.Series;
 /**
  * This class is generic enough to be promoted to Polygene's Restlet Library
  */
-public abstract class ZrestApplication extends org.restlet.Application
+public abstract class PolygeneRestApplication extends org.restlet.Application
 {
     protected org.apache.polygene.api.structure.Application polygeneApplication;
     protected ServiceFinder serviceFinder;
@@ -66,7 +66,7 @@ public abstract class ZrestApplication extends org.restlet.Application
 
     private Router router;
 
-    public ZrestApplication( Context context )
+    public PolygeneRestApplication( Context context )
         throws AssemblyException
     {
         super( context );
@@ -74,7 +74,7 @@ public abstract class ZrestApplication extends org.restlet.Application
 
     protected void printRoutes()
     {
-        router.getRoutes().stream().forEach(
+        router.getRoutes().forEach(
             route -> System.out.println( route.toString() ) );
     }
 
