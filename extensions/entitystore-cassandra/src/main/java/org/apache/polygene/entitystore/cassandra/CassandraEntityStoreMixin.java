@@ -23,8 +23,7 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.TypeTokens;
-import com.google.common.reflect.TypeToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +39,6 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.StringIdentity;
@@ -56,11 +54,13 @@ import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.value.ValueSerialization;
+import org.apache.polygene.api.value.ValueSerializer;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 import org.apache.polygene.spi.entitystore.DefaultEntityStoreUnitOfWork;
+import org.apache.polygene.spi.entitystore.EntityNotFoundException;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.EntityStoreSPI;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
@@ -79,6 +79,7 @@ import static org.apache.polygene.entitystore.cassandra.CassandraCluster.STORE_V
 import static org.apache.polygene.entitystore.cassandra.CassandraCluster.TYPE_COLUMN;
 import static org.apache.polygene.entitystore.cassandra.CassandraCluster.USECASE_COLUMN;
 import static org.apache.polygene.entitystore.cassandra.CassandraCluster.VERSION_COLUMN;
+import static org.apache.polygene.entitystore.cassandra.CassandraEntityStoreService.CURRENT_STORAGE_VERSION;
 
 /**
  * MongoDB implementation of MapEntityStore.
@@ -87,6 +88,7 @@ public class CassandraEntityStoreMixin
     implements EntityStore, EntityStoreSPI, ServiceActivation
 {
 
+    private static final ValueSerializer.Options MAP_OPTIONS = new ValueSerializer.Options().withMapEntriesAsObjects();
     @This
     private CassandraCluster cluster;
 
@@ -101,7 +103,6 @@ public class CassandraEntityStoreMixin
     @Tagged( ValueSerialization.Formats.JSON )
     private ValueSerialization valueSerialization;
 
-
     @Optional
     @Service
     private IdentityGenerator idGenerator;
@@ -115,14 +116,18 @@ public class CassandraEntityStoreMixin
     @Override
     public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleDescriptor module, EntityReference reference )
     {
-        return queryFor( cluster.entityRetrieveStatement().bind( reference.toURI() ), module, reference  );
+        return queryFor( cluster.entityRetrieveStatement().bind( reference.identity().toString() ), module, reference );
     }
 
     private EntityState queryFor( BoundStatement statement, ModuleDescriptor module, EntityReference reference )
     {
         ResultSet result = cluster.session().execute( statement );
         Row row = result.one();
-        return deserialize( row, module);
+        if( row == null )
+        {
+            throw new EntityNotFoundException( reference );
+        }
+        return deserialize( row, module );
     }
 
     private EntityState deserialize( Row row, ModuleDescriptor module )
@@ -156,12 +161,8 @@ public class CassandraEntityStoreMixin
         }
         Map<String, String> storedProperties = row.getMap( PROPERTIES_COLUMN, String.class, String.class );
         Map<String, String> storedAssociations = row.getMap( ASSOCIATIONS_COLUMN, String.class, String.class );
-
-        TypeToken<String> stringToken = TypeToken.of( String.class );
-        TypeToken<List<String>> listOfStringsToken = TypeTokens.listOf( String.class );
-        TypeToken<Map<String, String>> mapOfStringsToken = TypeTokens.mapOf( String.class, String.class );
-        Map<String, List<String>> storedManyassociation = row.getMap( MANYASSOCIATIONS_COLUMN, stringToken, listOfStringsToken );
-        Map<String, Map<String, String>> storedNamedassociation = row.getMap( NAMEDASSOCIATIONS_COLUMN, stringToken, mapOfStringsToken );
+        Map<String, String> storedManyassociation = row.getMap( MANYASSOCIATIONS_COLUMN, String.class, String.class );
+        Map<String, String> storedNamedassociation = row.getMap( NAMEDASSOCIATIONS_COLUMN, String.class, String.class );
 
         Map<QualifiedName, Object> properties = new HashMap<>();
         entityDescriptor
@@ -176,7 +177,7 @@ public class CassandraEntityStoreMixin
                         storedValue = storedProperties.get( propertyDescriptor.qualifiedName().name() );
                         if( storedValue == null )
                         {
-                            properties.put( propertyDescriptor.qualifiedName(), null );
+                            properties.remove( propertyDescriptor.qualifiedName() );
                         }
                         else
                         {
@@ -226,14 +227,13 @@ public class CassandraEntityStoreMixin
                     List<EntityReference> references = new ArrayList<>();
                     try
                     {
-                        List<String> storedValue = storedManyassociation.get( manyAssociationType.qualifiedName().name() );
+                        String storedValue = storedManyassociation.get( manyAssociationType.qualifiedName().name() );
                         if( storedValue != null )
                         {
-                            for( String value : storedValue )
+                            String[] refs = storedValue.split( "," );
+                            for( String value : refs )
                             {
-                                EntityReference ref = value == null
-                                                      ? null
-                                                      : EntityReference.parseEntityReference( value );
+                                EntityReference ref = EntityReference.parseEntityReference( value );
                                 references.add( ref );
                             }
                             manyAssociations.put( manyAssociationType.qualifiedName(), references );
@@ -256,22 +256,21 @@ public class CassandraEntityStoreMixin
                     Map<String, EntityReference> references = new LinkedHashMap<>();
                     try
                     {
-                        Map<String, String> storedValues = storedNamedassociation.get( namedAssociationType.qualifiedName().name() );
+                        String storedValues = storedNamedassociation.get( namedAssociationType.qualifiedName().name() );
                         if( storedValues != null )
                         {
-                            for( Map.Entry<String, String> entry : storedValues.entrySet() )
+                            Map<String, String> namedRefs = new ObjectMapper().readValue( storedValues, Map.class );
+                            for( Map.Entry<String, String> entry : namedRefs.entrySet() )
                             {
                                 String name = entry.getKey();
                                 String value = entry.getValue();
-                                EntityReference ref = value == null
-                                                      ? null
-                                                      : EntityReference.parseEntityReference( value );
+                                EntityReference ref = EntityReference.parseEntityReference( value );
                                 references.put( name, ref );
                             }
                             namedAssociations.put( namedAssociationType.qualifiedName(), references );
                         }
                     }
-                    catch( RuntimeException e )
+                    catch( Exception e )
                     {
                         // NamedAssociation not found, default to empty one
                         namedAssociations.put( namedAssociationType.qualifiedName(), references );
@@ -294,7 +293,7 @@ public class CassandraEntityStoreMixin
     @Override
     public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference reference )
     {
-        ResultSet result = cluster.session().execute( cluster.entityRetrieveStatement().bind( reference.toURI() ) );
+        ResultSet result = cluster.session().execute( cluster.versionRetrieveStatement().bind( reference.identity().toString() ) );
         Row row = result.one();
         return row.getString( VERSION_COLUMN );
     }
@@ -315,21 +314,50 @@ public class CassandraEntityStoreMixin
                         {
                             Map<String, String> props = new HashMap<>();
                             Map<String, String> assocs = new HashMap<>();
-                            Map<String, List<String>> many = new HashMap<>();
-                            Map<String, Map<String, String>> named = new HashMap<>();
+                            Map<String, String> many = new HashMap<>();
+                            Map<String, String> named = new HashMap<>();
                             serializeProperties( entityState, props );
                             serializeAssociations( entityState, assocs );
                             serializeManyAssociations( entityState, many );
                             serializeNamedAssociations( entityState, named );
-                            Identity identity = (Identity) entityState.propertyValueOf( HasIdentity.IDENTITY_STATE_NAME );
+                            String identity = entityState.entityReference().identity().toString();
                             String ver = entityState.version();
+                            if( entityState.status() == EntityStatus.NEW )
+                            {
+                                ver = "0";
+                            }
+                            else
+                            {
+                                ver = "" + ( Long.parseLong( ver ) + 1 );
+                            }
                             String appVersion = application.version();
-                            Date lastModified = new Date( entityState.lastModified().toEpochMilli() );
-                            String usecase = unitOfWork.usecase().name();
-                            BoundStatement statement = cluster.entityUpdateStatement().bind( identity.toString(), ver, appVersion, lastModified, usecase, props, assocs, many, named );
+                            String type = entityState.entityDescriptor().primaryType().getName();
+                            Usecase usecase = unitOfWork.usecase();
+                            String usecaseName = usecase.name();
+                            Instant lastModified = unitOfWork.currentTime();
+                            BoundStatement statement = cluster.entityUpdateStatement().bind(
+                                identity,
+                                ver,
+                                type,
+                                appVersion,
+                                CURRENT_STORAGE_VERSION,
+                                Date.from( lastModified ),
+                                usecaseName,
+                                props,
+                                assocs,
+                                many,
+                                named );
                             ResultSet result = cluster.session().execute( statement );
                             System.out.println( result );
                         } );
+                String ids = stream( state.spliterator(), false )
+                    .filter( entity -> entity.status() == EntityStatus.REMOVED )
+                    .map( entityState -> "'" + entityState.entityReference().identity().toString() + "'" )
+                    .collect( Collectors.joining( "," ) );
+                if( !ids.isEmpty() )
+                {
+                    cluster.session().execute( "DELETE FROM " + cluster.tableName() + " WHERE id IN (" + ids + ");" );
+                }
             }
 
             private void serializeProperties( EntityState entityState, Map<String, String> props )
@@ -339,8 +367,11 @@ public class CassandraEntityStoreMixin
                     descriptor ->
                     {
                         Object value = entityState.propertyValueOf( descriptor.qualifiedName() );
-                        String serialized = valueSerialization.serialize( value );
-                        props.put( descriptor.qualifiedName().name(), serialized );
+                        if( value != null )
+                        {
+                            String serialized = valueSerialization.serialize( value );
+                            props.put( descriptor.qualifiedName().name(), serialized );
+                        }
                     } );
             }
 
@@ -351,25 +382,28 @@ public class CassandraEntityStoreMixin
                     descriptor ->
                     {
                         EntityReference ref = entityState.associationValueOf( descriptor.qualifiedName() );
-                        assocs.put( descriptor.qualifiedName().name(), ref.toString() );
+                        if( ref != null )
+                        {
+                            assocs.put( descriptor.qualifiedName().name(), ref.toString() );
+                        }
                     } );
             }
 
-            private void serializeManyAssociations( EntityState entityState, Map<String, List<String>> many )
+            private void serializeManyAssociations( EntityState entityState, Map<String, String> many )
             {
-                Stream<? extends AssociationDescriptor> associations = entityState.entityDescriptor().state().associations();
+                Stream<? extends AssociationDescriptor> associations = entityState.entityDescriptor().state().manyAssociations();
                 associations.forEach(
                     descriptor ->
                     {
                         ManyAssociationState references = entityState.manyAssociationValueOf( descriptor.qualifiedName() );
-                        List<String> refs = references.stream().map( EntityReference::toString ).collect( Collectors.toList() );
+                        String refs = references.stream().map( EntityReference::toString ).collect( Collectors.joining( "," ) );
                         many.put( descriptor.qualifiedName().name(), refs );
                     } );
             }
 
-            private void serializeNamedAssociations( EntityState entityState, Map<String, Map<String, String>> named )
+            private void serializeNamedAssociations( EntityState entityState, Map<String, String> named )
             {
-                Stream<? extends AssociationDescriptor> associations = entityState.entityDescriptor().state().associations();
+                Stream<? extends AssociationDescriptor> associations = entityState.entityDescriptor().state().namedAssociations();
                 associations.forEach(
                     descriptor ->
                     {
@@ -379,7 +413,8 @@ public class CassandraEntityStoreMixin
                                       .collect(
                                           Collectors.toMap( Map.Entry::getKey,
                                                             entry -> entry.getValue().toString() ) );
-                        named.put( descriptor.qualifiedName().name(), refs );
+                        String serialized = valueSerialization.serialize( MAP_OPTIONS, refs );
+                        named.put( descriptor.qualifiedName().name(), serialized );
                     } );
             }
 
@@ -400,7 +435,7 @@ public class CassandraEntityStoreMixin
         }
         else
         {
-            newIdentity= idGenerator.generate( UnitOfWork.class );
+            newIdentity = idGenerator.generate( UnitOfWork.class );
         }
         return new DefaultEntityStoreUnitOfWork( module, this, newIdentity, usecase, currentTime );
     }
@@ -413,6 +448,7 @@ public class CassandraEntityStoreMixin
         ResultSet resultSet = session.execute( "SELECT "
                                                + IDENTITY_COLUMN + ", "
                                                + VERSION_COLUMN + ", "
+                                               + TYPE_COLUMN + ", "
                                                + APP_VERSION_COLUMN + ", "
                                                + STORE_VERSION_COLUMN + ", "
                                                + LASTMODIFIED_COLUMN + ", "
@@ -422,7 +458,7 @@ public class CassandraEntityStoreMixin
                                                + MANYASSOCIATIONS_COLUMN + ", "
                                                + NAMEDASSOCIATIONS_COLUMN
                                                + " FROM " + tableName );
-        return stream(resultSet.spliterator(), false).map( row -> deserialize( row, module ));
+        return stream( resultSet.spliterator(), false ).map( row -> deserialize( row, module ) );
     }
 
     @Override

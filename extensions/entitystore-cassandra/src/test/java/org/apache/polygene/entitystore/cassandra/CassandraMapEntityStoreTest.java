@@ -21,13 +21,13 @@ package org.apache.polygene.entitystore.cassandra;
 
 import org.apache.polygene.entitystore.cassandra.assembly.CassandraDBEntityStoreAssembler;
 import org.apache.polygene.test.entity.CanRemoveAll;
+import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
 import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
@@ -38,7 +38,6 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 public class CassandraMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
-
 
     @BeforeClass
     public static void beforeCassandraEntityStoreTests()
@@ -57,7 +56,7 @@ public class CassandraMapEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         module.services( CassandraEntityStoreService.class ).withTypes( CanRemoveAll.class ).withMixins( EmptyCassandraTableMixin.class );
-        new OrgJsonValueSerializationAssembler().assemble( module );
+        new JacksonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         new CassandraDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );

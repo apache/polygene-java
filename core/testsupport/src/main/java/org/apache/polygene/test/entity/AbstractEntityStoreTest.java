@@ -380,7 +380,7 @@ public abstract class AbstractEntityStoreTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
-            assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
+            assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
         }
@@ -411,7 +411,7 @@ public abstract class AbstractEntityStoreTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
-            assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
+            assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
         }

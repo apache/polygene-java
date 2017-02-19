@@ -28,6 +28,7 @@ dependencies {
   compile polygene.core.bootstrap
   compile polygene.library( 'locking' )
   compile libraries.cassandra_client
+  compile libraries.jackson_mapper
 
   runtime polygene.core.runtime
 

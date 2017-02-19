@@ -45,4 +45,7 @@ public interface CassandraEntityStoreService
             LockingAbstractComposite,
             Configuration
 {
+    String CURRENT_STORAGE_VERSION = "1";
+    String DEFAULT_KEYSPACE_NAME = "polygene";
+    String DEFAULT_TABLE_NAME = "entitystore";
 }

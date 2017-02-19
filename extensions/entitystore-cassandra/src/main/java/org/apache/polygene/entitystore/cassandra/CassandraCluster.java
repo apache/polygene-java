@@ -17,25 +17,6 @@
  *
  *
  */
-/*
- *  Licensed to the Apache Software Foundation (ASF) under one
- *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
- *  to you under the Apache License, Version 2.0 (the
- *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *
- */
 package org.apache.polygene.entitystore.cassandra;
 
 import com.datastax.driver.core.AuthProvider;
@@ -44,7 +25,6 @@ import com.datastax.driver.core.KeyspaceMetadata;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.AlreadyExistsException;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Service;
@@ -55,9 +35,6 @@ import org.apache.polygene.spi.entitystore.EntityStoreException;
 @Mixins( CassandraCluster.Mixin.class )
 public interface CassandraCluster
 {
-    String CURRENT_STORAGE_VERSION = "1";
-    String DEFAULT_KEYSPACE_NAME = "polygene";
-    String DEFAULT_TABLE_NAME = "entitystore";
     String IDENTITY_COLUMN = "id";
     String STORE_VERSION_COLUMN = "storeversion";
     String VERSION_COLUMN = "version";
@@ -144,7 +121,7 @@ public interface CassandraCluster
             String tableName = config.entityTableName().get();
             if( tableName == null || tableName.isEmpty() )
             {
-                tableName = DEFAULT_TABLE_NAME;
+                tableName = CassandraEntityStoreService.DEFAULT_TABLE_NAME;
             }
             return tableName;
         }
@@ -158,7 +135,7 @@ public interface CassandraCluster
             keyspaceName = config.keySpace().get();
             if( keyspaceName == null || keyspaceName.isEmpty() )
             {
-                keyspaceName = DEFAULT_KEYSPACE_NAME;
+                keyspaceName = CassandraEntityStoreService.DEFAULT_KEYSPACE_NAME;
             }
             String tableName = tableName();
             KeyspaceMetadata keyspace = cluster.getMetadata().getKeyspace( keyspaceName );
@@ -192,6 +169,7 @@ public interface CassandraCluster
             getEntityStatement = session.prepare( "SELECT "
                                                   + IDENTITY_COLUMN + ", "
                                                   + VERSION_COLUMN + ", "
+                                                  + TYPE_COLUMN + ", "
                                                   + APP_VERSION_COLUMN + ", "
                                                   + STORE_VERSION_COLUMN + ", "
                                                   + LASTMODIFIED_COLUMN + ", "
@@ -211,17 +189,18 @@ public interface CassandraCluster
                                                    + IDENTITY_COLUMN + " = ?" );
 
             updateEntityStatement = session.prepare( "INSERT INTO " + tableName + "( "
-                                                     + IDENTITY_COLUMN + ", "
-                                                     + VERSION_COLUMN + ", "
-                                                     + APP_VERSION_COLUMN + ", "
-                                                     + STORE_VERSION_COLUMN + ", "
-                                                     + LASTMODIFIED_COLUMN + ", "
-                                                     + USECASE_COLUMN + ", "
-                                                     + PROPERTIES_COLUMN + ", "
-                                                     + ASSOCIATIONS_COLUMN + ", "
-                                                     + MANYASSOCIATIONS_COLUMN + ", "
-                                                     + NAMEDASSOCIATIONS_COLUMN
-                                                     + " ) VALUES (?,?,?,'" + CURRENT_STORAGE_VERSION + "',?,?,?,?,?,?)" );
+                                                     + IDENTITY_COLUMN + ", "               // id
+                                                     + VERSION_COLUMN + ", "                // version
+                                                     + TYPE_COLUMN + ", "                   // type
+                                                     + APP_VERSION_COLUMN + ", "            // appversion
+                                                     + STORE_VERSION_COLUMN + ", "          // storeversion
+                                                     + LASTMODIFIED_COLUMN + ", "           // lastmodified
+                                                     + USECASE_COLUMN + ", "                // usecase
+                                                     + PROPERTIES_COLUMN + ", "             // properties
+                                                     + ASSOCIATIONS_COLUMN + ", "           // associations
+                                                     + MANYASSOCIATIONS_COLUMN + ", "       // manyassociations
+                                                     + NAMEDASSOCIATIONS_COLUMN             // namedassociations
+                                                     + " ) VALUES (?,?,?,?,?,?,?,?,?,?,?)" );
         }
 
         private void createPolygeneStateTable( String tableName )
@@ -231,6 +210,7 @@ public interface CassandraCluster
                 session.execute( "CREATE TABLE " + tableName + "(\n"
                                  + "   " + IDENTITY_COLUMN + " text,\n"
                                  + "   " + VERSION_COLUMN + " text,\n"
+                                 + "   " + TYPE_COLUMN + " text,\n"
                                  + "   " + APP_VERSION_COLUMN + " text,\n"
                                  + "   " + STORE_VERSION_COLUMN + " text,\n"
                                  + "   " + LASTMODIFIED_COLUMN + " timestamp,\n"
@@ -239,7 +219,7 @@ public interface CassandraCluster
                                  + "   " + ASSOCIATIONS_COLUMN + " map<text,text>,\n"
                                  + "   " + MANYASSOCIATIONS_COLUMN + " map<text,text>,\n"
                                  + "   " + NAMEDASSOCIATIONS_COLUMN + " map<text,text>,\n"
-                                 + "   PRIMARY KEY (" + IDENTITY_COLUMN + ")\n"
+                                 + "   PRIMARY KEY ( " + IDENTITY_COLUMN + " )\n"
                                  + "   )" );
             }
             catch( AlreadyExistsException e )
