@@ -91,10 +91,10 @@ public interface CassandraEntityStoreConfiguration
      *         storeversion text,
      *         modified timestamp,
      *         usecase text,
-     *         props map<text,text>,
-     *         assocs map<text,text>,
-     *         manyassocs map<text,text>,
-     *         namedassocs map<text,text>,
+     *         props map&lt;text,text&gt;,
+     *         assocs map&lt;text,text&gt;,
+     *         manyassocs map&lt;text,text&gt;,
+     *         namedassocs map&lt;text,text^gt;,
      *         PRIMARY KEY (id)
      * );
      *
