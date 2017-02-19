@@ -46,6 +46,7 @@ public final class InstanceImporter<T>
     @Structure
     private Module module;
 
+    @SuppressWarnings( "unchecked" )
     @Override
     public T importService( final ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
