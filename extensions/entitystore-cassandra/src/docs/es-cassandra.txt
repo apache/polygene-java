@@ -103,6 +103,7 @@ Polygene will store all entities in a single Cassandra TABLE
     CREATE TABLE &lt;tableName&gt; (
         id text,
         version text,
+        type text,
         appversion text,
         storeversion text,
         usecase text,
