@@ -259,6 +259,7 @@ public class CassandraEntityStoreMixin
                         String storedValues = storedNamedassociation.get( namedAssociationType.qualifiedName().name() );
                         if( storedValues != null )
                         {
+                            @SuppressWarnings( "unchecked" )
                             Map<String, String> namedRefs = new ObjectMapper().readValue( storedValues, Map.class );
                             for( Map.Entry<String, String> entry : namedRefs.entrySet() )
                             {
