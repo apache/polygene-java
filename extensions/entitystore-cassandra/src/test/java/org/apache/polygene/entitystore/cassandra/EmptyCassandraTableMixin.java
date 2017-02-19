@@ -33,7 +33,6 @@ public class EmptyCassandraTableMixin
     @Override
     public void removeAll()
     {
-        Delete delete = QueryBuilder.delete().from(cluster.keyspaceName(), cluster.tableName());
-        cluster.session().execute( delete );
+        cluster.session().execute( "TRUNCATE TABLE " + cluster.tableName() + ";");
     }
 }

@@ -43,6 +43,8 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.KeyspaceMetadata;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.exceptions.AlreadyExistsException;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Service;
@@ -140,7 +142,7 @@ public interface CassandraCluster
         {
             CassandraEntityStoreConfiguration config = configuration.get();
             String tableName = config.entityTableName().get();
-            if( tableName == null )
+            if( tableName == null || tableName.isEmpty() )
             {
                 tableName = DEFAULT_TABLE_NAME;
             }
@@ -152,21 +154,26 @@ public interface CassandraCluster
         {
             configuration.refresh();
             CassandraEntityStoreConfiguration config = configuration.get();
-            cluster = clusterBuilder.build(config);
+            cluster = clusterBuilder.build( config );
             keyspaceName = config.keySpace().get();
-            if( keyspaceName == null )
+            if( keyspaceName == null || keyspaceName.isEmpty() )
             {
                 keyspaceName = DEFAULT_KEYSPACE_NAME;
             }
             String tableName = tableName();
             KeyspaceMetadata keyspace = cluster.getMetadata().getKeyspace( keyspaceName );
+            boolean createIfMissing = config.createIfMissing().get();
             if( keyspace == null )
             {
-                if( config.createIfMissing().get() )
+                if( createIfMissing )
                 {
-                    createKeyspace( keyspaceName, config.replicationFactor().get() );
+                    Integer replication = config.replicationFactor().get();
+                    if( replication == null || replication <= 0 )
+                    {
+                        replication = 3;
+                    }
+                    createKeyspace( keyspaceName, replication );
                     session = cluster.connect( keyspaceName );
-                    createPolygeneStateTable( tableName );
                 }
                 else
                 {
@@ -178,7 +185,10 @@ public interface CassandraCluster
                 session = cluster.connect( keyspaceName );
             }
             session.init();
-
+            if( createIfMissing )
+            {
+                createPolygeneStateTable( tableName );
+            }
             getEntityStatement = session.prepare( "SELECT "
                                                   + IDENTITY_COLUMN + ", "
                                                   + VERSION_COLUMN + ", "
@@ -195,7 +205,7 @@ public interface CassandraCluster
                                                   + IDENTITY_COLUMN + " = ?" );
 
             getVersionStatement = session.prepare( "SELECT "
-                                                   + VERSION_COLUMN + ", "
+                                                   + VERSION_COLUMN
                                                    + " FROM " + tableName
                                                    + " WHERE "
                                                    + IDENTITY_COLUMN + " = ?" );
@@ -211,24 +221,31 @@ public interface CassandraCluster
                                                      + ASSOCIATIONS_COLUMN + ", "
                                                      + MANYASSOCIATIONS_COLUMN + ", "
                                                      + NAMEDASSOCIATIONS_COLUMN
-                                                     + " ) VALUES (?,?,?," + CURRENT_STORAGE_VERSION + "?,?,?,?,?,?)" );
+                                                     + " ) VALUES (?,?,?,'" + CURRENT_STORAGE_VERSION + "',?,?,?,?,?,?)" );
         }
 
         private void createPolygeneStateTable( String tableName )
         {
-            session.execute( "CREATE TABLE " + tableName + "(\n"
-                             + "   " + IDENTITY_COLUMN + " text,\n"
-                             + "   " + VERSION_COLUMN + " text,\n"
-                             + "   " + APP_VERSION_COLUMN + " text,\n"
-                             + "   " + STORE_VERSION_COLUMN + " text,\n"
-                             + "   " + LASTMODIFIED_COLUMN + " timestamp,\n"
-                             + "   " + USECASE_COLUMN + " text,\n"
-                             + "   " + PROPERTIES_COLUMN + " map<text,text>,\n"
-                             + "   " + ASSOCIATIONS_COLUMN + " map<text,text>,\n"
-                             + "   " + MANYASSOCIATIONS_COLUMN + " map<text,text>,\n"
-                             + "   " + NAMEDASSOCIATIONS_COLUMN + " map<text,text>,\n"
-                             + "   PRIMARY KEY (" + IDENTITY_COLUMN + ")\n"
-                             + "   )" );
+            try
+            {
+                session.execute( "CREATE TABLE " + tableName + "(\n"
+                                 + "   " + IDENTITY_COLUMN + " text,\n"
+                                 + "   " + VERSION_COLUMN + " text,\n"
+                                 + "   " + APP_VERSION_COLUMN + " text,\n"
+                                 + "   " + STORE_VERSION_COLUMN + " text,\n"
+                                 + "   " + LASTMODIFIED_COLUMN + " timestamp,\n"
+                                 + "   " + USECASE_COLUMN + " text,\n"
+                                 + "   " + PROPERTIES_COLUMN + " map<text,text>,\n"
+                                 + "   " + ASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                                 + "   " + MANYASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                                 + "   " + NAMEDASSOCIATIONS_COLUMN + " map<text,text>,\n"
+                                 + "   PRIMARY KEY (" + IDENTITY_COLUMN + ")\n"
+                                 + "   )" );
+            }
+            catch( AlreadyExistsException e )
+            {
+                // This is OK, as we try to create on every connect().
+            }
         }
 
         private void createKeyspace( String keyspaceName, int replication )

@@ -82,7 +82,7 @@ public interface CassandraEntityStoreConfiguration
      *
      * @return The name of the KEYSPACE to use If null, then the default <code>KEYSPACE polygene</code> will be used.
      */
-    @Optional
+    @UseDefaults
     Property<String> keySpace();
 
     /**
@@ -109,7 +109,7 @@ public interface CassandraEntityStoreConfiguration
      *
      * @return the name of the Entity table. If it returns null the default name of <code>entitystore</code> will be used.
      */
-    @Optional
+    @UseDefaults
     Property<String> entityTableName();
 
     /**
