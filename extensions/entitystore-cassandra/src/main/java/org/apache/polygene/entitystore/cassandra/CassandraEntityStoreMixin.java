@@ -22,6 +22,7 @@ package org.apache.polygene.entitystore.cassandra;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.TypeTokens;
 import com.google.common.reflect.TypeToken;
 import java.time.Instant;
@@ -83,7 +84,7 @@ import static org.apache.polygene.entitystore.cassandra.CassandraCluster.VERSION
  * MongoDB implementation of MapEntityStore.
  */
 public class CassandraEntityStoreMixin
-    implements EntityStore, EntityStoreSPI
+    implements EntityStore, EntityStoreSPI, ServiceActivation
 {
 
     @This
@@ -407,19 +408,34 @@ public class CassandraEntityStoreMixin
     @Override
     public Stream<EntityState> entityStates( ModuleDescriptor module )
     {
-        ResultSet resultSet = cluster.session().execute( "SELECT "
-                                             + IDENTITY_COLUMN + ", "
-                                             + VERSION_COLUMN + ", "
-                                             + APP_VERSION_COLUMN + ", "
-                                             + STORE_VERSION_COLUMN + ", "
-                                             + LASTMODIFIED_COLUMN + ", "
-                                             + USECASE_COLUMN + ", "
-                                             + PROPERTIES_COLUMN + ", "
-                                             + ASSOCIATIONS_COLUMN + ", "
-                                             + MANYASSOCIATIONS_COLUMN + ", "
-                                             + NAMEDASSOCIATIONS_COLUMN
-                                             + " FROM " + cluster.tableName() );
+        Session session = cluster.session();
+        String tableName = cluster.tableName();
+        ResultSet resultSet = session.execute( "SELECT "
+                                               + IDENTITY_COLUMN + ", "
+                                               + VERSION_COLUMN + ", "
+                                               + APP_VERSION_COLUMN + ", "
+                                               + STORE_VERSION_COLUMN + ", "
+                                               + LASTMODIFIED_COLUMN + ", "
+                                               + USECASE_COLUMN + ", "
+                                               + PROPERTIES_COLUMN + ", "
+                                               + ASSOCIATIONS_COLUMN + ", "
+                                               + MANYASSOCIATIONS_COLUMN + ", "
+                                               + NAMEDASSOCIATIONS_COLUMN
+                                               + " FROM " + tableName );
         return stream(resultSet.spliterator(), false).map( row -> deserialize( row, module ));
     }
 
+    @Override
+    public void activateService()
+        throws Exception
+    {
+        cluster.activate();
+    }
+
+    @Override
+    public void passivateService()
+        throws Exception
+    {
+        cluster.passivate();
+    }
 }

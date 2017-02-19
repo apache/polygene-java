@@ -38,14 +38,16 @@
  */
 package org.apache.polygene.entitystore.cassandra;
 
+import com.datastax.driver.core.AuthProvider;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.KeyspaceMetadata;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
 
 @Mixins( CassandraCluster.Mixin.class )
@@ -55,11 +57,11 @@ public interface CassandraCluster
     String DEFAULT_KEYSPACE_NAME = "polygene";
     String DEFAULT_TABLE_NAME = "entitystore";
     String IDENTITY_COLUMN = "id";
+    String STORE_VERSION_COLUMN = "storeversion";
     String VERSION_COLUMN = "version";
+    String APP_VERSION_COLUMN = "appversion";
     String USECASE_COLUMN = "usecase";
     String LASTMODIFIED_COLUMN = "modified";
-    String APP_VERSION_COLUMN = "appversion";
-    String STORE_VERSION_COLUMN = "storeversion";
     String TYPE_COLUMN = "type";
     String PROPERTIES_COLUMN = "props";
     String ASSOCIATIONS_COLUMN = "assocs";
@@ -78,11 +80,24 @@ public interface CassandraCluster
 
     String keyspaceName();
 
+    void activate()
+        throws Exception;
+
+    void passivate()
+        throws Exception;
+
     class Mixin
-        implements ServiceActivation, CassandraCluster
+        implements CassandraCluster
     {
         @This
         private Configuration<CassandraEntityStoreConfiguration> configuration;
+
+        @Service
+        @Optional
+        private AuthProvider authProvider;
+
+        @This
+        private ClusterBuilder clusterBuilder;
 
         private Cluster cluster;
         private Session session;
@@ -132,20 +147,12 @@ public interface CassandraCluster
             return tableName;
         }
 
-        @Override
-        public void activateService()
+        public void activate()
             throws Exception
         {
             configuration.refresh();
             CassandraEntityStoreConfiguration config = configuration.get();
-
-            String[] hostNames = config.hostnames().get().split( "," );
-            Cluster.Builder builder =
-                Cluster.builder()
-                       .withClusterName( "myCluster" )
-                       .addContactPoints( hostNames )
-                       .withCredentials( config.username().get(), config.password().get() );
-            cluster = builder.build();
+            cluster = clusterBuilder.build(config);
             keyspaceName = config.keySpace().get();
             if( keyspaceName == null )
             {
@@ -233,8 +240,7 @@ public interface CassandraCluster
             }
         }
 
-        @Override
-        public void passivateService()
+        public void passivate()
             throws Exception
         {
             cluster.close();

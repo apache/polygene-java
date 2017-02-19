@@ -43,6 +43,13 @@ public interface CassandraEntityStoreConfiguration
     @Optional
     Property<String> hostnames();
 
+    /** The name of the cluster to connect to.
+     *
+     * @return The configured cluster name. Default: "polygene-cluster"
+     */
+    @Optional
+    Property<String> clusterName();
+
     /** The replication factor to be used, if a KEYSPACE is created.
      *
      * @return The replication factor to use in the keyspace if a keyspace is created. Default: 3
