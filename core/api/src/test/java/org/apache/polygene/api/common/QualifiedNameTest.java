@@ -20,7 +20,6 @@
 package org.apache.polygene.api.common;
 
 import org.junit.Test;
-import org.apache.polygene.api.util.NullArgumentException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,43 +39,43 @@ public class QualifiedNameTest
                       QualifiedName.fromFQN( "Test$Test:satisfiedBy" ).type() );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments1()
     {
         new QualifiedName( TypeName.nameOf( "Test" ), null );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments2()
     {
         new QualifiedName( null, "satisfiedBy" );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments3()
     {
         new QualifiedName( null, null );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments4()
     {
         QualifiedName.fromFQN( null );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments5()
     {
         QualifiedName.fromAccessor( null );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments6()
     {
         QualifiedName.fromClass( null, "satisfiedBy" );
     }
 
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void nonNullArguments7()
     {
         QualifiedName.fromClass( null, null );

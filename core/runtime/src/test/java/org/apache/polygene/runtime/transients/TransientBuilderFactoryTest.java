@@ -34,7 +34,6 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
@@ -72,7 +71,7 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void newBuilderForNullType()
         throws Exception
     {
@@ -91,7 +90,7 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void newInstanceForNullType()
         throws Exception
     {

@@ -21,8 +21,8 @@ package org.apache.polygene.api.common;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import org.apache.polygene.api.util.Classes;
-import org.apache.polygene.api.util.NullArgumentException;
 
 /**
  * Represents a Type name.
@@ -34,7 +34,7 @@ public final class TypeName
 
     public static TypeName nameOf( Class type )
     {
-        NullArgumentException.validateNotNull( "type", type );
+        Objects.requireNonNull( type, "type" );
         return new TypeName( type.getName() );
     }
 
@@ -50,7 +50,11 @@ public final class TypeName
 
     private TypeName( String name )
     {
-        NullArgumentException.validateNotEmpty( "name", name );
+        Objects.requireNonNull( name, "name" );
+        if( name.isEmpty() )
+        {
+            throw new IllegalArgumentException( "name was empty" );
+        }
         this.name = name;
     }
 

@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.GenericAssociationInfo;
@@ -67,7 +68,6 @@ import org.apache.polygene.api.query.grammar.PropertyNotNullPredicate;
 import org.apache.polygene.api.query.grammar.PropertyNullPredicate;
 import org.apache.polygene.api.query.grammar.PropertyReference;
 import org.apache.polygene.api.query.grammar.Variable;
-import org.apache.polygene.api.util.NullArgumentException;
 
 import static org.apache.polygene.api.identity.HasIdentity.IDENTITY_METHOD;
 
@@ -90,7 +90,7 @@ public final class QueryExpressions
      */
     public static <T> T templateFor( Class<T> clazz )
     {
-        NullArgumentException.validateNotNull( "Template class", clazz );
+        Objects.requireNonNull( clazz,"Template class" );
 
         if( clazz.isInterface() )
         {
@@ -157,8 +157,8 @@ public final class QueryExpressions
      */
     public static <T> T templateFor( final Class<T> mixinType, Association<?> association )
     {
-        NullArgumentException.validateNotNull( "Mixin class", mixinType );
-        NullArgumentException.validateNotNull( "Association", association );
+        Objects.requireNonNull( mixinType, "Mixin class" );
+        Objects.requireNonNull( association, "Association" );
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(),
                                                        array( mixinType ),
                                                        new TemplateHandler<T>( null,
@@ -169,13 +169,13 @@ public final class QueryExpressions
 
     public static <T> T oneOf( final ManyAssociation<T> association )
     {
-        NullArgumentException.validateNotNull( "Association", association );
+        Objects.requireNonNull( association, "association" );
         return association.get( 0 );
     }
 
     public static <T> T oneOf( final NamedAssociation<T> association )
     {
-        NullArgumentException.validateNotNull( "Association", association );
+        Objects.requireNonNull(  association, "Association" );
         Iterator<String> iterator = association.iterator();
         return association.get( iterator.hasNext() ? iterator.next() : null );
     }
@@ -189,7 +189,7 @@ public final class QueryExpressions
      */
     public static Variable variable( String name )
     {
-        NullArgumentException.validateNotNull( "Variable name", name );
+        Objects.requireNonNull(  name, "Variable name" );
         return new Variable( name );
     }
 
@@ -618,7 +618,7 @@ public final class QueryExpressions
     public static <T> ContainsAllPredicate<T> containsAll( Property<? extends Collection<T>> collectionProperty,
                                                            Collection<T> values )
     {
-        NullArgumentException.validateNotNull( "Values", values );
+        Objects.requireNonNull( values, "Values" );
         return new ContainsAllPredicate<>( property( collectionProperty ), values );
     }
 
@@ -636,7 +636,7 @@ public final class QueryExpressions
         Property<? extends Collection<T>> collectionProperty,
         Collection<Variable> variables )
     {
-        NullArgumentException.validateNotNull( "Variables", variables );
+        Objects.requireNonNull( variables, "Variables" );
         return new ContainsAllPredicate( property( collectionProperty ), variables );
     }
 
@@ -652,7 +652,7 @@ public final class QueryExpressions
     public static <T> ContainsPredicate<T> contains( Property<? extends Collection<T>> collectionProperty,
                                                          T value )
     {
-        NullArgumentException.validateNotNull( "Value", value );
+        Objects.requireNonNull( value, "Value" );
         return new ContainsPredicate<>( property( collectionProperty ), value );
     }
 
@@ -669,7 +669,7 @@ public final class QueryExpressions
     public static <T> ContainsPredicate<T> contains( Property<? extends Collection<T>> collectionProperty,
                                                          Variable variable )
     {
-        NullArgumentException.validateNotNull( "Variable", variable );
+        Objects.requireNonNull( variable, "Variable" );
         return new ContainsPredicate( property( collectionProperty ), variable );
     }
 

@@ -19,8 +19,8 @@
  */
 package org.apache.polygene.test.cache;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.cache.Cache;
 
 import static org.apache.polygene.api.util.Collectors.single;
@@ -36,20 +36,20 @@ public abstract class MemoryCachePoolMixin
     @Override
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
-        NullArgumentException.validateNotEmpty( "cacheId", cacheId );
-        MemoryCacheImpl<?> cache = caches.get( cacheId );
-        if( cache == null )
+        Objects.requireNonNull( cacheId, "cacheId" );
+        if( cacheId.isEmpty() )
         {
-            cache = createNewCache( cacheId, valueType );
-            caches.put( cacheId, cache );
+            throw new IllegalArgumentException( "cacheId was empty string" );
         }
+        @SuppressWarnings( "unchecked" )
+        MemoryCacheImpl<T> cache = (MemoryCacheImpl<T>) caches.computeIfAbsent( cacheId, k -> createNewCache( cacheId, valueType ) );
         cache.incRefCount();
-        return (Cache<T>) cache;
+        return cache;
     }
 
     private <T> MemoryCacheImpl<T> createNewCache( String cacheId, Class<T> valueType )
     {
-        return new MemoryCacheImpl<>( cacheId, new ConcurrentHashMap<String, Object>(), valueType );
+        return new MemoryCacheImpl<>( cacheId, new ConcurrentHashMap<>(), valueType );
     }
 
     @Override

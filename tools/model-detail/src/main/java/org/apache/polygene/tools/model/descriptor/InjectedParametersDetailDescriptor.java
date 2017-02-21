@@ -19,9 +19,8 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.composite.InjectedParametersDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public class InjectedParametersDetailDescriptor
 {
@@ -32,8 +31,7 @@ public class InjectedParametersDetailDescriptor
     InjectedParametersDetailDescriptor( InjectedParametersDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
     }
 
@@ -74,14 +72,14 @@ public class InjectedParametersDetailDescriptor
     final void setConstructor( ConstructorDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         constructor = aDescriptor;
     }
 
     final void setMethod( InjectedMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         method = aDescriptor;
     }
 }

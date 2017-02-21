@@ -27,7 +27,6 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.object.NoSuchObjectException;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
@@ -65,7 +64,7 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void newBuilderForNullType()
         throws Exception
     {
@@ -84,7 +83,7 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void newObjectInstanceForNullType()
         throws Exception
     {

@@ -23,7 +23,7 @@ package org.apache.polygene.api.common;
 import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
-import org.apache.polygene.api.util.NullArgumentException;
+import java.util.Objects;
 
 /**
  * QualifiedName is a representation of Property names to their full declaration.
@@ -68,11 +68,11 @@ public final class QualifiedName
      *
      * @return A QualifiedName representing this method.
      *
-     * @throws NullArgumentException If the {@code method} argument passed is null.
+     * @throws NullPointerException If the {@code method} argument passed is null.
      */
     public static QualifiedName fromAccessor( AccessibleObject method )
     {
-        NullArgumentException.validateNotNull( "method", method );
+        Objects.requireNonNull( method, "method" );
         return fromClass( ( (Member) method ).getDeclaringClass(), ( (Member) method ).getName() );
     }
 
@@ -86,7 +86,8 @@ public final class QualifiedName
      *
      * @return A QualifiedName instance representing the {@code type} and {@code name} arguments.
      *
-     * @throws NullArgumentException if any of the two arguments are {@code null}, or if the name string is empty.
+     * @throws NullPointerException if any of the two arguments are {@code null}
+     * @throws IllegalArgumentException  if the name string is empty.
      */
     public static QualifiedName fromClass( Class type, String name )
     {
@@ -102,7 +103,8 @@ public final class QualifiedName
      *
      * @return A QualifiedName instance representing the {@code type} and {@code name} arguments.
      *
-     * @throws NullArgumentException if any of the two arguments are {@code null} or either string is empty.
+     * @throws NullPointerException if any of the two arguments are {@code null}
+     * @throws IllegalArgumentException  if the name string is empty.
      */
     public static QualifiedName fromName( String type, String name )
     {
@@ -121,11 +123,12 @@ public final class QualifiedName
      *
      * @return The QualifiedName instance represented by the {@code qualifiedName} argument.
      *
+     * @throws NullPointerException If the {@code qualifiedName} argument is null
      * @throws IllegalArgumentException If the {@code qualifiedName} argument has wrong format.
      */
     public static QualifiedName fromFQN( String fullQualifiedName )
     {
-        NullArgumentException.validateNotEmpty( "qualifiedName", fullQualifiedName );
+        Objects.requireNonNull( fullQualifiedName, "qualifiedName" );
         int idx = fullQualifiedName.lastIndexOf( ":" );
         if( idx == -1 )
         {
@@ -138,8 +141,11 @@ public final class QualifiedName
 
     QualifiedName( TypeName typeName, String name )
     {
-        NullArgumentException.validateNotNull( "typeName", typeName );
-        NullArgumentException.validateNotEmpty( "name", name );
+        Objects.requireNonNull( typeName, "typeName" );
+        Objects.requireNonNull( name, "name" );
+        if( name.isEmpty() ){
+            throw new IllegalArgumentException( "name" );
+        }
         this.typeName = typeName;
         this.name = name;
     }

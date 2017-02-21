@@ -19,9 +19,8 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.composite.MethodDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class CompositeMethodDetailDescriptor
 {
@@ -35,7 +34,7 @@ public final class CompositeMethodDetailDescriptor
     CompositeMethodDetailDescriptor( MethodDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
 
         composite = null;
@@ -99,14 +98,14 @@ public final class CompositeMethodDetailDescriptor
     final void setComposite( CompositeDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         composite = aDescriptor;
     }
 
     final void setConstraints( MethodConstraintsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethod( this );
         constraints = aDescriptor;
@@ -114,7 +113,7 @@ public final class CompositeMethodDetailDescriptor
 
     public void setConcerns( MethodConcernsDetailDescriptor aDescriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethod( this );
         concerns = aDescriptor;
@@ -122,7 +121,7 @@ public final class CompositeMethodDetailDescriptor
 
     final void setSideEffects( MethodSideEffectsDetailDescriptor aDescriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethod( this );
         sideEffects = aDescriptor;

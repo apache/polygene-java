@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.api.util.NullArgumentException;
 
 /**
  * An EntityReference is reference of a specific Entity instance.
@@ -69,7 +68,7 @@ public final class EntityReference
 
     /**
      * @param identity reference reference
-     * @throws NullArgumentException if reference is null or empty
+     * @throws NullPointerException if reference is null
      */
     private EntityReference( Identity identity )
     {

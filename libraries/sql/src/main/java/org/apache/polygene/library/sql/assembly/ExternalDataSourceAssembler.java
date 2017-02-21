@@ -19,9 +19,9 @@
  */
 package org.apache.polygene.library.sql.assembly;
 
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -44,7 +44,7 @@ public class ExternalDataSourceAssembler
 
     public ExternalDataSourceAssembler( DataSource externalDataSource )
     {
-        NullArgumentException.validateNotNull( "DataSource", externalDataSource );
+        Objects.requireNonNull( externalDataSource, "DataSource" );
         this.externalDataSource = externalDataSource;
     }
 
@@ -56,7 +56,7 @@ public class ExternalDataSourceAssembler
 
     public ExternalDataSourceAssembler withCircuitBreaker( CircuitBreaker circuitBreaker )
     {
-        NullArgumentException.validateNotNull( "CircuitBreaker", circuitBreaker );
+        Objects.requireNonNull( circuitBreaker, "CircuitBreaker" );
         this.circuitBreaker = circuitBreaker;
         return this;
     }

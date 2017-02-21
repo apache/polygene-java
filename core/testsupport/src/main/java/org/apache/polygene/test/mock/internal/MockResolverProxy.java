@@ -21,7 +21,7 @@ package org.apache.polygene.test.mock.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.apache.polygene.api.util.NullArgumentException;
+import java.util.Objects;
 
 /**
  * Proxy to another mock resolver that can be set/changed over time. This allows
@@ -45,13 +45,13 @@ public class MockResolverProxy
      * @param registeredMock registered mock; cannot be null
      * @param mockResolver   mock resolver delegate; cannot be null
      *
-     * @throws NullArgumentException - If registred mock is null
+     * @throws NullPointerException - If registred mock is null
      *                               - If mock resolver is null
      */
     MockResolverProxy( final Object registeredMock, final MockResolver mockResolver )
     {
-        NullArgumentException.validateNotNull( "Registered mock", registeredMock );
-        NullArgumentException.validateNotNull( "Mock resolver delegate", mockResolver );
+        Objects.requireNonNull( registeredMock, "Registered mock" );
+        Objects.requireNonNull( mockResolver, "Mock resolver delegate" );
         this.registeredMock = registeredMock;
         this.mockResolver = mockResolver;
     }
@@ -63,11 +63,11 @@ public class MockResolverProxy
      *
      * @return itself
      *
-     * @throws NullArgumentException - If mock resolver is null
+     * @throws NullPointerException - If mock resolver is null
      */
     MockResolverProxy setMock( final MockResolver mockResolver )
     {
-        NullArgumentException.validateNotNull( "Mock resolver delegate", mockResolver );
+        Objects.requireNonNull( mockResolver, "Mock resolver delegate" );
         this.mockResolver = mockResolver;
         return this;
     }

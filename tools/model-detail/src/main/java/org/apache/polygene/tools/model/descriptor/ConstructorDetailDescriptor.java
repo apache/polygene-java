@@ -19,9 +19,8 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.composite.ConstructorDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Constructor Detail Descriptor.
@@ -39,7 +38,7 @@ public final class ConstructorDetailDescriptor
     ConstructorDetailDescriptor( ConstructorDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ConstructorDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ConstructorDescriptor" );
         this.descriptor = descriptor;
         this.parameters = null;
     }
@@ -102,38 +101,38 @@ public final class ConstructorDetailDescriptor
 
     final void setActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         activator = descriptor;
     }
 
     final void setObject( ObjectDetailDescriptor descriptor )
     {
-        validateNotNull( "ObjectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ObjectDetailDescriptor" );
         object = descriptor;
     }
 
     final void setMixin( MixinDetailDescriptor descriptor )
     {
-        validateNotNull( "MixinDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MixinDetailDescriptor" );
         mixin = descriptor;
     }
 
     final void setMethodConcern( MethodConcernDetailDescriptor descriptor )
     {
-        validateNotNull( "MethodConcernDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodConcernDetailDescriptor" );
         methodConcern = descriptor;
     }
 
     final void setInjectedParameter( InjectedParametersDetailDescriptor descriptor )
     {
-        validateNotNull( "InjectedParametersDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedParametersDetailDescriptor" );
         descriptor.setConstructor( this );
         parameters = descriptor;
     }
 
     final void setMethodSideEffect( MethodSideEffectDetailDescriptor descriptor )
     {
-        validateNotNull( "MethodSideEffectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodSideEffectDetailDescriptor" );
         methodSideEffect = descriptor;
     }
 

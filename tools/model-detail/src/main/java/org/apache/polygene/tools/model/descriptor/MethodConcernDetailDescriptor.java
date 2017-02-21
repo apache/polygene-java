@@ -21,9 +21,8 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.concern.ConcernDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConcernDetailDescriptor
     implements InjectableDetailDescriptor
@@ -38,7 +37,7 @@ public final class MethodConcernDetailDescriptor
     MethodConcernDetailDescriptor( ConcernDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         descriptor = aDescriptor;
 
@@ -109,14 +108,14 @@ public final class MethodConcernDetailDescriptor
    final void setConcerns( MethodConcernsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         concerns = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethodConcern( this );
         constructors.add( aDescriptor );
@@ -125,7 +124,7 @@ public final class MethodConcernDetailDescriptor
     final void addInjectedMethod( InjectedMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethodConcern( this );
         injectedMethods.add( aDescriptor );
@@ -134,7 +133,7 @@ public final class MethodConcernDetailDescriptor
     final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMethodConcern( this );
         injectedFields.add( aDescriptor );

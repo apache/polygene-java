@@ -21,9 +21,8 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.mixin.MixinDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class MixinDetailDescriptor
     implements InjectableDetailDescriptor
@@ -37,8 +36,7 @@ public final class MixinDetailDescriptor
     MixinDetailDescriptor( MixinDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
         constructors = new LinkedList<ConstructorDetailDescriptor>();
         injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
@@ -99,14 +97,14 @@ public final class MixinDetailDescriptor
     final void setComposite( CompositeDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         composite = aDescriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMixin( this );
         constructors.add( aDescriptor );
@@ -115,7 +113,7 @@ public final class MixinDetailDescriptor
     final void addInjectedMethod( InjectedMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMixin( this );
         injectedMethods.add( aDescriptor );
@@ -124,7 +122,7 @@ public final class MixinDetailDescriptor
     final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setMixin( this );
         injectedFields.add( aDescriptor );

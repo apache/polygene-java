@@ -21,11 +21,10 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.activation.ActivatorDescriptor;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Activator Detail Descriptor.
@@ -45,7 +44,7 @@ public class ActivatorDetailDescriptor
 
     public ActivatorDetailDescriptor( ActivatorDescriptor descriptor )
     {
-        validateNotNull( "Activator Descriptor", descriptor );
+        Objects.requireNonNull( descriptor, "Activator Descriptor" );
         this.descriptor = descriptor;
         constructors = new LinkedList<>();
         injectedMethods = new LinkedList<>();
@@ -112,38 +111,38 @@ public class ActivatorDetailDescriptor
 
     final void setService( ServiceDetailDescriptor descriptor )
     {
-        validateNotNull( "ServiceDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ServiceDetailDescriptor" );
         service = descriptor;
     }
 
     final void setImportedService( ImportedServiceDetailDescriptor descriptor )
     {
-        validateNotNull( "ImportedServiceDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ImportedServiceDetailDescriptor" );
         importedService = descriptor;
     }
 
     final void setModule( ModuleDetailDescriptor descriptor )
     {
-        validateNotNull( "ModuleDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ModuleDetailDescriptor" );
         module = descriptor;
     }
 
     final void setLayer( LayerDetailDescriptor descriptor )
     {
-        validateNotNull( "LayerDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         layer = descriptor;
     }
 
     final void setApplication( ApplicationDetailDescriptor descriptor )
     {
-        validateNotNull( "ApplicationDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ApplicationDetailDescriptor" );
         application = descriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ConstructorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ConstructorDetailDescriptor" );
         descriptor.setActivator( this );
         constructors.add( descriptor );
     }
@@ -151,14 +150,14 @@ public class ActivatorDetailDescriptor
     final void addInjectedMethod( InjectedMethodDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "InjectedMethodDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedMethodDetailDescriptor" );
         descriptor.setActivator( this );
         injectedMethods.add( descriptor );
     }
 
     final void addInjectedField( InjectedFieldDetailDescriptor descriptor )
     {
-        validateNotNull( "InjectedFieldDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedFieldDetailDescriptor" );
         descriptor.setActivator( this );
         injectedFields.add( descriptor );
     }

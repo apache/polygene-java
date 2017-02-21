@@ -19,9 +19,8 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.composite.InjectedFieldDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class InjectedFieldDetailDescriptor
 {
@@ -35,7 +34,7 @@ public final class InjectedFieldDetailDescriptor
     InjectedFieldDetailDescriptor( InjectedFieldDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "InjectedFieldDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedFieldDescriptor" );
         this.descriptor = descriptor;
     }
 
@@ -89,35 +88,35 @@ public final class InjectedFieldDetailDescriptor
 
     final void setActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         activator = descriptor;
     }
 
     final void setObject( ObjectDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ObjectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ObjectDetailDescriptor" );
         object = descriptor;
     }
 
     final void setMixin( MixinDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MixinDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MixinDetailDescriptor" );
         mixin = descriptor;
     }
 
     final void setMethodConcern( MethodConcernDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MethodConcernDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodConcernDetailDescriptor" );
         methodConcern = descriptor;
     }
 
     final void setMethodSideEffect( MethodSideEffectDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MethodSideEffectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodSideEffectDetailDescriptor" );
         methodSideEffect = descriptor;
     }
 

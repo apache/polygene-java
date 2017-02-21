@@ -21,6 +21,7 @@ package org.apache.polygene.cache.memcache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import net.spy.memcached.AddrUtil;
 import net.spy.memcached.ConnectionFactoryBuilder;
 import net.spy.memcached.ConnectionFactoryBuilder.Protocol;
@@ -31,8 +32,6 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.spi.cache.Cache;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotEmpty;
 
 /**
  * Memcache CachePool Mixin.
@@ -101,7 +100,11 @@ public class MemcachePoolMixin
     @SuppressWarnings( "unchecked" )
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
-        validateNotEmpty( "cacheId", cacheId );
+        Objects.requireNonNull( cacheId, "cacheId" );
+        if( cacheId.isEmpty() )
+        {
+            throw new IllegalArgumentException( "cacheId was empty string" );
+        }
         synchronized( caches )
         {
             MemcacheImpl<?> cache = caches.get( cacheId );

@@ -21,9 +21,8 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.constraint.ConstraintsDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConstraintsDetailDescriptor
 {
@@ -34,8 +33,7 @@ public final class MethodConstraintsDetailDescriptor
     MethodConstraintsDetailDescriptor( ConstraintsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
         constraints = new LinkedList<MethodConstraintDetailDescriptor>();
     }
@@ -73,14 +71,14 @@ public final class MethodConstraintsDetailDescriptor
     final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         method = aDescriptor;
     }
 
     final void addConstraint( MethodConstraintDetailDescriptor aDescriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setConstraints( this );
         constraints.add( aDescriptor );

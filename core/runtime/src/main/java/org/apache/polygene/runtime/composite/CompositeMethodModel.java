@@ -29,13 +29,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.composite.MethodDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.api.util.VisitableHierarchy;
 import org.apache.polygene.runtime.injection.Dependencies;
 import org.apache.polygene.runtime.injection.DependencyModel;
@@ -100,7 +100,11 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( this.concerns, sideEffects ).filter( Objects::nonNull ).flatMap( Dependencies::dependencies );
+        Stream<? extends Dependencies> fragments = Stream.of( this.concerns, sideEffects );
+        Stream<? extends Dependencies> nonNullFragments = fragments.filter( Objects::nonNull );
+        Function<? super Dependencies, Stream<? extends DependencyModel>> dependencies = Dependencies::dependencies;
+        Stream<DependencyModel> modelStream = nonNullFragments.flatMap( dependencies );
+        return modelStream;
     }
 
     // Context
@@ -302,14 +306,14 @@ public final class CompositeMethodModel
         @SuppressWarnings( "unchecked" )
         public <T extends Annotation> T[] getAnnotationsByType( Class<T> annotationClass )
         {
-            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            Objects.requireNonNull( annotationClass, "annotationClass" );
             return (T[]) Array.newInstance( annotationClass, 0 );
         }
 
         // @Override (Since JDK 8)
         public <T extends Annotation> T getDeclaredAnnotation( Class<T> annotationClass )
         {
-            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            Objects.requireNonNull( annotationClass, "annotationClass" );
             return null;
         }
 
@@ -317,7 +321,7 @@ public final class CompositeMethodModel
         @SuppressWarnings( "unchecked" )
         public <T extends Annotation> T[] getDeclaredAnnotationsByType( Class<T> annotationClass )
         {
-            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            Objects.requireNonNull( annotationClass, "annotationClass" );
             return (T[]) Array.newInstance( annotationClass, 0 );
         }
     }

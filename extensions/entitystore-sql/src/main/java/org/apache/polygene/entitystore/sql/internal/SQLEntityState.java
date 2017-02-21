@@ -20,10 +20,10 @@
 package org.apache.polygene.entitystore.sql.internal;
 
 import java.time.Instant;
+import java.util.Objects;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entity.ManyAssociationState;
@@ -53,7 +53,7 @@ public interface SQLEntityState
 
         public DefaultSQLEntityState( DefaultEntityState state )
         {
-            NullArgumentException.validateNotNull( "Entity state", state );
+            Objects.requireNonNull( state, "Entity state" );
             this.state = state;
             this.entityPK = null;
             this.entityOptimisticLock = null;
@@ -61,9 +61,9 @@ public interface SQLEntityState
 
         public DefaultSQLEntityState( DefaultEntityState state, Long entityPK, Long entityOptimisticLock )
         {
-            NullArgumentException.validateNotNull( "Entity state", state );
-            NullArgumentException.validateNotNull( "Entity PK", entityPK );
-            NullArgumentException.validateNotNull( "Entity OptimisticLock", entityOptimisticLock );
+            Objects.requireNonNull( state, "Entity state" );
+            Objects.requireNonNull( entityPK, "Entity PK" );
+            Objects.requireNonNull( entityOptimisticLock, "Entity OptimisticLock" );
             this.state = state;
             this.entityPK = entityPK;
             this.entityOptimisticLock = entityOptimisticLock;

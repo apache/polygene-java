@@ -21,11 +21,10 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Module Detail Descriptor.
@@ -48,7 +47,7 @@ public final class ModuleDetailDescriptor
     ModuleDetailDescriptor( ModuleDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ModuleDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ModuleDescriptor" );
         this.descriptor = descriptor;
     }
 
@@ -125,55 +124,55 @@ public final class ModuleDetailDescriptor
     final void setLayer( LayerDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "LayerDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         layer = descriptor;
     }
 
     final void addActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         descriptor.setModule( this );
         activators.add( descriptor );
     }
 
     final void addService( ServiceDetailDescriptor descriptor )
     {
-        validateNotNull( "ServiceDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ServiceDetailDescriptor" );
         descriptor.setModule( this );
         services.add( descriptor );
     }
 
     final void addImportedService( ImportedServiceDetailDescriptor descriptor )
     {
-        validateNotNull( "ImportedServiceDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ImportedServiceDetailDescriptor" );
         descriptor.setModule( this );
         importedServices.add( descriptor );
     }
 
     final void addEntity( EntityDetailDescriptor descriptor )
     {
-        validateNotNull( "EntityDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "EntityDetailDescriptor" );
         descriptor.setModule( this );
         entities.add( descriptor );
     }
 
     final void addValue( ValueDetailDescriptor descriptor )
     {
-        validateNotNull( "ValueDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ValueDetailDescriptor" );
         descriptor.setModule( this );
         values.add( descriptor );
     }
 
     final void addTransient( TransientDetailDescriptor descriptor )
     {
-        validateNotNull( "TransientDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "TransientDetailDescriptor" );
         descriptor.setModule( this );
         transients.add( descriptor );
     }
 
     final void addObject( ObjectDetailDescriptor descriptor )
     {
-        validateNotNull( "ObjectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ObjectDetailDescriptor" );
         descriptor.setModule( this );
         objects.add( descriptor );
     }

@@ -19,10 +19,10 @@
  */
 package org.apache.polygene.library.sql.assembly;
 
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.service.importer.ServiceInstanceImporter;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -48,7 +48,7 @@ public class DataSourceAssembler
 
     public DataSourceAssembler withDataSourceServiceIdentity( String dataSourceServiceId )
     {
-        NullArgumentException.validateNotNull( "DataSourceService reference", dataSourceServiceId );
+        Objects.requireNonNull( dataSourceServiceId, "DataSourceService reference" );
         this.dataSourceServiceId = dataSourceServiceId;
         return this;
     }
@@ -61,7 +61,7 @@ public class DataSourceAssembler
 
     public DataSourceAssembler withCircuitBreaker( CircuitBreaker circuitBreaker )
     {
-        NullArgumentException.validateNotNull( "CircuitBreaker", circuitBreaker );
+        Objects.requireNonNull( circuitBreaker, "CircuitBreaker" );
         this.circuitBreaker = circuitBreaker;
         return this;
     }

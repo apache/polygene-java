@@ -21,11 +21,10 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Application Detail Descriptor.
@@ -42,7 +41,7 @@ public final class ApplicationDetailDescriptor
     ApplicationDetailDescriptor( ApplicationDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ApplicationDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ApplicationDescriptor" );
         this.descriptor = descriptor;
     }
 
@@ -70,14 +69,14 @@ public final class ApplicationDetailDescriptor
 
     final void addActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         descriptor.setApplication( this );
         activators.add( descriptor );
     }
 
     final void addLayer( LayerDetailDescriptor descriptor )
     {
-        validateNotNull( "LayerDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         descriptor.setApplication( this );
         layers.add( descriptor );
     }

@@ -61,7 +61,6 @@ import org.apache.polygene.api.structure.TypeLookup;
 import org.apache.polygene.api.type.HasTypes;
 import org.apache.polygene.api.unitofwork.UnitOfWorkException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.api.value.NoSuchValueException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
@@ -169,7 +168,7 @@ public class ModuleInstance
     public <T> T newObject( Class<T> mixinType, Object... uses )
         throws NoSuchObjectException
     {
-        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        Objects.requireNonNull( mixinType, "mixinType" );
         ObjectDescriptor model = typeLookup.lookupObjectModel( mixinType );
 
         if( model == null )
@@ -186,7 +185,7 @@ public class ModuleInstance
     public void injectTo( Object instance, Object... uses )
         throws ConstructionException
     {
-        NullArgumentException.validateNotNull( "instance", instance );
+        Objects.requireNonNull( instance, "instance" );
         ObjectDescriptor model = typeLookup.lookupObjectModel( instance.getClass() );
 
         if( model == null )
@@ -204,7 +203,7 @@ public class ModuleInstance
     public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
         throws NoSuchTransientException
     {
-        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        Objects.requireNonNull( mixinType, "mixinType" );
         TransientDescriptor model = typeLookup.lookupTransientModel( mixinType );
 
         if( model == null )
@@ -246,7 +245,7 @@ public class ModuleInstance
     public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
         throws NoSuchValueException
     {
-        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        Objects.requireNonNull( mixinType, "mixinType" );
         ValueDescriptor compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
@@ -266,10 +265,10 @@ public class ModuleInstance
                                                          Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
     )
     {
-        NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
-        NullArgumentException.validateNotNull( "associationFunction", associationFunction );
-        NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
-        NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
+        Objects.requireNonNull( propertyFunction, "propertyFunction" );
+        Objects.requireNonNull( associationFunction, "associationFunction" );
+        Objects.requireNonNull( manyAssociationFunction, "manyAssociationFunction" );
+        Objects.requireNonNull( namedAssociationFunction, "namedAssociationFunction" );
 
         ValueDescriptor compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
@@ -323,7 +322,7 @@ public class ModuleInstance
     @SuppressWarnings( "unchecked" )
     public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
     {
-        NullArgumentException.validateNotNull( "prototype", prototype );
+        Objects.requireNonNull( prototype, "prototype" );
 
         ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) valueInstance.types().findFirst().orElse( null );
@@ -342,7 +341,7 @@ public class ModuleInstance
     public <T> T newValueFromSerializedState( Class<T> mixinType, String serializedState )
         throws NoSuchValueException, ConstructionException
     {
-        NullArgumentException.validateNotNull( "mixinType", mixinType );
+        Objects.requireNonNull( mixinType, "mixinType" );
         ValueDescriptor model = typeLookup.lookupValueModel( mixinType );
 
         if( model == null )

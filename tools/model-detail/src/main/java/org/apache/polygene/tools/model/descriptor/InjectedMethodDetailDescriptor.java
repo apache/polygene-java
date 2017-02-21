@@ -19,9 +19,9 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.composite.InjectedMethodDescriptor;
 
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class InjectedMethodDetailDescriptor
 {
@@ -36,7 +36,7 @@ public final class InjectedMethodDetailDescriptor
     InjectedMethodDetailDescriptor( InjectedMethodDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "InjectedMethodDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedMethodDescriptor" );
         this.descriptor = descriptor;
         this.parameters = null;
     }
@@ -99,28 +99,28 @@ public final class InjectedMethodDetailDescriptor
 
     final void setActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         activator = descriptor;
     }
 
     final void setObject( ObjectDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "ObjectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ObjectDetailDescriptor" );
         object = descriptor;
     }
 
     final void setMixin( MixinDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MixinDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MixinDetailDescriptor" );
         mixin = descriptor;
     }
 
     final void setInjectedParameter( InjectedParametersDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "InjectedParametersDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedParametersDetailDescriptor" );
 
         descriptor.setMethod( this );
         parameters = descriptor;
@@ -129,14 +129,14 @@ public final class InjectedMethodDetailDescriptor
     final void setMethodSideEffect( MethodSideEffectDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MethodSideEffectDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodSideEffectDetailDescriptor" );
         methodSideEffect = descriptor;
     }
 
     final void setMethodConcern( MethodConcernDetailDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "MethodConcernDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "MethodConcernDetailDescriptor" );
         methodConcern = descriptor;
     }
 

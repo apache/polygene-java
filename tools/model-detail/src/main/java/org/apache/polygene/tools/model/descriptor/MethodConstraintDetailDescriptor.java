@@ -19,9 +19,8 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Objects;
 import org.apache.polygene.api.constraint.ConstraintDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodConstraintDetailDescriptor
 {
@@ -31,7 +30,7 @@ public final class MethodConstraintDetailDescriptor
     MethodConstraintDetailDescriptor( ConstraintDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         descriptor = aDescriptor;
     }
@@ -65,8 +64,7 @@ public final class MethodConstraintDetailDescriptor
    final void setConstraints( MethodConstraintsDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         constraints = aDescriptor;
     }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -32,7 +33,6 @@ import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.association.ManyAssociationWrapper;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 
 /**
@@ -68,7 +68,7 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean add( int i, T entity )
     {
-        NullArgumentException.validateNotNull( "entity", entity );
+        Objects.requireNonNull( entity, "entity" );
         checkImmutable();
         checkType( entity );
         associationInfo.checkConstraints( entity );
@@ -84,7 +84,7 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean remove( T entity )
     {
-        NullArgumentException.validateNotNull( "entity", entity );
+        Objects.requireNonNull( entity, "entity" );
         checkImmutable();
         checkType( entity );
 

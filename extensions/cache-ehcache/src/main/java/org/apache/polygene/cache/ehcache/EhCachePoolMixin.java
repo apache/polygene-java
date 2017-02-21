@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.cache.ehcache;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.cache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.CacheConfiguration;
@@ -77,7 +77,11 @@ public abstract class EhCachePoolMixin
         // Note: Small bug in Ehcache; If the cache name is an empty String it will actually work until
         //       you try to remove the Cache instance from the CacheManager, at which point it is silently
         //       ignored but not removed so there is a follow up problem of too much in the CacheManager.
-        NullArgumentException.validateNotEmpty( "cacheId", cacheId );
+        Objects.requireNonNull( cacheId, "cacheId" );
+        if( cacheId.isEmpty() )
+        {
+            throw new IllegalArgumentException( "cacheId was empty string" );
+        }
         EhCacheImpl<?> cache = caches.computeIfAbsent( cacheId, key -> createNewCache( cacheId, valueType ) );
         cache.incRefCount();
         return (Cache<T>) cache;

@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -64,7 +65,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCallback;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.runtime.association.AssociationInstance;
@@ -233,10 +233,10 @@ public class ModuleUnitOfWork
     )
         throws NoSuchEntityTypeException
     {
-        NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
-        NullArgumentException.validateNotNull( "associationFunction", associationFunction );
-        NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
-        NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
+        Objects.requireNonNull( propertyFunction, "propertyFunction" );
+        Objects.requireNonNull( associationFunction, "associationFunction" );
+        Objects.requireNonNull( manyAssociationFunction, "manyAssociationFunction" );
+        Objects.requireNonNull( namedAssociationFunction, "namedAssociationFunction" );
 
         EntityDescriptor model = module.typeLookup().lookupEntityModel( type );
 

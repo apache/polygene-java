@@ -21,11 +21,10 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.object.ObjectDescriptor;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Object Detail Descriptor.
@@ -41,7 +40,7 @@ public final class ObjectDetailDescriptor
 
     ObjectDetailDescriptor( ObjectDescriptor descriptor )
     {
-        validateNotNull( "ObjectDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ObjectDescriptor" );
         this.descriptor = descriptor;
     }
 
@@ -90,27 +89,27 @@ public final class ObjectDetailDescriptor
 
     final void setModule( ModuleDetailDescriptor descriptor )
     {
-        validateNotNull( "ModuleDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ModuleDetailDescriptor" );
         module = descriptor;
     }
 
     final void addConstructor( ConstructorDetailDescriptor descriptor )
     {
-        validateNotNull( "ConstructorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ConstructorDetailDescriptor" );
         descriptor.setObject( this );
         constructors.add( descriptor );
     }
 
     final void addInjectedMethod( InjectedMethodDetailDescriptor descriptor )
     {
-        validateNotNull( "InjectedMethodDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedMethodDetailDescriptor" );
         descriptor.setObject( this );
         injectedMethods.add( descriptor );
     }
 
     final void addInjectedField( InjectedFieldDetailDescriptor descriptor )
     {
-        validateNotNull( "InjectedFieldDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "InjectedFieldDetailDescriptor" );
         descriptor.setObject( this );
         injectedFields.add( descriptor );
     }

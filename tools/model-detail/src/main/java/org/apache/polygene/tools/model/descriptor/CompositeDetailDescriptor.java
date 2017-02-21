@@ -22,10 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.MethodDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Composite Detail Descriptor.
@@ -41,7 +40,7 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     CompositeDetailDescriptor( T aDescriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         descriptor = aDescriptor;
         methods = new LinkedList<>();
@@ -115,14 +114,14 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
     final void setModule( ModuleDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         module = aDescriptor;
     }
 
     final void addMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setComposite( this );
         methods.add( aDescriptor );
@@ -131,7 +130,7 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
     final void addMixin( MixinDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setComposite( this );
         mixins.add( aDescriptor );

@@ -22,6 +22,7 @@ package org.apache.polygene.entitystore.sql.internal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Service;
@@ -31,7 +32,6 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Application.Mode;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
@@ -141,13 +141,13 @@ public abstract class DatabaseSQLServiceCoreMixin
     protected String getConfiguredSchemaName( String defaultSchemaName )
     {
         if ( configuration == null ) {
-            NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
+            Objects.requireNonNull(  defaultSchemaName, "default schema name" );
             LOGGER.debug( "No configuration, will use default schema name: '{}'", defaultSchemaName );
             return defaultSchemaName;
         }
         String result = configuration.get().schemaName().get();
         if ( result == null ) {
-            NullArgumentException.validateNotNull( "default schema name", defaultSchemaName );
+            Objects.requireNonNull( defaultSchemaName, "default schema name" );
             result = defaultSchemaName;
             LOGGER.debug( "No database schema name in configuration, will use default: '{}'", defaultSchemaName );
         } else {

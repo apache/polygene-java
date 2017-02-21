@@ -21,9 +21,8 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.sideeffect.SideEffectsDescriptor;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 public final class MethodSideEffectsDetailDescriptor
 {
@@ -34,7 +33,7 @@ public final class MethodSideEffectsDetailDescriptor
     MethodSideEffectsDetailDescriptor( SideEffectsDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         descriptor = aDescriptor;
         sideEffects = new LinkedList<MethodSideEffectDetailDescriptor>();
@@ -73,14 +72,14 @@ public final class MethodSideEffectsDetailDescriptor
     final void setMethod( CompositeMethodDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
         method = aDescriptor;
     }
 
     final void addSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         aDescriptor.setSideEffects( aDescriptor );
         sideEffects.add( aDescriptor );

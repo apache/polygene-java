@@ -25,7 +25,6 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
 
@@ -57,16 +56,16 @@ public abstract class AbstractCachePoolTest
         try
         {
             cache = cachePool.fetchCache( "", String.class );
-            fail( "Expected " + NullArgumentException.class.getSimpleName() );
+            fail( "Expected " + IllegalArgumentException.class.getSimpleName() );
         }
-        catch( NullArgumentException e )
+        catch( IllegalArgumentException e )
         {
             // expected
         }
         try
         {
             cache = cachePool.fetchCache( null, String.class );
-            fail( "Expected " + NullArgumentException.class.getSimpleName() );
+            fail( "Expected " + NullPointerException.class.getSimpleName() );
 
         }
         catch( ConstraintViolationException e )

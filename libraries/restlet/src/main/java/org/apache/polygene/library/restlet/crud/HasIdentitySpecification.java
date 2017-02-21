@@ -20,10 +20,10 @@
 
 package org.apache.polygene.library.restlet.crud;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.util.NullArgumentException;
 
 public class HasIdentitySpecification
     implements Predicate<HasIdentity>
@@ -32,7 +32,7 @@ public class HasIdentitySpecification
 
     public HasIdentitySpecification(Identity identity )
     {
-        NullArgumentException.validateNotNull( "reference", identity );
+        Objects.requireNonNull( identity, "reference" );
         this.id = identity;
     }
 

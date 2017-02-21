@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.runtime.query;
 
+import java.util.Objects;
 import org.apache.polygene.api.query.NotQueryableException;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
 import org.apache.polygene.api.service.NoSuchServiceException;
 import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.service.ServiceReference;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.query.EntityFinder;
 
 /**
@@ -43,7 +43,7 @@ public final class QueryBuilderFactoryImpl
      */
     public QueryBuilderFactoryImpl( ServiceFinder finder )
     {
-        NullArgumentException.validateNotNull( "ServiceFinder", finder );
+        Objects.requireNonNull( finder, "ServiceFinder" );
         this.finder = finder;
     }
 

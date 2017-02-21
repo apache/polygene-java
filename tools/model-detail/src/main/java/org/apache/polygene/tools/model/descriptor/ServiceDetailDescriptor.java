@@ -21,12 +21,11 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Service Detail Descriptor.
@@ -76,7 +75,7 @@ public final class ServiceDetailDescriptor
 
     final void addActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         descriptor.setService( this );
         activators.add( descriptor );
     }

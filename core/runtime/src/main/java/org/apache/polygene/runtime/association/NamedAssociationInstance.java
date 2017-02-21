@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -34,7 +35,6 @@ import org.apache.polygene.api.association.NamedAssociation;
 import org.apache.polygene.api.association.NamedAssociationWrapper;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 
 public class NamedAssociationInstance<T>
@@ -74,7 +74,7 @@ public class NamedAssociationInstance<T>
     @Override
     public boolean put( String name, T entity )
     {
-        NullArgumentException.validateNotNull( "entity", entity );
+        Objects.requireNonNull( entity, "entity" );
         checkImmutable();
         checkType( entity );
         associationInfo.checkConstraints( entity );

@@ -21,11 +21,10 @@ package org.apache.polygene.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.polygene.api.structure.LayerDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
-
-import static org.apache.polygene.api.util.NullArgumentException.validateNotNull;
 
 /**
  * Layer Detail Descriptor.
@@ -44,7 +43,7 @@ public final class LayerDetailDescriptor
     LayerDetailDescriptor( LayerDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "LayerDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "LayerDescriptor" );
         this.descriptor = descriptor;
     }
 
@@ -108,26 +107,26 @@ public final class LayerDetailDescriptor
 
     final void setApplication( ApplicationDetailDescriptor descriptor )
     {
-        validateNotNull( "ApplicationDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ApplicationDetailDescriptor" );
         application = descriptor;
     }
 
     final void addActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ActivatorDetailDescriptor" );
         descriptor.setLayer( this );
         activators.add( descriptor );
     }
 
     final void addUsedLayer( LayerDetailDescriptor descriptor )
     {
-        validateNotNull( "LayerDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         usedLayers.add( descriptor );
     }
 
     final void addModule( ModuleDetailDescriptor descriptor )
     {
-        validateNotNull( "ModuleDetailDescriptor", descriptor );
+        Objects.requireNonNull( descriptor, "ModuleDetailDescriptor" );
         descriptor.setLayer( this );
         modules.add( descriptor );
     }

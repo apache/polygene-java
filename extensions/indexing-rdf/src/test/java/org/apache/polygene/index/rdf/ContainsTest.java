@@ -98,7 +98,7 @@ public class ContainsTest extends AbstractPolygeneTest
         Assert.assertTrue( "The entity must not have been found", result == null );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test( expected = NullPointerException.class )
     public void simplecontainsNullTest() throws Exception
     {
         this.performContainsStringTest(

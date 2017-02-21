@@ -21,9 +21,9 @@ package org.apache.polygene.api.type;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.util.NullArgumentException;
 
 import static java.util.stream.Collectors.joining;
 
@@ -55,7 +55,7 @@ public class ValueType
      */
     public static boolean isPrimitiveValue( Object object )
     {
-        NullArgumentException.validateNotNull( "object", object );
+        Objects.requireNonNull( object, "object" );
         if( object instanceof String
             || object instanceof Character
             || object instanceof Boolean
@@ -109,7 +109,7 @@ public class ValueType
      */
     public static boolean isPrimitiveValueType( Class<?> type )
     {
-        NullArgumentException.validateNotNull( "type", type );
+        Objects.requireNonNull( type, "type" );
         if( String.class.isAssignableFrom( type ) )
         {
             return true;

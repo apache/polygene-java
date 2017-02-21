@@ -22,7 +22,6 @@ package org.apache.polygene.runtime.instantiation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.util.NullArgumentException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -49,9 +48,9 @@ public class ValueInstantiationTests
         try
         {
             valueBuilderFactory.newValueBuilder( null );
-            fail( "NullArgumentException was expected." );
+            fail( "NullPointerException was expected." );
         }
-        catch( NullArgumentException e )
+        catch( NullPointerException e )
         {
             // expected
         }
@@ -60,9 +59,9 @@ public class ValueInstantiationTests
         try
         {
             valueBuilderFactory.newValue( null );
-            fail( "NullArgumentException was expected." );
+            fail( "NullPointerException was expected." );
         }
-        catch( NullArgumentException e )
+        catch( NullPointerException e )
         {
             // expected
         }
@@ -72,9 +71,9 @@ public class ValueInstantiationTests
         {
             valueBuilderFactory.newValueFromSerializedState( null, "abc:123" );
             ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( null );
-            fail( "NullArgumentException was expected." );
+            fail( "NullPointerException was expected." );
         }
-        catch( NullArgumentException e )
+        catch( NullPointerException e )
         {
             // expected
         }
