@@ -188,6 +188,7 @@ class PublishingPlugin implements Plugin<Project>
       if( mavenDeployer )
       {
         MavenMetadata.applyTo mavenDeployer
+        mavenDeployer.pom.artifactId = PublishNaming.publishedNameFor( project.path )
       }
     }
   }
