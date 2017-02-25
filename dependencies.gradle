@@ -57,7 +57,7 @@ def jacksonVersion = '2.8.5'
 def javascriptVersion = '1.7.7.1'
 def javasqlgeneratorVersion = '0.3.2'
 def jaxbApiVersion = '2.2.12'
-def jcloudsVersion = '1.9.2' // 2.0.0 exists
+def jcloudsVersion = '2.0.0'
 def jdbmVersion = '2.4'
 def jedisVersion = '2.9.0'
 def jettyVersion = '9.2.17.v20160517' // 9.3.x Tests fail!
@@ -244,11 +244,6 @@ dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution,
   else if( dep.module == 'commons-sandbox-parent' && dep.version == '3-SNAPSHOT' )
   {
     substitution.useTarget group: dep.group, name: dep.module, version: '3'
-  }
-  // GSON 2.3 POM is invalid, use 2.3.1 instead .. see https://github.com/google/gson/issues/588
-  else if( dep.group == 'com.google.code.gson' && dep.module == 'gson' && dep.version == '2.3' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: '2.3.1'
   }
   // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
   // Apache 2 licensed instead
