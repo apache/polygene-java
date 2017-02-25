@@ -21,7 +21,8 @@ apply plugin: 'polygene-internal-docker'
 
 dependencies {
   api polygene.core.testsupport
-  api libraries.docker_junit
+
+  implementation libraries.docker_junit
 
   runtimeOnly polygene.core.runtime
 }

@@ -25,11 +25,11 @@ import org.junit.runners.model.Statement;
 import pl.domzal.junit.docker.rule.DockerRuleBuilder;
 import pl.domzal.junit.docker.rule.WaitFor;
 
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeFalse;
 
 public class DockerRule implements TestRule
 {
-    private final String dockerHost = System.getenv( "DOCKER_HOST" );
+    private final boolean dockerDisabled = Boolean.valueOf( System.getProperty( "DOCKER_DISABLED", "false" ) );
     private final pl.domzal.junit.docker.rule.DockerRule dockerRule;
 
     public DockerRule( String image, int... portsToWaitFor )
@@ -39,7 +39,7 @@ public class DockerRule implements TestRule
 
     public DockerRule( String image, Map<String, String> environment, int... portsToWaitFor )
     {
-        if( dockerHost == null )
+        if( dockerDisabled )
         {
             dockerRule = null;
         }
@@ -58,7 +58,7 @@ public class DockerRule implements TestRule
     @Override
     public Statement apply( Statement base, Description description )
     {
-        assumeNotNull( dockerHost );
+        assumeFalse( dockerDisabled );
         return dockerRule.apply( base, description );
     }
 

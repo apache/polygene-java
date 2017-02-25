@@ -19,13 +19,17 @@ package org.apache.polygene.gradle.structure.internals
 
 import com.bmuschko.gradle.docker.DockerExtension
 import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import com.bmuschko.gradle.docker.tasks.DockerVersion
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.BasePlugin
+import org.apache.polygene.gradle.code.CodePlugin
 import org.apache.polygene.gradle.code.PublishNaming
 import org.apache.polygene.gradle.dependencies.DependenciesPlugin
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel
 
 @CompileStatic
 class InternalDockerPlugin implements Plugin<Project>
@@ -40,6 +44,7 @@ class InternalDockerPlugin implements Plugin<Project>
     project.plugins.apply BasePlugin
     project.plugins.apply DependenciesPlugin
     applyDockerPlugin( project )
+    applyDockerSwitch( project )
     applyDockerBuildImage( project )
   }
 
@@ -47,9 +52,29 @@ class InternalDockerPlugin implements Plugin<Project>
   {
     project.plugins.apply DockerRemoteApiPlugin
     def dockerExtension = project.extensions.getByType DockerExtension
-    dockerExtension.certPath = dockerCertPath ?
-                               new File( dockerCertPath ) :
-                               new File( System.getProperty( 'user.home' ), '.boot2docker/certs/boot2docker-vm' )
+    // TLS support
+    if( dockerCertPath )
+    {
+      dockerExtension.certPath = new File( dockerCertPath )
+    }
+  }
+
+  private void applyDockerSwitch( Project project )
+  {
+    project.tasks.create( 'checkDockerConnectivity', DockerVersion, { DockerVersion task ->
+      task.onError = { ex ->
+        // Disable Docker for this build
+        project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
+        if( project.logger.isEnabled( LogLevel.INFO ) )
+        {
+          project.logger.info 'Unable to connect to Docker, all Docker tasks will be SKIPPED', ex
+        }
+        else
+        {
+          project.logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ ( ( Exception ) ex ).message }"
+        }
+      }
+    } as Action<DockerVersion> )
   }
 
   private void applyDockerBuildImage( Project project )
@@ -62,7 +87,12 @@ class InternalDockerPlugin implements Plugin<Project>
       project.tasks.create( taskName, DockerBuildImage ) { DockerBuildImage task ->
         task.group = 'docker'
         task.description = "Build $dockerName Docker image"
-        task.onlyIf { dockerHost }
+        task.dependsOn 'checkDockerConnectivity'
+        task.onlyIf {
+          def extra = project.rootProject.extensions.extraProperties
+          !( extra.has( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY ) &&
+             extra.get( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY ) )
+        }
         task.inputs.property 'dockerMachineName', dockerMachineName
         task.inputs.property 'dockerHostEnv', dockerHost
         task.inputs.property 'dockerCertPath', dockerCertPath

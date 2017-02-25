@@ -22,9 +22,11 @@ import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.TaskGroups
 import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.polygene.gradle.dependencies.DependenciesPlugin
+import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.osgi.OsgiManifest
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -38,6 +40,8 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 @CompileStatic
 class CodePlugin implements Plugin<Project>
 {
+  public static final String DOCKER_DISABLED_EXTRA_PROPERTY = 'dockerDisabled'
+
   @Override
   void apply( Project project )
   {
@@ -91,7 +95,7 @@ class CodePlugin implements Plugin<Project>
     def maxTestWorkers = ( parallel ? project.gradle.startParameter.maxWorkerCount : 1 ) as int
     // The space in the directory name is intentional
     def allTestsDir = project.file "$project.buildDir/tmp/test files"
-    project.tasks.withType( Test ) { Test testTask ->
+    def testTasks = project.tasks.withType( Test ) { Test testTask ->
       testTask.onlyIf { !project.hasProperty( 'skipTests' ) }
       testTask.testLogging.info.exceptionFormat = TestExceptionFormat.FULL
       testTask.maxHeapSize = '1g'
@@ -123,8 +127,22 @@ class CodePlugin implements Plugin<Project>
           project.delete testDir
         }
       }
-      testTask.inputs.property( 'polygeneTestSupportDockerHostEnv', System.getenv( 'DOCKER_HOST' ) )
     }
+    // Configuration task to honor disabling Docker when unavailable
+    project.tasks.create( 'configureDockerForTest', { Task task ->
+      // TODO Untangle docker connectivity check & test task configuration
+      task.dependsOn ':internals:testsupport-internal:checkDockerConnectivity'
+      testTasks.each { it.dependsOn task }
+      task.inputs.property 'polygeneTestSupportDockerDisabled',
+                           { project.findProperty( DOCKER_DISABLED_EXTRA_PROPERTY ) }
+      task.doLast {
+        boolean dockerDisabled = project.findProperty( DOCKER_DISABLED_EXTRA_PROPERTY )
+        testTasks.each { testTask ->
+          testTask.inputs.property 'polygeneTestSupportDockerDisabled', dockerDisabled
+          testTask.systemProperty 'DOCKER_DISABLED', dockerDisabled
+        }
+      }
+    } as Action<Task> )
   }
 
   private static void configureJar( Project project )
