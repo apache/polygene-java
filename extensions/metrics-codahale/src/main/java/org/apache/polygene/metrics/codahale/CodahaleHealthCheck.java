@@ -42,7 +42,17 @@ public class CodahaleHealthCheck
 
     static Result wrap( HealthCheck.Result result )
     {
-        return new Result( result.isHealthy(), result.getMessage(), result.getError() );
+        if( result.isHealthy() )
+        {
+            return Result.healthOk();
+        }
+        String message = result.getMessage();
+        Throwable error = result.getError();
+        if( error != null )
+        {
+            return Result.exception( message, error );
+        }
+        return Result.unhealthy( message );
     }
 
     static HealthCheck.Result unwrap( Result result )
