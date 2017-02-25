@@ -25,14 +25,15 @@ description = "Apache Polygene™ Ehcache Cache Extension"
 jar { manifest { name = "Apache Polygene™ Extension: EhCache" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'constraints' )
-  compile libraries.ehcache
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'constraints' )
+  implementation libraries.ehcache
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

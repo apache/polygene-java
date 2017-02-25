@@ -54,13 +54,14 @@ class CodePlugin implements Plugin<Project>
 
   private static void applyJava( Project project )
   {
-    project.plugins.apply 'java'
+    project.plugins.apply 'java-library'
     def javaConvention = project.convention.getPlugin JavaPluginConvention
     javaConvention.targetCompatibility = JavaVersion.VERSION_1_8
     javaConvention.sourceCompatibility = JavaVersion.VERSION_1_8
     project.tasks.withType( JavaCompile ) { JavaCompile task ->
       task.options.encoding = 'UTF-8'
       task.options.compilerArgs << '-Xlint:deprecation'
+      task.options.incremental = true
     }
   }
 

@@ -25,19 +25,20 @@ description = "Apache Polygene™ JClouds EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JClouds" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile polygene.library( 'fileconfig' )
-  compile libraries.jclouds_core
-  compile libraries.jclouds_blobstore
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  runtime polygene.core.runtime
-  runtime libraries.jaxb_api
+  implementation polygene.library( 'locking' )
+  implementation libraries.slf4j_api
+  implementation libraries.jclouds_core
+  implementation libraries.jclouds_blobstore
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-  testCompile libraries.jclouds_filesystem
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.jaxb_api
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+  testImplementation libraries.jclouds_filesystem
+
+  testRuntimeOnly libraries.logback
 }
-

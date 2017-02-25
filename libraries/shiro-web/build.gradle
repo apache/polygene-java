@@ -26,21 +26,23 @@ jar { manifest { name = "Apache Polygene™ Library - Shiro Web" } }
 
 dependencies {
 
-  compile polygene.core.bootstrap
-  compile polygene.library( 'shiro-core' )
-  compile polygene.library( 'servlet' )
-  compile polygene.library( 'http' )
-  compile libraries.shiro_web
-  compile libraries.servlet_api
-  compile libraries.slf4j_api
+  compileOnly libraries.servlet_api
 
-  runtime polygene.core.runtime
+  api polygene.core.bootstrap
+  api polygene.library( 'shiro-core' )
+  api polygene.library( 'servlet' )
+  api polygene.library( 'http' )
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'shiro-web' )
-  testCompile polygene.extension( 'indexing-rdf' )
-  testCompile libraries.jetty_webapp
-  testCompile libraries.http_client
+  implementation libraries.shiro_web
+  implementation libraries.slf4j_api
 
-  testRuntime libraries.logback
+  runtimeOnly polygene.core.runtime
+
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'shiro-web' )
+  testImplementation polygene.extension( 'indexing-rdf' )
+  testImplementation libraries.jetty_webapp
+  testImplementation libraries.http_client
+
+  testRuntimeOnly libraries.logback
 }

@@ -21,11 +21,10 @@ apply plugin: 'polygene-manual'
 description = "Apache Polygene™ Manuals and Website."
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'constraints' )
-  compile polygene.library( 'logging' )
+  implementation polygene.core.bootstrap
+  implementation polygene.library( 'constraints' )
+  implementation polygene.library( 'logging' )
 
-  runtime polygene.core.runtime
-  runtime libraries.logback
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.logback
 }
-

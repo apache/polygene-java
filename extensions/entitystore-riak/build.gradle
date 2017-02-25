@@ -25,16 +25,16 @@ description = "Apache Polygene™ Riak EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Riak" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile polygene.library( 'constraints' )
-  compile libraries.riak
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'locking' )
+  implementation polygene.library( 'constraints' )
+  implementation libraries.riak
 
-  testCompile polygene.internals.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.internals.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }
-

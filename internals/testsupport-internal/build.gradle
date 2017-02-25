@@ -20,8 +20,8 @@ apply plugin: 'polygene-internal'
 apply plugin: 'polygene-internal-docker'
 
 dependencies {
-  compile polygene.core.testsupport
-  compile libraries.docker_junit
+  api polygene.core.testsupport
+  api libraries.docker_junit
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 }

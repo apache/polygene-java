@@ -44,10 +44,10 @@ class PerformanceTestsPlugin implements Plugin<Project>
   {
     def sourceSets = project.convention.getPlugin( JavaPluginConvention ).sourceSets
     sourceSets.create 'perf'
-    project.dependencies.add 'perfCompile', sourceSets.getByName( 'main' ).output
-    project.dependencies.add 'perfCompile', sourceSets.getByName( 'test' ).output
-    project.dependencies.add 'perfCompile', project.configurations.getByName( 'testCompile' )
-    project.dependencies.add 'perfRuntime', project.configurations.getByName( 'testRuntime' )
+    project.dependencies.add 'perfImplementation', sourceSets.getByName( 'main' ).output
+    project.dependencies.add 'perfImplementation', sourceSets.getByName( 'test' ).output
+    project.dependencies.add 'perfImplementation', project.configurations.getByName( 'testImplementation' )
+    project.dependencies.add 'perfRuntimeOnly', project.configurations.getByName( 'testRuntimeOnly' )
     project.tasks.getByName( LifecycleBasePlugin.CHECK_TASK_NAME ).dependsOn 'compilePerfJava'
     project.tasks.create( TaskNames.PERFORMANCE_TEST, Test, { Test task ->
       task.group = TaskGroups.PERFORMANCE

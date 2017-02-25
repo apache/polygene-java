@@ -25,9 +25,9 @@ description = "Apache Polygene™ Common Scripting Library contains common class
 jar { manifest { name = "Apache Polygene™ Library - Scripting - Common" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 }

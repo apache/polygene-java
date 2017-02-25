@@ -26,14 +26,15 @@ description = "Apache Polygene™ JMX Library provides Java Management Extension
 jar { manifest { name = "Apache Polygene™ Library - JMX" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.slf4j_api
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation libraries.slf4j_api
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }
 
 task( runJmxSample, dependsOn: 'testClasses', type: JavaExec ) {
@@ -42,4 +43,3 @@ task( runJmxSample, dependsOn: 'testClasses', type: JavaExec ) {
   main = 'org.apache.polygene.library.jmx.JMXTest'
   classpath = sourceSets.test.runtimeClasspath
 }
-

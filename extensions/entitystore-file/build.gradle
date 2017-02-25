@@ -23,15 +23,16 @@ apply plugin: 'polygene-extension'
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - File system" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile polygene.library( 'constraints' )
-  compile polygene.library( 'fileconfig' )
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'locking' )
+  implementation polygene.library( 'constraints' )
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

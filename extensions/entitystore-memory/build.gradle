@@ -23,12 +23,12 @@ apply plugin: 'polygene-extension'
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Memory" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

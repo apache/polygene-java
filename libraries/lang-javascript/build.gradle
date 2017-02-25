@@ -26,13 +26,14 @@ jar { manifest { name = "Apache Polygene™ Library - Scripting - JavaScript" } 
 
 
 dependencies {
-  compile polygene.core.api
-  compile polygene.library( 'scripting' )
-  compile libraries.javascript
+  api polygene.core.api
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'scripting' )
+  implementation libraries.javascript
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

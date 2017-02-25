@@ -26,18 +26,19 @@ description = "Visualizer of a Apache Polygene™ Application Structure."
 jar { manifest { name = "Apache Polygene™ Envisage" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.tool( 'model-detail' )
-  compile libraries.jgoodies_looks
-  compile libraries.pdfbox
-  compile libraries.prefuse
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation polygene.tool( 'model-detail' )
+  implementation libraries.jgoodies_looks
+  implementation libraries.pdfbox
+  implementation libraries.prefuse
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'indexing-rdf' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'indexing-rdf' )
+
+  testRuntimeOnly libraries.logback
 }
 
 task( runEnvisageSample, dependsOn: 'testClasses', type: JavaExec ) {

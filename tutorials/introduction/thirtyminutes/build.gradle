@@ -25,12 +25,12 @@ description = "A 30-minute Introduction Tutorial to Apache Polygene™ in its si
 jar { manifest { name = "Apache Polygene™ Tutorial - 30 minute Introduction" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile project( ':tutorials:introduction:tenminutes' )
+  implementation polygene.core.bootstrap
+  implementation project( ':tutorials:introduction:tenminutes' )
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

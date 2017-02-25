@@ -25,18 +25,19 @@ description = "Apache Polygene™ Shiro Library integrates Apache Shiro security
 jar { manifest { name = "Apache Polygene™ Library - Shiro Core" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.shiro
-  compile libraries.bouncy_castle
+  api polygene.core.bootstrap
+  api libraries.shiro
 
-  runtime polygene.core.runtime
+  implementation libraries.bouncy_castle
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'shiro-web' )
-  testCompile polygene.library( 'servlet' )
-  testCompile polygene.extension( 'indexing-rdf' )
-  testCompile libraries.jetty_webapp
-  testCompile libraries.http_client
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'shiro-web' )
+  testImplementation polygene.library( 'servlet' )
+  testImplementation polygene.extension( 'indexing-rdf' )
+  testImplementation libraries.jetty_webapp
+  testImplementation libraries.http_client
+
+  testRuntimeOnly libraries.logback
 }

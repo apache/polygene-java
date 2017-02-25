@@ -25,13 +25,15 @@ description = "Apache Polygene™ REST Client Library provides a client library 
 jar { manifest { name = "Apache Polygene™ Library - REST Client" } }
 
 dependencies {
-  compile polygene.library( 'rest-common' )
+  api polygene.library( 'rest-common' )
 
-  runtime polygene.core.runtime
+  implementation libraries.restlet
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'rest-server' )
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'rest-server' )
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

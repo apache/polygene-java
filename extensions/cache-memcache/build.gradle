@@ -25,13 +25,14 @@ description = "Apache Polygene™ Memcache Cache Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Cache - Memcache" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.spymemcached
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation libraries.spymemcached
 
-  testCompile polygene.internals.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.internals.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

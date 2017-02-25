@@ -26,20 +26,20 @@ description = "Sample of how to build a web forum"
 jar { manifest { name = "Apache Polygene™ Sample - Forum" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'rest-server' )
-  compile polygene.library( 'fileconfig' )
-  compile polygene.extension( 'valueserialization-orgjson' )
-  compile polygene.extension( 'entitystore-memory' )
-  compile polygene.extension( 'entitystore-file' )
-  compile polygene.extension( 'indexing-rdf' )
-  compile libraries.servlet_api
+  implementation polygene.core.bootstrap
+  implementation polygene.library( 'rest-server' )
+  implementation polygene.library( 'fileconfig' )
+  implementation polygene.extension( 'valueserialization-orgjson' )
+  implementation polygene.extension( 'entitystore-memory' )
+  implementation polygene.extension( 'entitystore-file' )
+  implementation polygene.extension( 'indexing-rdf' )
+  implementation libraries.servlet_api
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }
 
 task( runForumSample, dependsOn: 'testClasses', type: JavaExec ) {

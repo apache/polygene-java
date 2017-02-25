@@ -25,17 +25,18 @@ description = "Apache Polygene™ LevelDB EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - LevelDB" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile polygene.library( 'fileconfig' )
-  compile libraries.leveldb_api
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  runtime polygene.core.runtime
-  runtime libraries.leveldb_java
-  runtime libraries.leveldb_jni_all
+  implementation polygene.library( 'locking' )
+  implementation libraries.leveldb_api
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.leveldb_java
+  runtimeOnly libraries.leveldb_jni_all
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

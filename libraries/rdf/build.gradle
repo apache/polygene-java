@@ -25,15 +25,16 @@ description = "Apache Polygene™ RDF Library provides commonalities of various 
 jar { manifest { name = "Apache Polygene™ Library - RDF" } }
 
 dependencies {
-  compile polygene.core.spi
-  compile polygene.library( 'constraints' )
-  compile polygene.library( 'fileconfig' )
-  compile libraries.sesame
+  api polygene.core.spi
+  api libraries.sesame
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'constraints' )
+  implementation polygene.library( 'fileconfig' )
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

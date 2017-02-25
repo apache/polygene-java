@@ -23,7 +23,7 @@ apply plugin: 'polygene-core'
 jar { manifest { name = "Apache Polygene™ Core Bootstrap" } }
 
 dependencies {
-  compile polygene.core.spi
+  api polygene.core.spi
 
-  testRuntime polygene.core.runtime
+  testRuntimeOnly polygene.core.runtime
 }

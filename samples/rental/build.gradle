@@ -32,10 +32,10 @@ description = "Sample of implementation of a Car Rental application."
 jar { manifest { name = "Apache Polygene™ Sample - Car Rental" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.extension( 'valueserialization-orgjson' )
+  implementation polygene.core.bootstrap
+  implementation polygene.extension( 'valueserialization-orgjson' )
 
   providedCompile libraries.servlet_api
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 }

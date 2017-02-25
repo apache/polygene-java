@@ -25,12 +25,13 @@ description = "Apache Polygene™ File Configuration Library provides platform s
 jar { manifest { name = "Apache Polygene™ Library - FileConfig" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.slf4j_api
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation libraries.slf4j_api
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

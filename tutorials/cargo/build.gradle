@@ -25,12 +25,12 @@ description = "Tutorial on how to convert existing application into a Apache Pol
 jar { manifest { name = "Apache Polygene™ Tutorial - Cargo" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  implementation polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
-  testCompile libraries.easymock
+  testImplementation polygene.core.testsupport
+  testImplementation libraries.easymock
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

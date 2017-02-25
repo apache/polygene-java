@@ -25,14 +25,15 @@ description = "Apache Polygene™ Hazelcast EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Hazelcast" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile libraries.hazelcast
+  api polygene.core.bootstrap
+  api libraries.hazelcast
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'locking' )
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }

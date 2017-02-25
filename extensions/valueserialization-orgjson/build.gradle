@@ -25,12 +25,11 @@ description = "Apache Polygene™ org.json ValueSerialization Extension"
 jar { manifest { name = "Apache Polygene™ Extension - ValueSerialization - org.json" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }
-

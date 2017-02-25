@@ -25,18 +25,19 @@ description = "Apache Polygene™ REST Library provides various Restlet resource
 jar { manifest { name = "Apache Polygene™ Library - REST" } }
 
 dependencies {
-  compile polygene.extension( 'indexing-rdf' )
-  compile libraries.restlet
-  compile libraries.sparql
-  compile libraries.velocity
-  compile libraries.servlet_api
+  compileOnly libraries.servlet_api
 
-  runtime polygene.core.runtime
+  implementation polygene.extension( 'indexing-rdf' )
+  implementation libraries.restlet
+  implementation libraries.sparql
+  implementation libraries.velocity
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'http' )
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-  testCompile libraries.http_client
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'http' )
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+  testImplementation libraries.http_client
+
+  testRuntimeOnly libraries.logback
 }

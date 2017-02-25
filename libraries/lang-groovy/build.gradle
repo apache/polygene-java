@@ -27,12 +27,13 @@ jar { manifest { name = "Apache Polygene™ Library - Scripting - Groovy" } }
 apply plugin: 'groovy'
 
 dependencies {
-  compile polygene.core.api
-  compile libraries.groovy
+  api polygene.core.api
 
-  runtime polygene.core.runtime
+  implementation libraries.groovy
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

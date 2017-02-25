@@ -26,20 +26,20 @@ jar { manifest { name = "Apache Polygene™ Tests - Performance" } }
 apply plugin: PerformanceTestsPlugin
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.junit
-  compile libraries.slf4j_api
+  implementation polygene.core.bootstrap
+  implementation libraries.junit
+  implementation libraries.slf4j_api
 
-  perfCompile polygene.core.testsupport
-  perfCompile polygene.library( 'sql-dbcp' )
-  perfCompile polygene.extension( 'valueserialization-orgjson' )
-  perfCompile polygene.extension( 'entitystore-memory' )
-  perfCompile polygene.extension( 'entitystore-jdbm' )
-  perfCompile polygene.extension( 'entitystore-sql' )
-  perfCompile polygene.extension( 'cache-ehcache' )
-  perfCompile polygene.extension( 'indexing-rdf' )
-  perfCompile libraries.derby
+  perfImplementation polygene.core.testsupport
+  perfImplementation polygene.library( 'sql-dbcp' )
+  perfImplementation polygene.extension( 'valueserialization-orgjson' )
+  perfImplementation polygene.extension( 'entitystore-memory' )
+  perfImplementation polygene.extension( 'entitystore-jdbm' )
+  perfImplementation polygene.extension( 'entitystore-sql' )
+  perfImplementation polygene.extension( 'cache-ehcache' )
+  perfImplementation polygene.extension( 'indexing-rdf' )
+  perfImplementation libraries.derby
 
-  perfRuntime polygene.core.runtime
-  perfRuntime libraries.logback
+  perfRuntimeOnly polygene.core.runtime
+  perfRuntimeOnly libraries.logback
 }

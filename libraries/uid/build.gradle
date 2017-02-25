@@ -25,11 +25,11 @@ description = "Apache Polygene™ UID Library contains various Identity generati
 jar { manifest { name = "Apache Polygene™ Library - UID" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

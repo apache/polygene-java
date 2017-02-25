@@ -25,13 +25,13 @@ description = "Apache Polygene™ Spring Library allows for tight integration of
 jar { manifest { name = "Apache Polygene™ Library - Spring" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.spring_core
+  api polygene.core.bootstrap
+  api libraries.spring_core
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
-  testCompile libraries.spring_testsupport
+  testImplementation polygene.core.testsupport
+  testImplementation libraries.spring_testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

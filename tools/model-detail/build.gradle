@@ -25,13 +25,12 @@ description = "Detailled Model of a Apache Polygene™ Application Structure."
 jar { manifest { name = "Apache Polygene™ Model Detail" }}
 
 dependencies {
-  compile polygene.core.bootstrap
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'indexing-rdf' )
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'indexing-rdf' )
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }
-

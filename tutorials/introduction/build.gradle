@@ -25,11 +25,11 @@ description = "An Introduction to Apache Polygene™ in its simplest form."
 jar { manifest { name = "Apache Polygene™ Tutorial - Introduction" } }
 
 dependencies {
-  compile polygene.core.bootstrap
+  implementation polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

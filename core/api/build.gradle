@@ -23,9 +23,9 @@ apply plugin: 'polygene-core'
 jar { manifest { name = "Apache Polygene™ Core API" } }
 
 dependencies {
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'constraints' )
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'constraints' )
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
 
-  testRuntime polygene.core.runtime
+  testRuntimeOnly polygene.core.runtime
 }

@@ -25,14 +25,14 @@ description = "Apache Polygene™ Preferences EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Preferences" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile libraries.slf4j_api
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation libraries.slf4j_api
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }
-

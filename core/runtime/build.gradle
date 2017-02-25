@@ -25,11 +25,13 @@ jar { manifest { name = "Apache Polygene™ Core Runtime" } }
 dependencies {
   compileOnly libraries.osgi_core
 
-  compile polygene.core.bootstrap
-  compile libraries.asm
-  compile libraries.asm_util
-  compile libraries.asm_commons
+  api polygene.core.spi
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.library( 'constraints' )
+  implementation polygene.core.bootstrap
+  implementation libraries.asm
+  implementation libraries.asm_util
+  implementation libraries.asm_commons
+
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.library( 'constraints' )
 }

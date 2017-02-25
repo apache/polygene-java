@@ -25,19 +25,21 @@ description = "Apache Polygene™ Http Library provides embedded Jetty for Apach
 jar { manifest { name = "Apache Polygene™ Library - Http" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'jmx' )
-  compile polygene.library( 'constraints' )
-  compile libraries.bouncy_castle
-  compile libraries.jetty_webapp
-  compile libraries.jetty_jmx
+  api polygene.core.bootstrap
+  api libraries.servlet_api
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'jmx' )
+  implementation polygene.library( 'constraints' )
+  implementation libraries.bouncy_castle
+  implementation libraries.jetty_webapp
+  implementation libraries.jetty_jmx
 
-  testCompile polygene.core.testsupport
-  testCompile libraries.http_client
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation libraries.http_client
+
+  testRuntimeOnly libraries.logback
 }
 
 // Do not run vhost tests on Java >= 9 because they use internal JDK apis
@@ -56,11 +58,11 @@ if( JavaVersion.current() < JavaVersion.VERSION_1_9 )
     }
   }
   configurations {
-    vhostTestCompile.extendsFrom testCompile
-    vhostTestRuntime.extendsFrom testRuntime
+    vhostTestImplementation.extendsFrom testImplementation
+    vhostTestRuntimeOnly.extendsFrom testRuntimeOnly
   }
   dependencies {
-    vhostTestCompile( libraries.dnsjava )
+    vhostTestImplementation libraries.dnsjava
   }
   task vhostTest( type: Test ) {
     // TODO Test JVM won't start when offline

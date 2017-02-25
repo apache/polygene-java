@@ -25,12 +25,13 @@ description = "Apache Polygene™ Invocation Cache Library provides caching fram
 jar { manifest { name = "Apache Polygene™ Library - Invocation Cache" } }
 
 dependencies {
-  compile polygene.core.api
-  compile polygene.library( 'jmx' )
+  api polygene.core.api
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'jmx' )
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

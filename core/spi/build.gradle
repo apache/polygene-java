@@ -23,11 +23,11 @@ apply plugin: 'polygene-core'
 jar { manifest { name = "Apache Polygene™ Core SPI" } }
 
 dependencies {
-  compile polygene.core.api
-  compile libraries.org_json
+  api polygene.core.api
+  api libraries.org_json
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime polygene.core.runtime
-  testRuntime libraries.logback
+  testRuntimeOnly polygene.core.runtime
+  testRuntimeOnly libraries.logback
 }

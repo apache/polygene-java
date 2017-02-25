@@ -25,12 +25,12 @@ description = "Basic tutorial on how to covert a simple 'Hello World' applicatio
 jar { manifest { name = "Apache Polygene™ Tutorial - Composites" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'constraints' )
+  implementation polygene.core.bootstrap
+  implementation polygene.library( 'constraints' )
 
-  runtime polygene.core.runtime
+  runtimeOnly polygene.core.runtime
 
-  testCompile polygene.core.testsupport
+  testImplementation polygene.core.testsupport
 
-  testRuntime libraries.logback
+  testRuntimeOnly libraries.logback
 }

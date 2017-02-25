@@ -25,14 +25,15 @@ description = "Apache Polygene™ ElasticSearch Index/Query Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Index/Query - ElasticSearch" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'fileconfig' )
-  compile libraries.elasticsearch
+  api polygene.core.bootstrap
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'fileconfig' )
+  implementation libraries.elasticsearch
+  implementation libraries.slf4j_api
 
-  testCompile polygene.core.testsupport
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }
-

@@ -25,15 +25,16 @@ description = "Apache Polygene™ MongoDB EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - MongoDB" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile libraries.mongodb
+  api polygene.core.bootstrap
+  api libraries.mongodb
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'locking' )
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-  testCompile libraries.embed_mongo
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+  testImplementation libraries.embed_mongo
+
+  testRuntimeOnly libraries.logback
 }

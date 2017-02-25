@@ -25,12 +25,12 @@ description = "Apache Polygene™ Regression Tests are added by community member
 jar { manifest { name = "Apache Polygene™ Tests - Regression" } }
 
 dependencies {
-  compile polygene.core.testsupport
-  compile polygene.library( 'logging' )
-  compile polygene.extension( 'entitystore-jdbm' )
-  compile libraries.slf4j_api
-  compile libraries.junit
+  implementation polygene.core.testsupport
+  implementation polygene.library( 'logging' )
+  implementation polygene.extension( 'entitystore-jdbm' )
+  implementation libraries.slf4j_api
+  implementation libraries.junit
 
-  runtime polygene.core.runtime
-  runtime libraries.logback
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.logback
 }

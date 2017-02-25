@@ -26,8 +26,9 @@ description = "Sample of how to use the Swing bindings."
 jar { manifest { name = "Apache Polygene™ Sample - Swing Bindings" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  runtime polygene.core.runtime
+  implementation polygene.core.bootstrap
+
+  runtimeOnly polygene.core.runtime
 }
 
 task( runSwingSample, dependsOn: 'classes', type: JavaExec ) {

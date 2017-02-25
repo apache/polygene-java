@@ -27,15 +27,15 @@ jar { manifest { name = "Apache Polygene™ Sample - SQL Support" } }
 
 dependencies {
 
-  compile polygene.core.bootstrap
-  compile polygene.library( 'sql-dbcp' )
-  compile polygene.extension( 'entitystore-preferences' )
-  compile polygene.extension( 'entitystore-sql' )
-  compile polygene.extension( 'indexing-sql' )
+  implementation polygene.core.bootstrap
+  implementation polygene.library( 'sql-dbcp' )
+  implementation polygene.extension( 'entitystore-preferences' )
+  implementation polygene.extension( 'entitystore-sql' )
+  implementation polygene.extension( 'indexing-sql' )
 
-  runtime polygene.core.runtime
-  runtime libraries.postgres
-  runtime libraries.logback
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.postgres
+  runtimeOnly libraries.logback
 }
 
 task( runSqlSupportSample, dependsOn: 'classes', type: JavaExec ) {

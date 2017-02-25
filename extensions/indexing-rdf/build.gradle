@@ -25,17 +25,17 @@ description = "Apache Polygene™ RDF Index/Query Extension"
 jar { manifest { name = "Apache Polygene™ Extension - Index/Query - RDF" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'rdf' )
-  compile libraries.sesame
-  compile libraries.commons_lang
+  api polygene.core.bootstrap
+  api polygene.library( 'rdf' )
 
-  runtime polygene.core.runtime
+  implementation libraries.commons_lang
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
-  testCompile polygene.extension( 'entitystore-preferences' )
-  testCompile polygene.extension( 'entitystore-jdbm' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+  testImplementation polygene.extension( 'entitystore-preferences' )
+  testImplementation polygene.extension( 'entitystore-jdbm' )
+
+  testRuntimeOnly libraries.logback
 }

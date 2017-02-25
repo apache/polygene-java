@@ -25,15 +25,16 @@ description = "Apache Polygene™ JDBM EntityStore Extension"
 jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JDBM" } }
 
 dependencies {
-  compile polygene.core.bootstrap
-  compile polygene.library( 'locking' )
-  compile polygene.library( 'fileconfig' )
-  compile libraries.jdbm
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  runtime polygene.core.runtime
+  implementation polygene.library( 'locking' )
+  implementation libraries.jdbm
 
-  testCompile polygene.core.testsupport
-  testCompile polygene.extension( 'valueserialization-orgjson' )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'valueserialization-orgjson' )
+
+  testRuntimeOnly libraries.logback
 }
