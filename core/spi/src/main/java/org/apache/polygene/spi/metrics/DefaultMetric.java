@@ -76,7 +76,7 @@ public final class DefaultMetric
     public Result check()
         throws Exception
     {
-        return new Result( true, "No checks", null );
+        return  Result.healthOk();
     }
 
     @Override
