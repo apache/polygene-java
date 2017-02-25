@@ -66,7 +66,15 @@ public class DocumentationSupport
         MetricsHealthCheck healthCheck = healthFactory.registerHealthCheck( "Sample Healthcheck", () ->
         {
             ServiceStatus status = pingMyService();
-            return new MetricsHealthCheck.Result( status.isOk(), status.getErrorMessage(), status.getException() );
+            if( status.isOk() )
+                return MetricsHealthCheck.Result.healthOk();
+            String message = status.getErrorMessage();
+            Exception error = status.getException();
+            if( error != null )
+            {
+                return MetricsHealthCheck.Result.exception(message, error);
+            }
+            return MetricsHealthCheck.Result.unhealthy(message);
         } );
         // END SNIPPET: healthcheck
 
