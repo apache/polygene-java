@@ -214,9 +214,9 @@ public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStor
     }
 
     @Override
-    public String bucket()
+    public Namespace riakNamespace()
     {
-        return namespace.getBucketNameAsString();
+        return namespace;
     }
 
     @Override

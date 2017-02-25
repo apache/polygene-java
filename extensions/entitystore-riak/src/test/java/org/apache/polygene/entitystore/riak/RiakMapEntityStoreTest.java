@@ -17,43 +17,42 @@
  */
 package org.apache.polygene.entitystore.riak;
 
-import com.basho.riak.client.api.RiakClient;
-import com.basho.riak.client.api.commands.kv.DeleteValue;
-import com.basho.riak.client.api.commands.kv.ListKeys;
-import com.basho.riak.client.core.query.Location;
-import com.basho.riak.client.core.query.Namespace;
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 
-public class RiakMapEntityStoreTest
-    extends AbstractEntityStoreTest
+public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "riak", 8087 );
 
-    @BeforeClass
-    public static void waitForRiak() throws InterruptedException
+    private RiakFixture riakFixture;
+
+    @Override
+    public void setUp() throws Exception
     {
-        // TODO:flakiness Properly wait for Riak to be ready
-        // Riak listen to its network port before being ready to serve clients
-        // This breaks the test-support integration
-        // Wait a bit to give it a chance to be ready
-        Thread.sleep( 10_000 );
+        super.setUp();
+        RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
+        riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
+        riakFixture.waitUntilReady();
+    }
+
+    @Override
+    public void tearDown() throws Exception
+    {
+        riakFixture.deleteTestData();
+        super.tearDown();
     }
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -71,34 +70,4 @@ public class RiakMapEntityStoreTest
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
-
-    private RiakClient riakClient;
-    private String bucketKey;
-
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-        RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
-        riakClient = es.riakClient();
-        bucketKey = es.bucket();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        // Riak don't expose bucket deletion in its API so we empty the Polygene Entities bucket.
-        if( bucketKey != null )
-        {
-            Namespace namespace = new Namespace( bucketKey );
-            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
-            ListKeys.Response listKeysResponse = riakClient.execute( listKeys );
-            for( Location location : listKeysResponse )
-            {
-                DeleteValue delete = new DeleteValue.Builder( location ).build();
-                riakClient.execute( delete );
-            }
-        }
-        super.tearDown();
-    }
 }

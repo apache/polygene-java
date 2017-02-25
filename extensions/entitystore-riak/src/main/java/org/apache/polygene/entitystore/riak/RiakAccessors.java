@@ -20,12 +20,11 @@
 package org.apache.polygene.entitystore.riak;
 
 import com.basho.riak.client.api.RiakClient;
+import com.basho.riak.client.core.query.Namespace;
 
 public interface RiakAccessors
 {
-
     RiakClient riakClient();
 
-    String bucket();
-
+    Namespace riakNamespace();
 }
