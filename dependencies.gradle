@@ -170,7 +170,6 @@ dependencies.libraries << [
 ]
 
 // Runtime, Test and Samples dependencies
-def antVersion = '1.9.7'
 def awaitilityVersion = '2.0.0'
 def dnsJavaVersion = '2.1.7'
 def dockerJUnitVersion = '0.3'
@@ -185,8 +184,6 @@ def mysqlVersion = '6.0.4'
 def postgresqlVersion = '9.4.1211'
 def sqliteVersion = '3.14.2.1'
 dependencies.libraries << [
-  ant               : "org.apache.ant:ant:$antVersion",
-  ant_junit         : "org.apache.ant:ant-junit:$antVersion",
   awaitility        : "org.awaitility:awaitility:$awaitilityVersion",
   derby             : "org.apache.derby:derby:$derbyVersion",
   dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
@@ -207,10 +204,7 @@ dependencies.libraries << [
 
 // Default dependencies
 dependencies.defaultDependencies << [
-  testCompile: [ dependencies.libraries.junit,
-                 dependencies.libraries.hamcrest,
-                 dependencies.libraries.ant,
-                 dependencies.libraries.ant_junit ]
+  testImplementation: [ dependencies.libraries.junit, dependencies.libraries.hamcrest ]
 ]
 
 // Resolution rules
