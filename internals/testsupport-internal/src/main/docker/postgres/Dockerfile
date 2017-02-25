@@ -13,5 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM postgres:alpine
+FROM @postgres@
 COPY init-test-db.sh /docker-entrypoint-initdb.d/init-test-db.sh

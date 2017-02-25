@@ -25,15 +25,24 @@ import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.code.CodePlugin
 import org.apache.polygene.gradle.code.PublishNaming
+import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.polygene.gradle.dependencies.DependenciesPlugin
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.file.CopySpec
 import org.gradle.api.logging.LogLevel
 
 @CompileStatic
 class InternalDockerPlugin implements Plugin<Project>
 {
+  static class TaskNames
+  {
+    static final String CHECK_DOCKER_CONNECTIVITY = 'checkDockerConnectivity'
+  }
+
   private final String dockerMachineName = System.getenv( 'DOCKER_MACHINE_NAME' )
   private final String dockerHost = System.getenv( 'DOCKER_HOST' )
   private final String dockerCertPath = System.getenv( 'DOCKER_CERT_PATH' )
@@ -61,7 +70,7 @@ class InternalDockerPlugin implements Plugin<Project>
 
   private void applyDockerSwitch( Project project )
   {
-    project.tasks.create( 'checkDockerConnectivity', DockerVersion, { DockerVersion task ->
+    project.tasks.create( TaskNames.CHECK_DOCKER_CONNECTIVITY, DockerVersion, { DockerVersion task ->
       task.onError = { ex ->
         // Disable Docker for this build
         project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
@@ -81,28 +90,50 @@ class InternalDockerPlugin implements Plugin<Project>
   {
     def classesTask = project.tasks.getByName 'classes'
     def dockers = project.file( 'src/main/docker' )
+    def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
     dockers.eachDir { File dockerDir ->
       def dockerName = dockerDir.name
-      def taskName = "build${ dockerName.capitalize() }DockerImage"
-      project.tasks.create( taskName, DockerBuildImage ) { DockerBuildImage task ->
-        task.group = 'docker'
-        task.description = "Build $dockerName Docker image"
-        task.dependsOn 'checkDockerConnectivity'
-        task.onlyIf {
-          def extra = project.rootProject.extensions.extraProperties
-          !( extra.has( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY ) &&
-             extra.get( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY ) )
+      def buildDockerfileTaskName = "build${ dockerName.capitalize() }Dockerfile"
+      def buildImageTaskName = "build${ dockerName.capitalize() }DockerImage"
+      def tmpDir = project.file "${ project.buildDir }/tmp/docker/${ dockerName }"
+      tmpDir.mkdirs()
+      def buildDockerfileTask = project.tasks.create( buildDockerfileTaskName ) { Task task ->
+        task.description = "Build $dockerName Dockerfile"
+        task.inputs.property 'dockerImagesVersions', dependencies.dockerImagesVersions
+        task.inputs.dir dockerDir
+        task.outputs.dir tmpDir
+        // Filter Dockerfile for image versions from dependencies declaration
+        task.doFirst {
+          project.copy { CopySpec spec ->
+            spec.from( dockerDir ) { CopySpec unfiltered ->
+              unfiltered.exclude 'Dockerfile'
+            }
+            spec.from( dockerDir ) { CopySpec filtered ->
+              filtered.include 'Dockerfile'
+              filtered.filter ReplaceTokens, tokens: dependencies.dockerImagesVersions
+            }
+            spec.into tmpDir
+          }
         }
+      }
+      def buildImageTask = project.tasks.create( buildImageTaskName, DockerBuildImage, { DockerBuildImage task ->
+        task.description = "Build $dockerName Docker image"
+        task.inputDir = tmpDir
+        task.dockerFile = new File( tmpDir, 'Dockerfile' )
+        task.tag = "org.apache.polygene:${ PublishNaming.publishedNameFor ":internals:docker-$dockerName" }"
+      } as Action<DockerBuildImage> )
+      [ buildDockerfileTask, buildImageTask ].each { Task task ->
+        task.group = 'docker'
+        task.dependsOn TaskNames.CHECK_DOCKER_CONNECTIVITY
+        task.onlyIf { !project.rootProject.findProperty( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY ) }
         task.inputs.property 'dockerMachineName', dockerMachineName
         task.inputs.property 'dockerHostEnv', dockerHost
         task.inputs.property 'dockerCertPath', dockerCertPath
-        task.inputDir = dockerDir
-        task.dockerFile = new File( dockerDir, 'Dockerfile' )
-        task.tag = "org.apache.polygene:${ PublishNaming.publishedNameFor ":internals:docker-$dockerName" }"
-        // Ensure that all Docker images are built alongside this project
-        // This is a bit of a stretch but works for now
-        classesTask.dependsOn task
       }
+      buildImageTask.dependsOn buildDockerfileTask
+      // Ensure that all Docker images are built alongside this project
+      // This is a bit of a stretch but works for now
+      classesTask.dependsOn buildImageTask
     }
   }
 }

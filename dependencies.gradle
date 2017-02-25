@@ -251,3 +251,14 @@ dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution,
 dependencies.buildToolsVersions << [
   jacoco: '0.7.8'
 ]
+
+// Docker Images
+dependencies.dockerImagesVersions << [
+  cassandra: 'cassandra:3.10',
+  fakeS3: 'lphoward/fake-s3:14.04',
+  memcached: 'memcached:1.4-alpine',
+  mariadb: 'mariadb:10.1',
+  postgres: 'postgres:9.6-alpine',
+  redis: 'redis:3.2-alpine',
+  riak: 'basho/riak-kv:ubuntu-2.2.0'
+]

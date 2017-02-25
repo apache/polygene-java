@@ -30,4 +30,5 @@ class DependenciesDeclarationExtension
   final Map<String, List<Object>> defaultDependencies = [ : ]
   BiConsumer<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
   final Map<String, String> buildToolsVersions = [ : ]
+  final Map<String, String> dockerImagesVersions = [ : ]
 }
