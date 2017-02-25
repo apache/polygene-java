@@ -34,11 +34,35 @@ public interface MetricsHealthCheck extends Metric
         private final String message;
         private final Throwable exception;
 
-        public Result( boolean isHealthy, String message, Throwable exception )
+        private Result( boolean isHealthy, String message, Throwable exception )
         {
             healthy = isHealthy;
             this.message = message;
             this.exception = exception;
+        }
+
+        /** Factory method for reporting an Ok health.
+         *
+         * @return A healthy result.
+         */
+        public static Result healthOk() {
+            return new Result( true, "", null );
+        }
+
+        /** Factory method for reporting an unhealthy state.
+         *
+         * @return An unhealthy result.
+         */
+        public static Result unhealthy(String message) {
+            return new Result( false, message, null );
+        }
+
+        /** Factory method for reporting a state where an exception has occurred.
+         *
+         * @return A failing health state.
+         */
+        public static Result exception(String message, Throwable exception) {
+            return new Result( false, message, exception );
         }
 
         public boolean isHealthy()
