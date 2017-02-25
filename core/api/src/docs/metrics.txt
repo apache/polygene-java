@@ -39,7 +39,7 @@ handling.
 
 A Gauge can represent anything, for instance, thread pool levels, queue sizes and other resource allocations. It is
 useful to have separate gauges for percentage (%) and absolute numbers of the same resource. Operations are mainly
-interested in being alerted when threshold are reach as a percentage, as it is otherwise too many numbers to keep
+interested in being alerted when threshold are reached as a percentage, as it is otherwise too many numbers to keep
 track of.
 
 To create a Gauge, you do something like;
@@ -51,6 +51,10 @@ tag=gauge
 --------------
 
 == Counter ==
+Often we want to track the many counters in a system. This might be "number of HTTP requests" or
+"filesystem access frequency". By creating a _Counter_ metrics, it is simply a matter of calling the _increment_
+or _decrement_ on that metric. This will track both number of counts/steps as well as the rate (per second), and
+many visualization platforms. such as Kibana, Graphite and Grafana, are made to handle this particular metric very well.
 
 [snippet,java]
 --------------
@@ -59,6 +63,9 @@ tag=counter
 --------------
 
 == Histogram ==
+Histograms is about computing the running standard deviations and variances. Please see
+http://www.johndcook.com/standard_deviation.html["Accurately computing running variance"] for more detailed information.
+
 [snippet,java]
 --------------
 source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
@@ -66,6 +73,12 @@ tag=histogram
 --------------
 
 == Meter ==
+The _Meter_ is a more advanced _Counter_, which measures mean throughput and one-, five-, and fifteen-minute
+exponentially-weighted moving average throughputs.
+
+Wikipedia has a section
+http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average["Exponential moving average"] in the
+"Moving Average" article.
 
 [snippet,java]
 --------------
@@ -84,6 +97,8 @@ tag=timer
 --------------
 
 == HealthCheck ==
+HealthCheck is a metric to report the health of a system or component. The HealthCheck metric will be called upon
+regularly to report its status, which is then forwarded to the monitoring system.
 
 [snippet,java]
 --------------

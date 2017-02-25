@@ -38,14 +38,7 @@ public class DocumentationSupport
         // END SNIPPET: gauge
         // START SNIPPET: gauge
         MetricsGaugeFactory gaugeFactory = provider.createFactory( MetricsGaugeFactory.class );
-        MetricsGauge<Integer> gauge = gaugeFactory.registerGauge( "Sample Gauge", new MetricsGauge<Integer>()
-        {
-            @Override
-            public Integer value()
-            {
-                return queue.size();
-            }
-        } );
+        MetricsGauge<Integer> gauge = gaugeFactory.registerGauge( "Sample Gauge", () -> queue.size() );
         // END SNIPPET: gauge
 
         // START SNIPPET: counter
@@ -70,18 +63,11 @@ public class DocumentationSupport
 
         // START SNIPPET: healthcheck
         MetricsHealthCheckFactory healthFactory = provider.createFactory( MetricsHealthCheckFactory.class );
-        MetricsHealthCheck healthCheck = healthFactory.registerHealthCheck(
-            "Sample Healthcheck",
-            new MetricsHealthCheck()
-            {
-                @Override
-                public Result check()
-                    throws Exception
-                {
-                    ServiceStatus status = pingMyService();
-                    return new Result( status.isOk(), status.getErrorMessage(), status.getException() );
-                }
-            } );
+        MetricsHealthCheck healthCheck = healthFactory.registerHealthCheck( "Sample Healthcheck", () ->
+        {
+            ServiceStatus status = pingMyService();
+            return new MetricsHealthCheck.Result( status.isOk(), status.getErrorMessage(), status.getException() );
+        } );
         // END SNIPPET: healthcheck
 
     }
