@@ -194,11 +194,8 @@ public class CircuitBreaker
             else
             {
                 countDown--;
-
                 lastThrowable = throwable;
-
                 pcs.firePropertyChange( "serviceLevel", ( countDown + 1 ) / ( (double) threshold ), countDown / ( (double) threshold ) );
-
                 if( countDown == 0 )
                 {
                     trip();
@@ -212,7 +209,6 @@ public class CircuitBreaker
         if( status == Status.on && countDown < threshold )
         {
             countDown++;
-
             pcs.firePropertyChange( "serviceLevel", ( countDown - 1 ) / ( (double) threshold ), countDown / ( (double) threshold ) );
         }
     }

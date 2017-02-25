@@ -34,38 +34,30 @@ public class CircuitBreakers
     */
    public static Predicate<Throwable> in( final Class<? extends Throwable>... throwables)
    {
-      return new Predicate<Throwable>()
+      return item ->
       {
-         @Override
-         public boolean test( Throwable item )
+         Class<? extends Throwable> throwableClass = item.getClass();
+         for (Class<? extends Throwable> throwable : throwables)
          {
-            Class<? extends Throwable> throwableClass = item.getClass();
-            for (Class<? extends Throwable> throwable : throwables)
-            {
-               if (throwable.isAssignableFrom( throwableClass ))
-                  return true;
-            }
-            return false;
+            if (throwable.isAssignableFrom( throwableClass ))
+               return true;
          }
+         return false;
       };
    }
 
    public static Predicate<Throwable> rootCause( final Predicate<Throwable> specification)
    {
-      return new Predicate<Throwable>()
+      return item ->
       {
-         @Override
-         public boolean test( Throwable item )
+         Throwable cause = item.getCause();
+         if( cause != null )
          {
-            return specification.test( unwrap(item) );
+            return specification.test( cause );
          }
-
-         private Throwable unwrap(Throwable item)
+         else
          {
-            if (item.getCause() != null)
-               return item.getCause();
-            else
-               return item;
+            return specification.test( item );
          }
       };
    }
