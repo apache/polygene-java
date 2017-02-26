@@ -27,10 +27,10 @@
         <codebase>early</codebase>
 
         <!-- none, brief, good, complete -->
-        <documentation>none</documentation>
+        <documentation>good</documentation>
 
         <!-- none, some, good, complete -->
-        <unittests>none</unittests>
+        <unittests>good</unittests>
     </status>
     <licenses>
         <license>ALv2</license>
