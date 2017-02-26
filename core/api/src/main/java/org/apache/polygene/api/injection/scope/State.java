@@ -50,5 +50,5 @@ public @interface State
      *
      * @return the name
      */
-    public abstract String value() default "";
+    String value() default "";
 }
