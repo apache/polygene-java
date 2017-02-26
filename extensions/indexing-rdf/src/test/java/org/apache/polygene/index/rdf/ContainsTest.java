@@ -99,7 +99,7 @@ public class ContainsTest extends AbstractPolygeneTest
     }
 
     @Test( expected = NullPointerException.class )
-    public void simplecontainsNullTest() throws Exception
+    public void simpleContainsNullTest() throws Exception
     {
         this.performContainsStringTest(
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),

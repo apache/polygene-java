@@ -62,6 +62,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static org.apache.polygene.api.util.Collectors.toMapWithNullValues;
 
+// TODO Support deserialization from formatted XML, whitespaces are a problem ATM
 public class JavaxXmlDeserializer extends AbstractTextDeserializer implements XmlDeserializer
 {
     private static final String NULL_ELEMENT_NAME = "null";
@@ -79,10 +80,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         if( stateElement.isPresent() )
         {
             Optional<Node> stateNode = JavaxXml.firstStateChildNode( stateElement.get() );
-            if( stateNode.isPresent() )
-            {
-                return doDeserialize( module, valueType, stateNode.get() );
-            }
+            return doDeserialize( module, valueType, stateNode.orElse( null ) );
         }
         return null;
     }

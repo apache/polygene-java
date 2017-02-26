@@ -54,7 +54,9 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO Implement optimistic locking! Maybe as a SPI helper
+// TODO Implement optimistic locking! Maybe as a SPI helper (in-progress)
+// TODO Add schema version data into the DB, check it
+// TODO Remove old SQL ES Code
 public class SQLMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {

@@ -19,11 +19,11 @@
  */
 package org.apache.polygene.serialization.msgpack;
 
+import java.util.Base64;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
-import org.junit.Ignore;
+import org.msgpack.core.MessagePack;
 
-@Ignore( "Super test assume text" )
 public class MessagePackPlainValueSerializationTest extends AbstractPlainValueSerializationTest
 {
     @Override
@@ -31,5 +31,12 @@ public class MessagePackPlainValueSerializationTest extends AbstractPlainValueSe
     {
         new MessagePackSerializationAssembler().assemble( module );
         super.assemble( module );
+    }
+
+    @Override
+    protected String getSingleStringRawState( String state ) throws Exception
+    {
+        return MessagePack.newDefaultUnpacker( Base64.getDecoder().decode( state ) )
+                          .unpackValue().asStringValue().asString();
     }
 }

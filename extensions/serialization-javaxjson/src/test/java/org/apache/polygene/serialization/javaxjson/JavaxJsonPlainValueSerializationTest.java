@@ -23,4 +23,9 @@ import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTes
 
 public class JavaxJsonPlainValueSerializationTest extends AbstractPlainValueSerializationTest
 {
+    @Override
+    protected String getSingleStringRawState( String state )
+    {
+        return state;
+    }
 }

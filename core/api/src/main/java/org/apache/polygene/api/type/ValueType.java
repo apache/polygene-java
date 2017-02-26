@@ -29,6 +29,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -48,8 +49,8 @@ public class ValueType implements HasTypes
     public static final ValueType CHARACTER = ValueType.of( Character.class, char.class );
     public static final ValueType BOOLEAN = ValueType.of( Boolean.class, boolean.class );
     public static final ValueType INTEGER = ValueType.of( Integer.class, int.class );
-    public static final ValueType LONG = ValueType.of( Long.class, long.class );
     public static final ValueType SHORT = ValueType.of( Short.class, short.class );
+    public static final ValueType LONG = ValueType.of( Long.class, long.class );
     public static final ValueType BYTE = ValueType.of( Byte.class, byte.class );
     public static final ValueType FLOAT = ValueType.of( Float.class, float.class );
     public static final ValueType DOUBLE = ValueType.of( Double.class, double.class );
@@ -80,7 +81,56 @@ public class ValueType implements HasTypes
 
     protected ValueType( List<Class<?>> types )
     {
-        this.types = types;
+        this.types = applyPrimitiveAndBoxedTypes( types );
+    }
+
+    private List<Class<?>> applyPrimitiveAndBoxedTypes( List<Class<?>> types )
+    {
+        int charPrimitiveIndex = types.indexOf( char.class );
+        int charBoxedIndex = types.indexOf( Character.class );
+        int boolPrimitiveIndex = types.indexOf( boolean.class );
+        int boolBoxedIndex = types.indexOf( Boolean.class );
+        int intPrimitiveIndex = types.indexOf( int.class );
+        int intBoxedIndex = types.indexOf( Integer.class );
+        int shortPrimitiveIndex = types.indexOf( short.class );
+        int shortBoxedIndex = types.indexOf( Short.class );
+        int longPrimitiveIndex = types.indexOf( long.class );
+        int longBoxedIndex = types.indexOf( Long.class );
+        int bytePrimitiveIndex = types.indexOf( byte.class );
+        int byteBoxedIndex = types.indexOf( Byte.class );
+        int floatPrimitiveIndex = types.indexOf( float.class );
+        int floatBoxedIndex = types.indexOf( Float.class );
+        int doublePrimitiveIndex = types.indexOf( double.class );
+        int doubleBoxedIndex = types.indexOf( Double.class );
+        if( charPrimitiveIndex == -1 && charBoxedIndex == -1
+            && boolPrimitiveIndex == -1 && boolBoxedIndex == -1
+            && intPrimitiveIndex == -1 && intBoxedIndex == -1
+            && shortPrimitiveIndex == -1 && shortBoxedIndex == -1
+            && longPrimitiveIndex == -1 && longBoxedIndex == -1
+            && bytePrimitiveIndex == -1 && byteBoxedIndex == -1
+            && floatPrimitiveIndex == -1 && floatBoxedIndex == -1
+            && doublePrimitiveIndex == -1 && doubleBoxedIndex == -1 )
+        {
+            return types;
+        }
+        List<Class<?>> allTypes = new ArrayList<>( types );
+        if( charPrimitiveIndex >= 0 && charBoxedIndex == -1 ) { allTypes.add( Character.class ); }
+        if( charPrimitiveIndex == -1 && charBoxedIndex >= 0 ) { allTypes.add( char.class ); }
+        if( boolPrimitiveIndex >= 0 && boolBoxedIndex == -1 ) { allTypes.add( Boolean.class ); }
+        if( boolPrimitiveIndex == -1 && boolBoxedIndex >= 0 ) { allTypes.add( boolean.class ); }
+        if( intPrimitiveIndex >= 0 && intBoxedIndex == -1 ) { allTypes.add( Integer.class ); }
+        if( intPrimitiveIndex == -1 && intBoxedIndex >= 0 ) { allTypes.add( int.class ); }
+        if( shortPrimitiveIndex >= 0 && shortBoxedIndex == -1 ) { allTypes.add( Short.class ); }
+        if( shortPrimitiveIndex == -1 && shortBoxedIndex >= 0 ) { allTypes.add( short.class ); }
+        if( longPrimitiveIndex >= 0 && longBoxedIndex == -1 ) { allTypes.add( Long.class ); }
+        if( longPrimitiveIndex == -1 && longBoxedIndex >= 0 ) { allTypes.add( long.class ); }
+        if( bytePrimitiveIndex >= 0 && byteBoxedIndex == -1 ) { allTypes.add( Byte.class ); }
+        if( bytePrimitiveIndex == -1 && byteBoxedIndex >= 0 ) { allTypes.add( byte.class ); }
+        if( floatPrimitiveIndex >= 0 && floatBoxedIndex == -1 ) { allTypes.add( Float.class ); }
+        if( floatPrimitiveIndex == -1 && floatBoxedIndex >= 0 ) { allTypes.add( float.class ); }
+        if( doublePrimitiveIndex >= 0 && doubleBoxedIndex == -1 ) { allTypes.add( Double.class ); }
+        if( doublePrimitiveIndex == -1 && doubleBoxedIndex >= 0 ) { allTypes.add( double.class ); }
+        return allTypes;
     }
 
     public Class<?> primaryType()
@@ -115,7 +165,7 @@ public class ValueType implements HasTypes
         String name = types.stream().map( Class::getName ).collect( joining( "," ) );
         if( name.contains( "," ) )
         {
-            name = "{" + name + "}";
+            name = '{' + name + '}';
         }
         return name;
     }

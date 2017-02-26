@@ -29,7 +29,10 @@ dependencies {
   api polygene.library( 'sql' )
   api libraries.jooq
 
+  implementation libraries.slf4j_api
   implementation polygene.library( 'sql-liquibase' )
+
+  // TODO Remove java SQL generator dependency
   implementation libraries.javaSqlGenerator
   implementation( libraries.javaSqlGeneratorImpl ) {
     exclude group: 'junit'
