@@ -36,7 +36,7 @@ dependencies {
   runtimeOnly polygene.core.runtime
   runtimeOnly libraries.jaxb_api
 
-  testImplementation polygene.core.testsupport
+  testImplementation polygene.internals.testsupport
   testImplementation polygene.extension( 'valueserialization-orgjson' )
   testImplementation libraries.jclouds_filesystem
 
