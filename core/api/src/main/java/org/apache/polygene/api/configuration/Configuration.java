@@ -49,6 +49,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
  * should inject a reference to Configuration with the Configuration type:
@@ -403,8 +405,9 @@ public interface Configuration<T>
                     {
                         if( asStream != null )
                         {
-                            V configObject = serializerRef.get().deserialize( uow.module(), configType,
-                                                                              new InputStreamReader( asStream ) );
+                            Deserializer deserializer = serializerRef.get();
+                            V configObject = deserializer.deserialize( uow.module(), configType,
+                                                                       new InputStreamReader( asStream, UTF_8 ) );
                             return uow.toEntity( configType, configObject );
                         }
                     }

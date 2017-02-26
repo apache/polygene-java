@@ -45,6 +45,7 @@ public class JavaxJsonSerializationAssembler extends Assemblers.VisibilityIdenti
                                                            Serializer.class, Deserializer.class,
                                                            JsonSerialization.class,
                                                            JsonSerializer.class, JsonDeserializer.class )
+                                               .taggedWith( Serialization.Formats.JSON )
                                                .visibleIn( visibility() );
         if( hasIdentity() )
         {
