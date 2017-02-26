@@ -21,9 +21,16 @@ The Configuration system itself will handle all the details with interfacing wit
 The normal UnitOfWork management is used, but handled internally by the configuration system.
 
 In Polygene, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
-it can not be found, then it will try to bootstrap it from a properties file, with the same name as the
+it can not be found, then it will try to bootstrap it from the file system, with the same name as the
 ServiceDescriptor.identifiedBy(), which is set during <<core-bootstrap-assembly>> and defaults to the fully qualified
-classname of the <<core-api-service>> type.
+classname of the <<core-api-service>> type, followed by an extension dependent on the file type.
+
+The following file types for default configuration is supported (listed in read priority order);
+
+1. Java Properties
+2. JSON
+3. YAML
+4. XML
 
 == Defining a Configuration Type ==
 The Configuration type is simply listing the properties that are available. The standard rules on @UseDefaults and
@@ -35,6 +42,23 @@ Example;
 source=core/api/src/test/java/org/apache/polygene/api/configuration/MailServiceConfiguration.java
 tag=configuration
 --------------
+
+== Default Configuration formats ==
+The default configuration read will happen if the Entity Store backing the Configuration system does not contain the
+identifiable configuration. That will trigger the reading attempts of the supported configuration formats. Once the
+configuration is parsed from the file system it is written to the Entity Store, and if the Entity Store is not
+ephemeral, then on the next start, any changes to the configuration will NOT be detected, and will simply be ignored.
+
+To be able to read JSON, YAML and XML configuration, you must configure a ValueSerialization system that supports
+the configuration format that you want to use.
+
+* extension/valueserialization-jackson supports JSON
+* extension/valueserialization-stax supports XML
+
+== Support for Complex Types ==
+Since the regular Value Serialization platform is used, for JSON, YAML and XML, the configuration can contain
+arbitrary composite types. This is not true for the Java properties file format.
+
 
 == Using a Configuration Type ==
 It is important to remember that Configuration is not static values that are set prior to application start-up and
