@@ -48,12 +48,12 @@ package org.apache.polygene.api.entity;
  *          String thisId = meAsIdentity.reference().get();
  *          EntityBuilder builder = uow.newEntityBuilder( thisId + ":1", UserComposite.class );
  *          User admin = builder.newInstance();
- *          admin.set( admin );
+ *          admin().set( admin );
  *      }
  *
  *      public void remove()
  *      {
- *          uow.remove( admin.get() );
+ *          uow.remove( admin().get() );
  *      }
  * }
  *
