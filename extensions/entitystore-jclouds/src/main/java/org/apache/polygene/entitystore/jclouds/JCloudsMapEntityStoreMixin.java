@@ -104,6 +104,7 @@ public class JCloudsMapEntityStoreMixin
         String provider = configuration.get().provider().get();
         String identifier = configuration.get().identifier().get();
         String credentials = configuration.get().credential().get();
+        String endpoint = configuration.get().endpoint().get();
         Map<String, String> properties = configuration.get().properties().get();
         container = configuration.get().container().get();
         if( provider != null )
@@ -118,10 +119,11 @@ public class JCloudsMapEntityStoreMixin
         {
             container = "polygene-entities";
         }
-        storeContext = ContextBuilder.newBuilder( provider ).
-            credentials( identifier, credentials ).
-            overrides( asProperties( properties ) ).
-            buildView( BlobStoreContext.class );
+        storeContext = ContextBuilder.newBuilder( provider )
+                                     .endpoint( endpoint == null ? "" : endpoint )
+                                     .credentials( identifier, credentials )
+                                     .overrides( asProperties( properties ) )
+                                     .buildView( BlobStoreContext.class );
         BlobStore blobStore = storeContext.getBlobStore();
         if( !blobStore.containerExists( container ) )
         {
@@ -200,12 +202,14 @@ public class JCloudsMapEntityStoreMixin
                     {
                         @Override
                         public void close()
-                        throws IOException
+                            throws IOException
                         {
                             super.close();
+                            ByteSource payload = ByteSource.wrap( toString().getBytes( UTF_8 ) );
                             Blob blob = blobStore.blobBuilder( ref.identity().toString() )
-                                .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
-                                .build();
+                                                 .payload( payload )
+                                                 .contentLength( payload.size() )
+                                                 .build();
                             blobStore.putBlob( container, blob );
                         }
                     };
@@ -223,12 +227,14 @@ public class JCloudsMapEntityStoreMixin
                     {
                         @Override
                         public void close()
-                        throws IOException
+                            throws IOException
                         {
                             super.close();
+                            ByteSource payload = ByteSource.wrap( toString().getBytes( UTF_8 ) );
                             Blob blob = blobStore.blobBuilder( ref.identity().toString() )
-                                .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
-                                .build();
+                                                 .payload( payload )
+                                                 .contentLength( payload.size() )
+                                                 .build();
                             blobStore.putBlob( container, blob );
                         }
                     };
@@ -255,10 +261,13 @@ public class JCloudsMapEntityStoreMixin
             .getBlobStore().list( container ).stream()
             .map( metadata ->
                   {
-                      Payload payload = storeContext.getBlobStore().getBlob( container, metadata.getName() ).getPayload();
+                      Payload payload = storeContext.getBlobStore()
+                                                    .getBlob( container, metadata.getName() )
+                                                    .getPayload();
                       if( payload == null )
                       {
-                          throw new EntityNotFoundException( EntityReference.parseEntityReference( metadata.getName() ) );
+                          EntityReference reference = EntityReference.parseEntityReference( metadata.getName() );
+                          throw new EntityNotFoundException( reference );
                       }
                       try( InputStream input = payload.openStream() )
                       {

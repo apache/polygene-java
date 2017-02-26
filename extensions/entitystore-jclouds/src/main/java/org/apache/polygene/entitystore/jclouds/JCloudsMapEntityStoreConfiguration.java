@@ -47,6 +47,10 @@ public interface JCloudsMapEntityStoreConfiguration
      * Name of the JClouds container to use. Defaults to 'polygene-entities'.
      */
     @Optional Property<String> container();
+    /**
+     * Endpoint for the BlobStore provider.
+     */
+    @Optional Property<String> endpoint();
     // END SNIPPET: config
 
 }
