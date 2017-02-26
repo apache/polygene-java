@@ -61,6 +61,9 @@ public class CassandraMapEntityStoreTest
         // END SNIPPET: assembly
 
         CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "9042/tcp" );
+        cassandraConfig.hostnames().set( host + ':' + port );
         cassandraConfig.createIfMissing().set( true );
         // START SNIPPET: assembly
     }
