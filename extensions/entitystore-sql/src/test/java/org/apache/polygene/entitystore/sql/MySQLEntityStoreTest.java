@@ -92,7 +92,7 @@ public class MySQLEntityStoreTest
         int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
         config.forMixin( DataSourceConfiguration.class ).declareDefaults()
               .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
-                          + "/jdbc_test_db?profileSQL=true&useLegacyDatetimeCode=false&serverTimezone=UTC" );
+                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
@@ -109,7 +109,7 @@ public class MySQLEntityStoreTest
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s", SQLs.TABLE_NAME ) );
+                stmt.execute( String.format( "TRUNCATE %s", SQLs.TABLE_NAME ) );
                 connection.commit();
             }
         }
