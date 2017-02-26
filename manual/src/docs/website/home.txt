@@ -23,7 +23,7 @@
 = Polygene™ =
 
 [IMPORTANT]
-.Polygene™ {revnumber}
+.{revnumber}
 ====
 This is the documentation for *Polygene™ {revnumber}*. Use the version switcher on the left to browse other
 versions documentation.
@@ -54,4 +54,3 @@ Qi4j™ is pronounced "chee for jay". This website is out of scope to explain th
 facets and history of Qi, so we refer the interested to read the http://en.wikipedia.org/wiki/Qi[lengthy article] at
 Wikipedia. For us, Qi is the force/energy within the body, in this case the Java platform. Something that makes Java
 so much better, if it is found and channeled into a greater good.
-

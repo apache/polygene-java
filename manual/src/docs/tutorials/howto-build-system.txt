@@ -31,7 +31,7 @@ If instead you want to setup your project build system to depend on modules of t
 == Gradle ==
 
 NOTE: All major Java IDEs have great Gradle support.
-Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Polygene™ SDK build into your
+Visit the https://www.gradle.org/resources[Gradle] website to learn how to import the Polygene™ SDK build into your
 favorite IDE.
 
 Polygene™ community migrated away from Maven after several years of frustration, especially around release management,
@@ -39,65 +39,57 @@ versioning and cross-module dependency resolution issues, in Feb 2011.
 The tool of choice is now Gradle, and it doesn't require any installation, there are +gradlew+ and +gradlew.bat+ in
 the root folder of the Polygene™ SDK that will bootstrap Gradle if not done so already.
 
-If you are new to Gradle, you should keep the http://www.gradle.org/documentation[documentation] at hands.
+If you are new to Gradle, you should keep the https://gradle.org/docs[documentation] at hands.
 
 Build System configuration is done through Gradle properties.
 This can be done in many ways, see
-http://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
+https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
 
 == Main tasks ==
 
 The Polygene™ SDK project has tasks that work with the whole SDK.
 
-downloadDependencies::
-+
+`./gradlew downloadDependencies`::
 --
 Resolve, download and cache all needed dependencies.
 Useful to go offline.
 --
 
-./gradlew::
-+
+`./gradlew`::
 --
 The default build, triggered when running gradle without any command line arguments, compiles the code and run the
 tests, but nothing else. A quick way to check that nothing broke.
 --
 
-./gradlew clean::
-+
+`./gradlew clean`::
 --
 Clean up of all build output and restore the code base to a fresh state.
 --
 
-./gradlew assemble::
-+
+`./gradlew assemble`::
 --
 Produces all the archives, javadocs, manuals and website content.
 Global output is generated into +distributions/build+.
 --
 
-./gradlew check::
-+
+`./gradlew check`::
 --
 Run the tests and other checks like checkstyle.
 Global reports are generated in +reports/build/reports+.
 --
 
-./gradlew build::
-+
+`./gradlew build`::
 --
 Equivalent to `./gradlew assemble check`
 --
 
-./gradlew checkDistributions::
-+
+`./gradlew checkDistributions`::
 --
 Run global checks against the assembled distributions.
 Can take a while.
 --
 
-install::
-+
+`./gradlew install`::
 --
 Is roughly the same as Maven's install goal.
 It produces the test reports, javadocs and installs all the Jars into the local disk repository, for consumption
@@ -292,7 +284,5 @@ And here is how to deploy a signed release to the local filesystem:
 ./gradlew uploadArchives -Dversion=3.2.1 -PuploadRepository=file:///path/to/local/repository
 -----------
 
-See the http://www.gradle.org/docs/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
+See the https://docs.gradle.org/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
 supported protocols.
-
-

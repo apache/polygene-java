@@ -33,7 +33,7 @@ You need to install `asciidoc` and `docbook-xsl`.
 [[community-docs-overall-flow,Documentation Flow]]
 == Overall Flow ==
 
-TIP: To generate the website locally use `./gradlew -p manual website`. Output is in `~/manual/build/docs/website`.
+TIP: To generate the website locally use `./gradlew website`. Output is in `~/manual/build/docs/website`.
 
 Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
 
@@ -339,5 +339,3 @@ Useful links when configuring the docbook toolchain:
 * http://www.sagehill.net/docbookxsl/index.html
 * http://docbook.sourceforge.net/release/xsl/1.76.1/doc/html/index.html
 * http://docbook.sourceforge.net/release/xsl/1.76.1/doc/fo/index.html
-
-
