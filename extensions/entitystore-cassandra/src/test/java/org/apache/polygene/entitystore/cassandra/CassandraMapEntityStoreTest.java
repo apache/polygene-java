@@ -21,6 +21,7 @@ package org.apache.polygene.entitystore.cassandra;
 
 import org.apache.polygene.entitystore.cassandra.assembly.CassandraDBEntityStoreAssembler;
 import org.apache.polygene.test.entity.CanRemoveAll;
+import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
 import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
@@ -28,6 +29,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.junit.ClassRule;
 
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
@@ -38,12 +40,8 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 public class CassandraMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
-
-    @BeforeClass
-    public static void beforeCassandraEntityStoreTests()
-    {
-        assumeConnectivity( "localhost", 9042 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "cassandra", 9042 );
 
     @Override
     // START SNIPPET: assembly
