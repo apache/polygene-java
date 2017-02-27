@@ -52,6 +52,8 @@ import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
 import org.gradle.plugins.ide.internal.IdeDependenciesExtractor
 import org.gradle.plugins.ide.internal.resolver.model.IdeExtendedRepoFileDependency
+import org.gradle.plugins.signing.Sign
+import org.gradle.plugins.signing.SigningExtension
 
 // TODO Expose all project outputs into configurations
 @CompileStatic
@@ -90,6 +92,7 @@ class DistributionsPlugin implements Plugin<Project>
     applyAssembleDistributions project
     applyCheckDistributions project
     configureDistributionChecksums project
+    configureSigning project
   }
 
   private static void applyAssembleDistributions( Project project )
@@ -425,6 +428,24 @@ class DistributionsPlugin implements Plugin<Project>
         project.ant.checksum file: task.archivePath, algorithm: 'MD5'
         project.ant.checksum file: task.archivePath, algorithm: 'SHA-512'
       }
+    }
+  }
+
+  private static void configureSigning( Project project )
+  {
+    def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
+    project.plugins.apply 'signing'
+    def signing = project.extensions.getByType SigningExtension
+    signing.required = !releaseSpec.developmentVersion
+    def distTasks = [TaskNames.ZIP_SOURCE_DIST, TaskNames.TAR_SOURCE_DIST,
+                     TaskNames.ZIP_BINARY_DIST, TaskNames.TAR_BINARY_DIST]
+                     .collect { taskName -> project.tasks.getByName( taskName ) }
+    distTasks.each { distTask ->
+      distTask.finalizedBy signing.sign( distTask )
+    }
+    project.tasks.withType(Sign) { Sign task ->
+      task.enabled = !releaseSpec.developmentVersion
+      task.onlyIf { !project.findProperty( 'skipSigning' ) }
     }
   }
 
