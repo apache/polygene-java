@@ -107,6 +107,9 @@ class ReportsPlugin implements Plugin<Project>
       def options = task.options as StandardJavadocDocletOptions
       options.docFilesSubDirs = true
       options.encoding = 'UTF-8'
+      options.docEncoding = 'UTF-8'
+      options.charSet = 'UTF-8'
+      options.noTimestamp = true
       options.overview = "${ project.projectDir }/src/javadoc/overview.html"
       task.title = "${ RootPlugin.PROJECT_TITLE } ${ project.version }"
       options.group( [
@@ -130,6 +133,11 @@ class ReportsPlugin implements Plugin<Project>
         "Test Support"  : [ "org.apache.polygene.test",
                             "org.apache.polygene.test.*" ]
       ] )
+      options.links = [
+        'http://docs.oracle.com/javase/8/docs/api/',
+        'https://stleary.github.io/JSON-java/',
+        'http://junit.org/junit4/javadoc/latest/'
+      ]
     }
     project.tasks.getByName( LifecycleBasePlugin.CHECK_TASK_NAME ).dependsOn javadocsTask
     project.tasks.withType( Javadoc ) { Javadoc task ->
