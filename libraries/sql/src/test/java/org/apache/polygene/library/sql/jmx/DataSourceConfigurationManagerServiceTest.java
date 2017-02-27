@@ -82,6 +82,7 @@ public class DataSourceConfigurationManagerServiceTest
                 // Set up DataSource service that will manage the connection pools
                 new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" )
                                                     .visibleIn( Visibility.layer )
+                                                    .withConfig( module, Visibility.layer )
                                                     .assemble( module );
 
                 {
@@ -96,6 +97,7 @@ public class DataSourceConfigurationManagerServiceTest
 
                     // Set up Liquibase service that will create the tables
                     new LiquibaseAssembler().identifiedBy( "liquibase1" )
+                                            .withConfig( testModule, Visibility.module )
                                             .applyChangelogOnStartup()
                                             .assemble( testModule );
                     testModule.forMixin( LiquibaseConfiguration.class ).declareDefaults()
@@ -115,6 +117,7 @@ public class DataSourceConfigurationManagerServiceTest
 
                     // Set up Liquibase service that will create the tables
                     new LiquibaseAssembler().identifiedBy( "liquibase2" )
+                                            .withConfig( testModule2, Visibility.module )
                                             .applyChangelogOnStartup()
                                             .assemble( testModule2 );
                     testModule2.forMixin( LiquibaseConfiguration.class ).declareDefaults()
