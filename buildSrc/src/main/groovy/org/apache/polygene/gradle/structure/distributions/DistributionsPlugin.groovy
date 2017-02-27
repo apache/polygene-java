@@ -309,10 +309,6 @@ class DistributionsPlugin implements Plugin<Project>
   private static void applyBinaryDistribution( Project project )
   {
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
-    def reportsDistCopySpec = project.copySpec { CopySpec spec ->
-      spec.from "$project.rootProject.projectDir/reports/build/reports"
-      spec.into 'docs/reports'
-    }
     def docsCopySpec = project.copySpec { CopySpec spec ->
       spec.from "$project.rootProject.projectDir/reports/build/docs"
       spec.from "$project.rootProject.projectDir/manual/build/docs/website"
@@ -350,7 +346,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.into "apache-polygene-java-$project.version-bin"
       spec.with binDistNoticesCopySpec
       spec.with docsCopySpec
-      spec.with reportsDistCopySpec
       spec.with extraDistTextCopySpec
       spec.with extraDistBinCopySpec
       spec.with libsCopySpec
@@ -358,8 +353,9 @@ class DistributionsPlugin implements Plugin<Project>
 
     def binariesBuildDependencies = {
       project.rootProject.allprojects
-             .findAll { p -> p.plugins.hasPlugin( PublishedCodePlugin ) || p.path == ':manual' || p.path == ':reports' }
-             .collect { p -> "${ p.path }:${ LifecycleBasePlugin.BUILD_TASK_NAME }" }
+             .findAll { p -> p.plugins.hasPlugin( PublishedCodePlugin ) }
+             .collect { p -> "${ p.path }:${ LifecycleBasePlugin.ASSEMBLE_TASK_NAME }" as String } +
+             ( releaseSpec.developmentVersion ? [] as List<String> : [ ':manual:website', ':reports:javadocs' ] )
     }
 
     def zipBinaries = project.tasks.create( TaskNames.ZIP_BINARY_DIST, Zip ) { Zip task ->
