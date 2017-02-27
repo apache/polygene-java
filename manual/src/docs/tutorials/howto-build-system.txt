@@ -180,6 +180,9 @@ The last stanza set environment variables for Docker to use the newly created Do
 If you want to run the Docker containers in a remote machine, simply set the `DOCKER_HOST` and `DOCKER_CERT_PATH`
 environment variables to something sensible for your setup.
 
+If you want to forcibly skip all Docker related work, set the `skipDocker` Gradle property by e.g. appending
+`-PskipDocker` to your Gradle command line.
+
 === Performance tests ===
 
 Performance tests provide performance measurements for typical Polygene™ use cases.

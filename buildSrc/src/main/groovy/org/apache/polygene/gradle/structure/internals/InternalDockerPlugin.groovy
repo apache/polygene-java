@@ -74,13 +74,25 @@ class InternalDockerPlugin implements Plugin<Project>
       task.onError = { ex ->
         // Disable Docker for this build
         project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
-        if( project.logger.isEnabled( LogLevel.INFO ) )
+        if( project.hasProperty( 'skipDocker' ) )
+        {
+            project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
+        }
+        else if( project.logger.isEnabled( LogLevel.INFO ) )
         {
           project.logger.info 'Unable to connect to Docker, all Docker tasks will be SKIPPED', ex
         }
         else
         {
           project.logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ ( ( Exception ) ex ).message }"
+        }
+      }
+      task.onComplete = {
+        if( project.hasProperty( 'skipDocker' ) )
+        {
+          // Disable Docker for this build
+          project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
+          project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
         }
       }
     } as Action<DockerVersion> )
