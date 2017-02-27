@@ -52,7 +52,7 @@ Clone/checkout all needed repositories, next to each other:
 mkdir polygene-repos
 cd polygene-repos
 git clone https://git-wip-us.apache.org/repos/asf/polygene-java.git polygene-java
-svn checkout https://svn.apache.org/repos/asf/polygene/ polygene-web
+git clone https://git-wip-us.apache.org/repos/asf/polygene-website.git polygene-website
 svn checkout --depth empty https://dist.apache.org/repos/dist/ polygene-dist
 cd polygene-dist
 svn update --set-depth immediates dev
@@ -92,7 +92,7 @@ Here is what should pass before going further:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" website signArchives
+./gradlew -Dversion="<RELEASE-VERSION>" check website
 ----
 
 See the <<build-system, Build System>> tutorial for details.
@@ -235,13 +235,12 @@ Make a complete build, deploying maven artifacts locally:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" -PuploadRepository="file://$(pwd)/build/repositories/polygene-java" \
-    clean assemble checkDists uploadArchives
+./gradlew -Dversion="<RELEASE-VERSION>" checkDistributions
 ----
 
-Review maven artifacts in `build/repositories/polygene-java`.
+Review maven artifacts in `distributions/build/stage/maven-binaries`.
 
-Also review the release distributions in `build/distributions` where you should find the following files:
+Also review the release distributions in `distributions/build/distributions` where you should find the following files:
 
 [source,shell]
 ----
@@ -305,7 +304,7 @@ Stage artifacts to https://repository.apache.org/[repository.apache.org] :
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" uploadArchives
+./gradlew -Dversion="<RELEASE-VERSION>" publishAsfMavenArtifacts
 ----
 
 Close the staging Nexus repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#close-stage[Closing the staged repository] guide.
@@ -520,7 +519,7 @@ This also must output `some-filename: OK` for each distribution.
 
 === Verify source distribution
 
-Unpack the source distributions, we will use the `zip` distribution here, both should be checked. 
+Unpack the source distributions, we will use the `zip` distribution here, both should be checked.
 
 [source,shell]
 ----
@@ -544,7 +543,7 @@ You can also `grep` the whole source tree.
 [source,shell]
 ----
 cd polygene-check-rc/apache-polygene-java-<RELEASE-VERSION>-RC#-src
-./gradlew check assemble
+./gradlew assemble check
 ----
 
 
@@ -583,7 +582,7 @@ Move the release distributions, checksums and signatures from https://dist.apach
 [source,shell]
 ----
 cd polygene-dist
-# Source ZIP
+# Source ZIP TODO
 export DIST_DEV_URL="https://dist.apache.org/repos/dist/dev/polygene"
 export DIST_RELEASE_URL="https://dist.apache.org/repos/dist/release/polygene"
 svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" \
@@ -666,7 +665,7 @@ Generate the documentation and javadoc minisite:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" archiveJavadocs manuals
+./gradlew -Dversion="<RELEASE-VERSION>" publishAsfDocumentation
 ----
 
 This will automatically put all files into the `polygene-web` website repository.
@@ -676,7 +675,7 @@ Create a new post on the Polygene™ website by creating a new Markdown file:
 [source,shell]
 ----
 cd polygene-web
-touch "site/src/_posts/YYYY-MM-DD-apache-polygene-java-<RELEASE-VERSION>.md"
+touch "src/_posts/YYYY-MM-DD-apache-polygene-java-<RELEASE-VERSION>.md"
 open !$
 ----
 
@@ -728,8 +727,8 @@ And publish it:
 
 [source,shell]
 ----
-svn add * --force
-svn commit -m "polygene: update website"
+git add .
+git commit -m "update website"
 ----
 
 
@@ -789,4 +788,3 @@ svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene a
 === Start over
 
 If a new RC is to be created, restart the process as described above.
-
