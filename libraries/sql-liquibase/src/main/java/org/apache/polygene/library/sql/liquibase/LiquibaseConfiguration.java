@@ -20,18 +20,18 @@
 package org.apache.polygene.library.sql.liquibase;
 
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
-import org.apache.polygene.api.configuration.Enabled;
 import org.apache.polygene.api.property.Property;
 
 /**
- * Configuration for Liquibase
+ * Configuration for Liquibase.
  */
 // START SNIPPET: config
 public interface LiquibaseConfiguration
-        extends ConfigurationComposite, Enabled
 {
-    @UseDefaults Property<String> contexts();
-    @UseDefaults Property<String> changeLog();
+    @UseDefaults
+    Property<String> changeLog();
+
+    @UseDefaults
+    Property<String> contexts();
 }
 // END SNIPPET: config

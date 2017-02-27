@@ -19,12 +19,13 @@ package org.apache.polygene.test.performance.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import org.junit.Ignore;
+import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
+import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -32,12 +33,13 @@ import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
-import org.apache.polygene.entitystore.sql.internal.SQLs;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
-import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.junit.Ignore;
+
+import static org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
 /**
  * Performance test for PostgreSQLEntityStore.
@@ -119,29 +121,19 @@ public class PostgreSQLEntityStorePerformanceTest
 
             Module moduleInstance = application.findModule( "Layer 1", "config" );
             UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
-            UnitOfWork uow = uowf.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork(
+                UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
+            );
             try
             {
-                SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                                   PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-                // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractPolygeneTest
-                Connection connection = null; // SQLUtil.getConnection( this.serviceLocator );
+                SQLConfiguration config = uow.get( SQLConfiguration.class, DEFAULT_ENTITYSTORE_IDENTITY );
+                Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
+                connection.setAutoCommit( false );
                 String schemaName = config.schemaName().get();
-                if( schemaName == null )
+                try( Statement stmt = connection.createStatement() )
                 {
-                    schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-                }
-
-                Statement stmt = null;
-                try
-                {
-                    stmt = connection.createStatement();
-                    stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
+                    stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
                     connection.commit();
-                }
-                finally
-                {
-                    SQLUtil.closeQuietly( stmt );
                 }
             }
             finally

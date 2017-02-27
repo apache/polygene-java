@@ -22,10 +22,12 @@ import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.SQLMapEntityStoreMapping;
+import org.apache.polygene.entitystore.sql.SQLMapEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.SQLMapEntityStoreService;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
+import org.apache.polygene.library.sql.liquibase.LiquibaseAssembler;
+import org.apache.polygene.library.sql.liquibase.LiquibaseConfiguration;
 import org.jooq.SQLDialect;
+import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 
 /**
@@ -35,6 +37,9 @@ public abstract class AbstractSQLMapEntityStoreAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
     public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = new StringIdentity( "entitystore-sql" );
+    private static final String DEFAULT_CHANGELOG_PATH = "org/apache/polygene/entitystore/sql/changelog.xml";
+
+    private String changelogPath = DEFAULT_CHANGELOG_PATH;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -49,37 +54,44 @@ public abstract class AbstractSQLMapEntityStoreAssembler<AssemblerType>
         {
             throw new AssemblyException( "Settings must not be null" );
         }
-        SQLMapEntityStoreMapping mapping = getMapping();
-        if( settings == null )
+
+        String identity = ( hasIdentity() ? identity() : DEFAULT_ENTITYSTORE_IDENTITY ).toString();
+
+        LiquibaseAssembler liquibase = new LiquibaseAssembler().identifiedBy( identity + "-liquibase" );
+        if( hasConfig() )
         {
-            throw new AssemblyException( "SQLMapEntityStoreSchema must not be null" );
+            liquibase.withConfig( configModule(), configVisibility() );
+            LiquibaseConfiguration liquibaseconfig = configModule().forMixin( LiquibaseConfiguration.class )
+                                                                   .declareDefaults();
+            liquibaseconfig.changeLog().set( changelogPath );
         }
+        liquibase.assemble( module );
 
         module.services( SQLMapEntityStoreService.class )
-              .identifiedBy( ( hasIdentity() ? identity() : DEFAULT_ENTITYSTORE_IDENTITY ).toString() )
+              .identifiedBy( identity )
               .visibleIn( visibility() )
               .setMetaInfo( dialect )
-              .setMetaInfo( settings )
-              .setMetaInfo( mapping );
+              .setMetaInfo( settings );
 
         if( hasConfig() )
         {
-            configModule().entities( SQLConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( SQLMapEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
+    }
+
+    public AssemblerType withLiquibaseChangelog( String changelogPath )
+    {
+        this.changelogPath = changelogPath;
+        return (AssemblerType) this;
     }
 
     protected Settings getSettings()
     {
-        return new Settings();
+        return new Settings().withRenderNameStyle( RenderNameStyle.QUOTED );
     }
 
     protected SQLDialect getSQLDialect()
     {
         return SQLDialect.DEFAULT;
-    }
-
-    protected SQLMapEntityStoreMapping getMapping()
-    {
-        return new SQLMapEntityStoreMapping() {};
     }
 }

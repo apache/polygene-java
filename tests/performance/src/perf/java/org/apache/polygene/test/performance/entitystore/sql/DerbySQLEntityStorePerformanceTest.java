@@ -26,14 +26,14 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.sql.SQLMapEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.apache.polygene.entitystore.sql.internal.SQLs;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
-import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+
+import static org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
 /**
  * Performance test for DerbySQLEntityStore.
@@ -88,29 +88,21 @@ public class DerbySQLEntityStorePerformanceTest
         {
             return;
         }
-        UnitOfWork uow = this.uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
+            "Delete " + getClass().getSimpleName() + " test data" )
+        );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                               DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLMapEntityStoreConfiguration config = uow.get( SQLMapEntityStoreConfiguration.class,
+                                                             DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            String schemaName = config.schemaName().get();
-            if( schemaName == null )
+            connection.setAutoCommit( false );
+            try( Statement stmt = connection.createStatement() )
             {
-                schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-            }
-
-            Statement stmt = null;
-            try
-            {
-                stmt = connection.createStatement();
-                stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
+                stmt.execute( String.format( "DELETE FROM %s.%s",
+                                             config.schemaName().get(),
+                                             config.entityTableName().get() ) );
                 connection.commit();
-            }
-            finally
-            {
-                SQLUtil.closeQuietly( stmt );
             }
         }
         finally
@@ -119,5 +111,4 @@ public class DerbySQLEntityStorePerformanceTest
             super.cleanUp();
         }
     }
-
 }

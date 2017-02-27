@@ -28,12 +28,12 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.apache.polygene.entitystore.sql.internal.SQLs;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+
+import static org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
 public class DerbySQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -80,18 +80,15 @@ public class DerbySQLEntityStoreTest
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
-            SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                               DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLMapEntityStoreConfiguration config = uow.get( SQLMapEntityStoreConfiguration.class,
+                                                             DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
-            String schemaName = config.schemaName().get();
-            if( schemaName == null )
-            {
-                schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-            }
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s.%s", schemaName, SQLs.TABLE_NAME ) );
+                stmt.execute( String.format( "DELETE FROM %s.%s",
+                                             config.schemaName().get(),
+                                             config.entityTableName().get() ) );
                 connection.commit();
             }
         }

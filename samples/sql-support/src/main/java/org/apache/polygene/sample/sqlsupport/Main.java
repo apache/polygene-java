@@ -31,9 +31,7 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
-import org.apache.polygene.entitystore.sql.internal.SQLs;
 import org.apache.polygene.index.sql.assembly.PostgreSQLIndexQueryAssembler;
-import org.apache.polygene.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;
 
@@ -120,9 +118,6 @@ public class Main
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );
                 String schemaName = config.schemaName().get();
-                if ( schemaName == null ) {
-                    schemaName = SQLs.DEFAULT_SCHEMA_NAME;
-                }
 
                 Statement stmt = null;
                 try {
@@ -146,9 +141,6 @@ public class Main
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );
                 String schemaName = config.schemaName().get();
-                if ( schemaName == null ) {
-                    schemaName = PostgreSQLAppStartup.DEFAULT_SCHEMA_NAME;
-                }
 
                 Statement stmt = null;
                 try {

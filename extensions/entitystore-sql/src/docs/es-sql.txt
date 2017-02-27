@@ -30,6 +30,8 @@ EntityStore service backed by a SQL database.
 This extension fully leverage the <<library-sql>> meaning that you must use it to assemble your DataSource and that you
 get <<library-circuitbreaker,Circuit Breaker>> and <<library-jmx, JMX>> integration for free.
 
+The database schema is managed using <<library-sql-liquibase>>.
+
 TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
 <<extension-indexing-sql>>.
 
@@ -44,15 +46,17 @@ The following SQL databases are supported:
 Each entity state is stored as a single row so maximum number of entities is the maximum number of rows per table
 supported by the underlying SQL database.
 
-Implementations per database Vendor share a generic codebase but can override about everything SQL. As a consequence
-they can have strong differences in terms of performance if they use vendor specific extensions.
-
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Configuration ==
 
-SQL EntityStore Configuration is optional and provides only one configuration property: `schemaName` defaulted to
-'polygene_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
+Here are the available configuration properties:
+
+[snippet,java]
+----
+source=extensions/entitystore-sql/src/main/java/org/apache/polygene/entitystore/sql/SQLMapEntityStoreConfiguration.java
+tag=assembly
+----
 
 The assembly snippets below show the DataSource assembly alongside the SQL EntityStore assembly. Remember to configure
 the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.

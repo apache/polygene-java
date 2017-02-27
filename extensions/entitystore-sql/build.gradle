@@ -29,23 +29,16 @@ dependencies {
   api polygene.library( 'sql' )
   api libraries.jooq
 
-  implementation libraries.slf4j_api
   implementation polygene.library( 'sql-liquibase' )
-
-  // TODO Remove java SQL generator dependency
-  implementation libraries.javaSqlGenerator
-  implementation( libraries.javaSqlGeneratorImpl ) {
-    exclude group: 'junit'
-  }
 
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.internals.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
-  testImplementation libraries.derby // Needed at compile time for polite test shutdown
   testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
+  testRuntimeOnly libraries.derby
   testRuntimeOnly libraries.h2
   testRuntimeOnly libraries.mysql_connector
   testRuntimeOnly libraries.postgres

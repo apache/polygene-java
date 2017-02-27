@@ -30,8 +30,8 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceJMXAssembler;
 import org.apache.polygene.library.sql.datasource.DataSources;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+import org.apache.polygene.library.sql.liquibase.LiquibaseAssembler;
 import org.apache.polygene.library.sql.liquibase.LiquibaseConfiguration;
-import org.apache.polygene.library.sql.liquibase.LiquibaseService;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -95,10 +95,9 @@ public class DataSourceConfigurationManagerServiceTest
                                              .assemble( testModule );
 
                     // Set up Liquibase service that will create the tables
-                    testModule.services( LiquibaseService.class ).identifiedBy( "liquibase1" ).instantiateOnStartup();
-                    testModule.entities( LiquibaseConfiguration.class );
-                    testModule.forMixin( LiquibaseConfiguration.class ).declareDefaults()
-                              .enabled().set( true );
+                    new LiquibaseAssembler().identifiedBy( "liquibase1" )
+                                            .applyChangelogOnStartup()
+                                            .assemble( testModule );
                     testModule.forMixin( LiquibaseConfiguration.class ).declareDefaults()
                               .changeLog().set( "changelog.xml" );
                 }
@@ -115,12 +114,11 @@ public class DataSourceConfigurationManagerServiceTest
                                              .assemble( testModule2 );
 
                     // Set up Liquibase service that will create the tables
-                    testModule2.services( LiquibaseService.class ).identifiedBy( "liquibase2" ).instantiateOnStartup();
-                    testModule2.entities( LiquibaseConfiguration.class );
+                    new LiquibaseAssembler().identifiedBy( "liquibase2" )
+                                            .applyChangelogOnStartup()
+                                            .assemble( testModule2 );
                     testModule2.forMixin( LiquibaseConfiguration.class ).declareDefaults()
-                               .enabled().set( true );
-                    testModule2.forMixin( LiquibaseConfiguration.class ).declareDefaults()
-                               .changeLog().set( "changelog.xml" );
+                              .changeLog().set( "changelog.xml" );
                 }
 
                 // START SNIPPET: jmx

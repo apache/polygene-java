@@ -27,13 +27,17 @@ import org.apache.polygene.bootstrap.ServiceDeclaration;
 public class LiquibaseAssembler
     extends Assemblers.VisibilityIdentityConfig<LiquibaseAssembler>
 {
+    private boolean applyChangelogOnStartup;
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ServiceDeclaration service = module.services( LiquibaseService.class ).
-            visibleIn( visibility() ).
-            instantiateOnStartup();
+        ServiceDeclaration service = module.services( LiquibaseService.class ).visibleIn( visibility() );
+        if( applyChangelogOnStartup )
+        {
+            service.withActivators( LiquibaseService.ApplyChangelogActivator.class ).instantiateOnStartup();
+        }
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
@@ -42,5 +46,11 @@ public class LiquibaseAssembler
         {
             configModule().entities( LiquibaseConfiguration.class ).visibleIn( configVisibility() );
         }
+    }
+
+    public LiquibaseAssembler applyChangelogOnStartup()
+    {
+        applyChangelogOnStartup = true;
+        return this;
     }
 }

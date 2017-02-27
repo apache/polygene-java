@@ -22,13 +22,17 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 import javax.json.Json;
 import javax.sql.DataSource;
-import org.apache.polygene.api.common.Optional;
+import liquibase.Contexts;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.ObjectQuotingStrategy;
+import liquibase.exception.LiquibaseException;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
@@ -37,9 +41,8 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
+import org.apache.polygene.library.sql.liquibase.LiquibaseService;
 import org.apache.polygene.spi.entitystore.EntityNotFoundException;
-import org.apache.polygene.spi.entitystore.EntityStoreException;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
 import org.jooq.DSLContext;
@@ -51,26 +54,27 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-// TODO Implement optimistic locking! Maybe as a SPI helper (in-progress)
-// TODO Add schema version data into the DB, check it
-// TODO Remove old SQL ES Code
+// TODO Remove old SQL ES Code and spurious dependencies
 public class SQLMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( SQLMapEntityStoreService.class );
+    private static final String TABLE_NAME_LIQUIBASE_PARAMETER = "es-sql.table";
+    private static final String IDENTITY_COLUMN_NAME = "ENTITY_IDENTITY";
+    private static final String VERSION_COLUMN_NAME = "ENTITY_VERSION";
+    private static final String STATE_COLUMN_NAME = "ENTITY_STATE";
 
     @Service
     private DataSource dataSource;
+
+    @Service
+    private LiquibaseService liquibaseService;
 
     @Uses
     private ServiceDescriptor descriptor;
 
     @This
-    @Optional
-    private Configuration<SQLConfiguration> configuration;
+    private Configuration<SQLMapEntityStoreConfiguration> configuration;
 
     private Schema schema;
     private Table<Record> table;
@@ -82,40 +86,64 @@ public class SQLMapEntityStoreMixin
     @Override
     public void activateService() throws Exception
     {
+        configuration.refresh();
+        SQLMapEntityStoreConfiguration config = configuration.get();
+
+        // Prepare jooq DSL
         SQLDialect dialect = descriptor.metaInfo( SQLDialect.class );
         Settings settings = descriptor.metaInfo( Settings.class );
-        SQLMapEntityStoreMapping mapping = descriptor.metaInfo( SQLMapEntityStoreMapping.class );
-        String schemaName = getConfiguredSchemaName( mapping.defaultSchemaName() );
-        if( schemaName == null )
-        {
-            throw new EntityStoreException( "Schema name must not be null." );
-        }
-        schema = DSL.schema( DSL.name( schemaName.toUpperCase() ) );
+        String schemaName = config.schemaName().get();
+        String tableName = config.entityTableName().get();
+        schema = DSL.schema( DSL.name( schemaName ) );
         table = DSL.table(
             dialect.equals( SQLDialect.SQLITE )
-            ? DSL.name( mapping.tableName() )
-            : DSL.name( schema.getName(), mapping.tableName() )
+            ? DSL.name( tableName )
+            : DSL.name( schema.getName(), tableName )
         );
-        identityColumn = DSL.field( mapping.identityColumnName(), String.class );
-        versionColumn = DSL.field( mapping.versionColumnName(), String.class );
-        stateColumn = DSL.field( mapping.stateColumnName(), String.class );
-
+        identityColumn = DSL.field( DSL.name( IDENTITY_COLUMN_NAME ), String.class );
+        versionColumn = DSL.field( DSL.name( VERSION_COLUMN_NAME ), String.class );
+        stateColumn = DSL.field( DSL.name( STATE_COLUMN_NAME ), String.class );
         dsl = DSL.using( dataSource, dialect, settings );
 
-        if( !dialect.equals( SQLDialect.SQLITE )
-            && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equals( s.getName() ) ) )
+        // Eventually create schema and apply Liquibase changelog
+        if( config.createIfMissing().get() )
         {
-            dsl.createSchema( schema ).execute();
-        }
+            if( !dialect.equals( SQLDialect.SQLITE )
+                && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
+            {
+                dsl.createSchema( schema ).execute();
+            }
 
-        if( dsl.meta().getTables().stream().noneMatch( t -> table.getName().equals( t.getName() ) ) )
+            applyLiquibaseChangelog( dialect );
+        }
+    }
+
+    private void applyLiquibaseChangelog( SQLDialect dialect ) throws SQLException, LiquibaseException
+    {
+        Liquibase liquibase = liquibaseService.newConnectedLiquibase();
+        Database db = liquibase.getDatabase();
+        db.setObjectQuotingStrategy( ObjectQuotingStrategy.QUOTE_ALL_OBJECTS );
+        try
         {
-            dsl.createTable( table )
-               .column( identityColumn, mapping.identityDataType().nullable( false ) )
-               .column( versionColumn, mapping.versionDataType().nullable( false ) )
-               .column( stateColumn, mapping.stateDataType().nullable( false ) )
-               .constraint( DSL.constraint( "ENTITY_IDENTITY_CONSTRAINT" ).primaryKey( identityColumn ) )
-               .execute();
+            if( !dialect.equals( SQLDialect.SQLITE ) )
+            {
+                if( db.supportsSchemas() )
+                {
+                    db.setDefaultSchemaName( schema.getName() );
+                    db.setLiquibaseSchemaName( schema.getName() );
+                }
+                if( db.supportsCatalogs() )
+                {
+                    db.setDefaultCatalogName( schema.getName() );
+                    db.setLiquibaseCatalogName( schema.getName() );
+                }
+            }
+            liquibase.getChangeLogParameters().set( TABLE_NAME_LIQUIBASE_PARAMETER, table.getName() );
+            liquibase.update( new Contexts() );
+        }
+        finally
+        {
+            db.close();
         }
     }
 
@@ -209,31 +237,5 @@ public class SQLMapEntityStoreMixin
             }
         } );
         dsl.batch( operations ).execute();
-    }
-
-
-    /**
-     * Configuration is optional at both assembly and runtime.
-     */
-    protected String getConfiguredSchemaName( String defaultSchemaName )
-    {
-        if( configuration == null )
-        {
-            Objects.requireNonNull( defaultSchemaName, "default schema name" );
-            LOGGER.debug( "No configuration, will use default schema name: '{}'", defaultSchemaName );
-            return defaultSchemaName;
-        }
-        String result = configuration.get().schemaName().get();
-        if( result == null )
-        {
-            Objects.requireNonNull( defaultSchemaName, "default schema name" );
-            result = defaultSchemaName;
-            LOGGER.debug( "No database schema name in configuration, will use default: '{}'", defaultSchemaName );
-        }
-        else
-        {
-            LOGGER.debug( "Will use configured database schema name: '{}'", result );
-        }
-        return result;
     }
 }

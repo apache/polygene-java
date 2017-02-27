@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.library.sql.liquibase;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Function;
 import javax.sql.DataSource;
@@ -60,8 +58,7 @@ import static org.junit.Assert.assertTrue;
 public class LiquibaseServiceTest
 {
     @Test
-    public void testLiquibase()
-        throws SQLException, IOException, ActivationException, AssemblyException
+    public void testLiquibase() throws ActivationException
     {
         final SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -89,9 +86,9 @@ public class LiquibaseServiceTest
                 // START SNIPPET: assembly
                 new LiquibaseAssembler()
                     .withConfig( configModule, Visibility.layer )
+                    .applyChangelogOnStartup()
                     .assemble( module );
                 // END SNIPPET: assembly
-                module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
             }
 

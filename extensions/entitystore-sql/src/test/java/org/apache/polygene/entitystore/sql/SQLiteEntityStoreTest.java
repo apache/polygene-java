@@ -31,8 +31,7 @@ import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
-public class SQLiteEntityStoreTest
-    extends AbstractEntityStoreTest
+public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
 {
     @BeforeClass
     public static void beforeClass_IBMJDK()
