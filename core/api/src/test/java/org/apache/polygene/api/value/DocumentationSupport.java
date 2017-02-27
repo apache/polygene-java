@@ -29,13 +29,8 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.serialization.Deserializer;
-import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
@@ -46,8 +41,8 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Snippets:
- * - default : default ValueSerialization
- * - service : assembled service ValueSerialization
+ * - default : default Serialization
+ * - service : assembled service Serialization
  * - io : i/o usage
  */
 public class DocumentationSupport extends AbstractPolygeneTest
@@ -61,7 +56,6 @@ public class DocumentationSupport extends AbstractPolygeneTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( SomeValue.class ); // (2)
     }
@@ -160,54 +154,6 @@ public class DocumentationSupport extends AbstractPolygeneTest
         // START SNIPPET: io
     }
     // END SNIPPET: io
-
-    @Test
-    // TODO Move to SPI !
-    // TODO Include in each Serialization extensions documentation
-    public void assembledWithValuesModuleSerialization()
-        throws Exception
-    {
-        Application app = new Energy4Java().newApplication(
-            applicationFactory ->
-            {
-                Assembler[][][] pancakes = new Assembler[][][]
-                    {
-                        {
-                            {
-                                valuesModule ->
-                                {
-                                    valuesModule.layer().setName( "SINGLE-Layer" );
-                                    valuesModule.setName( "VALUES-Module" );
-
-                                    valuesModule.values( SomeValue.class );
-                                }
-                            },
-                            {
-                                servicesModule -> servicesModule.setName( "SERVICES-Module" )
-                            }
-                        }
-                    };
-                return applicationFactory.newApplicationAssembly( pancakes );
-            } );
-        app.activate();
-        try
-        {
-            SomeValue someValue = someNewValueInstance();
-
-            Module servicesModule = app.findModule( "SINGLE-Layer", "SERVICES-Module" );
-            Serialization stateSerialization = servicesModule.findService( Serialization.class ).get();
-
-            String json = stateSerialization.serialize( someValue );
-            assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
-
-            SomeValue someNewValue = stateSerialization.deserialize( module, SomeValue.class, json );
-            assertThat( someNewValue, equalTo( someValue ) );
-        }
-        finally
-        {
-            app.passivate();
-        }
-    }
 
     private SomeValue someNewValueInstance()
     {

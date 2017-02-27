@@ -22,10 +22,14 @@ import org.apache.polygene.test.serialization.AbstractValueCompositeSerializatio
 
 public class MessagePackValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
     {
         new MessagePackSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
         super.assemble( module );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 }

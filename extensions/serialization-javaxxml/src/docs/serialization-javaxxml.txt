@@ -25,6 +25,22 @@
 source=extensions/serialization-javaxxml/dev-status.xml
 --------------
 
-// TODO Document usage of XmlSerialization
+`Serialization` service backed by `javax.xml` types.
+See <<core-api-serialization>> and <<core-spi-serialization>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+This extension make use of the Java runtime default `javax.xml` provider.
+You can add dependencies to replace it by the one of your choice.
+
 // TODO Include sample model and its output from test code & resources
-// TODO Assembly - Serialization extension or sole Service, settings & adapters
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/serialization-javaxxml/src/test/java/org/apache/polygene/serialization/javaxxml/JavaxXmlValueCompositeSerializationTest.java
+tag=assembly
+----

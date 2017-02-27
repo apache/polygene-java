@@ -25,7 +25,25 @@
 source=extensions/serialization-javaxjson/dev-status.xml
 --------------
 
-// TODO Preamble - link to <<core-api-serialization>> and <<core-spi-serialization>>
-// TODO Document usage of JsonSerialization
+`Serialization` service backed by `javax.json` types.
+See <<core-api-serialization>> and <<core-spi-serialization>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+This extension comes with https://johnzon.apache.org/[Apache Johnzon] as a default `javax.json` provider.
+You can exclude its dependency and replace it by the one of your choice.
+
 // TODO Include sample model and its output from test code & resources
-// TODO Assembly - Serialization extension or sole Service, settings & adapters
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/serialization-javaxjson/src/test/java/org/apache/polygene/serialization/javaxjson/JavaxJsonValueCompositeSerializationTest.java
+tag=assembly
+----
+
+Note that this assembler is optional as Polygene assemble this service by default if no Serialization service is declared.
+

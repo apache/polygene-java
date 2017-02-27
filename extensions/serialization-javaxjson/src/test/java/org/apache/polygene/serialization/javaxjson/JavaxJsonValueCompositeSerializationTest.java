@@ -23,6 +23,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.test.serialization.AbstractValueCompositeSerializationTest;
 import org.junit.Test;
@@ -32,12 +33,26 @@ import static org.junit.Assert.assertThat;
 
 public class JavaxJsonValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {
+    // START SNIPPET: assembly
+    @Override
+    public void assemble( ModuleAssembly module )
+    {
+        new JavaxJsonSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
+        super.assemble( module );
+        // START SNIPPET: assembly
+    }
+    // END SNIPPET: assembly
+
+    // START SNIPPET: json-serialization
     @Service
-    private JsonSerialization jsonSerialization;
+    JsonSerialization jsonSerialization;
+    // END SNIPPET: json-serialization
 
     @Test
     public void valueCompositeJsonEquality()
     {
+        // START SNIPPET: json-serialization
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Some some = buildSomeValue( moduleInstance, uow, "42" );
@@ -50,11 +65,12 @@ public class JavaxJsonValueCompositeSerializationTest extends AbstractValueCompo
             // Deserialize using Module API
             Some some2 = moduleInstance.newValueFromSerializedState( Some.class, stateString );
 
-            assertThat( "Value equality", some, equalTo( some2 ) );
+            assertThat( "Deserialized Value equality", some, equalTo( some2 ) );
 
             JsonObject jsonState2 = Json.createReader( new StringReader( some2.toString() ) ).readObject();
 
-            assertThat( "JSON equality", jsonState, equalTo( jsonState2 ) );
+            assertThat( "value.toString() JSON equality", jsonState, equalTo( jsonState2 ) );
         }
+        // END SNIPPET: json-serialization
     }
 }

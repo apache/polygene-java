@@ -14,10 +14,6 @@
 [[core-api-serialization,Serialization]]
 = Serialization =
 
-// TODO Reword with the following outline
-// Preamble - What is it for? What can I use it with?, see <<extensions>>
-// Use cases - Value, collections/streams & arrays of values
-
 State can be serialized and deserialized using the Serialization API which is a Service API implemented
 by SPI and extensions.
 
@@ -29,7 +25,7 @@ The Serialization mechanism apply to the following object types :
     * EntityReference,
     * Iterable & Stream,
     * Map,
-    * Plain Value.
+    * Plain Values.
 
 Nested Plain Values, EntityReferences, Iterables, Streams, Maps, ValueComposites are supported.
 EntityComposites and EntityReferences are serialized as their identity string.
@@ -47,10 +43,7 @@ Plain Values can be one of :
     * Double or double,
     * BigInteger,
     * BigDecimal,
-    * Date,
-    * DateTime (JodaTime),
-    * LocalDateTime (JodaTime),
-    * LocalDate (JodaTime).
+    * java.time types.
 
 TIP: Serialization behaviour can be tuned with options.
 Every +Serializer+ methods can take a +Serializer.Options+ object that contains flags to change how some
@@ -64,8 +57,7 @@ Methods of +Serializer+ allow to specify if the serialized state should contain 
 serialized value. Having type information in the serialized payload allows to keep actual ValueComposite types and by so
 circumvent +AmbiguousTypeException+ when deserializing.
 
-Core Runtime provides a default Serialization system based on the
-https://github.com/douglascrockford/JSON-java[org.json] Java library producing and consuming JSON.
+Core Runtime provides a default Serialization system based on `javax.json` types.
 
 Let's see how it works in practice.
 
@@ -103,7 +95,7 @@ In this second example, we ;
 
     . declare a ValueComposite,
     . assemble it,
-    . assemble a Serialization Service backed by the +org.json+ package,
+    . assemble a Serialization Service backed by the +javax.json+ types,
     . get the +Serializer+ and +Deserializer+ Services injected,
     . create a new Value instance,
     . use the +Serializer#serialize()+ method to get a JSON representation of the Value,

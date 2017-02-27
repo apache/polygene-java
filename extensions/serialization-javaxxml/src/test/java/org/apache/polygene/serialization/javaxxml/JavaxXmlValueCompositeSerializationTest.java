@@ -33,12 +33,16 @@ import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 // TODO Assert deserialization from formatted XML, whitespaces are a problem ATM
 public class JavaxXmlValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
     {
         new JavaxXmlSerializationAssembler().assemble( module );
+        // END SNIPPET: assembly
         super.assemble( module );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 
     // START SNIPPET: xml-serialization
     @Service

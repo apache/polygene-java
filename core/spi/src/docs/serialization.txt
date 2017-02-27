@@ -20,21 +20,88 @@
 [[core-spi-serialization,Serialization SPI]]
 = Serialization SPI =
 
+TIP: Find Serialization extensions in the <<extensions>> list.
+
 == Overview ==
 
 The Polygene™ Core Runtime use Serialization to provide string representation of ValueComposites via their `toString()`
 method, and, their instantiation from the very same representation via the `newValueFromSerializedState(..)` method of
 the ValueBuilderFactory API.
 
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=default
+--------------
+
 In each Module, if no Serialization service is assembled, a default one supporting the JSON format is used.
 
-// TODO Add sample usage of the Serialization service
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=service
+--------------
+
+== Text or Binary?
+
+The Core SPI provides adapters for text or bytes based serialization, extends the following types to implement a custom
+serialization.
+
+For text based serialization:
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractTextSerializer.java
+tag=text
+--------------
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractTextDeserializer.java
+tag=text
+--------------
+
+For bytes based serialization:
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractBinarySerializer.java
+tag=binary
+--------------
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractBinaryDeserializer.java
+tag=binary
+--------------
+
+== JSON or XML?
+
+The Core SPI provides JSON and XML serialization respectively based on `javax.json` and `javax.xml` types and APIs to
+work directly with these types so you can work with the actual object representations without serializing to text or
+bytes. They both rely on the text serialization adapters shown above.
+
+Here is an example using the `JsonSerialization` service:
+
+[snippet,java]
+--------------
+source=extensions/serialization-javaxjson/src/test/java/org/apache/polygene/serialization/javaxjson/JavaxJsonValueCompositeSerializationTest.java
+tag=json-serialization
+--------------
+
+And another using the `XmlSerialization` service:
+
+[snippet,java]
+--------------
+source=extensions/serialization-javaxxml/src/test/java/org/apache/polygene/serialization/javaxxml/JavaxXmlValueCompositeSerializationTest.java
+tag=xml-serialization
+--------------
+
 
 == Implementation notes ==
 
 Simply implement Serialization to create an extension for the Serialization SPI.
-The Core SPI module provides adapters to create pull-parsing capable Serializers and pull-parsing and tree-parsing
-capable Deserializers.
+The Core SPI module provides adapters to create Serializers and Deserializers.
 
 The behaviour described here apply to all Serialization services implemented using the Core SPI adapters. Note that
 nothing stops you from implementing an extension for the Serialization SPI without relying on theses adapters.
@@ -46,38 +113,3 @@ Theses adapters are tailored for serialization mechanisms that support the follo
     * an ordered list of values. In most languages, this is realized as an array, vector, list, or sequence ;
 
 in other words, a JSON-like structure.
-
-Special attention is taken when dealing with Maps. They are serialized as an ordered list of collections of
-name/value pairs to keep the Map order for least surprise. That way, even when the underlying serialization mechanism
-do not keep the collection of name/value pairs order we can rely on it being kept.
-
-Here is a sample Map with two entries in JSON notation to make things clear:
-
-[source,javascript]
-----
-[
-    { "key": "foo",       "value": "bar"   },
-    { "key": "cathedral", "value": "bazar" }
-]
-----
-
-Among Plain Values (see the <<core-api-value,Serialization API>> section) some are considered primitives to
-underlying serialization mechanisms and by so handed/come without conversion to/from implementations.
-
-Primitive values can be one of:
-
-    * String,
-    * Boolean or boolean,
-    * Integer or int,
-    * Long or long,
-    * Short or short,
-    * Byte or byte,
-    * Float or float,
-    * Double or double.
-
-Serialization is always done in a streaming manner using a pull-parsing based approach.
-
-Deserialization is done in a streaming manner using a pull-parsing based approach except when encountering a
-ValueComposite. ValueComposite types are deserialized using a tree-parsing based approach.
-
-All this means that you can serialize and deserialize large collections of values without filling the heap.

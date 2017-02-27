@@ -26,12 +26,14 @@ import org.apache.polygene.api.common.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+// START SNIPPET: binary
 /**
  * Base Binary Serializer.
  *
  * Implementations work on bytes, this base serializer encode these bytes in Base64 to produce Strings.
  */
 public abstract class AbstractBinarySerializer extends AbstractSerializer
+// END SNIPPET: binary
 {
     @Override
     public void serialize( Options options, Writer writer, @Optional Object object )

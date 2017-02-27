@@ -25,12 +25,14 @@ import org.apache.polygene.api.common.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+// START SNIPPET: text
 /**
  * Base Text Serializer.
  *
  * Implementations work on Strings, this base serializer encode these strings in UTF-8 to produce bytes.
  */
 public abstract class AbstractTextSerializer extends AbstractSerializer
+// END SNIPPET: text
 {
     public void serialize( Options options, OutputStream output, @Optional Object object )
     {

@@ -24,7 +24,14 @@ import org.apache.polygene.api.type.ValueType;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+// START SNIPPET: text
+/**
+ * Base Text Deserializer.
+ *
+ * Implementations work on Strings, this base deserializer decode bytes in UTF-8 to produce strings.
+ */
 public abstract class AbstractTextDeserializer extends AbstractDeserializer
+// END SNIPPET: text
 {
     @Override
     public <T> T deserialize( ModuleDescriptor module, ValueType valueType, InputStream state )

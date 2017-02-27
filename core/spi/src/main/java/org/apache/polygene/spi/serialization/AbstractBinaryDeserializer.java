@@ -28,7 +28,14 @@ import org.apache.polygene.api.type.ValueType;
 
 import static java.util.stream.Collectors.joining;
 
+// START SNIPPET: binary
+/**
+ * Base Binary Deserializer.
+ *
+ * Implementations work on bytes, this base deserializer decode Strings from Base64 to produce bytes.
+ */
 public abstract class AbstractBinaryDeserializer extends AbstractDeserializer
+// END SNIPPET: binary
 {
     @Override
     public <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )

@@ -25,6 +25,19 @@
 source=extensions/serialization-msgpack/dev-status.xml
 --------------
 
-// TODO Document usage of MessagePackSerialization
+`Serialization` service backed by http://msgpack.org/[MessagePack] that produce and consume binary payloads.
+See <<core-api-serialization>> and <<core-spi-serialization>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
 // TODO Include sample model and its output from test code & resources
-// TODO Assembly - Serialization extension or sole Service, settings & adapters
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/serialization-msgpack/src/test/java/org/apache/polygene/serialization/msgpack/MessagePackValueCompositeSerializationTest.java
+tag=assembly
+----
