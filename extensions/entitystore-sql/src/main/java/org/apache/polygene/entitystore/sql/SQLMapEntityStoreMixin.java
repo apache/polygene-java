@@ -55,7 +55,6 @@ import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
-// TODO Remove old SQL ES Code and spurious dependencies
 public class SQLMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {

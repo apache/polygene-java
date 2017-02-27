@@ -62,7 +62,6 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static org.apache.polygene.api.util.Collectors.toMap;
 
-// TODO Test all deserializations for: missing & spurious entries
 @Mixins( MessagePackDeserializer.Mixin.class )
 public interface MessagePackDeserializer extends Deserializer
 {

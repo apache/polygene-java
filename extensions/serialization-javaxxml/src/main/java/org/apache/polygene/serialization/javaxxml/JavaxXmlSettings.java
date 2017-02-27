@@ -26,7 +26,7 @@ import org.apache.polygene.api.type.ValueType;
  *
  * Must be registered as meta-info at assembly time.
  */
-// TODO javax.xml properties
+// TODO javax.xml properties?
 public class JavaxXmlSettings
 {
     public static final JavaxXmlSettings DEFAULT = new JavaxXmlSettings();

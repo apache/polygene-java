@@ -30,7 +30,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
-public class JavaxXmlValueCompositeTest extends AbstractValueCompositeSerializationTest
+// TODO Assert deserialization from formatted XML, whitespaces are a problem ATM
+public class JavaxXmlValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
@@ -39,12 +40,15 @@ public class JavaxXmlValueCompositeTest extends AbstractValueCompositeSerializat
         super.assemble( module );
     }
 
+    // START SNIPPET: xml-serialization
     @Service
     XmlSerialization xmlSerialization;
+    // END SNIPPET: xml-serialization
 
     @Test
     public void valueCompositeXmlEquality()
     {
+        // START SNIPPET: xml-serialization
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Some some = buildSomeValue( moduleInstance, uow, "23" );
@@ -56,13 +60,14 @@ public class JavaxXmlValueCompositeTest extends AbstractValueCompositeSerializat
             // Deserialize using Module API
             Some some2 = moduleInstance.newValueFromSerializedState( Some.class, stateString );
 
-            assertThat( "Value equality", some, equalTo( some2 ) );
+            assertThat( "Deserialized Value equality", some, equalTo( some2 ) );
 
             // Need to loosely compare because of HashMaps not retaining order
-            assertThat( "XML equality",
+            assertThat( "value.toString() XML equality",
                         stateString,
                         isSimilarTo( some2.toString() )
                             .withNodeMatcher( new DefaultNodeMatcher( ElementSelectors.byNameAndAllAttributes ) ) );
         }
+        // END SNIPPET: xml-serialization
     }
 }

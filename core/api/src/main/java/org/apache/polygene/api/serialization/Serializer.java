@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.Optional;
 
-// TODO QUID Remove Optional?
 public interface Serializer
 {
     void serialize( Options options, Writer writer, @Optional Object object );

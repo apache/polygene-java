@@ -71,6 +71,9 @@ import static org.junit.Assert.assertThat;
  */
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
+// TODO Assert deserialization using a value super type that has less properties/associations (e.g. ignore spurious state)
+// TODO Assert deserialization from state missing optional values (e.g. do not fail on missing optional values)
+// TODO Assert deserialization from state with different properties/associations order (e.g. do not fail on unordered values)
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractPolygeneTest
 {

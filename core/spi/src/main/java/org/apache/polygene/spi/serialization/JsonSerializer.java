@@ -86,7 +86,6 @@ public interface JsonSerializer extends Serializer
         }
         try
         {
-            // TODO FIX ThIS SHIT of "out of structure" value (de)serialization
             // We want plain Strings to be serialized without quotes which is non JSON compliant
             // See https://java.net/jira/browse/JSON_PROCESSING_SPEC-65
             if( jsonValue.getValueType() == JsonValue.ValueType.STRING )
