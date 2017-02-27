@@ -19,6 +19,7 @@ package org.apache.polygene.gradle.structure.manual
 
 import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.TaskGroups
+import org.apache.polygene.gradle.code.PublishNaming
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 
@@ -31,10 +32,11 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
   {
     def buildInfoDir = new File( project.buildDir, "docs/buildinfo" );
 
-    def makeAsciidocBuildInfoTask = project.tasks.create( TASK_NAME )
-    makeAsciidocBuildInfoTask.group = TaskGroups.DOCUMENTATION
-    makeAsciidocBuildInfoTask.description = 'Generates asciidoc artifact snippet'
-    makeAsciidocBuildInfoTask.doLast {
+    def task = project.tasks.create( TASK_NAME )
+    task.group = TaskGroups.DOCUMENTATION
+    task.description = 'Generates asciidoc artifact snippet'
+    task.inputs.properties.put 'artifactId', PublishNaming.publishedNameFor( project.path )
+    task.doLast {
       buildInfoDir.mkdirs()
 
       // GroupID, ArtifactID, Version table in artifact.txt
@@ -44,7 +46,7 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
         |[role="artifact", options="header,autowidth"]
         ||===================================================
         ||Group ID|Artifact ID|Version
-        ||${ project.group }|${ project.name }|${ project.version }
+        ||${ project.group }|${ PublishNaming.publishedNameFor( project.path ) }|${ project.version }
         ||===================================================
         """.stripMargin()
       artifactTableFile.withWriter { out -> out.println( artifactTable ) }
@@ -53,8 +55,8 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
     // Declare inputs/outputs
     if( project.getBuildFile() != null && project.getBuildFile().exists() )
     {
-      makeAsciidocBuildInfoTask.getInputs().file( project.getBuildFile() )
+      task.getInputs().file( project.getBuildFile() )
     }
-    makeAsciidocBuildInfoTask.getOutputs().file( buildInfoDir )
+    task.getOutputs().file( buildInfoDir )
   }
 }

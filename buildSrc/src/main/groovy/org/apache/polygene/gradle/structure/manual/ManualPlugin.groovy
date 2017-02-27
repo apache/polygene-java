@@ -44,8 +44,14 @@ class ManualPlugin implements Plugin<Project>
     def websiteTask = project.tasks.create( TaskNames.WEBSITE, DocumentationTask ) { DocumentationTask task ->
       task.group = TaskGroups.DOCUMENTATION
       task.description = 'Generates documentation website'
-      task.dependsOn project.rootProject.allprojects.findResults { Project p ->
-        p.tasks.findByName AsciidocBuildInfoPlugin.TASK_NAME
+      project.rootProject.allprojects.findResults { Project p ->
+        // TODO Remove project.afterEvaluate
+        p.afterEvaluate {
+          if( p.tasks.findByName( AsciidocBuildInfoPlugin.TASK_NAME ) )
+          {
+            task.dependsOn p.tasks.findByName( AsciidocBuildInfoPlugin.TASK_NAME )
+          }
+        }
       }
       task.onlyIf { isAsciidocInstalled( project, releaseSpec ) }
       task.docName = 'website'
