@@ -29,5 +29,4 @@ dependencies {
   implementation libraries.docker_junit
 
   runtimeOnly polygene.core.runtime
-  runtimeOnly libraries.johnzon // TODO Quid?
 }
