@@ -26,8 +26,8 @@ import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreConfiguration;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreService;
 
-public class CassandraDBEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<CassandraDBEntityStoreAssembler>
+public class CassandraEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<CassandraEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
