@@ -55,7 +55,7 @@ module.exports = generators.Base.extend(
                         type: 'input',
                         name: 'packagename',
                         message: 'Java package name',
-                        default: this.appname // Default to current folder name
+                        default: "com.acme." + this.appname // Default to current folder name
                     },
                     {
                         type: 'list',
@@ -158,7 +158,7 @@ module.exports = generators.Base.extend(
 
             copyEntityStore( this, polygene.entitystore );
 
-            copyPolygeneBootstrap( this, "infrastructure", "RDFIndexingModule", hasIndexing( 'Rdf' ) );
+            copyPolygeneBootstrap( this, "infrastructure", "RdfIndexingModule", hasIndexing( 'Rdf' ) );
             copyPolygeneBootstrap( this, "infrastructure", "ElasticSearchIndexingModule", hasIndexing( 'Elasticsearch' ) );
             copyPolygeneBootstrap( this, "infrastructure", "SolrIndexingModule", hasIndexing( 'Solr' ) );
             copyPolygeneBootstrap( this, "infrastructure", "SqlIndexingModule", hasIndexing( 'Sql' ) );
@@ -178,6 +178,7 @@ module.exports = generators.Base.extend(
             copyPolygeneBootstrap( this, "infrastructure", "MigrationModule", hasFeature( 'version migration' ) );
 
             copyPolygeneBootstrap( this, "domain", "CrudModule", true );
+            copyPolygeneBootstrap( this, "domain", "SecurityModule", true );
             copyHeroesSampleApp( this );
             copyPolygeneDomain( this, "security", "RestApiModule", "SecurityRepository", hasFeature( 'rest api' ) );
 
