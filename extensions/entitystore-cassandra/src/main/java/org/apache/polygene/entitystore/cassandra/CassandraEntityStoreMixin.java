@@ -121,7 +121,7 @@ public class CassandraEntityStoreMixin
 
     private EntityState queryFor( BoundStatement statement, ModuleDescriptor module, EntityReference reference )
     {
-        ResultSet result = cluster.session().execute( statement );
+        ResultSet result = cluster.cassandraClientSession().execute( statement );
         Row row = result.one();
         if( row == null )
         {
@@ -143,7 +143,7 @@ public class CassandraEntityStoreMixin
         {
             if( migration != null )
             {
-                migration.migrate( row, application.version(), cluster.session() );
+                migration.migrate( row, application.version(), cluster.cassandraClientSession() );
                 // State may have changed
                 status[ 0 ] = EntityStatus.UPDATED;
             }
@@ -294,7 +294,7 @@ public class CassandraEntityStoreMixin
     @Override
     public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference reference )
     {
-        ResultSet result = cluster.session().execute( cluster.versionRetrieveStatement().bind( reference.identity().toString() ) );
+        ResultSet result = cluster.cassandraClientSession().execute( cluster.versionRetrieveStatement().bind( reference.identity().toString() ) );
         Row row = result.one();
         return row.getString( VERSION_COLUMN );
     }
@@ -348,7 +348,7 @@ public class CassandraEntityStoreMixin
                                 assocs,
                                 many,
                                 named );
-                            ResultSet result = cluster.session().execute( statement );
+                            ResultSet result = cluster.cassandraClientSession().execute( statement );
                             System.out.println( result );
                         } );
                 String ids = stream( state.spliterator(), false )
@@ -357,7 +357,7 @@ public class CassandraEntityStoreMixin
                     .collect( Collectors.joining( "," ) );
                 if( !ids.isEmpty() )
                 {
-                    cluster.session().execute( "DELETE FROM " + cluster.tableName() + " WHERE id IN (" + ids + ");" );
+                    cluster.cassandraClientSession().execute( "DELETE FROM " + cluster.tableName() + " WHERE id IN (" + ids + ");" );
                 }
             }
 
@@ -444,7 +444,7 @@ public class CassandraEntityStoreMixin
     @Override
     public Stream<EntityState> entityStates( ModuleDescriptor module )
     {
-        Session session = cluster.session();
+        Session session = cluster.cassandraClientSession();
         String tableName = cluster.tableName();
         ResultSet resultSet = session.execute( "SELECT "
                                                + IDENTITY_COLUMN + ", "

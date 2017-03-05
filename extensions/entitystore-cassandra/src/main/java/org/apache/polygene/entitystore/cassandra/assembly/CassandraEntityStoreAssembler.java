@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.cassandra.assembly;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreConfiguration;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreService;
 
@@ -33,11 +32,11 @@ public class CassandraEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ServiceDeclaration service = module.services( CassandraEntityStoreService.class ).visibleIn( visibility() );
-        if( hasIdentity() )
-        {
-            service.identifiedBy( identity() );
-        }
+        module.services( CassandraEntityStoreService.class )
+              .visibleIn( visibility() )
+              .identifiedBy( identity() )
+              .instantiateOnStartup();
+
         if( hasConfig() )
         {
             configModule().entities( CassandraEntityStoreConfiguration.class ).visibleIn( configVisibility() );

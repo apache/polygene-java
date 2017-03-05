@@ -25,7 +25,6 @@ import com.datastax.driver.core.KeyspaceMetadata;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.AlreadyExistsException;
-import java.util.Objects;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Service;
@@ -48,9 +47,9 @@ public interface CassandraCluster
     String MANYASSOCIATIONS_COLUMN = "manyassocs";
     String NAMEDASSOCIATIONS_COLUMN = "namedassocs";
 
-    Session session();
-
     String tableName();
+
+    Session cassandraClientSession();
 
     PreparedStatement entityRetrieveStatement();
 
@@ -87,12 +86,6 @@ public interface CassandraCluster
         private PreparedStatement getVersionStatement;
 
         @Override
-        public Session session()
-        {
-            return session;
-        }
-
-        @Override
         public PreparedStatement entityRetrieveStatement()
         {
             return getEntityStatement;
@@ -114,6 +107,12 @@ public interface CassandraCluster
         public String keyspaceName()
         {
             return keyspaceName;
+        }
+
+        @Override
+        public Session cassandraClientSession()
+        {
+            return session;
         }
 
         public String tableName()

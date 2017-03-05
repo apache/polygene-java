@@ -19,19 +19,16 @@
  */
 package org.apache.polygene.entitystore.cassandra;
 
-import org.apache.polygene.entitystore.cassandra.assembly.CassandraDBEntityStoreAssembler;
-import org.apache.polygene.test.entity.CanRemoveAll;
-import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
-import org.junit.BeforeClass;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.cassandra.assembly.CassandraEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.apache.polygene.test.entity.CanRemoveAll;
+import org.apache.polygene.test.internal.DockerRule;
+import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
 import org.junit.ClassRule;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 /**
  * Test the CassandraEntityStoreService.
@@ -57,7 +54,7 @@ public class CassandraMapEntityStoreTest
         new JacksonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
-        new CassandraDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new CassandraEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
 
         CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();

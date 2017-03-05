@@ -29,8 +29,6 @@ import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.StateChangeNotificationConcern;
-import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
-import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
 /**
  * Cassandra EntityStore service.
@@ -48,4 +46,5 @@ public interface CassandraEntityStoreService
     String CURRENT_STORAGE_VERSION = "1";
     String DEFAULT_KEYSPACE_NAME = "polygene";
     String DEFAULT_TABLE_NAME = "entitystore";
+
 }
