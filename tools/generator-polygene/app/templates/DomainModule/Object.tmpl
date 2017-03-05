@@ -17,24 +17,17 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= packageName %>.model.<%= polygene.current.name %>;
 
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.api.injection.scope.This
+import org.apache.polygene.api.mixin.Mixins;
 
-public class DomainLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+public class <%= polygene.current.clazz.name %>
 {
-    @Override
-    public LayerAssembly assemble(LayerAssembly layer)
-        throws AssemblyException
-    {
-        createModule( layer, CrudModule.class );
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
-        return layer;
-    }
+    @Uses
+    private String name;   // Sample @Uses injection
+
+    @Structure
+    private ValueBuilderFactory vbf;  // Sample @Structure injection
+
 }

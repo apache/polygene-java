@@ -17,35 +17,20 @@
  *
  *
 -%>
-package <%= packageName %>.model.security;
+package <%= packageName %>.model.<%= polygene.current.name %>;
 
-import java.util.Collections;
-import java.util.List;
-import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.value.ValueBuilderFactory;
 
-public class HardcodedSecurityRepositoryMixin
-    implements SecurityRepository
+@Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
+public interface <%= polygene.current.clazz.name %>
 {
-
-    @Override
-    public boolean verifyPassword( String userName, String password )
+    class Mixin
+        implements <%= polygene.current.clazz.name %>
     {
-        if( userName.equals("admin") && password.equals("secret") )        {
-            return true;
-        }
-        if( userName.equals("user") && password.equals("123") )        {
-            return true;
-        }
-        return false;
-    }
-
-    @UnitOfWorkPropagation
-    public List<String> findRoleNamesOfUser( String name )
-    {
-        if( "admin".equals( name ) )
-        {
-            return Collections.singletonList("admin");
-        }
-        return Collections.singletonList("user");
+        @Structure
+        private ValueBuilderFactory vbf;
     }
 }
+

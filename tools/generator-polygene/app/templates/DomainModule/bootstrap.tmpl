@@ -1,0 +1,85 @@
+<%#
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+-%>
+package <%= packageName %>.bootstrap.domain;
+
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+<% for( var idx in polygene.current.cruds) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.cruds[idx].name + ";" %><% } %>
+<% for( var idx in polygene.current.values) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.values[idx].name + ";" %><% } %>
+<% for( var idx in polygene.current.entities) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.entities[idx].name + ";" %><% } %>
+<% for( var idx in polygene.current.transients) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.transients[idx].name + ";" %><% } %>
+<% for( var idx in polygene.current.objects) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.objects[idx].name + ";" %><% } %>
+<% for( var idx in polygene.current.services) { %><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.services[idx].name + ";" %><% } %>
+
+import static org.apache.polygene.api.common.Visibility.layer;
+import static org.apache.polygene.api.common.Visibility.application;
+
+public class <%- firstUpper(polygene.current.name) %>Module
+    implements ModuleAssembler
+{
+    @Override
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
+        throws AssemblyException
+    {
+<% if( polygene.current.cruds ) { %>
+  <% for( var value in polygene.current.cruds ) { %>
+    <% var crud1 = polygene.current.cruds[value]; %>
+    module.values(<%-  crud1.name + ".class" %>)<% if( crud1.visibility ) {%><%-".visibleIn(" + crud1.visibility +")"%><% } %>;
+  <% } %>
+  <% for( var value in polygene.current.cruds ) { %>
+    <% var crud2 = polygene.current.cruds[value]; %>
+        module.entities(<%= crud2.name + ".class" %>)<% if( crud2.visibility ) {%><%-".visibleIn(" + crud2.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+<% if( polygene.current.values ) { %>
+  <% for( var value in polygene.current.values ) { %>
+    <% var v = polygene.current.current[value]; %>
+        module.values(<%= v.name + ".class" %>)<% if( v.visibility ) {%><%-".visibleIn(" + v.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+<% if( polygene.current.entities ) { %>
+  <% for( var value in polygene.current.entities ) { %>
+    <% var entity = polygene.current.entities[value]; %>
+        module.values(<%= entity.name + ".class" %>)<% if( entity.visibility ) {%><%-".visibleIn(" + entity.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+<% if( polygene.current.transients ) { %>
+  <% for( var value in polygene.current.transients ) { %>
+    <% var trans = polygene.current.transients[value]; %>
+        module.values(<%= trans.name + ".class" %>)<% if( trans.visibility ) {%><%-".visibleIn(" + trans.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+<% if( polygene.current.objects ) { %>
+  <% for( var value in polygene.current.objects ) { %>
+    <% var obj = polygene.current.objects[value]; %>
+        module.values(<%= obj.name + ".class" %>)<% if( obj.visibility ) {%><%-".visibleIn(" + obj.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+<% if( polygene.current.services ) { %>
+  <% for( var value in polygene.current.services ) { %>
+    <% var service = polygene.current.services[value]; %>
+        module.values(<%= service.name + ".class" %>)<% if( service.visibility ) {%><%-".visibleIn(" + service.visibility +")"%><% } %>;
+  <% } %>
+<% } %>
+        return module;
+    }
+}

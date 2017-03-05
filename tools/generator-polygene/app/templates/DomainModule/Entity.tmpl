@@ -17,24 +17,25 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= packageName %>.model.<%= polygene.current.name %>;
 
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.api.injection.scope.This
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
 
-public class DomainLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+@Mixins( { <%= polygene.current.clazz.name %>.Mixin } )
+public interface <%= polygene.current.clazz.name %>
 {
-    @Override
-    public LayerAssembly assemble(LayerAssembly layer)
-        throws AssemblyException
+    interface State
     {
-        createModule( layer, CrudModule.class );
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
-        return layer;
+        Property<String> name();     // Sample hidden property
+    }
+
+    class Mixin
+        implements <%= polygene.current.clazz.name %>
+    {
+        @This
+        private State state;        // Sample reference to hidden property
+
     }
 }
