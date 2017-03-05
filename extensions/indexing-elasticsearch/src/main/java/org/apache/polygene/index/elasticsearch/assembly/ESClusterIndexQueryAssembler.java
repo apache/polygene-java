@@ -34,10 +34,11 @@ public class ESClusterIndexQueryAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( ESClusterIndexQueryService.class ).
-            identifiedBy( identity() ).
-            visibleIn( visibility() ).
-            instantiateOnStartup();
+        module.services( ESClusterIndexQueryService.class )
+              .taggedWith( "elasticsearch", "query", "indexing" )
+              .identifiedBy( identity() )
+              .visibleIn( visibility() )
+              .instantiateOnStartup();
 
         module.services( OrgJsonValueSerializationService.class ).
             taggedWith( ValueSerialization.Formats.JSON );

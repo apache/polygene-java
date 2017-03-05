@@ -40,6 +40,7 @@ public class ESClientIndexQueryAssembler
     public void assemble( final ModuleAssembly module ) throws AssemblyException
     {
         module.services( ESClientIndexQueryService.class )
+              .taggedWith( "elasticsearch", "query", "indexing" )
               .identifiedBy( identity() )
               .setMetaInfo( client )
               .visibleIn( visibility() )

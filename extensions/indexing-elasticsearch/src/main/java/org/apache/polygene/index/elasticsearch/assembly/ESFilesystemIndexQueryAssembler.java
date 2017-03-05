@@ -34,10 +34,11 @@ public class ESFilesystemIndexQueryAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( ESFilesystemIndexQueryService.class ).
-            identifiedBy( identity() ).
-            visibleIn( visibility() ).
-            instantiateOnStartup();
+        module.services( ESFilesystemIndexQueryService.class )
+              .taggedWith( "elasticsearch", "query", "indexing" )
+              .identifiedBy( identity() )
+              .visibleIn( visibility() )
+              .instantiateOnStartup();
 
         module.services( OrgJsonValueSerializationService.class ).
             taggedWith( ValueSerialization.Formats.JSON );
