@@ -58,6 +58,9 @@ public final class ServiceDeclarationImpl
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
+            if( identity == null ) {
+                identity = serviceAssembly.types.get(0).getName();
+            }
             serviceAssembly.identity = new StringIdentity( identity );
         }
         return this;
