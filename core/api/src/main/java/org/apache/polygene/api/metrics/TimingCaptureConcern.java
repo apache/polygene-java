@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.polygene.library.metrics;
+package org.apache.polygene.api.metrics;
 
 import java.lang.reflect.Method;
 import org.apache.polygene.api.common.AppliesTo;
@@ -26,7 +26,6 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Invocation;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.metrics.MetricsProvider;
 import org.apache.polygene.api.structure.Module;
 
 @AppliesTo( TimingCapture.class )

@@ -32,7 +32,6 @@ dependencies {
 
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'jmx' )
-  testImplementation polygene.library( 'metrics' )
 
   testRuntimeOnly libraries.logback
 }

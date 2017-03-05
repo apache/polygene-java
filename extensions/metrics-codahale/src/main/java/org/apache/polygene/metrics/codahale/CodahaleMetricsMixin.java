@@ -42,6 +42,7 @@ import org.apache.polygene.api.metrics.MetricsTimer;
 import org.apache.polygene.api.metrics.MetricsTimerFactory;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.metrics.codahale.assembly.CodahaleMetricsDeclaration;
 import org.apache.polygene.spi.metrics.MetricsProviderAdapter;
 
 import java.io.Closeable;
@@ -74,15 +75,15 @@ public class CodahaleMetricsMixin extends MetricsProviderAdapter
         metricRegistry = new MetricRegistry();
         healthCheckRegistry = new HealthCheckRegistry();
         CodahaleMetricsDeclaration declaration = descriptor.metaInfo( CodahaleMetricsDeclaration.class );
-        prefix = declaration.prefix != null ? declaration.prefix : app.name();
-        fqcn = declaration.fqcn;
-        if( declaration.jmx )
+        prefix = declaration.prefix() != null ? declaration.prefix() : app.name();
+        fqcn = declaration.fqcn();
+        if( declaration.jmx() )
         {
             JmxReporter jmxReporter = JmxReporter.forRegistry( metricRegistry ).build();
             jmxReporter.start();
             reporters.add( jmxReporter );
         }
-        for( Function<MetricRegistry, Reporter> reporterFactory : declaration.reportersFactories)
+        for( Function<MetricRegistry, Reporter> reporterFactory : declaration.reportersFactories())
         {
             reporters.add( reporterFactory.apply( metricRegistry ) );
         }

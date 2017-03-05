@@ -16,8 +16,10 @@
  *  limitations under the License.
  *
  *
- */package org.apache.polygene.test.metrics;
+ */
+package org.apache.polygene.test.metrics;
 
+import java.util.Collection;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.PassivationException;
 import org.apache.polygene.api.association.ManyAssociation;
@@ -27,6 +29,9 @@ import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.metrics.TimingCapture;
+import org.apache.polygene.api.metrics.TimingCaptureAllConcern;
+import org.apache.polygene.api.metrics.TimingCaptureConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceActivation;
@@ -41,24 +46,19 @@ import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.library.metrics.TimingCapture;
-import org.apache.polygene.library.metrics.TimingCaptureAllConcern;
-import org.apache.polygene.library.metrics.TimingCaptureConcern;
 import org.apache.polygene.test.AbstractPolygeneBaseTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.JmxFixture;
 import org.junit.Test;
 
-import java.util.Collection;
-
 import static java.util.stream.Collectors.toList;
 import static org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.collection.IsIterableContainingInOrder .contains;
 import static org.junit.Assert.assertThat;
 
 // TODO Test errors
@@ -76,7 +76,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
         ManyAssociation<Person> all();
     }
 
-    @Concerns( {TimingCaptureAllConcern.class, UnitOfWorkConcern.class} )
+    @Concerns( { TimingCaptureAllConcern.class, UnitOfWorkConcern.class} )
     @Mixins( CommandsMixin.class )
     public interface Commands extends ServiceActivation
     {
@@ -146,7 +146,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
         }
     }
 
-    @Concerns( {TimingCaptureConcern.class, UnitOfWorkConcern.class} )
+    @Concerns( { TimingCaptureConcern.class, UnitOfWorkConcern.class} )
     @Mixins( QueriesMixin.class )
     public interface Queries
     {

@@ -14,24 +14,44 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
+package org.apache.polygene.metrics.codahale.assembly;
 
-package org.apache.polygene.library.metrics;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Reporter;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.apache.polygene.api.injection.InjectionScope;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.METHOD } )
-@Documented
-@InjectionScope
-public @interface TimingCapture
+public class CodahaleMetricsDeclaration
 {
-    String value() default "";
+    String prefix;
+
+    boolean fqcn = false;
+
+    boolean jmx = true;
+
+    final List<Function<MetricRegistry, Reporter>> reportersFactories = new ArrayList<>();
+
+
+    public String prefix()
+    {
+        return prefix;
+    }
+
+    public boolean fqcn()
+    {
+        return fqcn;
+    }
+
+    public boolean jmx()
+    {
+        return jmx;
+    }
+
+    public List<Function<MetricRegistry, Reporter>> reportersFactories()
+    {
+        return reportersFactories;
+    }
 }

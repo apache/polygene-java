@@ -105,3 +105,47 @@ regularly to report its status, which is then forwarded to the monitoring system
 source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=healthcheck
 --------------
+
+
+= Timing Capture =
+A lot of metrics are around the time it takes to execute something and Polygene supports this at its core.
+
+== Usage ==
+There are currently the following possibilities available;
+
+    * @TimingCapture - capture timing on a single method
+    * TimingCaptureAll - capture timing on all methods of a composite
+
+Before looking at the details of these, we need to point out that there are some pre-conditions for Metrics to be
+working. First of all, you need to install a Metrics Extensions, most likely the
+<<extension-metrics-codahale, Codahale Metrics Extension>>. See your chosen extension for details on how to do that.
+
+Once the Metrics extension is installed, you will also need a suitable backend to gather all the data out of a
+production plant and likewise a good front-end to view this. See your chosen Metrics Extension for this as well.
+
+== TimingCaptureAll ==
+There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
+in the composite.
+
+== @TimingCapture ==
+The +@TimingCapture+ annotation can be placed on any method of the composite, to indicate that
+a Timer is wanted on that method.
+
+Example;
+
+[snippet,java]
+----
+source=core/spi/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
+tag=capture
+----
+
+== Which method? ==
+It is valid to annotate either the composite interface methods or the mixin implementation methods.
+Any of the method declarations should work. From the testcases we have the following example;
+
+[snippet,java]
+----
+source=libraries/metrics/src/test/java/org/apache/polygene/library/metrics/AbstractTimingCaptureTest.java
+tag=complex-capture
+----
+

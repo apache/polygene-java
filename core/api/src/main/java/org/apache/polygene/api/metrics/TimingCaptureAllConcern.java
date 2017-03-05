@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.polygene.library.metrics;
+package org.apache.polygene.api.metrics;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,10 +27,6 @@ import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.injection.scope.Invocation;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.metrics.MetricNames;
-import org.apache.polygene.api.metrics.MetricsProvider;
-import org.apache.polygene.api.metrics.MetricsTimer;
-import org.apache.polygene.api.metrics.MetricsTimerFactory;
 import org.apache.polygene.api.structure.Module;
 
 public class TimingCaptureAllConcern extends ConcernOf<InvocationHandler>

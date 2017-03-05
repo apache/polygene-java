@@ -17,10 +17,13 @@
  *
  *
  */
-package org.apache.polygene.library.metrics;
+package org.apache.polygene.test.metrics;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientComposite;
+import org.apache.polygene.api.metrics.TimingCapture;
+import org.apache.polygene.api.metrics.TimingCaptureAllConcern;
+import org.apache.polygene.api.metrics.TimingCaptureConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.Assembler;
@@ -28,18 +31,17 @@ import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.test.metrics.MetricValuesProvider;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
+public abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
 {
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.layer().application().setName( "SomeApplication" );
         module.transients( Country1.class );
@@ -102,7 +104,7 @@ abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
     }
 
     public static abstract class Country1Mixin
-            implements Country1
+        implements Country1
     {
         @Override
         public void updateName( String newName )
@@ -117,7 +119,7 @@ abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
     }
 
     public static abstract class Country2Mixin
-            implements Country2
+        implements Country2
     {
         @Override
         public void updateName( String newName )
@@ -131,11 +133,11 @@ abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
     {
         @TimingCapture( "Country3.updateName" )
         @Override
-        void updateName(String newName);
+        void updateName( String newName );
     }
 
     public static abstract class Country3Mixin
-            implements Country3
+        implements Country3
     {
         @Override
         public void updateName( String newName )

@@ -33,6 +33,6 @@ public class EmptyCassandraTableMixin
     @Override
     public void removeAll()
     {
-        cluster.session().execute( "TRUNCATE TABLE " + cluster.tableName() + ";");
+        cluster.cassandraClientSession().execute( "TRUNCATE TABLE " + cluster.tableName() + ";");
     }
 }

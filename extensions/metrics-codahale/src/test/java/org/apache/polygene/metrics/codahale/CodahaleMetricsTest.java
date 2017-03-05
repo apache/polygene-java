@@ -23,7 +23,9 @@ import org.apache.polygene.api.activation.PassivationException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Assemblers;
+import org.apache.polygene.metrics.codahale.assembly.CodahaleMetricsAssembler;
 import org.apache.polygene.test.metrics.AbstractPolygeneMetricsTest;
+
 import org.apache.polygene.test.metrics.MetricValuesProvider;
 import org.junit.Test;
 

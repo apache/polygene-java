@@ -20,9 +20,13 @@
 
 package org.apache.polygene.api.metrics;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
 
 public class DocumentationSupport
 {
@@ -104,5 +108,57 @@ public class DocumentationSupport
         {
             return errorMessage.equals( "OK" );
         }
+    }
+
+
+    // START SNIPPET: capture
+    public interface Router
+    {
+        @TimingCapture
+        List<Coordinate> route( String source, String destination );
+    }
+
+    public class RouterAlgorithm1
+        implements Router
+    {
+        @Override
+        public List<Coordinate> route( String source, String destination )
+        {
+// END SNIPPET: capture
+            return null;
+// START SNIPPET: capture
+        }
+    }
+
+    public class RouterAlgorithm2
+        implements Router
+    {
+        @Override
+        public List<Coordinate> route( String source, String destination )
+        {
+// END SNIPPET: capture
+            return null;
+// START SNIPPET: capture
+        }
+
+        // END SNIPPET: capture
+        public class MyAssembler implements Assembler
+        {
+            // START SNIPPET: capture
+            @Override
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
+            {
+                module.addServices( Router.class ).identifiedBy( "router1" ).withMixins( RouterAlgorithm1.class );
+                module.addServices( Router.class ).identifiedBy( "router2" ).withMixins( RouterAlgorithm2.class );
+// END SNIPPET: capture
+// START SNIPPET: capture
+            }
+        }
+    }
+// END SNIPPET: capture
+
+    public class Coordinate
+    {
     }
 }

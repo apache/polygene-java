@@ -18,19 +18,20 @@
  *
  */
 
-apply plugin: 'polygene-library'
+package org.apache.polygene.api.metrics;
 
-description = "Apache Polygene™ Metrics Library."
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.apache.polygene.api.injection.InjectionScope;
 
-jar { manifest { name = "Apache Polygene™ Library - Metrics" } }
-
-dependencies {
-  api polygene.core.bootstrap
-
-  runtimeOnly polygene.core.runtime
-
-  testImplementation polygene.core.testsupport
-  testImplementation polygene.extension( 'metrics-codahale' )
-
-  testRuntimeOnly libraries.logback
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.METHOD } )
+@Documented
+@InjectionScope
+public @interface TimingCapture
+{
+    String value() default "";
 }

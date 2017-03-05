@@ -25,6 +25,7 @@ jar { manifest { name = "Apache Polygene™ Core Test Support" } }
 dependencies {
   api polygene.core.bootstrap
   api libraries.junit
+  api libraries.hamcrest
 
   testRuntimeOnly polygene.core.runtime
 }

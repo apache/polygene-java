@@ -18,22 +18,22 @@
  *
  */
 
-package org.apache.polygene.metrics.codahale;
+package org.apache.polygene.metrics.codahale.assembly;
 
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Reporter;
 import com.codahale.metrics.Slf4jReporter;
-import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.ServiceDeclaration;
-
 import java.io.File;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import org.apache.polygene.bootstrap.Assemblers;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.metrics.codahale.CodahaleMetricsProvider;
 
 public class CodahaleMetricsAssembler
     extends Assemblers.VisibilityIdentity<CodahaleMetricsAssembler>
@@ -110,10 +110,12 @@ public class CodahaleMetricsAssembler
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        ServiceDeclaration service = module.services( CodahaleMetricsProvider.class )
-                .setMetaInfo( declaration )
-                .instantiateOnStartup()
-                .visibleIn( visibility() );
+        ServiceDeclaration service =
+            module.services( CodahaleMetricsProvider.class )
+                  .setMetaInfo( declaration )
+                  .instantiateOnStartup()
+                  .identifiedBy( identity() )
+                  .visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
