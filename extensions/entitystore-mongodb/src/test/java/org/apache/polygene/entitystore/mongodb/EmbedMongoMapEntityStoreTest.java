@@ -53,7 +53,7 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
         port = FreePortFinder.findFreePortOnLoopback();
         mongod = MONGO_STARTER.prepare( new MongodConfigBuilder()
                                             .version( Version.Main.PRODUCTION )
-                                            .net( new Net( port, Network.localhostIsIPv6() ) )
+					.net( new Net( "localhost", port, Network.localhostIsIPv6() ) )
                                             .build() );
         mongod.start();
     }
