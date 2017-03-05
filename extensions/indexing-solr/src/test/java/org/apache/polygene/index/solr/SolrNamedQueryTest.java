@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.index.solr.assembly.SolrAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.indexing.AbstractNamedQueryTest;

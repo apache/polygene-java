@@ -21,6 +21,7 @@ package org.apache.polygene.index.solr;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.polygene.index.solr.assembly.SolrAssembler;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
