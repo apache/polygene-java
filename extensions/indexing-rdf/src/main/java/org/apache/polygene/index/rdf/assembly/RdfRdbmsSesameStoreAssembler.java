@@ -42,10 +42,7 @@ public class RdfRdbmsSesameStoreAssembler
         this( Visibility.application, Visibility.module );
     }
 
-    public RdfRdbmsSesameStoreAssembler(
-                                         Visibility indexingVisibility,
-                                         Visibility repositoryVisibility
-    )
+    public RdfRdbmsSesameStoreAssembler( Visibility indexingVisibility, Visibility repositoryVisibility )
     {
         this.indexingVisibility = indexingVisibility;
         this.repositoryVisibility = repositoryVisibility;
@@ -56,12 +53,13 @@ public class RdfRdbmsSesameStoreAssembler
         throws AssemblyException
     {
         module.services( RdbmsRepositoryService.class )
-            .visibleIn( repositoryVisibility )
-            .instantiateOnStartup()
-            .identifiedBy( "rdf-indexing" );
+              .visibleIn( repositoryVisibility )
+              .instantiateOnStartup()
+              .identifiedBy( "rdf-indexing" );
         module.services( RdfIndexingEngineService.class )
-            .visibleIn( indexingVisibility )
-            .instantiateOnStartup();
+              .taggedWith( "rdf", "query", "indexing" )
+              .visibleIn( indexingVisibility )
+              .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );

@@ -43,10 +43,7 @@ public class RdfMemoryStoreAssembler
         this( Visibility.application, Visibility.module );
     }
 
-    public RdfMemoryStoreAssembler(
-                                    Visibility indexingVisibility,
-                                    Visibility repositoryVisibility
-    )
+    public RdfMemoryStoreAssembler( Visibility indexingVisibility, Visibility repositoryVisibility )
     {
         this.indexingVisibility = indexingVisibility;
         this.repositoryVisibility = repositoryVisibility;
@@ -57,12 +54,13 @@ public class RdfMemoryStoreAssembler
         throws AssemblyException
     {
         module.services( MemoryRepositoryService.class )
-            .visibleIn( repositoryVisibility )
-            .instantiateOnStartup()
-            .identifiedBy( "rdf-repository" );
+              .visibleIn( repositoryVisibility )
+              .instantiateOnStartup()
+              .identifiedBy( "rdf-repository" );
         module.services( RdfIndexingEngineService.class )
-            .visibleIn( indexingVisibility )
-            .instantiateOnStartup();
+              .taggedWith( "rdf", "query", "indexing" )
+              .visibleIn( indexingVisibility )
+              .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
