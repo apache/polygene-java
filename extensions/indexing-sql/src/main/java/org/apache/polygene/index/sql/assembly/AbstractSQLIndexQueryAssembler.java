@@ -72,10 +72,11 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
             module.services( getIndexQueryServiceType() )
-                .identifiedBy( identity() )
-                .setMetaInfo( sqlVendor )
-                .visibleIn( visibility() )
-                .instantiateOnStartup();
+                  .taggedWith( "sql", "query", "indexing" )
+                  .identifiedBy( identity() )
+                  .setMetaInfo( sqlVendor )
+                  .visibleIn( visibility() )
+                  .instantiateOnStartup();
         }
         catch( IOException ex )
         {
@@ -86,14 +87,13 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
             visibleIn( Visibility.module );
         module.services( ReindexingStrategy.class ).
             withMixins( reindexingStrategy ).
-            visibleIn( Visibility.module );
+                  visibleIn( Visibility.module );
 
         if( hasConfig() )
         {
             configModule().entities( SQLConfiguration.class,
                                      ReindexerConfiguration.class ).
-                visibleIn( configVisibility() );
+                              visibleIn( configVisibility() );
         }
     }
-
 }
