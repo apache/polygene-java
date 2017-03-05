@@ -84,7 +84,7 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
                                                           .declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
-        mongoConfig.database().set( "polygene:test" );
+        mongoConfig.database().set( "polygene-test" );
         mongoConfig.collection().set( testName.getMethodName() );
         mongoConfig.hostname().set( "localhost" );
         mongoConfig.port().set( port );
