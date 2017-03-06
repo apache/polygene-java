@@ -54,3 +54,6 @@ Here are the configuration properties for the EhCache EntityStore Cache:
 source=extensions/cache-ehcache/src/main/java/org/apache/polygene/cache/ehcache/EhCacheConfiguration.java
 tag=config
 ----
+
+Cache overflow to disk may be configured using the <<library-fileconfig>>.
+If the FileConfig library is not in use, then it defaults to a temporary directory in `java.io.tmpdir`.

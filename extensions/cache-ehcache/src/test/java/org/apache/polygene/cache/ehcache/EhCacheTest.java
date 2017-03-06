@@ -20,28 +20,36 @@
 package org.apache.polygene.cache.ehcache;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.cache.ehcache.assembly.EhCacheAssembler;
+import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
+import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractCachePoolTest;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class EhCacheTest
     extends AbstractCachePoolTest
 {
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
-	    // END SNIPPET: assembly
+        // END SNIPPET: assembly
         ModuleAssembly confModule = module.layer().module( "confModule" );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( confModule );
+        new FileConfigurationAssembler()
+            .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
+            .assemble( module );
 
         // START SNIPPET: assembly
-        new EhCacheAssembler().
-            withConfig( confModule, Visibility.layer ).
-            assemble( module );
+        new EhCacheAssembler()
+            .withConfig( confModule, Visibility.layer )
+            .assemble( module );
     }
     // END SNIPPET: assembly
 }

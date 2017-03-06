@@ -19,13 +19,16 @@
  */
 package org.apache.polygene.cache.ehcache;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.library.fileconfig.FileConfiguration;
 import org.apache.polygene.spi.cache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.CacheConfiguration;
@@ -34,7 +37,8 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.expiry.Duration;
-import org.ehcache.expiry.Expirations;
+
+import static org.ehcache.expiry.Expirations.*;
 
 public abstract class EhCachePoolMixin
     implements EhCachePoolService
@@ -48,30 +52,46 @@ public abstract class EhCachePoolMixin
     @This
     private Configuration<EhCacheConfiguration> configuration;
 
+    @Optional
+    @Service
+    private FileConfiguration fileConfiguration;
+
     private CacheManager cacheManager;
 
     @Override
     public void activateService()
-            throws Exception
+        throws Exception
     {
-        cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-                .withDefaultDiskStoreThreadPool( cacheManagerThreadPoolName( "disk-store" ) )
-                .withDefaultEventListenersThreadPool( cacheManagerThreadPoolName( "event-listeners" ) )
-                .withDefaultWriteBehindThreadPool( cacheManagerThreadPoolName( "write-behind" ) )
-                .build();
+        cacheManager = CacheManagerBuilder
+            .newCacheManagerBuilder()
+            .with( CacheManagerBuilder.persistence( diskStorePath().getAbsolutePath() ) )
+            .withDefaultDiskStoreThreadPool( cacheManagerThreadPoolName( "disk-store" ) )
+            .withDefaultEventListenersThreadPool( cacheManagerThreadPoolName( "event-listeners" ) )
+            .withDefaultWriteBehindThreadPool( cacheManagerThreadPoolName( "write-behind" ) )
+            .build();
         cacheManager.init();
+    }
+
+    private File diskStorePath()
+    {
+        String stringIdentity = identity.identity().get().toString();
+        if( fileConfiguration != null )
+        {
+            return new File( fileConfiguration.cacheDirectory(), stringIdentity );
+        }
+        return new File( System.getProperty( "java.io.tmpdir" ), stringIdentity );
     }
 
     @Override
     public void passivateService()
-            throws Exception
+        throws Exception
     {
         cacheManager.close();
         cacheManager = null;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
         // Note: Small bug in Ehcache; If the cache name is an empty String it will actually work until
@@ -92,51 +112,52 @@ public abstract class EhCachePoolMixin
         configuration.refresh();
         EhCacheConfiguration config = configuration.get();
 
-        ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap( config.heapSize().get(), MemoryUnit.valueOf( config.heapUnit().get() ) );
+        ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder();
+
+        poolsBuilder = poolsBuilder.heap( config.heapSize().get(), MemoryUnit.valueOf( config.heapUnit().get() ) );
+
         if( config.offHeapSize().get() != null )
         {
-            poolsBuilder = poolsBuilder
-                    .offheap( config.offHeapSize().get(), MemoryUnit.valueOf( config.offHeapUnit().get() ) );
+            poolsBuilder = poolsBuilder.offheap( config.offHeapSize().get(),
+                                                 MemoryUnit.valueOf( config.offHeapUnit().get() ) );
         }
         if( config.diskSize().get() != null )
         {
-            poolsBuilder = poolsBuilder
-                    .disk( config.diskSize().get(), MemoryUnit.valueOf( config.diskUnit().get() ), config.diskPersistent().get() );
+            poolsBuilder = poolsBuilder.disk( config.diskSize().get(),
+                                              MemoryUnit.valueOf( config.diskUnit().get() ),
+                                              config.diskPersistent().get() );
         }
 
         CacheConfigurationBuilder<String, T> configBuilder = CacheConfigurationBuilder
-                .newCacheConfigurationBuilder( String.class, valueType, poolsBuilder );
+            .newCacheConfigurationBuilder( String.class, valueType, poolsBuilder );
         if( config.maxObjectSize().get() != null )
         {
-            configBuilder = configBuilder
-                    .withSizeOfMaxObjectSize( config.maxObjectSize().get(), MemoryUnit.valueOf( config.maxObjectSizeUnit().get() ) );
+            configBuilder = configBuilder.withSizeOfMaxObjectSize( config.maxObjectSize().get(),
+                                                                   MemoryUnit.valueOf( config.maxObjectSizeUnit().get() ) );
         }
         if( config.maxObjectGraphDepth().get() != null )
         {
-            configBuilder = configBuilder
-                    .withSizeOfMaxObjectGraph( config.maxObjectGraphDepth().get() );
+            configBuilder = configBuilder.withSizeOfMaxObjectGraph( config.maxObjectGraphDepth().get() );
         }
-        switch( config.expiry().get() ) {
+        switch( config.expiry().get() )
+        {
             case "TIME_TO_IDLE":
-                configBuilder = configBuilder.withExpiry( Expirations.timeToIdleExpiration( Duration.of(
-                    config.expiryLength().get() == null ? -1L : config.expiryLength().get(),
-                    TimeUnit.valueOf( config.expiryTimeUnit().get() )
-                ) ) );
+                configBuilder = configBuilder.withExpiry( timeToIdleExpiration( Duration.of(
+                    config.expiryLength().get() == null ? - 1L : config.expiryLength().get(),
+                    TimeUnit.valueOf( config.expiryTimeUnit().get() ) ) ) );
                 break;
             case "TIME_TO_LIVE":
-                configBuilder = configBuilder.withExpiry( Expirations.timeToLiveExpiration( Duration.of(
-                    config.expiryLength().get() == null ? -1L : config.expiryLength().get(),
-                    TimeUnit.valueOf( config.expiryTimeUnit().get() )
-                ) ) );
+                configBuilder = configBuilder.withExpiry( timeToLiveExpiration( Duration.of(
+                    config.expiryLength().get() == null ? - 1L : config.expiryLength().get(),
+                    TimeUnit.valueOf( config.expiryTimeUnit().get() ) ) ) );
                 break;
             case "NONE":
             default:
-                configBuilder = configBuilder.withExpiry( Expirations.noExpiration() );
+                configBuilder = configBuilder.withExpiry( noExpiration() );
                 break;
         }
         CacheConfiguration<String, T> cacheConfig = configBuilder.build();
-        org.ehcache.Cache<String,T> cache =  cacheManager.createCache( cacheId, cacheConfig );
+        org.ehcache.Cache<String, T> cache = cacheManager.createCache( cacheId, cacheConfig );
         return new EhCacheImpl<>( cacheId, cache, valueType );
     }
 
@@ -154,6 +175,6 @@ public abstract class EhCachePoolMixin
 
     private String cacheManagerThreadPoolName( String name )
     {
-        return identity.identity().getClass() + "-" + name;
+        return identity.identity().get().toString() + "-" + name;
     }
 }

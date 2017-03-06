@@ -26,6 +26,7 @@ jar { manifest { name = "Apache Polygene™ Extension: EhCache" } }
 
 dependencies {
   api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
   implementation polygene.library( 'constraints' )
   implementation libraries.ehcache
