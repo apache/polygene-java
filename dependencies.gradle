@@ -27,7 +27,7 @@ dependencies.repositoriesUrls << [
 ]
 
 // Core dependencies
-def asmVersion = '5.1'
+def asmVersion = '5.2'
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.3.1'
 dependencies.libraries << [
