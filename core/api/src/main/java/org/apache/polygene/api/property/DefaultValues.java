@@ -20,6 +20,7 @@
 
 package org.apache.polygene.api.property;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -81,6 +82,10 @@ public final class DefaultValues
             else if( typeAsClass.isEnum() )
             {
                 return ( (Class) type ).getEnumConstants()[ 0 ];
+            }
+            else if( typeAsClass.isArray() )
+            {
+                return Array.newInstance( typeAsClass.getComponentType(), 0 );
             }
         }
         throw new IllegalArgumentException( "Cannot use @UseDefaults with type " + type.toString() );
