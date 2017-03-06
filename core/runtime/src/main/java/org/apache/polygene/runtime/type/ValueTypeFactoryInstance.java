@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import org.apache.polygene.api.common.InvalidApplicationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -76,6 +77,10 @@ public class ValueTypeFactoryInstance implements ValueTypeFactory
         if( EnumType.isEnum( type ) )
         {
             valueType = EnumType.of( Classes.RAW_CLASS.apply( type ) );
+        }
+        else if( ArrayType.isArray( type ) )
+        {
+            valueType = ArrayType.of( Classes.RAW_CLASS.apply( type ) );
         }
         else if( CollectionType.isCollection( type ) )
         {

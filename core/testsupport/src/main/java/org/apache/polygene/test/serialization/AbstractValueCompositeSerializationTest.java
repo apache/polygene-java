@@ -61,6 +61,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -69,7 +70,6 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-// TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractPolygeneTest
@@ -320,23 +320,14 @@ public abstract class AbstractValueCompositeSerializationTest
 
         some.stringValueMap().get().put( "foo", anotherValue1 );
         some.another().set( anotherValue1 );
-        // some.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
+        some.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
+        some.primitiveByteArray().set( "foo".getBytes( UTF_8 ) );
+        some.byteArray().set( new Byte[] { 23, null, 42 } );
         some.serializable().set( new SerializableObject() );
         some.foo().set( module.newValue( FooValue.class ) );
         some.fooValue().set( module.newValue( FooValue.class ) );
         some.customFoo().set( module.newValue( CustomFooValue.class ) );
         some.customFooValue().set( module.newValue( CustomFooValue.class ) );
-
-        // Arrays
-        // TODO FIXME Disabled as ValueComposite equality fails here
-        //proto.primitiveByteArray().set( new byte[]
-        //    {
-        //        9, -12, 42, -12, 127, 23, -128, 73
-        //    } );
-        //proto.byteArray().set( new Byte[]
-        //    {
-        //        9, null, -12, 23, -12, 127, -128, 73
-        //    } );
 
         // NestedEntities
         some.barAssociation().set( buildBarEntity( uow, "bazar in barAssociation" ) );
@@ -410,7 +401,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
         Property<AnotherValue> another();
 
-        // Property<AnotherValue[]> arrayOfValues();
+        Property<AnotherValue[]> arrayOfValues();
 
         @Optional
         Property<AnotherValue> anotherNull();
@@ -427,16 +418,15 @@ public abstract class AbstractValueCompositeSerializationTest
         @UseDefaults
         Property<TestEnum> testEnum();
 
-        // TODO FIXME Disabled as ValueComposite equality fails here
-        //Property<byte[]> primitiveByteArray();
-        //
-        //@Optional
-        //Property<byte[]> primitiveByteArrayNull();
-        //
-        //Property<Byte[]> byteArray();
-        //
-        //@Optional
-        //Property<Byte[]> byteArrayNull();
+        Property<byte[]> primitiveByteArray();
+
+        @Optional
+        Property<byte[]> primitiveByteArrayNull();
+
+        Property<Byte[]> byteArray();
+
+        @Optional
+        Property<Byte[]> byteArrayNull();
 
         Property<Object> serializable();
 

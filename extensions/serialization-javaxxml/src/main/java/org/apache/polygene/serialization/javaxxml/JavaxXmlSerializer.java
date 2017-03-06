@@ -36,9 +36,11 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.util.ArrayIterable;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextSerializer;
@@ -113,6 +115,10 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
         if( MapType.isMap( objectClass ) )
         {
             return serializeMap( document, options, (Map<?, ?>) object );
+        }
+        if( ArrayType.isArray( objectClass ) )
+        {
+            return serializeArray( document, options, object );
         }
         if( Iterable.class.isAssignableFrom( objectClass ) )
         {
@@ -228,6 +234,21 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
                .forEach( mapElement::appendChild );
         }
         return mapElement;
+    }
+
+    private <T> Node serializeArray( Document document, Options options, T object )
+    {
+        ArrayType valueType = ArrayType.of( object.getClass() );
+        if( valueType.isArrayOfPrimitiveBytes() )
+        {
+            byte[] base64 = Base64.getEncoder().encode( (byte[]) object );
+            return document.createCDATASection( new String( base64, UTF_8 ) );
+        }
+        if( valueType.isArrayOfPrimitives() )
+        {
+            return serializeIterable( document, options, new ArrayIterable( object ) );
+        }
+        return serializeStream( document, options, Stream.of( (Object[]) object ) );
     }
 
     private Node serializeIterable( Document document, Options options, Iterable<?> object )

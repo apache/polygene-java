@@ -20,6 +20,7 @@ package org.apache.polygene.serialization.javaxxml;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -103,6 +105,10 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         if( EnumType.class.isAssignableFrom( valueType.getClass() ) )
         {
             return (T) Enum.valueOf( (Class) valueType.primaryType(), xml.getNodeValue() );
+        }
+        if( ArrayType.class.isAssignableFrom( valueType.getClass() ) )
+        {
+            return (T) deserializeArray( module, (ArrayType) valueType, xml );
         }
         if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
         {
@@ -207,6 +213,23 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
                                                                            .orElse( null ) ) )
                              .map( Map::entrySet ).map( Set::stream )
                              .orElse( Stream.empty() );
+    }
+
+
+    private Object deserializeArray( ModuleDescriptor module, ArrayType arrayType, Node xml )
+    {
+        if( arrayType.isArrayOfPrimitiveBytes() )
+        {
+            return Base64.getDecoder().decode( xml.getNodeValue().getBytes( UTF_8 ) );
+        }
+        CollectionType collectionType = CollectionType.listOf( arrayType.collectedType() );
+        List collection = (List) deserializeCollection( module, collectionType, xml );
+        Object array = Array.newInstance( arrayType.collectedType().primaryType(), collection.size() );
+        for( int idx = 0; idx < collection.size(); idx++ )
+        {
+            Array.set( array, idx, collection.get( idx ) );
+        }
+        return array;
     }
 
     @SuppressWarnings( "unchecked" )

@@ -40,10 +40,12 @@ import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.ArrayIterable;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextSerializer;
@@ -90,6 +92,10 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         if( MapType.isMap( objectClass ) )
         {
             return serializeMap( options, (Map<?, ?>) object );
+        }
+        if( ArrayType.isArray( objectClass ) )
+        {
+            return serializeArray( options, object );
         }
         if( Iterable.class.isAssignableFrom( objectClass ) )
         {
@@ -181,6 +187,21 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         }
     }
 
+    private JsonValue serializeArray( Options options, Object object )
+    {
+        ArrayType valueType = ArrayType.of( object.getClass() );
+        if( valueType.isArrayOfPrimitiveBytes() )
+        {
+            byte[] base64 = Base64.getEncoder().encode( (byte[]) object );
+            return JavaxJson.toJsonString( new String( base64, UTF_8 ) );
+        }
+        if( valueType.isArrayOfPrimitives() )
+        {
+            return serializeIterable( options, new ArrayIterable( object ) );
+        }
+        return serializeStream( options, Stream.of( (Object[]) object ) );
+    }
+
     private JsonArray serializeIterable( Options options, Iterable<?> iterable )
     {
         return serializeStream( options, StreamSupport.stream( iterable.spliterator(), false ) );
@@ -195,12 +216,17 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
 
     private JsonString serializeBase64( Object object )
     {
+        byte[] bytes = Base64.getEncoder().encode( javaSerialization( object ) );
+        return JavaxJson.toJsonString( new String( bytes, UTF_8 ) );
+    }
+
+    private byte[] javaSerialization( Object object )
+    {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
         {
             out.writeUnshared( object );
-            byte[] bytes = Base64.getEncoder().encode( bout.toByteArray() );
-            return JavaxJson.toJsonString( new String( bytes, UTF_8 ) );
+            return bout.toByteArray();
         }
         catch( IOException ex )
         {

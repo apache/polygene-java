@@ -32,9 +32,11 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.util.ArrayIterable;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractBinarySerializer;
@@ -99,6 +101,10 @@ public interface MessagePackSerializer extends Serializer
                 {
                     return serializeMap( options, (Map<?, ?>) object );
                 }
+                if( ArrayType.isArray( objectClass ) )
+                {
+                    return serializeArray( options, object );
+                }
                 if( Iterable.class.isAssignableFrom( objectClass ) )
                 {
                     return serializeIterable( options, (Iterable<?>) object );
@@ -160,6 +166,20 @@ public interface MessagePackSerializer extends Serializer
             map.forEach( ( key, value ) -> builder.put( doSerialize( options, key, false ),
                                                         doSerialize( options, value, false ) ) );
             return builder.build();
+        }
+
+        private Value serializeArray( Options options, Object object )
+        {
+            ArrayType valueType = ArrayType.of( object.getClass() );
+            if( valueType.isArrayOfPrimitiveBytes() )
+            {
+                return ValueFactory.newBinary( (byte[]) object );
+            }
+            if( valueType.isArrayOfPrimitives() )
+            {
+                return serializeIterable( options, new ArrayIterable( object ) );
+            }
+            return serializeStream( options, Stream.of( (Object[]) object ) );
         }
 
         private ArrayValue serializeIterable( Options options, Iterable<?> iterable )

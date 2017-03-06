@@ -20,6 +20,7 @@ package org.apache.polygene.serialization.javaxjson;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -43,6 +44,7 @@ import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -95,6 +97,10 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
         {
             return (T) Enum.valueOf( (Class) valueType.primaryType(), asString( json ) );
         }
+        if( ArrayType.class.isAssignableFrom( valueTypeClass ) )
+        {
+            return (T) deserializeArray( module, (ArrayType) valueType, json );
+        }
         if( CollectionType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) deserializeCollection( module, (CollectionType) valueType, requireJsonArray( json ) );
@@ -108,6 +114,29 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
             return (T) deserializeValueComposite( module, (ValueCompositeType) valueType, requireJsonObject( json ) );
         }
         return doGuessDeserialize( module, valueType, json );
+    }
+
+    private Object deserializeArray( ModuleDescriptor module, ArrayType arrayType, JsonValue json )
+    {
+        if( arrayType.isArrayOfPrimitiveBytes() && json.getValueType() == JsonValue.ValueType.STRING )
+        {
+            byte[] bytes = asString( json ).getBytes( UTF_8 );
+            return Base64.getDecoder().decode( bytes );
+        }
+        if( json.getValueType() == JsonValue.ValueType.ARRAY )
+        {
+            CollectionType collectionType = CollectionType.listOf( arrayType.collectedType() );
+            List<Object> collection = (List<Object>) deserializeCollection( module,
+                                                                            collectionType,
+                                                                            requireJsonArray( json ) );
+            Object array = Array.newInstance( arrayType.collectedType().primaryType(), collection.size() );
+            for( int idx = 0; idx < collection.size(); idx++ )
+            {
+                Array.set( array, idx, collection.get( idx ) );
+            }
+            return array;
+        }
+        throw new SerializationException( "Don't know how to deserialize " + arrayType + " from " + json );
     }
 
     @SuppressWarnings( "unchecked" )

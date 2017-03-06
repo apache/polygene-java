@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -107,6 +109,10 @@ public interface MessagePackDeserializer extends Deserializer
                 {
                     return (T) Enum.valueOf( (Class) valueType.primaryType(), value.asStringValue().asString() );
                 }
+                if( ArrayType.class.isAssignableFrom( valueType.getClass() ) )
+                {
+                    return (T) deserializeArray( module, (ArrayType) valueType, value );
+                }
                 if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
                 {
                     return (T) deserializeCollection( module, (CollectionType) valueType, value.asArrayValue() );
@@ -125,6 +131,22 @@ public interface MessagePackDeserializer extends Deserializer
             {
                 throw new SerializationException( "Unable to deserialize " + valueType + " from: " + value );
             }
+        }
+
+        private Object deserializeArray( ModuleDescriptor module, ArrayType arrayType, Value value ) throws IOException
+        {
+            if( arrayType.isArrayOfPrimitiveBytes() )
+            {
+                return value.asBinaryValue().asByteArray();
+            }
+            CollectionType collectionType = CollectionType.listOf( arrayType.collectedType() );
+            List collection = (List) deserializeCollection( module, collectionType, value.asArrayValue() );
+            Object array = Array.newInstance( arrayType.collectedType().primaryType(), collection.size() );
+            for( int idx = 0; idx < collection.size(); idx++ )
+            {
+                Array.set( array, idx, collection.get( idx ) );
+            }
+            return array;
         }
 
         private Collection<?> deserializeCollection( ModuleDescriptor module, CollectionType collectionType,
