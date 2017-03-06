@@ -71,9 +71,6 @@ import static org.junit.Assert.assertThat;
  */
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
-// TODO Assert deserialization using a value super type that has less properties/associations (e.g. ignore spurious state)
-// TODO Assert deserialization from state missing optional values (e.g. do not fail on missing optional values)
-// TODO Assert deserialization from state with different properties/associations order (e.g. do not fail on unordered values)
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractPolygeneTest
 {
@@ -99,7 +96,8 @@ public abstract class AbstractValueCompositeSerializationTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( Some.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
+        module.values( Some.class, SomeExtended.class, SomeShuffled.class,
+                       AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
 
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
@@ -143,6 +141,61 @@ public abstract class AbstractValueCompositeSerializationTest
                         is( true ) );
 
             assertThat( "Value equality", some, equalTo( some2 ) );
+        }
+    }
+
+    @Test
+    public void canDeserializeUsingSuperTypeWithLessState()
+    {
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            SomeExtended someExtended = buildSomeExtendedValue( moduleInstance, uow, "42" );
+
+            String serialized = serialization.serialize( someExtended );
+            System.out.println( serialized );
+
+            Some deserialized = serialization.deserialize( module, Some.class, serialized );
+            System.out.println( deserialized );
+        }
+    }
+
+    @Test
+    public void canDeserializeUsingChildTypeWithSupplementaryOptionalState()
+    {
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            Some some = buildSomeValue( moduleInstance, uow, "42" );
+
+            String serialized = serialization.serialize( some );
+            System.out.println( serialized );
+
+            SomeExtended deserialized = serialization.deserialize( module, SomeExtended.class, serialized );
+            System.out.println( deserialized );
+        }
+    }
+
+    /**
+     * State model order depend on declaration order, this test ensures that moving a state method up/down into a type
+     * does not break deserialization.
+     */
+    @Test
+    public void canDeserializeFromShuffledState()
+    {
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            SomeExtended someExtended = buildSomeExtendedValue( moduleInstance, uow, "42" );
+
+            String serialized = serialization.serialize( someExtended );
+            System.out.println( serialized );
+
+            SomeShuffled deserialized = serialization.deserialize( module, SomeShuffled.class, serialized );
+            System.out.println( deserialized );
+
+            serialized = serialization.serialize( deserialized );
+            System.out.println( serialized );
+
+            serialization.deserialize( module, SomeExtended.class, serialized );
+            System.out.println( deserialized );
         }
     }
 
@@ -205,6 +258,19 @@ public abstract class AbstractValueCompositeSerializationTest
         Some proto = builder.prototype();
         proto.identity().set( StringIdentity.fromString( identity ) );
         setSomeValueState( module, uow, proto );
+        return builder.newInstance();
+    }
+
+    protected static SomeExtended buildSomeExtendedValue( Module module, UnitOfWork uow, String identity )
+    {
+        ValueBuilder<SomeExtended> builder = module.newValueBuilder( SomeExtended.class );
+        SomeExtended proto = builder.prototype();
+        proto.identity().set( StringIdentity.fromString( identity ) );
+        setSomeValueState( module, uow, proto );
+        proto.extraProperty().set( "extra property" );
+        proto.extraAssociation().set( buildBarEntity( uow, "extra association" ) );
+        proto.extraManyAssociation().add( buildBarEntity( uow, "extra many association" ) );
+        proto.extraNamedAssociation().put( "extra", buildBarEntity( uow, "extra named association" ) );
         return builder.newInstance();
     }
 
@@ -405,6 +471,42 @@ public abstract class AbstractValueCompositeSerializationTest
         NamedAssociation<Bar> barNamedAssociation();
 
         NamedAssociation<BarEntity> barEntityNamedAssociation();
+    }
+
+    interface SomeExtended extends Some
+    {
+        @Optional
+        Property<String> extraProperty();
+
+        @Optional
+        Association<Bar> extraAssociation();
+
+        ManyAssociation<Bar> extraManyAssociation();
+
+        NamedAssociation<Bar> extraNamedAssociation();
+    }
+
+    interface SomeShuffled extends SomeExtended
+    {
+        NamedAssociation<Bar> extraNamedAssociation();
+
+        @Override
+        NamedAssociation<Bar> barNamedAssociation();
+
+        ManyAssociation<Bar> extraManyAssociation();
+
+        @Override
+        ManyAssociation<Bar> barManyAssociation();
+
+        Association<Bar> extraAssociation();
+
+        @Override
+        Association<Bar> barAssociation();
+
+        Property<String> extraProperty();
+
+        @Override
+        Property<String> string();
     }
 
     public interface SpecificCollection

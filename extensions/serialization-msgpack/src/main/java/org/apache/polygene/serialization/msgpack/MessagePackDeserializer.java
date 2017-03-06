@@ -94,7 +94,7 @@ public interface MessagePackDeserializer extends Deserializer
         {
             try
             {
-                if( value.isNilValue() )
+                if( value == null || value.isNilValue() )
                 {
                     return null;
                 }
