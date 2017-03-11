@@ -17,29 +17,26 @@
  *
  *
  */
-package org.apache.polygene.entitystore.prefs;
+package org.apache.polygene.valueserialization.jackson.assembly;
 
-import java.io.Serializable;
-import java.util.prefs.Preferences;
+import org.apache.polygene.api.value.ValueSerialization;
+import org.apache.polygene.bootstrap.Assemblers;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationService;
 
 /**
- * @author edward.yakop@gmail.com
+ * Assemble a ValueSerialization Service producing and consuming JSON documents.
  */
-public final class PreferencesEntityStoreInfo
-    implements Serializable
+public class JacksonValueSerializationAssembler
+    extends Assemblers.Visibility<JacksonValueSerializationAssembler>
 {
-    private Preferences rootNode;
-
-    public PreferencesEntityStoreInfo( Preferences aRootNode )
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        rootNode = aRootNode;
-    }
-
-    /**
-     * @return root preference node to use.
-     */
-    public Preferences rootNode()
-    {
-        return rootNode;
+        module.services( JacksonValueSerializationService.class )
+              .visibleIn( visibility() )
+              .taggedWith( ValueSerialization.Formats.JSON );
     }
 }

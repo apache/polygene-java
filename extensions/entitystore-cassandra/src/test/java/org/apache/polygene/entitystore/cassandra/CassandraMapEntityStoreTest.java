@@ -27,7 +27,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 /**

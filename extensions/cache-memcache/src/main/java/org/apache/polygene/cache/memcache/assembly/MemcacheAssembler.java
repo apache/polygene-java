@@ -17,31 +17,33 @@
  *
  *
  */
-package org.apache.polygene.valueserialization.stax;
+package org.apache.polygene.cache.memcache.assembly;
 
-import org.apache.polygene.valueserialization.stax.assembly.StaxValueSerializationAssembler;
-import org.junit.BeforeClass;
+import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.value.AbstractCollectionSerializationTest;
+import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.cache.memcache.MemcacheConfiguration;
+import org.apache.polygene.cache.memcache.MemcachePoolService;
 
-import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
-
-public class StaxCollectionSerializationTest
-    extends AbstractCollectionSerializationTest
+/**
+ * Memcache CachePool Assembler.
+ */
+public class MemcacheAssembler
+    extends Assemblers.VisibilityIdentityConfig<MemcacheAssembler>
 {
-
-    @BeforeClass
-    public static void beforeClass_IBMJDK()
-    {
-        assumeNoIbmJdk();
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        super.assemble( module );
-        new StaxValueSerializationAssembler().assemble( module );
+        ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( MemcacheConfiguration.class ).visibleIn( configVisibility() );
+        }
     }
 }

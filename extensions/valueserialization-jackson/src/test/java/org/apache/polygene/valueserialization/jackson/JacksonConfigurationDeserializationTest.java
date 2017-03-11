@@ -23,6 +23,7 @@ package org.apache.polygene.valueserialization.jackson;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class JacksonConfigurationDeserializationTest
     extends AbstractConfigurationDeserializationTest

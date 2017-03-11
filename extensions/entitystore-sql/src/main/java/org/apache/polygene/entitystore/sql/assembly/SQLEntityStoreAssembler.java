@@ -17,25 +17,12 @@
  *
  *
  */
-package org.apache.polygene.valueserialization.jackson;
-
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
+package org.apache.polygene.entitystore.sql.assembly;
 
 /**
- * Assemble a ValueSerialization Service producing and consuming JSON documents.
+ * This is a dummy Assembler to support the Yeoman Polygene Generator, which require naming conventions for
+ * the systems that it supports.
  */
-public class JacksonValueSerializationAssembler
-    extends Assemblers.Visibility<JacksonValueSerializationAssembler>
-{
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.services( JacksonValueSerializationService.class ).
-            visibleIn( visibility() ).
-                  taggedWith( ValueSerialization.Formats.JSON );
-    }
-}
+public class SQLEntityStoreAssembler extends H2SQLEntityStoreAssembler
+{}
+

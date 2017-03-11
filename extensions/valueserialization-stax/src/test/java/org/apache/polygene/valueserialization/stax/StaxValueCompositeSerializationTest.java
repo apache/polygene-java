@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.valueserialization.stax;
 
+import org.apache.polygene.valueserialization.stax.assembly.StaxValueSerializationAssembler;
 import org.junit.BeforeClass;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;

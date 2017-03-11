@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.Rule;
 import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
@@ -43,7 +44,6 @@ import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertTrue;
@@ -221,6 +221,7 @@ public class Qi95IssueTest
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
+            addModule( layer, name, new JacksonValueSerializationAssembler() );
             return addModule( layer, name, new RdfNativeSesameStoreAssembler() );
         }
     };
@@ -241,6 +242,7 @@ public class Qi95IssueTest
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
+            addModule( layer, name, new JacksonValueSerializationAssembler() );
             return addModule( layer, name, new RdfMemoryStoreAssembler() );
         }
     };
@@ -322,7 +324,7 @@ public class Qi95IssueTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new OrgJsonValueSerializationAssembler().assemble( module );
+                new JacksonValueSerializationAssembler().assemble( module );
                 new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
                 new DefaultUnitOfWorkAssembler().assemble( module );
             }

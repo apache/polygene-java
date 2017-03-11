@@ -21,7 +21,7 @@ package org.apache.polygene.entitystore;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
+import org.apache.polygene.entitystore.preferences.assembly.PreferencesEntityStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 
 public class DocumentationSupport
@@ -32,7 +32,7 @@ public class DocumentationSupport
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        new PreferenceEntityStoreAssembler().assemble( module );
+        new PreferencesEntityStoreAssembler().assemble( module );
     }
     // END SNIPPET: assembly
 

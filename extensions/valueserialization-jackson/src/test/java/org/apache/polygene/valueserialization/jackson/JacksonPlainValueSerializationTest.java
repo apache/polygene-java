@@ -21,6 +21,7 @@ package org.apache.polygene.valueserialization.jackson;
 
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractPlainValueSerializationTest;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class JacksonPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest

@@ -17,31 +17,26 @@
  *
  *
  */
-package org.apache.polygene.cache.memcache;
+package org.apache.polygene.valueserialization.stax.assembly;
 
+import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.valueserialization.stax.StaxValueSerializationService;
 
 /**
- * Memcache CachePool Assembler.
+ * Assemble a ValueSerialization Service producing and consuming XML documents.
  */
-public class MemcacheAssembler
-    extends Assemblers.VisibilityIdentityConfig<MemcacheAssembler>
+public class StaxValueSerializationAssembler
+    extends Assemblers.Visibility<StaxValueSerializationAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
-        if( hasIdentity() )
-        {
-            service.identifiedBy( identity() );
-        }
-        if( hasConfig() )
-        {
-            configModule().entities( MemcacheConfiguration.class ).visibleIn( configVisibility() );
-        }
+        module.services( StaxValueSerializationService.class )
+              .visibleIn( visibility() )
+              .taggedWith( ValueSerialization.Formats.XML );
     }
 }

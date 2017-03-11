@@ -27,6 +27,8 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.index.rdf.query.SesameExpressions;
 import org.apache.polygene.test.indexing.AbstractNamedQueryTest;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
+import org.slf4j.LoggerFactory;
 
 public class RdfNamedQueryTest extends AbstractNamedQueryTest
 {

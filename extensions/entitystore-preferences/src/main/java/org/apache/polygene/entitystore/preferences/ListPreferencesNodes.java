@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.prefs;
+package org.apache.polygene.entitystore.preferences;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;

@@ -17,18 +17,18 @@
  *
  *
  */
-package org.apache.polygene.entitystore.prefs.assembly;
+package org.apache.polygene.entitystore.preferences.assembly;
 
 import java.util.prefs.Preferences;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.prefs.PreferencesEntityStoreInfo;
-import org.apache.polygene.entitystore.prefs.PreferencesEntityStoreService;
+import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreInfo;
+import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreService;
 
-public class PreferenceEntityStoreAssembler
-    extends Assemblers.VisibilityIdentity<PreferenceEntityStoreAssembler>
+public class PreferencesEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<PreferencesEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )

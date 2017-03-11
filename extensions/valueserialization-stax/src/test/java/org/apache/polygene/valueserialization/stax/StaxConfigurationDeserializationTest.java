@@ -21,6 +21,7 @@
 package org.apache.polygene.valueserialization.stax;
 
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.valueserialization.stax.assembly.StaxValueSerializationAssembler;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Service;

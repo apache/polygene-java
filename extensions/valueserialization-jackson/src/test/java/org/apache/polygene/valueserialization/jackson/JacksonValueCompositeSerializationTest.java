@@ -22,6 +22,7 @@ package org.apache.polygene.valueserialization.jackson;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractValueCompositeSerializationTest;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class JacksonValueCompositeSerializationTest
     extends AbstractValueCompositeSerializationTest

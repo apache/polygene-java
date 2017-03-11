@@ -28,6 +28,7 @@ import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -53,6 +54,7 @@ public class RdfQueryMultimoduleTest
         ModuleAssembly indexModule = layer.module( "index" );
         new RdfNativeSesameStoreAssembler( Visibility.layer, Visibility.module ).assemble( indexModule );
         new DefaultUnitOfWorkAssembler().assemble( indexModule );
+        new JacksonValueSerializationAssembler().assemble( indexModule );
 
         LayerAssembly configLayer = module.layer().application().layer( "config" );
         module.layer().uses( configLayer );

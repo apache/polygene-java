@@ -43,6 +43,7 @@ public interface RdfQueryParserFactory
     {
         @Structure
         private PolygeneSPI spi;
+
         @Service
         @Tagged( ValueSerialization.Formats.JSON )
         private ValueSerializer valueSerializer;

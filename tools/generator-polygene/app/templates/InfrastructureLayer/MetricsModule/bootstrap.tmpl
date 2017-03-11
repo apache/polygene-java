@@ -41,7 +41,7 @@ public class <%- polygene.metrics %>MetricsModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.metrics %>Assembler(Visibility.application, Visibility.module).assemble( module );
+        new <%- polygene.metrics %>MetricsAssembler().assemble( module );
         return module;
     }
 }

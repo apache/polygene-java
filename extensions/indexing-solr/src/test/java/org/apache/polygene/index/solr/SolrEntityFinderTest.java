@@ -21,7 +21,7 @@ package org.apache.polygene.index.solr;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.index.solr.assembly.SolrAssembler;
+import org.apache.polygene.index.solr.assembly.SolrIndexingAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
@@ -44,6 +44,6 @@ public class SolrEntityFinderTest
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
-        new SolrAssembler().assemble( module );
+        new SolrIndexingAssembler().assemble( module );
     }
 }

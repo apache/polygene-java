@@ -1,0 +1,68 @@
+def allEntityStores = [
+        'Cassandra',
+        'File',
+        'DerbySQL',
+        'Geode',
+        'H2SQL',
+        'Hazelcast',
+        'JClouds',
+        'Jdbm',
+        'LevelDB',
+        'Memory',
+        'MongoDB',
+        'MySQL',
+        'Preferences',
+        'Redis',
+        'Riak',
+        'PostgresSQL',
+        'SQLite'
+]
+
+def allIndexing = [
+        "Rdf",
+        "ElasticSearch",
+        "Solr",
+        "SQL"
+]
+
+def allCaching = [
+        "None",
+        "EhCache",
+        "Memcache"
+]
+
+def allMetrics = [
+        "None",
+        "Codahale"
+]
+
+def allValueSerialization = [
+        "Jackson",
+        "Stax"
+]
+
+def featureCombinations(array, result) {
+    if (array?.empty) {
+        return []
+    }
+    return [array, featureCombinations(array.tail())]
+}
+
+def allFeatures = [
+        'rest api',
+        'jmx',
+        'security'
+].forEach( {
+
+});
+
+def allFeatureCombos = [
+
+]
+
+def allCombos = [
+
+]
+
+println allFeatures
+

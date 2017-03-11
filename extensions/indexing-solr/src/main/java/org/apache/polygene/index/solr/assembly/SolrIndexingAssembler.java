@@ -30,7 +30,7 @@ import org.apache.polygene.index.solr.SolrQueryService;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
-public class SolrAssembler extends Assemblers.VisibilityIdentity
+public class SolrIndexingAssembler extends Assemblers.VisibilityIdentityConfig<SolrIndexingAssembler>
 {
     @Override
    public void assemble( ModuleAssembly module ) throws AssemblyException
@@ -42,7 +42,6 @@ public class SolrAssembler extends Assemblers.VisibilityIdentity
             identifiedBy( identity() ).
             visibleIn( visibility() ).
             instantiateOnStartup();
-      module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
       module.objects( EntityStateSerializer.class );
    }
 }

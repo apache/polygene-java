@@ -30,6 +30,7 @@ import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
 import org.apache.polygene.test.util.NotYetImplemented;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -77,6 +78,9 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
         esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
                                                         testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
+
+        // Serialization
+        new JacksonValueSerializationAssembler().assemble( module );
 
         // FileConfig
         new FileConfigurationAssembler()

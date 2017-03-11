@@ -21,6 +21,7 @@ package org.apache.polygene.valueserialization.stax;
 
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.value.AbstractPlainValueSerializationTest;
+import org.apache.polygene.valueserialization.stax.assembly.StaxValueSerializationAssembler;
 import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;

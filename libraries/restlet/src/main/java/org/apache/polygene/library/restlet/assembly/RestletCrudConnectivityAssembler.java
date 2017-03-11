@@ -38,7 +38,7 @@ import org.apache.polygene.library.restlet.resource.EntryPointResource;
 import org.apache.polygene.library.restlet.resource.ResourceBuilder;
 import org.apache.polygene.library.restlet.serialization.FormRepresentation;
 import org.apache.polygene.library.restlet.serialization.JsonRepresentation;
-import org.apache.polygene.valueserialization.jackson.JacksonValueSerializationAssembler;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class RestletCrudConnectivityAssembler
     implements Assembler

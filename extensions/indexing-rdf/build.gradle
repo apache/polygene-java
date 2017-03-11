@@ -33,7 +33,7 @@ dependencies {
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.core.testsupport
-  testImplementation polygene.extension( 'valueserialization-orgjson' )
+  testImplementation polygene.extension( 'valueserialization-jackson' )
   testImplementation polygene.extension( 'entitystore-preferences' )
   testImplementation polygene.extension( 'entitystore-jdbm' )
 

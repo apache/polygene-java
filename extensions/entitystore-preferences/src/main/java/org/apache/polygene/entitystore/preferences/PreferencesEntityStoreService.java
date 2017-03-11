@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.polygene.entitystore.prefs;
+package org.apache.polygene.entitystore.preferences;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;

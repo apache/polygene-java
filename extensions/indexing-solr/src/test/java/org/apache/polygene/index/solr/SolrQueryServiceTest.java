@@ -21,7 +21,7 @@ package org.apache.polygene.index.solr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.polygene.index.solr.assembly.SolrAssembler;
+import org.apache.polygene.index.solr.assembly.SolrIndexingAssembler;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -64,7 +64,7 @@ public class SolrQueryServiceTest
 
         new EntityTestAssembler().assemble( module );
         // START SNIPPET: assembly
-        new SolrAssembler().assemble( module );
+        new SolrIndexingAssembler().assemble( module );
         // END SNIPPET: assembly
 
         module.entities( TestEntity.class );

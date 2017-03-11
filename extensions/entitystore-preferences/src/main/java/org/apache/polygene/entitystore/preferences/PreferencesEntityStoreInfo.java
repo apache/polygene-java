@@ -17,31 +17,29 @@
  *
  *
  */
-package org.apache.polygene.valueserialization.stax;
+package org.apache.polygene.entitystore.preferences;
 
-import org.apache.polygene.valueserialization.stax.assembly.StaxValueSerializationAssembler;
-import org.junit.BeforeClass;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.value.AbstractCollectionSerializationTest;
+import java.io.Serializable;
+import java.util.prefs.Preferences;
 
-import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
-
-public class StaxCollectionSerializationTest
-    extends AbstractCollectionSerializationTest
+/**
+ * @author edward.yakop@gmail.com
+ */
+public final class PreferencesEntityStoreInfo
+    implements Serializable
 {
+    private Preferences rootNode;
 
-    @BeforeClass
-    public static void beforeClass_IBMJDK()
+    public PreferencesEntityStoreInfo( Preferences aRootNode )
     {
-        assumeNoIbmJdk();
+        rootNode = aRootNode;
     }
 
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    /**
+     * @return root preference node to use.
+     */
+    public Preferences rootNode()
     {
-        super.assemble( module );
-        new StaxValueSerializationAssembler().assemble( module );
+        return rootNode;
     }
 }

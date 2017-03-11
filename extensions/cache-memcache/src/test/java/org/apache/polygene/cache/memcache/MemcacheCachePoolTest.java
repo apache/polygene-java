@@ -22,6 +22,7 @@ package org.apache.polygene.cache.memcache;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.cache.memcache.assembly.MemcacheAssembler;
 import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractCachePoolTest;

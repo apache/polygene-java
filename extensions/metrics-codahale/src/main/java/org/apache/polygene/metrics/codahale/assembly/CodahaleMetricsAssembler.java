@@ -36,7 +36,7 @@ import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.metrics.codahale.CodahaleMetricsProvider;
 
 public class CodahaleMetricsAssembler
-    extends Assemblers.VisibilityIdentity<CodahaleMetricsAssembler>
+    extends Assemblers.VisibilityIdentityConfig<CodahaleMetricsAssembler>
 {
     private final CodahaleMetricsDeclaration declaration = new CodahaleMetricsDeclaration();
 

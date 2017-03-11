@@ -17,25 +17,8 @@
  *
  *
  */
-package org.apache.polygene.valueserialization.stax;
+package org.apache.polygene.index.sql.assembly;
 
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-
-/**
- * Assemble a ValueSerialization Service producing and consuming XML documents.
- */
-public class StaxValueSerializationAssembler
-    extends Assemblers.Visibility<StaxValueSerializationAssembler>
+public class SQLIndexingAssembler extends PostgreSQLIndexQueryAssembler
 {
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-        module.services( StaxValueSerializationService.class ).
-            visibleIn( visibility() ).
-                  taggedWith( ValueSerialization.Formats.XML );
-    }
 }
