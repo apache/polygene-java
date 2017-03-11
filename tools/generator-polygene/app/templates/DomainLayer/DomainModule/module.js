@@ -1,7 +1,7 @@
 module.exports = {
 
     write: function (p) {
-
+        if(!p.modules) return;
         Object.keys(p.modules).forEach(function (moduleName, index) {
             copyPolygeneDomainModule(p, moduleName, p.modules[moduleName])
         });
