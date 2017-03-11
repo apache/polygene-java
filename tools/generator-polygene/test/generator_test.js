@@ -17,7 +17,7 @@ describe('polygene-generator-defaults', function () {
     });
 });
 
-[
+var entityStores = [
     'Cassandra',
     'File',
     'Geode',
@@ -31,97 +31,105 @@ describe('polygene-generator-defaults', function () {
     'Riak',
     'SQL',
     'Memory'   // Somehow the last EntityStore is used in subsequent test arrays. Pick the fastest.
-].forEach(function (entityStore) {
-    describe('polygene-generator-default-and-' + entityStore.toLowerCase() + "-entitystore", function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with ' + entityStore + ' as the Entity Store', function () {
-            return helpers.run(path.join(__dirname, '../app'))
-                .withPrompts({
-                    name: 'test-project',
-                    packageName: 'org.apache.polygene.generator.test',
-                    entitystore: entityStore
-                })
-                .then(buildAndVerify);
-        });
-    });
-});
+];
 
-[
+var indexings = [
     'Rdf',
     'ElasticSearch',
     'Solr',
     'SQL'
-].forEach(function (indexing) {
-    describe('polygene-generator-default-and-' + indexing.toLowerCase() + '-indexing', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with '+ indexing + ' as the Indexing system', function () {
-            return helpers.run(path.join(__dirname, '../app'))
-                .withPrompts({
-                    name: 'test-project',
-                    packageName: 'org.apache.polygene.generator.test',
-                    indexing: indexing
-                })
-                .then(buildAndVerify);
-        });
-    });
-});
+];
 
-[
+var cachings = [
     'None',
     'Memcache',
     'EhCache'
-].forEach(function (caching) {
-    describe('polygene-generator-default-and-' + caching.toLowerCase() + '-caching', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with '+caching+' as the Caching system', function () {
-            return helpers.run(path.join(__dirname, '../app'))
-                .withPrompts({
-                    name: 'test-project',
-                    packageName: 'org.apache.polygene.generator.test',
-                    caching: caching
-                })
-                .then(buildAndVerify);
-        });
-    });
-});
+];
 
-[
+var serializations = [
     'Jackson',
     // 'Johnzon',
     'Stax'
-].forEach(function (serialization) {
-    describe('polygene-generator-default-and-' + serialization.toLowerCase() + '-caching', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with '+serialization+' as the Serialization system', function () {
-            return helpers.run(path.join(__dirname, '../app'))
-                .withPrompts({
-                    name: 'test-project',
-                    packageName: 'org.apache.polygene.generator.test',
-                    serialization: serialization
-                })
-                .then(buildAndVerify);
-        });
-    });
-});
+];
 
-[
+var metricses = [
     'None',
     'Codahale'
-].forEach(function (metrics) {
-    describe('polygene-generator-default-and-' + metrics.toLowerCase() + '-caching', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with '+metrics+' as the Metrics system', function () {
-            return helpers.run(path.join(__dirname, '../app'))
-                .withPrompts({
-                    name: 'test-project',
-                    packageName: 'org.apache.polygene.generator.test',
-                    metrics: metrics
-                })
-                .then(buildAndVerify);
+];
+
+var featuresset = [
+    [],
+    ['rest api'],
+    ['security'],
+    ['rest api, security']
+];
+
+entityStores.forEach(function (entityStore) {
+    test(entityStore, "Rdf", "Jackson", "Memcache", "Codahale", "[]");
+});
+
+indexings.forEach(function (indexing) {
+    test("Memory", indexing, "Jackson", "Memcache", "Codahale", "[]");
+});
+
+serializations.forEach(function (serialization) {
+    test("Memory", "Rdf", serialization, "Memcache", "Codahale", "[]");
+});
+
+cachings.forEach(function (caching) {
+    test("Memory", "Rdf", "Jackson", caching, "Codahale", "[]");
+});
+
+metricses.forEach(function (metrics) {
+    test("Memory", "Rdf", "Jackson", "Memcache", metrics, "[]");
+});
+
+featuresset.forEach(function (feature) {
+    test("Memory", "Rdf", "Jackson", "Memcache", "Codahale", feature);
+});
+
+// All Tests !!!!
+entityStores.forEach(function (entitystore) {
+    indexings.forEach(function (indexing) {
+        serializations.forEach(function (serialization) {
+            cachings.forEach(function (caching) {
+                metricses.forEach(function (metrics) {
+                    featuresset.forEach(function (features) {
+                        test(entitystore, indexing, serialization, caching, metrics, features)
+                    });
+                });
+            });
         });
     });
 });
 
+function test(entityStore, indexing, serialization, caching, metrics, features) {
+    describe('polygene-generator-default-and-' + entityStore.toLowerCase() + "-entitystore", function () {
+        this.timeout(10000);
+        it('generates a Gradle buildable Apache Polygene project with '
+            + entityStore + 'EntityStore, '
+            + indexing + 'Indexing, '
+            + serialization + 'Serialzation, '
+            + caching + 'Caching, '
+            + metrics + 'Metrics, '
+            + ' and ' + features + '.',
+            function () {
+                return helpers.run(path.join(__dirname, '../app'))
+                    .withPrompts({
+                        name: 'test-project',
+                        packageName: 'org.apache.polygene.generator.test',
+
+                        entitystore: entityStore,
+                        serialization: serialization,
+                        indexing: indexing,
+                        caching: caching,
+                        metrics: metrics,
+                        features: features
+                    })
+                    .then(buildAndVerify);
+            });
+    });
+}
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);

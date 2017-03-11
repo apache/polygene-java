@@ -31,6 +31,7 @@ dependencies {
 
   testImplementation polygene.core.testsupport
   testImplementation polygene.extension( 'entitystore-jdbm' )
+  testImplementation polygene.extension( 'valueserialization-jackson' )
   testImplementation polygene.extension( 'indexing-rdf' )
 
   testRuntimeOnly libraries.logback

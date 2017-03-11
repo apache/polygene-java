@@ -40,6 +40,7 @@ import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -66,6 +67,7 @@ public class ReindexerTest
 
         // Native Sesame EntityFinder
         new RdfNativeSesameStoreAssembler().assemble( module );
+        new JacksonValueSerializationAssembler().assemble( module );
 
         // Reindexer
         // START SNIPPET: assembly
