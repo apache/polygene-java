@@ -33,4 +33,12 @@ dependencies {
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.valueserialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
 
+<% if( polygene.caching !== "None" ) { %>
+  compile "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
+<% } %>
+
+<% if( polygene.metrics !== "None" ) { %>
+  compile "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
+<% } %>
+
 }

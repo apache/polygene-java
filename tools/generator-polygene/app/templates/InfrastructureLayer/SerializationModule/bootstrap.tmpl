@@ -17,26 +17,27 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= packageName %>.bootstrap.infrastructure;
 
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.valueserialization.<%- polygene.serialization.toLowerCase() %>.<%- polygene.serialization %>ValueSerializationAssembler;
 
-public class DomainLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+public class <%- polygene.serialization %>ValueSerializationModule
+    implements ModuleAssembler
 {
+    public static final String NAME = "<%- polygene.serialization %> Serialization Module";
+
     @Override
-    public LayerAssembly assemble(LayerAssembly layer)
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, CrudModule.class );
-<% } %>
-<% if( hasFeature( 'security' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
-        return layer;
+        new <%- polygene.serialization %>ValueSerializationAssembler()
+            .visibleIn( Visibility.application )
+            .assemble( module );
+        return module;
     }
 }

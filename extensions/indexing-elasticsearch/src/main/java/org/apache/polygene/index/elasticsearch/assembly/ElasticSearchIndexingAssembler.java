@@ -1,4 +1,4 @@
-<%#
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -14,28 +14,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
--%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+ */
+package org.apache.polygene.index.elasticsearch.assembly;
 
-rootProject.name = '<%= polygene.name %>'
-
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+/**
+ * This is a dummy Assembler to support the Yeoman Polygene Generator, which require naming conventions for
+ * the systems that it supports.
+ */
+public class ElasticSearchIndexingAssembler extends ESFilesystemIndexQueryAssembler
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
 }

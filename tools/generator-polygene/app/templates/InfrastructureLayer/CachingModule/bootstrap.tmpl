@@ -17,26 +17,35 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= packageName %>.bootstrap.infrastructure;
 
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.cache.<%- polygene.caching.toLowerCase() %>.assembly.<%- polygene.caching %>Assembler;
 
-public class DomainLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+public class <%- polygene.caching %>CachingModule
+    implements ModuleAssembler
 {
+    public static final String NAME = "<%- polygene.caching %> Caching Module";
+    private final ModuleAssembly configModule;
+
+    public <%- polygene.caching %>CachingModule( ModuleAssembly configModule )
+    {
+        this.configModule = configModule;
+    }
+
     @Override
-    public LayerAssembly assemble(LayerAssembly layer)
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, CrudModule.class );
-<% } %>
-<% if( hasFeature( 'security' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
-        return layer;
+        new <%- polygene.caching %>Assembler()
+            .visibleIn(Visibility.layer)
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
+
+        return module;
     }
 }

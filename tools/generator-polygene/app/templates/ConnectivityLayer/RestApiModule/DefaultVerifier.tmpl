@@ -17,25 +17,30 @@
  *
  *
 -%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+package <%= packageName %>.rest.security;
 
-rootProject.name = '<%= polygene.name %>'
+import org.apache.polygene.api.injection.scope.Service;
+import org.restlet.security.SecretVerifier;
+import org.restlet.security.Verifier;
+import <%= packageName %>.model.security.SecurityRepository;
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+public class DefaultVerifier extends SecretVerifier
+    implements Verifier
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
+    @Service
+    private SecurityRepository repository;
+
+    @Override
+    public int verify( String user, char[] secret )
+    {
+        if( user == null || secret == null )
+        {
+            return RESULT_UNKNOWN;
+        }
+        if( repository.verifyPassword( user, String.valueOf( secret ) ) )
+        {
+            return RESULT_VALID;
+        }
+        return RESULT_INVALID;
+    }
 }

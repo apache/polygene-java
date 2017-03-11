@@ -19,24 +19,35 @@
 -%>
 package <%= packageName %>.bootstrap.domain;
 
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
 
-public class DomainLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+import <%= packageName %>.model.security.SecurityRepository;
+import <%= packageName %>.model.security.HardcodedSecurityRepositoryMixin;
+
+public class SecurityModule
+    implements ModuleAssembler
 {
+    public static String NAME;
+
     @Override
-    public LayerAssembly assemble(LayerAssembly layer)
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, CrudModule.class );
-<% } %>
-<% if( hasFeature( 'security' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
-        return layer;
+        module.services( SecurityRepository.class )
+            .withMixins( HardcodedSecurityRepositoryMixin.class )
+            .visibleIn( Visibility.application )
+            .instantiateOnStartup();
+
+        new StandaloneShiroAssembler().
+            withConfig( configModule, Visibility.layer ).
+            assemble( module );
+        module.services( RealmService.class );
+
+        return module;
     }
 }

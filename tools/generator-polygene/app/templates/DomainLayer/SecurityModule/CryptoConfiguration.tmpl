@@ -17,25 +17,21 @@
  *
  *
 -%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+package <%= packageName %>.model.security;
 
-rootProject.name = '<%= polygene.name %>'
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.common.Optional;
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+public class CryptoConfiguration
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
+    @Optional
+    Property<String> digestAlgorithm();
+
+    @Optional
+    Property<String> digestAlgorithm();
+
+    Property<String> secret1();
+
+    Property<String> secret2();
+
 }

@@ -19,37 +19,33 @@
 -%>
 package <%= packageName %>.bootstrap.infrastructure;
 
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.layered.LayerAssembler;
-import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.entitystore.<%- polygene.entitystore.toLowerCase() %>.assembly.<%- polygene.entitystore %>EntityStoreAssembler;
 
-public class InfrastructureLayer extends LayeredLayerAssembler
-    implements LayerAssembler
+public class <%- polygene.entitystore %>StorageModule
+    implements ModuleAssembler
 {
-    public static final String NAME = "Infrastructure Layer";
+    public static final String NAME = "<%- polygene.entitystore %> Storage Module";
     private final ModuleAssembly configModule;
 
-    public InfrastructureLayer( ModuleAssembly configModule )
+    public <%- polygene.entitystore %>StorageModule( ModuleAssembly configModule )
     {
         this.configModule = configModule;
     }
 
     @Override
-    public LayerAssembly assemble( LayerAssembly layer )
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        createModule( layer, FileConfigurationModule.class );
-        createModule( layer, <%= polygene.serialization %>ValueSerializationModule.class );
-<% if( polygene.metrics !== "None" ) { %>
-        createModule( layer, <%= polygene.metrics %>MetricsModule.class );
-<% } %>
-<% if( polygene.caching !== "None" ) { %>
-        createModule( layer, <%= polygene.caching %>CachingModule.class );
-<% } %>
-        new <%= polygene.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= polygene.entitystore %>StorageModule.NAME ) );
-        new <%= polygene.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= polygene.indexing %>IndexingModule.NAME ) );
-        return layer;
+        new <%- polygene.entitystore %>EntityStoreAssembler()
+            .visibleIn( Visibility.application  )
+            .withConfig( configModule, Visibility.application )
+            .identifiedBy( "entitystore-<%- polygene.entitystore %>" )
+            .assemble( module );
+        return module;
     }
 }

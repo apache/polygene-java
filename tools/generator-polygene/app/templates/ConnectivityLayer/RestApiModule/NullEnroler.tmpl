@@ -17,25 +17,16 @@
  *
  *
 -%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+package <%= packageName %>.rest.security;
 
-rootProject.name = '<%= polygene.name %>'
+import org.restlet.data.ClientInfo;
+import org.restlet.security.Enroler;
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+public class NullEnroler
+    implements Enroler
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
+    @Override
+    public void enrole( ClientInfo clientInfo )
+    {
+    }
 }

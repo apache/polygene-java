@@ -17,25 +17,25 @@
  *
  *
 -%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+package <%= packageName %>.model.<%= polygene.current.name %>;
 
-rootProject.name = '<%= polygene.name %>'
+import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+@Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
+public interface <%= polygene.current.clazz.name %>
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
+    interface State
+    {
+        Property<String> name();     // Sample hidden property
+    }
+
+    class Mixin
+        implements <%= polygene.current.clazz.name %>
+    {
+        @This
+        private State state;        // Sample reference to hidden property
+
+    }
 }

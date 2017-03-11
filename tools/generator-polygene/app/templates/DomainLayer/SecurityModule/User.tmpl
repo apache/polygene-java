@@ -17,25 +17,35 @@
  *
  *
 -%>
-include 'app',
-        'bootstrap',
-        'model',
-        'rest'
+package <%= packageName %>.model.security;
 
-rootProject.name = '<%= polygene.name %>'
+import org.apache.polygene.api.injection.scope.This
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
+@Mixins( { User.Mixin } )
+public interface User
 {
-  assert project.projectDir.isDirectory()
-  if( new File("$project.projectDir/src/main/java").exists() )
-  {
-    assert project.buildFile.isFile()
-  }
-  if( parentName.length() > 0 )
-  println "Project: " + project.name
-  project.children.each { child ->
-    validateProject(child, project.name)
-  }
+
+    interface State
+    {
+        @Concerns( EncryptedStringPropertyConcern.class )
+        Property<String> password();
+
+        ManyAssociation<Group> memberOf();
+    }
+
+    class Mixin
+        implements User
+    {
+        @Service
+        private HashingService hashing;
+
+        @This
+        private State state;
+
+
+    }
+
+
 }
