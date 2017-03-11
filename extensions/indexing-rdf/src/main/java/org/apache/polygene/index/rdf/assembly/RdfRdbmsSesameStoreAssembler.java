@@ -20,18 +20,14 @@
 package org.apache.polygene.index.rdf.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.RdfIndexingEngineService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
-import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.library.rdf.repository.RdbmsRepositoryConfiguration;
 import org.apache.polygene.library.rdf.repository.RdbmsRepositoryService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfRdbmsSesameStoreAssembler  extends AbstractRdfIndexingAssembler<RdfNativeSesameStoreAssembler>
 {
@@ -42,6 +38,7 @@ public class RdfRdbmsSesameStoreAssembler  extends AbstractRdfIndexingAssembler<
         this( Visibility.application, Visibility.module );
     }
 
+    @SuppressWarnings( "WeakerAccess" )
     public RdfRdbmsSesameStoreAssembler( Visibility indexingVisibility, Visibility repositoryVisibility )
     {
         visibleIn( indexingVisibility );

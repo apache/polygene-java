@@ -21,6 +21,7 @@ package org.apache.polygene.index.rdf.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
 
+@SuppressWarnings( "WeakerAccess" )
 public abstract class AbstractRdfIndexingAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {

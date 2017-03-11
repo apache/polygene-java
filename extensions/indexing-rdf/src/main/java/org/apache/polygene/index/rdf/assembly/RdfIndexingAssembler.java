@@ -23,6 +23,7 @@ package org.apache.polygene.index.rdf.assembly;
  * This is a dummy Assembler to support the Yeoman Polygene Generator, which require naming conventions for
  * the systems that it supports.
  */
+@SuppressWarnings( "unused" )
 public class RdfIndexingAssembler extends RdfNativeSesameStoreAssembler
 {
 }
