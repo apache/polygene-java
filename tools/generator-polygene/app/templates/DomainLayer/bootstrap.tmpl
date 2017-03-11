@@ -28,15 +28,18 @@ public class DomainLayer extends LayeredLayerAssembler
     implements LayerAssembler
 {
     @Override
-    public LayerAssembly assemble(LayerAssembly layer)
+    public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-<% if( hasFeature( 'rest api' ) ) { %>
-        createModule( layer, CrudModule.class );
-<% } %>
-<% if( hasFeature( 'security' ) ) { %>
-        createModule( layer, SecurityModule.class );
-<% } %>
+<% if( hasFeature( 'rest api' ) ) {
+%>        createModule( layer, CrudModule.class );<%
+}
+for( var mod in polygene.modules ) {%>
+<%- "        createModule( layer, " + polygene.firstUpper(mod) + "Module.class );" %><%
+}
+if( hasFeature( 'security' ) ) {
+%>        createModule( layer, SecurityModule.class );<%
+} %>
         return layer;
     }
 }

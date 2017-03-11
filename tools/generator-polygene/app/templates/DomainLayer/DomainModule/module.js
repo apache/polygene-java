@@ -28,12 +28,19 @@ function copyPolygeneDomainModule(p, moduleName, moduleDef) {
     copyComposites(p, moduleDef.transients, "Transient");
     copyComposites(p, moduleDef.objects, "Object");
     copyComposites(p, moduleDef.services, "Service");
+    copyComposites(p, moduleDef.services, "Configuration");
 }
 
 function copyComposites(p, composites, type) {
     for (var idx in composites) {
         if (composites.hasOwnProperty(idx)) {
-            p.current.clazz = composites[idx];
+            if( type === "Configuration"){
+                p.current.clazz.name = p.configurationClassName(composites[idx].name);
+                p.prepareConfigClazz(p.current);
+            } else {
+                p.current.clazz = composites[idx];
+                p.prepareClazz(p.current);
+            }
             p.copyTemplate(p.ctx,
                 'DomainLayer/DomainModule/' + type + '.tmpl',
                 'model/src/main/java/' + p.javaPackageDir + '/model/' + p.current.name  + '/' + p.current.clazz.name + '.java');

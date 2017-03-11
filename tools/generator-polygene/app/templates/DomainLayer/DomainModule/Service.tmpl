@@ -19,18 +19,34 @@
 -%>
 package <%= packageName %>.model.<%= polygene.current.name %>;
 
+import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
+<%
+for( var prop in polygene.current.imported ) {
+    if( !prop.startsWith( "java.lang" )) {
+        %><%- "import " + prop + ";"; %><%
+    }
+} %>
 
 @Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
 public interface <%= polygene.current.clazz.name %>
 {
+
     class Mixin
         implements <%= polygene.current.clazz.name %>
     {
+        @This
+        private Configuration<<%- polygene.configurationClassName( polygene.current.clazz.name ); %>> configuration;
+
         @Structure
         private ValueBuilderFactory vbf;
+
+        @Structure
+        private UnitOfWorkFactory uowf;
     }
 }
 

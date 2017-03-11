@@ -22,13 +22,21 @@ package <%= packageName %>.model.<%= polygene.current.name %>;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
+<%
+for( var prop in polygene.current.imported ) {
+    if( !prop.startsWith( "java.lang" )) {
+        %><%- "import " + prop + ";"; %><%
+    }
+} %>
 
 @Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
 public interface <%= polygene.current.clazz.name %>
 {
     interface State
     {
-        Property<String> name();     // Sample hidden property
+<% for( var idx in polygene.current.state ) { %>
+        <%- polygene.current.state[idx]; %>
+<% } %>
     }
 
     class Mixin

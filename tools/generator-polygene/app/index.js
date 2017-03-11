@@ -287,4 +287,77 @@ function assignFunctions(polygene) {
     polygene.firstUpper = function (text) {
         return text.charAt(0).toUpperCase() + text.substring(1);
     };
+    polygene.typeNameOnly = function(text) {
+        var lastPos = text.lastIndexOf(".");
+        if( lastPos < 0 ) {
+            return text;
+        }
+        return text.substring(lastPos + 1);
+    };
+
+    polygene.configurationClassName = function( clazzName ) {
+        if( clazzName.endsWith( "Service" )) {
+            clazzName = clazzName.substring(0, clazzName.length - 7 );
+        }
+        return clazzName + "Configuration";
+    };
+
+    polygene.prepareClazz = function (current) {
+        var state = [];
+        var imported = {};
+        var props = current.clazz.properties;
+        if( props ) {
+            for( var idx in props ) {
+                var prop = props[idx];
+                state.push( 'Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
+                imported[prop.type] = imported[prop.type];
+            }
+        } else {
+            state.push( 'Property<String> name();    // TODO: remove sample property')
+        }
+        var assocs = current.clazz.associations;
+        if( assocs ) {
+            for( var idx in assocs ) {
+                var assoc = assocs[idx];
+                state.push("Association" + '<' +  polygene.typeNameOnly(assoc.type) + '>' + assoc.name + "();")
+                imported[assoc.type] = imported[assoc.type] ;
+            }
+        }
+        assocs = current.clazz.manyassociations;
+        if( assocs ) {
+            for( var idx in assocs ) {
+                var assoc = assocs[idx];
+                state.push("ManyAssociation<" +  polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
+                imported[assoc.type] = imported[assoc.type] ;
+            }
+        }
+        assocs = current.clazz.namedassociations;
+        if( assocs ) {
+            for( var idx in assocs ) {
+                var assoc = assocs[idx];
+                state.push("NamedAssociation<" +  polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
+                imported[assoc.type] = imported[assoc.type];
+            }
+        }
+        current.state = state;
+        current.imported = imported;
+    };
+
+    polygene.prepareConfigClazz = function (current) {
+        var state = [];
+        var imported = {};
+        var props = current.clazz.configuration;
+        if( props ) {
+            for( var idx in props ) {
+                var prop = props[idx];
+                state.push( 'Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
+                imported[prop.type] = imported[prop.type];
+            }
+        } else {
+            state.push( 'Property<String> name();    // TODO: remove sample property')
+        }
+        current.state = state;
+        current.imported = imported;
+    };
+
 }
