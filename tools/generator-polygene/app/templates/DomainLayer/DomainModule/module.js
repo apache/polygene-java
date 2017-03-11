@@ -29,6 +29,8 @@ function copyPolygeneDomainModule(p, moduleName, moduleDef) {
     copyComposites(p, moduleDef.objects, "Object");
     copyComposites(p, moduleDef.services, "Service");
     copyComposites(p, moduleDef.services, "Configuration");
+
+    copyConfigurationYaml(p, moduleDef.services )
 }
 
 function copyComposites(p, composites, type) {
@@ -47,3 +49,16 @@ function copyComposites(p, composites, type) {
         }
     }
 }
+
+function copyConfigurationYaml(p, composites) {
+    for (var idx in composites) {
+        if (composites.hasOwnProperty(idx)) {
+            p.current.clazz = composites[idx];
+            p.prepareClazz(p.current);
+            p.copyTemplate(p.ctx,
+                'DomainLayer/DomainModule/config.yaml.tmpl',
+                'model/src/main/resources/' + p.javaPackageDir + '/model/' + p.current.name + '/' + p.current.clazz.name + '.yaml');
+        }
+    }
+}
+

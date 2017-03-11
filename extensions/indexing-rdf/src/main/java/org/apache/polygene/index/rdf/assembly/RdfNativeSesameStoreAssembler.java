@@ -20,31 +20,28 @@
 package org.apache.polygene.index.rdf.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.RdfIndexingEngineService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
+import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.library.rdf.repository.NativeRepositoryService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
-public class RdfNativeSesameStoreAssembler
-    implements Assembler
+public class RdfNativeSesameStoreAssembler extends AbstractRdfIndexingAssembler<RdfNativeSesameStoreAssembler>
 {
-    private Visibility indexingVisibility;
     private Visibility repositoryVisibility;
 
     public RdfNativeSesameStoreAssembler()
     {
-        this( Visibility.application, Visibility.module );
+        visibleIn( Visibility.application );
+        this.repositoryVisibility = Visibility.module;
     }
 
     public RdfNativeSesameStoreAssembler( Visibility indexingVisibility, Visibility repositoryVisibility )
     {
-        this.indexingVisibility = indexingVisibility;
+        visibleIn( indexingVisibility );
         this.repositoryVisibility = repositoryVisibility;
     }
 
@@ -54,14 +51,18 @@ public class RdfNativeSesameStoreAssembler
     {
         module.services( NativeRepositoryService.class )
               .visibleIn( repositoryVisibility )
-              .instantiateOnStartup()
-              .identifiedBy( "rdf-indexing" );
+              .instantiateOnStartup();
         module.services( RdfIndexingEngineService.class )
               .taggedWith( "rdf", "query", "indexing" )
-              .visibleIn( indexingVisibility )
+              .visibleIn( visibility() )
               .instantiateOnStartup();
-        module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
+        module.services( RdfQueryParserFactory.class ).visibleIn( visibility() );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
+
+        if( hasConfig() )
+        {
+            configModule().entities( NativeConfiguration.class ).
+                visibleIn( configVisibility() );
+        }
     }
 }

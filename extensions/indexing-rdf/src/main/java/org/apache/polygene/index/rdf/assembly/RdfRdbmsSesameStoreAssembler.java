@@ -28,13 +28,13 @@ import org.apache.polygene.index.rdf.RdfIndexingEngineService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
+import org.apache.polygene.library.rdf.repository.NativeConfiguration;
+import org.apache.polygene.library.rdf.repository.RdbmsRepositoryConfiguration;
 import org.apache.polygene.library.rdf.repository.RdbmsRepositoryService;
 import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
-public class RdfRdbmsSesameStoreAssembler
-    implements Assembler
+public class RdfRdbmsSesameStoreAssembler  extends AbstractRdfIndexingAssembler<RdfNativeSesameStoreAssembler>
 {
-    private Visibility indexingVisibility;
     private Visibility repositoryVisibility;
 
     public RdfRdbmsSesameStoreAssembler()
@@ -44,7 +44,7 @@ public class RdfRdbmsSesameStoreAssembler
 
     public RdfRdbmsSesameStoreAssembler( Visibility indexingVisibility, Visibility repositoryVisibility )
     {
-        this.indexingVisibility = indexingVisibility;
+        visibleIn( indexingVisibility );
         this.repositoryVisibility = repositoryVisibility;
     }
 
@@ -54,14 +54,18 @@ public class RdfRdbmsSesameStoreAssembler
     {
         module.services( RdbmsRepositoryService.class )
               .visibleIn( repositoryVisibility )
-              .instantiateOnStartup()
-              .identifiedBy( "rdf-indexing" );
+              .instantiateOnStartup();
         module.services( RdfIndexingEngineService.class )
               .taggedWith( "rdf", "query", "indexing" )
-              .visibleIn( indexingVisibility )
+              .visibleIn( visibility() )
               .instantiateOnStartup();
-        module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
+        module.services( RdfQueryParserFactory.class ).visibleIn( visibility() );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
+
+        if( hasConfig() )
+        {
+            configModule().entities( RdbmsRepositoryConfiguration.class ).
+                visibleIn( configVisibility() );
+        }
     }
 }

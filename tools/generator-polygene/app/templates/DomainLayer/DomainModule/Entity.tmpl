@@ -34,10 +34,10 @@ public interface <%= polygene.current.clazz.name %>
 {
     interface State
     {
-<% for( var idx in polygene.current.state ) { %>
-        <%- polygene.current.state[idx]; %>
-<% } %>
-    }
+<% for( var idx in polygene.current.state ) {
+%>        <%- polygene.current.state[idx]; %>
+<% }
+%>    }
 
     class Mixin
         implements <%= polygene.current.clazz.name %>

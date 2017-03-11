@@ -40,9 +40,6 @@ public class ESFilesystemIndexQueryAssembler
               .visibleIn( visibility() )
               .instantiateOnStartup();
 
-        module.services( OrgJsonValueSerializationService.class ).
-            taggedWith( ValueSerialization.Formats.JSON );
-
         if( hasConfig() )
         {
             configModule().entities( ElasticSearchConfiguration.class ).

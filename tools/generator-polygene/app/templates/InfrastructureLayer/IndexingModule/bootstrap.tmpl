@@ -43,7 +43,7 @@ public class <%- polygene.indexing %>IndexingModule
     {
         new <%- polygene.indexing %>IndexingAssembler()
             .visibleIn( Visibility.application )
-            .identifiedBy( "indexing-<%- polygene.indexing %>" )
+            .identifiedBy( "indexing-<%- polygene.indexing.toLowerCase() %>" )
             .withConfig( configModule, Visibility.application )
             .assemble( module );
         return module;

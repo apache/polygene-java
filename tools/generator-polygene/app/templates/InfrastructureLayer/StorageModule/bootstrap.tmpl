@@ -44,7 +44,7 @@ public class <%- polygene.entitystore %>StorageModule
         new <%- polygene.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )
-            .identifiedBy( "entitystore-<%- polygene.entitystore %>" )
+            .identifiedBy( "entitystore-<%- polygene.entitystore.toLowerCase() %>" )
             .assemble( module );
         return module;
     }

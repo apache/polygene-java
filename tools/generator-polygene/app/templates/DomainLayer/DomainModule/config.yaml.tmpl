@@ -17,20 +17,7 @@
  *
  *
 -%>
-package <%= packageName %>.model.<%= polygene.current.name %>;
-
-import org.apache.polygene.api.property.Property;
-<%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %>
-<%
-    }
-} %>
-
-public interface <%= polygene.current.clazz.name %>
-{
-<% for( var idx in polygene.current.state ) {
-%>    <%- polygene.current.state[idx]; %>
+-
+<% for( var idx in polygene.current.yaml ) {
+%>    <%- polygene.current.yaml[idx]; %>
 <% } %>
-}

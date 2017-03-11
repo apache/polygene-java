@@ -1,4 +1,4 @@
-<%#
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -16,21 +16,16 @@
  *  limitations under the License.
  *
  *
--%>
-package <%= packageName %>.model.<%= polygene.current.name %>;
+ */
+package org.apache.polygene.index.rdf.assembly;
 
-import org.apache.polygene.api.property.Property;
-<%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %>
-<%
-    }
-} %>
+import org.apache.polygene.bootstrap.Assemblers;
 
-public interface <%= polygene.current.clazz.name %>
+public abstract class AbstractRdfIndexingAssembler<AssemblerType>
+    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-<% for( var idx in polygene.current.state ) {
-%>    <%- polygene.current.state[idx]; %>
-<% } %>
+    public AbstractRdfIndexingAssembler()
+    {
+        identifiedBy( "rdf-indexing" );
+    }
 }

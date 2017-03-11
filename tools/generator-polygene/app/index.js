@@ -31,10 +31,32 @@ module.exports = generators.Base.extend(
             // Calling the super constructor is important so our generator is correctly set up
             generators.Base.apply(this, arguments);
 
-            this.option('import-model'); // --import-model reads model.json in current directory and creates the domain model for it.
+            this.option('import-model', {
+                name: "import",
+                desc: 'Reads a model file and creates the domain model for it.',
+                type: String,
+                default: "./model.json",
+                hide: false
+            });
 
-            if (this.options.import != null) {
-                polygene = importModel(this, './imported-model.json');
+            this.option('export-model', {
+                name: "export",
+                desc: 'Writes the model of the application into a json file.',
+                type: String,
+                default: "exported-model",
+                hide: false
+            });
+
+            this.option('noPrompt', {
+                name: "noPrompt",
+                desc: 'If specified, the interactive prompts will be disabled.',
+                type: Boolean,
+                default: false,
+                hide: false
+            });
+
+            if (this.options.import) {
+                polygene = importModel(this.options.import);
                 polygene.name = polygene.name ? polygene.name : firstUpper(this.appname);
                 polygene.packageName = polygene.packageName ? polygene.packageName : ("com.acme." + this.appname);
                 polygene.singletonApp = false;  // not supported yet
@@ -44,13 +66,12 @@ module.exports = generators.Base.extend(
                 polygene.entitystore = polygene.entitystore ? polygene.entitystore : null;
                 polygene.caching = polygene.caching ? polygene.caching : null;
                 polygene.serialization = polygene.serialization ? polygene.serialization : null;
-                console.log(JSON.stringify(polygene, null, 4));
             }
             assignFunctions(polygene);
         },
 
         prompting: function () {
-            if (this.options.noPrompt != null) {
+            if (this.options.noPrompt) {
                 return this.prompt([]);
             }
             else {
@@ -194,8 +215,8 @@ module.exports = generators.Base.extend(
             });
             var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
             buildToolChain.write(polygene);
-            if (this.options.export != null) {
-                exportModel(this, "exported-model.json");
+            if (this.options.export) {
+                exportModel(this.options.export);
             }
         }
     }
@@ -226,11 +247,17 @@ function firstUpper(text) {
     return text.charAt(0).toUpperCase() + text.substring(1);
 }
 
-function importModel(ctx, filename) {
+function importModel(filename) {
+    if ( typeof filename !== 'string' ) {
+        filename = "./model.json";
+    }
     return JSON.parse(fs.readFileSync(filename, 'utf8'));
 }
 
-function exportModel(ctx, filename) {
+function exportModel(filename) {
+    if ( typeof filename !== 'string' ) {
+        filename = "exported-model.json";
+    }
     delete polygene.current;
     return fs.writeFileSync(filename, JSON.stringify(polygene, null, 4) + "\n", 'utf8');
 }
@@ -238,7 +265,6 @@ function exportModel(ctx, filename) {
 function assignFunctions(polygene) {
 
     polygene.hasFeature = function (feature) {
-        console.log(polygene.features);
         return polygene.features.indexOf(feature) >= 0;
     };
 
@@ -287,17 +313,17 @@ function assignFunctions(polygene) {
     polygene.firstUpper = function (text) {
         return text.charAt(0).toUpperCase() + text.substring(1);
     };
-    polygene.typeNameOnly = function(text) {
+    polygene.typeNameOnly = function (text) {
         var lastPos = text.lastIndexOf(".");
-        if( lastPos < 0 ) {
+        if (lastPos < 0) {
             return text;
         }
         return text.substring(lastPos + 1);
     };
 
-    polygene.configurationClassName = function( clazzName ) {
-        if( clazzName.endsWith( "Service" )) {
-            clazzName = clazzName.substring(0, clazzName.length - 7 );
+    polygene.configurationClassName = function (clazzName) {
+        if (clazzName.endsWith("Service")) {
+            clazzName = clazzName.substring(0, clazzName.length - 7);
         }
         return clazzName + "Configuration";
     };
@@ -306,36 +332,36 @@ function assignFunctions(polygene) {
         var state = [];
         var imported = {};
         var props = current.clazz.properties;
-        if( props ) {
-            for( var idx in props ) {
+        if (props) {
+            for (var idx in props) {
                 var prop = props[idx];
-                state.push( 'Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
+                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
                 imported[prop.type] = imported[prop.type];
             }
         } else {
-            state.push( 'Property<String> name();    // TODO: remove sample property')
+            state.push('Property<String> name();    // TODO: remove sample property')
         }
         var assocs = current.clazz.associations;
-        if( assocs ) {
-            for( var idx in assocs ) {
+        if (assocs) {
+            for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("Association" + '<' +  polygene.typeNameOnly(assoc.type) + '>' + assoc.name + "();")
-                imported[assoc.type] = imported[assoc.type] ;
+                state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + '>' + assoc.name + "();")
+                imported[assoc.type] = imported[assoc.type];
             }
         }
         assocs = current.clazz.manyassociations;
-        if( assocs ) {
-            for( var idx in assocs ) {
+        if (assocs) {
+            for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("ManyAssociation<" +  polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
-                imported[assoc.type] = imported[assoc.type] ;
+                state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
+                imported[assoc.type] = imported[assoc.type];
             }
         }
         assocs = current.clazz.namedassociations;
-        if( assocs ) {
-            for( var idx in assocs ) {
+        if (assocs) {
+            for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("NamedAssociation<" +  polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
+                state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
                 imported[assoc.type] = imported[assoc.type];
             }
         }
@@ -345,18 +371,44 @@ function assignFunctions(polygene) {
 
     polygene.prepareConfigClazz = function (current) {
         var state = [];
+        var yaml = [];
         var imported = {};
         var props = current.clazz.configuration;
-        if( props ) {
-            for( var idx in props ) {
+        if (props) {
+            for (var idx in props) {
                 var prop = props[idx];
-                state.push( 'Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
+                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
                 imported[prop.type] = imported[prop.type];
+                var yamlDefault;
+                if( prop.type === "java.lang.String" ) {
+                    yamlDefault = '""';
+                }
+                else if( prop.type === "java.lang.Boolean" ) {
+                    yamlDefault = 'false';
+                }
+                else if( prop.type === "java.lang.Long" ) {
+                    yamlDefault = '0';
+                }
+                else if( prop.type === "java.lang.Integer" ) {
+                    yamlDefault = '0';
+                }
+                else if( prop.type === "java.lang.Double" ) {
+                    yamlDefault = '0.0';
+                }
+                else if( prop.type === "java.lang.Float" ) {
+                    yamlDefault = '0.0';
+                }
+                else {
+                    yamlDefault = '\n    # TODO: complex configuration type. ';
+                }
+                yaml.push( prop.name + " : " + yamlDefault);
             }
         } else {
-            state.push( 'Property<String> name();    // TODO: remove sample property')
+            state.push('Property<String> name();    // TODO: remove sample property')
+            yaml.push( 'name : "sample config value"' );
         }
         current.state = state;
+        current.yaml = yaml;
         current.imported = imported;
     };
 

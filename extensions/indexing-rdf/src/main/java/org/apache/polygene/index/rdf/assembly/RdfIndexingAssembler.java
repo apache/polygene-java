@@ -1,4 +1,4 @@
-<%#
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -16,21 +16,13 @@
  *  limitations under the License.
  *
  *
--%>
-package <%= packageName %>.model.<%= polygene.current.name %>;
+ */
+package org.apache.polygene.index.rdf.assembly;
 
-import org.apache.polygene.api.property.Property;
-<%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %>
-<%
-    }
-} %>
-
-public interface <%= polygene.current.clazz.name %>
+/**
+ * This is a dummy Assembler to support the Yeoman Polygene Generator, which require naming conventions for
+ * the systems that it supports.
+ */
+public class RdfIndexingAssembler extends RdfNativeSesameStoreAssembler
 {
-<% for( var idx in polygene.current.state ) {
-%>    <%- polygene.current.state[idx]; %>
-<% } %>
 }
