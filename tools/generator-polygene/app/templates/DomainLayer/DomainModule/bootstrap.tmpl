@@ -54,7 +54,7 @@ public class <%- firstUpper(polygene.current.name) %>Module
 <% } %>
 <% if( polygene.current.values ) { %>
   <% for( var value in polygene.current.values ) { %>
-    <% var v = polygene.current.current[value]; %>
+    <% var v = polygene.current.values[value]; %>
         module.values(<%= v.name + ".class" %>)<% if( v.visibility ) {%><%-".visibleIn(" + v.visibility +")"%><% } %>;
   <% } %>
 <% } %>

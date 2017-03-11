@@ -19,8 +19,10 @@
 -%>
 package <%= packageName %>.model.<%= polygene.current.name %>;
 
-import org.apache.polygene.api.injection.scope.This
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.value.ValueBuilderFactory;
 
 public class <%= polygene.current.clazz.name %>
 {

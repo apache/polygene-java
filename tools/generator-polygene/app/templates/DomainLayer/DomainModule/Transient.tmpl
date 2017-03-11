@@ -19,23 +19,29 @@
 -%>
 package <%= packageName %>.model.<%= polygene.current.name %>;
 
-import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 
 @Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
 public interface <%= polygene.current.clazz.name %>
 {
-    interface State
-    {
-        Property<String> name();     // Sample hidden property
-    }
+    Property<String> name();     // Sample hidden property
 
-    class Mixin
+    // If Property declarations are public, the Mixin must be abstract, because PropertyMixin will implement those methods.
+    abstract class Mixin
         implements <%= polygene.current.clazz.name %>
     {
-        @This
-        private State state;        // Sample reference to hidden property
+        // Transients supports @Uses injection
+        //
+        //  Socket socket = serverSockete.accept();
+        //  TransientBuilder<<%= polygene.current.clazz.name %>> builder = transientBuilderFactory.newTransientBuilder(<%= polygene.current.clazz.name %>.class);
+        //  builder.use( socket );
+        //  builder.prototype().name().set( name + counter++ );
+        //  <%= polygene.current.clazz.name %> <%= polygene.current.clazz.name.toLowerCase() %> = builder.newInstance();
+
+//        @Uses
+//        private Socket items;
 
     }
 }
