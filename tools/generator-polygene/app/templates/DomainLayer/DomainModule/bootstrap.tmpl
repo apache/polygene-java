@@ -17,7 +17,7 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= polygene.packageName %>.bootstrap.domain;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -25,32 +25,32 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 
 <% for( var idx in polygene.current.cruds) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.cruds[idx].name + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.cruds[idx].name + ";" %>
 <%
 }
 
 for( var idx in polygene.current.values) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.values[idx].name + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.values[idx].name + ";" %>
 <%
 }
 for( var idx in polygene.current.entities) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.entities[idx].name + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.entities[idx].name + ";" %>
 <%
 }
 
 for( var idx in polygene.current.transients) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.transients[idx].name + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.transients[idx].name + ";" %>
 <%
 }
 
 for( var idx in polygene.current.objects) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.objects[idx].name + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.objects[idx].name + ";" %>
 <%
 }
 
 for( var idx in polygene.current.services) {
-%><%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.current.services[idx].name + ";" %>
-<%= "import " + packageName + ".model." + polygene.current.name + "." + polygene.configurationClassName(polygene.current.services[idx].name) + ";" %>
+%><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.services[idx].name + ";" %>
+<%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.configurationClassName(polygene.current.services[idx].name) + ";" %>
 <%
 } %>
 

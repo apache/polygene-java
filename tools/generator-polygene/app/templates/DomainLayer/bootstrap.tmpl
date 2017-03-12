@@ -17,7 +17,7 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= polygene.packageName %>.bootstrap.domain;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -31,7 +31,7 @@ public class DomainLayer extends LayeredLayerAssembler
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-<% if( hasFeature( 'rest api' ) ) {
+<% if( polygene.applicationtype === 'Rest API' ) {
 %>        createModule( layer, CrudModule.class );<%
 }
 for( var mod in polygene.modules ) {%>

@@ -17,7 +17,7 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.connectivity;
+package <%= polygene.packageName %>.bootstrap.connectivity;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -33,7 +33,7 @@ public class ConnectivityLayer extends LayeredLayerAssembler
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-<% if( hasFeature('rest api') ) { %>
+<% if( polygene.applicationtype === 'Rest API' ) { %>
         createModule( layer, RestApiModule.class );
 <% } -%>
         return layer;

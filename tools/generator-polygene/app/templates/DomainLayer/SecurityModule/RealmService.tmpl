@@ -17,15 +17,23 @@
  *
  *
 -%>
-package <%= packageName %>.model.security;
+package <%= polygene.packageName %>.model.security;
 
-@Mixins( MyRealmMixin.class )
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.service.ServiceActivation;
+
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.authc.credential.PasswordService;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.SimpleAccountRealm;
+
+@Mixins( RealmService.Mixin.class )
 public interface RealmService
-        extends Realm, ServiceComposite, ServiceActivation
+        extends Realm, ServiceActivation
 {
-    class Mixin
-        extends SimpleAccountRealm
-        implements ServiceActivation
+    class Mixin extends SimpleAccountRealm
+            implements ServiceActivation
     {
 
         private final PasswordService passwordService;
@@ -42,8 +50,13 @@ public interface RealmService
         public void activateService()
                 throws Exception
         {
-             // Create a test account
+            // Create a test account
             addAccount( "foo", passwordService.encryptPassword( "bar" ) );
+        }
+
+        public void passivateService()
+                throws Exception
+        {
         }
     }
 }

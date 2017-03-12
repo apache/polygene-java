@@ -5,17 +5,8 @@ var shell = require('shelljs');
 
 //See http://yeoman.io/authoring/testing.html
 
-describe('polygene-generator-defaults', function () {
-    this.timeout(10000);
-    it('generates a Gradle buildable Apache Polygene project', function () {
-        return helpers.run(path.join(__dirname, '../app'))
-            .withPrompts({
-                name: 'test-project',
-                packageName: 'org.apache.polygene.generator.test'
-            })
-            .then(buildAndVerify);
-    });
-});
+// test with all defaults first.
+test();
 
 var entityStores = [
     'Cassandra',
@@ -104,7 +95,7 @@ entityStores.forEach(function (entitystore) {
 });
 
 function test(entityStore, indexing, serialization, caching, metrics, features) {
-    describe('polygene-generator-default-and-' + entityStore.toLowerCase() + "-entitystore", function () {
+    describe('polygene-generator', function () {
         this.timeout(10000);
         it('generates a Gradle buildable Apache Polygene project with '
             + entityStore + 'EntityStore, '
@@ -115,10 +106,10 @@ function test(entityStore, indexing, serialization, caching, metrics, features) 
             + ' and ' + features + '.',
             function () {
                 return helpers.run(path.join(__dirname, '../app'))
+                    .inDir(path.join(__dirname, '../build/test-project'))
                     .withPrompts({
                         name: 'test-project',
                         packageName: 'org.apache.polygene.generator.test',
-
                         entitystore: entityStore,
                         serialization: serialization,
                         indexing: indexing,

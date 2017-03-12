@@ -17,18 +17,19 @@
  *
  *
 -%>
-package <%= packageName %>.model.security;
+package <%= polygene.packageName %>.model.security;
 
+import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.common.Optional;
 
-public class CryptoConfiguration
+public interface CryptoConfiguration extends ConfigurationComposite
 {
     @Optional
     Property<String> digestAlgorithm();
 
     @Optional
-    Property<String> digestAlgorithm();
+    Property<String> encryptionAlgorithm();
 
     Property<String> secret1();
 

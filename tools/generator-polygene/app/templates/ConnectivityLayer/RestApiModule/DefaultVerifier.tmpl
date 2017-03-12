@@ -17,12 +17,12 @@
  *
  *
 -%>
-package <%= packageName %>.rest.security;
+package <%= polygene.packageName %>.rest.security;
 
 import org.apache.polygene.api.injection.scope.Service;
 import org.restlet.security.SecretVerifier;
 import org.restlet.security.Verifier;
-import <%= packageName %>.model.security.SecurityRepository;
+import <%= polygene.packageName %>.model.security.SecurityRepository;
 
 public class DefaultVerifier extends SecretVerifier
     implements Verifier

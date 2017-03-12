@@ -18,6 +18,12 @@
  *
 -%>
 
-// dependencies {
-//   compile "org.restlet.jee:org.restlet:2.3.4"
-// }
+dependencies {
+
+<% if( hasFeature( 'security' ) ) {
+%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.shiro-core:$polygeneVersion"
+<% } %>
+<% if( polygene.applicationtype === 'Rest API' ) {
+%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+<% } %>
+}

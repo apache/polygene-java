@@ -32,7 +32,7 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 
 @Mixins( Role.Mixin.class )
 public interface Role
-        extends EntityComposite
+    extends EntityComposite
 {
 
     Property<String> name();
@@ -42,8 +42,8 @@ public interface Role
 
     RoleAssignment assignTo( RoleAssignee assignee );
 
-    public abstract class Mixin
-            implements Role
+    abstract class Mixin
+        implements Role
     {
 
         @Structure

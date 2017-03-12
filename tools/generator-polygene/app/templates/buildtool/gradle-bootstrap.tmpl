@@ -26,7 +26,7 @@ dependencies {
 
 
   compile "org.apache.polygene.libraries:org.apache.polygene.library.fileconfig:$polygeneVersion"
-<% if( hasFeature( 'rest api' ) ) { %>
+<% if( polygene.applicationtype === 'Rest API' ) { %>
   compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystore.toLowerCase() %>:$polygeneVersion"

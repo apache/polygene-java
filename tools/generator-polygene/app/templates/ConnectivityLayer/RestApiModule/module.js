@@ -2,7 +2,7 @@
 module.exports = {
 
     write: function (p) {
-        if (p.hasFeature("rest api")) {
+        if (p.applicationtype === 'Rest API') {
             p.copyTemplate(p.ctx,
                 'ConnectivityLayer/RestApiModule/bootstrap.tmpl',
                 'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/connectivity/RestApiModule.java');

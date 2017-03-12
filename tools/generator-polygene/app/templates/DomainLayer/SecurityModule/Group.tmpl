@@ -16,26 +16,11 @@
  *  limitations under the License.
  *
  *
--%>
-package <%= packageName %>.model.security;
+%>
+package <%= polygene.packageName %>.model.security;
 
-import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.shiro.domain.permissions.RoleAssignee;
 
-@Mixins( { Group.Mixin } )
-public interface Group
+public interface Group extends RoleAssignee
 {
-    interface State
-    {
-        Property<String> password();
-    }
-
-    class Mixin
-        implements Group
-    {
-        @This
-        private State state;        // Sample reference to hidden property
-
-    }
 }

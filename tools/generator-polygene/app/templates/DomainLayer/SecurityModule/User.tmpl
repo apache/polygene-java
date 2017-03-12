@@ -16,36 +16,36 @@
  *  limitations under the License.
  *
  *
--%>
-package <%= packageName %>.model.security;
+%>
+package <%= polygene.packageName %>.model.security;
 
+import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.shiro.domain.passwords.PasswordSecurable;
+import org.apache.polygene.library.shiro.domain.permissions.RoleAssignee;
 
-@Mixins( { User.Mixin } )
-public interface User
+@Mixins( { User.GroupsMixin.class } )
+public interface User extends PasswordSecurable, RoleAssignee
 {
+    boolean isMemberOf( Group group );
 
     interface State
     {
-        @Concerns( EncryptedStringPropertyConcern.class )
-        Property<String> password();
-
         ManyAssociation<Group> memberOf();
     }
 
-    class Mixin
+    abstract class GroupsMixin
         implements User
     {
-        @Service
-        private HashingService hashing;
-
         @This
         private State state;
 
-
+        public boolean isMemberOf( Group group )
+        {
+            return state.memberOf().contains( group );
+        }
     }
-
-
 }

@@ -17,18 +17,24 @@
  *
  *
 -%>
-package <%= packageName %>.model.security;
+package <%= polygene.packageName %>.model.security;
 
+import java.util.Collections;
 import java.util.List;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 
 @Concerns( UnitOfWorkConcern.class )
-@Mixins( { SecurityRepository.EntiyStoreBackedMixin.class } )
+@Mixins( { SecurityRepository.ShiroBackedSecurityRepositoryMixin.class } )
 public interface SecurityRepository
 {
     @UnitOfWorkPropagation
@@ -38,7 +44,7 @@ public interface SecurityRepository
     List<String> findRoleNamesOfUser( String name );
 
 
-    class EntityStoreBackedSecurityRepositoryMixin
+    class ShiroBackedSecurityRepositoryMixin
         implements SecurityRepository
     {
         @Structure
@@ -48,16 +54,18 @@ public interface SecurityRepository
         @UnitOfWorkPropagation
         public boolean verifyPassword( String userName, String password )
         {
-            Identity identity = new StringIdentity("User-" + userName );
-            User user = uow.currentUnitOfWork(User.class, identity );
-            return user.verify( password );
+            Subject currentUser = SecurityUtils.getSubject();
+            return currentUser.isAuthenticated();
         }
 
         @UnitOfWorkPropagation
         public List<String> findRoleNamesOfUser( String name )
         {
+            if( "admin".equals( name ) )
+            {
+                return Collections.singletonList("admin");
+            }
+            return Collections.singletonList("user");
         }
     }
-
-
 }

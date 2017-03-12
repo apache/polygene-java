@@ -152,14 +152,6 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         {
             guard.setEnroler( enroler );
         }
-
-        // In the future, look into JAAS approach.
-//        Configuration jaasConfig = Configuration.getConfiguration();
-//        JaasVerifier verifier = new JaasVerifier( "BasicJaasAuthenticationApplication");
-//        verifier.setConfiguration( jaasConfig);
-//        verifier.setUserPrincipalClassName("com.sun.security.auth.UserPrincipal");
-//        guard.setVerifier(verifier);
-
         return createInterceptors( guard );
     }
 

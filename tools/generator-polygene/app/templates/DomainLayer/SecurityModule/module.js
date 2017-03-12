@@ -11,11 +11,11 @@ module.exports = {
             copyFile(p, "CryptoException");
             copyFile(p, "CryptoService");
             copyFile(p, "EncryptedStringPropertyConcern");
-            copyFile(p, "EntityStoreBackedSecurityRepositoryMixin");
             copyFile(p, "Group");
             copyFile(p, "RealmService");
             copyFile(p, "SecurityRepository");
             copyFile(p, "User");
+            copyFile(p, "UserFactory");
         }
     }
 

@@ -17,13 +17,15 @@
  *
  *
 -%>
-package <%= packageName %>.model.security;
+package <%= polygene.packageName %>.model.security;
 
 import java.security.MessageDigest;
-import java.crypto.Cipher;
-import java.crypto.spec.IvParameterSpec;
-import java.crypto.spec.SecretKeySpec;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 
@@ -34,31 +36,35 @@ public interface CryptoService
 
     String decrypt( String encrypted );
 
-    class CryptoMixin
+    class Mixin
         implements CryptoService
     {
-        private byte[] keyBytes;
-        private byte[] ivBytes;
+        private SecretKeySpec key;
+        private IvParameterSpec ivSpec;
         private Cipher cipher;
         private MessageDigest digest;
 
-        public CryptoMixin(Configuration<CryptoConfiguration> configuration)
+        public Mixin( @This Configuration<CryptoConfiguration> configuration)
             throws Exception
         {
-            CryptoConfiguration config = configuration.configuration().get();
+            CryptoConfiguration config = configuration.get();
             String digestAlgorithm = config.digestAlgorithm().get();
             if( digestAlgorithm == null )
+            {
                 digestAlgorithm = "SHA-1";
-            digest = MessageDigest.getInstance(  );
+            }
+            digest = MessageDigest.getInstance( digestAlgorithm );
             byte[] keyBytes = hashed( config.secret1().get() );
             byte[] ivBytes = hashed( config.secret2().get() );
 
-            SecretKeySpec key = new SecretKeySpec(keyBytes, "DES");
-            IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
+            key = new SecretKeySpec(keyBytes, "DES");
+            ivSpec = new IvParameterSpec(ivBytes);
 
             String encryptionAlgorithm = config.encryptionAlgorithm().get();
             if( encryptionAlgorithm == null )
+            {
                 encryptionAlgorithm = "AES";
+            }
             cipher = Cipher.getInstance( encryptionAlgorithm );
         }
 
@@ -88,7 +94,8 @@ public interface CryptoService
                 cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 
                 byte[] encrypted = encryptedString.getBytes();
-                byte[] decrypted = new byte[cipher.getOutputSize(enc_len)];
+                int enc_len = encrypted.length;
+                byte[] decrypted = new byte[cipher.getOutputSize(encrypted.length)];
                 int dec_len = cipher.update(encrypted, 0, enc_len, decrypted, 0);
                 dec_len += cipher.doFinal(decrypted, dec_len);
                 return new String( decrypted, 0, dec_len );

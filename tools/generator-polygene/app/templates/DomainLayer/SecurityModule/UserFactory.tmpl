@@ -17,36 +17,39 @@
  *
  *
 -%>
-package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
+package <%= polygene.packageName %>.model.security;
 
-import org.apache.polygene.api.configuration.Configuration;
+import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.ValueBuilderFactory;
-<%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %><%
-    }
-} %>
 
-@Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
-public interface <%= polygene.current.clazz.name %>
+import org.apache.shiro.authc.credential.PasswordService;
+
+@Mixins( UserFactory.Mixin.class )
+public interface UserFactory
 {
 
+    User createNewUser( String username, String password );
+
     class Mixin
-        implements <%= polygene.current.clazz.name %>
+        implements UserFactory
     {
-        @This
-        private Configuration<<%- polygene.configurationClassName( polygene.current.clazz.name ); %>> configuration;
-
-        @Structure
-        private ValueBuilderFactory vbf;
-
         @Structure
         private UnitOfWorkFactory uowf;
+
+        @Service
+        private PasswordService passwordService;
+
+        @Override
+        public User createNewUser( String username, String password )
+        {
+            EntityBuilder<User> userBuilder = uowf.currentUnitOfWork().newEntityBuilder( User.class );
+            User user = userBuilder.instance();
+            user.subjectIdentifier().set( username );
+            user.password().set( passwordService.encryptPassword( password ) );
+            return userBuilder.newInstance();
+        }
     }
 }
-

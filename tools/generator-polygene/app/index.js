@@ -59,8 +59,8 @@ module.exports = generators.Base.extend(
                 polygene = importModel(this.options.import);
                 polygene.name = polygene.name ? polygene.name : firstUpper(this.appname);
                 polygene.packageName = polygene.packageName ? polygene.packageName : ("com.acme." + this.appname);
-                polygene.singletonApp = false;  // not supported yet
-                polygene.features = polygene.features ? polygene.features : ['rest api'];
+                polygene.applicationtype = "Rest API";
+                polygene.features = polygene.features ? polygene.features : [];
                 polygene.modules = polygene.modules ? polygene.modules : {};
                 polygene.indexing = polygene.indexing ? polygene.indexing : null;
                 polygene.entitystore = polygene.entitystore ? polygene.entitystore : null;
@@ -88,6 +88,16 @@ module.exports = generators.Base.extend(
                             name: 'packageName',
                             message: 'Java package name',
                             default: polygene.packageName ? polygene.packageName : "com.acme"
+                        },
+                        {
+                            type: 'list',
+                            name: 'applicationtype',
+                            choices: [
+                                'Command Line',
+                                'Rest API'
+                            ],
+                            message: 'what type of application do you want to create?',
+                            default: polygene.applicationtype ? polygene.applicationtype : "Rest API"
                         },
                         {
                             type: 'list',
@@ -162,7 +172,6 @@ module.exports = generators.Base.extend(
                             type: 'checkbox',
                             name: 'features',
                             choices: [
-                                'rest api'
                                 , 'security'
                                 // ,'version migration'
                                 // ,'logging'
@@ -188,22 +197,22 @@ module.exports = generators.Base.extend(
                         this.log('Caching:', answers.caching);
                         this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
-                        polygene.name = answers.name;
-                        polygene.entitystore = answers.entitystore;
-                        polygene.indexing = answers.indexing;
-                        polygene.caching = answers.caching;
-                        polygene.serialization = answers.serialization;
-                        polygene.metrics = answers.metrics;
-                        polygene.packageName = answers.packageName;
-                        polygene.features = answers.features;
-                        polygene.javaPackageDir = polygene.javaPackageDir ? polygene.javaPackageDir : polygene.packageName.replace(/[.]/g, '/');
-                        polygene.singletonApp = false;
+                        polygene = answers;
+                        // polygene.name = answers.name;
+                        // polygene.entitystore = answers.entitystore;
+                        // polygene.indexing = answers.indexing;
+                        // polygene.caching = answers.caching;
+                        // polygene.serialization = answers.serialization;
+                        // polygene.metrics = answers.metrics;
+                        // polygene.packageName = answers.packageName;
+                        // polygene.features = answers.features;
                     }.bind(this)
                 );
             }
         },
 
         writing: function () {
+            polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
             polygene.ctx = this;
             fs.readdir(__dirname + "/templates", function (err, files) {
                 files.forEach(function (directory) {
@@ -222,23 +231,6 @@ module.exports = generators.Base.extend(
     }
 );
 
-
-function hasEntityStore(esType) {
-    return polygene.entitystore === esType;
-}
-
-function hasIndexing(indexingType) {
-    return polygene.indexing === indexingType;
-}
-
-function hasCaching(cachingType) {
-    return polygene.caching === cachingType;
-}
-
-function hasSerialization(serializer) {
-    return polygene.serialization === serializer;
-}
-
 function hasFeature(feature) {
     return polygene.features.indexOf(feature) >= 0;
 }
@@ -248,14 +240,14 @@ function firstUpper(text) {
 }
 
 function importModel(filename) {
-    if ( typeof filename !== 'string' ) {
+    if (typeof filename !== 'string') {
         filename = "./model.json";
     }
     return JSON.parse(fs.readFileSync(filename, 'utf8'));
 }
 
 function exportModel(filename) {
-    if ( typeof filename !== 'string' ) {
+    if (typeof filename !== 'string') {
         filename = "exported-model.json";
     }
     delete polygene.current;
@@ -273,11 +265,7 @@ function assignFunctions(polygene) {
             ctx.templatePath(from),
             ctx.destinationPath(to),
             {
-                packageName: polygene.packageName,
                 hasFeature: hasFeature,
-                hasEntityStore: hasEntityStore,
-                hasIndexing: hasIndexing,
-                hasCaching: hasCaching,
                 firstUpper: firstUpper,
                 polygene: polygene
             }
@@ -380,32 +368,32 @@ function assignFunctions(polygene) {
                 state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
                 imported[prop.type] = imported[prop.type];
                 var yamlDefault;
-                if( prop.type === "java.lang.String" ) {
+                if (prop.type === "java.lang.String") {
                     yamlDefault = '""';
                 }
-                else if( prop.type === "java.lang.Boolean" ) {
+                else if (prop.type === "java.lang.Boolean") {
                     yamlDefault = 'false';
                 }
-                else if( prop.type === "java.lang.Long" ) {
+                else if (prop.type === "java.lang.Long") {
                     yamlDefault = '0';
                 }
-                else if( prop.type === "java.lang.Integer" ) {
+                else if (prop.type === "java.lang.Integer") {
                     yamlDefault = '0';
                 }
-                else if( prop.type === "java.lang.Double" ) {
+                else if (prop.type === "java.lang.Double") {
                     yamlDefault = '0.0';
                 }
-                else if( prop.type === "java.lang.Float" ) {
+                else if (prop.type === "java.lang.Float") {
                     yamlDefault = '0.0';
                 }
                 else {
                     yamlDefault = '\n    # TODO: complex configuration type. ';
                 }
-                yaml.push( prop.name + " : " + yamlDefault);
+                yaml.push(prop.name + " : " + yamlDefault);
             }
         } else {
             state.push('Property<String> name();    // TODO: remove sample property')
-            yaml.push( 'name : "sample config value"' );
+            yaml.push('name : "sample config value"');
         }
         current.state = state;
         current.yaml = yaml;

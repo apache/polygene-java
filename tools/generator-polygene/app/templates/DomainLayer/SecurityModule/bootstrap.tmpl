@@ -17,17 +17,21 @@
  *
  *
 -%>
-package <%= packageName %>.bootstrap.domain;
+package <%= polygene.packageName %>.bootstrap.domain;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.shiro.assembly.PasswordDomainAssembler;
+import org.apache.polygene.library.shiro.assembly.PermissionsDomainAssembler;
 import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
-
-import <%= packageName %>.model.security.SecurityRepository;
-import <%= packageName %>.model.security.HardcodedSecurityRepositoryMixin;
+import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
+import <%= polygene.packageName %>.model.security.RealmService;
+import <%= polygene.packageName %>.model.security.SecurityRepository;
+import <%= polygene.packageName %>.model.security.User;
+import <%= polygene.packageName %>.model.security.UserFactory;
 
 public class SecurityModule
     implements ModuleAssembler
@@ -39,14 +43,26 @@ public class SecurityModule
         throws AssemblyException
     {
         module.services( SecurityRepository.class )
-            .withMixins( HardcodedSecurityRepositoryMixin.class )
             .visibleIn( Visibility.application )
             .instantiateOnStartup();
 
-        new StandaloneShiroAssembler().
-            withConfig( configModule, Visibility.layer ).
-            assemble( module );
+        new StandaloneShiroAssembler()
+            .withConfig( module, Visibility.layer )
+            .assemble( module );
         module.services( RealmService.class );
+
+        module.forMixin( ShiroIniConfiguration.class )
+            .declareDefaults()
+            .iniResourcePath().set( "classpath:standalone-shiro.ini" );
+
+        new PasswordDomainAssembler()
+            .withConfig( module, Visibility.layer )
+            .assemble( module );
+
+        new PermissionsDomainAssembler().assemble( module );
+
+        module.entities( User.class );
+        module.services( UserFactory.class );
 
         return module;
     }
