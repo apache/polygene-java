@@ -34,6 +34,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * {@literal javax.xml} deserializer.
+ */
 public interface XmlDeserializer extends Deserializer
 {
     <T> T fromXml( ModuleDescriptor module, ValueType valueType, Document state );

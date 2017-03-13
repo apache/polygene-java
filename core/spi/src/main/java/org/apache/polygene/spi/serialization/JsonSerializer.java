@@ -28,6 +28,9 @@ import javax.json.JsonValue;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.serialization.Serializer;
 
+/**
+ * {@literal javax.json} serializer.
+ */
 public interface JsonSerializer extends Serializer
 {
     <T> Function<T, JsonValue> toJsonFunction( Options options );

@@ -27,6 +27,13 @@ import java.util.stream.StreamSupport;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.serialization.Serializer;
 
+/**
+ * Base Serializer.
+ *
+ * Provides default implementations for convenience API methods.
+ *
+ * See {@link AbstractDeserializer}.
+ */
 public abstract class AbstractSerializer implements Serializer
 {
     @Override

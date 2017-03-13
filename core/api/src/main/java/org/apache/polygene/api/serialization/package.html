@@ -14,11 +14,30 @@
   ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~  See the License for the specific language governing permissions and
   ~  limitations under the License.
-  ~
-  ~
   -->
 <html>
 <body>
 <h2>Serialization API.</h2>
+<p>
+    {@link Serialization} extends {@link Serializer} and {@link Deserializer}.
+    <br/>
+    {@link SerializationException} is thrown when something goes wrong.
+</p>
+<p>
+    Serialization implementations should be tagged with {@link Serialization.Format} at assembly time so that consumers
+    can specify which format they need:
+</p>
+<pre><code>@Service @Tagged( Serialization.Format.JSON ) Serialization serialization;</code></pre>
+<p>
+    {@link Serializer}s and {@link Deserializers} provides methods and functions to (de)serialize objects
+    and set of objects.
+</p>
+<p>
+    Serialized representations might be textual (e.g. {@literal JSON} and {@literal XML}) or binary.
+    Implementations are free to use any codec to encode/decode from/to text and bytes but it must be bi-directional.
+</p>
+<p>
+    The serialization behavior can be influenced using {@link Serializer.Options}.
+</p>
 </body>
 </html>

@@ -18,17 +18,15 @@
 package org.apache.polygene.api.serialization;
 
 /**
- *
+ * Serialization extends {@link Serializer} and {@link Deserializer}.
  */
 public interface Serialization extends Serializer, Deserializer
 {
     /**
-     * Serialization format @Service tags.
+     * Serialization format {@literal @Service} tags.
      *
-     * <p>
-     *     Serialization implementations should be tagged with theses at assembly time so that consumers can
-     *     specify which format they need.
-     * </p>
+     * Serialization implementations should be tagged with theses at assembly time so that consumers can
+     * specify which format they need.
      */
     interface Formats
     {

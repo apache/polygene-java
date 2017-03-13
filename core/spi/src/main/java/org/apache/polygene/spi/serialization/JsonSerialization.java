@@ -19,6 +19,9 @@ package org.apache.polygene.spi.serialization;
 
 import org.apache.polygene.api.serialization.Serialization;
 
+/**
+ * {@literal javax.json} serialization.
+ */
 public interface JsonSerialization extends Serialization, JsonSerializer, JsonDeserializer
 {
 }

@@ -29,6 +29,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Base Text Deserializer.
  *
  * Implementations work on Strings, this base deserializer decode bytes in UTF-8 to produce strings.
+ *
+ * See {@link AbstractTextSerializer}.
  */
 public abstract class AbstractTextDeserializer extends AbstractDeserializer
 // END SNIPPET: text

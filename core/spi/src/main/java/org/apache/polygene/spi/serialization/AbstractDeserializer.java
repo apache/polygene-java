@@ -32,6 +32,13 @@ import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.spi.module.ModuleSpi;
 
+/**
+ * Base Deserializer.
+ *
+ * Provides default implementations for convenience API methods.
+ *
+ * See {@link AbstractSerializer}.
+ */
 public abstract class AbstractDeserializer implements Deserializer
 {
     protected static final ValueType ENTITY_REF_LIST_VALUE_TYPE = CollectionType.listOf( EntityReference.class );

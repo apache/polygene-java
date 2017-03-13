@@ -26,6 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.Optional;
 
+/**
+ * Serializer.
+ *
+ * All implementations must handle all {@link Options}, they might extend them to provide more control.
+ * See their respective documentation for the details.
+ */
 public interface Serializer
 {
     void serialize( Options options, Writer writer, @Optional Object object );

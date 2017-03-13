@@ -39,6 +39,9 @@ import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.stream.Collectors.joining;
 
+/**
+ * {@literal javax.json} deserializer.
+ */
 public interface JsonDeserializer extends Deserializer
 {
     <T> T fromJson( ModuleDescriptor module, ValueType valueType, JsonValue state );

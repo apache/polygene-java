@@ -24,6 +24,11 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
 
+/**
+ * Deserializer.
+ *
+ * Provides methods and functions to deserialize objects and set of objects.
+ */
 public interface Deserializer
 {
     <T> T deserialize( ModuleDescriptor module, ValueType valueType, InputStream state );

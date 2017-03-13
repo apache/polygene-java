@@ -30,6 +30,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Base Text Serializer.
  *
  * Implementations work on Strings, this base serializer encode these strings in UTF-8 to produce bytes.
+ *
+ * See {@link AbstractTextDeserializer}.
  */
 public abstract class AbstractTextSerializer extends AbstractSerializer
 // END SNIPPET: text

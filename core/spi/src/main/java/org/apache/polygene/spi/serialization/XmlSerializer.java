@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * XML State Serializer.
+ * {@literal javax.xml} serializer.
  */
 public interface XmlSerializer extends Serializer
 {

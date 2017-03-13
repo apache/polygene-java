@@ -14,11 +14,38 @@
   ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~  See the License for the specific language governing permissions and
   ~  limitations under the License.
-  ~
-  ~
   -->
 <html>
-    <body>
-        <h2>Serialization SPI.</h2>
-    </body>
+<body>
+<h2>Serialization SPI.</h2>
+<p>
+    This package contains specialized serialization APIs for the {@literal JSON} and {@literal XML} formats.
+    See {@link @JsonSerialization}, based on {@literal javax.json},
+    and {@link XmlSerialization}, based on {@literal javax.xml}.
+</p>
+<p>
+    This package also contains base implementations, mixins and helpers for serialization API implementations:
+</p>
+<p><strong>Base implementations</strong></p>
+<ul>
+    <li>
+        Use {@link AbstractTextSerializer} and {@link AbstractTextDeserializer} as a basis to implement the
+        serialization API for text representations.
+    </li>
+    <li>
+        Use {@link AbstractBinarySerializer} and {@link AbstractBinaryDeserializer} as a basis to implement the
+        serialization API for binary representations.
+    </li>
+    <li>
+        Use {@link AbstractSerializer} and {@link AbstractDeserializer} if you need to handle text/binary conversion
+        yourself.
+    </li>
+</ul>
+<p>
+    <strong>Mixins</strong>
+</p>
+<ul>
+    <li>{@link BuiltInConverters} provides built-in {@link Converter}s for types supported by the Polygene Runtime.</li>
+</ul>
+</body>
 </html>

@@ -31,6 +31,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Base Binary Serializer.
  *
  * Implementations work on bytes, this base serializer encode these bytes in Base64 to produce Strings.
+ *
+ * See {@link AbstractBinaryDeserializer}.
  */
 public abstract class AbstractBinarySerializer extends AbstractSerializer
 // END SNIPPET: binary

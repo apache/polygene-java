@@ -37,6 +37,27 @@ import org.apache.polygene.api.type.ValueType;
 
 /**
  * Built-in serialization converters.
+ *
+ * Mixin for {@link org.apache.polygene.api.serialization.Serialization} implementations that provides built-in
+ * {@link Converter}s for the following types:
+ *
+ * <ul>
+ *     <li>{@link Identity}</li>
+ *     <li>{@link EntityReference}</li>
+ *     <li>{@link BigDecimal}</li>
+ *     <li>{@link BigInteger}</li>
+ *     <li>{@link Instant}</li>
+ *     <li>{@link ZonedDateTime}</li>
+ *     <li>{@link OffsetDateTime}</li>
+ *     <li>{@link LocalDateTime}</li>
+ *     <li>{@link LocalDate}</li>
+ *     <li>{@link LocalTime}</li>
+ *     <li>{@link Duration}</li>
+ *     <li>{@link Period}</li>
+ * </ul>
+ *
+ * Note that this does not include {@link String} nor primitive values and their boxed counterparts.
+ * {@literal Serialization} implementations must handle those.
  */
 @Mixins( BuiltInConverters.Mixin.class )
 public interface BuiltInConverters

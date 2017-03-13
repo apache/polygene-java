@@ -33,6 +33,8 @@ import static java.util.stream.Collectors.joining;
  * Base Binary Deserializer.
  *
  * Implementations work on bytes, this base deserializer decode Strings from Base64 to produce bytes.
+ *
+ * See {@link AbstractBinarySerializer}.
  */
 public abstract class AbstractBinaryDeserializer extends AbstractDeserializer
 // END SNIPPET: binary
