@@ -39,19 +39,19 @@ public interface MessagePackAdapter<T>
      * Serialize.
      *
      * @param object Object to serialize, never null
-     * @param serializeFunction Serialization function for nested structure serialization
+     * @param serialize Serialization function for nested structure serialization
      * @return MessagePack Value
      */
-    Value serialize( Object object, Function<Object, Value> serializeFunction )
+    Value serialize( Object object, Function<Object, Value> serialize )
         throws IOException;
 
     /**
      * Deserialize.
      *
      * @param value MessagePack value
-     * @param deserializeFunction Deserialization function for nested structure deserialization
+     * @param deserialize Deserialization function for nested structure deserialization
      * @return Deserialized object
      */
-    T deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+    T deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
         throws IOException;
 }

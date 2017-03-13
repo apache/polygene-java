@@ -38,17 +38,17 @@ public interface JavaxJsonAdapter<T>
      * Serialize.
      *
      * @param object Object to serialize, never null
-     * @param serializeFunction Serialization function for nested structure serialization
+     * @param serialize Serialization function for nested structure serialization
      * @return Serialized JSON representation
      */
-    JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction );
+    JsonValue serialize( Object object, Function<Object, JsonValue> serialize );
 
     /**
      * Deserialize.
      *
      * @param json JSON to deserialize from, never null
-     * @param deserializeFunction Deserialization function for nested structure deserialization
+     * @param deserialize Deserialization function for nested structure deserialization
      * @return Deserialized object
      */
-    T deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction );
+    T deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize );
 }

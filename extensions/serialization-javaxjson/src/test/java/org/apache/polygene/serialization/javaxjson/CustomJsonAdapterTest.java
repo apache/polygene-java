@@ -85,13 +85,13 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
         public Class<CustomValue> type() { return CustomValue.class; }
 
         @Override
-        public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+        public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
         {
             return JavaxJson.toJsonString( type().cast( object ).state );
         }
 
         @Override
-        public CustomValue deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+        public CustomValue deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
         {
             switch( json.getValueType() )
             {
@@ -109,17 +109,17 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
         public Class<CustomStructure> type() { return CustomStructure.class; }
 
         @Override
-        public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+        public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
         {
             CustomStructure customStructure = type().cast( object );
             return Json.createObjectBuilder()
                        .add( "foo", customStructure.foo )
-                       .add( "bar", serializeFunction.apply( customStructure.bar ) )
+                       .add( "bar", serialize.apply( customStructure.bar ) )
                        .build();
         }
 
         @Override
-        public CustomStructure deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+        public CustomStructure deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
         {
             if( json.getValueType() != JsonValue.ValueType.OBJECT )
             {
@@ -127,7 +127,7 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
             }
             JsonObject jsonObject = (JsonObject) json;
             String foo = jsonObject.getString( "foo" );
-            LocalDate bar = (LocalDate) deserializeFunction.apply( jsonObject.get( "bar" ), ValueType.of( LocalDate.class ) );
+            LocalDate bar = (LocalDate) deserialize.apply( jsonObject.get( "bar" ), ValueType.of( LocalDate.class ) );
             return new CustomStructure( foo, bar );
         }
     }

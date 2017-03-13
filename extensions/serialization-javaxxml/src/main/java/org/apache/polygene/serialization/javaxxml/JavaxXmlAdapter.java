@@ -40,17 +40,17 @@ public interface JavaxXmlAdapter<T>
      *
      * @param document the Document to use as a Node factory
      * @param object Object to serialize, never null
-     * @param serializationFunction Serialization function for nested structure serialization
+     * @param serialize Serialization function for nested structure serialization
      * @return Serialized XML representation
      */
-    Node serialize( Document document, Object object, Function<Object, Node> serializationFunction );
+    Node serialize( Document document, Object object, Function<Object, Node> serialize );
 
     /**
      * Deserialize.
      *
      * @param node XML to deserialize from, never null
-     * @param deserializationFunction Deserialization function for nested structure deserialization
+     * @param deserialize Deserialization function for nested structure deserialization
      * @return Deserialized object
      */
-    T deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction );
+    T deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize );
 }

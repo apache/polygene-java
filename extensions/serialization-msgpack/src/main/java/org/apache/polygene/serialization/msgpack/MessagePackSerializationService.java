@@ -96,7 +96,7 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
         private static abstract class ToStringAdapter<T> implements MessagePackAdapter<T>
         {
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newString( object.toString() );
             }
@@ -108,7 +108,7 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<String> type() { return String.class; }
 
             @Override
-            public String deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public String deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asStringValue().asString();
             }
@@ -120,7 +120,7 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Character> type() { return Character.class; }
 
             @Override
-            public Character deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Character deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 String string = value.asStringValue().asString();
                 return string.isEmpty() ? null : string.charAt( 0 );
@@ -133,13 +133,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Boolean> type() { return Boolean.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newBoolean( (Boolean) object );
             }
 
             @Override
-            public Boolean deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Boolean deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asBooleanValue().getBoolean();
             }
@@ -151,13 +151,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Integer> type() { return Integer.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newInteger( (Integer) object );
             }
 
             @Override
-            public Integer deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Integer deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asIntegerValue().asInt();
             }
@@ -169,13 +169,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Long> type() { return Long.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newInteger( (Long) object );
             }
 
             @Override
-            public Long deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Long deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asIntegerValue().asLong();
             }
@@ -187,13 +187,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Short> type() { return Short.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newInteger( (Short) object );
             }
 
             @Override
-            public Short deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Short deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asIntegerValue().asShort();
             }
@@ -205,13 +205,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Byte> type() { return Byte.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newInteger( (Byte) object );
             }
 
             @Override
-            public Byte deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Byte deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asIntegerValue().asByte();
             }
@@ -223,13 +223,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Float> type() { return Float.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newFloat( (Float) object );
             }
 
             @Override
-            public Float deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Float deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asFloatValue().toFloat();
             }
@@ -241,13 +241,13 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             public Class<Double> type() { return Double.class; }
 
             @Override
-            public Value serialize( Object object, Function<Object, Value> serializeFunction )
+            public Value serialize( Object object, Function<Object, Value> serialize )
             {
                 return ValueFactory.newFloat( (Double) object );
             }
 
             @Override
-            public Double deserialize( Value value, BiFunction<Value, ValueType, Object> deserializeFunction )
+            public Double deserialize( Value value, BiFunction<Value, ValueType, Object> deserialize )
             {
                 return value.asFloatValue().toDouble();
             }

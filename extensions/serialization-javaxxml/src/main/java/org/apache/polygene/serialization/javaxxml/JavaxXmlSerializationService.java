@@ -96,7 +96,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
         private static abstract class ToStringTextNodeAdapter<T> implements JavaxXmlAdapter<T>
         {
             @Override
-            public Node serialize( Document document, Object object, Function<Object, Node> serializationFunction )
+            public Node serialize( Document document, Object object, Function<Object, Node> serialize )
             {
                 return document.createTextNode( object.toString() );
             }
@@ -108,7 +108,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<String> type() { return String.class; }
 
             @Override
-            public String deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public String deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return node.getNodeValue();
             }
@@ -120,7 +120,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Character> type() { return Character.class; }
 
             @Override
-            public Character deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Character deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 String string = node.getNodeValue();
                 return string.isEmpty() ? null : string.charAt( 0 );
@@ -133,7 +133,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Boolean> type() { return Boolean.class; }
 
             @Override
-            public Boolean deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Boolean deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Boolean.valueOf( node.getNodeValue() );
             }
@@ -145,7 +145,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Integer> type() { return Integer.class; }
 
             @Override
-            public Integer deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Integer deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Integer.valueOf( node.getNodeValue() );
             }
@@ -157,7 +157,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Long> type() { return Long.class; }
 
             @Override
-            public Long deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Long deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Long.valueOf( node.getNodeValue() );
             }
@@ -169,7 +169,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Short> type() { return Short.class; }
 
             @Override
-            public Short deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Short deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Short.valueOf( node.getNodeValue() );
             }
@@ -181,7 +181,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Byte> type() { return Byte.class; }
 
             @Override
-            public Byte deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Byte deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Byte.valueOf( node.getNodeValue() );
             }
@@ -193,7 +193,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Float> type() { return Float.class; }
 
             @Override
-            public Float deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Float deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Float.valueOf( node.getNodeValue() );
             }
@@ -205,7 +205,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Class<Double> type() { return Double.class; }
 
             @Override
-            public Double deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
+            public Double deserialize( Node node, BiFunction<Node, ValueType, Object> deserialize )
             {
                 return Double.valueOf( node.getNodeValue() );
             }

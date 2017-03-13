@@ -101,7 +101,7 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
         private static abstract class ToJsonStringAdapter<T> implements JavaxJsonAdapter<T>
         {
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return JavaxJson.toJsonString( object );
             }
@@ -113,7 +113,7 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<String> type() { return String.class; }
 
             @Override
-            public String deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public String deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 return JavaxJson.asString( json );
             }
@@ -125,7 +125,7 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Character> type() { return Character.class; }
 
             @Override
-            public Character deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Character deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 String string = JavaxJson.asString( json );
                 return string.isEmpty() ? null : string.charAt( 0 );
@@ -138,13 +138,13 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Boolean> type() { return Boolean.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return type().cast( object ) ? JsonValue.TRUE : JsonValue.FALSE;
             }
 
             @Override
-            public Boolean deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Boolean deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -170,14 +170,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Integer> type() { return Integer.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
                            .getJsonNumber( "value" );
             }
 
             @Override
-            public Integer deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Integer deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -200,14 +200,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Long> type() { return Long.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build().getJsonNumber(
                     "value" );
             }
 
             @Override
-            public Long deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Long deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -230,14 +230,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Short> type() { return Short.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
                            .getJsonNumber( "value" );
             }
 
             @Override
-            public Short deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Short deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -260,14 +260,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Byte> type() { return Byte.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
                            .getJsonNumber( "value" );
             }
 
             @Override
-            public Byte deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Byte deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -290,14 +290,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Float> type() { return Float.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
                            .getJsonNumber( "value" );
             }
 
             @Override
-            public Float deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Float deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
@@ -320,14 +320,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             public Class<Double> type() { return Double.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serializeFunction )
+            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
             {
                 return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
                            .getJsonNumber( "value" );
             }
 
             @Override
-            public Double deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
+            public Double deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
                 switch( json.getValueType() )
                 {
