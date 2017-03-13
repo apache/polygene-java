@@ -40,7 +40,7 @@ public class JavaxXmlSerializationAssembler extends Assemblers.VisibilityIdentit
     @Override
     public void assemble( ModuleAssembly module )
     {
-        ServiceDeclaration declaration = module.services( JavaxXmlSerializationService.class )
+        ServiceDeclaration declaration = module.services( JavaxXmlSerialization.class )
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,
                                                            XmlSerialization.class,

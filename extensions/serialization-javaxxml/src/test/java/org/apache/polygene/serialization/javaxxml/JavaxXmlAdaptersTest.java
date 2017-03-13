@@ -18,7 +18,7 @@ public class JavaxXmlAdaptersTest extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
     {
         new JavaxXmlSerializationAssembler().assemble( module );
-        module.services( JavaxXmlSerializationService.class )
+        module.services( JavaxXmlSerialization.class )
               .withTypes( JavaxXmlAdapters.class );
     }
 

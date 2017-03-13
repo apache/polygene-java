@@ -23,7 +23,7 @@ import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxjson.JavaxJsonSerializationService;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonSerialization;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.spi.serialization.JsonSerializer;
@@ -34,7 +34,7 @@ public class DefaultSerializationAssembler
     @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( JavaxJsonSerializationService.class )
+        module.services( JavaxJsonSerialization.class )
               .withTypes( Serialization.class, Serializer.class, Deserializer.class,
                           JsonSerialization.class, JsonSerializer.class, JsonDeserializer.class )
               .taggedWith( Serialization.Format.JSON );

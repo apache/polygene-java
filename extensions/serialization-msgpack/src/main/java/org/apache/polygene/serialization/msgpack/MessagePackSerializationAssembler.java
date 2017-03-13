@@ -37,7 +37,7 @@ public class MessagePackSerializationAssembler extends Assemblers.VisibilityIden
     @Override
     public void assemble( ModuleAssembly module )
     {
-        ServiceDeclaration declaration = module.services( MessagePackSerializationService.class )
+        ServiceDeclaration declaration = module.services( MessagePackSerialization.class )
                                                .withTypes( Serialization.class, Serializer.class, Deserializer.class )
                                                .visibleIn( visibility() );
         if( hasIdentity() )
