@@ -50,7 +50,6 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -89,12 +88,8 @@ public abstract class AbstractValueCompositeSerializationTest
         System.out.println( "# END " + testName.getMethodName() );
     }
 
-    @Structure
-    protected Module moduleInstance;
-
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( Some.class, SomeExtended.class, SomeShuffled.class,
                        AnotherValue.class, FooValue.class, CustomFooValue.class,
@@ -103,6 +98,9 @@ public abstract class AbstractValueCompositeSerializationTest
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
         module.entities( Some.class, BarEntity.class );
     }
+
+    @Structure
+    protected Module moduleInstance;
 
     @Service
     protected Serialization serialization;
@@ -141,6 +139,8 @@ public abstract class AbstractValueCompositeSerializationTest
                         is( true ) );
 
             assertThat( "Value equality", some, equalTo( some2 ) );
+
+            uow.complete();
         }
     }
 
@@ -156,6 +156,8 @@ public abstract class AbstractValueCompositeSerializationTest
 
             Some deserialized = serialization.deserialize( module, Some.class, serialized );
             System.out.println( deserialized );
+
+            uow.complete();
         }
     }
 
@@ -171,6 +173,8 @@ public abstract class AbstractValueCompositeSerializationTest
 
             SomeExtended deserialized = serialization.deserialize( module, SomeExtended.class, serialized );
             System.out.println( deserialized );
+
+            uow.complete();
         }
     }
 
@@ -196,6 +200,8 @@ public abstract class AbstractValueCompositeSerializationTest
 
             serialization.deserialize( module, SomeExtended.class, serialized );
             System.out.println( deserialized );
+
+            uow.complete();
         }
     }
 
@@ -268,9 +274,9 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.identity().set( StringIdentity.fromString( identity ) );
         setSomeValueState( module, uow, proto );
         proto.extraProperty().set( "extra property" );
-        proto.extraAssociation().set( buildBarEntity( uow, "extra association" ) );
-        proto.extraManyAssociation().add( buildBarEntity( uow, "extra many association" ) );
-        proto.extraNamedAssociation().put( "extra", buildBarEntity( uow, "extra named association" ) );
+        proto.extraAssociation().set( buildBarEntity( module, uow, "extra association" ) );
+        proto.extraManyAssociation().add( buildBarEntity( module, uow, "extra many association" ) );
+        proto.extraNamedAssociation().put( "extra", buildBarEntity( module, uow, "extra named association" ) );
         return builder.newInstance();
     }
 
@@ -314,7 +320,7 @@ public abstract class AbstractValueCompositeSerializationTest
         // maintain a certain order but it's not the case on some JVMs. On OpenJDK 8 they are reversed for example.
         // This should not be enforced tough as both the Map API and the JSON specification state that name-value pairs
         // are unordered.
-        // As a consequence this test should be enhanced to be Map order independant.
+        // As a consequence this test should be enhanced to be Map order independent.
         //
         // proto.stringIntMap().get().put( "bar", 67 );
 
@@ -330,18 +336,19 @@ public abstract class AbstractValueCompositeSerializationTest
         some.customFooValue().set( module.newValue( CustomFooValue.class ) );
 
         // NestedEntities
-        some.barAssociation().set( buildBarEntity( uow, "bazar in barAssociation" ) );
-        some.barEntityAssociation().set( buildBarEntity( uow, "bazar in barEntityAssociation" ) );
-        some.barManyAssociation().add( buildBarEntity( uow, "bazar ONE in barManyAssociation" ) );
-        some.barManyAssociation().add( buildBarEntity( uow, "bazar TWO in barManyAssociation" ) );
-        some.barEntityManyAssociation().add( buildBarEntity( uow, "bazar ONE in barEntityManyAssociation" ) );
-        some.barEntityManyAssociation().add( buildBarEntity( uow, "bazar TWO in barEntityManyAssociation" ) );
-        some.barNamedAssociation().put( "bazar", buildBarEntity( uow, "bazar in barNamedAssociation" ) );
-        some.barNamedAssociation().put( "cathedral", buildBarEntity( uow, "cathedral in barNamedAssociation" ) );
+        some.barAssociation().set( buildBarEntity( module, uow, "bazar in barAssociation" ) );
+        some.barEntityAssociation().set( buildBarEntity( module, uow, "bazar in barEntityAssociation" ) );
+        some.barManyAssociation().add( buildBarEntity( module, uow, "bazar ONE in barManyAssociation" ) );
+        some.barManyAssociation().add( buildBarEntity( module, uow, "bazar TWO in barManyAssociation" ) );
+        some.barEntityManyAssociation().add( buildBarEntity( module, uow, "bazar ONE in barEntityManyAssociation" ) );
+        some.barEntityManyAssociation().add( buildBarEntity( module, uow, "bazar TWO in barEntityManyAssociation" ) );
+        some.barNamedAssociation().put( "bazar", buildBarEntity( module, uow, "bazar in barNamedAssociation" ) );
+        some.barNamedAssociation().put( "cathedral",
+                                        buildBarEntity( module, uow, "cathedral in barNamedAssociation" ) );
         some.barEntityNamedAssociation().put( "bazar",
-                                              buildBarEntity( uow, "bazar in barEntityNamedAssociation" ) );
+                                              buildBarEntity( module, uow, "bazar in barEntityNamedAssociation" ) );
         some.barEntityNamedAssociation().put( "cathedral",
-                                              buildBarEntity( uow, "cathedral in barEntityNamedAssociation" ) );
+                                              buildBarEntity( module, uow, "cathedral in barEntityNamedAssociation" ) );
     }
 
     private static AnotherValue createAnotherValue( Module module, String val1, String val2 )
@@ -352,10 +359,11 @@ public abstract class AbstractValueCompositeSerializationTest
         return valueBuilder.newInstance();
     }
 
-    private static BarEntity buildBarEntity( UnitOfWork uow, String cathedral )
+    private static BarEntity buildBarEntity( Module module, UnitOfWork uow, String cathedral )
     {
         EntityBuilder<BarEntity> barBuilder = uow.newEntityBuilder( BarEntity.class );
         barBuilder.instance().cathedral().set( cathedral );
+        barBuilder.instance().another().set( createAnotherValue( module, "nested", "value" ) );
         return barBuilder.newInstance();
     }
 
@@ -574,6 +582,8 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         @UseDefaults
         Property<String> cathedral();
+
+        Property<AnotherValue> another();
     }
 
     public interface BarEntity
