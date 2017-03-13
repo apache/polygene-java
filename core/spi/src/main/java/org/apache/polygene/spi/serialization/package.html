@@ -20,8 +20,8 @@
 <h2>Serialization SPI.</h2>
 <p>
     This package contains specialized serialization APIs for the {@literal JSON} and {@literal XML} formats.
-    See {@link @JsonSerialization}, based on {@literal javax.json},
-    and {@link XmlSerialization}, based on {@literal javax.xml}.
+    See {@link org.apache.polygene.spi.serialization.JsonSerialization}, based on {@literal javax.json},
+    and {@link org.apache.polygene.spi.serialization.XmlSerialization}, based on {@literal javax.xml}.
 </p>
 <p>
     This package also contains base implementations, mixins and helpers for serialization API implementations:
@@ -29,23 +29,40 @@
 <p><strong>Base implementations</strong></p>
 <ul>
     <li>
-        Use {@link AbstractTextSerializer} and {@link AbstractTextDeserializer} as a basis to implement the
-        serialization API for text representations.
+        Use {@link org.apache.polygene.spi.serialization.AbstractTextSerializer}
+        and {@link org.apache.polygene.spi.serialization.AbstractTextDeserializer}
+        as a basis to implement the serialization API for text representations.
     </li>
     <li>
-        Use {@link AbstractBinarySerializer} and {@link AbstractBinaryDeserializer} as a basis to implement the
-        serialization API for binary representations.
+        Use {@link org.apache.polygene.spi.serialization.AbstractBinarySerializer}
+        and {@link org.apache.polygene.spi.serialization.AbstractBinaryDeserializer}
+        as a basis to implement the serialization API for binary representations.
     </li>
     <li>
-        Use {@link AbstractSerializer} and {@link AbstractDeserializer} if you need to handle text/binary conversion
-        yourself.
+        Use {@link org.apache.polygene.spi.serialization.AbstractSerializer}
+        and {@link org.apache.polygene.spi.serialization.AbstractDeserializer}
+        if you need to handle text/binary conversion yourself.
     </li>
 </ul>
 <p>
     <strong>Mixins</strong>
 </p>
 <ul>
-    <li>{@link BuiltInConverters} provides built-in {@link Converter}s for types supported by the Polygene Runtime.</li>
+    <li>
+        {@link org.apache.polygene.spi.serialization.BuiltInConverters} provides built-in
+        {@link org.apache.polygene.api.serialization.Converter}s for types supported by the Polygene Runtime.
+    </li>
+</ul>
+<p>
+    <strong>Helpers</strong>
+</p>
+<ul>
+    <li>
+        {@link org.apache.polygene.spi.serialization.SerializationSettings}
+        can be used to register custom Converters at assembly time.
+        Serialization implementations might extend this with additional specialized settings,
+        see their respective documentation for details.
+    </li>
 </ul>
 </body>
 </html>

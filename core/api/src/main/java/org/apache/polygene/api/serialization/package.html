@@ -19,17 +19,21 @@
 <body>
 <h2>Serialization API.</h2>
 <p>
-    {@link Serialization} extends {@link Serializer} and {@link Deserializer}.
+    {@link org.apache.polygene.api.serialization.Serialization}
+    extends {@link org.apache.polygene.api.serialization.Serializer}
+    and {@link org.apache.polygene.api.serialization.Deserializer}.
     <br/>
-    {@link SerializationException} is thrown when something goes wrong.
+    {@link org.apache.polygene.api.serialization.SerializationException}
+    is thrown when something goes wrong.
 </p>
 <p>
-    Serialization implementations should be tagged with {@link Serialization.Format} at assembly time so that consumers
-    can specify which format they need:
+    Serialization implementations should be tagged with
+    {@link org.apache.polygene.api.serialization.Serialization.Format}
+    at assembly time so that consumers can specify which format they need:
 </p>
 <pre><code>@Service @Tagged( Serialization.Format.JSON ) Serialization serialization;</code></pre>
 <p>
-    {@link Serializer}s and {@link Deserializers} provides methods and functions to (de)serialize objects
+    {@literal Serializer}s and {@literal Deserializer}s provides methods and functions to (de)serialize objects
     and set of objects.
 </p>
 <p>
@@ -37,7 +41,7 @@
     Implementations are free to use any codec to encode/decode from/to text and bytes but it must be bi-directional.
 </p>
 <p>
-    The serialization behavior can be influenced using {@link Serializer.Options}.
+    The serialization behavior can be influenced using {@link org.apache.polygene.api.serialization.Serializer.Options}.
 </p>
 </body>
 </html>
