@@ -20,11 +20,15 @@
 
 package org.apache.polygene.runtime.mixin;
 
+import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.util.NotYetImplemented;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 
@@ -34,21 +38,47 @@ import static org.junit.Assert.assertThat;
 /**
  * Test of Initializable interface
  */
-public class InitializableTest
-    extends AbstractPolygeneTest
+public class InitializableTest extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.objects( TestObject.class );
-        module.transients( TestComposite.class );
+        module.transients( TestComposite.class, NoMethod.class );
+        module.values( TestComposite.class );
+        module.services( TestComposite.class );
+        module.entities( TestComposite.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test
-    public void givenCompositeWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
+    public void givenTransientWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
     {
         TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
         assertThat( "mixin has been initialized", instance.ok(), equalTo( true ) );
+    }
+
+    @Test
+    public void givenValueWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
+    {
+        TestComposite instance = valueBuilderFactory.newValue( TestComposite.class );
+        assertThat( "mixin has been initialized", instance.ok(), equalTo( true ) );
+    }
+
+    @Test
+    public void givenServiceWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
+    {
+        TestComposite instance = serviceFinder.findService( TestComposite.class ).get();
+        assertThat( "mixin has been initialized", instance.ok(), equalTo( true ) );
+    }
+
+    @Test
+    public void givenEntityWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
+    {
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            TestComposite instance = uow.newEntity( TestComposite.class );
+            assertThat( "mixin has been initialized", instance.ok(), equalTo( true ) );
+        }
     }
 
     @Test
@@ -58,34 +88,140 @@ public class InitializableTest
         assertThat( "object has been initialized", instance.ok(), equalTo( true ) );
     }
 
+    @NotYetImplemented( reason = "Mixin of types with no method are not scrutinized for Initializable implementation" )
+    @Test
+    public void givenTypeWithNoMethodsAndInitializableMixinWhenInstantiatedThenInvokeInitialize()
+    {
+        NoMethod instance = transientBuilderFactory.newTransient( NoMethod.class );
+        assertThat( "mixin has been initialized", noMethodMixinOk, equalTo( true ) );
+    }
+
     @Mixins( TestMixin.class )
-    public interface TestComposite
-        extends TransientComposite
+    public interface TestComposite extends ComposedInitializable
     {
         boolean ok();
     }
 
-    public abstract static class TestMixin
-        implements TestComposite, Initializable
+    public abstract static class TestMixin implements TestComposite, Initializable
     {
         boolean ok = false;
 
+        @This
+        ComposedInitializable composedInitializable;
+
+        @This
+        PrivateInitializable privateInitializable;
+
+        @Override
         public void initialize()
         {
             ok = true;
         }
 
+        @Override
         public boolean ok()
+        {
+            return ok && composedInitializable.composedOk() && privateInitializable.ok();
+        }
+    }
+
+    @Mixins( ComposedInitializableMixin.class )
+    public interface ComposedInitializable
+    {
+        boolean composedOk();
+    }
+
+    public static class ComposedInitializableMixin implements ComposedInitializable, Initializable
+    {
+        boolean ok = false;
+
+        @Override
+        public void initialize()
+        {
+            ok = true;
+        }
+
+        @Override
+        public boolean composedOk()
         {
             return ok;
         }
     }
 
-    public static class TestObject
-        implements Initializable
+    @Mixins( PrivateInitializableMixin.class )
+    public interface PrivateInitializable
+    {
+        boolean ok();
+    }
+
+    public static class PrivateInitializableMixin implements PrivateInitializable, Initializable
+    {
+        @This
+        NestedInitializable nestedInitializable;
+
+        boolean ok = false;
+
+        @Override
+        public void initialize()
+        {
+            ok = true;
+        }
+
+        @Override
+        public boolean ok()
+        {
+            return ok && nestedInitializable.nestedOk();
+        }
+    }
+
+    @Mixins( NestedInitializableMixin.class )
+    public interface NestedInitializable
+    {
+        boolean nestedOk();
+    }
+
+    public static class NestedInitializableMixin implements NestedInitializable, Initializable
     {
         boolean ok = false;
 
+        @Override
+        public void initialize()
+        {
+            ok = true;
+        }
+
+        @Override
+        public boolean nestedOk()
+        {
+            return ok;
+        }
+    }
+
+    static boolean noMethodMixinOk;
+
+    @Before
+    public void resetNoMethodMixinStaticState()
+    {
+        noMethodMixinOk = false;
+    }
+
+    @Mixins( NoMethodMixin.class )
+    public interface NoMethod {}
+
+    public static class NoMethodMixin implements Initializable
+    {
+        @Override
+        public void initialize()
+        {
+            noMethodMixinOk = true;
+        }
+    }
+
+    public static class TestObject implements Initializable
+    {
+        boolean ok = false;
+
+        @Override
         public void initialize()
         {
             ok = true;
