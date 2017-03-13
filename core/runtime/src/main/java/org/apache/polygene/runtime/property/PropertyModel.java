@@ -343,8 +343,7 @@ public class PropertyModel
                 {
                     if( valueType instanceof ValueCompositeType )
                     {
-                        Class<?> propertyType = valueType().types().findFirst().orElse( null );
-                        value = module.instance().newValue( propertyType );
+                        value = module.instance().newValue( valueType.primaryType() );
                     }
                     else
                     {

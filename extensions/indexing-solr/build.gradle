@@ -27,8 +27,8 @@ jar { manifest { name = "Apache Polygene™ Extension - Indexing - Solr" } }
 dependencies {
   api polygene.core.bootstrap
   api polygene.library( 'fileconfig' )
-  api polygene.library( 'rdf' )
 
+  implementation polygene.library( 'rdf' )
   implementation libraries.solr
 
   runtimeOnly polygene.core.runtime
