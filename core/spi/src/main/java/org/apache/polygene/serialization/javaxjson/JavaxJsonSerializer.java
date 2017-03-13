@@ -17,9 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,7 +36,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
-import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.MapType;
@@ -216,21 +212,6 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         JsonArrayBuilder builder = Json.createArrayBuilder();
         stream.forEach( element -> builder.add( doSerialize( options, element, false ) ) );
         return builder.build();
-    }
-
-    private byte[] serializeJava( Object object )
-    {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
-        {
-            out.writeUnshared( object );
-            out.flush();
-            return bout.toByteArray();
-        }
-        catch( IOException ex )
-        {
-            throw new SerializationException( "Unable to serialize using Java serialization", ex );
-        }
     }
 
     private String getTypeInfoPropertyName()

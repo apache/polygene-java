@@ -18,6 +18,8 @@
 package org.apache.polygene.spi.serialization;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
 
 /**
@@ -150,5 +153,20 @@ public abstract class AbstractSerializer implements Serializer
     public Stream<byte[]> toBytesEach( Object... objects )
     {
         return Stream.of( objects ).map( object -> toBytes( Options.DEFAULT, object ) );
+    }
+
+    protected byte[] serializeJava( Object object )
+    {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
+        {
+            out.writeUnshared( object );
+            out.flush();
+            return bout.toByteArray();
+        }
+        catch( IOException ex )
+        {
+            throw new SerializationException( "Unable to serialize using Java serialization", ex );
+        }
     }
 }

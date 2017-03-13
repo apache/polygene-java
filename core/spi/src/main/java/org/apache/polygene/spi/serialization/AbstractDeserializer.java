@@ -18,7 +18,9 @@
 package org.apache.polygene.spi.serialization;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.function.Function;
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.serialization.Deserializer;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.MapType;
@@ -158,5 +161,17 @@ public abstract class AbstractDeserializer implements Deserializer
     {
         // TODO Remove (ModuleSpi) cast
         return ( (ModuleSpi) module.instance() ).valueTypeFactory().valueTypeOf( module, type );
+    }
+
+    protected Object deserializeJava( byte[] bytes )
+    {
+        try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
+        {
+            return oin.readObject();
+        }
+        catch( IOException | ClassNotFoundException ex )
+        {
+            throw new SerializationException( "Unable to deserialize using Java serialization", ex );
+        }
     }
 }

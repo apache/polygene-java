@@ -17,9 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -319,18 +316,6 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
             return deserializeJava( bytes );
         }
         throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml );
-    }
-
-    private Object deserializeJava( byte[] bytes )
-    {
-        try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
-        {
-            return oin.readObject();
-        }
-        catch( IOException | ClassNotFoundException ex )
-        {
-            throw new SerializationException( "Unable to deserialize using Java serialization", ex );
-        }
     }
 
     private Optional<String> getTypeInfo( Node xml )

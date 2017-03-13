@@ -17,10 +17,8 @@
  */
 package org.apache.polygene.serialization.msgpack;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -309,18 +307,6 @@ public interface MessagePackDeserializer extends Deserializer
                 default:
                     throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + value
                                                       + " (" + value.getValueType() + ")" );
-            }
-        }
-
-        private Object deserializeJava( byte[] bytes )
-        {
-            try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
-            {
-                return oin.readObject();
-            }
-            catch( IOException | ClassNotFoundException ex )
-            {
-                throw new SerializationException( "Unable to deserialize using Java serialization", ex );
             }
         }
     }

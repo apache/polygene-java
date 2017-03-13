@@ -17,9 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
@@ -277,21 +274,6 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
                             collectionElement.appendChild( itemElement );
                         } );
         return collectionElement;
-    }
-
-    private byte[] serializeJava( Object object )
-    {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
-        {
-            out.writeUnshared( object );
-            out.flush();
-            return bout.toByteArray();
-        }
-        catch( IOException ex )
-        {
-            throw new SerializationException( "Unable to serialize using Java serialization", ex );
-        }
     }
 
     private JavaxXmlSettings getSettings()

@@ -17,9 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -284,18 +281,6 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
                                                               object.get( association.qualifiedName().name() ) );
             return map == null ? Stream.empty() : map.entrySet().stream();
         };
-    }
-
-    private Object deserializeJava( byte[] bytes )
-    {
-        try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
-        {
-            return oin.readObject();
-        }
-        catch( IOException | ClassNotFoundException ex )
-        {
-            throw new SerializationException( "Unable to deserialize using Java serialization", ex );
-        }
     }
 
     private String getTypeInfoPropertyName()

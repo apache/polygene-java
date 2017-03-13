@@ -17,9 +17,7 @@
  */
 package org.apache.polygene.serialization.msgpack;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -199,21 +197,6 @@ public interface MessagePackSerializer extends Serializer
         {
             return ValueFactory.newArray( stream.map( element -> doSerialize( options, element, false ) )
                                                 .collect( toList() ) );
-        }
-
-        private byte[] serializeJava( Object object )
-        {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
-            {
-                out.writeUnshared( object );
-                out.flush();
-                return bout.toByteArray();
-            }
-            catch( IOException ex )
-            {
-                throw new SerializationException( "Unable to serialize using Java serialization", ex );
-            }
         }
     }
 }
