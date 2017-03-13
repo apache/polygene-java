@@ -22,7 +22,6 @@ package org.apache.polygene.tools.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.tools.model.descriptor.ServiceDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.TransientDetailDescriptor;
 import org.junit.Test;
@@ -83,7 +82,6 @@ public class VisitableDetailTest
                     // Module
                     "visitEnter( ModuleName )",
                     "visit( " + ModuleActivator.class.getName() + " )",
-                    "visit( " + ServiceActivation.ServiceActivator.class.getName() + " )",
                     // Leaving Structure
                     "visitLeave( ModuleName )",
                     "visitLeave( LayerName )",

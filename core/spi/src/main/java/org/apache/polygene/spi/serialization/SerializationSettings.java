@@ -41,7 +41,7 @@ public class SerializationSettings<SettingsType extends SerializationSettings>
 
     private final Map<ValueType, Converter<Object>> converters = new LinkedHashMap<>();
 
-    public final Map<ValueType, Converter<Object>> getConverters()
+    public final Map<ValueType, Converter<?>> getConverters()
     {
         return Collections.unmodifiableMap( converters );
     }
