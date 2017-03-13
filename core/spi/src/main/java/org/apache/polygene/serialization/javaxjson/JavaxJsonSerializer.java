@@ -39,9 +39,10 @@ import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ArrayType;
-import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
@@ -57,6 +58,9 @@ import static org.apache.polygene.api.util.Collectors.toMap;
 
 public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonSerializer
 {
+    @This
+    private Converters converters;
+
     @This
     private JavaxJsonAdapters adapters;
 
@@ -76,14 +80,15 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
             return JsonValue.NULL;
         }
         Class<?> objectClass = object.getClass();
+        Converter<Object> converter = converters.converterFor( objectClass );
+        if( converter != null )
+        {
+            return doSerialize( options, converter.toString( object ), false );
+        }
         JavaxJsonAdapter<?> adapter = adapters.adapterFor( objectClass );
         if( adapter != null )
         {
             return adapter.serialize( object, obj -> doSerialize( options, obj, false ) );
-        }
-        if( EnumType.isEnum( objectClass ) )
-        {
-            return JavaxJson.toJsonString( object.toString() );
         }
         if( ValueCompositeType.isValueComposite( objectClass ) )
         {

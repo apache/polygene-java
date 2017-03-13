@@ -34,6 +34,8 @@ import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ArrayType;
@@ -59,6 +61,9 @@ import static org.apache.polygene.api.util.Collectors.toMap;
 public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSerializer
 {
     private static final String NULL_ELEMENT_NAME = "null";
+
+    @This
+    private Converters converters;
 
     @This
     private JavaxXmlAdapters adapters;
@@ -99,6 +104,11 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
             return document.createElement( NULL_ELEMENT_NAME );
         }
         Class<?> objectClass = object.getClass();
+        Converter<Object> converter = converters.converterFor( objectClass );
+        if( converter != null )
+        {
+            return doSerialize( document, options, converter.toString( object ), false );
+        }
         JavaxXmlAdapter<?> adapter = adapters.adapterFor( objectClass );
         if( adapter != null )
         {

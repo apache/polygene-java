@@ -39,6 +39,8 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
@@ -70,6 +72,9 @@ public interface MessagePackDeserializer extends Deserializer
     class Mixin extends AbstractBinaryDeserializer
     {
         @This
+        private Converters converters;
+
+        @This
         private MessagePackAdapters adapters;
 
         @Override
@@ -99,6 +104,11 @@ public interface MessagePackDeserializer extends Deserializer
                 if( value == null || value.isNilValue() )
                 {
                     return null;
+                }
+                Converter<Object> converter = converters.converterFor( valueType );
+                if( converter != null )
+                {
+                    return (T) converter.fromString( doDeserialize( module, ValueType.STRING, value ).toString() );
                 }
                 MessagePackAdapter<?> adapter = adapters.adapterFor( valueType );
                 if( adapter != null )

@@ -17,27 +17,16 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.Period;
-import java.time.ZonedDateTime;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.BuiltInConverters;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -50,6 +39,12 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
         private ServiceDescriptor descriptor;
 
         @This
+        private BuiltInConverters builtInConverters;
+
+        @This
+        private Converters converters;
+
+        @This
         private JavaxXmlAdapters adapters;
 
         private boolean registrationDone = false;
@@ -59,6 +54,8 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
         {
             if( !registrationDone )
             {
+                registerCustomConverters();
+                registerBuiltInConverters();
                 registerCustomAdapters();
                 registerBaseAdapters();
                 registrationDone = true;
@@ -67,6 +64,16 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
 
         @Override
         public void passivateService() {}
+
+        private void registerCustomConverters()
+        {
+            // TODO register custom converters
+        }
+
+        private void registerBuiltInConverters()
+        {
+            builtInConverters.registerBuiltInConverters( converters );
+        }
 
         private void registerCustomAdapters()
         {
@@ -87,24 +94,6 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             adapters.registerAdapter( ValueType.BYTE, new ByteAdapter() );
             adapters.registerAdapter( ValueType.FLOAT, new FloatAdapter() );
             adapters.registerAdapter( ValueType.DOUBLE, new DoubleAdapter() );
-
-            // Number types
-            adapters.registerAdapter( ValueType.BIG_DECIMAL, new BigDecimalAdapter() );
-            adapters.registerAdapter( ValueType.BIG_INTEGER, new BigIntegerAdapter() );
-
-            // Date types
-            adapters.registerAdapter( ValueType.INSTANT, new InstantAdapter() );
-            adapters.registerAdapter( ValueType.ZONED_DATE_TIME, new ZonedDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.OFFSET_DATE_TIME, new OffsetDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_DATE_TIME, new LocalDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_DATE, new LocalDateAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_TIME, new LocalTimeAdapter() );
-            adapters.registerAdapter( ValueType.DURATION, new DurationAdapter() );
-            adapters.registerAdapter( ValueType.PERIOD, new PeriodAdapter() );
-
-            // Other supported types
-            adapters.registerAdapter( ValueType.IDENTITY, new IdentityAdapter() );
-            adapters.registerAdapter( ValueType.ENTITY_REFERENCE, new EntityReferenceAdapter() );
         }
 
         private static abstract class ToStringTextNodeAdapter<T> implements JavaxXmlAdapter<T>
@@ -222,150 +211,6 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             public Double deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
             {
                 return Double.valueOf( node.getNodeValue() );
-            }
-        }
-
-        private static class BigDecimalAdapter extends ToStringTextNodeAdapter<BigDecimal>
-        {
-            @Override
-            public Class<BigDecimal> type() { return BigDecimal.class; }
-
-            @Override
-            public BigDecimal deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return new BigDecimal( node.getNodeValue() );
-            }
-        }
-
-        private static class BigIntegerAdapter extends ToStringTextNodeAdapter<BigInteger>
-        {
-            @Override
-            public Class<BigInteger> type() { return BigInteger.class; }
-
-            @Override
-            public BigInteger deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return new BigInteger( node.getNodeValue() );
-            }
-        }
-
-        private static class InstantAdapter extends ToStringTextNodeAdapter<Instant>
-        {
-            @Override
-            public Class<Instant> type() { return Instant.class; }
-
-            @Override
-            public Instant deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return Instant.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class ZonedDateTimeAdapter extends ToStringTextNodeAdapter<ZonedDateTime>
-        {
-            @Override
-            public Class<ZonedDateTime> type() { return ZonedDateTime.class; }
-
-            @Override
-            public ZonedDateTime deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return ZonedDateTime.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class OffsetDateTimeAdapter extends ToStringTextNodeAdapter<OffsetDateTime>
-        {
-            @Override
-            public Class<OffsetDateTime> type() { return OffsetDateTime.class; }
-
-            @Override
-            public OffsetDateTime deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return OffsetDateTime.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class LocalDateTimeAdapter extends ToStringTextNodeAdapter<LocalDateTime>
-        {
-            @Override
-            public Class<LocalDateTime> type() { return LocalDateTime.class; }
-
-            @Override
-            public LocalDateTime deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return LocalDateTime.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class LocalDateAdapter extends ToStringTextNodeAdapter<LocalDate>
-        {
-            @Override
-            public Class<LocalDate> type() { return LocalDate.class; }
-
-            @Override
-            public LocalDate deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return LocalDate.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class LocalTimeAdapter extends ToStringTextNodeAdapter<LocalTime>
-        {
-            @Override
-            public Class<LocalTime> type() { return LocalTime.class; }
-
-            @Override
-            public LocalTime deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return LocalTime.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class DurationAdapter extends ToStringTextNodeAdapter<Duration>
-        {
-            @Override
-            public Class<Duration> type() { return Duration.class; }
-
-            @Override
-            public Duration deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return Duration.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class PeriodAdapter extends ToStringTextNodeAdapter<Period>
-        {
-            @Override
-            public Class<Period> type() { return Period.class; }
-
-            @Override
-            public Period deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return Period.parse( node.getNodeValue() );
-            }
-        }
-
-        private static class IdentityAdapter extends ToStringTextNodeAdapter<Identity>
-        {
-            @Override
-            public Class<Identity> type() { return Identity.class; }
-
-            @Override
-            public Identity deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return StringIdentity.fromString( node.getNodeValue() );
-            }
-        }
-
-        private static class EntityReferenceAdapter extends ToStringTextNodeAdapter<EntityReference>
-        {
-            @Override
-            public Class<EntityReference> type() { return EntityReference.class; }
-
-            @Override
-            public EntityReference deserialize( Node node, BiFunction<Node, ValueType, Object> deserializationFunction )
-            {
-                return EntityReference.parseEntityReference( node.getNodeValue() );
             }
         }
     }

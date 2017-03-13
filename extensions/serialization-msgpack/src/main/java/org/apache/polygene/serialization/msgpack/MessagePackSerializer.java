@@ -30,6 +30,8 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.type.ArrayType;
@@ -56,6 +58,9 @@ public interface MessagePackSerializer extends Serializer
 {
     class Mixin extends AbstractBinarySerializer
     {
+        @This
+        private Converters converters;
+
         @This
         private MessagePackAdapters adapters;
 
@@ -84,6 +89,11 @@ public interface MessagePackSerializer extends Serializer
                     return ValueFactory.newNil();
                 }
                 Class<?> objectClass = object.getClass();
+                Converter<Object> converter = converters.converterFor( objectClass );
+                if( converter != null )
+                {
+                    return doSerialize( options, converter.toString( object ), false );
+                }
                 MessagePackAdapter<?> adapter = adapters.adapterFor( objectClass );
                 if( adapter != null )
                 {

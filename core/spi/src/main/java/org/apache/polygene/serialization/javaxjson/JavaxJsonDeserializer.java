@@ -41,12 +41,13 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
-import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
@@ -69,6 +70,9 @@ import static org.apache.polygene.serialization.javaxjson.JavaxJson.requireJsonS
 public class JavaxJsonDeserializer extends AbstractTextDeserializer implements JsonDeserializer
 {
     @This
+    private Converters converters;
+
+    @This
     private JavaxJsonAdapters adapters;
 
     @Uses
@@ -87,16 +91,17 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
         {
             return null;
         }
+        Converter<Object> converter = converters.converterFor( valueType );
+        if( converter != null )
+        {
+            return (T) converter.fromString( doDeserialize( module, ValueType.STRING, json ).toString() );
+        }
         JavaxJsonAdapter<?> adapter = adapters.adapterFor( valueType );
         if( adapter != null )
         {
             return (T) adapter.deserialize( json, ( jsonValue, type ) -> doDeserialize( module, type, jsonValue ) );
         }
         Class<? extends ValueType> valueTypeClass = valueType.getClass();
-        if( EnumType.class.isAssignableFrom( valueTypeClass ) )
-        {
-            return (T) Enum.valueOf( (Class) valueType.primaryType(), asString( json ) );
-        }
         if( ArrayType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) deserializeArray( module, (ArrayType) valueType, json );

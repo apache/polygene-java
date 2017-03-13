@@ -17,32 +17,21 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.Period;
-import java.time.ZonedDateTime;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.json.Json;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.BuiltInConverters;
 
 // TODO Move into JavaxJsonSerialization
 // TODO Do the same on XML & MessagePack
@@ -55,6 +44,12 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
         private ServiceDescriptor descriptor;
 
         @This
+        private BuiltInConverters builtInConverters;
+
+        @This
+        private Converters converters;
+
+        @This
         private JavaxJsonAdapters adapters;
 
         private boolean registrationDone = false;
@@ -64,6 +59,8 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
         {
             if( !registrationDone )
             {
+                registerCustomConverters();
+                registerBuiltInConverters();
                 registerCustomAdapters();
                 registerBaseAdapters();
                 registrationDone = true;
@@ -72,6 +69,16 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
 
         @Override
         public void passivateService() {}
+
+        private void registerCustomConverters()
+        {
+            // TODO register custom converters
+        }
+
+        private void registerBuiltInConverters()
+        {
+            builtInConverters.registerBuiltInConverters( converters );
+        }
 
         private void registerCustomAdapters()
         {
@@ -92,24 +99,6 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             adapters.registerAdapter( ValueType.BYTE, new ByteAdapter() );
             adapters.registerAdapter( ValueType.FLOAT, new FloatAdapter() );
             adapters.registerAdapter( ValueType.DOUBLE, new DoubleAdapter() );
-
-            // Number types
-            adapters.registerAdapter( ValueType.BIG_DECIMAL, new BigDecimalAdapter() );
-            adapters.registerAdapter( ValueType.BIG_INTEGER, new BigIntegerAdapter() );
-
-            // Date types
-            adapters.registerAdapter( ValueType.INSTANT, new InstantAdapter() );
-            adapters.registerAdapter( ValueType.ZONED_DATE_TIME, new ZonedDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.OFFSET_DATE_TIME, new OffsetDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_DATE_TIME, new LocalDateTimeAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_DATE, new LocalDateAdapter() );
-            adapters.registerAdapter( ValueType.LOCAL_TIME, new LocalTimeAdapter() );
-            adapters.registerAdapter( ValueType.DURATION, new DurationAdapter() );
-            adapters.registerAdapter( ValueType.PERIOD, new PeriodAdapter() );
-
-            // Other supported types
-            adapters.registerAdapter( ValueType.IDENTITY, new IdentityAdapter() );
-            adapters.registerAdapter( ValueType.ENTITY_REFERENCE, new EntityReferenceAdapter() );
         }
 
         private static abstract class ToJsonStringAdapter<T> implements JavaxJsonAdapter<T>
@@ -355,178 +344,6 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
                     default:
                         throw new SerializationException( "Don't know how to deserialize Double from " + json );
                 }
-            }
-        }
-
-        private static class BigDecimalAdapter extends ToJsonStringAdapter<BigDecimal>
-        {
-            @Override
-            public Class<BigDecimal> type() { return BigDecimal.class; }
-
-            @Override
-            public BigDecimal deserialize( JsonValue json,
-                                           BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                switch( json.getValueType() )
-                {
-                    case NULL:
-                        return null;
-                    case NUMBER:
-                        return new BigDecimal( json.toString() );
-                    case STRING:
-                        return new BigDecimal( ( (JsonString) json ).getString() );
-                    default:
-                        throw new SerializationException(
-                            "Don't know how to deserialize BigDecimal from " + json );
-                }
-            }
-        }
-
-        private static class BigIntegerAdapter extends ToJsonStringAdapter<BigInteger>
-        {
-            @Override
-            public Class<BigInteger> type() { return BigInteger.class; }
-
-            @Override
-            public BigInteger deserialize( JsonValue json,
-                                           BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                switch( json.getValueType() )
-                {
-                    case NULL:
-                        return null;
-                    case NUMBER:
-                        return new BigInteger( json.toString() );
-                    case STRING:
-                        return new BigInteger( ( (JsonString) json ).getString() );
-                    default:
-                        throw new SerializationException(
-                            "Don't know how to deserialize BigInteger from " + json );
-                }
-            }
-        }
-
-        private static class PeriodAdapter extends ToJsonStringAdapter<Period>
-        {
-            @Override
-            public Class<Period> type() { return Period.class; }
-
-            @Override
-            public Period deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return Period.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class DurationAdapter extends ToJsonStringAdapter<Duration>
-        {
-            @Override
-            public Class<Duration> type() { return Duration.class; }
-
-            @Override
-            public Duration deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return Duration.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class LocalTimeAdapter extends ToJsonStringAdapter<LocalTime>
-        {
-            @Override
-            public Class<LocalTime> type() { return LocalTime.class; }
-
-            @Override
-            public LocalTime deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return LocalTime.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class LocalDateAdapter extends ToJsonStringAdapter<LocalDate>
-        {
-            @Override
-            public Class<LocalDate> type() { return LocalDate.class; }
-
-            @Override
-            public LocalDate deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return LocalDate.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class LocalDateTimeAdapter extends ToJsonStringAdapter<LocalDateTime>
-        {
-            @Override
-            public Class<LocalDateTime> type() { return LocalDateTime.class; }
-
-            @Override
-            public LocalDateTime deserialize( JsonValue json,
-                                              BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return LocalDateTime.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class OffsetDateTimeAdapter extends ToJsonStringAdapter<OffsetDateTime>
-        {
-            @Override
-            public Class<OffsetDateTime> type() { return OffsetDateTime.class; }
-
-            @Override
-            public OffsetDateTime deserialize( JsonValue json,
-                                               BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return OffsetDateTime.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class ZonedDateTimeAdapter extends ToJsonStringAdapter<ZonedDateTime>
-        {
-            @Override
-            public Class<ZonedDateTime> type() { return ZonedDateTime.class; }
-
-            @Override
-            public ZonedDateTime deserialize( JsonValue json,
-                                              BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return ZonedDateTime.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class InstantAdapter extends ToJsonStringAdapter<Instant>
-        {
-            @Override
-            public Class<Instant> type() { return Instant.class; }
-
-            @Override
-            public Instant deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return Instant.parse( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class IdentityAdapter extends ToJsonStringAdapter<Identity>
-        {
-            @Override
-            public Class<Identity> type() { return Identity.class; }
-
-            @Override
-            public Identity deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return StringIdentity.fromString( JavaxJson.asString( json ) );
-            }
-        }
-
-        private static class EntityReferenceAdapter extends ToJsonStringAdapter<EntityReference>
-        {
-            @Override
-            public Class<EntityReference> type() { return EntityReference.class; }
-
-            @Override
-            public EntityReference deserialize( JsonValue json,
-                                                BiFunction<JsonValue, ValueType, Object> deserializeFunction )
-            {
-                return EntityReference.parseEntityReference( JavaxJson.asString( json ) );
             }
         }
     }

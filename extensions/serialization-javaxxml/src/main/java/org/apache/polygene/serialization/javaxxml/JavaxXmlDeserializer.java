@@ -41,6 +41,8 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.Converter;
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
@@ -67,6 +69,9 @@ import static org.apache.polygene.api.util.Collectors.toMapWithNullValues;
 public class JavaxXmlDeserializer extends AbstractTextDeserializer implements XmlDeserializer
 {
     private static final String NULL_ELEMENT_NAME = "null";
+
+    @This
+    private Converters converters;
 
     @This
     private JavaxXmlAdapters adapters;
@@ -96,6 +101,11 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         if( xml.getNodeType() == Node.ELEMENT_NODE && NULL_ELEMENT_NAME.equals( ( (Element) xml ).getTagName() ) )
         {
             return null;
+        }
+        Converter<Object> converter = converters.converterFor( valueType );
+        if( converter != null )
+        {
+            return (T) converter.fromString( doDeserialize( module, ValueType.STRING, xml ).toString() );
         }
         JavaxXmlAdapter<?> adapter = adapters.adapterFor( valueType );
         if( adapter != null )
