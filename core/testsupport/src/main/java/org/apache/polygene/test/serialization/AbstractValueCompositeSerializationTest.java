@@ -67,7 +67,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Assert that ValueSerialization behaviour on ValueComposites is correct.
+ * Assert that Serialization behaviour on ValueComposites is correct.
  */
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest

@@ -30,7 +30,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
@@ -64,7 +63,7 @@ public class DocumentationSupport extends AbstractPolygeneTest
 
     @Test
     // START SNIPPET: default
-    public void defaultValueSerialization()
+    public void defaultSerialization()
     {
         SomeValue someValue = someNewValueInstance(); // (3)
         String json = someValue.toString(); // (4)

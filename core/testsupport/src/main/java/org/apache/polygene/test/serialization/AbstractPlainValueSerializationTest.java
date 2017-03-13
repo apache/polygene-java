@@ -50,7 +50,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
 /**
- * Assert that ValueSerialization behaviour on plain values is correct.
+ * Assert that Serialization behaviour on plain values is correct.
  *
  * Implementations must:
  * <ul>

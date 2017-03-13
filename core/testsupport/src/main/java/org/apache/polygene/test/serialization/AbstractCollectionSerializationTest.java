@@ -51,7 +51,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Assert that ValueSerialization behaviour on Collections and Maps is correct.
+ * Assert that Serialization behaviour on Collections and Maps is correct.
  */
 public class AbstractCollectionSerializationTest
     extends AbstractPolygeneTest
@@ -65,7 +65,7 @@ public class AbstractCollectionSerializationTest
 
     @Service
     @SuppressWarnings( "ProtectedField" )
-    protected Serialization stateSerialization;
+    protected Serialization serialization;
 
     @Test
     public void givenPrimitiveArrayWithIntsWhenSerializingAndDeserializingExpectEquals()
@@ -75,9 +75,9 @@ public class AbstractCollectionSerializationTest
             {
                 23, 42, -23, -42
             };
-        String output = stateSerialization.serialize( primitiveArray );
+        String output = serialization.serialize( primitiveArray );
         System.out.println( output );
-        int[] deserialized = stateSerialization.deserialize( module, int[].class, output );
+        int[] deserialized = serialization.deserialize( module, int[].class, output );
         assertArrayEquals( primitiveArray, deserialized );
     }
 
@@ -89,9 +89,9 @@ public class AbstractCollectionSerializationTest
             {
                 9, null, -12, -12, 127, -128, 73
             };
-        String output = stateSerialization.serialize( array );
+        String output = serialization.serialize( array );
         System.out.println( output );
-        Byte[] deserialized = stateSerialization.deserialize( module, Byte[].class, output );
+        Byte[] deserialized = serialization.deserialize( module, Byte[].class, output );
         assertArrayEquals( array, deserialized );
     }
 
@@ -99,10 +99,10 @@ public class AbstractCollectionSerializationTest
     public void givenIterableTypeWithByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( new AdHocIterable<>( byteCollection() ) );
+        String output = serialization.serialize( new AdHocIterable<>( byteCollection() ) );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.BYTE );
-        List<Byte> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Byte> list = serialization.deserialize( module, collectionType, output );
         assertEquals( byteCollection(), list );
     }
 
@@ -110,10 +110,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( byteCollection() );
+        String output = serialization.serialize( byteCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.setOf( ValueType.BYTE );
-        Set<Byte> list = stateSerialization.deserialize( module, collectionType, output );
+        Set<Byte> list = serialization.deserialize( module, collectionType, output );
         assertEquals( new LinkedHashSet<>( byteCollection() ), list );
     }
 
@@ -121,10 +121,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithCharacterAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( characterCollection() );
+        String output = serialization.serialize( characterCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.CHARACTER );
-        List<Character> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Character> list = serialization.deserialize( module, collectionType, output );
         assertEquals( characterCollection(), list );
     }
 
@@ -132,10 +132,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithShortAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( shortCollection() );
+        String output = serialization.serialize( shortCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.SHORT );
-        List<Short> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Short> list = serialization.deserialize( module, collectionType, output );
         assertEquals( shortCollection(), list );
     }
 
@@ -143,10 +143,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithIntegerAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( integerCollection() );
+        String output = serialization.serialize( integerCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.INTEGER );
-        List<Integer> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Integer> list = serialization.deserialize( module, collectionType, output );
         assertEquals( integerCollection(), list );
     }
 
@@ -154,10 +154,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithLongAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( longCollection() );
+        String output = serialization.serialize( longCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.LONG );
-        List<Long> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Long> list = serialization.deserialize( module, collectionType, output );
         assertEquals( longCollection(), list );
     }
 
@@ -165,10 +165,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithFloatAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( floatCollection() );
+        String output = serialization.serialize( floatCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.FLOAT );
-        List<Float> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Float> list = serialization.deserialize( module, collectionType, output );
         assertEquals( floatCollection(), list );
     }
 
@@ -176,10 +176,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithDoubleAndNullElementWhenSerializingExpectCorrectJsonOutput()
         throws Exception
     {
-        String output = stateSerialization.serialize( doubleCollection() );
+        String output = serialization.serialize( doubleCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.DOUBLE );
-        List<Double> list = stateSerialization.deserialize( module, collectionType, output );
+        List<Double> list = serialization.deserialize( module, collectionType, output );
         assertEquals( doubleCollection(), list );
     }
 
@@ -187,10 +187,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithBigIntegerAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( bigIntegerCollection() );
+        String output = serialization.serialize( bigIntegerCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.BIG_INTEGER );
-        List<BigInteger> list = stateSerialization.deserialize( module, collectionType, output );
+        List<BigInteger> list = serialization.deserialize( module, collectionType, output );
         assertEquals( bigIntegerCollection(), list );
     }
 
@@ -198,10 +198,10 @@ public class AbstractCollectionSerializationTest
     public void givenCollectionTypeWithBigDecimalAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( bigDecimalCollection() );
+        String output = serialization.serialize( bigDecimalCollection() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.collectionOf( ValueType.BIG_DECIMAL );
-        Collection<BigDecimal> collection = stateSerialization.deserialize( module, collectionType, output );
+        Collection<BigDecimal> collection = serialization.deserialize( module, collectionType, output );
         assertEquals( bigDecimalCollection(), collection );
     }
 
@@ -209,10 +209,10 @@ public class AbstractCollectionSerializationTest
     public void givenMapOfStringByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( stringByteMap() );
+        String output = serialization.serialize( stringByteMap() );
         System.out.println( output );
         MapType mapType = MapType.of( ValueType.STRING, ValueType.BYTE );
-        Map<String, Byte> value = stateSerialization.deserialize( module, mapType, output );
+        Map<String, Byte> value = serialization.deserialize( module, mapType, output );
         assertEquals( stringByteMap(), value );
     }
 
@@ -220,11 +220,11 @@ public class AbstractCollectionSerializationTest
     public void givenMapOfStringListStringAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( stringMultiMap() );
+        String output = serialization.serialize( stringMultiMap() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.STRING );
         MapType mapType = MapType.of( ValueType.STRING, collectionType );
-        Map<String, List<String>> value = stateSerialization.deserialize( module, mapType, output );
+        Map<String, List<String>> value = serialization.deserialize( module, mapType, output );
         assertEquals( stringMultiMap(), value );
     }
 
@@ -232,10 +232,10 @@ public class AbstractCollectionSerializationTest
     public void givenListOfMapStringStringAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( stringListOfMaps() );
+        String output = serialization.serialize( stringListOfMaps() );
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( MapType.of( ValueType.STRING, ValueType.STRING ) );
-        List<Map<String, String>> value = stateSerialization.deserialize( module, collectionType, output );
+        List<Map<String, String>> value = serialization.deserialize( module, collectionType, output );
         assertEquals( stringListOfMaps(), value );
     }
 
@@ -243,11 +243,11 @@ public class AbstractCollectionSerializationTest
     public void givenListOfValueCompositesAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = stateSerialization.serialize( valueCompositesList() );
+        String output = serialization.serialize( valueCompositesList() );
         System.out.println( output );
         ValueCompositeType valueType = module.valueDescriptor( SomeValue.class.getName() ).valueType();
         CollectionType collectionType = CollectionType.listOf( valueType );
-        List<SomeValue> value = stateSerialization.deserialize( module, collectionType, output );
+        List<SomeValue> value = serialization.deserialize( module, collectionType, output );
         assertEquals( valueCompositesList(), value );
     }
 
@@ -255,10 +255,10 @@ public class AbstractCollectionSerializationTest
     public void givenEnumSetWhenSerializingAndDeserializingExpectEquals()
     {
         Set<SomeEnum> enumSet = EnumSet.allOf( SomeEnum.class );
-        String output = stateSerialization.serialize( enumSet );
+        String output = serialization.serialize( enumSet );
         System.out.println( output );
         CollectionType valueType = CollectionType.setOf( EnumType.of( SomeEnum.class ) );
-        Set<SomeEnum> value = stateSerialization.deserialize( module, valueType, output );
+        Set<SomeEnum> value = serialization.deserialize( module, valueType, output );
         assertEquals( enumSet, value );
     }
 
@@ -270,10 +270,10 @@ public class AbstractCollectionSerializationTest
         {
             enumMap.put( value, 23 );
         }
-        String output = stateSerialization.serialize( enumMap );
+        String output = serialization.serialize( enumMap );
         System.out.println( output );
         MapType valueType = MapType.of( EnumType.of( SomeEnum.class ), ValueType.of( Integer.class ) );
-        Map<SomeEnum, Number> value = stateSerialization.deserialize( module, valueType, output );
+        Map<SomeEnum, Number> value = serialization.deserialize( module, valueType, output );
         assertEquals( enumMap, value );
     }
 
