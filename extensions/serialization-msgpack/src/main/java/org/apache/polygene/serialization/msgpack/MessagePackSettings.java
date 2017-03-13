@@ -20,8 +20,9 @@ package org.apache.polygene.serialization.msgpack;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.SerializationSettings;
 
-public class MessagePackSettings
+public class MessagePackSettings extends SerializationSettings<MessagePackSettings>
 {
     public static final MessagePackSettings DEFAULT = new MessagePackSettings();
 

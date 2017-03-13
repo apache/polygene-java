@@ -20,8 +20,9 @@ package org.apache.polygene.serialization.javaxjson;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.SerializationSettings;
 
-public class JavaxJsonSettings
+public class JavaxJsonSettings extends SerializationSettings<JavaxJsonSettings>
 {
     public static final JavaxJsonSettings DEFAULT = new JavaxJsonSettings();
 

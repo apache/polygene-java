@@ -29,8 +29,8 @@ public class MessagePackPlainValueSerializationTest extends AbstractPlainValueSe
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new MessagePackSerializationAssembler().assemble( module );
-        super.assemble( module );
+        new MessagePackSerializationAssembler().withMessagePackSettings( withTestSettings( new MessagePackSettings() ) )
+                                               .assemble( module );
     }
 
     @Override

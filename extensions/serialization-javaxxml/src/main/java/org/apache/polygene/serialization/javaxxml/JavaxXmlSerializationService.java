@@ -54,10 +54,9 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
         {
             if( !registrationDone )
             {
-                registerCustomConverters();
+                applySettings();
                 registerBuiltInConverters();
-                registerCustomAdapters();
-                registerBaseAdapters();
+                registerBaseJavaxXmlAdapters();
                 registrationDone = true;
             }
         }
@@ -65,9 +64,14 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
         @Override
         public void passivateService() {}
 
-        private void registerCustomConverters()
+        private void applySettings()
         {
-            // TODO register custom converters
+            JavaxXmlSettings settings
+                = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
+            settings.getConverters()
+                    .forEach( ( type, converter ) -> converters.registerConverter( type, converter ) );
+            settings.getAdapters()
+                    .forEach( ( type, adapter ) -> adapters.registerAdapter( type, adapter ) );
         }
 
         private void registerBuiltInConverters()
@@ -75,14 +79,7 @@ public interface JavaxXmlSerializationService extends JavaxXmlSerialization, Ser
             builtInConverters.registerBuiltInConverters( converters );
         }
 
-        private void registerCustomAdapters()
-        {
-            JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) )
-                            .getAdapters()
-                            .forEach( ( valueType, adapter ) -> adapters.registerAdapter( valueType, adapter ) );
-        }
-
-        private void registerBaseAdapters()
+        private void registerBaseJavaxXmlAdapters()
         {
             // Primitive Value types
             adapters.registerAdapter( ValueType.STRING, new StringAdapter() );

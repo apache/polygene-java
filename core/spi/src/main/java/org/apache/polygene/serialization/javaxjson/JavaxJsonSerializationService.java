@@ -59,10 +59,9 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
         {
             if( !registrationDone )
             {
-                registerCustomConverters();
+                applySettings();
                 registerBuiltInConverters();
-                registerCustomAdapters();
-                registerBaseAdapters();
+                registerBaseJavaxJsonAdapters();
                 registrationDone = true;
             }
         }
@@ -70,9 +69,14 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
         @Override
         public void passivateService() {}
 
-        private void registerCustomConverters()
+        private void applySettings()
         {
-            // TODO register custom converters
+            JavaxJsonSettings settings
+                = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
+            settings.getConverters()
+                    .forEach( ( type, converter ) -> converters.registerConverter( type, converter ) );
+            settings.getAdapters()
+                    .forEach( ( type, adapter ) -> adapters.registerAdapter( type, adapter ) );
         }
 
         private void registerBuiltInConverters()
@@ -80,14 +84,7 @@ public interface JavaxJsonSerializationService extends JavaxJsonSerialization, S
             builtInConverters.registerBuiltInConverters( converters );
         }
 
-        private void registerCustomAdapters()
-        {
-            JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) )
-                             .getAdapters()
-                             .forEach( ( valueType, adapter ) -> adapters.registerAdapter( valueType, adapter ) );
-        }
-
-        private void registerBaseAdapters()
+        private void registerBaseJavaxJsonAdapters()
         {
             // Primitive Value types
             adapters.registerAdapter( ValueType.STRING, new StringAdapter() );

@@ -54,10 +54,9 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
         {
             if( !registrationDone )
             {
-                registerCustomConverters();
+                applySettings();
                 registerBuiltInConverters();
-                registerCustomAdapters();
-                registerBaseAdapters();
+                registerBaseMessagePackAdapters();
                 registrationDone = true;
             }
         }
@@ -65,9 +64,14 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
         @Override
         public void passivateService() {}
 
-        private void registerCustomConverters()
+        private void applySettings()
         {
-            // TODO register custom converters
+            MessagePackSettings settings
+                = MessagePackSettings.orDefault( descriptor.metaInfo( MessagePackSettings.class ) );
+            settings.getConverters()
+                    .forEach( ( type, converter ) -> converters.registerConverter( type, converter ) );
+            settings.getAdapters()
+                    .forEach( ( type, adapter ) -> adapters.registerAdapter( type, adapter ) );
         }
 
         private void registerBuiltInConverters()
@@ -75,14 +79,7 @@ public interface MessagePackSerializationService extends MessagePackSerializatio
             builtInConverters.registerBuiltInConverters( converters );
         }
 
-        private void registerCustomAdapters()
-        {
-            MessagePackSettings.orDefault( descriptor.metaInfo( MessagePackSettings.class ) )
-                               .getAdapters()
-                               .forEach( ( valueType, adapter ) -> adapters.registerAdapter( valueType, adapter ) );
-        }
-
-        private void registerBaseAdapters()
+        private void registerBaseMessagePackAdapters()
         {
             // Primitive Value types
             adapters.registerAdapter( ValueType.STRING, new StringAdapter() );

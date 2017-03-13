@@ -35,8 +35,8 @@ public class JavaxXmlPlainValueSerializationTest extends AbstractPlainValueSeria
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new JavaxXmlSerializationAssembler().assemble( module );
-        super.assemble( module );
+        new JavaxXmlSerializationAssembler().withXmlSettings( withTestSettings( new JavaxXmlSettings() ) )
+                                            .assemble( module );
     }
 
     @Override

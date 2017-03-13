@@ -19,10 +19,19 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
+import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
 
 public class JavaxJsonPlainValueSerializationTest extends AbstractPlainValueSerializationTest
 {
+    @Override
+    public void assemble( final ModuleAssembly module )
+    {
+        new JavaxJsonSerializationAssembler()
+            .withJsonSettings( withTestSettings( new JavaxJsonSettings() ) )
+            .assemble( module );
+    }
+
     @Override
     protected String getSingleStringRawState( String state )
     {

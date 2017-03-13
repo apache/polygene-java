@@ -20,6 +20,7 @@ package org.apache.polygene.serialization.javaxxml;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.SerializationSettings;
 
 /**
  * javax.xml settings.
@@ -27,7 +28,7 @@ import org.apache.polygene.api.type.ValueType;
  * Must be registered as meta-info at assembly time.
  */
 // TODO javax.xml properties?
-public class JavaxXmlSettings
+public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
 {
     public static final JavaxXmlSettings DEFAULT = new JavaxXmlSettings();
 
