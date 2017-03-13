@@ -67,7 +67,6 @@ module.exports = generators.Base.extend(
                 polygene.caching = polygene.caching ? polygene.caching : null;
                 polygene.serialization = polygene.serialization ? polygene.serialization : null;
             }
-            assignFunctions(polygene);
         },
 
         prompting: function () {
@@ -198,30 +197,17 @@ module.exports = generators.Base.extend(
                         this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
                         polygene = answers;
-                        // polygene.name = answers.name;
-                        // polygene.entitystore = answers.entitystore;
-                        // polygene.indexing = answers.indexing;
-                        // polygene.caching = answers.caching;
-                        // polygene.serialization = answers.serialization;
-                        // polygene.metrics = answers.metrics;
-                        // polygene.packageName = answers.packageName;
-                        // polygene.features = answers.features;
                     }.bind(this)
                 );
             }
         },
 
         writing: function () {
+            assignFunctions(polygene);
             polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
             polygene.ctx = this;
-            fs.readdir(__dirname + "/templates", function (err, files) {
-                files.forEach(function (directory) {
-                    if (directory.endsWith("Layer")) {
-                        var layer = require(__dirname + '/templates/' + directory + '/layer.js');
-                        layer.write(polygene);
-                    }
-                });
-            });
+            var app = require(__dirname + '/templates/' + polygene.applicationtype.replace(/ /g, '') + 'Application/app.js');
+            app.write(polygene);
             var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
             buildToolChain.write(polygene);
             if (this.options.export) {

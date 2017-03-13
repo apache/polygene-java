@@ -18,9 +18,12 @@
  *
 -%>
 include 'app',
-        'bootstrap',
+        'bootstrap',<%
+if( polygene.applicationtype === 'Rest API' ) { %>
         'model',
-        'rest'
+        'rest'<% } else { %>
+        'model'
+<% } %>
 
 rootProject.name = '<%= polygene.name %>'
 
