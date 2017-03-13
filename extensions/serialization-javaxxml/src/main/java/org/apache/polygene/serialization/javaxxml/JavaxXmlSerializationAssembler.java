@@ -45,7 +45,7 @@ public class JavaxXmlSerializationAssembler extends Assemblers.VisibilityIdentit
                                                            Serializer.class, Deserializer.class,
                                                            XmlSerialization.class,
                                                            XmlSerializer.class, XmlDeserializer.class )
-                                               .taggedWith( Serialization.Formats.XML )
+                                               .taggedWith( Serialization.Format.XML )
                                                .visibleIn( visibility() );
         if( hasIdentity() )
         {

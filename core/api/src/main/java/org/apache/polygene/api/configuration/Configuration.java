@@ -366,7 +366,7 @@ public interface Configuration<T>
                                                               Identity identity
         )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.JSON, ".json" );
+            return readConfig( uow, compositeType, configType, identity, Serialization.Format.JSON, ".json" );
         }
 
         private <C, V extends HasIdentity> V tryLoadYamlFile( UnitOfWork uow,
@@ -375,7 +375,7 @@ public interface Configuration<T>
                                                               Identity identity
         )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.YAML, ".yaml" );
+            return readConfig( uow, compositeType, configType, identity, Serialization.Format.YAML, ".yaml" );
         }
 
         private <C, V extends HasIdentity> V tryLoadXmlFile( UnitOfWork uow,
@@ -384,7 +384,7 @@ public interface Configuration<T>
                                                              Identity identity
         )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Formats.XML, ".xml" );
+            return readConfig( uow, compositeType, configType, identity, Serialization.Format.XML, ".xml" );
         }
 
         private <C, V extends HasIdentity> V readConfig( UnitOfWork uow,

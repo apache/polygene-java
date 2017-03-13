@@ -43,7 +43,7 @@ public class Polygene142Test extends AbstractPolygeneTest
     }
 
     @Service
-    @Tagged( Serialization.Formats.JSON )
+    @Tagged( Serialization.Format.JSON )
     private Serialization serialization;
 
     @Test

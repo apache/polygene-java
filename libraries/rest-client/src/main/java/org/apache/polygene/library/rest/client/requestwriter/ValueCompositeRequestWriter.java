@@ -51,7 +51,7 @@ public class ValueCompositeRequestWriter
    private PolygeneSPI spi;
 
    @Service
-   @Tagged( Serialization.Formats.JSON )
+   @Tagged( Serialization.Format.JSON )
    private Serializer serializer;
 
     @Override

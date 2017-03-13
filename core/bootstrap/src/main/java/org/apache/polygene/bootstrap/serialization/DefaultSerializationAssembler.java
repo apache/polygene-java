@@ -37,6 +37,6 @@ public class DefaultSerializationAssembler
         module.services( JavaxJsonSerializationService.class )
               .withTypes( Serialization.class, Serializer.class, Deserializer.class,
                           JsonSerialization.class, JsonSerializer.class, JsonDeserializer.class )
-              .taggedWith( Serialization.Formats.JSON );
+              .taggedWith( Serialization.Format.JSON );
     }
 }

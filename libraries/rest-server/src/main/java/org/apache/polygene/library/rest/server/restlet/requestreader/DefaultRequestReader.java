@@ -86,7 +86,7 @@ public class DefaultRequestReader
     private ValueBuilderFactory vbf;
 
     @Service
-    @Tagged( Serialization.Formats.JSON )
+    @Tagged( Serialization.Format.JSON )
     private Deserializer deserializer;
 
     @Override

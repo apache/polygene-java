@@ -28,7 +28,7 @@ public interface Serialization extends Serializer, Deserializer
      * Serialization implementations should be tagged with theses at assembly time so that consumers can
      * specify which format they need.
      */
-    interface Formats
+    interface Format
     {
         /**
          * Tag a Serialization service that support the JSON format.

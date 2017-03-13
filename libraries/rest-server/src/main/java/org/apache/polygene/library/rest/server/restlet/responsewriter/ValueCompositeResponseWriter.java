@@ -53,7 +53,7 @@ public class ValueCompositeResponseWriter extends AbstractResponseWriter
     private Configuration cfg;
 
     @Service
-    @Tagged( Serialization.Formats.JSON )
+    @Tagged( Serialization.Format.JSON )
     private Serializer serializer;
 
     @Override
