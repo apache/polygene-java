@@ -56,13 +56,13 @@ public class JavaxJsonSettings
 
     public JavaxJsonSettings withTypeInfoPropertyName( String typeInfoPropertyName )
     {
-        setTypeInfoPropertyName( typeInfoPropertyName );
+        this.typeInfoPropertyName = typeInfoPropertyName;
         return this;
     }
 
     public JavaxJsonSettings withJsonAdapter( ValueType valueType, JavaxJsonAdapter<?> adapter )
     {
-        getAdapters().put( valueType, adapter );
+        adapters.put( valueType, adapter );
         return this;
     }
 

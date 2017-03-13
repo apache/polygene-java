@@ -20,7 +20,6 @@ package org.apache.polygene.serialization.javaxjson;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.UncheckedIOException;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,7 +31,6 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
@@ -41,6 +39,7 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.MapType;
@@ -111,8 +110,8 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
             return serializeStream( options, (Stream<?>) object );
         }
         // Fallback to Java Serialization in Base 64
-        // Include all arrays!
-        return serializeBase64( object );
+        byte[] bytes = Base64.getEncoder().encode( serializeJava( object ) );
+        return JavaxJson.toJsonString( new String( bytes, UTF_8 ) );
     }
 
     private JsonObject serializeValueComposite( Options options, Object composite, boolean root )
@@ -219,23 +218,18 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         return builder.build();
     }
 
-    private JsonString serializeBase64( Object object )
-    {
-        byte[] bytes = Base64.getEncoder().encode( javaSerialization( object ) );
-        return JavaxJson.toJsonString( new String( bytes, UTF_8 ) );
-    }
-
-    private byte[] javaSerialization( Object object )
+    private byte[] serializeJava( Object object )
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
         {
             out.writeUnshared( object );
+            out.flush();
             return bout.toByteArray();
         }
         catch( IOException ex )
         {
-            throw new UncheckedIOException( ex );
+            throw new SerializationException( "Unable to serialize using Java serialization", ex );
         }
     }
 

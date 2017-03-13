@@ -158,7 +158,8 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
                     return (T) deserializeValueComposite( module, valueDescriptor.valueType(), object );
                 }
             case STRING:
-                return (T) deserializeBase64( asString( json ) );
+                byte[] bytes = Base64.getDecoder().decode( asString( json ).getBytes( UTF_8 ) );
+                return (T) deserializeJava( bytes );
             default:
                 throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + json );
         }
@@ -285,17 +286,15 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
         };
     }
 
-    private Object deserializeBase64( String inputString )
+    private Object deserializeJava( byte[] bytes )
     {
-        byte[] bytes = inputString.getBytes( UTF_8 );
-        bytes = Base64.getDecoder().decode( bytes );
         try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
         {
             return oin.readObject();
         }
         catch( IOException | ClassNotFoundException ex )
         {
-            throw new SerializationException( "Unable to deserialize Base64 serialized " + inputString, ex );
+            throw new SerializationException( "Unable to deserialize using Java serialization", ex );
         }
     }
 

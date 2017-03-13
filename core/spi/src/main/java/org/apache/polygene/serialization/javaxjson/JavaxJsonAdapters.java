@@ -38,7 +38,7 @@ public interface JavaxJsonAdapters
 
     class Mixin implements JavaxJsonAdapters
     {
-        private Map<ValueType, JavaxJsonAdapter<?>> adapters = new LinkedHashMap<>();
+        private final Map<ValueType, JavaxJsonAdapter<?>> adapters = new LinkedHashMap<>();
 
         @Override
         public void registerAdapter( ValueType valueType, JavaxJsonAdapter<?> adapter )

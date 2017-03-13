@@ -20,7 +20,6 @@ package org.apache.polygene.serialization.javaxxml;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.UncheckedIOException;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
@@ -139,8 +138,8 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
             return serializeStream( document, options, (Stream<?>) object );
         }
         // Fallback to Java Serialization in Base 64
-        // Include all arrays!
-        return serializeBase64( document, object );
+        byte[] bytes = Base64.getEncoder().encode( serializeJava( object ) );
+        return document.createCDATASection( new String( bytes, UTF_8 ) );
     }
 
     private <T> Node serializeValueComposite( Document document, Options options, T composite, boolean root )
@@ -280,18 +279,18 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
         return collectionElement;
     }
 
-    private <T> Node serializeBase64( Document document, T object )
+    private byte[] serializeJava( Object object )
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
         {
             out.writeUnshared( object );
-            byte[] bytes = Base64.getEncoder().encode( bout.toByteArray() );
-            return document.createCDATASection( new String( bytes, UTF_8 ) );
+            out.flush();
+            return bout.toByteArray();
         }
         catch( IOException ex )
         {
-            throw new UncheckedIOException( ex );
+            throw new SerializationException( "Unable to serialize using Java serialization", ex );
         }
     }
 

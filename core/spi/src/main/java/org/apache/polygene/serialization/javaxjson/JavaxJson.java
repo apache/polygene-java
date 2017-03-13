@@ -33,6 +33,8 @@ import javax.json.JsonValue;
  */
 public class JavaxJson
 {
+    public static JsonValue EMPTY_STRING = toJsonString( "" );
+
     /**
      * Create a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}.
      *

@@ -56,7 +56,6 @@ import org.apache.polygene.spi.serialization.AbstractBinaryDeserializer;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
 import org.msgpack.value.ArrayValue;
-import org.msgpack.value.BinaryValue;
 import org.msgpack.value.ImmutableValue;
 import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
@@ -285,7 +284,7 @@ public interface MessagePackDeserializer extends Deserializer
             switch( value.getValueType() )
             {
                 case BINARY:
-                    return deserializeJava( value.asBinaryValue() );
+                    return deserializeJava( value.asBinaryValue().asByteArray() );
                 case MAP:
                     MapValue mapValue = value.asMapValue();
                     Optional<String> typeInfo = mapValue
@@ -313,13 +312,15 @@ public interface MessagePackDeserializer extends Deserializer
             }
         }
 
-        private Object deserializeJava( BinaryValue value )
-            throws IOException, ClassNotFoundException
+        private Object deserializeJava( byte[] bytes )
         {
-            byte[] bytes = value.asByteArray();
             try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
             {
                 return oin.readObject();
+            }
+            catch( IOException | ClassNotFoundException ex )
+            {
+                throw new SerializationException( "Unable to deserialize using Java serialization", ex );
             }
         }
     }

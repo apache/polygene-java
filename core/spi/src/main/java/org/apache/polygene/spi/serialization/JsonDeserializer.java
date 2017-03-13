@@ -34,6 +34,7 @@ import javax.json.stream.JsonParsingException;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.serialization.javaxjson.JavaxJson;
 import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.stream.Collectors.joining;
@@ -157,8 +158,6 @@ public interface JsonDeserializer extends Deserializer
             return outOfStructureFunction.apply( stateString );
         }
         // Empty state string?
-        JsonValue emptyJsonString = Json.createReader( new StringReader( "{\"empty\":\"\"}" ) )
-                                        .readObject().get( "empty" );
-        return fromJson( module, valueType, emptyJsonString );
+        return fromJson( module, valueType, JavaxJson.EMPTY_STRING );
     }
 }

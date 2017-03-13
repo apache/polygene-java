@@ -45,7 +45,6 @@ import org.apache.polygene.spi.serialization.AbstractBinarySerializer;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessagePacker;
 import org.msgpack.value.ArrayValue;
-import org.msgpack.value.BinaryValue;
 import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
@@ -124,8 +123,7 @@ public interface MessagePackSerializer extends Serializer
                     return serializeStream( options, (Stream<?>) object );
                 }
                 // Fallback to Java Serialization
-                // Include all arrays!
-                return serializeJava( object );
+                return ValueFactory.newBinary( serializeJava( object ) );
             }
             catch( IOException ex )
             {
@@ -203,14 +201,18 @@ public interface MessagePackSerializer extends Serializer
                                                 .collect( toList() ) );
         }
 
-        private BinaryValue serializeJava( Object object ) throws IOException
+        private byte[] serializeJava( Object object )
         {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
             {
                 out.writeUnshared( object );
-                byte[] bytes = bout.toByteArray();
-                return ValueFactory.newBinary( bytes );
+                out.flush();
+                return bout.toByteArray();
+            }
+            catch( IOException ex )
+            {
+                throw new SerializationException( "Unable to serialize using Java serialization", ex );
             }
         }
     }
