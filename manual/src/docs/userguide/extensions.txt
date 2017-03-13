@@ -53,7 +53,7 @@ include::../../../../extensions/serialization-javaxxml/src/docs/serialization-ja
 
 :leveloffset: 2
 
-include::../../../../extensions/serialization-msgpack/src/docs/serialization-msgpack.txt[]
+include::../../../../extensions/serialization-messagepack/src/docs/serialization-messagepack.txt[]
 
 :leveloffset: 2
 
@@ -140,4 +140,3 @@ include::../../../../extensions/migration/src/docs/migration.txt[]
 include::../../../../extensions/reindexer/src/docs/reindexer.txt[]
 
 :leveloffset: 2
-

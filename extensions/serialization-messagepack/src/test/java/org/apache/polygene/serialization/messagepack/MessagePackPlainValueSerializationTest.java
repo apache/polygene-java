@@ -14,19 +14,30 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.serialization.javaxxml;
+package org.apache.polygene.serialization.messagepack;
 
+import java.util.Base64;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
-import org.apache.polygene.test.serialization.AbstractCollectionSerializationTest;
+import org.apache.polygene.serialization.messagepack.assembly.MessagePackSerializationAssembler;
+import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
+import org.msgpack.core.MessagePack;
 
-public class JavaxXmlCollectionTest extends AbstractCollectionSerializationTest
+public class MessagePackPlainValueSerializationTest extends AbstractPlainValueSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new JavaxXmlSerializationAssembler().assemble( module );
-        super.assemble( module );
+        new MessagePackSerializationAssembler().withMessagePackSettings( withTestSettings( new MessagePackSettings() ) )
+                                               .assemble( module );
+    }
+
+    @Override
+    protected String getSingleStringRawState( String state ) throws Exception
+    {
+        return MessagePack.newDefaultUnpacker( Base64.getDecoder().decode( state ) )
+                          .unpackValue().asStringValue().asString();
     }
 }

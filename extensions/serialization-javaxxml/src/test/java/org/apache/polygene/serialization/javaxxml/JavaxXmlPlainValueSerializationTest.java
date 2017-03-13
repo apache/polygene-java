@@ -24,6 +24,7 @@ import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

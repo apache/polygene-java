@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.w3c.dom.Document;

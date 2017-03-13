@@ -20,6 +20,7 @@
 package org.apache.polygene.serialization.javaxjson;
 
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
 
 public class JavaxJsonPlainValueSerializationTest extends AbstractPlainValueSerializationTest

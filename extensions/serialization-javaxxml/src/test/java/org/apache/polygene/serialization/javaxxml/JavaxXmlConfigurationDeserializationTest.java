@@ -1,6 +1,7 @@
 package org.apache.polygene.serialization.javaxxml;
 
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest;
 import org.junit.Test;
 

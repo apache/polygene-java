@@ -31,6 +31,7 @@ import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 

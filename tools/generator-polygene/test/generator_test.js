@@ -39,7 +39,8 @@ var cachings = [
 
 var serializations = [
     'JavaxJson',
-    'JavaxXml'
+    'JavaxXml',
+    'MessagePack'
 ];
 
 var metricses = [

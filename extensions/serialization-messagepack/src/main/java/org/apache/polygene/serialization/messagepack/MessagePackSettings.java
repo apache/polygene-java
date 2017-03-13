@@ -15,18 +15,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.serialization.javaxxml;
+package org.apache.polygene.serialization.messagepack;
 
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
-import org.apache.polygene.test.serialization.AbstractCollectionSerializationTest;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.serialization.SerializationSettings;
 
-public class JavaxXmlCollectionTest extends AbstractCollectionSerializationTest
+public class MessagePackSettings extends SerializationSettings<MessagePackSettings>
 {
-    @Override
-    public void assemble( ModuleAssembly module )
+    public static final MessagePackSettings DEFAULT = new MessagePackSettings();
+
+    public static MessagePackSettings orDefault( MessagePackSettings settings )
     {
-        new JavaxXmlSerializationAssembler().assemble( module );
-        super.assemble( module );
+        return settings != null ? settings : DEFAULT;
+    }
+
+    private Map<ValueType, MessagePackAdapter<?>> adapters;
+
+    public MessagePackSettings()
+    {
+        adapters = new LinkedHashMap<>();
+    }
+
+    public Map<ValueType, MessagePackAdapter<?>> getAdapters()
+    {
+        return adapters;
     }
 }

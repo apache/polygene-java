@@ -20,6 +20,7 @@ package org.apache.polygene.serialization.javaxxml;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.spi.serialization.XmlSerialization;
 import org.apache.polygene.test.serialization.AbstractValueCompositeSerializationTest;
 import org.junit.Test;

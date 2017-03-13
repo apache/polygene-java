@@ -15,18 +15,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.serialization.javaxxml;
+package org.apache.polygene.serialization.messagepack;
 
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
+import org.apache.polygene.serialization.messagepack.assembly.MessagePackSerializationAssembler;
 import org.apache.polygene.test.serialization.AbstractCollectionSerializationTest;
 
-public class JavaxXmlCollectionTest extends AbstractCollectionSerializationTest
+public class MessagePackCollectionSerializationTest extends AbstractCollectionSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new JavaxXmlSerializationAssembler().assemble( module );
+        new MessagePackSerializationAssembler().assemble( module );
         super.assemble( module );
     }
 }

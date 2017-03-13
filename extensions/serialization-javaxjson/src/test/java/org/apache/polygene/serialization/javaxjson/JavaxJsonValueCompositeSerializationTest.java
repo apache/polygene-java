@@ -24,6 +24,7 @@ import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.test.serialization.AbstractValueCompositeSerializationTest;
 import org.junit.Test;
