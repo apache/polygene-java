@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore;
+package org.apache.polygene.entitystore.preferences;
 
 import java.util.prefs.Preferences;
 import org.apache.polygene.bootstrap.AssemblyException;

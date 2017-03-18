@@ -27,7 +27,8 @@ import pl.domzal.junit.docker.rule.WaitFor;
 
 import static org.junit.Assume.assumeFalse;
 
-public class DockerRule implements TestRule
+public class DockerRule
+    implements TestRule
 {
     private final boolean dockerDisabled = Boolean.valueOf( System.getProperty( "DOCKER_DISABLED", "false" ) );
     private final pl.domzal.junit.docker.rule.DockerRule dockerRule;
