@@ -39,6 +39,7 @@ dependencies {
   testImplementation polygene.library( 'sql-dbcp' )
   testImplementation polygene.extension( 'valueserialization-orgjson' )
   testImplementation libraries.derby // Needed at compile time for polite test shutdown
+  testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
   testRuntimeOnly libraries.h2

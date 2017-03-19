@@ -32,17 +32,17 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.test.indexing.model.Account;
-import org.apache.polygene.test.indexing.model.Address;
-import org.apache.polygene.test.indexing.model.Cat;
-import org.apache.polygene.test.indexing.model.City;
-import org.apache.polygene.test.indexing.model.Domain;
-import org.apache.polygene.test.indexing.model.Female;
-import org.apache.polygene.test.indexing.model.Male;
-import org.apache.polygene.test.indexing.model.Person;
-import org.apache.polygene.test.indexing.model.Protocol;
-import org.apache.polygene.test.indexing.model.QueryParam;
-import org.apache.polygene.test.indexing.model.URL;
+import org.apache.polygene.test.model.Account;
+import org.apache.polygene.test.model.Address;
+import org.apache.polygene.test.model.Cat;
+import org.apache.polygene.test.model.City;
+import org.apache.polygene.test.model.Domain;
+import org.apache.polygene.test.model.Female;
+import org.apache.polygene.test.model.Male;
+import org.apache.polygene.test.model.Person;
+import org.apache.polygene.test.model.Protocol;
+import org.apache.polygene.test.model.QueryParam;
+import org.apache.polygene.test.model.URL;
 
 import static java.time.ZoneOffset.UTC;
 

@@ -38,7 +38,7 @@ public class CassandraMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "cassandra", 9042 );
+    public static final DockerRule DOCKER = new DockerRule( "cassandra", "Starting listening for CQL clients" );
 
     @Override
     // START SNIPPET: assembly
@@ -60,6 +60,7 @@ public class CassandraMapEntityStoreTest
         CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "9042/tcp" );
+        System.out.println("Cassandra: " + host + ":" + port);
         cassandraConfig.hostnames().set( host + ':' + port );
         cassandraConfig.createIfMissing().set( true );
         // START SNIPPET: assembly

@@ -29,7 +29,7 @@ public class PostgreSQLEntityFinderTest
     extends AbstractEntityFinderTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres", 5432 );
+    public static final DockerRule DOCKER = new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
 
     @Override
     public void assemble( ModuleAssembly mainModule )

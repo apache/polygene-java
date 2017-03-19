@@ -29,11 +29,11 @@ import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.grammar.OrderBy;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.spi.query.IndexExporter;
-import org.apache.polygene.test.indexing.model.Domain;
-import org.apache.polygene.test.indexing.model.Female;
-import org.apache.polygene.test.indexing.model.Male;
-import org.apache.polygene.test.indexing.model.Nameable;
-import org.apache.polygene.test.indexing.model.Person;
+import org.apache.polygene.test.model.Domain;
+import org.apache.polygene.test.model.Female;
+import org.apache.polygene.test.model.Male;
+import org.apache.polygene.test.model.Nameable;
+import org.apache.polygene.test.model.Person;
 import org.junit.Before;
 import org.junit.Test;
 

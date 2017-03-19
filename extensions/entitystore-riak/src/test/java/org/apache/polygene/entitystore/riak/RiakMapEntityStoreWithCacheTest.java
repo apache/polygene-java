@@ -33,7 +33,7 @@ import org.junit.ClassRule;
 public class RiakMapEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "riak", 8087 );
+    public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
 
     private RiakFixture riakFixture;
 

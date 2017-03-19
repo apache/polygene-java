@@ -28,8 +28,8 @@ import org.apache.polygene.api.query.QueryExpressions;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.polygene.test.indexing.model.Male;
-import org.apache.polygene.test.indexing.model.Person;
+import org.apache.polygene.test.model.Male;
+import org.apache.polygene.test.model.Person;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

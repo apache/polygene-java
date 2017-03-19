@@ -34,7 +34,7 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.test.indexing.TestData;
-import org.apache.polygene.test.indexing.layered.assembly.ApplicationAssembler;
+import org.apache.polygene.test.model.assembly.ApplicationAssembler;
 import org.junit.Before;
 import org.junit.Test;
 

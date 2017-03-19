@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.test.indexing.model.Nameable;
+import org.apache.polygene.test.model.Nameable;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;

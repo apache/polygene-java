@@ -31,7 +31,7 @@ import org.junit.ClassRule;
 public class JCloudsS3Test extends AbstractEntityStoreTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "s3server", 8000 );
+    public static final DockerRule DOCKER = new DockerRule( "s3server", "server started" );
 
     @Override
     public void assemble( ModuleAssembly module )

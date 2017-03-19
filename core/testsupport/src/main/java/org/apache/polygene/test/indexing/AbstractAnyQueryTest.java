@@ -25,19 +25,19 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.indexing.model.Account;
-import org.apache.polygene.test.indexing.model.Address;
-import org.apache.polygene.test.indexing.model.Cat;
-import org.apache.polygene.test.indexing.model.City;
-import org.apache.polygene.test.indexing.model.Domain;
-import org.apache.polygene.test.indexing.model.Female;
-import org.apache.polygene.test.indexing.model.File;
-import org.apache.polygene.test.indexing.model.Host;
-import org.apache.polygene.test.indexing.model.Male;
-import org.apache.polygene.test.indexing.model.Port;
-import org.apache.polygene.test.indexing.model.Protocol;
-import org.apache.polygene.test.indexing.model.QueryParam;
-import org.apache.polygene.test.indexing.model.URL;
+import org.apache.polygene.test.model.Account;
+import org.apache.polygene.test.model.Address;
+import org.apache.polygene.test.model.Cat;
+import org.apache.polygene.test.model.City;
+import org.apache.polygene.test.model.Domain;
+import org.apache.polygene.test.model.Female;
+import org.apache.polygene.test.model.File;
+import org.apache.polygene.test.model.Host;
+import org.apache.polygene.test.model.Male;
+import org.apache.polygene.test.model.Port;
+import org.apache.polygene.test.model.Protocol;
+import org.apache.polygene.test.model.QueryParam;
+import org.apache.polygene.test.model.URL;
 
 /**
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.

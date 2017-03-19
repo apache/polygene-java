@@ -52,7 +52,8 @@ public class MySQLEntityStoreTest
             put( "MYSQL_DATABASE", "jdbc_test_db" );
             put( "MYSQL_ROOT_HOST", "172.17.0.1" );
         }},
-        3306
+        30000L
+//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
     );
 
     @Override
