@@ -91,13 +91,7 @@ public class AssemblyHelper
 
     protected FragmentClassLoader getModifierClassLoader( ClassLoader classLoader )
     {
-        FragmentClassLoader cl = modifierClassLoaders.get( classLoader );
-        if( cl == null )
-        {
-            cl = instantiateFragmentClassLoader( classLoader );
-            modifierClassLoaders.put( classLoader, cl );
-        }
-        return cl;
+        return modifierClassLoaders.computeIfAbsent( classLoader, k -> instantiateFragmentClassLoader( classLoader ) );
     }
 
     protected FragmentClassLoader instantiateFragmentClassLoader( ClassLoader classLoader )
@@ -107,12 +101,7 @@ public class AssemblyHelper
 
     public boolean appliesTo( Class<?> fragmentClass, Method method, Iterable<Class<?>> types, Class<?> mixinClass )
     {
-        AppliesToFilter appliesToFilter = appliesToInstances.get( fragmentClass );
-        if( appliesToFilter == null )
-        {
-            appliesToFilter = createAppliesToFilter( fragmentClass );
-            appliesToInstances.put( fragmentClass, appliesToFilter );
-        }
+        AppliesToFilter appliesToFilter = appliesToInstances.computeIfAbsent( fragmentClass, k -> createAppliesToFilter( fragmentClass ) );
         for( Class<?> compositeType : types )
         {
             if( appliesToFilter.appliesTo( method, mixinClass, compositeType, fragmentClass ) )
@@ -202,13 +191,8 @@ public class AssemblyHelper
                               Type valueType
     )
     {
-        ConstraintDeclaration constraintDeclaration = constraintDeclarations.get( constraint );
-        if( constraintDeclaration == null )
-        {
-            constraintDeclaration = new ConstraintDeclaration( constraint );
-            constraintDeclarations.put( constraint, constraintDeclaration );
-        }
-
+        ConstraintDeclaration constraintDeclaration =
+            constraintDeclarations.computeIfAbsent( constraint, k -> new ConstraintDeclaration( constraint ) );
         return constraintDeclaration.appliesTo( annotationType, valueType );
     }
 }
