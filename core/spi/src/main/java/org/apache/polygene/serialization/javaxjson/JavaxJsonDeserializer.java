@@ -152,7 +152,9 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
                 ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
                 if( valueDescriptor != null )
                 {
-                    return (T) deserializeValueComposite( module, valueDescriptor.valueType(), object );
+                    return (T) deserializeValueComposite( valueDescriptor.module(),
+                                                          valueDescriptor.valueType(),
+                                                          object );
                 }
             case STRING:
                 byte[] bytes = Base64.getDecoder().decode( asString( json ).getBytes( UTF_8 ) );
@@ -218,10 +220,10 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
         }
         ValueBuilder builder = module.instance().newValueBuilderWithState(
             valueType.primaryType(),
-            propertyFunction( module, json ),
-            associationFunction( module, json ),
-            manyAssociationFunction( module, json ),
-            namedAssociationFunction( module, json ) );
+            propertyFunction( valueType.module(), json ),
+            associationFunction( valueType.module(), json ),
+            manyAssociationFunction( valueType.module(), json ),
+            namedAssociationFunction( valueType.module(), json ) );
         return builder.newInstance();
     }
 

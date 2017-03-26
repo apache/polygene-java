@@ -148,10 +148,10 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         }
         ValueBuilder builder = module.instance().newValueBuilderWithState(
             valueType.primaryType(),
-            propertyFunction( module, xml ),
-            associationFunction( module, xml ),
-            manyAssociationFunction( module, xml ),
-            namedAssociationFunction( module, xml ) );
+            propertyFunction( valueType.module(), xml ),
+            associationFunction( valueType.module(), xml ),
+            manyAssociationFunction( valueType.module(), xml ),
+            namedAssociationFunction( valueType.module(), xml ) );
         return builder.newInstance();
     }
 
@@ -307,7 +307,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
             ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo.get() );
             if( valueDescriptor != null )
             {
-                return deserializeValueComposite( module, valueDescriptor.valueType(), xml );
+                return deserializeValueComposite( valueDescriptor.module(), valueDescriptor.valueType(), xml );
             }
         }
         if( xml.getNodeType() == Node.CDATA_SECTION_NODE )

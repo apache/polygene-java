@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -51,6 +52,11 @@ public final class ValueCompositeType extends ValueType
     {
         super( model.types().collect( toList() ) );
         this.model = model;
+    }
+
+    public ModuleDescriptor module()
+    {
+        return model.module();
     }
 
     public Stream<? extends PropertyDescriptor> properties()

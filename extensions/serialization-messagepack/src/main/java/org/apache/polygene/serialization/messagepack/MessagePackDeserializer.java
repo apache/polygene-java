@@ -210,10 +210,10 @@ public interface MessagePackDeserializer extends Deserializer
 
             ValueBuilder builder = module.instance().newValueBuilderWithState(
                 valueType.primaryType(),
-                propertyFunction( module, namedValues ),
-                associationFunction( module, namedValues ),
-                manyAssociationFunction( module, namedValues ),
-                namedAssociationFunction( module, namedValues ) );
+                propertyFunction( valueType.module(), namedValues ),
+                associationFunction( valueType.module(), namedValues ),
+                manyAssociationFunction( valueType.module(), namedValues ),
+                namedAssociationFunction( valueType.module(), namedValues ) );
             return builder.newInstance();
         }
 
@@ -301,7 +301,9 @@ public interface MessagePackDeserializer extends Deserializer
                         ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo.get() );
                         if( valueDescriptor != null )
                         {
-                            return deserializeValueComposite( module, valueDescriptor.valueType(), mapValue );
+                            return deserializeValueComposite( valueDescriptor.module(),
+                                                              valueDescriptor.valueType(),
+                                                              mapValue );
                         }
                     }
                 default:
