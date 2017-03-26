@@ -234,7 +234,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( associated.identity() );
-                                    EntityState assocState = uow.entityStateOf( module, reference );
+                                    EntityState assocState = uow.entityStateOf( entityType.module(), reference );
                                     builder.add( key,
                                                  Json.createReader( new StringReader(
                                                      toJSON( assocState, newStates, uow )
@@ -273,7 +273,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( associated.identity() );
-                                    EntityState assocState = uow.entityStateOf( module, reference );
+                                    EntityState assocState = uow.entityStateOf( entityType.module(), reference );
                                     assBuilder.add(
                                         Json.createReader( new StringReader(
                                             toJSON( assocState, newStates, uow )
@@ -318,7 +318,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( identity );
-                                    EntityState assocState = uow.entityStateOf( module, reference );
+                                    EntityState assocState = uow.entityStateOf( entityType.module(), reference );
                                     assBuilder.add(
                                         JavaxJson.toBuilder(
                                             Json.createReader( new StringReader(
