@@ -120,6 +120,7 @@ public final class JSONEntityState
                 // TODO This rely on _type explicitely :(
                 // Needed because of this mess that is JsonEntityState
                 ValueType propertyValueType = null;
+                ModuleDescriptor propertyModule = module;
                 if( json.getValueType() == JsonValue.ValueType.OBJECT )
                 {
                     String typeInfo = ( (JsonObject) json ).getString( "_type", null );
@@ -129,6 +130,7 @@ public final class JSONEntityState
                         if( valueDescriptor != null )
                         {
                             propertyValueType = valueDescriptor.valueType();
+                            propertyModule = valueDescriptor.module();
                         }
                     }
                 }
@@ -145,7 +147,7 @@ public final class JSONEntityState
                 {
                     return null;
                 }
-                return serialization.fromJson( module, propertyValueType, json );
+                return serialization.fromJson( propertyModule, propertyValueType, json );
             }
         }
         catch( SerializationException e )

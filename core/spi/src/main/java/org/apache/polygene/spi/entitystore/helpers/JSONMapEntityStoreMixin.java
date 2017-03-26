@@ -453,7 +453,7 @@ public class JSONMapEntityStoreMixin
                 throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
             }
 
-            return new JSONEntityState( module, serialization,
+            return new JSONEntityState( entityDescriptor.module(), serialization,
                                         version, modified,
                                         EntityReference.create( identity ),
                                         status, entityDescriptor,
@@ -502,7 +502,7 @@ public class JSONMapEntityStoreMixin
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
                 String version = data.getString( JSONKeys.VERSION );
                 Instant lastModified = Instant.ofEpochMilli( data.getJsonNumber( JSONKeys.MODIFIED ).longValueExact() );
-                return new JSONEntityState( module, serialization,
+                return new JSONEntityState( entityDescriptor.module(), serialization,
                                             version, lastModified,
                                             reference,
                                             EntityStatus.LOADED, entityDescriptor,
