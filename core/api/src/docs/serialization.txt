@@ -22,12 +22,12 @@ TIP: +Serialization extends Serializer, Deserializer+. See the <<javadocs>> for 
 The Serialization mechanism apply to the following object types :
 
     * ValueComposite,
-    * EntityReference,
-    * Iterable & Stream,
+    * EntityReference & Identity,
+    * Array, Iterable & Stream,
     * Map,
     * Plain Values.
 
-Nested Plain Values, EntityReferences, Iterables, Streams, Maps, ValueComposites are supported.
+Nested Plain Values, EntityReferences, Identities, Arrays, Iterables, Streams, Maps, ValueComposites are supported.
 EntityComposites and EntityReferences are serialized as their identity string.
 
 Plain Values can be one of :
