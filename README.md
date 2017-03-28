@@ -53,7 +53,8 @@ for more information.
 ### IntelliJ IDEA
 
 IntelliJ IDEA Community Edition has everything you need to open Apache Polygene™.
-To open the project in IDEA, simply open this repository as a project. 
+To open the project in IDEA, simply open this repository as a project.
+During import, make sure *"Create separate module per source set"* is checked.
 
 ### Netbeans
 
