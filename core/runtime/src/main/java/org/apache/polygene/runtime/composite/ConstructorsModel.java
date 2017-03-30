@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.composite.CompositeDescriptor;
-import org.apache.polygene.api.composite.InvalidCompositeException;
 import org.apache.polygene.api.injection.InjectionScope;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.util.Classes;
@@ -49,6 +48,7 @@ import org.apache.polygene.runtime.injection.ParameterizedTypeInstance;
 import org.apache.polygene.runtime.model.Binder;
 import org.apache.polygene.runtime.model.Resolution;
 
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
 import static org.apache.polygene.api.util.Annotations.typeHasAnnotation;
 
 /**
@@ -104,7 +104,7 @@ public final class ConstructorsModel
         {
             return;
         }
-        throw new InvalidCompositeException( "Inner classes can not be used. Use static nested classes instead: " + fragmentClass );
+        handleInvalidCompsiteType( "Inner classes can not be used. Use static nested classes instead.", null, null, fragmentClass, null, null, null );
     }
 
     @Override

@@ -70,7 +70,7 @@ public class RestTest extends AbstractPolygeneTest
     private static final int ADMIN_PORT = FreePortFinder.findFreePortOnLoopback();
 
     @Override
-    protected ApplicationDescriptor newApplication()
+    protected ApplicationDescriptor newApplicationModel()
         throws AssemblyException
     {
         return polygene.newApplicationModel( new ApplicationAssemblerAdapter(

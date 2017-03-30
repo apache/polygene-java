@@ -40,6 +40,7 @@ import org.apache.polygene.runtime.injection.Dependencies;
 import org.apache.polygene.runtime.injection.DependencyModel;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
 
 /**
  * JAVADOC
@@ -47,16 +48,18 @@ import static java.lang.reflect.Proxy.newProxyInstance;
 public abstract class CompositeModel
     implements VisitableHierarchy<Object, Object>, Dependencies, CompositeDescriptor
 {
+    protected final ModuleDescriptor module;
     protected final MixinsModel mixinsModel;
     protected final CompositeMethodsModel compositeMethodsModel;
+    protected final StateModel stateModel;
+
+    private final Class<?> primaryType;
     private final Set<Class<?>> types;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
-    protected final StateModel stateModel;
-    private volatile Class<?> primaryType;
-    protected Class<? extends Composite> proxyClass;
-    protected Constructor<? extends Composite> proxyConstructor;
-    protected ModuleDescriptor module;
+
+    private Class<? extends Composite> proxyClass;
+    private Constructor<? extends Composite> proxyConstructor;
 
     protected CompositeModel( final ModuleDescriptor module,
                               final List<Class<?>> types,
@@ -76,7 +79,17 @@ public abstract class CompositeModel
         this.mixinsModel = mixinsModel;
 
         // Create proxy class
-        createProxyClass();
+        @SuppressWarnings( "OptionalGetWithoutIsPresent" )
+        Class<?> mainType = types.stream().findFirst().get();
+        try
+        {
+            proxyClass = createProxyClass( mainType );
+            proxyConstructor = createProxyConstructor( mainType );
+        }
+        catch( ClassNotFoundException | NoSuchMethodException e )
+        {
+            handleInvalidCompsiteType( e.getMessage(), module, mainType, null, null, null, types );
+        }
         primaryType = mixinTypes()
             .reduce( null, ( primary, type ) ->
             {
@@ -172,38 +185,39 @@ public abstract class CompositeModel
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    private void createProxyClass()
+    private Class<? extends Composite>  createProxyClass( Class<?> mainType )
+        throws ClassNotFoundException, NoSuchMethodException
     {
-        Class<?> mainType = types.stream().findFirst().get();
+        Class<? extends Composite>  proxyClass;
         if( mainType.isInterface() )
         {
             ClassLoader proxyClassloader = mainType.getClassLoader();
 
             Class<?>[] interfaces = types.stream().map( Class.class::cast ).toArray( Class[]::new );
             proxyClass = (Class<? extends Composite>) ProxyGenerator.createProxyClass( proxyClassloader, interfaces );
-
-            try
-            {
-                proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
-            }
-            catch( NoSuchMethodException e )
-            {
-                throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor" ).initCause( e );
-            }
-            proxyConstructor.setAccessible( true );
         }
         else
         {
-            try
-            {
-                proxyClass = new TransientClassLoader( getClass().getClassLoader() ).loadFragmentClass( mainType );
-                proxyConstructor = (Constructor<? extends Composite>) proxyClass.getConstructors()[ 0 ];
-            }
-            catch( ClassNotFoundException e )
-            {
-                throw (InvalidCompositeException) new InvalidCompositeException( "Could not get proxy constructor" ).initCause( e );
-            }
+            proxyClass = new TransientClassLoader( getClass().getClassLoader() ).loadFragmentClass( mainType );
         }
+        return proxyClass;
+    }
+
+    @SuppressWarnings( { "raw", "unchecked" } )
+    private Constructor<? extends Composite> createProxyConstructor( Class<?> mainType )
+        throws ClassNotFoundException, NoSuchMethodException
+    {
+        Constructor<? extends Composite> constructor;
+        if( mainType.isInterface() )
+        {
+            constructor = proxyClass.getConstructor( InvocationHandler.class );
+        }
+        else
+        {
+            constructor = (Constructor<? extends Composite>) proxyClass.getConstructors()[ 0 ];
+        }
+        constructor.setAccessible( true );
+        return constructor;
     }
 
     // Context

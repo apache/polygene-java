@@ -27,7 +27,6 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.spi.PolygeneSPI;
@@ -49,7 +48,7 @@ public abstract class AbstractPolygeneBaseTest
         throws Exception
     {
         polygene = new Energy4Java();
-        applicationModel = newApplication();
+        applicationModel = newApplicationModel();
         if( applicationModel == null )
         {
             // An AssemblyException has occurred that the Test wants to check for.
@@ -76,20 +75,15 @@ public abstract class AbstractPolygeneBaseTest
         return applicationModel.newInstance( polygene.api() );
     }
 
-    protected ApplicationDescriptor newApplication()
+    protected ApplicationDescriptor newApplicationModel()
         throws AssemblyException
     {
-        ApplicationAssembler assembler = new ApplicationAssembler()
+        ApplicationAssembler assembler = applicationFactory ->
         {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
-                applicationAssembly.setMode( Application.Mode.test );
-                defineApplication( applicationAssembly );
-                return applicationAssembly;
-            }
+            ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+            applicationAssembly.setMode( Application.Mode.test );
+            defineApplication( applicationAssembly );
+            return applicationAssembly;
         };
 
         try

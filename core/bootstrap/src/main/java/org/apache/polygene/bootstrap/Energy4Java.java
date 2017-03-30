@@ -21,6 +21,7 @@
 package org.apache.polygene.bootstrap;
 
 import org.apache.polygene.api.PolygeneAPI;
+import org.apache.polygene.api.composite.InvalidCompositeException;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.spi.PolygeneSPI;
@@ -71,7 +72,22 @@ public final class Energy4Java
         try
         {
             ApplicationModelFactory modelFactory = runtime.applicationModelFactory();
-            return modelFactory.newApplicationModel( assembly );
+            ApplicationDescriptor model = modelFactory.newApplicationModel( assembly );
+            String modelReport = InvalidCompositeException.modelReport();
+            if( modelReport != null )
+            {
+                throw new AssemblyException( "Composition problems\n\n" + modelReport );
+            }
+            return model;
+        }
+        catch( AssemblyResportException e )
+        {
+            e.attacheModelReport( InvalidCompositeException.modelReport() );
+            throw e;
+        }
+        catch( AssemblyException e )
+        {
+            throw e;
         }
         catch( RuntimeException e )
         {

@@ -48,7 +48,6 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.composite.InvalidCompositeException;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.constraint.Constraint;
 import org.apache.polygene.api.constraint.ConstraintDeclaration;
@@ -69,6 +68,7 @@ import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.util.Fields;
 import org.apache.polygene.api.util.HierarchicalVisitorAdapter;
+import org.apache.polygene.bootstrap.AssemblyResportException;
 import org.apache.polygene.bootstrap.StateDeclarations;
 import org.apache.polygene.runtime.association.AssociationModel;
 import org.apache.polygene.runtime.association.AssociationsModel;
@@ -98,6 +98,7 @@ import org.apache.polygene.runtime.property.PropertiesModel;
 import org.apache.polygene.runtime.property.PropertyModel;
 
 import static java.util.stream.Stream.concat;
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
 import static org.apache.polygene.api.util.Annotations.isType;
 import static org.apache.polygene.api.util.Annotations.typeHasAnnotation;
 import static org.apache.polygene.api.util.Classes.classHierarchy;
@@ -126,11 +127,11 @@ public abstract class CompositeAssemblyImpl
     protected MixinsModel mixinsModel;
     protected CompositeMethodsModel compositeMethodsModel;
     private AssemblyHelper helper;
-    protected StateDeclarations stateDeclarations;
+    private StateDeclarations stateDeclarations;
 
-    protected Set<String> registeredStateNames = new HashSet<>();
+    private Set<String> registeredStateNames = new HashSet<>();
 
-    public CompositeAssemblyImpl( Class<?> mainType )
+    CompositeAssemblyImpl( Class<?> mainType )
     {
         types.add( mainType );
     }
@@ -151,9 +152,9 @@ public abstract class CompositeAssemblyImpl
         return new MixinsModel();
     }
 
-    protected void buildComposite( AssemblyHelper helper,
-                                   StateDeclarations stateDeclarations
-    )
+    void buildComposite( AssemblyHelper helper,
+                         StateDeclarations stateDeclarations
+                       )
     {
         this.stateDeclarations = stateDeclarations;
         this.helper = helper;
@@ -167,7 +168,6 @@ public abstract class CompositeAssemblyImpl
         propertiesModel = new PropertiesModel();
         stateModel = createStateModel();
         mixinsModel = createMixinsModel();
-//        compositeMethodsModel = new CompositeMethodsModel();
         compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
 
         // Implement composite methods
@@ -181,7 +181,7 @@ public abstract class CompositeAssemblyImpl
                             concernClasses,
                             sideEffectClasses,
                             mixinClasses
-        );
+                          );
 
         // Add state from methods and fields
         //noinspection unchecked
@@ -208,86 +208,103 @@ public abstract class CompositeAssemblyImpl
                                        List<Class<?>> concernClasses,
                                        List<Class<?>> sideEffectClasses,
                                        List<Class<?>> mixinClasses
-    )
+                                     )
     {
+        List<Throwable> exceptions = new ArrayList<>();
         Set<Class<?>> thisDependencies = new HashSet<>();
-        types.forEach( mixinType -> {
-            for( Method method : mixinType.getMethods() )
-            {
-                if( !compositeMethodsModel.isImplemented( method )
-                    && !Proxy.class.equals( method.getDeclaringClass().getSuperclass() )
-                    && !Proxy.class.equals( method.getDeclaringClass() )
-                    && !Modifier.isStatic( method.getModifiers() ) )
-                {
-                    MixinModel mixinModel = implementMethod( method, mixinClasses );
-                    ConcernsModel concernsModel = concernsFor(
-                        method,
-                        mixinModel.mixinClass(),
-                        concat( concernDeclarations( mixinModel.mixinClass() ),
-                                concernClasses.stream() )
-                    );
-                    SideEffectsModel sideEffectsModel = sideEffectsFor(
-                        method,
-                        mixinModel.mixinClass(),
-                        concat( sideEffectDeclarations( mixinModel.mixinClass() ),
-                                sideEffectClasses.stream() )
-                    );
-                    method.setAccessible( true );
-                    ConstraintsModel constraints = constraintsFor(
-                        method,
-                        toList( concat( constraintDeclarations( mixinModel.mixinClass() ),
-                                        constraintClasses.stream() ) )
-                    );
-                    CompositeMethodModel methodComposite = new CompositeMethodModel(
-                        method,
-                        constraints,
-                        concernsModel,
-                        sideEffectsModel,
-                        mixinsModel
-                    );
+        types.forEach( mixinType ->
+                       {
+                           for( Method method : mixinType.getMethods() )
+                           {
+                               try
+                               {
+                                   if( !compositeMethodsModel.isImplemented( method )
+                                       && !Proxy.class.equals( method.getDeclaringClass().getSuperclass() )
+                                       && !Proxy.class.equals( method.getDeclaringClass() )
+                                       && !Modifier.isStatic( method.getModifiers() ) )
+                                   {
+                                       MixinModel mixinModel = implementMethod( method, mixinClasses );
+                                       if( mixinModel != null )
+                                       {
+                                           ConcernsModel concernsModel = concernsFor(
+                                               method,
+                                               mixinModel.mixinClass(),
+                                               concat( concernDeclarations( mixinModel.mixinClass() ),
+                                                       concernClasses.stream() )
+                                                                                    );
+                                           SideEffectsModel sideEffectsModel = sideEffectsFor(
+                                               method,
+                                               mixinModel.mixinClass(),
+                                               concat( sideEffectDeclarations( mixinModel.mixinClass() ),
+                                                       sideEffectClasses.stream() )
+                                                                                             );
+                                           method.setAccessible( true );
+                                           ConstraintsModel constraints = constraintsFor(
+                                               method,
+                                               toList( concat( constraintDeclarations( mixinModel.mixinClass() ),
+                                                               constraintClasses.stream() ) )
+                                                                                        );
+                                           CompositeMethodModel methodComposite = new CompositeMethodModel(
+                                               method,
+                                               constraints,
+                                               concernsModel,
+                                               sideEffectsModel,
+                                               mixinsModel
+                                           );
 
-                    Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
-                    source.flatMap( Dependencies::dependencies )
-                          .filter( new DependencyModel.ScopeSpecification( This.class ) )
-                          .map( DependencyModel::rawInjectionType )
-                          .forEach( thisDependencies::add );
+                                           Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
+                                           source.flatMap( Dependencies::dependencies )
+                                                 .filter( new DependencyModel.ScopeSpecification( This.class ) )
+                                                 .map( DependencyModel::rawInjectionType )
+                                                 .forEach( thisDependencies::add );
 
-                    interfacesOf( mixinModel.mixinClass() )
-                        .map( Classes.RAW_CLASS )
-                        .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
-                                                .noneMatch( c -> c.equals( clazz ) ) )
-                        .forEach( thisDependencies::add );
+                                           interfacesOf( mixinModel.mixinClass() )
+                                               .map( Classes.RAW_CLASS )
+                                               .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
+                                                                       .noneMatch( c -> c.equals( clazz ) ) )
+                                               .forEach( thisDependencies::add );
 
-                    compositeMethodsModel.addMethod( methodComposite );
-                }
-            }
-            // Add type to set of mixin types
-            mixinsModel.addMixinType( mixinType );
-        } );
+                                           compositeMethodsModel.addMethod( methodComposite );
+                                       }
+                                   }
+                               }
+                               catch( Exception e )
+                               {
+                                   exceptions.add( e );
+                               }
+                           }
+                           // Add type to set of mixin types
+                           mixinsModel.addMixinType( mixinType );
+                       } );
 
         // Implement all @This dependencies that were found
-        thisDependencies.forEach( thisDependency -> {
-            // Add additional declarations from the @This type
-            Stream<Class<?>> typeConstraintClasses = concat(
-                constraintClasses.stream(),
-                constraintDeclarations( thisDependency ) );
-            Stream<Class<?>> typeConcernClasses = concat(
-                concernClasses.stream(),
-                concernDeclarations( thisDependency ) );
-            Stream<Class<?>> typeSideEffectClasses = concat(
-                sideEffectClasses.stream(),
-                sideEffectDeclarations( thisDependency ) );
-            Stream<Class<?>> typeMixinClasses = concat(
-                mixinClasses.stream(),
-                mixinDeclarations( thisDependency ) );
-            List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
-            implementMixinType( singleton,
-                                toList( typeConstraintClasses ),
-                                toList( typeConcernClasses ),
-                                toList( typeSideEffectClasses ),
-                                toList( typeMixinClasses )
-            );
-        } );
+        thisDependencies.forEach( thisDependency ->
+                                  {
+                                      // Add additional declarations from the @This type
+                                      Stream<Class<?>> typeConstraintClasses = concat(
+                                          constraintClasses.stream(),
+                                          constraintDeclarations( thisDependency ) );
+                                      Stream<Class<?>> typeConcernClasses = concat(
+                                          concernClasses.stream(),
+                                          concernDeclarations( thisDependency ) );
+                                      Stream<Class<?>> typeSideEffectClasses = concat(
+                                          sideEffectClasses.stream(),
+                                          sideEffectDeclarations( thisDependency ) );
+                                      Stream<Class<?>> typeMixinClasses = concat(
+                                          mixinClasses.stream(),
+                                          mixinDeclarations( thisDependency ) );
+                                      List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
+                                      implementMixinType( singleton,
+                                                          toList( typeConstraintClasses ),
+                                                          toList( typeConcernClasses ),
+                                                          toList( typeSideEffectClasses ),
+                                                          toList( typeMixinClasses )
+                                                        );
+                                  } );
+        if( exceptions.size() > 0 )
+        {
+            throw new AssemblyResportException( exceptions );
+        }
     }
 
     @SuppressWarnings( "raw" )
@@ -311,8 +328,8 @@ public abstract class CompositeAssemblyImpl
             return implementMethodWithClass( method, mixinClass );
         }
 
-        throw new InvalidCompositeException( "No implementation found for method \n    " + method.toGenericString()
-                                             + "\nin\n    " + types );
+        handleInvalidCompsiteType( "No implementation found for method ", null, null, null, null, method, types );
+        return null;
     }
 
     private Class<?> findTypedImplementation( final Method method, Stream<Class<?>> mixins )
@@ -383,8 +400,8 @@ public abstract class CompositeAssemblyImpl
                     MixinModel model = (MixinModel) visited;
                     Consumer<Field> addState = field -> addStateFor( field, constraintClasses );
                     Fields.FIELDS_OF.apply( model.mixinClass() )
-                        .filter( Annotations.hasAnnotation( State.class ) )
-                        .forEach( addState );
+                                    .filter( Annotations.hasAnnotation( State.class ) )
+                                    .forEach( addState );
                     return false;
                 }
                 return super.visitEnter( visited );
@@ -441,7 +458,7 @@ public abstract class CompositeAssemblyImpl
 
     protected PropertyModel newPropertyModel( AccessibleObject accessor,
                                               List<Class<?>> constraintClasses
-    )
+                                            )
     {
         List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
@@ -466,7 +483,7 @@ public abstract class CompositeAssemblyImpl
         }
         boolean useDefaults = useDefaultsDeclaration != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        InitialValueProvider initialValueProvider = metaInfo.get(InitialValueProvider.class);
+        InitialValueProvider initialValueProvider = metaInfo.get( InitialValueProvider.class );
         return new PropertyModel(
             accessor,
             immutable,
@@ -481,7 +498,7 @@ public abstract class CompositeAssemblyImpl
     // Model
     private ConstraintsModel constraintsFor( Method method,
                                              List<Class<?>> constraintClasses
-    )
+                                           )
     {
         List<ValueConstraintsModel> parameterConstraintModels = Collections.emptyList();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
@@ -496,8 +513,8 @@ public abstract class CompositeAssemblyImpl
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
             boolean optional = Stream.of( parameterAnnotation )
-                    .filter( isType( Optional.class ) )
-                    .findFirst().isPresent();
+                                     .filter( isType( Optional.class ) )
+                                     .findFirst().isPresent();
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
                 Arrays.stream( parameterAnnotation ),
                 parameterTypes[ i ],
@@ -534,7 +551,7 @@ public abstract class CompositeAssemblyImpl
         boolean optional,
         Iterable<Class<?>> constraintClasses,
         AccessibleObject accessor
-    )
+                                                  )
     {
         valueType = wrapperClass( valueType );
 
@@ -576,7 +593,7 @@ public abstract class CompositeAssemblyImpl
             // No implementation found!
             // Check if if it's a composite constraints
             if( Arrays.stream( annotationType.getAnnotations() )
-                .anyMatch( typeHasAnnotation( ConstraintDeclaration.class ) ) )
+                      .anyMatch( typeHasAnnotation( ConstraintDeclaration.class ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(
                     Arrays.stream( annotationType.getAnnotations() ),
@@ -592,14 +609,7 @@ public abstract class CompositeAssemblyImpl
             }
             else
             {
-                throw new InvalidCompositeException(
-                    "Cannot find implementation of constraint @"
-                    + annotationType.getSimpleName()
-                    + " for "
-                    + valueType
-                    + " in method "
-                    + ( (Member) accessor ).getName()
-                    + " of composite " + types );
+                handleInvalidCompsiteType( "Cannot find implementation of constraint @", null, annotationType, null, valueType, (Member) accessor, types );
             }
         }
         return new ValueConstraintsModel( constraintModels, name, optional );
@@ -608,34 +618,35 @@ public abstract class CompositeAssemblyImpl
     private ConcernsModel concernsFor( Method method,
                                        Class<?> mixinClass,
                                        Stream<Class<?>> concernClasses
-    )
+                                     )
     {
         List<ConcernModel> concernsFor = new ArrayList<>();
-        concernClasses.forEach( concern -> {
-            if( helper.appliesTo( concern, method, types, mixinClass ) )
-            {
-                addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
-            }
-            else
-            {
-                // Lookup method in mixin
-                if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
-                {
-                    try
-                    {
-                        Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
-                        if( helper.appliesTo( concern, mixinMethod, types, mixinClass ) )
-                        {
-                            addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
-                        }
-                    }
-                    catch( NoSuchMethodException e )
-                    {
-                        // Ignore
-                    }
-                }
-            }
-        } );
+        concernClasses.forEach( concern ->
+                                {
+                                    if( helper.appliesTo( concern, method, types, mixinClass ) )
+                                    {
+                                        addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
+                                    }
+                                    else
+                                    {
+                                        // Lookup method in mixin
+                                        if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
+                                        {
+                                            try
+                                            {
+                                                Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
+                                                if( helper.appliesTo( concern, mixinMethod, types, mixinClass ) )
+                                                {
+                                                    addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
+                                                }
+                                            }
+                                            catch( NoSuchMethodException e )
+                                            {
+                                                // Ignore
+                                            }
+                                        }
+                                    }
+                                } );
 
         // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
@@ -675,35 +686,36 @@ public abstract class CompositeAssemblyImpl
     private SideEffectsModel sideEffectsFor( Method method,
                                              Class<?> mixinClass,
                                              Stream<Class<?>> sideEffectClasses
-    )
+                                           )
     {
         List<SideEffectModel> sideEffectsFor = new ArrayList<>();
-        sideEffectClasses.forEach( sideEffect -> {
-            SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
-            if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
-            {
-                addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
-            }
-            else
-            {
-                // Lookup method in mixin
-                if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
-                {
-                    try
-                    {
-                        Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
-                        if( helper.appliesTo( sideEffect, mixinMethod, types, mixinClass ) )
-                        {
-                            addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
-                        }
-                    }
-                    catch( NoSuchMethodException e )
-                    {
-                        // Ignore
-                    }
-                }
-            }
-        } );
+        sideEffectClasses.forEach( sideEffect ->
+                                   {
+                                       SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
+                                       if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
+                                       {
+                                           addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
+                                       }
+                                       else
+                                       {
+                                           // Lookup method in mixin
+                                           if( !InvocationHandler.class.isAssignableFrom( mixinClass ) )
+                                           {
+                                               try
+                                               {
+                                                   Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
+                                                   if( helper.appliesTo( sideEffect, mixinMethod, types, mixinClass ) )
+                                                   {
+                                                       addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
+                                                   }
+                                               }
+                                               catch( NoSuchMethodException e )
+                                               {
+                                                   // Ignore
+                                               }
+                                           }
+                                       }
+                                   } );
 
         // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
@@ -735,7 +747,7 @@ public abstract class CompositeAssemblyImpl
 
     private void addSideEffectOrRepositionIfExists( List<SideEffectModel> sideEffectsFor,
                                                     SideEffectModel sideEffectModel
-    )
+                                                  )
     {
         // This add/remove is to allow reording of SideEffects.
         sideEffectsFor.remove( sideEffectModel );
@@ -800,8 +812,8 @@ public abstract class CompositeAssemblyImpl
     private Stream<Class<?>> mixinDeclarations( Stream<? extends Class> types )
     {
         return types.flatMap( this::getTypes ).flatMap( Classes::typesOf )
-            .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
-            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
+                    .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
+                    .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
     }
 
     private Stream<Class> getAllTypes()
@@ -823,7 +835,7 @@ public abstract class CompositeAssemblyImpl
 
     public AssociationModel newAssociationModel( AccessibleObject accessor,
                                                  List<Class<?>> constraintClasses
-    )
+                                               )
     {
         List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
@@ -859,7 +871,7 @@ public abstract class CompositeAssemblyImpl
 
     public ManyAssociationModel newManyAssociationModel( AccessibleObject accessor,
                                                          List<Class<?>> constraintClasses
-    )
+                                                       )
     {
         List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
@@ -886,7 +898,7 @@ public abstract class CompositeAssemblyImpl
 
     public NamedAssociationModel newNamedAssociationModel( AccessibleObject accessor,
                                                            List<Class<?>> constraintClasses
-    )
+                                                         )
     {
         List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );

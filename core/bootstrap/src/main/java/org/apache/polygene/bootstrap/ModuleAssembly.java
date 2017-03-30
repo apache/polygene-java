@@ -152,8 +152,8 @@ public interface ModuleAssembly
     ConfigurationDeclaration configurations( Class<?>... configurationTypes );
 
     /**
-     * Given a Specification for ConfigurationAssembly's, returns a ConfigurationDeclaration that can
-     * be used to work with all of the assemblies matched by the specification.
+     * Given a Specification for Configuration, returns a ConfigurationDeclaration that can be used to work with all
+     * of the assemblies matched by the specification.
      *
      * @param specification The Specification that specifies the ConfigurationComposite types of interest.
      *

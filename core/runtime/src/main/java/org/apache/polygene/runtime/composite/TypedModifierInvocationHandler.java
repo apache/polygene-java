@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.apache.polygene.api.composite.InvalidCompositeException;
 
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
+
 /**
  * JAVADOC
  */
@@ -43,10 +45,6 @@ public final class TypedModifierInvocationHandler
         }
         catch( Throwable e )
         {
-            if( fragment == null )
-            {
-                throw new InvalidCompositeException( "No fragment available for method " + method.getName() );
-            }
             throw cleanStackTrace( e, proxy, method );
         }
     }
