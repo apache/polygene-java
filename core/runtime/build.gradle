@@ -35,3 +35,8 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'constraints' )
 }
+
+compileTestJava {
+  options.fork = true
+  options.compilerArgs += ["-parameters"]
+}

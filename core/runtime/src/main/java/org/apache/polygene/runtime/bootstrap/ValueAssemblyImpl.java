@@ -63,19 +63,12 @@ public final class ValueAssemblyImpl
                               AssemblyHelper helper
     )
     {
-        try
-        {
-            associationsModel = new AssociationsModel();
-            manyAssociationsModel = new ManyAssociationsModel();
-            namedAssociationsModel = new NamedAssociationsModel();
-            buildComposite( helper, stateDeclarations );
-            return new ValueModel(
-                module, types, visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
-        }
-        catch( Exception e )
-        {
-            throw new InvalidApplicationException( "Could not register " + types, e );
-        }
+        associationsModel = new AssociationsModel();
+        manyAssociationsModel = new ManyAssociationsModel();
+        namedAssociationsModel = new NamedAssociationsModel();
+        buildComposite( helper, stateDeclarations );
+        return new ValueModel(
+            module, types, visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
     }
 
     protected AssociationsModel associationsModel()

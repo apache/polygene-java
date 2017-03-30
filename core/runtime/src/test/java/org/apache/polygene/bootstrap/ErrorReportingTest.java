@@ -43,7 +43,6 @@ public class ErrorReportingTest extends AbstractPolygeneTest
     protected void assemblyException( AssemblyException exception )
         throws AssemblyException
     {
-        assertThat( exception.getMessage(), containsString( "Composition problems\n" ) );
         assertThat( exception.getMessage(), containsString( "Composition Problems Report:\n" ) );
         assertThat( exception.getMessage(), containsString( "    message: No implementation found for method \n"
                                                             + "    method: Map doAnotherThing(String name, int value)\n"
