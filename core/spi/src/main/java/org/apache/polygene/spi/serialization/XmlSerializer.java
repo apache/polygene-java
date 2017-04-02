@@ -96,7 +96,7 @@ public interface XmlSerializer extends Serializer
         }
         try
         {
-            // We want plain Strings to be serialized without quotes
+            // We want plain text nodes to be serialized without surrounding elements
             if( xmlDocument.getNodeType() == Node.TEXT_NODE )
             {
                 writer.write( xmlDocument.getNodeValue() );

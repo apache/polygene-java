@@ -33,57 +33,58 @@ import org.apache.polygene.spi.module.ModuleSpi;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.w3c.dom.Node;
 
 /**
  * {@literal javax.xml} deserializer.
  */
 public interface XmlDeserializer extends Deserializer
 {
-    <T> T fromXml( ModuleDescriptor module, ValueType valueType, Document state );
+    <T> T fromXml( ModuleDescriptor module, ValueType valueType, Node state );
 
-    default <T> Function<Document, T> fromXmlFunction( ModuleDescriptor module, ValueType valueType )
+    default <T> Function<Node, T> fromXmlFunction( ModuleDescriptor module, ValueType valueType )
     {
         return state -> fromXml( module, valueType, state );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Stream<Document> states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Stream<Node> states )
     {
         return states.map( fromXmlFunction( module, valueType ) );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Iterable<Document> states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Iterable<Node> states )
     {
         return fromXmlEach( module, valueType, StreamSupport.stream( states.spliterator(), false ) );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Document... states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, ValueType valueType, Node... states )
     {
         return fromXmlEach( module, valueType, Stream.of( states ) );
     }
 
-    default <T> T fromXml( ModuleDescriptor module, Class<T> type, Document state )
+    default <T> T fromXml( ModuleDescriptor module, Class<T> type, Node state )
     {
         // TODO Remove (ModuleSpi) cast
         ValueType valueType = ( (ModuleSpi) module.instance() ).valueTypeFactory().valueTypeOf( module, type );
         return fromXml( module, valueType, state );
     }
 
-    default <T> Function<Document, T> fromXml( ModuleDescriptor module, Class<T> type )
+    default <T> Function<Node, T> fromXml( ModuleDescriptor module, Class<T> type )
     {
         return state -> fromXml( module, type, state );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Stream<Document> states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Stream<Node> states )
     {
         return states.map( fromXml( module, valueType ) );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Iterable<Document> states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Iterable<Node> states )
     {
         return fromXmlEach( module, valueType, StreamSupport.stream( states.spliterator(), false ) );
     }
 
-    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Document... states )
+    default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Node... states )
     {
         return fromXmlEach( module, valueType, Stream.of( states ) );
     }

@@ -53,7 +53,6 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
 import org.apache.polygene.spi.serialization.XmlDeserializer;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -77,7 +76,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
     private ServiceDescriptor descriptor;
 
     @Override
-    public <T> T fromXml( ModuleDescriptor module, ValueType valueType, Document state )
+    public <T> T fromXml( ModuleDescriptor module, ValueType valueType, Node state )
     {
         Optional<Element> stateElement = JavaxXml.firstChildElementNamed( state, getSettings().getRootTagName() );
         if( stateElement.isPresent() )
