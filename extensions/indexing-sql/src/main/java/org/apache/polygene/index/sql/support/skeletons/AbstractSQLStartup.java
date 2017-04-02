@@ -136,8 +136,6 @@ public abstract class AbstractSQLStartup
         SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo );
     }
 
-    public static final String DEFAULT_SCHEMA_NAME = "polygene";
-
     private static final Class<?> ENTITY_PK_TYPE = Long.class;
     private static final Class<?> ENTITY_TYPE_PK_TYPE = Integer.class;
 
@@ -195,15 +193,8 @@ public abstract class AbstractSQLStartup
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
 
-        String schemaName = this._configuration.get().schemaName().get();
-        if( schemaName == null )
-        {
-            schemaName = DEFAULT_SCHEMA_NAME;
-        }
-        else
-        {
-            this.checkSchemaName( schemaName );
-        }
+        String schemaName = this._configuration.get().schemaName().get().toLowerCase();
+        this.checkSchemaName( schemaName );
         LOGGER.debug( "Will use '{}' as schema name", schemaName );
 
         this._state.schemaName().set( schemaName );

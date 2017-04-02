@@ -104,7 +104,7 @@ public class HazelcastEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         changes.visitMap( new MapChanger()
         {
@@ -127,10 +127,10 @@ public class HazelcastEntityStoreMixin
             }
 
             @Override
-            public Writer updateEntity( EntityReference ref, EntityDescriptor entityDescriptor )
+            public Writer updateEntity( MapChange mapChange )
                 throws IOException
             {
-                return newEntity( ref, entityDescriptor );
+                return newEntity( mapChange.reference(), mapChange.descriptor());
             }
 
             @Override

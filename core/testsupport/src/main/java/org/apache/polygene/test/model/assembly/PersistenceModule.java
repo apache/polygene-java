@@ -21,13 +21,11 @@
 package org.apache.polygene.test.model.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 class PersistenceModule
     implements ModuleAssembler
@@ -37,7 +35,6 @@ class PersistenceModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
         return module;
     }

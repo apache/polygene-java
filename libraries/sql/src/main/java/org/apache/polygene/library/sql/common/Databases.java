@@ -29,6 +29,7 @@ import org.apache.polygene.api.util.Visitor;
 /**
  * Utility methods for performing SQL calls wrapping a given DataSource.
  */
+// TODO Remove me!
 public class Databases
 {
     DataSource source;

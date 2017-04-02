@@ -20,7 +20,6 @@
 
 package org.apache.polygene.test.entity;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.identity.HasIdentity;
@@ -28,12 +27,11 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceReference;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -45,14 +43,11 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractP
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-//        ModuleAssembly storageModule = module.layer().module( "storage" );
-        @SuppressWarnings( "UnnecessaryLocalVariable" )
-        ModuleAssembly storageModule = module; // Disable the more complex set up. The entire value serialization has gotten the deserialization type lookup problem wrong.
+        ModuleAssembly storageModule = module.layer().module( "storage" );
         module.configurations( ConfigSerializationConfig.class );
         module.values( Host.class );
         module.services( MyService.class ).identifiedBy( "configtest" );
         storageModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-        storageModule.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 
     @Test

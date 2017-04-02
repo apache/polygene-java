@@ -32,7 +32,7 @@ public class ConcurrentUoWFileModificationException
 
     ConcurrentUoWFileModificationException( Iterable<UoWFile> concurrentlyModifiedFiles, Usecase usecase )
     {
-        super( Collections.<EntityComposite,HasTypes>emptyMap(), usecase );
+        super( Collections.emptyMap(), usecase );
         this.concurrentlyModifiedFiles = concurrentlyModifiedFiles;
     }
 

@@ -150,12 +150,12 @@ module.exports = generators.Base.extend(
                             type: 'list',
                             name: 'serialization',
                             choices: [
-                                'Jackson',
-                                // 'Johnzon',
-                                'Stax'
+                                'JavaxJson',
+                                'JavaxXml',
+                                'MessagePack'
                             ],
                             message: 'Which serialization system do you want to use?',
-                            default: polygene.serialization ? polygene.serialization : "Jackson"
+                            default: polygene.serialization ? polygene.serialization : "JavaxJson"
                         },
                         {
                             type: 'list',

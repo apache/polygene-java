@@ -58,7 +58,7 @@ public final class ValueModel extends CompositeModel
     {
         super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
-        valueType = new ValueCompositeType( this );
+        valueType = ValueCompositeType.of( this );
     }
 
     @Override

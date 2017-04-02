@@ -25,7 +25,6 @@ import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 public class JCloudsS3Test extends AbstractEntityStoreTest
@@ -39,7 +38,6 @@ public class JCloudsS3Test extends AbstractEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class )
                                                             .declareDefaults();

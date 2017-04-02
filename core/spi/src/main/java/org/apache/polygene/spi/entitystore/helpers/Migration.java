@@ -20,14 +20,14 @@
 
 package org.apache.polygene.spi.entitystore.helpers;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonException;
+import javax.json.JsonObject;
 
 /**
  * State Migration SPI.
  */
 public interface Migration
 {
-    boolean migrate( JSONObject state, String toVersion, StateStore stateStore )
-        throws JSONException;
+    JsonObject migrate( JsonObject state, String toVersion, StateStore stateStore )
+        throws JsonException;
 }

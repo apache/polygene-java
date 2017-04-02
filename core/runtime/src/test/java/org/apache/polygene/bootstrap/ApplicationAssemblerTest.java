@@ -20,6 +20,7 @@
 package org.apache.polygene.bootstrap;
 
 import org.apache.polygene.api.identity.IdentityGenerator;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -77,7 +78,9 @@ public class ApplicationAssemblerTest
                 if( visited instanceof ServiceDescriptor )
                 {
                     ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
-                    if( serviceDescriptor.hasType( UnitOfWorkFactory.class ) || serviceDescriptor.hasType( IdentityGenerator.class ) )
+                    if( serviceDescriptor.hasType( UnitOfWorkFactory.class )
+                        || serviceDescriptor.hasType( IdentityGenerator.class )
+                        || serviceDescriptor.hasType( Serialization.class ) )
                     {
                         return false;
                     }

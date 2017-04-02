@@ -26,14 +26,13 @@ jar { manifest { name = "Apache Polygene™ Library - SQL Liquibase" } }
 
 dependencies {
   api polygene.library( 'sql' )
-
-  implementation libraries.liquibase
-  implementation libraries.slf4j_api
+  api libraries.liquibase
 
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
+  testImplementation libraries.jooq
 
   testRuntimeOnly libraries.derby
   testRuntimeOnly libraries.logback

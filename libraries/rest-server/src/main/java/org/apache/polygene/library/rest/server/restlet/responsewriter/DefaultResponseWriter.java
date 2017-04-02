@@ -20,7 +20,7 @@
 
 package org.apache.polygene.library.rest.server.restlet.responsewriter;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
@@ -33,7 +33,7 @@ import org.restlet.resource.ResourceException;
 public class DefaultResponseWriter
     extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedMediaTypes = Collections.singletonList( MediaType.APPLICATION_JSON );
 
     @Override
     public boolean writeResponse( final Object result, final Response response )

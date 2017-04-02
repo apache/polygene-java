@@ -20,8 +20,7 @@
 package org.apache.polygene.migration.assembly;
 
 import java.util.Arrays;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
@@ -33,17 +32,17 @@ public class EntityMigrationRule
     extends AbstractMigrationRule
 {
     private final String[] entityTypes;
-    private final EntityMigrationOperation operationEntity;
+    private final EntityMigrationOperation entityOperation;
 
     public EntityMigrationRule( String fromVersion,
                                 String toVersion,
                                 String[] entityTypes,
-                                EntityMigrationOperation operationEntity
+                                EntityMigrationOperation entityOperation
     )
     {
         super( fromVersion, toVersion );
         this.entityTypes = entityTypes;
-        this.operationEntity = operationEntity;
+        this.entityOperation = entityOperation;
     }
 
     public String[] entityTypes()
@@ -51,29 +50,29 @@ public class EntityMigrationRule
         return entityTypes;
     }
 
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
         if( appliesTo( state.getString( JSONKeys.TYPE ) ) )
         {
-            return operationEntity.upgrade( state, stateStore, migrator );
+            return entityOperation.upgrade( context, state, stateStore, migrator );
         }
         else
         {
-            return false;
+            context.addFailure( entityOperation.toString() );
+            return state;
         }
     }
 
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
         if( appliesTo( state.getString( JSONKeys.TYPE ) ) )
         {
-            return operationEntity.downgrade( state, stateStore, migrator );
+            return entityOperation.downgrade( context, state, stateStore, migrator );
         }
         else
         {
-            return false;
+            context.addFailure( entityOperation.toString() );
+            return state;
         }
     }
 
@@ -92,6 +91,6 @@ public class EntityMigrationRule
     @Override
     public String toString()
     {
-        return fromVersion + "->" + toVersion + ": on " + Arrays.asList( entityTypes ) + " do " + operationEntity;
+        return fromVersion + "=>" + toVersion + ": on " + Arrays.asList( entityTypes ) + " do " + entityOperation;
     }
 }

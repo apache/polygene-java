@@ -19,6 +19,10 @@
 apply plugin: 'polygene-internal'
 apply plugin: 'polygene-internal-docker'
 
+description = "Apache Polygene™ Internal Test Support"
+
+jar { manifest { name = "Apache Polygene™ Internals - Test Support" } }
+
 dependencies {
   api polygene.core.testsupport
 

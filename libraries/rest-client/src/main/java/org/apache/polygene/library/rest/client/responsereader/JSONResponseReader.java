@@ -20,18 +20,19 @@
 
 package org.apache.polygene.library.rest.client.responsereader;
 
-import java.util.Iterator;
+import java.io.IOException;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.service.qualifier.Tagged;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDeserializer;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.library.rest.client.spi.ResponseReader;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -41,47 +42,50 @@ import org.restlet.resource.ResourceException;
  * JAVADOC
  */
 public class JSONResponseReader
-   implements ResponseReader
+    implements ResponseReader
 {
-   @Structure
-   private ModuleDescriptor module;
+    @Structure
+    private ModuleDescriptor module;
 
-   @Service
-   @Tagged( ValueSerialization.Formats.JSON )
-   private ValueDeserializer valueDeserializer;
+    @Service
+    private JsonDeserializer jsonDeserializer;
 
     @Override
-   public Object readResponse( Response response, Class<?> resultType )
-   {
-      if (response.getEntity().getMediaType().equals( MediaType.APPLICATION_JSON))
-      {
-         if (ValueComposite.class.isAssignableFrom( resultType ))
-         {
-            String jsonValue = response.getEntityAsText();
-            ValueCompositeType valueType = module.valueDescriptor( resultType.getName() ).valueType();
-            return valueDeserializer.deserialize( module, valueType, jsonValue );
-         }
-         else if (resultType.equals(Form.class))
-         {
-            try
+    public Object readResponse( Response response, Class<?> resultType )
+    {
+        if( response.getEntity().getMediaType().equals( MediaType.APPLICATION_JSON ) )
+        {
+            if( ValueComposite.class.isAssignableFrom( resultType ) )
             {
-               String jsonValue = response.getEntityAsText();
-               JSONObject jsonObject = new JSONObject(jsonValue);
-               Iterator<?> keys = jsonObject.keys();
-               Form form = new Form();
-               while (keys.hasNext())
-               {
-                  Object key = keys.next();
-                  form.set(key.toString(), jsonObject.get(key.toString()).toString());
-               }
-               return form;
-            } catch (JSONException e)
-            {
-               throw new ResourceException(e);
+                String jsonValue = response.getEntityAsText();
+                ValueCompositeType valueType = module.valueDescriptor( resultType.getName() ).valueType();
+                return jsonDeserializer.deserialize( module, valueType, jsonValue );
             }
-         }
-      }
+            else if( resultType.equals( Form.class ) )
+            {
+                try
+                {
+                    JsonObject jsonObject = Json.createReader( response.getEntity().getReader() ).readObject();
+                    Form form = new Form();
+                    jsonObject.entrySet().forEach(
+                        entry ->
+                        {
 
-      return null;
-   }
+                            String key = entry.getKey();
+                            JsonValue value = entry.getValue();
+                            String valueString = value.getValueType() == JsonValue.ValueType.STRING
+                                                 ? ( (JsonString) value ).getString()
+                                                 : value.toString();
+                            form.set( key, valueString );
+                        } );
+                    return form;
+                }
+                catch( IOException | JsonException e )
+                {
+                    throw new ResourceException( e );
+                }
+            }
+        }
+        return null;
+    }
 }

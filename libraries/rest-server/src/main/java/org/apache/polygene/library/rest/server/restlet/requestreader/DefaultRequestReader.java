@@ -41,14 +41,14 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.service.qualifier.Tagged;
+import org.apache.polygene.api.serialization.Deserializer;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDeserializer;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializationException;
 import org.apache.polygene.library.rest.server.spi.RequestReader;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -86,8 +86,8 @@ public class DefaultRequestReader
     private ValueBuilderFactory vbf;
 
     @Service
-    @Tagged( ValueSerialization.Formats.JSON )
-    private ValueDeserializer valueDeserializer;
+    @Tagged( Serialization.Format.JSON )
+    private Deserializer deserializer;
 
     @Override
     @SuppressWarnings( "unchecked" )
@@ -303,9 +303,9 @@ public class DefaultRequestReader
                     {
                         try
                         {
-                            return valueDeserializer.deserialize( module, propertyDescriptor.valueType(), value );
+                            return deserializer.deserialize( module, propertyDescriptor.valueType(), value );
                         }
-                        catch( ValueSerializationException e )
+                        catch( SerializationException e )
                         {
                             throw new IllegalArgumentException( "Query parameter has invalid JSON format", e );
                         }

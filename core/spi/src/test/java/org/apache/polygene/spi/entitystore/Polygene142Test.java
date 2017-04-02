@@ -23,10 +23,10 @@ import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.qualifier.Tagged;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -43,20 +43,13 @@ public class Polygene142Test extends AbstractPolygeneTest
     }
 
     @Service
-    @Tagged( ValueSerialization.Formats.JSON )
-    private ValueSerialization serialization;
+    @Tagged( Serialization.Format.JSON )
+    private Serialization serialization;
 
     @Test
     public void polygene142RegressionTest()
         throws Exception
     {
-        if( getClass().getName().equals(
-            "org.apache.polygene.valueserialization.stax.StaxPlainValueSerializationTest" ) )
-        {
-            // This test is disabled, as this test expect a JSON capable serializer as it uses
-            // the JSONMapEntityStoreMixin in MemoryEntityStore.
-            return;
-        }
         Regression142Type value;
         {
             ValueBuilder<Regression142Type> builder = valueBuilderFactory.newValueBuilder( Regression142Type.class );
@@ -85,7 +78,7 @@ public class Polygene142Test extends AbstractPolygeneTest
                 }
             }
             {
-                try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ) )
+                try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "read" ) ) )
                 {
                     value = uow.get( Regression142Type.class, valueId );
                     System.out.println( value.price().get() );

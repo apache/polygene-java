@@ -20,8 +20,6 @@
 package org.apache.polygene.index.rdf;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.query.Query;
@@ -44,6 +42,12 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_1;
+import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_2;
+import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_3;
+import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_4;
+import static org.apache.polygene.index.rdf.ContainsAllTest.setOf;
 
 public class ContainsTest extends AbstractPolygeneTest
 {
@@ -76,10 +80,8 @@ public class ContainsTest extends AbstractPolygeneTest
     public void simpleContainsSuccessTest() throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
-            new HashSet<>( Arrays.asList(
-                ContainsAllTest.TEST_STRING_1, ContainsAllTest.TEST_STRING_2, ContainsAllTest.TEST_STRING_3
-            ) ),
-            ContainsAllTest.TEST_STRING_3
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            TEST_STRING_3
         );
 
         Assert.assertTrue( "The entity must have been found", result != null );
@@ -89,22 +91,18 @@ public class ContainsTest extends AbstractPolygeneTest
     public void simpleContainsSuccessFailTest() throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
-            new HashSet<>( Arrays.asList(
-                ContainsAllTest.TEST_STRING_1, ContainsAllTest.TEST_STRING_2, ContainsAllTest.TEST_STRING_3
-            ) ),
-            ContainsAllTest.TEST_STRING_4
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            TEST_STRING_4
         );
 
         Assert.assertTrue( "The entity must not have been found", result == null );
     }
 
     @Test( expected = NullPointerException.class )
-    public void simplecontainsNullTest() throws Exception
+    public void simpleContainsNullTest() throws Exception
     {
         this.performContainsStringTest(
-            new HashSet<>( Arrays.asList(
-                ContainsAllTest.TEST_STRING_1, ContainsAllTest.TEST_STRING_2, ContainsAllTest.TEST_STRING_3
-            ) ),
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
             null
         );
     }
@@ -113,10 +111,8 @@ public class ContainsTest extends AbstractPolygeneTest
     public void simpleContainsStringValueSuccessTest() throws Exception
     {
         ExampleEntity result = this.performContainsStringValueTest(
-            new HashSet<>( Arrays.asList(
-                ContainsAllTest.TEST_STRING_1, ContainsAllTest.TEST_STRING_2, ContainsAllTest.TEST_STRING_3
-            ) ),
-            ContainsAllTest.TEST_STRING_3
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            TEST_STRING_3
         );
 
         Assert.assertTrue( "The entity must have been found", result != null );
@@ -126,10 +122,8 @@ public class ContainsTest extends AbstractPolygeneTest
     public void simpleContainsStringValueFailTest() throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
-            new HashSet<>( Arrays.asList(
-                ContainsAllTest.TEST_STRING_1, ContainsAllTest.TEST_STRING_2, ContainsAllTest.TEST_STRING_3
-            ) ),
-            ContainsAllTest.TEST_STRING_4
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            TEST_STRING_4
         );
 
         Assert.assertTrue( "The entity must not have been found", result == null );
@@ -139,11 +133,8 @@ public class ContainsTest extends AbstractPolygeneTest
     {
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
 
-        builder = builder.where( QueryExpressions.contains(
-            QueryExpressions.templateFor( ExampleEntity.class ).strings(),
-            string
-                                 )
-        );
+        builder = builder.where(
+            QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).strings(), string ) );
         return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
     }
 
@@ -161,11 +152,8 @@ public class ContainsTest extends AbstractPolygeneTest
     private Query<ExampleEntity> createComplexQuery( ExampleValue value )
     {
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
-        builder = builder.where( QueryExpressions.contains(
-            QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
-            value
-                                 )
-        );
+        builder = builder.where(
+            QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).complexValue(), value ) );
 
         return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder );
     }

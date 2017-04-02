@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
-import org.junit.Test;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
@@ -32,6 +30,7 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
@@ -78,7 +77,6 @@ public class NestedValueBuilderTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class );
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
     }
 
@@ -87,8 +85,8 @@ public class NestedValueBuilderTest
     {
         ValueBuilder<InnerValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerValue.class );
         InnerValue inner = innerBuilder.prototype();
-        inner.listProp().set( new ArrayList<String>() );
-        inner.mapProp().set( new HashMap<String, String>() );
+        inner.listProp().set( new ArrayList<>() );
+        inner.mapProp().set( new HashMap<>() );
         inner = innerBuilder.newInstance();
         // If we reach this point, value creation went well
         try
@@ -116,12 +114,12 @@ public class NestedValueBuilderTest
     {
         ValueBuilder<InnerValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerValue.class );
         InnerValue innerPrototype = innerBuilder.prototype();
-        innerPrototype.listProp().set( new ArrayList<String>() );
-        innerPrototype.mapProp().set( new HashMap<String, String>() );
+        innerPrototype.listProp().set( new ArrayList<>() );
+        innerPrototype.mapProp().set( new HashMap<>() );
         InnerValue innerInstance = innerBuilder.newInstance();
         ValueBuilder<OuterValue> outerBuilder = valueBuilderFactory.newValueBuilder( OuterValue.class );
         OuterValue outerPrototype = outerBuilder.prototype();
-        List<InnerValue> inners = new ArrayList<InnerValue>();
+        List<InnerValue> inners = new ArrayList<>();
         inners.add( innerInstance );
         outerPrototype.innerListProp().set( inners );
         OuterValue outerInstance = outerBuilder.newInstance();
@@ -171,7 +169,7 @@ public class NestedValueBuilderTest
         InnerDefaultedValue innerInstance = innerBuilder.newInstance();
         ValueBuilder<OuterDefaultedValue> outerBuilder = valueBuilderFactory.newValueBuilder( OuterDefaultedValue.class );
         OuterDefaultedValue outerPrototype = outerBuilder.prototype();
-        List<InnerDefaultedValue> inners = new ArrayList<InnerDefaultedValue>();
+        List<InnerDefaultedValue> inners = new ArrayList<>();
         inners.add( innerInstance );
         outerPrototype.innerListPropDefault().set( inners );
         OuterDefaultedValue outerInstance = outerBuilder.newInstance();

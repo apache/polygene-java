@@ -19,13 +19,6 @@
  */
 package org.apache.polygene.library.rest.client;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.test.util.FreePortFinder;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.property.Property;
@@ -53,7 +46,13 @@ import org.apache.polygene.library.rest.server.api.ContextRestlet;
 import org.apache.polygene.library.rest.server.assembler.RestServerAssembler;
 import org.apache.polygene.library.rest.server.restlet.NullCommandResult;
 import org.apache.polygene.library.rest.server.spi.CommandResult;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.util.FreePortFinder;
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -89,7 +88,6 @@ public class ContinuousIntegrationTest
         throws AssemblyException
     {
         // General setup of client and server
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
         new RestServerAssembler().assemble( module );
@@ -434,12 +432,12 @@ public class ContinuousIntegrationTest
         public BuildResult buildStatus( BuildSpec build )
         {
             String buildNo = build.buildNo().get(); // or lookup by tag
-            return module.newValueFromSerializedState( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
+            return module.newValueFromSerializedState( BuildResult.class, "{ \"buildNo\":\"" + buildNo + "\", \"testsPassed\": 37, \"testsFailed\": 1}" );
         }
 
         public ServerStatus serverStatus()
         {
-            return module.newValueFromSerializedState( ServerStatus.class, "{'currentStatus':'Idle', 'availableAgents': 2  }" );
+            return module.newValueFromSerializedState( ServerStatus.class, "{\"currentStatus\":\"Idle\", \"availableAgents\": 2  }" );
         }
 
         public void tagBuild( TagBuildCommand command )

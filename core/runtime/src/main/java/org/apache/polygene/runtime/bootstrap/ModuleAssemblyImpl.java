@@ -40,10 +40,11 @@ import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.service.DuplicateServiceIdentityException;
 import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.api.type.HasEqualOrAssignableFromType;
 import org.apache.polygene.api.type.HasTypes;
-import org.apache.polygene.api.type.MatchTypeSpecification;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.Assembler;
@@ -68,6 +69,7 @@ import org.apache.polygene.bootstrap.TransientDeclaration;
 import org.apache.polygene.bootstrap.ValueAssembly;
 import org.apache.polygene.bootstrap.ValueDeclaration;
 import org.apache.polygene.bootstrap.identity.DefaultIdentityGeneratorAssembler;
+import org.apache.polygene.bootstrap.serialization.DefaultSerializationAssembler;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.runtime.activation.ActivatorsModel;
 import org.apache.polygene.runtime.composite.TransientModel;
@@ -119,8 +121,9 @@ final class ModuleAssemblyImpl
     static
     {
         defaultAssemblers = new HashMap<>();
-        defaultAssemblers.put(UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler());
-        defaultAssemblers.put(IdentityGenerator.class, new DefaultIdentityGeneratorAssembler());
+        defaultAssemblers.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
+        defaultAssemblers.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
+        defaultAssemblers.put( Serialization.class, new DefaultSerializationAssembler() );
     }
 
     ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)
@@ -307,27 +310,27 @@ final class ModuleAssemblyImpl
     }
 
     @Override
-    public ConfigurationDeclaration configurations(Predicate<HasTypes> specification)
+    public ConfigurationDeclaration configurations( Predicate<HasTypes> specification )
     {
-        Predicate<HasTypes> isConfigurationComposite = new MatchTypeSpecification(HasIdentity.class);
-        specification = specification.and(isConfigurationComposite);
-        List<EntityAssemblyImpl> entityAssmblyList = new ArrayList<>();
-        for (EntityAssemblyImpl entityAssembly : entityAssemblies.values())
+        Predicate<HasTypes> isConfigurationComposite = new HasEqualOrAssignableFromType<>( HasIdentity.class );
+        specification = specification.and( isConfigurationComposite );
+        List<EntityAssemblyImpl> entityAssemblyList = new ArrayList<>();
+        for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
         {
-            if (specification.test(entityAssembly))
+            if( specification.test( entityAssembly ) )
             {
-                entityAssmblyList.add(entityAssembly);
+                entityAssemblyList.add( entityAssembly );
             }
         }
         List<ValueAssemblyImpl> valueAssemblyList = new ArrayList<>();
-        for (ValueAssemblyImpl transientAssembly : valueAssemblies.values())
+        for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
         {
-            if (specification.test(transientAssembly))
+            if( specification.test( transientAssembly ) )
             {
-                valueAssemblyList.add(transientAssembly);
+                valueAssemblyList.add( transientAssembly );
             }
         }
-        return new ConfigurationDeclarationImpl(entityAssmblyList, valueAssemblyList);
+        return new ConfigurationDeclarationImpl( entityAssemblyList, valueAssemblyList );
     }
 
     @Override

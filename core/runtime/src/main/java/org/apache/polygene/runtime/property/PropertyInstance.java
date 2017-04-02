@@ -20,6 +20,7 @@
 package org.apache.polygene.runtime.property;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -138,6 +139,50 @@ public class PropertyInstance<T>
         if( value == null )
         {
             return that.get() == null;
+        }
+        Class<?> valueClass = value.getClass();
+        // Handling arrays
+        if( valueClass.isArray() )
+        {
+            Object thatValue = that.get();
+            if( !thatValue.getClass().isArray() )
+            {
+                return false;
+            }
+            Class<?> componentType = valueClass.getComponentType();
+            if( boolean.class.equals( componentType ) )
+            {
+                return Arrays.equals( (boolean[]) value, (boolean[]) thatValue );
+            }
+            if( char.class.equals( componentType ) )
+            {
+                return Arrays.equals( (char[]) value, (char[]) thatValue );
+            }
+            if( short.class.equals( componentType ) )
+            {
+                return Arrays.equals( (short[]) value, (short[]) thatValue );
+            }
+            if( int.class.equals( componentType ) )
+            {
+                return Arrays.equals( (int[]) value, (int[]) thatValue );
+            }
+            if( byte.class.equals( componentType ) )
+            {
+                return Arrays.equals( (byte[]) value, (byte[]) thatValue );
+            }
+            if( long.class.equals( componentType ) )
+            {
+                return Arrays.equals( (long[]) value, (long[]) thatValue );
+            }
+            if( float.class.equals( componentType ) )
+            {
+                return Arrays.equals( (float[]) value, (float[]) thatValue );
+            }
+            if( double.class.equals( componentType ) )
+            {
+                return Arrays.equals( (double[]) value, (double[]) thatValue );
+            }
+            return Arrays.deepEquals( (Object[]) value, (Object[]) thatValue );
         }
         return value.equals( that.get() );
     }

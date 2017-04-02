@@ -20,10 +20,10 @@
 
 package org.apache.polygene.migration.operation;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
 
 /**
@@ -43,17 +43,15 @@ public class RemoveAssociation
     }
 
     @Override
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.removeAssociation( state, association );
+        return migrator.removeAssociation( context, state, association );
     }
 
     @Override
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.addAssociation( state, association, defaultValue );
+        return migrator.addAssociation( context, state, association, defaultValue );
     }
 
     @Override

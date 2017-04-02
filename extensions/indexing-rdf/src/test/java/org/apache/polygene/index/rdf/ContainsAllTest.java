@@ -131,12 +131,12 @@ public class ContainsAllTest
 
     private static void populateStrings( ExampleEntity proto, String... strings )
     {
-        proto.strings().set( new HashSet<String>( Arrays.asList( strings ) ) );
+        proto.strings().set( setOf( strings ) );
     }
 
     private static void populateComplexValue( ExampleEntity proto, ValueBuilderFactory vbf, String... valueStrings )
     {
-        Set<ExampleValue> values = new HashSet<ExampleValue>();
+        Set<ExampleValue> values = new HashSet<>();
         for( String value : valueStrings )
         {
             ValueBuilder<ExampleValue2> vBuilder = vbf.newValueBuilder( ExampleValue2.class );
@@ -154,16 +154,9 @@ public class ContainsAllTest
     public void simpleContainsAllQuerySuccessTest()
         throws Exception
     {
-
         ExampleEntity result = this.performContainsAllStringsTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            setOf( TEST_STRING_1, TEST_STRING_2 )
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -174,14 +167,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringsTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 )
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -192,14 +179,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringsTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3, TEST_STRING_4
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3, TEST_STRING_4 )
         );
 
         Assert.assertTrue( "The entity must not have been found.", result == null );
@@ -210,14 +191,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringsTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, null, TEST_STRING_2
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
+            setOf( TEST_STRING_1, null, TEST_STRING_2 )
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -228,11 +203,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringsTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            ),
-            new HashSet<String>()
+            setOf( TEST_STRING_1, TEST_STRING_2 ),
+            setOf()
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -243,14 +215,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringValueTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2 ),
+            setOf( TEST_STRING_1 )
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -261,14 +227,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringValueTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2 ),
+            setOf( TEST_STRING_1, TEST_STRING_2 )
         );
 
         Assert.assertTrue( "The entity must have been found", result != null );
@@ -279,14 +239,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringValueTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            ),
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2, TEST_STRING_3
-            )
-            )
+            setOf( TEST_STRING_1, TEST_STRING_2 ),
+            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 )
         );
 
         Assert.assertTrue( "The entity must not have been found.", result == null );
@@ -297,11 +251,8 @@ public class ContainsAllTest
         throws Exception
     {
         ExampleEntity result = this.performContainsAllStringValueTest(
-            new HashSet<String>( Arrays.asList(
-                TEST_STRING_1, TEST_STRING_2
-            )
-            ),
-            new HashSet<String>()
+            setOf( TEST_STRING_1, TEST_STRING_2 ),
+            setOf()
         );
 
         Assert.assertTrue( "The entity must have been found.", result != null );
@@ -312,8 +263,8 @@ public class ContainsAllTest
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
 
         builder = builder.where( QueryExpressions.containsAll(
-                QueryExpressions.templateFor( ExampleEntity.class ).strings(),
-                Arrays.asList( strings ) ) );
+            QueryExpressions.templateFor( ExampleEntity.class ).strings(),
+            Arrays.asList( strings ) ) );
         return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder ).find();
     }
 
@@ -337,9 +288,9 @@ public class ContainsAllTest
     {
         QueryBuilder<ExampleEntity> builder = this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class );
         builder = builder.where( QueryExpressions.containsAll(
-                QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
-                valuez
-        )
+            QueryExpressions.templateFor( ExampleEntity.class ).complexValue(),
+            valuez
+                                 )
         );
 
         return this.unitOfWorkFactory.currentUnitOfWork().newQuery( builder );
@@ -349,14 +300,14 @@ public class ContainsAllTest
         throws Exception
     {
         UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
-        String[] entityStringsArray = new String[entityStrings.size()];
+        String[] entityStringsArray = new String[ entityStrings.size() ];
         createEntityWithStrings( creatingUOW, this.valueBuilderFactory, entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
         UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
         try
         {
-            String[] queryableStringsArray = new String[queryableStrings.size()];
+            String[] queryableStringsArray = new String[ queryableStrings.size() ];
             ExampleEntity entity = this.findEntity( queryableStrings.toArray( queryableStringsArray ) );
             return entity;
         }
@@ -370,20 +321,27 @@ public class ContainsAllTest
         throws Exception
     {
         UnitOfWork creatingUOW = this.unitOfWorkFactory.newUnitOfWork();
-        String[] entityStringsArray = new String[entityStrings.size()];
-        createEntityWithComplexValues( creatingUOW, this.valueBuilderFactory, entityStrings.toArray( entityStringsArray ) );
+        String[] entityStringsArray = new String[ entityStrings.size() ];
+        createEntityWithComplexValues( creatingUOW, this.valueBuilderFactory,
+                                       entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
         UnitOfWork queryingUOW = this.unitOfWorkFactory.newUnitOfWork();
         try
         {
-            String[] queryableStringsArray = new String[queryableStrings.size()];
-            ExampleEntity entity = this.findEntityBasedOnValueStrings( queryableStrings.toArray( queryableStringsArray ) );
+            String[] queryableStringsArray = new String[ queryableStrings.size() ];
+            ExampleEntity entity = this.findEntityBasedOnValueStrings(
+                queryableStrings.toArray( queryableStringsArray ) );
             return entity;
         }
         finally
         {
             queryingUOW.discard();
         }
+    }
+
+    static <T> Set<T> setOf( T... elements )
+    {
+        return new HashSet<T>( Arrays.asList( elements ) );
     }
 }

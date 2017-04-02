@@ -28,8 +28,8 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.reindexer.ReindexerConfiguration;
 import org.apache.polygene.index.reindexer.ReindexerService;
+import org.apache.polygene.index.sql.SQLIndexingEngineConfiguration;
 import org.apache.polygene.index.sql.support.common.ReindexingStrategy;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
@@ -91,7 +91,7 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
 
         if( hasConfig() )
         {
-            configModule().entities( SQLConfiguration.class,
+            configModule().entities( SQLIndexingEngineConfiguration.class,
                                      ReindexerConfiguration.class ).
                               visibleIn( configVisibility() );
         }

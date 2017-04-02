@@ -24,9 +24,9 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.valueserialization.<%- polygene.serialization.toLowerCase() %>.assembly.<%- polygene.serialization %>ValueSerializationAssembler;
+import org.apache.polygene.serialization.<%- polygene.serialization.toLowerCase() %>.assembly.<%- polygene.serialization %>SerializationAssembler;
 
-public class <%- polygene.serialization %>ValueSerializationModule
+public class <%- polygene.serialization %>SerializationModule
     implements ModuleAssembler
 {
     public static final String NAME = "<%- polygene.serialization %> Serialization Module";
@@ -35,7 +35,7 @@ public class <%- polygene.serialization %>ValueSerializationModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.serialization %>ValueSerializationAssembler()
+        new <%- polygene.serialization %>SerializationAssembler()
             .visibleIn( Visibility.application )
             .assemble( module );
         return module;

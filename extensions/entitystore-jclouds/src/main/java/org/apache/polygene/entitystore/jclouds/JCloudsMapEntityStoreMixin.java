@@ -188,7 +188,7 @@ public class JCloudsMapEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         final BlobStore blobStore = storeContext.getBlobStore();
         changes.visitMap(
@@ -216,12 +216,13 @@ public class JCloudsMapEntityStoreMixin
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer updateEntity( MapChange mapChange )
                     throws IOException
                 {
-                    if( !blobStore.blobExists( container, ref.identity().toString() ) )
+                    String identity = mapChange.reference().identity().toString();
+                    if( !blobStore.blobExists( container, identity ) )
                     {
-                        throw new EntityNotFoundException( ref );
+                        throw new EntityNotFoundException( mapChange.reference() );
                     }
                     return new StringWriter()
                     {
@@ -231,7 +232,7 @@ public class JCloudsMapEntityStoreMixin
                         {
                             super.close();
                             ByteSource payload = ByteSource.wrap( toString().getBytes( UTF_8 ) );
-                            Blob blob = blobStore.blobBuilder( ref.identity().toString() )
+                            Blob blob = blobStore.blobBuilder( identity )
                                                  .payload( payload )
                                                  .contentLength( payload.size() )
                                                  .build();

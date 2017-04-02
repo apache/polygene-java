@@ -21,8 +21,8 @@
 package org.apache.polygene.migration.operation;
 
 import java.util.Arrays;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
@@ -43,17 +43,15 @@ public class AddManyAssociation
     }
 
     @Override
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.addManyAssociation( state, association, defaultReferences );
+        return migrator.addManyAssociation( context, state, association, defaultReferences );
     }
 
     @Override
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.removeManyAssociation( state, association );
+        return migrator.removeManyAssociation( context, state, association );
     }
 
     @Override

@@ -154,7 +154,7 @@ public class FileEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         try
         {
@@ -183,7 +183,7 @@ public class FileEntityStoreMixin
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
+                public Writer updateEntity( MapChange mapChange )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -194,7 +194,7 @@ public class FileEntityStoreMixin
                         {
                             super.close();
                             String state = this.toString();
-                            File dataFile = getDataFile( ref );
+                            File dataFile = getDataFile( mapChange.reference() );
                             store( dataFile, state );
                         }
                     };

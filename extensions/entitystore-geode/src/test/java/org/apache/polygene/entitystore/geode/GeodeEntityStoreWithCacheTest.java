@@ -25,7 +25,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.geode.assembly.GeodeEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class GeodeEntityStoreWithCacheTest
         extends AbstractEntityStoreWithCacheTest
@@ -37,7 +36,6 @@ public class GeodeEntityStoreWithCacheTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new GeodeEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 }

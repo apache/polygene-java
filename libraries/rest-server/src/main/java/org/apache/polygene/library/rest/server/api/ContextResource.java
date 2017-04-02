@@ -428,7 +428,7 @@ public class ContextResource
 
                 if( index != null && index instanceof ValueComposite )
                 {
-                    builder.prototype().index().set( (ValueComposite) index );
+                    builder.prototype().index().set( index );
                 }
             }
         }

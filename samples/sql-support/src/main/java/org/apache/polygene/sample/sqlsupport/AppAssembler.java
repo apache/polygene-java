@@ -20,7 +20,6 @@
 package org.apache.polygene.sample.sqlsupport;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
@@ -33,7 +32,6 @@ import org.apache.polygene.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSources;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * Assemble the Application.
@@ -56,8 +54,6 @@ public class AppAssembler
         LayerAssembly configLayer = appAss.layer( "config" );
         ModuleAssembly configModule = configLayer.module( "config" );
         {
-            configModule.services( OrgJsonValueSerializationService.class ).
-                taggedWith( ValueSerialization.Formats.JSON );
             configModule.services( MemoryEntityStoreService.class ).
                 visibleIn( Visibility.module );
             // Use a PreferenceEntityStore instead if you want the configuration to be persistent
@@ -68,9 +64,6 @@ public class AppAssembler
         LayerAssembly infraLayer = appAss.layer( "infra" );
         ModuleAssembly persistenceModule = infraLayer.module( "persistence" );
         {
-            persistenceModule.services( OrgJsonValueSerializationService.class ).
-                taggedWith( ValueSerialization.Formats.JSON );
-
             // SQL DataSource Service
             String dataSourceServiceIdentity = "postgresql-datasource-service";
             new DBCPDataSourceServiceAssembler().

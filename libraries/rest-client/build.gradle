@@ -33,7 +33,6 @@ dependencies {
 
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'rest-server' )
-  testImplementation polygene.extension( 'valueserialization-orgjson' )
 
   testRuntimeOnly libraries.logback
 }

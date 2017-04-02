@@ -21,15 +21,19 @@
 package org.apache.polygene.index.solr.internal;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.schema.SchemaField;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.stream.JsonParser;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.index.solr.EmbeddedSolrService;
@@ -37,9 +41,11 @@ import org.apache.polygene.index.solr.SolrQueryService;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.schema.SchemaField;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -151,7 +157,7 @@ public abstract class SolrEntityIndexerMixin
     }
 
     private SolrInputDocument indexEntityState( final EntityState entityState )
-        throws IOException, SolrServerException, JSONException
+        throws IOException, SolrServerException
     {
         Graph graph = new GraphImpl();
         stateSerializer.serialize( entityState, false, graph );
@@ -171,15 +177,24 @@ public abstract class SolrEntityIndexerMixin
                     String value = statement.getObject().stringValue();
                     if( field.getType().getTypeName().equals( "json" ) )
                     {
-                        if( value.charAt( 0 ) == '[' )
+                        try( JsonParser parser = Json.createParser( new StringReader( value ) ) )
                         {
-                            JSONArray array = new JSONArray( value );
-                            indexJson( input, array );
-                        }
-                        else if( value.charAt( 0 ) == '{' )
-                        {
-                            JSONObject object = new JSONObject( value );
-                            indexJson( input, object );
+                            JsonParser.Event event = parser.next();
+                            switch( event )
+                            {
+                                case START_ARRAY:
+                                    try( JsonReader reader = Json.createReader( new StringReader( value ) ) )
+                                    {
+                                        indexJson( input, reader.readArray() );
+                                    }
+                                    break;
+                                case START_OBJECT:
+                                    try( JsonReader reader = Json.createReader( new StringReader( value ) ) )
+                                    {
+                                        indexJson( input, reader.readObject() );
+                                    }
+                                    break;
+                            }
                         }
                     }
                     else
@@ -215,34 +230,54 @@ public abstract class SolrEntityIndexerMixin
     }
 
     private void indexJson( SolrInputDocument input, Object object )
-        throws JSONException
     {
-        if( object instanceof JSONArray )
+        if( object instanceof JsonArray )
         {
-            JSONArray array = (JSONArray) object;
-            for( int i = 0; i < array.length(); i++ )
+            JsonArray array = (JsonArray) object;
+            for( int i = 0; i < array.size(); i++ )
             {
                 indexJson( input, array.get( i ) );
             }
         }
         else
         {
-            JSONObject jsonObject = (JSONObject) object;
-            Iterator keys = jsonObject.keys();
-            while( keys.hasNext() )
+            JsonObject jsonObject = (JsonObject) object;
+            for( String name : jsonObject.keySet() )
             {
-                Object name = keys.next();
-                Object value = jsonObject.get( name.toString() );
-                if( value instanceof JSONObject || value instanceof JSONArray )
+                JsonValue jsonValue = jsonObject.get( name );
+                if( jsonValue.getValueType() == JsonValue.ValueType.OBJECT
+                    || jsonValue.getValueType() == JsonValue.ValueType.ARRAY )
                 {
-                    indexJson( input, value );
+                    indexJson( input, jsonValue );
                 }
                 else
                 {
-                    SchemaField field = indexedFields.get( name.toString() );
+                    SchemaField field = indexedFields.get( name );
                     if( field != null )
                     {
-                        input.addField( name.toString(), jsonObject.get( name.toString() ) );
+                        Object value;
+                        switch( jsonValue.getValueType() )
+                        {
+                            case NULL:
+                                value = null;
+                                break;
+                            case STRING:
+                                value = ( (JsonString) jsonValue ).getString();
+                                break;
+                            case NUMBER:
+                                JsonNumber jsonNumber = (JsonNumber) jsonValue;
+                                value = jsonNumber.isIntegral() ? jsonNumber.longValue() : jsonNumber.doubleValue();
+                                break;
+                            case TRUE:
+                                value = Boolean.TRUE;
+                                break;
+                            case FALSE:
+                                value = Boolean.FALSE;
+                                break;
+                            default:
+                                value = jsonValue.toString();
+                        }
+                        input.addField( name, value );
                     }
                 }
             }

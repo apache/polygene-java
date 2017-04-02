@@ -30,7 +30,6 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
@@ -38,7 +37,6 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 public class VisibilityInUnitOfWorkTest
@@ -155,9 +153,6 @@ public class VisibilityInUnitOfWorkTest
             yourModule.services( YourService.class ).visibleIn( Visibility.layer );
             new DefaultUnitOfWorkAssembler().assemble( yourModule );
             infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-            infraModule.services( OrgJsonValueSerializationService.class )
-                .visibleIn( Visibility.layer )
-                .taggedWith( ValueSerialization.Formats.JSON );
             new DefaultUnitOfWorkAssembler().assemble( infraModule );
             return appAssembly;
         } );

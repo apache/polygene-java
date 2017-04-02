@@ -27,7 +27,6 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -47,7 +46,6 @@ public class FileEntityStoreWithCacheTest
             .assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new FileEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 }

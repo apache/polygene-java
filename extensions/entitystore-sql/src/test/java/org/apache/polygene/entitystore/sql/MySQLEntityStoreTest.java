@@ -29,15 +29,15 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
-import org.apache.polygene.entitystore.sql.internal.SQLs;
-import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
+
+import static org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
 public class MySQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -65,35 +65,35 @@ public class MySQLEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         // DataSourceService
-        new DBCPDataSourceServiceAssembler().
-            identifiedBy( "mysql-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "mysql-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
 
         // DataSource
-        new DataSourceAssembler().
-            withDataSourceServiceIdentity( "mysql-datasource-service" ).
-            identifiedBy( "mysql-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( module );
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "mysql-datasource-service" )
+            .identifiedBy( "mysql-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
         // SQL EntityStore
-        new MySQLEntityStoreAssembler().
-            visibleIn( Visibility.application ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new MySQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         // END SNIPPET: assembly
         String mysqlHost = DOCKER.getDockerHost();
         int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
         config.forMixin( DataSourceConfiguration.class ).declareDefaults()
               .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
-                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC" );
+                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
+                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
@@ -107,10 +107,14 @@ public class MySQLEntityStoreTest
         try
         {
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
+            SQLMapEntityStoreConfiguration configuration = uow.get( SQLMapEntityStoreConfiguration.class,
+                                                                    DEFAULT_ENTITYSTORE_IDENTITY );
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "TRUNCATE %s", SQLs.TABLE_NAME ) );
+                stmt.execute( String.format( "TRUNCATE %s.%s",
+                                             configuration.schemaName().get(),
+                                             configuration.entityTableName().get() ) );
                 connection.commit();
             }
         }

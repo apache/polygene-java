@@ -20,14 +20,12 @@
 
 package org.apache.polygene.test.performance.entitystore.memory;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.StateChangeListener;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.apache.polygene.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
 
@@ -44,7 +42,6 @@ public class MemoryEntityStoreTest
         super.assemble( module );
 
         module.services( MemoryEntityStoreService.class );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.importedServices( StatePrinter.class ).importedBy( NEW_OBJECT );
         module.objects( StatePrinter.class );
     }

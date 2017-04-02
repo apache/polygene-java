@@ -20,8 +20,8 @@
 
 package org.apache.polygene.migration.operation;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
@@ -42,17 +42,15 @@ public class AddProperty
     }
 
     @Override
-    public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.addProperty( state, property, defaultValue );
+        return migrator.addProperty( context, state, property, defaultValue );
     }
 
     @Override
-    public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException
+    public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
     {
-        return migrator.removeProperty( state, property );
+        return migrator.removeProperty( context, state, property );
     }
 
     @Override

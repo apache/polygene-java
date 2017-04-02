@@ -21,28 +21,22 @@
 package org.apache.polygene.entitystore.jclouds;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JCloudsTransientTest
         extends AbstractEntityStoreTest
 {
-
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
     }
-
 }

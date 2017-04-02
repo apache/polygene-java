@@ -21,14 +21,15 @@
 package org.apache.polygene.library.restlet.serialization;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.ModuleDescriptor;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializer;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
@@ -42,13 +43,11 @@ import org.restlet.representation.Representation;
 public class JsonRepresentation<T> extends OutputRepresentation
 {
 
-    private static final ValueSerializer.Options OPTIONS_NO_TYPE = new ValueSerializer.Options().withoutTypeInfo().withMapEntriesAsObjects();
-
     @Structure
     private PolygeneSPI spi;
 
     @Service
-    private ValueSerialization serializer;
+    private Serialization stateSerialization;
 
     @Structure
     private ModuleDescriptor module;
@@ -98,7 +97,8 @@ public class JsonRepresentation<T> extends OutputRepresentation
         }
         else if( this.representation != null )
         {
-            result = serializer.deserialize( module, objectClass, this.representation.getStream() );
+            result = stateSerialization.deserialize( module, objectClass,
+                                                     new InputStreamReader( this.representation.getStream() ) );
         }
         return result;
     }
@@ -123,7 +123,8 @@ public class JsonRepresentation<T> extends OutputRepresentation
         }
         else if( object != null )
         {
-            serializer.serialize( OPTIONS_NO_TYPE, object, outputStream );
+            // TODO was WITHOUT TYPE INFO
+            stateSerialization.serialize( new OutputStreamWriter( outputStream ), object );
             outputStream.write( '\n' );
         }
     }

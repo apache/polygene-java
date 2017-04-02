@@ -24,7 +24,6 @@ import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
@@ -58,7 +57,6 @@ public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly

@@ -98,14 +98,14 @@ public class RedisMapEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         try( Jedis jedis = pool.getResource() )
         {
             changes.visitMap( new MapChanger()
             {
                 @Override
-                public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer newEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -125,7 +125,7 @@ public class RedisMapEntityStoreMixin
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer updateEntity( MapChange mapChange )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -135,10 +135,12 @@ public class RedisMapEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            String statusCode = jedis.set( ref.identity().toString(), toString(), "XX" );
+                            String statusCode = jedis.set( mapChange.reference().identity().toString(),
+                                                           toString(),
+                                                           "XX" );
                             if( !"OK".equals( statusCode ) )
                             {
-                                throw new EntityNotFoundException( ref );
+                                throw new EntityNotFoundException( mapChange.reference() );
                             }
                         }
                     };

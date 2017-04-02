@@ -35,12 +35,10 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -102,7 +100,6 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         module.entities( Person.class );
         module.values( Person.class );
         module.services( PersonRepository.class ).withConcerns( UnitOfWorkConcern.class );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( MemoryEntityStoreService.class );
 
         module.services( Runnable.class )

@@ -23,7 +23,6 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class MemoryEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
@@ -33,7 +32,6 @@ public class MemoryEntityStoreWithCacheTest
         throws AssemblyException
     {
         super.assemble( module );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new MemoryEntityStoreAssembler().assemble( module );
     }
 }

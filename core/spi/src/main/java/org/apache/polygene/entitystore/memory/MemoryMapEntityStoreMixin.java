@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import javax.json.Json;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.spi.entitystore.BackupRestore;
@@ -37,9 +37,6 @@ import org.apache.polygene.spi.entitystore.EntityStoreException;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreActivation;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * In-memory implementation of MapEntityStore.
@@ -55,21 +52,15 @@ public class MemoryMapEntityStoreMixin
     }
 
     @Override
-    public void activateMapEntityStore()
-        throws Exception
-    {
-        // NOOP
-    }
+    public void activateMapEntityStore() {}
 
-    public boolean contains( EntityReference entityReference, EntityDescriptor descriptor )
-        throws EntityStoreException
+    public boolean contains( EntityReference entityReference, EntityDescriptor descriptor ) throws EntityStoreException
     {
         return store.containsKey( entityReference );
     }
 
     @Override
-    public Reader get( EntityReference entityReference )
-        throws EntityStoreException
+    public Reader get( EntityReference entityReference ) throws EntityStoreException
     {
         String state = store.get( entityReference );
         if( state == null )
@@ -81,8 +72,7 @@ public class MemoryMapEntityStoreMixin
     }
 
     @Override
-    public void applyChanges( MapEntityStore.MapChanges changes )
-        throws IOException
+    public void applyChanges( MapEntityStore.MapChanges changes ) throws Exception
     {
         changes.visitMap( new MemoryMapChanger() );
     }
@@ -100,29 +90,23 @@ public class MemoryMapEntityStoreMixin
     }
 
     @Override
-    public void restore( final Stream<String> stream )
+    public void restore( Stream<String> stream )
     {
         store.clear();
-        stream.forEach( item -> {
-            try
+        stream.forEach(
+            item ->
             {
-                JSONTokener tokener = new JSONTokener( item );
-                JSONObject entity = (JSONObject) tokener.nextValue();
-                String id = entity.getString( JSONKeys.IDENTITY );
+                String id = Json.createReader( new StringReader( item ) )
+                                .readObject().getString( JSONKeys.IDENTITY );
                 store.put( EntityReference.parseEntityReference( id ), item );
-            }
-            catch( JSONException e )
-            {
-                throw new UncheckedIOException( new IOException( e ) );
-            }
-        } );
+            } );
     }
 
     private class MemoryMapChanger
         implements MapChanger
     {
         @Override
-        public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
+        public Writer newEntity( EntityReference ref, EntityDescriptor descriptor )
         {
             return new StringWriter( 1000 )
             {
@@ -142,7 +126,7 @@ public class MemoryMapEntityStoreMixin
         }
 
         @Override
-        public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
+        public Writer updateEntity( MapChange mapChange )
             throws IOException
         {
             return new StringWriter( 1000 )
@@ -152,11 +136,12 @@ public class MemoryMapEntityStoreMixin
                     throws IOException
                 {
                     super.close();
-                    String old = store.put( ref, toString() );
+                    EntityReference reference = mapChange.reference();
+                    String old = store.put( reference, toString() );
                     if( old == null )
                     {
-                        store.remove( ref );
-                        throw new EntityNotFoundException( ref );
+                        store.remove( reference );
+                        throw new EntityNotFoundException( reference );
                     }
                 }
             };

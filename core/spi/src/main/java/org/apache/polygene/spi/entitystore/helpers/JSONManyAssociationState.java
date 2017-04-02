@@ -21,39 +21,52 @@ package org.apache.polygene.spi.entitystore.helpers;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.json.JSONArray;
-import org.json.JSONException;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
 
 /**
  * JSON implementation of ManyAssociationState.
- * <p>Backed by a JSONArray.</p>
+ * <p>Backed by a JsonArray.</p>
  */
 public final class JSONManyAssociationState
     implements ManyAssociationState
 {
-
     private final JSONEntityState entityState;
-    private final JSONArray references;
+    private final String stateName;
 
-    public JSONManyAssociationState( JSONEntityState entityState, JSONArray references )
+    /* package */ JSONManyAssociationState( JSONEntityState entityState, String stateName )
     {
         this.entityState = entityState;
-        this.references = references;
+        this.stateName = stateName;
+    }
+
+    private JsonArray getReferences()
+    {
+        JsonObject manyAssociations = entityState.state().getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
+        JsonValue references = manyAssociations.get( stateName );
+        if( references != null && references.getValueType() == JsonValue.ValueType.ARRAY )
+        {
+            return (JsonArray) references;
+        }
+        return Json.createArrayBuilder().build();
     }
 
     @Override
     public int count()
     {
-        return references.length();
+        return getReferences().size();
     }
 
     @Override
     public boolean contains( EntityReference entityReference )
     {
-        return indexOfReference( entityReference.toString() ) != -1;
+        return indexOfReference( entityReference.identity().toString() ) != -1;
     }
 
     @Override
@@ -65,12 +78,11 @@ public final class JSONManyAssociationState
             {
                 return false;
             }
-            entityState.cloneStateIfGlobalStateLoaded();
-            insertReference( idx, entityReference.identity().toString() );
+            entityState.stateCloneAddManyAssociation( idx, stateName, entityReference );
             entityState.markUpdated();
             return true;
         }
-        catch( JSONException e )
+        catch( JsonException e )
         {
             throw new EntityStoreException( e );
         }
@@ -82,8 +94,7 @@ public final class JSONManyAssociationState
         int refIndex = indexOfReference( entityReference.identity().toString() );
         if( refIndex != -1 )
         {
-            entityState.cloneStateIfGlobalStateLoaded();
-            references.remove( refIndex );
+            entityState.stateCloneRemoveManyAssociation( stateName, entityReference );
             entityState.markUpdated();
             return true;
         }
@@ -93,14 +104,7 @@ public final class JSONManyAssociationState
     @Override
     public EntityReference get( int i )
     {
-        try
-        {
-            return EntityReference.parseEntityReference( references.getString( i ) );
-        }
-        catch( JSONException e )
-        {
-            throw new EntityStoreException( e );
-        }
+        return EntityReference.parseEntityReference( getReferences().getString( i ) );
     }
 
     @Override
@@ -113,7 +117,7 @@ public final class JSONManyAssociationState
             @Override
             public boolean hasNext()
             {
-                return idx < references.length();
+                return idx < getReferences().size();
             }
 
             @Override
@@ -121,11 +125,11 @@ public final class JSONManyAssociationState
             {
                 try
                 {
-                    EntityReference ref = EntityReference.parseEntityReference( references.getString( idx ) );
+                    EntityReference ref = EntityReference.parseEntityReference( getReferences().getString( idx ) );
                     idx++;
                     return ref;
                 }
-                catch( JSONException e )
+                catch( JsonException e )
                 {
                     throw new NoSuchElementException();
                 }
@@ -142,49 +146,19 @@ public final class JSONManyAssociationState
     @Override
     public String toString()
     {
-        return references.toString();
+        return getReferences().toString();
     }
 
-    private int indexOfReference( String enityIdentityAsString )
+    private int indexOfReference( String entityIdentityAsString )
     {
-        for( int idx = 0; idx < references.length(); idx++ )
+        JsonArray references = getReferences();
+        for( int idx = 0; idx < references.size(); idx++ )
         {
-            if( enityIdentityAsString.equals( references.opt( idx ) ) )
+            if( entityIdentityAsString.equals( references.getString( idx, null ) ) )
             {
                 return idx;
             }
         }
         return -1;
-    }
-
-    private void insertReference( int insert, Object item )
-        throws JSONException
-    {
-        if( insert < 0 || insert > references.length() )
-        {
-            throw new JSONException( "JSONArray[" + insert + "] is out of bounds." );
-        }
-        if( insert == references.length() )
-        {
-            // append
-            references.put( item );
-        }
-        else
-        {
-            // insert (copy/insert/apply)
-            JSONArray output = new JSONArray();
-            for( int idx = 0; idx < references.length(); idx++ )
-            {
-                if( idx == insert )
-                {
-                    output.put( item );
-                }
-                output.put( references.opt( idx ) );
-            }
-            for( int idx = 0; idx < output.length(); idx++ )
-            {
-                references.put( idx, output.opt( idx ) );
-            }
-        }
     }
 }

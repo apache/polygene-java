@@ -19,12 +19,10 @@
  */
 package org.apache.polygene.index.rdf.qi66;
 
-import org.apache.polygene.api.identity.Identity;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
@@ -34,7 +32,7 @@ import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -97,7 +95,6 @@ public class Qi66IssueTest
         module.services( RdfQueryService.class,
                          RdfQueryParserFactory.class,
                          MemoryRepositoryService.class );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

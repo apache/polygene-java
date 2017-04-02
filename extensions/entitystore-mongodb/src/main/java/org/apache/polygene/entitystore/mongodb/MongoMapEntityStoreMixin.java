@@ -222,14 +222,14 @@ public class MongoMapEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         final MongoCollection<Document> entities = db.getCollection( collectionName );
 
         changes.visitMap( new MapChanger()
         {
             @Override
-            public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+            public Writer newEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
                 return new StringWriter( 1000 )
@@ -249,7 +249,7 @@ public class MongoMapEntityStoreMixin
             }
 
             @Override
-            public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+            public Writer updateEntity( MapChange mapChange )
                 throws IOException
             {
                 return new StringWriter( 1000 )
@@ -261,9 +261,9 @@ public class MongoMapEntityStoreMixin
                         super.close();
                         Document bsonState = Document.parse( toString() );
                         Document entity = new Document();
-                        entity.put( IDENTITY_COLUMN, ref.identity().toString() );
+                        entity.put( IDENTITY_COLUMN, mapChange.reference().identity().toString() );
                         entity.put( STATE_COLUMN, bsonState );
-                        entities.replaceOne( byIdentity( ref ), entity );
+                        entities.replaceOne( byIdentity( mapChange.reference() ), entity );
                     }
                 };
             }

@@ -31,12 +31,10 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -53,7 +51,6 @@ public class Qi382Test extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.addServices( MemoryEntityStoreService.class );
         module.entities( Car.class, Person.class );
     }

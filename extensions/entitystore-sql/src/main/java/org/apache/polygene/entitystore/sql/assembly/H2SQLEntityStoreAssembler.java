@@ -19,30 +19,17 @@
  */
 package org.apache.polygene.entitystore.sql.assembly;
 
-import java.io.IOException;
-import org.apache.polygene.entitystore.sql.internal.H2SQLDatabaseSQLServiceMixin;
-import org.sql.generation.api.vendor.H2Vendor;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
+import org.jooq.SQLDialect;
 
 /**
  * H2 EntityStore assembly.
  */
 public class H2SQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler<H2SQLEntityStoreAssembler>
+    extends AbstractSQLMapEntityStoreAssembler<H2SQLEntityStoreAssembler>
 {
-
     @Override
-    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    protected SQLDialect getSQLDialect()
     {
-        return H2SQLDatabaseSQLServiceMixin.class;
+        return SQLDialect.H2;
     }
-
-    @Override
-    protected SQLVendor getSQLVendor()
-            throws IOException
-    {
-        return SQLVendorProvider.createVendor( H2Vendor.class );
-    }
-
 }

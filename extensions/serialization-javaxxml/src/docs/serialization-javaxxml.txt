@@ -1,0 +1,46 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[extension-serialization-javaxxml,javax.xml serialization]]
+= javax.xml serialization =
+
+[devstatus]
+--------------
+source=extensions/serialization-javaxxml/dev-status.xml
+--------------
+
+`Serialization` service backed by `javax.xml` types.
+See <<core-api-serialization>> and <<core-spi-serialization>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+This extension make use of the Java runtime default `javax.xml` provider.
+You can add dependencies to replace it by the one of your choice.
+
+// TODO Include sample model and its output from test code & resources
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/serialization-javaxxml/src/test/java/org/apache/polygene/serialization/javaxxml/JavaxXmlValueCompositeSerializationTest.java
+tag=assembly
+----

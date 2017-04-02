@@ -25,7 +25,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.geode.assembly.GeodeEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class GeodeEntityStoreTest
     extends AbstractEntityStoreTest
@@ -39,7 +38,6 @@ public class GeodeEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new GeodeEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
