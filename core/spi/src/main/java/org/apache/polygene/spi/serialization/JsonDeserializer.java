@@ -17,27 +17,14 @@
  */
 package org.apache.polygene.spi.serialization;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParsingException;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
-import org.apache.polygene.serialization.javaxjson.JavaxJson;
 import org.apache.polygene.spi.module.ModuleSpi;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * {@literal javax.json} deserializer.
@@ -91,76 +78,5 @@ public interface JsonDeserializer extends Deserializer
     default <T> Stream<T> fromJsonEach( ModuleDescriptor module, Class<T> valueType, JsonValue... states )
     {
         return fromJsonEach( module, valueType, Stream.of( states ) );
-    }
-
-    @Override
-    default <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )
-    {
-        // JSR-353 Does not allow reading "out of structure" values
-        // See https://www.jcp.org/en/jsr/detail?id=353
-        // And commented JsonReader#readValue() method in the javax.json API
-        // BUT, it will be part of the JsonReader contract in the next version
-        // See https://www.jcp.org/en/jsr/detail?id=374
-        // Implementation by provider is optional though, so we'll always need a default implementation here.
-        // Fortunately, JsonParser has new methods allowing to read structures while parsing so it will be easy to do.
-        // In the meantime, a poor man's implementation reading the json into memory will do.
-        // TODO Revisit values out of structure JSON deserialization when JSR-374 is out
-        String stateString;
-        try( BufferedReader buffer = new BufferedReader( state ) )
-        {
-            stateString = buffer.lines().collect( joining( "\n" ) );
-        }
-        catch( IOException ex )
-        {
-            throw new UncheckedIOException( ex );
-        }
-        // We want plain Strings, BigDecimals, BigIntegers to be deserialized even when unquoted
-        Function<String, T> plainValueFunction = string ->
-        {
-            String poorMans = "{\"value\":" + string + "}";
-            JsonObject poorMansJson = Json.createReader( new StringReader( poorMans ) ).readObject();
-            JsonValue value = poorMansJson.get( "value" );
-            return fromJson( module, valueType, value );
-        };
-        Function<String, T> outOfStructureFunction = string ->
-        {
-            // Is this an unquoted plain value?
-            try
-            {
-                return plainValueFunction.apply( '"' + string + '"' );
-            }
-            catch( JsonParsingException ex )
-            {
-                return plainValueFunction.apply( string );
-            }
-        };
-        try( JsonParser parser = Json.createParser( new StringReader( stateString ) ) )
-        {
-            if( parser.hasNext() )
-            {
-                JsonParser.Event e = parser.next();
-                switch( e )
-                {
-                    case VALUE_NULL:
-                        return null;
-                    case START_ARRAY:
-                    case START_OBJECT:
-                        // JSON Structure
-                        try( JsonReader reader = Json.createReader( new StringReader( stateString ) ) )
-                        {
-                            return fromJson( module, valueType, reader.read() );
-                        }
-                    default:
-                        // JSON Value out of structure
-                        return outOfStructureFunction.apply( stateString );
-                }
-            }
-        }
-        catch( JsonParsingException ex )
-        {
-            return outOfStructureFunction.apply( stateString );
-        }
-        // Empty state string?
-        return fromJson( module, valueType, JavaxJson.EMPTY_STRING );
     }
 }

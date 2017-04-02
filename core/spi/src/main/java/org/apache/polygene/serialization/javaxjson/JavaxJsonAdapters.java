@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -112,7 +112,8 @@ public interface JavaxJsonAdapters
         private static abstract class ToJsonStringAdapter<T> implements JavaxJsonAdapter<T>
         {
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory, Object object,
+                                        Function<Object, JsonValue> serialize )
             {
                 return JavaxJson.toJsonString( object );
             }
@@ -149,7 +150,8 @@ public interface JavaxJsonAdapters
             public Class<Boolean> type() { return Boolean.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory, Object object,
+                                        Function<Object, JsonValue> serialize )
             {
                 return type().cast( object ) ? JsonValue.TRUE : JsonValue.FALSE;
             }
@@ -181,10 +183,11 @@ public interface JavaxJsonAdapters
             public Class<Integer> type() { return Integer.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
-                           .getJsonNumber( "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override
@@ -211,10 +214,11 @@ public interface JavaxJsonAdapters
             public Class<Long> type() { return Long.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build().getJsonNumber(
-                    "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override
@@ -241,10 +245,11 @@ public interface JavaxJsonAdapters
             public Class<Short> type() { return Short.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
-                           .getJsonNumber( "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override
@@ -271,10 +276,11 @@ public interface JavaxJsonAdapters
             public Class<Byte> type() { return Byte.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
-                           .getJsonNumber( "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override
@@ -301,10 +307,11 @@ public interface JavaxJsonAdapters
             public Class<Float> type() { return Float.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
-                           .getJsonNumber( "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override
@@ -331,10 +338,11 @@ public interface JavaxJsonAdapters
             public Class<Double> type() { return Double.class; }
 
             @Override
-            public JsonValue serialize( Object object, Function<Object, JsonValue> serialize )
+            public JsonValue serialize( JsonBuilderFactory builderFactory,
+                                        Object object, Function<Object, JsonValue> serialize )
             {
-                return Json.createObjectBuilder().add( "value", type().cast( object ) ).build()
-                           .getJsonNumber( "value" );
+                return builderFactory.createObjectBuilder().add( "value", type().cast( object ) ).build()
+                                     .getJsonNumber( "value" );
             }
 
             @Override

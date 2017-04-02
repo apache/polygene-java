@@ -17,13 +17,9 @@
  */
 package org.apache.polygene.spi.serialization;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.serialization.Serializer;
@@ -78,31 +74,5 @@ public interface JsonSerializer extends Serializer
     default <T> Stream<JsonValue> toJsonEach( Object... objects )
     {
         return toJsonEach( Options.DEFAULT, Stream.of( objects ) );
-    }
-
-    default void serialize( Options options, Writer writer, @Optional Object object )
-    {
-        JsonValue jsonValue = toJson( options, object );
-        if( jsonValue == null )
-        {
-            return;
-        }
-        try
-        {
-            // We want plain Strings to be serialized without quotes which is non JSON compliant
-            // See https://java.net/jira/browse/JSON_PROCESSING_SPEC-65
-            if( jsonValue.getValueType() == JsonValue.ValueType.STRING )
-            {
-                writer.write( ( (JsonString) jsonValue ).getString() );
-            }
-            else
-            {
-                writer.write( jsonValue.toString() );
-            }
-        }
-        catch( IOException ex )
-        {
-            throw new UncheckedIOException( ex );
-        }
     }
 }

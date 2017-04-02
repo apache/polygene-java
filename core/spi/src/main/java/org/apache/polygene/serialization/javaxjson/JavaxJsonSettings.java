@@ -31,6 +31,7 @@ public class JavaxJsonSettings extends SerializationSettings<JavaxJsonSettings>
         return settings != null ? settings : DEFAULT;
     }
 
+    private String jsonProviderClassName;
     private String typeInfoPropertyName;
     private Map<ValueType, JavaxJsonAdapter<?>> adapters;
 
@@ -38,6 +39,16 @@ public class JavaxJsonSettings extends SerializationSettings<JavaxJsonSettings>
     {
         typeInfoPropertyName = "_type";
         adapters = new LinkedHashMap<>();
+    }
+
+    public String getJsonProviderClassName()
+    {
+        return jsonProviderClassName;
+    }
+
+    public void setJsonProviderClassName( String jsonProviderClassName )
+    {
+        this.jsonProviderClassName = jsonProviderClassName;
     }
 
     public String getTypeInfoPropertyName()

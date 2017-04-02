@@ -17,6 +17,11 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -31,12 +36,16 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
+import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParsingException;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
@@ -57,6 +66,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.polygene.api.util.Collectors.toMapWithNullValues;
 import static org.apache.polygene.serialization.javaxjson.JavaxJson.asString;
@@ -64,8 +74,12 @@ import static org.apache.polygene.serialization.javaxjson.JavaxJson.requireJsonA
 import static org.apache.polygene.serialization.javaxjson.JavaxJson.requireJsonObject;
 import static org.apache.polygene.serialization.javaxjson.JavaxJson.requireJsonStructure;
 
-public class JavaxJsonDeserializer extends AbstractTextDeserializer implements JsonDeserializer
+public class JavaxJsonDeserializer extends AbstractTextDeserializer
+    implements JsonDeserializer, Initializable
 {
+    @This
+    private JavaxJsonFactories jsonFactories;
+
     @This
     private Converters converters;
 
@@ -74,6 +88,88 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
 
     @Uses
     private ServiceDescriptor descriptor;
+
+    private JavaxJsonSettings settings;
+
+    @Override
+    public void initialize() throws Exception
+    {
+        settings = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
+    }
+
+    @Override
+    public <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )
+    {
+        // JSR-353 Does not allow reading "out of structure" values
+        // See https://www.jcp.org/en/jsr/detail?id=353
+        // And commented JsonReader#readValue() method in the javax.json API
+        // BUT, it will be part of the JsonReader contract in the next version
+        // See https://www.jcp.org/en/jsr/detail?id=374
+        // Implementation by provider is optional though, so we'll always need a default implementation here.
+        // Fortunately, JsonParser has new methods allowing to read structures while parsing so it will be easy to do.
+        // In the meantime, a poor man's implementation reading the json into memory will do.
+        // TODO Revisit values out of structure JSON deserialization when JSR-374 is out
+        String stateString;
+        try( BufferedReader buffer = new BufferedReader( state ) )
+        {
+            stateString = buffer.lines().collect( joining( "\n" ) );
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
+        // We want plain Strings, BigDecimals, BigIntegers to be deserialized even when unquoted
+        Function<String, T> plainValueFunction = string ->
+        {
+            String poorMans = "{\"value\":" + string + "}";
+            JsonObject poorMansJson = jsonFactories.readerFactory()
+                                                   .createReader( new StringReader( poorMans ) )
+                                                   .readObject();
+            JsonValue value = poorMansJson.get( "value" );
+            return fromJson( module, valueType, value );
+        };
+        Function<String, T> outOfStructureFunction = string ->
+        {
+            // Is this an unquoted plain value?
+            try
+            {
+                return plainValueFunction.apply( '"' + string + '"' );
+            }
+            catch( JsonParsingException ex )
+            {
+                return plainValueFunction.apply( string );
+            }
+        };
+        try( JsonParser parser = jsonFactories.parserFactory().createParser( new StringReader( stateString ) ) )
+        {
+            if( parser.hasNext() )
+            {
+                JsonParser.Event e = parser.next();
+                switch( e )
+                {
+                    case VALUE_NULL:
+                        return null;
+                    case START_ARRAY:
+                    case START_OBJECT:
+                        // JSON Structure
+                        try( JsonReader reader = jsonFactories.readerFactory()
+                                                              .createReader( new StringReader( stateString ) ) )
+                        {
+                            return fromJson( module, valueType, reader.read() );
+                        }
+                    default:
+                        // JSON Value out of structure
+                        return outOfStructureFunction.apply( stateString );
+                }
+            }
+        }
+        catch( JsonParsingException ex )
+        {
+            return outOfStructureFunction.apply( stateString );
+        }
+        // Empty state string?
+        return fromJson( module, valueType, JavaxJson.EMPTY_STRING );
+    }
 
     @Override
     public <T> T fromJson( ModuleDescriptor module, ValueType valueType, JsonValue state )
@@ -148,7 +244,8 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
         {
             case OBJECT:
                 JsonObject object = (JsonObject) json;
-                String typeInfo = object.getString( getTypeInfoPropertyName(), valueType.primaryType().getName() );
+                String typeInfo = object.getString( settings.getTypeInfoPropertyName(),
+                                                    valueType.primaryType().getName() );
                 ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
                 if( valueDescriptor != null )
                 {
@@ -206,7 +303,7 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
 
     private Object deserializeValueComposite( ModuleDescriptor module, ValueCompositeType valueType, JsonObject json )
     {
-        String typeInfoName = getTypeInfoPropertyName();
+        String typeInfoName = settings.getTypeInfoPropertyName();
         String typeInfo = json.getString( typeInfoName, null );
         if( typeInfo != null )
         {
@@ -283,11 +380,5 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer implements J
                                                               object.get( association.qualifiedName().name() ) );
             return map == null ? Stream.empty() : map.entrySet().stream();
         };
-    }
-
-    private String getTypeInfoPropertyName()
-    {
-        return JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) )
-                                .getTypeInfoPropertyName();
     }
 }

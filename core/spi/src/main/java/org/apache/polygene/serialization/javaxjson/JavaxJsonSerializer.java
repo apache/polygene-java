@@ -17,23 +17,28 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.service.ServiceDescriptor;
@@ -51,8 +56,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static org.apache.polygene.api.util.Collectors.toMap;
 
-public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonSerializer
+public class JavaxJsonSerializer extends AbstractTextSerializer
+    implements JsonSerializer, Initializable
 {
+    @This
+    private JavaxJsonFactories jsonFactories;
+
     @This
     private Converters converters;
 
@@ -61,6 +70,41 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
 
     @Uses
     private ServiceDescriptor descriptor;
+
+    private JavaxJsonSettings settings;
+
+    @Override
+    public void initialize() throws Exception
+    {
+        settings = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
+    }
+
+    @Override
+    public void serialize( Options options, Writer writer, @Optional Object object )
+    {
+        JsonValue jsonValue = toJson( options, object );
+        if( jsonValue == null )
+        {
+            return;
+        }
+        try
+        {
+            // We want plain Strings to be serialized without quotes which is non JSON compliant
+            // See https://java.net/jira/browse/JSON_PROCESSING_SPEC-65
+            if( jsonValue.getValueType() == JsonValue.ValueType.STRING )
+            {
+                writer.write( ( (JsonString) jsonValue ).getString() );
+            }
+            else
+            {
+                writer.write( jsonValue.toString() );
+            }
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
+    }
 
     @Override
     public <T> Function<T, JsonValue> toJsonFunction( Options options )
@@ -83,7 +127,8 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         JavaxJsonAdapter<?> adapter = adapters.adapterFor( objectClass );
         if( adapter != null )
         {
-            return adapter.serialize( object, obj -> doSerialize( options, obj, false ) );
+            return adapter.serialize( jsonFactories.builderFactory(), object,
+                                      obj -> doSerialize( options, obj, false ) );
         }
         if( ValueCompositeType.isValueComposite( objectClass ) )
         {
@@ -117,7 +162,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         AssociationStateHolder state = (AssociationStateHolder) instance.state();
         ValueCompositeType valueType = descriptor.valueType();
 
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
         valueType.properties().forEach(
             property -> builder.add(
                 property.qualifiedName().name(),
@@ -148,7 +193,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
 
     private JsonObjectBuilder withTypeInfo( JsonObjectBuilder builder, ValueType valueType )
     {
-        return builder.add( getTypeInfoPropertyName(), valueType.primaryType().getName() );
+        return builder.add( settings.getTypeInfoPropertyName(), valueType.primaryType().getName() );
     }
 
     /**
@@ -163,26 +208,26 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
         if( map.isEmpty() )
         {
             // Defaults to {}
-            return Json.createObjectBuilder().build();
+            return jsonFactories.builderFactory().createObjectBuilder().build();
         }
         Predicate<Object> characterKeyPredicate = key ->
             key != null && ( key instanceof CharSequence || key instanceof Character );
         if( map.keySet().stream().allMatch( characterKeyPredicate ) )
         {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
+            JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
             map.entrySet().forEach( entry -> builder.add( entry.getKey().toString(),
                                                           doSerialize( options, entry.getValue(), false ) ) );
             return builder.build();
         }
         else
         {
-            JsonArrayBuilder builder = Json.createArrayBuilder();
+            JsonArrayBuilder builder = jsonFactories.builderFactory().createArrayBuilder();
             map.entrySet().forEach(
                 entry -> builder.add(
-                    Json.createObjectBuilder()
-                        .add( "key", doSerialize( options, entry.getKey(), false ) )
-                        .add( "value", doSerialize( options, entry.getValue(), false ) )
-                        .build() ) );
+                    jsonFactories.builderFactory().createObjectBuilder()
+                                 .add( "key", doSerialize( options, entry.getKey(), false ) )
+                                 .add( "value", doSerialize( options, entry.getValue(), false ) )
+                                 .build() ) );
             return builder.build();
         }
     }
@@ -209,14 +254,8 @@ public class JavaxJsonSerializer extends AbstractTextSerializer implements JsonS
 
     private <T> JsonArray serializeStream( Options options, Stream<?> stream )
     {
-        JsonArrayBuilder builder = Json.createArrayBuilder();
+        JsonArrayBuilder builder = jsonFactories.builderFactory().createArrayBuilder();
         stream.forEach( element -> builder.add( doSerialize( options, element, false ) ) );
         return builder.build();
-    }
-
-    private String getTypeInfoPropertyName()
-    {
-        return JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) )
-                                .getTypeInfoPropertyName();
     }
 }

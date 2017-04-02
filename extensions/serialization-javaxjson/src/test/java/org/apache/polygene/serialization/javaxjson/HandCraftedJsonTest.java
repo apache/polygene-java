@@ -63,8 +63,6 @@ public class HandCraftedJsonTest extends AbstractPolygeneTest
     }
 
     @Test
-    @NotYetImplemented( reason = "need to manage javax.json providers and properties first, could work with Johnzon" )
-    // See org.apache.johnzon.supports-comments
     public void canReadCommentedJson()
     {
         String json = "// One comment\n {  \n\t\"foo\"  :  \"bar\"  \n/* Two comments */ }\n  ";
