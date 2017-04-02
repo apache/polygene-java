@@ -37,6 +37,9 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
         return settings != null ? settings : DEFAULT;
     }
 
+    private String documentBuilderFactoryClassName;
+    private String transformerFactoryClassName;
+
     private String rootTagName;
     private String collectionTagName;
     private String collectionElementTagName;
@@ -44,6 +47,7 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
     private String mapEntryTagName;
     private String valueTagName;
     private String typeInfoTagName;
+
     private Map<ValueType, JavaxXmlAdapter<?>> adapters;
 
     public JavaxXmlSettings()
@@ -56,6 +60,26 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
         valueTagName = "value";
         typeInfoTagName = "_type";
         adapters = new LinkedHashMap<>();
+    }
+
+    public String getDocumentBuilderFactoryClassName()
+    {
+        return documentBuilderFactoryClassName;
+    }
+
+    public void setDocumentBuilderFactoryClassName( String documentBuilderFactoryClassName )
+    {
+        this.documentBuilderFactoryClassName = documentBuilderFactoryClassName;
+    }
+
+    public String getTransformerFactoryClassName()
+    {
+        return transformerFactoryClassName;
+    }
+
+    public void setTransformerFactoryClassName( String transformerFactoryClassName )
+    {
+        this.transformerFactoryClassName = transformerFactoryClassName;
     }
 
     public String getRootTagName()

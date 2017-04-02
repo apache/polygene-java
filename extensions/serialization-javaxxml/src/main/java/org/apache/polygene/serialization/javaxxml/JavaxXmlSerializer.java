@@ -17,19 +17,28 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.util.Base64;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
@@ -54,9 +63,13 @@ import static org.apache.polygene.api.util.Collectors.toMap;
 /**
  * XML Serializer.
  */
-public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSerializer
+public class JavaxXmlSerializer extends AbstractTextSerializer
+    implements XmlSerializer, Initializable
 {
     private static final String NULL_ELEMENT_NAME = "null";
+
+    @This
+    private JavaxXmlFactories xmlFactories;
 
     @This
     private Converters converters;
@@ -66,6 +79,51 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
 
     @Uses
     private ServiceDescriptor descriptor;
+
+    private JavaxXmlSettings settings;
+
+    private Transformer toStringTransformer;
+
+    @Override
+    public void initialize() throws Exception
+    {
+        settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
+        toStringTransformer = xmlFactories.transformerFactory().newTransformer();
+        toStringTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+        toStringTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
+        toStringTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
+        toStringTransformer.setOutputProperty( OutputKeys.ENCODING, "UTF-8" );
+    }
+
+    @Override
+    public void serialize( Options options, Writer writer, @Optional Object object )
+    {
+        Document xmlDocument = toXml( options, object );
+        if( xmlDocument == null )
+        {
+            return;
+        }
+        try
+        {
+            // We want plain text nodes to be serialized without surrounding elements
+            if( xmlDocument.getNodeType() == Node.TEXT_NODE )
+            {
+                writer.write( xmlDocument.getNodeValue() );
+            }
+            else
+            {
+                toStringTransformer.transform( new DOMSource( xmlDocument ), new StreamResult( writer ) );
+            }
+        }
+        catch( IOException ex )
+        {
+            throw new UncheckedIOException( ex );
+        }
+        catch( TransformerException ex )
+        {
+            throw new SerializationException( "Unable to transform XML Document to String", ex );
+        }
+    }
 
     @Override
     public <T> Function<T, Document> toXmlFunction( Options options )
@@ -77,10 +135,10 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
     {
         try
         {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Document doc = xmlFactories.documentBuilderFactory().newDocumentBuilder().newDocument();
             doc.setXmlVersion( "1.1" );
             doc.setXmlStandalone( true );
-            Element stateElement = doc.createElement( getSettings().getRootTagName() );
+            Element stateElement = doc.createElement( settings.getRootTagName() );
             Node node = doSerialize( doc, options, object, true );
             stateElement.appendChild( node );
             doc.appendChild( stateElement );
@@ -146,7 +204,7 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
         AssociationStateHolder state = (AssociationStateHolder) instance.state();
         ValueCompositeType valueType = descriptor.valueType();
 
-        Element valueElement = document.createElement( getSettings().getValueTagName() );
+        Element valueElement = document.createElement( settings.getValueTagName() );
         valueType.properties().forEach(
             property ->
             {
@@ -185,14 +243,13 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
         );
         if( !root && options.includeTypeInfo() )
         {
-            valueElement.setAttribute( getSettings().getTypeInfoTagName(), valueType.primaryType().getName() );
+            valueElement.setAttribute( settings.getTypeInfoTagName(), valueType.primaryType().getName() );
         }
         return valueElement;
     }
 
     private Node serializeMap( Document document, Options options, Map<?, ?> map )
     {
-        JavaxXmlSettings settings = getSettings();
         Element mapElement = document.createElement( settings.getMapTagName() );
         if( map.isEmpty() )
         {
@@ -264,7 +321,6 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
 
     private Node serializeStream( Document document, Options options, Stream<?> object )
     {
-        JavaxXmlSettings settings = getSettings();
         Element collectionElement = document.createElement( settings.getCollectionTagName() );
         object.map( each -> doSerialize( document, options, each, false ) )
               .forEach( itemValueNode ->
@@ -274,10 +330,5 @@ public class JavaxXmlSerializer extends AbstractTextSerializer implements XmlSer
                             collectionElement.appendChild( itemElement );
                         } );
         return collectionElement;
-    }
-
-    private JavaxXmlSettings getSettings()
-    {
-        return JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
     }
 }

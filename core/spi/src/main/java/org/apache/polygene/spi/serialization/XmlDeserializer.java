@@ -17,22 +17,13 @@
  */
 package org.apache.polygene.spi.serialization;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.polygene.api.serialization.Deserializer;
-import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.spi.module.ModuleSpi;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
 
 /**
@@ -87,20 +78,5 @@ public interface XmlDeserializer extends Deserializer
     default <T> Stream<T> fromXmlEach( ModuleDescriptor module, Class<T> valueType, Node... states )
     {
         return fromXmlEach( module, valueType, Stream.of( states ) );
-    }
-
-    @Override
-    default <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )
-    {
-        try
-        {
-            DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = docBuilder.parse( new InputSource( state ) );
-            return fromXml( module, valueType, doc );
-        }
-        catch( SAXException | IOException | ParserConfigurationException ex )
-        {
-            throw new SerializationException( "Unable to read XML document", ex );
-        }
     }
 }

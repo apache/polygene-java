@@ -17,6 +17,8 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -33,10 +35,16 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.stream.StreamSource;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
@@ -62,9 +70,13 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static org.apache.polygene.api.util.Collectors.toMapWithNullValues;
 
-public class JavaxXmlDeserializer extends AbstractTextDeserializer implements XmlDeserializer
+public class JavaxXmlDeserializer extends AbstractTextDeserializer
+    implements XmlDeserializer, Initializable
 {
     private static final String NULL_ELEMENT_NAME = "null";
+
+    @This
+    private JavaxXmlFactories xmlFactories;
 
     @This
     private Converters converters;
@@ -75,10 +87,45 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
     @Uses
     private ServiceDescriptor descriptor;
 
+    private JavaxXmlSettings settings;
+
+    private Transformer normalizingTransformer;
+
+    @Override
+    public void initialize() throws Exception
+    {
+        settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
+
+        String xslPath = "/org/apache/polygene/serialization/javaxxml/deserializer-normalization.xsl";
+        InputStream xsltStream = getClass().getResourceAsStream( xslPath );
+        normalizingTransformer = xmlFactories.transformerFactory()
+                                             .newTransformer( new StreamSource( xsltStream ) );
+        normalizingTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+        normalizingTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
+        normalizingTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
+        normalizingTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
+    }
+
+    @Override
+    public <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )
+    {
+        try
+        {
+            DOMResult domResult = new DOMResult();
+            normalizingTransformer.transform( new StreamSource( state ), domResult );
+            Node node = domResult.getNode();
+            return fromXml( module, valueType, node );
+        }
+        catch( TransformerException ex )
+        {
+            throw new SerializationException( "Unable to read XML document", ex );
+        }
+    }
+
     @Override
     public <T> T fromXml( ModuleDescriptor module, ValueType valueType, Node state )
     {
-        Optional<Element> stateElement = JavaxXml.firstChildElementNamed( state, getSettings().getRootTagName() );
+        Optional<Element> stateElement = JavaxXml.firstChildElementNamed( state, settings.getRootTagName() );
         if( stateElement.isPresent() )
         {
             Optional<Node> stateNode = JavaxXml.firstStateChildNode( stateElement.get() );
@@ -139,7 +186,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
             ValueDescriptor descriptor = module.valueDescriptor( typeInfo.get() );
             if( descriptor == null )
             {
-                String typeInfoName = getSettings().getTypeInfoTagName();
+                String typeInfoName = settings.getTypeInfoTagName();
                 throw new SerializationException(
                     typeInfoName + ": " + typeInfo.get() + " could not be resolved while deserializing " + xml );
             }
@@ -252,7 +299,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
             .childElements( xml )
             .map( element ->
                   {
-                      if( getSettings().getCollectionElementTagName().equals( element.getTagName() ) )
+                      if( settings.getCollectionElementTagName().equals( element.getTagName() ) )
                       {
                           return doDeserialize( module, collectionType.collectedType(),
                                                 JavaxXml.firstStateChildNode( element ).get() );
@@ -269,7 +316,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         {
             return new LinkedHashMap<>();
         }
-        Predicate<Element> complexMapping = element -> getSettings().getMapEntryTagName().equals( element.getTagName() )
+        Predicate<Element> complexMapping = element -> settings.getMapEntryTagName().equals( element.getTagName() )
                                                        && JavaxXml.firstChildElementNamed( element, "key" )
                                                                   .isPresent();
         // This allows deserializing mixed simple/complex mappings for a given map
@@ -309,7 +356,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
                 return deserializeValueComposite( valueDescriptor.module(), valueDescriptor.valueType(), xml );
             }
         }
-        if( xml.getNodeType() == Node.CDATA_SECTION_NODE )
+        if( xml.getNodeType() == Node.CDATA_SECTION_NODE || xml.getNodeType() == Node.TEXT_NODE )
         {
             byte[] bytes = Base64.getDecoder().decode( xml.getNodeValue().getBytes( UTF_8 ) );
             return deserializeJava( bytes );
@@ -323,16 +370,11 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer implements Xm
         {
             return Optional.empty();
         }
-        String typeInfo = ( (Element) xml ).getAttribute( getSettings().getTypeInfoTagName() );
+        String typeInfo = ( (Element) xml ).getAttribute( settings.getTypeInfoTagName() );
         if( typeInfo.isEmpty() )
         {
             return Optional.empty();
         }
         return Optional.of( typeInfo );
-    }
-
-    private JavaxXmlSettings getSettings()
-    {
-        return JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
     }
 }

@@ -31,7 +31,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
-// TODO Assert deserialization from formatted XML, whitespaces are a problem ATM
 public class JavaxXmlValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {
     // START SNIPPET: assembly

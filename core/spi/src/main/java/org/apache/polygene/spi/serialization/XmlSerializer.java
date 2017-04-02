@@ -17,23 +17,12 @@
  */
 package org.apache.polygene.spi.serialization;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * {@literal javax.xml} serializer.
@@ -85,39 +74,5 @@ public interface XmlSerializer extends Serializer
     default <T> Stream<Document> toXmlEach( Object... objects )
     {
         return toXmlEach( Options.DEFAULT, Stream.of( objects ) );
-    }
-
-    default void serialize( Options options, Writer writer, @Optional Object object )
-    {
-        Document xmlDocument = toXml( options, object );
-        if( xmlDocument == null )
-        {
-            return;
-        }
-        try
-        {
-            // We want plain text nodes to be serialized without surrounding elements
-            if( xmlDocument.getNodeType() == Node.TEXT_NODE )
-            {
-                writer.write( xmlDocument.getNodeValue() );
-            }
-            else
-            {
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.setOutputProperty( OutputKeys.METHOD, "xml" );
-                transformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
-                transformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
-                transformer.setOutputProperty( OutputKeys.ENCODING, "UTF-8" );
-                transformer.transform( new DOMSource( xmlDocument ), new StreamResult( writer ) );
-            }
-        }
-        catch( IOException ex )
-        {
-            throw new UncheckedIOException( ex );
-        }
-        catch( TransformerException ex )
-        {
-            throw new SerializationException( "Unable to transform XML Document to String", ex );
-        }
     }
 }
