@@ -88,7 +88,7 @@ public interface JavaxJsonFactories
             parserFactory = jsonProvider.createParserFactory( parserProperties );
             readerFactory = jsonProvider.createReaderFactory( parserProperties );
 
-            Map<String, ?> generatorProperties = Collections.singletonMap( JsonGenerator.PRETTY_PRINTING, false );
+            Map<String, ?> generatorProperties = Collections.emptyMap();
             generatorFactory = jsonProvider.createGeneratorFactory( generatorProperties );
             builderFactory = jsonProvider.createBuilderFactory( generatorProperties );
             writerFactory = jsonProvider.createWriterFactory( generatorProperties );
