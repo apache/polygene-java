@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -82,17 +79,10 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
 
     private JavaxXmlSettings settings;
 
-    private Transformer toStringTransformer;
-
     @Override
     public void initialize() throws Exception
     {
         settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
-        toStringTransformer = xmlFactories.transformerFactory().newTransformer();
-        toStringTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
-        toStringTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
-        toStringTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
-        toStringTransformer.setOutputProperty( OutputKeys.ENCODING, "UTF-8" );
     }
 
     @Override
@@ -112,7 +102,8 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
             }
             else
             {
-                toStringTransformer.transform( new DOMSource( xmlDocument ), new StreamResult( writer ) );
+                xmlFactories.serializationTransformer().transform( new DOMSource( xmlDocument ),
+                                                                   new StreamResult( writer ) );
             }
         }
         catch( IOException ex )
@@ -133,22 +124,12 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
 
     private <T> Document doSerializeRoot( Options options, T object )
     {
-        try
-        {
-            Document doc = xmlFactories.documentBuilderFactory().newDocumentBuilder().newDocument();
-            doc.setXmlVersion( "1.1" );
-            doc.setXmlStandalone( true );
-            Element stateElement = doc.createElement( settings.getRootTagName() );
-            Node node = doSerialize( doc, options, object, true );
-            stateElement.appendChild( node );
-            doc.appendChild( stateElement );
-            return doc;
-        }
-        catch( ParserConfigurationException ex )
-        {
-            throw new SerializationException( "Unable to create XML document. "
-                                              + "Is your javax.xml subsystem correctly set up?", ex );
-        }
+        Document doc = xmlFactories.newDocumentForSerialization();
+        Element stateElement = doc.createElement( settings.getRootTagName() );
+        Node node = doSerialize( doc, options, object, true );
+        stateElement.appendChild( node );
+        doc.appendChild( stateElement );
+        return doc;
     }
 
     private <T> Node doSerialize( Document document, Options options, T object, boolean root )

@@ -17,7 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
-import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -35,8 +34,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
@@ -89,21 +86,10 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
 
     private JavaxXmlSettings settings;
 
-    private Transformer normalizingTransformer;
-
     @Override
     public void initialize() throws Exception
     {
         settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
-
-        String xslPath = "/org/apache/polygene/serialization/javaxxml/deserializer-normalization.xsl";
-        InputStream xsltStream = getClass().getResourceAsStream( xslPath );
-        normalizingTransformer = xmlFactories.transformerFactory()
-                                             .newTransformer( new StreamSource( xsltStream ) );
-        normalizingTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
-        normalizingTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
-        normalizingTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
-        normalizingTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
     }
 
     @Override
@@ -112,7 +98,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         try
         {
             DOMResult domResult = new DOMResult();
-            normalizingTransformer.transform( new StreamSource( state ), domResult );
+            xmlFactories.normalizationTransformer().transform( new StreamSource( state ), domResult );
             Node node = domResult.getNode();
             return fromXml( module, valueType, node );
         }

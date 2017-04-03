@@ -17,19 +17,37 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
+import java.io.InputStream;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
+import org.w3c.dom.Document;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Mixins( JavaxXmlFactories.Mixin.class )
 public interface JavaxXmlFactories
 {
     DocumentBuilderFactory documentBuilderFactory();
 
+    Document newDocumentForSerialization();
+
     TransformerFactory transformerFactory();
+
+    Transformer serializationTransformer();
+
+    Transformer normalizationTransformer();
 
     class Mixin implements JavaxXmlFactories, Initializable
     {
@@ -39,24 +57,55 @@ public interface JavaxXmlFactories
         private DocumentBuilderFactory documentBuilderFactory;
         private TransformerFactory transformerFactory;
 
+        private Transformer serializationTransformer;
+        private Transformer normalizationTransformer;
+
         @Override
         public void initialize()
         {
             JavaxXmlSettings settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
 
-            String documentBuilderFactoryClassName = settings.getDocumentBuilderFactoryClassName();
-            documentBuilderFactory = documentBuilderFactoryClassName == null
-                                     ? DocumentBuilderFactory.newInstance()
-                                     : DocumentBuilderFactory.newInstance( documentBuilderFactoryClassName,
-                                                                           getClass().getClassLoader() );
-            documentBuilderFactory.setNamespaceAware( false );
-            documentBuilderFactory.setIgnoringComments( true );
+            try
+            {
+                String documentBuilderFactoryClassName = settings.getDocumentBuilderFactoryClassName();
+                documentBuilderFactory = documentBuilderFactoryClassName == null
+                                         ? DocumentBuilderFactory.newInstance()
+                                         : DocumentBuilderFactory.newInstance( documentBuilderFactoryClassName,
+                                                                               getClass().getClassLoader() );
+                documentBuilderFactory.setValidating( false );
+                documentBuilderFactory.setNamespaceAware( false );
+                documentBuilderFactory.setIgnoringComments( true );
+                documentBuilderFactory.setFeature( XMLConstants.FEATURE_SECURE_PROCESSING, true );
 
-            String transformerFactoryClassName = settings.getTransformerFactoryClassName();
-            transformerFactory = transformerFactoryClassName == null
-                                 ? TransformerFactory.newInstance()
-                                 : TransformerFactory.newInstance( transformerFactoryClassName,
-                                                                   getClass().getClassLoader() );
+                String transformerFactoryClassName = settings.getTransformerFactoryClassName();
+                transformerFactory = transformerFactoryClassName == null
+                                     ? TransformerFactory.newInstance()
+                                     : TransformerFactory.newInstance( transformerFactoryClassName,
+                                                                       getClass().getClassLoader() );
+                transformerFactory.setFeature( XMLConstants.FEATURE_SECURE_PROCESSING, true );
+                transformerFactory.setAttribute( XMLConstants.ACCESS_EXTERNAL_DTD, "" );
+                transformerFactory.setAttribute( XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "" );
+
+                serializationTransformer = transformerFactory.newTransformer();
+                serializationTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+                serializationTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
+                serializationTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
+                serializationTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
+                serializationTransformer.setOutputProperty( OutputKeys.INDENT, "no" );
+
+                String xslPath = "/org/apache/polygene/serialization/javaxxml/deserializer-normalization.xsl";
+                InputStream xsltStream = getClass().getResourceAsStream( xslPath );
+                normalizationTransformer = transformerFactory.newTransformer( new StreamSource( xsltStream ) );
+                normalizationTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+                normalizationTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
+                normalizationTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
+                normalizationTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
+                normalizationTransformer.setOutputProperty( OutputKeys.INDENT, "no" );
+            }
+            catch( ParserConfigurationException | TransformerConfigurationException ex )
+            {
+                throw new SerializationException( "Unable to setup the XML subsystem", ex );
+            }
         }
 
         @Override
@@ -66,9 +115,39 @@ public interface JavaxXmlFactories
         }
 
         @Override
+        public Document newDocumentForSerialization()
+        {
+            try
+            {
+                DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
+                Document doc = docBuilder.newDocument();
+                doc.setXmlVersion( "1.1" );
+                doc.setXmlStandalone( true );
+                return doc;
+            }
+            catch( ParserConfigurationException ex )
+            {
+                throw new SerializationException( "Unable to create XML document. "
+                                                  + "Is your javax.xml subsystem correctly set up?", ex );
+            }
+        }
+
+        @Override
         public TransformerFactory transformerFactory()
         {
             return transformerFactory;
+        }
+
+        @Override
+        public Transformer serializationTransformer()
+        {
+            return serializationTransformer;
+        }
+
+        @Override
+        public Transformer normalizationTransformer()
+        {
+            return normalizationTransformer;
         }
     }
 }
