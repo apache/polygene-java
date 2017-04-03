@@ -23,6 +23,7 @@ import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonSerialization;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonSettings;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
@@ -46,7 +47,8 @@ public class JavaxJsonSerializationAssembler extends Assemblers.VisibilityIdenti
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,
                                                            JsonSerialization.class,
-                                                           JsonSerializer.class, JsonDeserializer.class )
+                                                           JsonSerializer.class, JsonDeserializer.class,
+                                                           JavaxJsonFactories.class )
                                                .taggedWith( Serialization.Format.JSON )
                                                .visibleIn( visibility() );
         if( hasIdentity() )
