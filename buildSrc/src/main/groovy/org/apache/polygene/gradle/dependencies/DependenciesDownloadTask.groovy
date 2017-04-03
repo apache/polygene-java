@@ -29,6 +29,6 @@ class DependenciesDownloadTask extends DefaultTask
   void downloadAllDependencies()
   {
     def allConfigurations = project.allprojects.collect { it.configurations }.flatten() as Set<Configuration>
-    allConfigurations*.resolvedConfiguration
+    allConfigurations.findAll { it.canBeResolved }*.resolvedConfiguration
   }
 }
