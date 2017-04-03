@@ -255,7 +255,15 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
                 }
             case STRING:
                 byte[] bytes = Base64.getDecoder().decode( asString( json ).getBytes( UTF_8 ) );
-                return (T) deserializeJava( bytes );
+                try
+                {
+                    return (T) deserializeJava( bytes );
+                }
+                catch( SerializationException ex )
+                {
+                    throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + json,
+                                                      ex );
+                }
             default:
                 throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + json );
         }

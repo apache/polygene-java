@@ -282,7 +282,16 @@ public interface MessagePackDeserializer extends Deserializer
             switch( value.getValueType() )
             {
                 case BINARY:
-                    return deserializeJava( value.asBinaryValue().asByteArray() );
+                    try
+                    {
+                        return deserializeJava( value.asBinaryValue().asByteArray() );
+                    }
+                    catch( SerializationException ex )
+                    {
+                        throw new SerializationException( "Don't know how to deserialize " + valueType
+                                                          + " from " + value + " (" + value.getValueType() + ")",
+                                                          ex );
+                    }
                 case MAP:
                     MapValue mapValue = value.asMapValue();
                     Optional<String> typeInfo = mapValue

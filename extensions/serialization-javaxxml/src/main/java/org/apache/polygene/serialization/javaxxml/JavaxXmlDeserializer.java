@@ -359,7 +359,14 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         if( xml.getNodeType() == Node.CDATA_SECTION_NODE || xml.getNodeType() == Node.TEXT_NODE )
         {
             byte[] bytes = Base64.getDecoder().decode( xml.getNodeValue().getBytes( UTF_8 ) );
-            return deserializeJava( bytes );
+            try
+            {
+                return deserializeJava( bytes );
+            }
+            catch( SerializationException ex )
+            {
+                throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml, ex );
+            }
         }
         throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml );
     }
