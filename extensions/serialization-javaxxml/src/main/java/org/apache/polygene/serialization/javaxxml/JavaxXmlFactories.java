@@ -18,7 +18,7 @@
 package org.apache.polygene.serialization.javaxxml;
 
 import java.io.InputStream;
-import javax.xml.XMLConstants;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,19 +75,32 @@ public interface JavaxXmlFactories
                 documentBuilderFactory.setValidating( false );
                 documentBuilderFactory.setNamespaceAware( false );
                 documentBuilderFactory.setIgnoringComments( true );
-                documentBuilderFactory.setFeature( XMLConstants.FEATURE_SECURE_PROCESSING, true );
+                for( Map.Entry<String, Boolean> feature : settings.getDocumentBuilderFactoryFeatures().entrySet() )
+                {
+                    documentBuilderFactory.setFeature( feature.getKey(), feature.getValue() );
+                }
+                for( Map.Entry<String, Object> attributes : settings.getDocumentBuilderFactoryAttributes().entrySet() )
+                {
+                    documentBuilderFactory.setAttribute( attributes.getKey(), attributes.getValue() );
+                }
 
                 String transformerFactoryClassName = settings.getTransformerFactoryClassName();
                 transformerFactory = transformerFactoryClassName == null
                                      ? TransformerFactory.newInstance()
                                      : TransformerFactory.newInstance( transformerFactoryClassName,
                                                                        getClass().getClassLoader() );
-                transformerFactory.setFeature( XMLConstants.FEATURE_SECURE_PROCESSING, true );
-                transformerFactory.setAttribute( XMLConstants.ACCESS_EXTERNAL_DTD, "" );
-                transformerFactory.setAttribute( XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "" );
+                for( Map.Entry<String, Boolean> feature : settings.getTransformerFactoryFeatures().entrySet() )
+                {
+                    transformerFactory.setFeature( feature.getKey(), feature.getValue() );
+                }
+                for( Map.Entry<String, Object> attributes : settings.getTransformerFactoryAttributes().entrySet() )
+                {
+                    transformerFactory.setAttribute( attributes.getKey(), attributes.getValue() );
+                }
 
                 serializationTransformer = transformerFactory.newTransformer();
                 serializationTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+                serializationTransformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "no" );
                 serializationTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
                 serializationTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
                 serializationTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
@@ -97,6 +110,7 @@ public interface JavaxXmlFactories
                 InputStream xsltStream = getClass().getResourceAsStream( xslPath );
                 normalizationTransformer = transformerFactory.newTransformer( new StreamSource( xsltStream ) );
                 normalizationTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
+                normalizationTransformer.setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "no" );
                 normalizationTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
                 normalizationTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
                 normalizationTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
