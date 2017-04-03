@@ -135,7 +135,7 @@ Example;
 
 [snippet,java]
 ----
-source=core/spi/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=capture
 ----
 
@@ -145,7 +145,7 @@ Any of the method declarations should work. From the testcases we have the follo
 
 [snippet,java]
 ----
-source=libraries/metrics/src/test/java/org/apache/polygene/library/metrics/AbstractTimingCaptureTest.java
+source=core/testsupport/src/main/java/org/apache/polygene/test/metrics/AbstractTimingCaptureTest.java
 tag=complex-capture
 ----
 

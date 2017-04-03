@@ -208,7 +208,7 @@ class DocumentationTask extends DefaultTask
     def errLog = getLogFile( 'adoc-2-docbook', 'stderr' )
     ExecLogged.execLogged( project, outLog, errLog, { ExecSpec spec ->
       spec.executable = 'asciidoc'
-      spec.workingDir = '..'
+      spec.workingDir = project.rootProject.projectDir
       def commonResourcesPath = relativePath( project.rootDir, commonResourcesDir )
       def asciidocConfigPath = relativePath( project.rootDir, new File( configDir, 'asciidoc.conf' ) )
       def docbookConfigPath = relativePath( project.rootDir, new File( configDir, 'docbook45.conf' ) )
