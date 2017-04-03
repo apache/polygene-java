@@ -436,15 +436,15 @@ class DistributionsPlugin implements Plugin<Project>
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
     project.plugins.apply 'signing'
     def signing = project.extensions.getByType SigningExtension
-    signing.required = !releaseSpec.developmentVersion
-    def distTasks = [TaskNames.ZIP_SOURCE_DIST, TaskNames.TAR_SOURCE_DIST,
-                     TaskNames.ZIP_BINARY_DIST, TaskNames.TAR_BINARY_DIST]
+    signing.required = !releaseSpec.developmentVersion && !project.findProperty( 'skipSigning' )
+    def distTasks = [ TaskNames.ZIP_SOURCE_DIST, TaskNames.TAR_SOURCE_DIST,
+                      TaskNames.ZIP_BINARY_DIST, TaskNames.TAR_BINARY_DIST ]
                      .collect { taskName -> project.tasks.getByName( taskName ) }
     distTasks.each { distTask ->
       distTask.finalizedBy signing.sign( distTask )
     }
-    project.tasks.withType(Sign) { Sign task ->
-      task.enabled = !releaseSpec.developmentVersion
+    project.tasks.withType( Sign ) { Sign task ->
+      task.enabled = !releaseSpec.developmentVersion && !project.findProperty( 'skipSigning' )
       task.onlyIf { !project.findProperty( 'skipSigning' ) }
     }
   }
