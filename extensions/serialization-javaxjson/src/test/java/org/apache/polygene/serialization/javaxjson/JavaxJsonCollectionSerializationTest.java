@@ -149,10 +149,6 @@ public class JavaxJsonCollectionSerializationTest extends AbstractCollectionSeri
         assertThat( fooEntry.getString( "value" ), equalTo( "bar" ) );
         assertThat( bazEntry.getJsonObject( "key" ).getString( "foo" ), equalTo( "baz" ) );
         assertThat( bazEntry.getString( "value" ), equalTo( "bazar" ) );
-
-        MapType mapType = MapType.of( ValueType.OBJECT, ValueType.STRING );
-        Map<Object, String> map2 = jsonSerialization.fromJson( module, mapType, json );
-        assertThat( map2, equalTo( map ) );
     }
 
     @Test
