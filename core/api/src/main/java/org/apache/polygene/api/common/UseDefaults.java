@@ -53,7 +53,7 @@ import java.lang.annotation.Target;
  * <p>
  * The <code>&#64;UseDefaults</code> annotation can also have a value in its declaration. This value is used,
  * unless it is overridden in the assembly (see below). Java does not support generic types of annotation values,
- * so it accepts String values, which are deserialized from JSON using the ValueSerialization SPI. This allows
+ * so it accepts String values, which are deserialized from JSON using the Serialization SPI. This allows
  * for (albeit somewhat tedious) any object type to have a default value declared on it. If the property type is
  * String, then no value deserialization is done.
  * </p>

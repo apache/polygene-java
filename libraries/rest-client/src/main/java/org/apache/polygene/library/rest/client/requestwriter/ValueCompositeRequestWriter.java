@@ -26,11 +26,11 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.property.StateHolder;
 import org.apache.polygene.api.service.qualifier.Tagged;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.SerializationException;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializationException;
-import org.apache.polygene.api.value.ValueSerializer;
 import org.apache.polygene.library.rest.client.spi.RequestWriter;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.Request;
@@ -38,7 +38,6 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
-import org.restlet.engine.io.WriterOutputStream;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 
@@ -52,8 +51,8 @@ public class ValueCompositeRequestWriter
    private PolygeneSPI spi;
 
    @Service
-   @Tagged( ValueSerialization.Formats.JSON )
-   private ValueSerializer valueSerializer;
+   @Tagged( Serialization.Format.JSON )
+   private Serializer serializer;
 
     @Override
    public boolean writeRequest(Object requestObject, Request request) throws ResourceException
@@ -80,11 +79,11 @@ public class ValueCompositeRequestWriter
                      }
                      else
                      {
-                         param = valueSerializer.serialize( value );
+                         param = serializer.serialize( value );
                      }
                      ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), param );
                  }
-                 catch( ValueSerializationException e )
+                 catch( SerializationException e )
                  {
                      throw new ResourceException( e );
                  }
@@ -99,7 +98,7 @@ public class ValueCompositeRequestWriter
                     throws IOException
                 {
                    setCharacterSet( CharacterSet.UTF_8 );
-                   valueSerializer.serialize( valueObject, new WriterOutputStream( writer, CharacterSet.UTF_8 ) );
+                   serializer.serialize( writer, valueObject );
                 }
             });
          }

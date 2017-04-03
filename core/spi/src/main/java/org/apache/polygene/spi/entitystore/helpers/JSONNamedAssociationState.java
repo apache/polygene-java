@@ -19,42 +19,56 @@
  */
 package org.apache.polygene.spi.entitystore.helpers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
 
 /**
  * JSON implementation of NamedAssociationState.
- * <p>Backed by a JSONObject.</p>
+ * <p>Backed by a JsonObject.</p>
  */
 public final class JSONNamedAssociationState
     implements NamedAssociationState
 {
 
     private final JSONEntityState entityState;
-    private final JSONObject references;
+    private final String stateName;
 
-    public JSONNamedAssociationState( JSONEntityState entityState, JSONObject references )
+    /* package */ JSONNamedAssociationState( JSONEntityState entityState, String stateName )
     {
         this.entityState = entityState;
-        this.references = references;
+        this.stateName = stateName;
+    }
+
+    private JsonObject getReferences()
+    {
+        JsonObject namedAssociations = entityState.state().getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
+        JsonValue references = namedAssociations.get( stateName );
+        if( references != null && references.getValueType() == JsonValue.ValueType.OBJECT )
+        {
+            return (JsonObject) references;
+        }
+        return Json.createObjectBuilder().build();
     }
 
     @Override
     public int count()
     {
-        return references.length();
+        return getReferences().size();
     }
 
     @Override
     public boolean containsName( String name )
     {
-        return references.has( name );
+        return getReferences().containsKey( name );
     }
 
     @Override
@@ -62,16 +76,16 @@ public final class JSONNamedAssociationState
     {
         try
         {
-            if( references.has( name ) && entityReference.identity().toString().equals( references.getString( name ) ) )
+            if( containsName( name )
+                && entityReference.identity().toString().equals( getReferences().getString( name ) ) )
             {
                 return false;
             }
-            entityState.cloneStateIfGlobalStateLoaded();
-            references.put( name, entityReference.identity().toString() );
+            entityState.stateCloneAddNamedAssociation( stateName, name, entityReference );
             entityState.markUpdated();
             return true;
         }
-        catch( JSONException ex )
+        catch( JsonException ex )
         {
             throw new EntityStoreException( ex );
         }
@@ -80,12 +94,11 @@ public final class JSONNamedAssociationState
     @Override
     public boolean remove( String name )
     {
-        if( !references.has( name ) )
+        if( !containsName( name ) )
         {
             return false;
         }
-        entityState.cloneStateIfGlobalStateLoaded();
-        references.remove( name );
+        entityState.stateCloneRemoveNamedAssociation( stateName, name );
         entityState.markUpdated();
         return true;
     }
@@ -93,29 +106,18 @@ public final class JSONNamedAssociationState
     @Override
     public EntityReference get( String name )
     {
-        try
-        {
-            return EntityReference.parseEntityReference( references.getString( name ) );
-        }
-        catch( JSONException ex )
-        {
-            return null;
-        }
+        String stringRef = getReferences().getString( name, null );
+        return stringRef == null ? null : EntityReference.parseEntityReference( stringRef );
     }
 
     @Override
     public String nameOf( EntityReference entityReference )
     {
-        JSONArray names = references.names();
-        if( names == null )
-        {
-            return null;
-        }
         try
         {
-            for( int idx = 0; idx < names.length(); idx++ )
+            JsonObject references = getReferences();
+            for( String name : references.keySet() )
             {
-                String name = names.getString( idx );
                 if( entityReference.identity().toString().equals( references.getString( name ) ) )
                 {
                     return name;
@@ -123,7 +125,7 @@ public final class JSONNamedAssociationState
             }
             return null;
         }
-        catch( JSONException ex )
+        catch( JsonException ex )
         {
             throw new EntityStoreException( ex );
         }
@@ -132,7 +134,7 @@ public final class JSONNamedAssociationState
     @Override
     public Iterator<String> iterator()
     {
-        final JSONArray names = references.names() == null ? new JSONArray() : references.names();
+        List<String> names = new ArrayList<>( getReferences().keySet() );
         return new Iterator<String>()
         {
             private int idx = 0;
@@ -140,7 +142,7 @@ public final class JSONNamedAssociationState
             @Override
             public boolean hasNext()
             {
-                return idx < names.length();
+                return idx < names.size();
             }
 
             @Override
@@ -148,11 +150,11 @@ public final class JSONNamedAssociationState
             {
                 try
                 {
-                    String next = names.getString( idx );
+                    String next = names.get( idx );
                     idx++;
                     return next;
                 }
-                catch( JSONException ex )
+                catch( JsonException ex )
                 {
                     throw new NoSuchElementException();
                 }
@@ -169,7 +171,6 @@ public final class JSONNamedAssociationState
     @Override
     public String toString()
     {
-        return references.toString();
+        return getReferences().toString();
     }
-
 }

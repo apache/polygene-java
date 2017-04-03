@@ -19,37 +19,17 @@
  */
 package org.apache.polygene.entitystore.sql.assembly;
 
-import java.io.IOException;
-import org.apache.polygene.entitystore.sql.internal.PostgreSQLDatabaseSQLServiceMixin;
-import org.apache.polygene.entitystore.sql.internal.PostgreSQLStringBuilderMixin;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
+import org.jooq.SQLDialect;
 
 /**
  * PostgreSQL EntityStore assembly.
  */
 public class PostgreSQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
+    extends AbstractSQLMapEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
 {
-
     @Override
-    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
+    protected SQLDialect getSQLDialect()
     {
-        return PostgreSQLDatabaseSQLServiceMixin.class;
+        return SQLDialect.POSTGRES;
     }
-
-    @Override
-    protected Class<?> getDatabaseStringBuilderMixin()
-    {
-        return PostgreSQLStringBuilderMixin.class;
-    }
-
-    @Override
-    protected SQLVendor getSQLVendor()
-            throws IOException
-    {
-        return SQLVendorProvider.createVendor( PostgreSQLVendor.class );
-    }
-
 }

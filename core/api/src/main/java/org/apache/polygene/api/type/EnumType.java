@@ -27,13 +27,12 @@ import java.lang.reflect.Type;
 public final class EnumType
     extends ValueType
 {
-
     public static boolean isEnum( Type type )
     {
         if( type instanceof Class )
         {
             Class<?> typeClass = (Class) type;
-            return ( typeClass.isEnum() );
+            return typeClass.isEnum();
         }
         return false;
     }
@@ -43,7 +42,7 @@ public final class EnumType
         return new EnumType( type );
     }
 
-    public EnumType( Class<?> type )
+    private EnumType( Class<?> type )
     {
         super( type );
         if( !isEnum( type ) )

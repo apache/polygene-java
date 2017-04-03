@@ -19,58 +19,76 @@
  */
 package org.apache.polygene.library.sql.liquibase;
 
-import java.net.ConnectException;
-import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Map;
 import javax.sql.DataSource;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.polygene.api.activation.ActivatorAdapter;
-import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
-import org.apache.polygene.api.service.ServiceImporterException;
 import org.apache.polygene.api.service.ServiceReference;
-import org.apache.polygene.library.sql.common.SQLUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper service for Liquibase.
  */
 @Mixins( LiquibaseService.Mixin.class )
-@Activators( LiquibaseService.Activator.class )
 public interface LiquibaseService
-        extends ServiceComposite
 {
+    /**
+     * Creates a new Liquibase instance connected to a visible DataSource.
+     *
+     * <strong>WARNING</strong> remember to {@literal liquibase.getDatabase().close()}
+     *
+     * @return a new Liquibase instance connected to a visible DataSource.
+     * @throws SQLException if something goes wrong
+     * @throws LiquibaseException  if something goes wrong
+     */
+    Liquibase newConnectedLiquibase() throws SQLException, LiquibaseException;
 
-    void activateLiquibase()
-            throws Exception;
+    /**
+     * Apply the configured database changelog.
+     *
+     * @throws SQLException if something goes wrong
+     * @throws LiquibaseException  if something goes wrong
+     */
+    void applyChangelog() throws SQLException, LiquibaseException;
 
-    public static class Activator
-            extends ActivatorAdapter<ServiceReference<LiquibaseService>>
+    /**
+     * Apply the configured database changelog.
+     *
+     * @param parameters changelog parameters, see {@link Liquibase#getChangeLogParameters()}
+     * @throws SQLException if something goes wrong
+     * @throws LiquibaseException  if something goes wrong
+     */
+    void applyChangelog( Map<String, Object> parameters )
+        throws SQLException, LiquibaseException;
+
+    /**
+     * Apply database changelog on application startup.
+     *
+     * Assembled by {@link LiquibaseAssembler#applyChangelogOnStartup()}.
+     *
+     * @see LiquibaseService#applyChangelog()
+     */
+    class ApplyChangelogActivator extends ActivatorAdapter<ServiceReference<LiquibaseService>>
     {
-
         @Override
         public void afterActivation( ServiceReference<LiquibaseService> activated )
-                throws Exception
+            throws Exception
         {
-            activated.get().activateLiquibase();
+            activated.get().applyChangelog();
         }
-
     }
 
-    public static abstract class Mixin
-            implements LiquibaseService
+    class Mixin implements LiquibaseService
     {
-
-        private static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.polygene.library.sql" );
-
         @This
         Configuration<LiquibaseConfiguration> config;
 
@@ -78,49 +96,42 @@ public interface LiquibaseService
         ServiceReference<DataSource> dataSource;
 
         @Override
-        public void activateLiquibase()
-                throws Exception
+        public Liquibase newConnectedLiquibase() throws SQLException, LiquibaseException
         {
             config.refresh();
-            boolean enabled = config.get().enabled().get();
-            if ( !enabled ) {
-                return;
-            }
-
-            Connection connection = null;
-            try {
-
-                connection = dataSource.get().getConnection();
-                DatabaseConnection dc = new JdbcConnection( connection );
-                Liquibase liquibase = new Liquibase( config.get().changeLog().get(), new ClassLoaderResourceAccessor(), dc );
-                liquibase.update( config.get().contexts().get() );
-
-            } catch ( SQLException e ) {
-
-                Throwable ex = e;
-                while ( ex.getCause() != null ) {
-                    ex = ex.getCause();
-                }
-
-                if ( ex instanceof ConnectException ) {
-                    LOGGER.warn( "Could not connect to database; Liquibase should be disabled" );
-                    return;
-                }
-
-                LOGGER.error( "Liquibase could not perform database migration", e );
-
-            } catch ( ServiceImporterException ex ) {
-
-                LOGGER.warn( "DataSource is not available - database refactoring skipped" );
-
-            } finally {
-
-                SQLUtil.rollbackQuietly( connection );
-                SQLUtil.closeQuietly( connection );
-
-            }
+            DatabaseConnection dbConnection = new JdbcConnection( dataSource.get().getConnection() );
+            return new Liquibase( config.get().changeLog().get(),
+                                  new ClassLoaderResourceAccessor(),
+                                  dbConnection );
         }
 
-    }
+        @Override
+        public void applyChangelog() throws SQLException, LiquibaseException
+        {
+            applyChangelog( Collections.emptyMap() );
+        }
 
+        @Override
+        public void applyChangelog( Map<String, Object> parameters )
+            throws SQLException, LiquibaseException
+        {
+            Liquibase liquibase = null;
+            try
+            {
+                liquibase = newConnectedLiquibase();
+                for( Map.Entry<String, Object> entry : parameters.entrySet() )
+                {
+                    liquibase.getChangeLogParameters().set( entry.getKey(), entry.getValue() );
+                }
+                liquibase.update( config.get().contexts().get() );
+            }
+            finally
+            {
+                if( liquibase != null )
+                {
+                    liquibase.getDatabase().close();
+                }
+            }
+        }
+    }
 }

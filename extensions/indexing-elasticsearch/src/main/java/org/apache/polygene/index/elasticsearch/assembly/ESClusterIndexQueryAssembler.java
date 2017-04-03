@@ -19,13 +19,11 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchClusterConfiguration;
 import org.apache.polygene.index.elasticsearch.cluster.ESClusterIndexQueryService;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class ESClusterIndexQueryAssembler
     extends AbstractElasticSearchAssembler<ESClusterIndexQueryAssembler>
@@ -39,9 +37,6 @@ public class ESClusterIndexQueryAssembler
               .identifiedBy( identity() )
               .visibleIn( visibility() )
               .instantiateOnStartup();
-
-        module.services( OrgJsonValueSerializationService.class ).
-            taggedWith( ValueSerialization.Formats.JSON );
 
         if( hasConfig() )
         {

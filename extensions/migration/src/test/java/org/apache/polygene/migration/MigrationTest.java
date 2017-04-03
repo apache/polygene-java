@@ -22,6 +22,7 @@ package org.apache.polygene.migration;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.json.JsonObject;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.service.importer.NewObjectImporter;
@@ -33,18 +34,17 @@ import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
 import org.apache.polygene.migration.assembly.MigrationBuilder;
+import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.migration.assembly.MigrationOperation;
 import org.apache.polygene.spi.entitystore.BackupRestore;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.hamcrest.CoreMatchers;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -124,9 +124,7 @@ public class MigrationTest
             id = entity.identity().get();
             uow.complete();
 
-            BackupRestore backupRestore = v1.module()
-                .findService( BackupRestore.class )
-                .get();
+            BackupRestore backupRestore = v1.module().findService( BackupRestore.class ).get();
             try( Stream<String> backup = backupRestore.backup() )
             {
                 data_v1 = backup.collect( toList() );
@@ -152,9 +150,9 @@ public class MigrationTest
 
             UnitOfWork uow = v1_1.module().unitOfWorkFactory().newUnitOfWork();
             TestEntity1_1 entity = uow.get( TestEntity1_1.class, id );
-            assertThat( "Property has been renamed", entity.newFoo().get(), CoreMatchers.equalTo( "Some value" ) );
-            assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo( 1 ) );
-            assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo( entity ) );
+            assertThat( "Property has been renamed", entity.newFoo().get(), equalTo( "Some value" ) );
+            assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), equalTo( 1 ) );
+            assertThat( "Association has been renamed", entity.newFooAssoc().get(), equalTo( entity ) );
             uow.complete();
 
             try( Stream<String> backup = testData.backup() )
@@ -183,10 +181,10 @@ public class MigrationTest
                 testData.restore( data_v1.stream() );
                 UnitOfWork uow = v2_0.module().unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
-                assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo( "Some value" ) );
-                assertThat( "Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo( "Hello Some value" ) );
-                assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo( 1 ) );
-                assertThat( "Association has been renamed", entity.newFooAssoc().get(), CoreMatchers.equalTo( entity ) );
+                assertThat( "Property has been created", entity.bar().get(), equalTo( "Some value" ) );
+                assertThat( "Custom Property has been created", entity.customBar().get(), equalTo( "Hello Some value" ) );
+                assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), equalTo( 1 ) );
+                assertThat( "Association has been renamed", entity.newFooAssoc().get(), equalTo( entity ) );
                 uow.complete();
             }
         }
@@ -221,19 +219,16 @@ public class MigrationTest
         implements EntityMigrationOperation
     {
         @Override
-        public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-            throws JSONException
+        public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore store, Migrator migrator )
         {
-            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
-
-            return migrator.addProperty( state, "customBar", "Hello " + properties.getString( "bar" ) );
+            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
+            return migrator.addProperty( context, state, "customBar", "Hello " + properties.getString( "bar" ) );
         }
 
         @Override
-        public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-            throws JSONException
+        public JsonObject downgrade( MigrationContext context, JsonObject state, StateStore store, Migrator migrator )
         {
-            return migrator.removeProperty( state, "customBar" );
+            return migrator.removeProperty( context, state, "customBar" );
         }
     }
 

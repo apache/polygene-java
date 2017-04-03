@@ -19,16 +19,14 @@
  */
 package org.apache.polygene.test;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
- * Helper assembler that adds an in-memory EntityStore, a UUID generator, and an Entity type registry to the module
+ * Helper assembler that adds an in-memory EntityStore to the module
  */
 public class EntityTestAssembler
     extends Assemblers.VisibilityIdentity<EntityTestAssembler>
@@ -42,6 +40,5 @@ public class EntityTestAssembler
         {
             service.identifiedBy( identity() );
         }
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 }

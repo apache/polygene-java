@@ -19,13 +19,11 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
 import org.apache.polygene.index.elasticsearch.filesystem.ESFilesystemIndexQueryService;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class ESFilesystemIndexQueryAssembler
     extends AbstractElasticSearchAssembler<ESFilesystemIndexQueryAssembler>

@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.io.File;
-import org.apache.derby.iapi.services.io.FileUtil;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -29,7 +27,6 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class H2SQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -43,44 +40,28 @@ public class H2SQLEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         // DataSourceService
-        new DBCPDataSourceServiceAssembler().
-            identifiedBy( "h2-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "h2-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
 
         // DataSource
-        new DataSourceAssembler().
-            withDataSourceServiceIdentity( "h2-datasource-service" ).
-            identifiedBy( "h2-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( module );
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "h2-datasource-service" )
+            .identifiedBy( "h2-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
         // SQL EntityStore
-        new H2SQLEntityStoreAssembler().
-            visibleIn( Visibility.application ).
-            withConfig( config, Visibility.layer ).
-            assemble( module );
+        new H2SQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
     }
     // END SNIPPET: assembly
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        try
-        {
-            FileUtil.removeDirectory( new File( "target/polygene-data" ) );
-        }
-        finally
-        {
-            super.tearDown();
-        }
-    }
-
 }

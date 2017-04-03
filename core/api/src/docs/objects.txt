@@ -28,9 +28,9 @@ The characteristics of an Object compared to Composite meta types are;
     * Can not have Property instances managed by the Polygene runtime.
 
 == Serialization ==
-Objects can be serialized and deserialized using the ValueSerialization API, if and only
+Objects can be serialized and deserialized using the Serialization API, if and only
 if they are used as types in Properties in Values or Entities. It depends on the
-ValueSerialization implementation on how the objects are serialized, and
+Serialization implementation on how the objects are serialized, and
 what the requirements are to allow for deserialization. In general, the Spring
 POJO setter/getter approach will always work, a default constructor is needed, and
 to be safe, make it into +java.io.Serializable+.

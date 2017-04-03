@@ -20,14 +20,16 @@
 package org.apache.polygene.bootstrap.builder;
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 import org.apache.polygene.api.activation.ActivationEventListener;
 import org.apache.polygene.api.activation.ActivationEventListenerRegistration;
 import org.apache.polygene.api.activation.ActivationException;
@@ -74,10 +76,7 @@ public class ApplicationBuilder
 
     public ApplicationBuilder metaInfo( Object... metaInfos )
     {
-        for( Object metaInfo : metaInfos )
-        {
-            this.metaInfos.add( metaInfo );
-        }
+        Collections.addAll( this.metaInfos, metaInfos );
         return this;
     }
 
@@ -199,13 +198,11 @@ public class ApplicationBuilder
      * Load an ApplicationBuilder from a JSON String.
      * @param json JSON String
      * @return Application Builder loaded from JSON
-     * @throws JSONException if unable to read JSON
      * @throws AssemblyException if unable to declare the assembly
      */
     public static ApplicationBuilder fromJson( String json )
-        throws JSONException, AssemblyException
     {
-        JSONObject root = new JSONObject( json );
+        JsonObject root = Json.createReader( new StringReader( json ) ).readObject();
         return fromJson( root );
     }
 
@@ -213,25 +210,23 @@ public class ApplicationBuilder
      * Load an ApplicationBuilder from a JSON InputStream.
      * @param json JSON input
      * @return Application Builder loaded from JSON
-     * @throws JSONException if unable to read JSON
      * @throws AssemblyException if unable to declare the assembly
      */
     public static ApplicationBuilder fromJson( InputStream json )
-        throws JSONException, AssemblyException
+        throws AssemblyException
     {
-        String jsonString = new Scanner( json, "UTF-8" ).useDelimiter( "\\A" ).next();
-        return fromJson( jsonString );
+        JsonObject root = Json.createReader( json ).readObject();
+        return fromJson( root );
     }
 
     /**
      * Load an ApplicationBuilder from a JSONObject.
      * @param root JSON object
      * @return Application Builder loaded from JSON
-     * @throws JSONException if unable to read JSON
      * @throws AssemblyException if unable to declare the assembly
      */
-    public static ApplicationBuilder fromJson( JSONObject root )
-        throws JSONException, AssemblyException
+    public static ApplicationBuilder fromJson( JsonObject root )
+        throws AssemblyException
     {
         String applicationName = root.getString( "name" );
         ApplicationBuilder builder = new ApplicationBuilder( applicationName );
@@ -242,40 +237,43 @@ public class ApplicationBuilder
     /** Configures the application struucture from a JSON document.
      *
      * @param root The JSON document root.
-     * @throws JSONException if the JSON document isn't valid.
      * @throws AssemblyException if probelms in the Assemblers provided in the JSON document.
      */
-    protected void configureWithJson( JSONObject root )
-        throws JSONException, AssemblyException
+    protected void configureWithJson( JsonObject root )
+        throws AssemblyException
     {
-        JSONArray layers = root.optJSONArray( "layers" );
-        if( layers != null )
+        JsonValue optLayers = root.get( "layers" );
+        if( optLayers != null && optLayers.getValueType() == JsonValue.ValueType.ARRAY )
         {
-            for( int i = 0; i < layers.length(); i++ )
+            JsonArray layers = (JsonArray) optLayers;
+            for( int i = 0; i < layers.size(); i++ )
             {
-                JSONObject layerObject = layers.getJSONObject( i );
+                JsonObject layerObject = layers.getJsonObject( i );
                 String layerName = layerObject.getString( "name" );
                 LayerDeclaration layerDeclaration = withLayer( layerName );
-                JSONArray using = layerObject.optJSONArray( "uses" );
-                if( using != null )
+                JsonValue optUsing = layerObject.get( "uses" );
+                if( optUsing != null && optUsing.getValueType() == JsonValue.ValueType.ARRAY )
                 {
-                    for( int j = 0; j < using.length(); j++ )
+                    JsonArray using = (JsonArray) optUsing;
+                    for( int j = 0; j < using.size(); j++ )
                     {
                         layerDeclaration.using( using.getString( j ) );
                     }
                 }
-                JSONArray modules = layerObject.optJSONArray( "modules" );
-                if( modules != null )
+                JsonValue optModules = layerObject.get( "modules" );
+                if( optModules != null && optModules.getValueType() == JsonValue.ValueType.ARRAY )
                 {
-                    for( int k = 0; k < modules.length(); k++ )
+                    JsonArray modules = (JsonArray) optModules;
+                    for( int k = 0; k < modules.size(); k++ )
                     {
-                        JSONObject moduleObject = modules.getJSONObject( k );
+                        JsonObject moduleObject = modules.getJsonObject( k );
                         String moduleName = moduleObject.getString( "name" );
                         ModuleDeclaration moduleDeclaration = layerDeclaration.withModule( moduleName );
-                        JSONArray assemblers = moduleObject.optJSONArray( "assemblers" );
-                        if( assemblers != null )
+                        JsonValue optAssemblers = moduleObject.get( "assemblers" );
+                        if( optAssemblers != null && optAssemblers.getValueType() == JsonValue.ValueType.ARRAY )
                         {
-                            for( int m = 0; m < assemblers.length(); m++ )
+                            JsonArray assemblers = (JsonArray) optAssemblers;
+                            for( int m = 0; m < assemblers.size(); m++ )
                             {
                                 String string = assemblers.getString( m );
                                 moduleDeclaration.withAssembler( string );
@@ -291,12 +289,11 @@ public class ApplicationBuilder
      * {@literal main} method that read JSON from STDIN.
      * <p>Passivation exceptions are written to STDERR if any.</p>
      * @param args Unused
-     * @throws JSONException if unable to read JSON
      * @throws AssemblyException if the assembly failed
      * @throws ActivationException if the activation failed
      */
     public static void main( String[] args )
-        throws JSONException, ActivationException, AssemblyException
+        throws ActivationException, AssemblyException
     {
         fromJson( System.in ).withPassivationShutdownHook().newApplication();
     }

@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
@@ -36,7 +39,6 @@ import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,56 +48,46 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that JDK classes are usable as Mixins.
  */
-public class JDKMixinTest
-    extends AbstractPolygeneTest
+public class JDKMixinTest extends AbstractPolygeneTest
 {
-
     @Concerns( JDKMixinConcern.class )
-    public interface JSONSerializableMap
-        extends Map<String, String>
+    public interface JSONSerializableMap extends Map<String, String>
     {
-
-        JSONObject toJSON();
-
+        JsonObject toJSON();
     }
 
     @SuppressWarnings( "serial" )
-    public static class ExtendsJDKMixin
-        extends HashMap<String, String>
+    public static class ExtendsJDKMixin extends HashMap<String, String>
         implements JSONSerializableMap
     {
-
         @Override
-        public JSONObject toJSON()
+        public JsonObject toJSON()
         {
             System.out.println( ">>>> Call ExtendsJDKMixin.toJSON()" );
-            // Copy the Map before handing it to JSONObject so that the JSONObject do not use the Composite
-            return new JSONObject( new HashMap<String, String>( this ) );
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            entrySet().forEach( entry -> builder.add( entry.getKey(), entry.getValue() ) );
+            return builder.build();
         }
-
     }
 
     public static abstract class ComposeWithJDKMixin
         implements JSONSerializableMap
     {
-
         @This
         private Map<String, String> map;
 
         @Override
-        public JSONObject toJSON()
+        public JsonObject toJSON()
         {
             System.out.println( ">>>> Call ComposeWithJDKMixin.toJSON()" );
-            // Copy the Map before handing it to JSONObject so that the JSONObject do not use the Composite
-            return new JSONObject( new HashMap<String, String>( map ) );
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            map.entrySet().forEach( entry -> builder.add( entry.getKey(), entry.getValue() ) );
+            return builder.build();
         }
-
     }
 
-    public static class JDKMixinConcern
-        extends GenericConcern
+    public static class JDKMixinConcern extends GenericConcern
     {
-
         @Override
         public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
@@ -104,13 +96,14 @@ public class JDKMixinTest
             CONCERN_RECORDS.add( method.getName() );
             return next.invoke( proxy, method, args );
         }
-
     }
 
     private static final Identity EXTENDS_IDENTITY = new StringIdentity( ExtendsJDKMixin.class.getName() );
     private static final Identity COMPOSE_IDENTITY = new StringIdentity( ComposeWithJDKMixin.class.getName() );
-    private static final Predicate<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec( EXTENDS_IDENTITY );
-    private static final Predicate<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec( COMPOSE_IDENTITY );
+    private static final Predicate<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec(
+        EXTENDS_IDENTITY );
+    private static final Predicate<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec(
+        COMPOSE_IDENTITY );
     private static final List<String> CONCERN_RECORDS = new ArrayList<String>();
 
     @Before
@@ -123,16 +116,16 @@ public class JDKMixinTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( JSONSerializableMap.class ).
-            identifiedBy( EXTENDS_IDENTITY.toString() ).
-            withMixins( ExtendsJDKMixin.class ).
-            instantiateOnStartup();
+        module.services( JSONSerializableMap.class )
+              .identifiedBy( EXTENDS_IDENTITY.toString() )
+              .withMixins( ExtendsJDKMixin.class )
+              .instantiateOnStartup();
 
-        module.layer().module( "compose" ).services( JSONSerializableMap.class ).
-            visibleIn( Visibility.layer ).
-            identifiedBy( COMPOSE_IDENTITY.toString() ).
-            withMixins( HashMap.class, ComposeWithJDKMixin.class ).
-            instantiateOnStartup();
+        module.layer().module( "compose" ).services( JSONSerializableMap.class )
+              .visibleIn( Visibility.layer )
+              .identifiedBy( COMPOSE_IDENTITY.toString() )
+              .withMixins( HashMap.class, ComposeWithJDKMixin.class )
+              .instantiateOnStartup();
     }
 
     @Test
@@ -147,12 +140,12 @@ public class JDKMixinTest
 
         JSONSerializableMap extending = services.get( 0 ).get();
         extending.put( "foo", "bar" ); // Concern trigger #1 (put)
-        JSONObject json = extending.toJSON(); // Concern trigger #2, #3 and #4 (toJSON, size, entrySet)
+        JsonObject json = extending.toJSON(); // Concern trigger #2 and #3 (toJSON, entrySet)
 
-        assertThat( json.length(), equalTo( 1 ) );
-        assertThat( json.optString( "foo" ), equalTo( "bar" ) );
+        assertThat( json.size(), equalTo( 1 ) );
+        assertThat( json.getString( "foo" ), equalTo( "bar" ) );
 
-        assertThat( CONCERN_RECORDS.size(), equalTo( 4 ) );
+        assertThat( CONCERN_RECORDS.size(), equalTo( 3 ) );
     }
 
     @Test
@@ -167,21 +160,20 @@ public class JDKMixinTest
 
         JSONSerializableMap composing = services.get( 0 ).get();
         composing.put( "foo", "bar" ); // Concern trigger #1 (put)
-        JSONObject json = composing.toJSON(); // Concern trigger #2, #3 and #4 (toJSON, size, entrySet)
+        JsonObject json = composing.toJSON(); // Concern trigger #2 and #3 (toJSON, entrySet)
 
-        assertThat( json.length(), equalTo( 1 ) );
-        assertThat( json.optString( "foo" ), equalTo( "bar" ) );
+        assertThat( json.size(), equalTo( 1 ) );
+        assertThat( json.getString( "foo" ), equalTo( "bar" ) );
 
-        assertThat( CONCERN_RECORDS.size(), equalTo( 4 ) );
+        assertThat( CONCERN_RECORDS.size(), equalTo( 3 ) );
     }
 
     private static class ServiceIdentitySpec
         implements Predicate<ServiceReference<?>>
     {
-
         private final Identity identity;
 
-        ServiceIdentitySpec(Identity identity)
+        ServiceIdentitySpec( Identity identity )
         {
             this.identity = identity;
         }
@@ -191,7 +183,5 @@ public class JDKMixinTest
         {
             return item.identity().equals( identity );
         }
-
     }
-
 }

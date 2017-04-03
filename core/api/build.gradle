@@ -25,7 +25,6 @@ jar { manifest { name = "Apache Polygene™ Core API" } }
 dependencies {
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'constraints' )
-  testImplementation polygene.extension( 'valueserialization-orgjson' )
 
   testRuntimeOnly polygene.core.runtime
 }

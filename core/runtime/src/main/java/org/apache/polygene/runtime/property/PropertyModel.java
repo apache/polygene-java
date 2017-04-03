@@ -39,22 +39,20 @@ import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.service.NoSuchServiceException;
 import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.api.serialization.Deserializer;
+import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
-import org.apache.polygene.api.type.Serialization;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.util.Classes;
-import org.apache.polygene.api.value.MissingValueSerializationException;
-import org.apache.polygene.api.value.ValueDeserializer;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
 import org.apache.polygene.bootstrap.BindingException;
 import org.apache.polygene.runtime.composite.ValueConstraintsInstance;
 import org.apache.polygene.runtime.model.Binder;
 import org.apache.polygene.runtime.model.Resolution;
-import org.apache.polygene.runtime.types.ValueTypeFactory;
+import org.apache.polygene.runtime.type.ValueTypeFactoryInstance;
 
 /**
  * Model for a Property.
@@ -187,31 +185,15 @@ public class PropertyModel
     public void bind( Resolution resolution )
         throws BindingException
     {
-        ValueTypeFactory factory = ValueTypeFactory.instance();
+        ValueTypeFactoryInstance factory = ValueTypeFactoryInstance.instance();
         Class<?> declaringClass = ( (Member) accessor() ).getDeclaringClass();
         Class<?> mainType = resolution.model().types().findFirst().orElse( null );
-        Serialization.Variant variant = findVariant();
-        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module(), variant );
+        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.module() );
         builderInfo = new BuilderPropertyInfo();
         if( type instanceof TypeVariable )
         {
             type = Classes.resolveTypeVariable( (TypeVariable) type, declaringClass, mainType );
         }
-    }
-
-    private Serialization.Variant findVariant()
-    {
-        Serialization serialization = metaInfo.get( Serialization.class );
-        Serialization.Variant variant = null;
-        if( serialization != null )
-        {
-            variant = serialization.value();
-        }
-        if( variant == null )
-        {
-            variant = Serialization.Variant.entry;
-        }
-        return variant;
     }
 
     @Override
@@ -355,21 +337,11 @@ public class PropertyModel
                     Class<?> propertyType = valueType().types().findFirst().orElse( null );
                     if( value instanceof String && !propertyType.equals( String.class ) )
                     {
-                        try
+                        ServiceFinder serviceFinder = module.instance().serviceFinder();
+                        Deserializer deserializer = serviceFinder.findService( Deserializer.class ).get();
+                        if( deserializer != null )
                         {
-                            // here we could possibly deserialize json to other types...
-                            ValueDeserializer deserializer = module.instance()
-                                    .serviceFinder()
-                                    .findService( ValueDeserializer.class )
-                                    .get();
-                            if( deserializer != null )
-                            {
-                                value = deserializer.deserialize( module, propertyType ).apply( (String) value );
-                            }
-                        }
-                        catch( NoSuchServiceException e )
-                        {
-                            throw new MissingValueSerializationException( "@UseDefaults with initialization value requires that there is a visible ValueDeserializer service available.", e);
+                            value = deserializer.deserialize( module, valueType, (String) value );
                         }
                     }
                 }

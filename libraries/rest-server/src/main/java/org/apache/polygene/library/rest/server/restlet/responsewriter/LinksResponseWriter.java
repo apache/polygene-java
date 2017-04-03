@@ -25,6 +25,7 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ import org.restlet.resource.ResourceException;
 public class LinksResponseWriter
     extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedLinkMediaTypes = Arrays.asList( MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedLinkMediaTypes = Collections.singletonList( MediaType.APPLICATION_JSON );
     private static final List<MediaType> supportedLinksMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_ATOM );
 
     @Service

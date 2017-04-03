@@ -43,4 +43,10 @@ public class AbstractMigrationRule
     {
         return toVersion;
     }
+
+    @Override
+    public String toString()
+    {
+        return fromVersion + "=>" + toVersion + ": " + getClass();
+    }
 }

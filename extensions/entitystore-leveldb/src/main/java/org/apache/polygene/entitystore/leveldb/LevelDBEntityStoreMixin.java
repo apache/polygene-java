@@ -234,7 +234,7 @@ public class LevelDBEntityStoreMixin
 
     @Override
     public void applyChanges( MapChanges changes )
-        throws IOException
+        throws Exception
     {
         final WriteBatch writeBatch = db.createWriteBatch();
         try
@@ -243,7 +243,7 @@ public class LevelDBEntityStoreMixin
             {
 
                 @Override
-                public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer newEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -262,7 +262,7 @@ public class LevelDBEntityStoreMixin
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                public Writer updateEntity( MapChange mapChange )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -274,7 +274,8 @@ public class LevelDBEntityStoreMixin
                         {
                             super.close();
                             String jsonState = toString();
-                            writeBatch.put( ref.identity().toString().getBytes( charset ), jsonState.getBytes( charset ) );
+                            writeBatch.put( mapChange.reference().identity().toString().getBytes( charset ),
+                                            jsonState.getBytes( charset ) );
                         }
 
                     };

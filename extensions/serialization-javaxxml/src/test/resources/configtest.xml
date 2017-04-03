@@ -1,0 +1,1 @@
+<?xml version="1.1" encoding="UTF-8" standalone="yes"?><state><value><identity>configtest</identity><host><value _type="org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest$Host"><ip>12.23.34.45</ip><port>1234</port></value></host><name>main</name></value></state>

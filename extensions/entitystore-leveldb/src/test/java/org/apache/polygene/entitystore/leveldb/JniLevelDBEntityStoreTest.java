@@ -27,7 +27,6 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -45,7 +44,6 @@ public class JniLevelDBEntityStoreTest
 
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().visibleIn( Visibility.module ).assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )

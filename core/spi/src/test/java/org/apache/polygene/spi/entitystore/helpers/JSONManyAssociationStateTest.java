@@ -21,12 +21,12 @@ package org.apache.polygene.spi.entitystore.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.time.SystemTime;
 import org.apache.polygene.spi.entity.EntityStatus;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -39,14 +39,14 @@ public class JSONManyAssociationStateTest
 
     @Test
     public void givenEmptyJSONManyAssociationStateWhenAddingTwoRefsAtZeroIndexExpectCorrectOrder()
-        throws JSONException
     {
         // Fake JSONManyAssociationState
-        JSONObject state = new JSONObject();
-        state.put( JSONKeys.PROPERTIES, new JSONObject() );
-        state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
-        state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
-        state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( JSONKeys.PROPERTIES, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.ASSOCIATIONS, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.MANY_ASSOCIATIONS, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.NAMED_ASSOCIATIONS, Json.createObjectBuilder().build() );
+        JsonObject state = builder.build();
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
@@ -55,7 +55,7 @@ public class JSONManyAssociationStateTest
                                                            EntityStatus.NEW,
                                                            null,
                                                            state );
-        JSONManyAssociationState jsonState = new JSONManyAssociationState( entityState, new JSONArray() );
+        JSONManyAssociationState jsonState = new JSONManyAssociationState( entityState, "under-test" );
 
         jsonState.add( 0, EntityReference.parseEntityReference( "first" ) );
         jsonState.add( 0, EntityReference.parseEntityReference( "second" ) );
@@ -65,14 +65,14 @@ public class JSONManyAssociationStateTest
 
     @Test
     public void givenJSONManyAssociationStateWhenChangingReferencesExpectCorrectBehavior()
-        throws JSONException
     {
         // Fake JSONManyAssociationState
-        JSONObject state = new JSONObject();
-        state.put( JSONKeys.PROPERTIES, new JSONObject() );
-        state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
-        state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
-        state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( JSONKeys.PROPERTIES, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.ASSOCIATIONS, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.MANY_ASSOCIATIONS, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.NAMED_ASSOCIATIONS, Json.createObjectBuilder().build() );
+        JsonObject state = builder.build();
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
@@ -81,7 +81,7 @@ public class JSONManyAssociationStateTest
                                                            EntityStatus.NEW,
                                                            null,
                                                            state );
-        JSONManyAssociationState jsonState = new JSONManyAssociationState( entityState, new JSONArray() );
+        JSONManyAssociationState jsonState = new JSONManyAssociationState( entityState, "under-test" );
 
         assertThat( jsonState.contains( EntityReference.parseEntityReference( "NOT_PRESENT" ) ), is( false ) );
 

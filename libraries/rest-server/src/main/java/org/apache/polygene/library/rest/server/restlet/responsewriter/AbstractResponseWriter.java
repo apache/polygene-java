@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.rest.server.restlet.responsewriter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.polygene.library.rest.server.spi.ResponseWriter;
@@ -36,7 +35,7 @@ import org.restlet.representation.Variant;
 public abstract class AbstractResponseWriter
     implements ResponseWriter
 {
-    protected static List<Language> ENGLISH = Arrays.asList( Language.ENGLISH );
+    protected static List<Language> ENGLISH = Collections.singletonList( Language.ENGLISH );
 
     protected Variant getVariant( Request request,
                                   List<Language> possibleLanguages,

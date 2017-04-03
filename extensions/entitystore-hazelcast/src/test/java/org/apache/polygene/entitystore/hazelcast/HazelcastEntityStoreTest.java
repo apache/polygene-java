@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.entitystore.hazelcast;
 
-import org.junit.After;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -28,7 +26,8 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.hazelcast.assembly.HazelcastEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.After;
+import org.junit.Test;
 
 public class HazelcastEntityStoreTest
     extends AbstractEntityStoreTest
@@ -43,7 +42,6 @@ public class HazelcastEntityStoreTest
         super.assemble( module );
         ModuleAssembly configModule = module.layer().module( "config" );
         new EntityTestAssembler().assemble( configModule );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new HazelcastEntityStoreAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
     }

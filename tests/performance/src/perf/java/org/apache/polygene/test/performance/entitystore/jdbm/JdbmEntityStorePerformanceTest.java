@@ -29,7 +29,6 @@ import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
 import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * Performance test for JdbmEntityStoreComposite
@@ -51,7 +50,6 @@ public class JdbmEntityStorePerformanceTest
                 throws AssemblyException
             {
                 new JdbmEntityStoreAssembler().assemble( module );
-                new OrgJsonValueSerializationAssembler().assemble( module );
                 ModuleAssembly configModule = module.layer().module( "Config" );
                 configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler().assemble( configModule );

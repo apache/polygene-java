@@ -83,6 +83,7 @@ class SQLCompatEntityStateWrapper
                    || Enum.class.isAssignableFrom( primaryType )
                    || String.class.isAssignableFrom( primaryType )
                    || Identity.class.isAssignableFrom( primaryType )
+                   // TODO javax.time support in indexing-sql
                    // || Date.class.isAssignableFrom( primaryType )
                    // || DateTime.class.isAssignableFrom( primaryType )
                    // || LocalDateTime.class.isAssignableFrom( primaryType )

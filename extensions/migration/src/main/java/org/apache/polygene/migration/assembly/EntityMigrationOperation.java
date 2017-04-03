@@ -20,8 +20,8 @@
 
 package org.apache.polygene.migration.assembly;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonException;
+import javax.json.JsonObject;
 import org.apache.polygene.migration.Migrator;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
 
@@ -30,9 +30,9 @@ import org.apache.polygene.spi.entitystore.helpers.StateStore;
  */
 public interface EntityMigrationOperation
 {
-    boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException;
+    JsonObject upgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
+        throws JsonException;
 
-    boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
-        throws JSONException;
+    JsonObject downgrade( MigrationContext context, JsonObject state, StateStore stateStore, Migrator migrator )
+        throws JsonException;
 }

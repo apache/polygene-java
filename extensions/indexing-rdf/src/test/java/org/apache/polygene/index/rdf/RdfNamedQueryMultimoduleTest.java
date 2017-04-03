@@ -27,7 +27,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class RdfNamedQueryMultimoduleTest
     extends RdfNamedQueryTest
@@ -48,7 +47,6 @@ public class RdfNamedQueryMultimoduleTest
         ModuleAssembly indexModule = layer.module( "index" );
         new DefaultUnitOfWorkAssembler().assemble( indexModule );
         new RdfMemoryStoreAssembler( Visibility.layer, Visibility.module ).assemble( indexModule );
-        new JacksonValueSerializationAssembler().assemble( indexModule );
     }
 
 }

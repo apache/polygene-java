@@ -38,7 +38,6 @@ import org.apache.polygene.library.restlet.resource.EntryPointResource;
 import org.apache.polygene.library.restlet.resource.ResourceBuilder;
 import org.apache.polygene.library.restlet.serialization.FormRepresentation;
 import org.apache.polygene.library.restlet.serialization.JsonRepresentation;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class RestletCrudConnectivityAssembler
     implements Assembler
@@ -65,6 +64,5 @@ public class RestletCrudConnectivityAssembler
                         PolygeneEntityRestlet.class )
             .visibleIn( Visibility.layer );
         module.services( ResourceBuilder.class ).visibleIn( Visibility.layer );
-        new JacksonValueSerializationAssembler().assemble( module );
     }
 }

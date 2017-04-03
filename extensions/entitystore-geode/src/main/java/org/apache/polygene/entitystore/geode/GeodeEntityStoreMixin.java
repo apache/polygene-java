@@ -154,7 +154,7 @@ public class GeodeEntityStoreMixin
     }
 
     @Override
-    public void applyChanges( MapChanges changes ) throws IOException
+    public void applyChanges( MapChanges changes ) throws Exception
     {
         changes.visitMap( new MapChanger()
         {
@@ -177,10 +177,10 @@ public class GeodeEntityStoreMixin
             }
 
             @Override
-            public Writer updateEntity( EntityReference ref, EntityDescriptor entityDescriptor )
+            public Writer updateEntity( MapChange mapChange )
                     throws IOException
             {
-                return newEntity( ref, entityDescriptor );
+                return newEntity( mapChange.reference(), mapChange.descriptor() );
             }
 
             @Override

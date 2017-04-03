@@ -20,8 +20,8 @@
 package org.apache.polygene.migration;
 
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.JsonObject;
+import org.apache.polygene.migration.assembly.MigrationContext;
 
 /**
  * The Migrator implements this interface, which is invoked by MigrationOperation implementations
@@ -29,42 +29,42 @@ import org.json.JSONObject;
  */
 public interface Migrator
 {
-    boolean addProperty( JSONObject state, String name, Object defaultValue )
-        throws JSONException;
+    JsonObject addProperty( MigrationContext content, JsonObject state,
+                            String name, Object defaultValue );
 
-    boolean removeProperty( JSONObject state, String name )
-        throws JSONException;
+    JsonObject removeProperty( MigrationContext content, JsonObject state,
+                               String name );
 
-    boolean renameProperty( JSONObject state, String from, String to )
-        throws JSONException;
+    JsonObject renameProperty( MigrationContext content, JsonObject state,
+                               String from, String to );
 
-    boolean addAssociation( JSONObject state, String name, String defaultReference )
-        throws JSONException;
+    JsonObject addAssociation( MigrationContext content, JsonObject state,
+                               String name, String defaultReference );
 
-    boolean removeAssociation( JSONObject state, String name )
-        throws JSONException;
+    JsonObject removeAssociation( MigrationContext content, JsonObject state,
+                                  String name );
 
-    boolean renameAssociation( JSONObject state, String from, String to )
-        throws JSONException;
+    JsonObject renameAssociation( MigrationContext content, JsonObject state,
+                                  String from, String to );
 
-    boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
-        throws JSONException;
+    JsonObject addManyAssociation( MigrationContext content, JsonObject state,
+                                   String name, String... defaultReferences );
 
-    boolean removeManyAssociation( JSONObject state, String name )
-        throws JSONException;
+    JsonObject removeManyAssociation( MigrationContext content, JsonObject state,
+                                      String name );
 
-    boolean renameManyAssociation( JSONObject state, String from, String to )
-        throws JSONException;
+    JsonObject renameManyAssociation( MigrationContext content, JsonObject state,
+                                      String from, String to );
 
-    boolean addNamedAssociation( JSONObject state, String name, Map<String, String> defaultReferences )
-        throws JSONException;
+    JsonObject addNamedAssociation( MigrationContext content, JsonObject state,
+                                    String name, Map<String, String> defaultReferences );
 
-    boolean removeNamedAssociation( JSONObject state, String name )
-        throws JSONException;
+    JsonObject removeNamedAssociation( MigrationContext content, JsonObject state,
+                                       String name );
 
-    boolean renameNamedAssociation( JSONObject state, String from, String to )
-        throws JSONException;
+    JsonObject renameNamedAssociation( MigrationContext content, JsonObject state,
+                                       String from, String to );
 
-    void changeEntityType( JSONObject state, String newEntityType )
-        throws JSONException;
+    JsonObject changeEntityType( MigrationContext content, JsonObject state,
+                                 String fromType, String toType );
 }

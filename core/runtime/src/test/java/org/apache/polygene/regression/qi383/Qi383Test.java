@@ -19,18 +19,16 @@
  */
 package org.apache.polygene.regression.qi383;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 public class Qi383Test extends AbstractPolygeneTest
 {
@@ -38,7 +36,6 @@ public class Qi383Test extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.addServices( MemoryEntityStoreService.class );
         module.entities( Car.class );
     }

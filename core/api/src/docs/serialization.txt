@@ -1,0 +1,102 @@
+//////////////////////
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-serialization,Serialization]]
+= Serialization =
+
+State can be serialized and deserialized using the Serialization API which is a Service API implemented
+by SPI and extensions.
+
+TIP: +Serialization extends Serializer, Deserializer+. See the <<javadocs>> for interfaces detail.
+
+The Serialization mechanism apply to the following object types :
+
+    * ValueComposite,
+    * EntityReference & Identity,
+    * Array, Iterable & Stream,
+    * Map,
+    * Plain Values.
+
+Nested Plain Values, EntityReferences, Identities, Arrays, Iterables, Streams, Maps, ValueComposites are supported.
+EntityComposites and EntityReferences are serialized as their identity string.
+
+Plain Values can be one of :
+
+    * String,
+    * Character or char,
+    * Boolean or boolean,
+    * Integer or int,
+    * Long or long,
+    * Short or short,
+    * Byte or byte,
+    * Float or float,
+    * Double or double,
+    * BigInteger,
+    * BigDecimal,
+    * java.time types.
+
+TIP: Serialization behaviour can be tuned with options.
+Every +Serializer+ methods can take a +Serializer.Options+ object that contains flags to change how some
+values are serialized. See the <<javadocs>> for more details.
+
+Values of unknown types and all arrays are considered as +java.io.Serializable+ and by so are (de)serialized to (from)
+base64 encoded bytes using pure Java serialization. If it happens that the value is not Serializable or the input to
+deserialize is invalid, a +SerializationException+ is thrown.
+
+Methods of +Serializer+ allow to specify if the serialized state should contain extra type information about the
+serialized value. Having type information in the serialized payload allows to keep actual ValueComposite types and by so
+circumvent +AmbiguousTypeException+ when deserializing.
+
+Core Runtime provides a default Serialization system based on `javax.json` types.
+
+Let's see how it works in practice.
+
+[snippet,java]
+----
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=default
+----
+
+Reading this first example step by step we ;
+
+    . declare a ValueComposite,
+    . assemble it,
+    . create a new Value instance,
+    . use the +ValueComposite#toString()+ method to get a JSON representation of the Value,
+    . and finally, use the +Module#newValueFromSerializedState()+ method to create a new Value instance from the JSON
+      state.
+
++ValueComposite#toString()+ method leverage Value Serialization and by so provide JSON based representation. The Module
+API allows to create new Value instances from serialized state.
+
+On top of that, Application assemblies can register different implementation of Serialization as Services to
+support more formats, see the <<extensions>> section. Note that the default behaviour described above is overriden if a
+Serialization Service is visible.
+
+Let's see how to use the Serialization Services.
+
+[snippet,java]
+----
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=service
+----
+
+In this second example, we ;
+
+    . declare a ValueComposite,
+    . assemble it,
+    . assemble a Serialization Service backed by the +javax.json+ types,
+    . get the +Serializer+ and +Deserializer+ Services injected,
+    . create a new Value instance,
+    . use the +Serializer#serialize()+ method to get a JSON representation of the Value,
+    . and finally, use the +Deserializer#deserialize()+ method to create a new Value instance from the JSON state.

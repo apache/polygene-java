@@ -140,7 +140,7 @@ public class JdbmEntityStoreMixin
             changes.visitMap( new MapChanger()
             {
                 @Override
-                public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
+                public Writer newEntity( EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -160,7 +160,7 @@ public class JdbmEntityStoreMixin
                 }
 
                 @Override
-                public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
+                public Writer updateEntity( MapChange mapChange )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
@@ -171,7 +171,7 @@ public class JdbmEntityStoreMixin
                         {
                             super.close();
 
-                            Long stateIndex = getStateIndex( ref.identity() );
+                            Long stateIndex = getStateIndex( mapChange.reference().identity() );
                             byte[] stateArray = toString().getBytes( "UTF-8" );
                             recordManager.update( stateIndex, stateArray, serializer );
                         }

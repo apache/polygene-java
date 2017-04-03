@@ -33,7 +33,6 @@ jar { manifest { name = "Apache Polygene™ Sample - Car Rental" } }
 
 dependencies {
   implementation polygene.core.bootstrap
-  implementation polygene.extension( 'valueserialization-orgjson' )
 
   providedCompile libraries.servlet_api
 

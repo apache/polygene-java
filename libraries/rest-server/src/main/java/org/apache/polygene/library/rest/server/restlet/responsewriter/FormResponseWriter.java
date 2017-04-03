@@ -29,8 +29,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
 import org.restlet.Response;
 import org.restlet.data.Form;
@@ -47,7 +49,8 @@ import org.restlet.resource.ResourceException;
 public class FormResponseWriter
     extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML,
+                                                                              MediaType.APPLICATION_JSON );
 
     @Service
     private Configuration cfg;
@@ -61,7 +64,7 @@ public class FormResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                JSONObject json = new JSONObject();
+                JsonObjectBuilder builder = Json.createObjectBuilder();
                 Form form = (Form) result;
                 try
                 {
@@ -70,21 +73,21 @@ public class FormResponseWriter
                         String value = parameter.getValue();
                         if( value == null )
                         {
-                            json.put( parameter.getName(), JSONObject.NULL );
+                            builder.add( parameter.getName(), JsonValue.NULL );
                         }
                         else
                         {
-                            json.put( parameter.getName(), value );
+                            builder.add( parameter.getName(), value );
                         }
                     }
                 }
-                catch( JSONException e )
+                catch( JsonException e )
                 {
                     e.printStackTrace();
                 }
 
-                StringRepresentation representation
-                    = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );
+                StringRepresentation representation = new StringRepresentation( builder.build().toString(),
+                                                                                MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
 
                 return true;

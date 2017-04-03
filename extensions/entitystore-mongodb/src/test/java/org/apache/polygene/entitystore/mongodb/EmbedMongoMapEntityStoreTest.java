@@ -31,7 +31,6 @@ import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -75,8 +74,6 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
 
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-
-        new OrgJsonValueSerializationAssembler().assemble( module );
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 

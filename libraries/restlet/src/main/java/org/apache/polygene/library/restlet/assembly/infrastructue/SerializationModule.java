@@ -20,12 +20,10 @@
 
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
-import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.valueserialization.jackson.assembly.JacksonValueSerializationAssembler;
 
 public class SerializationModule
     implements ModuleAssembler
@@ -36,9 +34,6 @@ public class SerializationModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new JacksonValueSerializationAssembler()
-            .visibleIn( Visibility.layer )
-            .assemble( module );
         return module;
     }
 }

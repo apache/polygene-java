@@ -21,11 +21,10 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
+import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class MemoryEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
@@ -45,7 +44,6 @@ public class MemoryEntityStorePerformanceTest
                 throws AssemblyException
             {
                 new MemoryEntityStoreAssembler().assemble( module );
-                new OrgJsonValueSerializationAssembler().assemble( module );
             }
         };
     }

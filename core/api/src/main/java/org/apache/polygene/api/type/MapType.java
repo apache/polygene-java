@@ -21,6 +21,7 @@ package org.apache.polygene.api.type;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.polygene.api.util.Classes;
 
 /**
@@ -30,38 +31,40 @@ import org.apache.polygene.api.util.Classes;
 public final class MapType
     extends ValueType
 {
-
-    private ValueType keyType;
-    private ValueType valueType;
-    private final Serialization.Variant variant;
-
     public static boolean isMap( Type type )
     {
         Class<?> cl = Classes.RAW_CLASS.apply( type );
         return Map.class.isAssignableFrom( cl );
     }
 
+    public static MapType of( Class<?> mapType, ValueType keyType, ValueType valueType )
+    {
+        return new MapType( mapType, keyType, valueType );
+    }
+
+    public static MapType of( Class<?> mapType, Class<?> keyType, Class<?> valueType )
+    {
+        return of( mapType, ValueType.of( keyType ), ValueType.of( valueType ) );
+    }
+
+    public static MapType of( ValueType keyType, ValueType valueType )
+    {
+        return new MapType( Map.class, keyType, valueType );
+    }
+
     public static MapType of( Class<?> keyType, Class<?> valueType )
     {
-        return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ) );
+        return of( ValueType.of( keyType ), ValueType.of( valueType ) );
     }
 
-    public static MapType of( Class<?> keyType, Class<?> valueType, Serialization.Variant variant )
-    {
-        return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ), variant );
-    }
+    private ValueType keyType;
+    private ValueType valueType;
 
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
-    {
-        this( type, keyType, valueType, Serialization.Variant.entry );
-    }
-
-    public MapType( Class<?> type, ValueType keyType, ValueType valueType, Serialization.Variant variant )
     {
         super( type );
         this.keyType = keyType;
         this.valueType = valueType;
-        this.variant = variant;
         if( !isMap( type ) )
         {
             throw new IllegalArgumentException( type + " is not a Map." );
@@ -78,9 +81,21 @@ public final class MapType
         return valueType;
     }
 
-    public Serialization.Variant variant()
+    @Override
+    public boolean equals( final Object o )
     {
-        return variant;
+        if( this == o ) { return true; }
+        if( o == null || getClass() != o.getClass() ) { return false; }
+        if( !super.equals( o ) ) { return false; }
+        MapType mapType = (MapType) o;
+        return Objects.equals( keyType, mapType.keyType ) &&
+               Objects.equals( valueType, mapType.valueType );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( super.hashCode(), keyType, valueType );
     }
 
     @Override

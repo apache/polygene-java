@@ -24,7 +24,9 @@ jar { manifest { name = "Apache Polygene™ Core SPI" } }
 
 dependencies {
   api polygene.core.api
-  api libraries.org_json
+  api libraries.javax_json
+
+  runtimeOnly libraries.johnzon
 
   testImplementation polygene.core.testsupport
 

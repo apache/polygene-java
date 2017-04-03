@@ -43,7 +43,8 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.api.service.qualifier.Tagged;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.time.SystemTime;
@@ -56,8 +57,6 @@ import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.api.value.ValueSerialization;
-import org.apache.polygene.api.value.ValueSerializationException;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
@@ -80,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * (one reference per line), and NamedAssociations are stored as multi-line strings (one name on a line, reference on the
  * next line).
  * </p>
- * <p>Nested ValuesComposites, Collections and Maps are stored using available ValueSerialization service.</p>
+ * <p>Nested ValuesComposites, Collections and Maps are stored using available StateSerialization service.</p>
  */
 public class PreferencesEntityStoreMixin
     implements ServiceActivation, EntityStore, EntityStoreSPI
@@ -98,8 +97,7 @@ public class PreferencesEntityStoreMixin
     private Application application;
 
     @Service
-    @Tagged( ValueSerialization.Formats.JSON )
-    private ValueSerialization valueSerialization;
+    private Serialization serialization;
 
     private Preferences root;
 
@@ -263,16 +261,16 @@ public class PreferencesEntityStoreMixin
                             else
                             {
                                 // Load as string even though it's a number
-                                String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName()
-                                                                  .name(), null );
+                                String string = propsPrefs.get( persistentPropertyDescriptor.qualifiedName()
+                                                                                            .name(), null );
                                 Object value;
-                                if( json == null )
+                                if( string == null )
                                 {
                                     value = null;
                                 }
                                 else
                                 {
-                                    value = valueSerialization.deserialize( module, persistentPropertyDescriptor.valueType(), json );
+                                    value = serialization.deserialize( module, propertyType, string );
                                 }
                                 properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                             }
@@ -289,27 +287,27 @@ public class PreferencesEntityStoreMixin
                                  || propertyType instanceof CollectionType
                                  || propertyType instanceof EnumType )
                         {
-                            String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
+                            String string = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
                             Object value;
-                            if( json == null )
+                            if( string == null )
                             {
                                 value = null;
                             }
                             else
                             {
-                                value = valueSerialization.deserialize( module, persistentPropertyDescriptor.valueType(), json );
+                                value = serialization.deserialize( module, propertyType, string );
                             }
                             properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                         }
                         else
                         {
-                            String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
-                            if( json == null )
+                            String string = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
+                            if( string == null )
                             {
                                 if( persistentPropertyDescriptor.resolveInitialValue( module ) != null )
                                 {
                                     properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                            persistentPropertyDescriptor.resolveInitialValue( module ) );
+                                                    persistentPropertyDescriptor.resolveInitialValue( module ) );
                                 }
                                 else
                                 {
@@ -318,7 +316,7 @@ public class PreferencesEntityStoreMixin
                             }
                             else
                             {
-                                Object value = valueSerialization.deserialize( module, propertyType, json );
+                                Object value = serialization.deserialize( module, propertyType, string );
                                 properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                             }
                         }
@@ -402,7 +400,7 @@ public class PreferencesEntityStoreMixin
                                            namedAssociations
             );
         }
-        catch( ValueSerializationException | BackingStoreException e )
+        catch( SerializationException | BackingStoreException e )
         {
             throw new EntityStoreException( e );
         }
@@ -528,8 +526,8 @@ public class PreferencesEntityStoreMixin
                                       else
                                       {
                                           // Store as string even though it's a number
-                                          String jsonString = valueSerialization.serialize( value );
-                                          propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
+                                          String string = serialization.serialize( value );
+                                          propsPrefs.put( persistentProperty.qualifiedName().name(), string );
                                       }
                                   }
                                   else if( primaryType.equals( Boolean.class ) )
@@ -542,13 +540,13 @@ public class PreferencesEntityStoreMixin
                                            || valueType instanceof CollectionType
                                            || valueType instanceof EnumType )
                                   {
-                                      String jsonString = valueSerialization.serialize( value );
-                                      propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
+                                      String string = serialization.serialize( value );
+                                      propsPrefs.put( persistentProperty.qualifiedName().name(), string );
                                   }
                                   else
                                   {
-                                      String jsonString = valueSerialization.serialize( value );
-                                      propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
+                                      String string = serialization.serialize( value );
+                                      propsPrefs.put( persistentProperty.qualifiedName().name(), string );
                                   }
                               }
                           } );
@@ -616,7 +614,7 @@ public class PreferencesEntityStoreMixin
                 }
             }
         }
-        catch( ValueSerializationException e )
+        catch( SerializationException e )
         {
             throw new EntityStoreException( "Could not store EntityState", e );
         }

@@ -94,6 +94,10 @@ include::decoratormixin.txt[]
 
 :leveloffset: {level3}
 
+include::serialization.txt[]
+
+:leveloffset: {level3}
+
 // include::indexing.txt[]
 
 :leveloffset: {level3}

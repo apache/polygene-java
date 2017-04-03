@@ -49,11 +49,11 @@ identifiable configuration. That will trigger the reading attempts of the suppor
 configuration is parsed from the file system it is written to the Entity Store, and if the Entity Store is not
 ephemeral, then on the next start, any changes to the configuration will NOT be detected, and will simply be ignored.
 
-To be able to read JSON, YAML and XML configuration, you must configure a ValueSerialization system that supports
+To be able to read JSON, YAML and XML configuration, you must configure a Serialization system that supports
 the configuration format that you want to use.
 
-* extension/valueserialization-jackson supports JSON
-* extension/valueserialization-stax supports XML
+* extension/serialization-javaxjson supports JSON
+* extension/serialization-javaxxml supports XML
 
 == Support for Complex Types ==
 Since the regular Value Serialization platform is used, for JSON, YAML and XML, the configuration can contain
@@ -84,4 +84,3 @@ must be called. Example;
 source=core/api/src/test/java/org/apache/polygene/api/configuration/MailService.java
 tag=write
 --------------
-

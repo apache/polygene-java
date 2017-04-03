@@ -20,6 +20,7 @@
 
 package org.apache.polygene.runtime.defaults;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,28 +29,25 @@ import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.value.ValueDeserializer;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueDeserializer;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * JAVADOC
  */
-public class UseDefaultsTest
-    extends AbstractPolygeneTest
+public class UseDefaultsTest extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.transients( TestComposite.class );
-        module.services( ValueDeserializer.class ).withMixins( OrgJsonValueDeserializer.class );
         module.forMixin( TestComposite.class ).declareDefaults().assemblyString().set( "habba" );
     }
 
@@ -63,7 +61,14 @@ public class UseDefaultsTest
         assertThat( "zeroInt is zero", testComposite.defaultInt().get(), equalTo( 0 ) );
         assertThat( "nullString is null", testComposite.nullString().get(), nullValue() );
         assertThat( "defaultString is empty string", testComposite.defaultString().get(), equalTo( "" ) );
-        assertThat( "assemblyString is empty string", testComposite.assemblyString().get(), equalTo( "habba" ) );
+        assertThat( "assemblyString is set string", testComposite.assemblyString().get(), equalTo( "habba" ) );
+
+        assertThat( "nullPrimitiveArray is null", testComposite.nullPrimitiveArray().get(), nullValue() );
+        assertTrue( "emptyPrimitiveArray is empty",
+                    Arrays.equals( testComposite.emptyPrimitiveArray().get(), new int[ 0 ] ) );
+        assertThat( "nullArray is null", testComposite.nullArray().get(), nullValue() );
+        assertTrue( "emptyArray is empty array",
+                    Arrays.equals( testComposite.emptyArray().get(), new Integer[ 0 ] ) );
     }
 
     @Test
@@ -76,9 +81,14 @@ public class UseDefaultsTest
         assertThat( testComposite.initializedIntegerDefaultValue().get(), equalTo( 123 ) );
         assertThat( testComposite.initializedFloatDefaultValue().get(), equalTo( 123.45f ) );
         List<String> expectedList = Collections.singletonList( "abcde" );
-//        assertThat( testComposite.initializedStringListDefultString().get(), equalTo( expectedList) );
+        assertThat( testComposite.initializedStringListDefultString().get(), equalTo( expectedList ) );
         Map<String, Integer> expectedMap = Collections.singletonMap( "abcd", 345 );
-//        assertThat( testComposite.initializedMapDefaultValue().get(), equalTo( expectedMap) );
+        assertThat( testComposite.initializedMapDefaultValue().get(), equalTo( expectedMap ) );
+
+        assertTrue( "initializedPrimitiveArray is set",
+                    Arrays.equals( testComposite.initializedPrimitiveArray().get(), new int[] { 23, 42 } ) );
+        assertTrue( "initializedArray is set",
+                    Arrays.equals( testComposite.initializedArray().get(), new Integer[] { 23, 42 } ) );
     }
 
     interface TestComposite
@@ -109,12 +119,28 @@ public class UseDefaultsTest
         @UseDefaults( "123.45" )
         Property<Float> initializedFloatDefaultValue();
 
-// TODO: Seems that OrgJsonValueDeserializer has problem with arrays.
-//        @UseDefaults( "[\"abcde\"]" )
-//        Property<List<String>> initializedStringListDefultString();
+        @UseDefaults( "[\"abcde\"]" )
+        Property<List<String>> initializedStringListDefultString();
 
-// TODO: Seems that OrgJsonValueDeserializer has problem with arrays.
-//        @UseDefaults( "{\"abcd\" : 345 }" )
-//        Property<Map<String, Integer>> initializedMapDefaultValue();
+        @UseDefaults( "{\"abcd\": 345}" )
+        Property<Map<String, Integer>> initializedMapDefaultValue();
+
+        @Optional
+        Property<int[]> nullPrimitiveArray();
+
+        @UseDefaults
+        Property<int[]> emptyPrimitiveArray();
+
+        @UseDefaults( "[23, 42]" )
+        Property<int[]> initializedPrimitiveArray();
+
+        @Optional
+        Property<Integer[]> nullArray();
+
+        @UseDefaults
+        Property<Integer[]> emptyArray();
+
+        @UseDefaults( "[23, 42]" )
+        Property<Integer[]> initializedArray();
     }
 }

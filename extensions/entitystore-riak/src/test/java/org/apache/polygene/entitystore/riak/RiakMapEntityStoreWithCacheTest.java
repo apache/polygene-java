@@ -27,7 +27,6 @@ import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.apache.polygene.test.internal.DockerRule;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.junit.ClassRule;
 
 public class RiakMapEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
@@ -60,7 +59,6 @@ public class RiakMapEntityStoreWithCacheTest extends AbstractEntityStoreWithCach
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        new OrgJsonValueSerializationAssembler().assemble( module );
         new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
                                                         .declareDefaults();

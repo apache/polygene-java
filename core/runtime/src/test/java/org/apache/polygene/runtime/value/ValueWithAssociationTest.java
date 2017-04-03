@@ -19,10 +19,6 @@
  */
 package org.apache.polygene.runtime.value;
 
-import org.apache.polygene.api.identity.HasIdentity;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.association.ManyAssociation;
@@ -31,16 +27,18 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -56,7 +54,6 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
         module.values( SimpleName.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 
     @Test

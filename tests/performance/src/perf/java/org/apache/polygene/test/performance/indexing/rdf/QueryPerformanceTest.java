@@ -19,12 +19,6 @@ package org.apache.polygene.test.performance.indexing.rdf;
 
 import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
-import org.apache.polygene.api.query.QueryBuilderFactory;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -33,12 +27,14 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
+import org.apache.polygene.api.query.QueryBuilderFactory;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
@@ -52,7 +48,10 @@ import org.apache.polygene.index.rdf.indexing.RdfIndexingService;
 import org.apache.polygene.index.rdf.query.SesameExpressions;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
@@ -300,7 +299,6 @@ public class QueryPerformanceTest
         new RdfNativeSesameStoreAssembler().assemble( persistenceModule );
 
         // Entity store
-        new OrgJsonValueSerializationAssembler().assemble( persistenceModule );
         new MemoryEntityStoreAssembler().visibleIn( Visibility.application ).assemble( persistenceModule );
 
         return infrastructureLayer;

@@ -28,12 +28,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.value.ValueDescriptor;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -41,12 +43,15 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 
+import static org.restlet.data.MediaType.APPLICATION_JSON;
+import static org.restlet.data.MediaType.TEXT_HTML;
+
 /**
  * JAVADOC
  */
 public class ValueDescriptorResponseWriter extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedMediaTypes = Arrays.asList( TEXT_HTML, APPLICATION_JSON );
 
     @Structure
     private ModuleDescriptor module;
@@ -61,36 +66,38 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
         if( result instanceof ValueDescriptor )
         {
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
-            if( MediaType.APPLICATION_JSON.equals( type ) )
+            if( APPLICATION_JSON.equals( type ) )
             {
-                JSONObject json = new JSONObject();
                 ValueDescriptor vd = (ValueDescriptor) result;
-                vd.state().properties().forEach( propertyDescriptor -> {
-                    try
+                JsonObjectBuilder builder = Json.createObjectBuilder();
+                vd.state().properties().forEach(
+                    property ->
                     {
-                        Object o = propertyDescriptor.resolveInitialValue(module);
-                        if( o == null )
+                        try
                         {
-                            json.put( propertyDescriptor.qualifiedName().name(), JSONObject.NULL );
+                            Object o = property.resolveInitialValue( module );
+                            if( o == null )
+                            {
+                                builder.add( property.qualifiedName().name(), JsonValue.NULL );
+                            }
+                            else
+                            {
+                                builder.add( property.qualifiedName().name(), o.toString() );
+                            }
                         }
-                        else
+                        catch( JsonException ex )
                         {
-                            json.put( propertyDescriptor.qualifiedName().name(), o.toString() );
+                            throw new RestResponseException( "Unable to serialize " + vd, ex );
                         }
-                    }
-                    catch( JSONException e )
-                    {
-                        throw new RestResponseException( "Unable to serialize " + vd, e);
-                    }
-                } );
-                StringRepresentation representation
-                    = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );
+                    } );
+                StringRepresentation representation = new StringRepresentation( builder.build().toString(),
+                                                                                APPLICATION_JSON );
                 response.setEntity( representation );
                 return true;
             }
-            else if( MediaType.TEXT_HTML.equals( type ) )
+            else if( TEXT_HTML.equals( type ) )
             {
-                Representation rep = new WriterRepresentation( MediaType.TEXT_HTML )
+                Representation rep = new WriterRepresentation( TEXT_HTML )
                 {
                     @Override
                     public void write( Writer writer )

@@ -21,10 +21,10 @@ package org.apache.polygene.spi.module;
 
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.metrics.MetricsProvider;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.structure.TypeLookup;
-import org.apache.polygene.api.value.ValueSerialization;
 import org.apache.polygene.spi.entitystore.EntityStore;
+import org.apache.polygene.spi.type.ValueTypeFactory;
 
 public interface ModuleSpi extends Module
 {
@@ -32,9 +32,9 @@ public interface ModuleSpi extends Module
 
     IdentityGenerator identityGenerator();
 
-    ValueSerialization valueSerialization();
-
-    TypeLookup typeLookup();
+    Serialization serialization();
 
     MetricsProvider metricsProvider();
+
+    ValueTypeFactory valueTypeFactory();
 }

@@ -20,7 +20,6 @@
 package org.apache.polygene.library.sql.common;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -28,13 +27,10 @@ import org.apache.polygene.api.property.Property;
  * database, and given schema name as schema to create tables in.
  */
 public interface SQLConfiguration
-        extends ConfigurationComposite
 {
-
     /**
      * The schema name to use to create/find tables.
      */
     @Optional
     Property<String> schemaName();
-
 }

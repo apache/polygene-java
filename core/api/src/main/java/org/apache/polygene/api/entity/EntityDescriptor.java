@@ -20,18 +20,14 @@
 
 package org.apache.polygene.api.entity;
 
-import org.apache.polygene.api.association.AssociationStateDescriptor;
 import org.apache.polygene.api.composite.CompositeDescriptor;
-import org.apache.polygene.api.composite.StatefulCompositeDescriptor;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 
 /**
  * Entity Descriptor.
  */
 public interface EntityDescriptor
-    extends CompositeDescriptor, StatefulCompositeDescriptor
+    extends CompositeDescriptor, StatefulAssociationCompositeDescriptor
 {
-    @Override
-    AssociationStateDescriptor state();
-
     boolean queryable();
 }

@@ -90,11 +90,7 @@ public class PostgreSQLDBIntegrityTest
         uow = this.unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( entity );
         SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
-        String schemaName = config.schemaName().get();
-        if( schemaName == null )
-        {
-            schemaName = PostgreSQLAppStartup.DEFAULT_SCHEMA_NAME;
-        }
+        String schemaName = config.schemaName().get().toLowerCase();
         uow.remove( entity );
         uow.complete();
 

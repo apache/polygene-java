@@ -22,7 +22,7 @@ package org.apache.polygene.library.rest.server.restlet.responsewriter;
 
 import java.util.Arrays;
 import java.util.List;
-import org.json.JSONObject;
+import javax.json.JsonObject;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
@@ -33,28 +33,28 @@ import org.restlet.resource.ResourceException;
  */
 public class JSONResponseWriter extends AbstractResponseWriter
 {
-    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
+    private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML,
+                                                                              MediaType.APPLICATION_JSON );
 
     @Override
-    public boolean writeResponse( final Object result, final Response response )
-        throws ResourceException
+    public boolean writeResponse( Object result, Response response ) throws ResourceException
     {
-        if( result instanceof JSONObject )
+        if( result instanceof JsonObject )
         {
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                JSONObject json = (JSONObject) result;
-                StringRepresentation representation
-                    = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );
+                JsonObject json = (JsonObject) result;
+                StringRepresentation representation = new StringRepresentation( json.toString(),
+                                                                                MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
                 return true;
             }
             else if( MediaType.TEXT_HTML.equals( type ) )
             {
-                JSONObject json = (JSONObject) result;
-                StringRepresentation representation
-                    = new StringRepresentation( json.toString(), MediaType.TEXT_HTML );
+                JsonObject json = (JsonObject) result;
+                StringRepresentation representation = new StringRepresentation( json.toString(),
+                                                                                MediaType.TEXT_HTML );
                 response.setEntity( representation );
                 return true;
             }
