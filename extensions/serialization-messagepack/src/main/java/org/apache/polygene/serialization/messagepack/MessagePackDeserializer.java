@@ -37,6 +37,7 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
@@ -48,6 +49,7 @@ import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractBinaryDeserializer;
@@ -101,6 +103,12 @@ public interface MessagePackDeserializer extends Deserializer
                 if( value == null || value.isNilValue() )
                 {
                     return null;
+                }
+                ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
+                if( convertedBy != null )
+                {
+                    return (T) module.instance().newObject( convertedBy.value() )
+                                     .fromString( doDeserialize( module, ValueType.STRING, value ).toString() );
                 }
                 Converter<Object> converter = converters.converterFor( valueType );
                 if( converter != null )
@@ -222,26 +230,36 @@ public interface MessagePackDeserializer extends Deserializer
         {
             return property ->
             {
-                Value value = namedValues.get( property.qualifiedName().name() );
-                if( value != null )
+                Value messagePackValue = namedValues.get( property.qualifiedName().name() );
+                if( messagePackValue != null )
                 {
-                    Object propertyValue = doDeserialize( module, property.valueType(), value );
+                    Object value;
+                    ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
+                    if( convertedBy != null )
+                    {
+                        value = module.instance().newObject( convertedBy.value() )
+                                      .fromString( doDeserialize( module, ValueType.STRING, messagePackValue ) );
+                    }
+                    else
+                    {
+                        value = doDeserialize( module, property.valueType(), messagePackValue );
+                    }
                     if( property.isImmutable() )
                     {
-                        if( propertyValue instanceof Set )
+                        if( value instanceof Set )
                         {
-                            return unmodifiableSet( (Set<?>) propertyValue );
+                            return unmodifiableSet( (Set<?>) value );
                         }
-                        else if( propertyValue instanceof List )
+                        else if( value instanceof List )
                         {
-                            return unmodifiableList( (List<?>) propertyValue );
+                            return unmodifiableList( (List<?>) value );
                         }
-                        else if( propertyValue instanceof Map )
+                        else if( value instanceof Map )
                         {
-                            return unmodifiableMap( (Map<?, ?>) propertyValue );
+                            return unmodifiableMap( (Map<?, ?>) value );
                         }
                     }
-                    return propertyValue;
+                    return value;
                 }
                 return property.resolveInitialValue( module );
             };

@@ -33,17 +33,21 @@ import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
+import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.util.ArrayIterable;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -76,6 +80,9 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
 
     @Uses
     private ServiceDescriptor descriptor;
+
+    @Structure
+    private Module module;
 
     private JavaxXmlSettings settings;
 
@@ -139,6 +146,11 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
             return document.createElement( NULL_ELEMENT_NAME );
         }
         Class<?> objectClass = object.getClass();
+        ConvertedBy convertedBy = Annotations.annotationOn( objectClass, ConvertedBy.class );
+        if( convertedBy != null )
+        {
+            return doSerialize( document, options, module.newObject( convertedBy.value() ).toString( object ), false );
+        }
         Converter<Object> converter = converters.converterFor( objectClass );
         if( converter != null )
         {
@@ -190,6 +202,11 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
             property ->
             {
                 Object value = state.propertyFor( property.accessor() ).get();
+                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
+                if( convertedBy != null )
+                {
+                    value = module.newObject( convertedBy.value() ).toString( value );
+                }
                 Element element = document.createElement( property.qualifiedName().name() );
                 element.appendChild( doSerialize( document, options, value, false ) );
                 valueElement.appendChild( element );

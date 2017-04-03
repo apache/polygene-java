@@ -47,6 +47,7 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
@@ -57,6 +58,7 @@ import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
@@ -183,6 +185,12 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
         if( json == null || JsonValue.NULL.equals( json ) )
         {
             return null;
+        }
+        ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
+        if( convertedBy != null )
+        {
+            return (T) module.instance().newObject( convertedBy.value() )
+                             .fromString( doDeserialize( module, ValueType.STRING, json ).toString() );
         }
         Converter<Object> converter = converters.converterFor( valueType );
         if( converter != null )
@@ -339,7 +347,17 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
             JsonValue jsonValue = object.get( property.qualifiedName().name() );
             if( jsonValue != null )
             {
-                Object value = doDeserialize( module, property.valueType(), jsonValue );
+                Object value;
+                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
+                if( convertedBy != null )
+                {
+                    value = module.instance().newObject( convertedBy.value() )
+                                  .fromString( doDeserialize( module, ValueType.STRING, jsonValue ) );
+                }
+                else
+                {
+                    value = doDeserialize( module, property.valueType(), jsonValue );
+                }
                 if( property.isImmutable() )
                 {
                     if( value instanceof Set )

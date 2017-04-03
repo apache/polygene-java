@@ -15,18 +15,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.serialization.javaxxml;
+package org.apache.polygene.api.serialization;
 
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
-import org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class JavaxXmlConfigurationDeserializationTest extends AbstractConfigurationDeserializationTest
+/**
+ * Convert this type or Property with the given {@link Converter}.
+ *
+ * The {@link Converter} must be assembled as an object and will automatically be instantiated by the Polygene runtime.
+ */
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Documented
+public @interface ConvertedBy
 {
-    @Override
-    public void assemble( ModuleAssembly module )
-    {
-        new JavaxXmlSerializationAssembler().assemble( module );
-        super.assemble( module );
-    }
+    Class<? extends Converter> value();
 }

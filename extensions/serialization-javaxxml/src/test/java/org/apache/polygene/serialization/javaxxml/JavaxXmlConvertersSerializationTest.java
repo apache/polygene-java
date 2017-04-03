@@ -14,8 +14,6 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
 package org.apache.polygene.serialization.javaxxml;
 
@@ -25,26 +23,25 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
-import org.apache.polygene.test.serialization.AbstractPlainValueSerializationTest;
+import org.apache.polygene.test.serialization.AbstractConvertersSerializationTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class JavaxXmlPlainValueSerializationTest extends AbstractPlainValueSerializationTest
+public class JavaxXmlConvertersSerializationTest extends AbstractConvertersSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new JavaxXmlSerializationAssembler().withXmlSettings( withTestSettings( new JavaxXmlSettings() ) )
-                                            .assemble( module );
+        new JavaxXmlSerializationAssembler().assemble( module );
+        super.assemble( module );
     }
 
     @Service
     private JavaxXmlFactories xmlFactories;
 
     @Override
-    protected String getSingleStringRawState( String state ) throws Exception
+    protected String getStringFromValueState( String state, String key ) throws Exception
     {
         JavaxXmlSettings settings = serviceFinder.findService( JavaxXmlSerialization.class )
                                                  .metaInfo( JavaxXmlSettings.class );
@@ -54,8 +51,16 @@ public class JavaxXmlPlainValueSerializationTest extends AbstractPlainValueSeria
         Optional<Element> stateElement = JavaxXml.firstChildElementNamed( doc, settings.getRootTagName() );
         if( stateElement.isPresent() )
         {
-            Optional<Node> stateNode = JavaxXml.firstStateChildNode( stateElement.get() );
-            return stateNode.map( Node::getNodeValue ).orElse( "" );
+            Optional<Element> valueNode = JavaxXml.firstChildElementNamed( stateElement.get(),
+                                                                           settings.getValueTagName() );
+            if( valueNode.isPresent() )
+            {
+                Optional<Element> element = JavaxXml.firstChildElementNamed( valueNode.get(), key );
+                if( element.isPresent() )
+                {
+                    return element.get().getFirstChild().getNodeValue();
+                }
+            }
         }
         return null;
     }

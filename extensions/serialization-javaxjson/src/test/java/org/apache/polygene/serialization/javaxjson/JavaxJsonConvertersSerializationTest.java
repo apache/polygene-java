@@ -15,18 +15,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.serialization.javaxxml;
+package org.apache.polygene.serialization.javaxjson;
 
+import java.io.StringReader;
+import javax.json.JsonObject;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
-import org.apache.polygene.test.entity.AbstractConfigurationDeserializationTest;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
+import org.apache.polygene.test.serialization.AbstractConvertersSerializationTest;
 
-public class JavaxXmlConfigurationDeserializationTest extends AbstractConfigurationDeserializationTest
+public class JavaxJsonConvertersSerializationTest extends AbstractConvertersSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
     {
-        new JavaxXmlSerializationAssembler().assemble( module );
+        new JavaxJsonSerializationAssembler().assemble( module );
         super.assemble( module );
+    }
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
+
+    @Override
+    protected String getStringFromValueState( String state, String key ) throws Exception
+    {
+        JsonObject jsonObject = jsonFactories.readerFactory().createReader( new StringReader( state ) ).readObject();
+        return jsonObject.getString( key );
     }
 }

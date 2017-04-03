@@ -26,16 +26,20 @@ import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.CompositeInstance;
+import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.util.ArrayIterable;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -60,6 +64,9 @@ public interface MessagePackSerializer extends Serializer
 
         @This
         private MessagePackAdapters adapters;
+
+        @Structure
+        private Module module;
 
         @Override
         public void serialize( Options options, OutputStream output, @Optional Object object )
@@ -86,6 +93,11 @@ public interface MessagePackSerializer extends Serializer
                     return ValueFactory.newNil();
                 }
                 Class<?> objectClass = object.getClass();
+                ConvertedBy convertedBy = Annotations.annotationOn( objectClass, ConvertedBy.class );
+                if( convertedBy != null )
+                {
+                    return doSerialize( options, module.newObject( convertedBy.value() ).toString( object ), false );
+                }
                 Converter<Object> converter = converters.converterFor( objectClass );
                 if( converter != null )
                 {
@@ -138,9 +150,18 @@ public interface MessagePackSerializer extends Serializer
 
             ValueFactory.MapBuilder builder = ValueFactory.newMapBuilder();
             valueType.properties().forEach(
-                property -> builder.put(
-                    ValueFactory.newString( property.qualifiedName().name() ),
-                    doSerialize( options, state.propertyFor( property.accessor() ).get(), false ) ) );
+                property ->
+                {
+                    Object value = state.propertyFor( property.accessor() ).get();
+                    ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
+                    if( convertedBy != null )
+                    {
+                        value = module.newObject( convertedBy.value() ).toString( value );
+                    }
+                    builder.put(
+                        ValueFactory.newString( property.qualifiedName().name() ),
+                        doSerialize( options, value, false ) );
+                } );
             valueType.associations().forEach(
                 association -> builder.put(
                     ValueFactory.newString( association.qualifiedName().name() ),
