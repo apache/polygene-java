@@ -16,5 +16,5 @@
 FROM @s3server@
 
 # See https://github.com/scality/S3/blob/master/DOCKER.md
-ENV ACCESS_KEY dummyIdentifier
-ENV SECRET_KEY dummyCredential
+ENV SCALITY_ACCESS_KEY_ID dummyIdentifier
+ENV SCALITY_SECRET_ACCESS_KEY dummyCredential
