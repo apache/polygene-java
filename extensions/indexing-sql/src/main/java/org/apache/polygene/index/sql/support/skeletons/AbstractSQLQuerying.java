@@ -988,15 +988,17 @@ public abstract class AbstractSQLQuerying
                     QualifiedName qName
                         = QualifiedName.fromAccessor( predicate.property().accessor() );
                     String columnName;
+                    Object value;
                     if( qName.type().equals( HasIdentity.class.getName() ) )
                     {
                         columnName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+                        value = predicate.value().toString();
                     }
                     else
                     {
                         columnName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        value = predicate.value();
                     }
-                    Object value = predicate.value();
                     modifyFromClauseAndWhereClauseToGetValue(
                         qName, value, predicate,
                         negationActive, lastTableIndex,
