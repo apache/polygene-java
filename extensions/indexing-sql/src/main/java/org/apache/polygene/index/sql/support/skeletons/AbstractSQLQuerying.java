@@ -36,6 +36,7 @@ import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -988,15 +989,17 @@ public abstract class AbstractSQLQuerying
                     QualifiedName qName
                         = QualifiedName.fromAccessor( predicate.property().accessor() );
                     String columnName;
+                    Object value;
                     if( qName.type().equals( HasIdentity.class.getName() ) )
                     {
                         columnName = DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+                        value = predicate.value().toString();
                     }
                     else
                     {
                         columnName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+                        value = predicate.value();
                     }
-                    Object value = predicate.value();
                     modifyFromClauseAndWhereClauseToGetValue(
                         qName, value, predicate,
                         negationActive, lastTableIndex,
@@ -1393,8 +1396,7 @@ public abstract class AbstractSQLQuerying
         return this.findFromLookupTables( SQL_OPERATORS, null, predicate, false );
     }
 
-    protected JoinType
-    getTableJoinStyle( Predicate<Composite> predicate, Boolean negationActive )
+    protected JoinType getTableJoinStyle( Predicate<Composite> predicate, Boolean negationActive )
     {
         return this.findFromLookupTables( JOIN_STYLES, NEGATED_JOIN_STYLES, predicate,
                                           negationActive );
@@ -1428,8 +1430,7 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    protected QuerySpecificationBuilder
-    getBuilderForPredicate( SQLVendor vendor, String tableAlias )
+    protected QuerySpecificationBuilder getBuilderForPredicate( SQLVendor vendor, String tableAlias )
     {
         QueryFactory q = vendor.getQueryFactory();
         ColumnsFactory c = vendor.getColumnsFactory();
