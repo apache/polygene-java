@@ -70,7 +70,7 @@ class DependenciesPlugin implements Plugin<Project>
   }
 
   static void applyDependencyResolutionRules( Configuration configuration,
-                                                     DependenciesDeclarationExtension declaration )
+                                              DependenciesDeclarationExtension declaration )
   {
     configuration.resolutionStrategy.dependencySubstitution.all(
       { DependencySubstitution dep ->

@@ -17,14 +17,11 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.util.Collections;
-import java.util.Map;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonException;
 import javax.json.JsonReaderFactory;
 import javax.json.JsonWriterFactory;
 import javax.json.spi.JsonProvider;
-import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.json.stream.JsonParserFactory;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -84,14 +81,12 @@ public interface JavaxJsonFactories
                 }
             }
 
-            Map<String, ?> parserProperties = Collections.singletonMap( "org.apache.johnzon.supports-comments", true );
-            parserFactory = jsonProvider.createParserFactory( parserProperties );
-            readerFactory = jsonProvider.createReaderFactory( parserProperties );
+            parserFactory = jsonProvider.createParserFactory( settings.getJsonParserProperties() );
+            readerFactory = jsonProvider.createReaderFactory( settings.getJsonParserProperties() );
 
-            Map<String, ?> generatorProperties = Collections.singletonMap( JsonGenerator.PRETTY_PRINTING, false );
-            generatorFactory = jsonProvider.createGeneratorFactory( generatorProperties );
-            builderFactory = jsonProvider.createBuilderFactory( generatorProperties );
-            writerFactory = jsonProvider.createWriterFactory( generatorProperties );
+            generatorFactory = jsonProvider.createGeneratorFactory( settings.getJsonGeneratorProperties() );
+            builderFactory = jsonProvider.createBuilderFactory( settings.getJsonGeneratorProperties() );
+            writerFactory = jsonProvider.createWriterFactory( settings.getJsonGeneratorProperties() );
         }
 
         @Override

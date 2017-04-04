@@ -15,20 +15,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.gradle.dependencies
+package org.apache.polygene.api.serialization;
 
-import groovy.transform.CompileStatic
-import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.TaskAction
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@CompileStatic
-class DependenciesDownloadTask extends DefaultTask
+/**
+ * Convert this type or Property with the given {@link Converter}.
+ *
+ * The {@link Converter} must be assembled as an object and will automatically be instantiated by the Polygene runtime.
+ */
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.TYPE, ElementType.METHOD } )
+@Documented
+public @interface ConvertedBy
 {
-  @TaskAction
-  void downloadAllDependencies()
-  {
-    def allConfigurations = project.allprojects.collect { it.configurations }.flatten() as Set<Configuration>
-    allConfigurations.findAll { it.canBeResolved }*.resolvedConfiguration
-  }
+    Class<? extends Converter> value();
 }

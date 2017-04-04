@@ -22,7 +22,7 @@
 
 [devstatus]
 --------------
-source=extensions/serialization-msgpack/dev-status.xml
+source=extensions/serialization-messagepack/dev-status.xml
 --------------
 
 `Serialization` service backed by http://msgpack.org/[MessagePack] that produce and consume binary payloads.
@@ -38,6 +38,6 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/serialization-msgpack/src/test/java/org/apache/polygene/serialization/msgpack/MessagePackValueCompositeSerializationTest.java
+source=extensions/serialization-messagepack/src/test/java/org/apache/polygene/serialization/messagepack/MessagePackValueCompositeSerializationTest.java
 tag=assembly
 ----

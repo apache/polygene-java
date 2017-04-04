@@ -23,6 +23,7 @@ import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.serialization.javaxxml.JavaxXmlFactories;
 import org.apache.polygene.serialization.javaxxml.JavaxXmlSerialization;
 import org.apache.polygene.serialization.javaxxml.JavaxXmlSettings;
 import org.apache.polygene.spi.serialization.XmlDeserializer;
@@ -46,7 +47,8 @@ public class JavaxXmlSerializationAssembler extends Assemblers.VisibilityIdentit
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,
                                                            XmlSerialization.class,
-                                                           XmlSerializer.class, XmlDeserializer.class )
+                                                           XmlSerializer.class, XmlDeserializer.class,
+                                                           JavaxXmlFactories.class )
                                                .taggedWith( Serialization.Format.XML )
                                                .visibleIn( visibility() );
         if( hasIdentity() )

@@ -117,10 +117,10 @@ class PublishingPlugin implements Plugin<Project>
   {
     project.plugins.apply 'signing'
     def signing = project.extensions.getByType SigningExtension
-    signing.required = config.signed
+    signing.required = config.signed && !project.findProperty( 'skipSigning' )
     signing.sign project.configurations.getByName( 'archives' )
     def signArchives = project.tasks.getByName( 'signArchives' ) as Sign
-    signArchives.enabled = config.signed
+    signArchives.enabled = config.signed && !project.findProperty( 'skipSigning' )
     signArchives.onlyIf { !project.findProperty( 'skipSigning' ) }
   }
 

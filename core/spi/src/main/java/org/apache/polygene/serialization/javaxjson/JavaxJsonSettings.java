@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.polygene.api.type.ValueType;
@@ -32,11 +33,18 @@ public class JavaxJsonSettings extends SerializationSettings<JavaxJsonSettings>
     }
 
     private String jsonProviderClassName;
+    private Map<String, Object> jsonParserProperties;
+    private Map<String, Object> jsonGeneratorProperties;
     private String typeInfoPropertyName;
     private Map<ValueType, JavaxJsonAdapter<?>> adapters;
 
     public JavaxJsonSettings()
     {
+        jsonParserProperties = new HashMap<String, Object>()
+        {{
+            put( "org.apache.johnzon.supports-comments", true );
+        }};
+        jsonGeneratorProperties = new HashMap<>();
         typeInfoPropertyName = "_type";
         adapters = new LinkedHashMap<>();
     }
@@ -49,6 +57,26 @@ public class JavaxJsonSettings extends SerializationSettings<JavaxJsonSettings>
     public void setJsonProviderClassName( String jsonProviderClassName )
     {
         this.jsonProviderClassName = jsonProviderClassName;
+    }
+
+    public Map<String, Object> getJsonParserProperties()
+    {
+        return jsonParserProperties;
+    }
+
+    public void setJsonParserProperties( Map<String, Object> jsonParserProperties )
+    {
+        this.jsonParserProperties = jsonParserProperties;
+    }
+
+    public Map<String, Object> getJsonGeneratorProperties()
+    {
+        return jsonGeneratorProperties;
+    }
+
+    public void setJsonGeneratorProperties( Map<String, Object> jsonGeneratorProperties )
+    {
+        this.jsonGeneratorProperties = jsonGeneratorProperties;
     }
 
     public String getTypeInfoPropertyName()

@@ -17,7 +17,6 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
-import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -35,8 +34,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
@@ -46,6 +43,7 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
@@ -57,6 +55,7 @@ import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
@@ -89,21 +88,10 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
 
     private JavaxXmlSettings settings;
 
-    private Transformer normalizingTransformer;
-
     @Override
     public void initialize() throws Exception
     {
         settings = JavaxXmlSettings.orDefault( descriptor.metaInfo( JavaxXmlSettings.class ) );
-
-        String xslPath = "/org/apache/polygene/serialization/javaxxml/deserializer-normalization.xsl";
-        InputStream xsltStream = getClass().getResourceAsStream( xslPath );
-        normalizingTransformer = xmlFactories.transformerFactory()
-                                             .newTransformer( new StreamSource( xsltStream ) );
-        normalizingTransformer.setOutputProperty( OutputKeys.METHOD, "xml" );
-        normalizingTransformer.setOutputProperty( OutputKeys.VERSION, "1.1" );
-        normalizingTransformer.setOutputProperty( OutputKeys.STANDALONE, "yes" );
-        normalizingTransformer.setOutputProperty( OutputKeys.ENCODING, UTF_8.name() );
     }
 
     @Override
@@ -112,7 +100,7 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         try
         {
             DOMResult domResult = new DOMResult();
-            normalizingTransformer.transform( new StreamSource( state ), domResult );
+            xmlFactories.normalizationTransformer().transform( new StreamSource( state ), domResult );
             Node node = domResult.getNode();
             return fromXml( module, valueType, node );
         }
@@ -144,6 +132,12 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         if( xml.getNodeType() == Node.ELEMENT_NODE && NULL_ELEMENT_NAME.equals( ( (Element) xml ).getTagName() ) )
         {
             return null;
+        }
+        ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
+        if( convertedBy != null )
+        {
+            return (T) module.instance().newObject( convertedBy.value() )
+                             .fromString( doDeserialize( module, ValueType.STRING, xml ).toString() );
         }
         Converter<Object> converter = converters.converterFor( valueType );
         if( converter != null )
@@ -209,7 +203,17 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
             if( element.isPresent() )
             {
                 Node valueNode = JavaxXml.firstStateChildNode( element.get() ).orElse( null );
-                Object value = doDeserialize( module, property.valueType(), valueNode );
+                Object value;
+                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
+                if( convertedBy != null )
+                {
+                    value = module.instance().newObject( convertedBy.value() )
+                                  .fromString( doDeserialize( module, ValueType.STRING, valueNode ) );
+                }
+                else
+                {
+                    value = doDeserialize( module, property.valueType(), valueNode );
+                }
                 if( property.isImmutable() )
                 {
                     if( value instanceof Set )
@@ -359,7 +363,14 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         if( xml.getNodeType() == Node.CDATA_SECTION_NODE || xml.getNodeType() == Node.TEXT_NODE )
         {
             byte[] bytes = Base64.getDecoder().decode( xml.getNodeValue().getBytes( UTF_8 ) );
-            return deserializeJava( bytes );
+            try
+            {
+                return deserializeJava( bytes );
+            }
+            catch( SerializationException ex )
+            {
+                throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml, ex );
+            }
         }
         throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml );
     }

@@ -17,8 +17,10 @@
  */
 package org.apache.polygene.serialization.javaxxml;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.xml.XMLConstants;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.spi.serialization.SerializationSettings;
 
@@ -27,7 +29,6 @@ import org.apache.polygene.spi.serialization.SerializationSettings;
  *
  * Must be registered as meta-info at assembly time.
  */
-// TODO javax.xml properties?
 public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
 {
     public static final JavaxXmlSettings DEFAULT = new JavaxXmlSettings();
@@ -38,7 +39,12 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
     }
 
     private String documentBuilderFactoryClassName;
+    private Map<String, Boolean> documentBuilderFactoryFeatures;
+    private Map<String, Object> documentBuilderFactoryAttributes;
+
     private String transformerFactoryClassName;
+    private Map<String, Boolean> transformerFactoryFeatures;
+    private Map<String, Object> transformerFactoryAttributes;
 
     private String rootTagName;
     private String collectionTagName;
@@ -52,6 +58,22 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
 
     public JavaxXmlSettings()
     {
+        documentBuilderFactoryFeatures = new HashMap<String, Boolean>()
+        {{
+            put( XMLConstants.FEATURE_SECURE_PROCESSING, true );
+        }};
+        documentBuilderFactoryAttributes = new HashMap<>();
+
+        transformerFactoryFeatures = new HashMap<String, Boolean>()
+        {{
+            put( XMLConstants.FEATURE_SECURE_PROCESSING, true );
+        }};
+        transformerFactoryAttributes = new HashMap<String, Object>()
+        {{
+            put( XMLConstants.ACCESS_EXTERNAL_DTD, "" );
+            put( XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "" );
+        }};
+
         rootTagName = "state";
         collectionTagName = "collection";
         collectionElementTagName = "element";
@@ -59,6 +81,7 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
         mapEntryTagName = "entry";
         valueTagName = "value";
         typeInfoTagName = "_type";
+
         adapters = new LinkedHashMap<>();
     }
 
@@ -72,6 +95,26 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
         this.documentBuilderFactoryClassName = documentBuilderFactoryClassName;
     }
 
+    public Map<String, Boolean> getDocumentBuilderFactoryFeatures()
+    {
+        return documentBuilderFactoryFeatures;
+    }
+
+    public void setDocumentBuilderFactoryFeatures( Map<String, Boolean> documentBuilderFactoryFeatures )
+    {
+        this.documentBuilderFactoryFeatures = documentBuilderFactoryFeatures;
+    }
+
+    public Map<String, Object> getDocumentBuilderFactoryAttributes()
+    {
+        return documentBuilderFactoryAttributes;
+    }
+
+    public void setDocumentBuilderFactoryAttributes( Map<String, Object> documentBuilderFactoryAttributes )
+    {
+        this.documentBuilderFactoryAttributes = documentBuilderFactoryAttributes;
+    }
+
     public String getTransformerFactoryClassName()
     {
         return transformerFactoryClassName;
@@ -80,6 +123,26 @@ public class JavaxXmlSettings extends SerializationSettings<JavaxXmlSettings>
     public void setTransformerFactoryClassName( String transformerFactoryClassName )
     {
         this.transformerFactoryClassName = transformerFactoryClassName;
+    }
+
+    public Map<String, Boolean> getTransformerFactoryFeatures()
+    {
+        return transformerFactoryFeatures;
+    }
+
+    public void setTransformerFactoryFeatures( Map<String, Boolean> transformerFactoryFeatures )
+    {
+        this.transformerFactoryFeatures = transformerFactoryFeatures;
+    }
+
+    public Map<String, Object> getTransformerFactoryAttributes()
+    {
+        return transformerFactoryAttributes;
+    }
+
+    public void setTransformerFactoryAttributes( Map<String, Object> transformerFactoryAttributes )
+    {
+        this.transformerFactoryAttributes = transformerFactoryAttributes;
     }
 
     public String getRootTagName()
