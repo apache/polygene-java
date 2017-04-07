@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.AssemblySpecifications;
 import org.apache.polygene.bootstrap.AssemblyVisitor;
 import org.apache.polygene.bootstrap.ConfigurationDeclaration;
@@ -497,6 +499,7 @@ final class ModuleAssemblyImpl
             throws AssemblyException
     {
         addDefaultAssemblers();
+        List<Throwable> exceptions = new ArrayList<>();
         List<TransientModel> transientModels = new ArrayList<>();
         List<ObjectModel> objectModels = new ArrayList<>();
         List<ValueModel> valueModels = new ArrayList<>();
@@ -520,20 +523,56 @@ final class ModuleAssemblyImpl
         }
 
         transientModels.addAll(transientAssemblies.values().stream()
-                .map(composite -> composite.newTransientModel(moduleModel, metaInfoDeclaration, helper))
+                .map( composite ->
+                      {
+                          try
+                          {
+                              return composite.newTransientModel( moduleModel, metaInfoDeclaration, helper );
+                          }
+                          catch( Exception e )
+                          {
+                              exceptions.add( e );
+                              return null;
+                          }
+                      } )
+                .filter( Objects::nonNull )
                 .collect(toList()));
 
         valueModels.addAll(valueAssemblies.values().stream()
-                .map(value -> value.newValueModel(moduleModel, metaInfoDeclaration, helper))
+                .map( value ->
+                      {
+                          try
+                          {
+                              return value.newValueModel( moduleModel, metaInfoDeclaration, helper );
+                          }
+                          catch( Exception e )
+                          {
+                              exceptions.add( e );
+                              return null;
+                          }
+                      } )
+                .filter( Objects::nonNull )
                 .collect(toList()));
 
         entityModels.addAll(entityAssemblies.values().stream()
-                .map(entityDeclaration -> entityDeclaration.newEntityModel(moduleModel,
-                        metaInfoDeclaration,
-                        metaInfoDeclaration,
-                        metaInfoDeclaration,
-                        metaInfoDeclaration,
-                        helper))
+                .map( entityDeclaration ->
+                      {
+                          try
+                          {
+                              return entityDeclaration.newEntityModel( moduleModel,
+                                                                       metaInfoDeclaration,
+                                                                       metaInfoDeclaration,
+                                                                       metaInfoDeclaration,
+                                                                       metaInfoDeclaration,
+                                                                       helper );
+                          }
+                          catch( Exception e )
+                          {
+                              exceptions.add( e );
+                              return null;
+                          }
+                      } )
+                .filter( Objects::nonNull )
                 .collect(Collectors.toList()));
 
         for (ObjectAssemblyImpl objectDeclaration : objectAssemblies.values())
@@ -541,15 +580,27 @@ final class ModuleAssemblyImpl
             objectDeclaration.addObjectModel(moduleModel, objectModels);
         }
 
-        for (ServiceAssemblyImpl serviceDeclaration : serviceAssemblies)
-        {
-            if (serviceDeclaration.identity == null)
-            {
-                serviceDeclaration.identity = generateId(serviceDeclaration.types());
-            }
-
-            serviceModels.add(serviceDeclaration.newServiceModel(moduleModel, metaInfoDeclaration, helper));
-        }
+        serviceModels.addAll(
+            serviceAssemblies
+                .stream()
+                .map( serviceDeclaration ->
+                      {
+                          try
+                          {
+                              if( serviceDeclaration.identity == null )
+                              {
+                                  serviceDeclaration.identity = generateId( serviceDeclaration.types() );
+                              }
+                              return ( serviceDeclaration.newServiceModel( moduleModel, metaInfoDeclaration, helper ) );
+                          }
+                          catch( Exception e )
+                          {
+                              exceptions.add( e );
+                              return null;
+                          }
+                      } )
+                .filter( Objects::nonNull )
+                .collect( Collectors.toList() ) );
 
         for (ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values())
         {
@@ -563,22 +614,29 @@ final class ModuleAssemblyImpl
             String identity = serviceModel.identity().toString();
             if (identities.contains(identity))
             {
-                throw new DuplicateServiceIdentityException(
-                        "Duplicated service reference: " + identity + " in module " + moduleModel.name()
+                DuplicateServiceIdentityException exception = new DuplicateServiceIdentityException(
+                    "Duplicated service reference: " + identity + " in module " + moduleModel.name()
                 );
+                exceptions.add( exception.fillInStackTrace() );
+            } else
+            {
+                identities.add( identity );
             }
-            identities.add(identity);
         }
         for (ImportedServiceModel serviceModel : importedServiceModels)
         {
             String identity = serviceModel.identity().toString();
             if (identities.contains(identity))
             {
-                throw new DuplicateServiceIdentityException(
+                DuplicateServiceIdentityException exception = new DuplicateServiceIdentityException(
                         "Duplicated service reference: " + identity + " in module " + moduleModel.name()
                 );
+                exceptions.add( exception.fillInStackTrace() );
             }
-            identities.add(identity);
+            else
+            {
+                identities.add( identity );
+            }
         }
 
         importedServiceModels
@@ -589,10 +647,22 @@ final class ModuleAssemblyImpl
                                                                    .equals( importedServiceModel.serviceImporter() ) ) )
             .forEach(
                 importedServiceModel ->
-                    objectModels.add( new ObjectModel( moduleModel, importedServiceModel.serviceImporter(),
-                                                       Visibility.module, new MetaInfo() ) ) );
-
-        return moduleModel;
+                {
+                    try
+                    {
+                        objectModels.add( new ObjectModel( moduleModel, importedServiceModel.serviceImporter(),
+                                                           Visibility.module, new MetaInfo() ) );
+                    }
+                    catch( Exception e )
+                    {
+                        exceptions.add( e );
+                    }
+                } );
+        if( exceptions.size() == 0 )
+        {
+            return moduleModel;
+        }
+        throw new AssemblyReportException( exceptions );
     }
 
     private void addDefaultAssemblers()

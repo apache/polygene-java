@@ -80,7 +80,7 @@ public final class Energy4Java
             }
             return model;
         }
-        catch( AssemblyResportException e )
+        catch( AssemblyReportException e )
         {
             e.attacheModelReport( InvalidCompositeException.modelReport() );
             throw e;

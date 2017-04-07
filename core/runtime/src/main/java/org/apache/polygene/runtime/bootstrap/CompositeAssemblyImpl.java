@@ -68,7 +68,7 @@ import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.util.Fields;
 import org.apache.polygene.api.util.HierarchicalVisitorAdapter;
-import org.apache.polygene.bootstrap.AssemblyResportException;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.StateDeclarations;
 import org.apache.polygene.runtime.association.AssociationModel;
 import org.apache.polygene.runtime.association.AssociationsModel;
@@ -214,6 +214,7 @@ public abstract class CompositeAssemblyImpl
         Set<Class<?>> thisDependencies = new HashSet<>();
         types.forEach( mixinType ->
                        {
+
                            for( Method method : mixinType.getMethods() )
                            {
                                try
@@ -270,6 +271,7 @@ public abstract class CompositeAssemblyImpl
                                }
                                catch( Exception e )
                                {
+                                   System.out.println("NICLAS 2: " + e.getClass() + " - " + e.getMessage());
                                    exceptions.add( e );
                                }
                            }
@@ -303,7 +305,7 @@ public abstract class CompositeAssemblyImpl
                                   } );
         if( exceptions.size() > 0 )
         {
-            throw new AssemblyResportException( exceptions );
+            throw new AssemblyReportException( exceptions );
         }
     }
 

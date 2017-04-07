@@ -19,18 +19,20 @@
  */
 package org.apache.polygene.bootstrap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Thrown when one or more assembly problems has occurred.
  */
-public class AssemblyResportException extends AssemblyException
+public class AssemblyReportException extends AssemblyException
 {
     private List<Throwable> problems;
     private String modelReport;
 
-    public AssemblyResportException( List<Throwable> problems )
+    public AssemblyReportException( List<Throwable> problems )
     {
         this.problems = problems;
     }
@@ -48,7 +50,7 @@ public class AssemblyResportException extends AssemblyException
             message = modelReport;
         }
         return message + problems.stream()
-                                 .map( Throwable::getMessage )
+                                 .map( this::composeMessage )
                                  .map( m -> m + "\n--\n" )
                                  .collect( Collectors.joining( "" ) );
     }
@@ -56,5 +58,26 @@ public class AssemblyResportException extends AssemblyException
     public void attacheModelReport( String modelReport )
     {
         this.modelReport = modelReport;
+    }
+
+    private String composeMessage( Throwable exception )
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream( baos );
+        if( Boolean.getBoolean( "polygene.report.exceptions" ) )
+        {
+            exception.printStackTrace( ps );
+        }
+        else
+        {
+            StringBuilder indent = new StringBuilder(  );
+            while( exception != null ){
+                indent = indent.append( "  " );
+                ps.println(indent.toString() + exception.getMessage());
+                ps.println("---");
+                exception = exception.getCause();
+            }
+        }
+        return baos.toString();
     }
 }

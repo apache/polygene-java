@@ -21,16 +21,15 @@ package org.apache.polygene.runtime.concerns;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
-import org.apache.polygene.api.common.InvalidApplicationException;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
-import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -53,13 +52,10 @@ public class PropertyInheritanceTest extends AbstractPolygeneTest
     protected void assemblyException( AssemblyException exception )
         throws AssemblyException
     {
-        if( exception.getCause() instanceof InvalidApplicationException )
+        if( exception instanceof AssemblyReportException )
         {
-            if( exception.getCause().getCause() instanceof InvalidPropertyTypeException )
-            {
-                failed = true;
-                return;
-            }
+            failed = true;
+            return;
         }
         super.assemblyException( exception );
     }

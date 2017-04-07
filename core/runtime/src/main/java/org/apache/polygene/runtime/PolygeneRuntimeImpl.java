@@ -275,7 +275,7 @@ public final class PolygeneRuntimeImpl
             ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
             return valueInstance.descriptor();
         }
-        throw new IllegalArgumentException( "Wrong type. Must be subtype of " + ValueComposite.class );
+        throw new IllegalArgumentException( "Wrong type. {" + value + "} must be subtype of " + ValueComposite.class );
     }
 
     @Override
