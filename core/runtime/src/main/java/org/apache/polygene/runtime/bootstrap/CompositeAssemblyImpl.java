@@ -98,7 +98,7 @@ import org.apache.polygene.runtime.property.PropertiesModel;
 import org.apache.polygene.runtime.property.PropertyModel;
 
 import static java.util.stream.Stream.concat;
-import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompositeType;
 import static org.apache.polygene.api.util.Annotations.isType;
 import static org.apache.polygene.api.util.Annotations.typeHasAnnotation;
 import static org.apache.polygene.api.util.Classes.classHierarchy;
@@ -330,7 +330,7 @@ public abstract class CompositeAssemblyImpl
             return implementMethodWithClass( method, mixinClass );
         }
 
-        handleInvalidCompsiteType( "No implementation found for method ", null, null, null, null, method, types );
+        handleInvalidCompositeType( "No implementation found for method ", null, null, null, null, method, types );
         return null;
     }
 
@@ -611,7 +611,7 @@ public abstract class CompositeAssemblyImpl
             }
             else
             {
-                handleInvalidCompsiteType( "Cannot find implementation of constraint @", null, annotationType, null, valueType, (Member) accessor, types );
+                handleInvalidCompositeType( "Cannot find implementation of constraint @", null, annotationType, null, valueType, (Member) accessor, types );
             }
         }
         return new ValueConstraintsModel( constraintModels, name, optional );

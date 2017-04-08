@@ -32,7 +32,6 @@ import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeDescriptor;
-import org.apache.polygene.api.composite.InvalidCompositeException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
@@ -40,7 +39,7 @@ import org.apache.polygene.runtime.injection.Dependencies;
 import org.apache.polygene.runtime.injection.DependencyModel;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompositeType;
 
 /**
  * JAVADOC
@@ -88,7 +87,7 @@ public abstract class CompositeModel
         }
         catch( ClassNotFoundException | NoSuchMethodException e )
         {
-            handleInvalidCompsiteType( e.getMessage(), module, mainType, null, null, null, types );
+            handleInvalidCompositeType( e.getMessage(), module, mainType, null, null, null, types );
         }
         primaryType = mixinTypes()
             .reduce( null, ( primary, type ) ->

@@ -21,9 +21,6 @@ package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.apache.polygene.api.composite.InvalidCompositeException;
-
-import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
 
 /**
  * JAVADOC

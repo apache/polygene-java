@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 
 /**
@@ -44,9 +43,12 @@ public class InvalidCompositeException extends RuntimeException
     private Member member;
     private List<Class<?>> types;
 
-    public static void handleInvalidCompsiteType( String message, ModuleDescriptor module, Class<?> primaryType, Class<?> fragmentClass, Type valueType, Member member, List<Class<?>> types )
+    public static void handleInvalidCompositeType( String message, ModuleDescriptor module, Class<?> primaryType,
+                                                   Class<?> fragmentClass, Type valueType, Member member,
+                                                   List<Class<?>> types )
     {
-        InvalidCompositeException exception = new InvalidCompositeException( message, module, primaryType, fragmentClass, valueType, member, types );
+        InvalidCompositeException exception = new InvalidCompositeException( message, module, primaryType,
+                                                                             fragmentClass, valueType, member, types );
         if( aggregateProblems )
         {
             report.get().add( exception );
@@ -55,7 +57,8 @@ public class InvalidCompositeException extends RuntimeException
         throw exception;
     }
 
-    private InvalidCompositeException( String message, ModuleDescriptor module, Class<?> primaryType, Class<?> fragmentClass, Type valueType, Member member, List<Class<?>> types )
+    private InvalidCompositeException( String message, ModuleDescriptor module, Class<?> primaryType,
+                                       Class<?> fragmentClass, Type valueType, Member member, List<Class<?>> types )
     {
         super( message );
         this.module = module;
@@ -75,7 +78,8 @@ public class InvalidCompositeException extends RuntimeException
         String message = super.getMessage() == null ? "" : "    message: " + super.getMessage() + "\n";
         String fragment = fragmentClass == null ? "" : "    fragmentClass: " + fragmentClass.getName() + "\n";
         String valueType = this.valueType == null ? "" : "    valueType: " + this.valueType.getTypeName() + "\n";
-        String module = this.module == null ? "" : "    layer: " + this.module.layer().name() + "\n    module: " + this.module.name() + "\n";
+        String module = this.module == null ? "" : "    layer: " + this.module.layer().name() + "\n    module: "
+                                                   + this.module.name() + "\n";
         return message + module + primary + fragment + methodName + valueType + typeNames;
     }
 
@@ -101,7 +105,9 @@ public class InvalidCompositeException extends RuntimeException
         if( member instanceof Method )
         {
             Method method = (Method) member;
-            String parameters = Arrays.stream( method.getParameters() ).map( p -> p.getType().getSimpleName() + " " + p.getName() ).collect( Collectors.joining( ", ", "(", ")" ) );
+            String parameters = Arrays.stream( method.getParameters() )
+                                      .map( p -> p.getType().getSimpleName() + " " + p.getName() )
+                                      .collect( Collectors.joining( ", ", "(", ")" ) );
             return "    method: " + method.getReturnType().getSimpleName() + " " + method.getName() + parameters + "\n";
         }
         if( member instanceof Field )
@@ -116,11 +122,13 @@ public class InvalidCompositeException extends RuntimeException
     {
         if( report.get().size() > 0 )
         {
-            return "\nComposition Problems Report:\n"
-                   + report.get().stream()
-                           .map( Throwable::getMessage )
-                           .map( m -> m + "\n--\n" )
-                           .collect( Collectors.joining( "" ) );
+            String reportText = "\nComposition Problems Report:\n"
+                                + report.get().stream()
+                                        .map( Throwable::getMessage )
+                                        .map( m -> m + "\n--\n" )
+                                        .collect( Collectors.joining() );
+            report.set( new ArrayList<>() );
+            return reportText;
         }
         aggregateProblems = false;
         return null;

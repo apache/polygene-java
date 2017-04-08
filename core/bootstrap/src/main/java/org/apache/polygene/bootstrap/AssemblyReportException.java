@@ -52,7 +52,7 @@ public class AssemblyReportException extends AssemblyException
         return message + problems.stream()
                                  .map( this::composeMessage )
                                  .map( m -> m + "\n--\n" )
-                                 .collect( Collectors.joining( "" ) );
+                                 .collect( Collectors.joining() );
     }
 
     public void attacheModelReport( String modelReport )
@@ -70,11 +70,12 @@ public class AssemblyReportException extends AssemblyException
         }
         else
         {
-            StringBuilder indent = new StringBuilder(  );
-            while( exception != null ){
+            StringBuilder indent = new StringBuilder();
+            while( exception != null )
+            {
                 indent = indent.append( "  " );
-                ps.println(indent.toString() + exception.getMessage());
-                ps.println("---");
+                ps.println( indent.toString() + exception.getMessage() );
+                ps.println( "---" );
                 exception = exception.getCause();
             }
         }

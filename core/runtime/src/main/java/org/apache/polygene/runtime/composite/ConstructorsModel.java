@@ -48,7 +48,7 @@ import org.apache.polygene.runtime.injection.ParameterizedTypeInstance;
 import org.apache.polygene.runtime.model.Binder;
 import org.apache.polygene.runtime.model.Resolution;
 
-import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompsiteType;
+import static org.apache.polygene.api.composite.InvalidCompositeException.handleInvalidCompositeType;
 import static org.apache.polygene.api.util.Annotations.typeHasAnnotation;
 
 /**
@@ -104,7 +104,7 @@ public final class ConstructorsModel
         {
             return;
         }
-        handleInvalidCompsiteType( "Inner classes can not be used. Use static nested classes instead.", null, null, fragmentClass, null, null, null );
+        handleInvalidCompositeType( "Inner classes can not be used. Use static nested classes instead.", null, null, fragmentClass, null, null, null );
     }
 
     @Override
