@@ -17,7 +17,9 @@
  *
  *
  */
+// START SNIPPET: speaker
 package org.apache.polygene.library.scripting;
+// END SNIPPET: speaker
 
 import org.apache.polygene.api.mixin.Mixins;
 

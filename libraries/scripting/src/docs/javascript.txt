@@ -31,7 +31,8 @@ tag=speaker
 ----
 
 
-we need a implementation that looks like this;
+we need a implementation in a resource file (visible on classpath) named +org/apache/polygene/library/scripting/HelloSpeaker.js+
+that looks like this;
 
 [snippet,javascript]
 ----
