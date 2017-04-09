@@ -21,11 +21,11 @@ package org.apache.polygene.library.scripting;
 
 import org.apache.polygene.api.mixin.Mixins;
 
-// START SNIPPET: mixin
+// START SNIPPET: speaker
 
 @Mixins(ScriptMixin.class)
 public interface HelloSpeaker
 {
     String sayHello();
 }
-// END SNIPPET: mixin
+// END SNIPPET: speaker

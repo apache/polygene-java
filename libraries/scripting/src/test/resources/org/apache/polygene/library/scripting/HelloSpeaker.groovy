@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.library.groovy
+package org.apache.polygene.library.scripting
 
 // START SNIPPET: script
 def sayHello() {

@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.scripting;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -47,10 +46,10 @@ public class HelloSpeakerTest extends AbstractPolygeneTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.transients( HelloSpeaker.class ).setMetaInfo( Scripting.GROOVY ).withMixins( ScriptMixin.class );
+                module.values( HelloSpeaker.class ).setMetaInfo( Scripting.GROOVY ).withMixins( ScriptMixin.class );
             }
         };
-        HelloSpeaker speaker = assembler.module().newTransient( HelloSpeaker.class );
+        HelloSpeaker speaker = assembler.module().newValue( HelloSpeaker.class );
         assertThat( speaker.sayHello(), equalTo("Hello, Groovy") );
         // END SNIPPET: script
     }

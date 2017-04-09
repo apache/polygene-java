@@ -32,7 +32,7 @@ All examples below are based on this type:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/apache/polygene/library/groovy/HelloSpeaker.java
+source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeaker.java
 tag=speaker
 ----
 
@@ -45,7 +45,7 @@ Having this Groovy class compiled ;
 .HelloSpeakerMixin.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/apache/polygene/library/groovy/HelloSpeakerMixin.groovy
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerMixin.groovy
 tag=direct
 ----
 
@@ -53,7 +53,7 @@ assemble it directly:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/apache/polygene/library/groovy/HelloSpeakerTest.java
+source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeakerTest.java
 tag=direct
 ----
 
@@ -64,7 +64,7 @@ Declare a Groovy function in a resource file located in the same package as the 
 .HelloSpeaker.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/resources/org/apache/polygene/library/groovy/HelloSpeaker.groovy
+source=libraries/scripting/src/test/resources/org/apache/polygene/library/scripting/HelloSpeaker.groovy
 tag=script
 ----
 
@@ -72,6 +72,6 @@ Then assemble it with the normal +ScriptMixin+:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/apache/polygene/library/groovy/HelloSpeakerTest.java
+source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeakerTest.java
 tag=script
 ----

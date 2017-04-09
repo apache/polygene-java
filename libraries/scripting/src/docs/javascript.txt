@@ -26,8 +26,8 @@ For the following Polygene composite type,
 
 [snippet,java]
 ----
-source=libraries/scripting/src/test/java/org/apache/polygene/library/javascript/HelloSpeaker.java
-tag=mixin
+source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeaker.java
+tag=speaker
 ----
 
 
@@ -35,7 +35,7 @@ we need a implementation that looks like this;
 
 [snippet,javascript]
 ----
-source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeaker.js
+source=libraries/scripting/src/test/resources/org/apache/polygene/library/scripting/HelloSpeaker.js
 tag=script
 ----
 

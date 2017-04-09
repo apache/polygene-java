@@ -33,8 +33,6 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.runtime.structure.LayerModel;
-import org.apache.polygene.runtime.structure.ModuleModel;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
