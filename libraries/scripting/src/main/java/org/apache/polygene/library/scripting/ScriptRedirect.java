@@ -19,15 +19,13 @@
  */
 package org.apache.polygene.library.scripting;
 
-public class ScriptException extends RuntimeException
-{
-    public ScriptException( String message )
-    {
-        super( message );
-    }
+import java.io.BufferedWriter;
+import java.io.Reader;
+import java.io.Writer;
 
-    public ScriptException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+public interface ScriptRedirect
+{
+    void setStdOut( Writer writer );
+    void setStdErr( Writer writer );
+    void setStdIn( Reader reader );
 }

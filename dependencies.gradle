@@ -54,7 +54,6 @@ def groovyVersion = '2.4.10'
 def hazelcastVersion = '3.8'
 def httpClientVersion = '4.5.3'
 def jacksonVersion = '2.8.7'
-def javascriptVersion = '1.7.7.1'
 def javasqlgeneratorVersion = '0.3.2'
 def jaxbApiVersion = '2.2.12'
 def jcloudsVersion = '2.0.1'
@@ -98,7 +97,6 @@ dependencies.libraries << [
   hazelcast           : "com.hazelcast:hazelcast:$hazelcastVersion",
   http_client         : "org.apache.httpcomponents:httpclient:$httpClientVersion",
   jackson_mapper      : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
-  javascript          : "org.mozilla:rhino:$javascriptVersion",
   javaSqlGenerator    : "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
   javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
   jaxb_api            : "javax.xml.bind:jaxb-api:$jaxbApiVersion",

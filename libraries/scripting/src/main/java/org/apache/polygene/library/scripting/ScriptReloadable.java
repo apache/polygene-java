@@ -21,5 +21,5 @@ package org.apache.polygene.library.scripting;
 
 public interface ScriptReloadable
 {
-    void reloadScripts();
+    void reloadScript();
 }

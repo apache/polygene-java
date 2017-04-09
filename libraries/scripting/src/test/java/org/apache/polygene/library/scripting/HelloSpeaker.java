@@ -19,15 +19,13 @@
  */
 package org.apache.polygene.library.scripting;
 
-public class ScriptException extends RuntimeException
-{
-    public ScriptException( String message )
-    {
-        super( message );
-    }
+import org.apache.polygene.api.mixin.Mixins;
 
-    public ScriptException( String message, Throwable cause )
-    {
-        super( message, cause );
-    }
+// START SNIPPET: mixin
+
+@Mixins(ScriptMixin.class)
+public interface HelloSpeaker
+{
+    void sayHello();
 }
+// END SNIPPET: mixin
