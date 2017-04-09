@@ -105,6 +105,10 @@ public class ScriptMixin
         {
             engine = manager.getEngineByExtension( scripting.extension() );
         }
+        if( engine == null )
+        {
+            throw new ScriptException( "Engine " + scripting + " is not available. Perhaps missing implementation on the classpath." );
+        }
         return engine;
     }
 

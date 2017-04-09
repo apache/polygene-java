@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.library.scripting;
 
-import org.apache.polygene.api.mixin.Mixins;
-
-// START SNIPPET: mixin
-
-@Mixins(ScriptMixin.class)
-public interface HelloSpeaker
+// START SNIPPET: direct
+class HelloSpeakerMixin
+    implements HelloSpeaker
 {
-    String sayHello();
+
+    String sayHello() {
+        "Hello there, Groovy"
+    }
 }
-// END SNIPPET: mixin
+// END SNIPPET: direct

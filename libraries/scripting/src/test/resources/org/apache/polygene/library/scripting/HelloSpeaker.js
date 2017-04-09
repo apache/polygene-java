@@ -17,15 +17,9 @@
  *
  *
  */
-package org.apache.polygene.library.scripting;
 
-import org.apache.polygene.api.mixin.Mixins;
-
-// START SNIPPET: mixin
-
-@Mixins(ScriptMixin.class)
-public interface HelloSpeaker
-{
-    String sayHello();
+// START SNIPPET: script
+function sayHello() {
+    return "Hello, JavaScript";
 }
-// END SNIPPET: mixin
+// END SNIPPET: script

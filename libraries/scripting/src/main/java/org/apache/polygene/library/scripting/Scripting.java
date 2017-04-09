@@ -19,14 +19,19 @@
  */
 package org.apache.polygene.library.scripting;
 
+import javax.script.ScriptEngineManager;
+
+// START SNIPPET: supported
 public class Scripting
 {
-    public static final Scripting JAVASCRIPT = new Scripting( "nashorn", ".js" );
     public static final Scripting ECMASCRIPT = new Scripting( "nashorn", ".js" );
     public static final Scripting GROOVY = new Scripting( "groovy", ".groovy" );
-    public static final Scripting RUBY = new Scripting( "jruby", ".rb" );
-    public static final Scripting PYTHON = new Scripting( "python", ".py" );
+    public static final Scripting JAVASCRIPT = new Scripting( "nashorn", ".js" );
     public static final Scripting KOTLIN = new Scripting( "kotlin", ".kt" );
+    public static final Scripting LUA = new Scripting( "lua", ".lua" );
+    public static final Scripting PYTHON = new Scripting( "python", ".py" );
+    public static final Scripting RUBY = new Scripting( "jruby", ".rb" );
+    // END SNIPPET: supported
 
     private String scriptEngine;
     private String extension;
@@ -50,5 +55,20 @@ public class Scripting
     public String extension()
     {
         return extension;
+    }
+
+    @Override
+    public String toString()
+    {
+        if( scriptEngine == null )
+        {
+            return "for script extension '" + extension + "'";
+        }
+        return "'" + scriptEngine + "'";
+    }
+
+    public static void main( String[] args )
+    {
+        new ScriptEngineManager().getEngineFactories().forEach( factory -> System.out.println(factory));
     }
 }

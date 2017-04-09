@@ -27,10 +27,10 @@
     <codebase>stable</codebase>
 
     <!-- none, brief, good, complete -->
-    <documentation>none</documentation>
+    <documentation>good</documentation>
 
     <!-- none, some, good, complete -->
-    <unittests>complete</unittests>
+    <unittests>good</unittests>
   </status>
   <licenses>
     <license>ALv2</license>

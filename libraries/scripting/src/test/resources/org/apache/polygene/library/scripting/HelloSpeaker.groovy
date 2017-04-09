@@ -17,15 +17,10 @@
  *
  *
  */
-package org.apache.polygene.library.scripting;
+package org.apache.polygene.library.groovy
 
-import org.apache.polygene.api.mixin.Mixins;
-
-// START SNIPPET: mixin
-
-@Mixins(ScriptMixin.class)
-public interface HelloSpeaker
-{
-    String sayHello();
+// START SNIPPET: script
+def sayHello() {
+    "Hello, Groovy"
 }
-// END SNIPPET: mixin
+// END SNIPPET: script

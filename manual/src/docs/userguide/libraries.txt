@@ -31,11 +31,7 @@ for our users.
 
 :leveloffset: 2
 
-include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
+include::../../../../libraries/scripting/src/docs/scripting.txt[]
 
 :leveloffset: 2
 

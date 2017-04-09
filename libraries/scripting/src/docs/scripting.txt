@@ -1,0 +1,100 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[scripting, Scripting Library]]
+= Scripting =
+
+[devstatus]
+--------------
+source=libraries/scripting/dev-status.xml
+--------------
+
+The Scripting Library allows Mixin methods to be implemented in any JSR-223 scripting language, loaded dynamically on
+first use and allowing reloading of the script in runtime.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+The Scripting Library is a Generic mixin class that implements
+Composite interfaces by delegating to script functions using Java Scripting API. All Java Scripting API (JSR-223)
+implementations that support
+
+[code,java]
+----
+    ((javax.script.Invocable) scriptEngine).invokeFunction( functionName, arguments );
+----
+
+should be supported. On Java.Net there is a https://java.net/projects/scripting/sources/svn/show/trunk/engines[list of Java Scripting API languages].
+
+
+It is important to understand that the ScriptEngines must be present on the classpath, or they will not be available,
+with the exception of JavaScript which uses the built-in Nashorn engine and Groovy that is an explicit dependency of
+this library.
+
+We welcome additional information and samples of languages that has been tried and tested.
+
+.Language Support
+[options="header"]
+|=======
+| Language | Supported | Tested | Implementation
+| JavaScript | Yes | Yes | | Nashorn, built-in Java 8 and later
+| Groovy | Yes | Yes | Apache | Apache Groovy, dependency exist from this library
+| Ruby | Yes | No |  | JRuby
+| Python | Yes | No | | Jython, must use jython-standalone
+| Kotlin | Yes | No |  | Jetbrains
+| Lua | Yes | No | MIT | luaj.org,
+| Clojure | Yes | No | CPL | https://github.com/pmf/clojure-jsr223
+|=======
+
+The following languages may or may not be supported, and was found at https://java.net/projects/scripting/sources/svn/show/trunk/engines[Java.Net Scripting project]
+
+.Potential Languages
+[options="header"]
+|=======
+| Language | Location | License
+|beanshell
+|ejs
+|freemarker
+|jacl
+|jaskell
+|jawk
+|jelly
+|jep
+|jexl
+|jst
+|judo
+|juel
+|ognl
+|pnuts
+|scheme
+|velocity
+|xpath
+|xslt
+|=======
+
+.Not Compatible Languages
+[options="header"]
+|=======
+| Language | Comment
+| Java | Implementation exists at https://github.com/nickman/javax-scripting/ which is forked from https://java.net/projects/scripting. It doesn't support Invocable, and additional work on ScriptMixin is required to support this. Althernatively, fork the ScriptEngine implementation and support Invocable in it.
+|=======
+
+include::../../../../libraries/scripting/src/docs/javascript.txt[]
+
+include::../../../../libraries/scripting/src/docs/groovy.txt[]
+

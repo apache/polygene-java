@@ -52,6 +52,8 @@ public class ScriptMixinTest
         LayerAssembly layer = module.layer();
         layer.application().setName( "Script Test" );
         module.transients( DomainType.class ).setMetaInfo( Scripting.JAVASCRIPT ).withMixins( ScriptMixin.class );
+        module.transients( HelloSpeaker.class ).setMetaInfo( Scripting.GROOVY ).withMixins( ScriptMixin.class );
+        module.values( HelloSpeaker.class ).setMetaInfo( Scripting.JAVASCRIPT ).withMixins( ScriptMixin.class );
     }
 
     @Test
@@ -61,6 +63,7 @@ public class ScriptMixinTest
         assertThat(domain1.do1("her message"), equalTo("[her message]") );
     }
 
+    @Test
     public void testIsolation() throws Throwable
     {
         DomainType domain1 = transientBuilderFactory.newTransient( DomainType.class );
@@ -119,6 +122,20 @@ public class ScriptMixinTest
 
         TypeLookup lookup = domain.whatIsTypeLookup( );
         assertThat( lookup, notNullValue());
+    }
 
+
+    @Test
+    public void testJavascriptInvoke() throws Exception
+    {
+        HelloSpeaker speaker = valueBuilderFactory.newValue( HelloSpeaker.class );
+        assertThat(speaker.sayHello(), equalTo("Hello, JavaScript"));
+    }
+
+    @Test
+    public void testGroovyInvoke() throws Exception
+    {
+        HelloSpeaker speaker = transientBuilderFactory.newTransient( HelloSpeaker.class );
+        assertThat(speaker.sayHello(), equalTo("Hello, Groovy"));
     }
 }
