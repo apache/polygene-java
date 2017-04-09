@@ -49,7 +49,7 @@ this library.
 We welcome additional information and samples of languages that has been tried and tested.
 
 .Language Support
-[options="header",align="left"]
+[options="header"]
 |=======
 |Language | Supported | Tested | License | Implementation
 |JavaScript | Yes | Yes | ? |Nashorn, built-in Java 8 and later
@@ -64,7 +64,7 @@ We welcome additional information and samples of languages that has been tried a
 The following languages may or may not be supported, and was found at https://java.net/projects/scripting/sources/svn/show/trunk/engines[Java.Net Scripting project]
 
 .Potential Languages
-[options="header",align="left"]
+[options="header"]
 |=======
 | Language | Location | License
 |beanshell | |
@@ -88,7 +88,7 @@ The following languages may or may not be supported, and was found at https://ja
 |=======
 
 .Not Compatible Languages
-[options="header",align="left"]
+[options="header"]
 |=======
 | Language | Comment
 | Java | Implementation exists at https://github.com/nickman/javax-scripting/ which is forked from https://java.net/projects/scripting. It doesn't support Invocable, and additional work on ScriptMixin is required to support this. Althernatively, fork the ScriptEngine implementation and support Invocable in it.
