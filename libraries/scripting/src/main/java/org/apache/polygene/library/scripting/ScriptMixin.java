@@ -211,27 +211,27 @@ public class ScriptMixin
             }
             if( short.class.equals( returnType ) )
             {
-                return (short) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).shortValue();
             }
             if( int.class.equals( returnType ) )
             {
-                return (int) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).intValue();
             }
             if( byte.class.equals( returnType ) )
             {
-                return (byte) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).byteValue();
             }
             if( long.class.equals( returnType ) )
             {
-                return (long) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).longValue();
             }
             if( float.class.equals( returnType ) )
             {
-                return (float) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).floatValue();
             }
             if( double.class.equals( returnType ) )
             {
-                return (double) result;
+                return result.getClass().isPrimitive() ? result : ( (Number) result ).doubleValue();
             }
         }
         return returnType.cast( result );
