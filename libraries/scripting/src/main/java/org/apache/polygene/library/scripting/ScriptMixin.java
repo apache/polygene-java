@@ -116,7 +116,8 @@ public class ScriptMixin
     public Object invoke( Object proxy, Method method, Object[] objects )
         throws Throwable
     {
-        return ( (Invocable) engine ).invokeFunction( method.getName(), objects );
+        Object result = ( (Invocable) engine ).invokeFunction( method.getName(), objects );
+        return castInvocationResult( method.getReturnType(), result );
     }
 
     @Override
@@ -185,5 +186,54 @@ public class ScriptMixin
     public void setGlobalAttribute( String name, Object value )
     {
         engine.getContext().setAttribute( name, value, ScriptContext.GLOBAL_SCOPE );
+    }
+
+    /**
+     * Needed to prevent class cast exception between boxed and unboxed types.
+     * Explicit casting to primitive type, triggers the auto-unboxing compiler trick.
+     */
+    @SuppressWarnings( "RedundantCast" )
+    private static Object castInvocationResult( Class<?> returnType, Object result )
+    {
+        if( void.class.equals( returnType ) || Void.class.equals( returnType ) )
+        {
+            return null;
+        }
+        if( returnType.isPrimitive() )
+        {
+            if( char.class.equals( returnType ) )
+            {
+                return (char) result;
+            }
+            if( boolean.class.equals( returnType ) )
+            {
+                return (boolean) result;
+            }
+            if( short.class.equals( returnType ) )
+            {
+                return (short) result;
+            }
+            if( int.class.equals( returnType ) )
+            {
+                return (int) result;
+            }
+            if( byte.class.equals( returnType ) )
+            {
+                return (byte) result;
+            }
+            if( long.class.equals( returnType ) )
+            {
+                return (long) result;
+            }
+            if( float.class.equals( returnType ) )
+            {
+                return (float) result;
+            }
+            if( double.class.equals( returnType ) )
+            {
+                return (double) result;
+            }
+        }
+        return returnType.cast( result );
     }
 }
