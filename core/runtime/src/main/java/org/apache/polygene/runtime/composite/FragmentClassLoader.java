@@ -92,13 +92,10 @@ public class FragmentClassLoader
         String jdkString = System.getProperty( "java.specification.version" );
         switch( jdkString )
         {
-        case "1.8":
-            JDK_VERSION = Opcodes.V1_8;
-            break;
-        case "1.7":
-        default:
-            JDK_VERSION = Opcodes.V1_7;
-            break;
+            case "1.8":
+            default:
+                JDK_VERSION = Opcodes.V1_8;
+                break;
         }
     }
 
