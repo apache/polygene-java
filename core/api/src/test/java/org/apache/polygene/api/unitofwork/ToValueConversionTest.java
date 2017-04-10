@@ -20,6 +20,7 @@
 package org.apache.polygene.api.unitofwork;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.Association;
@@ -46,6 +47,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
+import static org.hamcrest.core.AnyOf.anyOf;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -62,25 +64,49 @@ public class ToValueConversionTest
     }
 
     @Test
-    public void testPropertyConversionToValue()
+    public void testConversionToValue()
         throws Exception
     {
-        Identity identity = new StringIdentity( "Niclas" );
         Usecase usecase = UsecaseBuilder.buildUsecase( "test case" )
                                         .withMetaInfo( new SomeValueConverter() )
                                         .newUsecase();
+        SomeType value;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(usecase) )
         {
-            EntityBuilder<SomeType> builder = uow.newEntityBuilder( SomeType.class, identity );
-            builder.instance().name().set( "Niclas" );
-            SomeType entity = builder.newInstance();
-            SomeType value = uow.toValue( SomeType.class, entity );
+            SomeType entity1 = createEntity( uow, new StringIdentity( "Niclas" ) );
+            SomeType entity2 = createEntity( uow, new StringIdentity( "Paul" ) );
+            SomeType entity3 = createEntity( uow, new StringIdentity( "Jiri" ) );
+            SomeType entity4 = createEntity( uow, new StringIdentity( "Kent" ) );
+            SomeType entity5 = createEntity( uow, new StringIdentity( "Stan" ) );
+            entity1.assoc().set( entity2 );
+            entity1.many().add( entity3 );
+            entity1.named().put( "kent", entity4 );
+            entity1.named().put( "stan", entity5 );
 
-            assertThat( value.name().get(), equalTo( "[Niclas]" ) );
-            assertThat( value.identity().get(), equalTo( identity ) );
+            value = uow.toValue( SomeType.class, entity1 );
             uow.complete();
+
+        }
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(usecase) )
+        {
+            assertThat( value.identity().get(), equalTo( new StringIdentity( "Niclas" ) ) );
+            assertThat( value.name().get(), equalTo( "[Niclas]" ) );
+
+            assertThat( uow.toValue( SomeType.class, value.assoc().get()).name().get(), equalTo( "[Paul]" ));
+            assertThat( uow.toValueList( value.many() ).get(0).name().get(), equalTo( "[Jiri]" ));
+            assertThat( uow.toValueSet( value.many() ).iterator().next().name().get(), equalTo( "[Jiri]" ));
+            Set<Map.Entry<String, SomeType>> actual = uow.toValueMap( value.named() ).entrySet();
+            assertThat( actual.iterator().next().getKey(), anyOf(equalTo( "stan" ), equalTo( "kent" )) );
+            assertThat( actual.iterator().next().getValue().name().get(), anyOf(equalTo( "[Stan]" ), equalTo( "[Kent]" )) );
         }
 
+    }
+
+    private SomeType createEntity( UnitOfWork uow, Identity identity )
+    {
+        EntityBuilder<SomeType> builder = uow.newEntityBuilder( SomeType.class, identity );
+        builder.instance().name().set( identity.toString() );
+        return builder.newInstance();
     }
 
     interface SomeType extends HasIdentity
@@ -88,13 +114,13 @@ public class ToValueConversionTest
         Property<String> name();
 
         @Optional
-        Association<String> assoc();
+        Association<SomeType> assoc();
 
         @UseDefaults
-        ManyAssociation<String> many();
+        ManyAssociation<SomeType> many();
 
         @UseDefaults
-        NamedAssociation<String> named();
+        NamedAssociation<SomeType> named();
     }
 
     private static class SomeValueConverter
