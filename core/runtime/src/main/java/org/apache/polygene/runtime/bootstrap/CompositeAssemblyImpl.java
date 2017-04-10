@@ -271,7 +271,7 @@ public abstract class CompositeAssemblyImpl
                                }
                                catch( Exception e )
                                {
-                                   System.out.println("NICLAS 2: " + e.getClass() + " - " + e.getMessage());
+                                   System.out.println( "NICLAS 2: " + e.getClass() + " - " + e.getMessage() );
                                    exceptions.add( e );
                                }
                            }
@@ -650,21 +650,19 @@ public abstract class CompositeAssemblyImpl
                                     }
                                 } );
 
-        // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
         {
-            @SuppressWarnings( "raw" )
-            Concerns concerns = annotation.annotationType().getAnnotation( Concerns.class );
-            if( concerns != null )
+            if( annotation instanceof Concerns )
             {
-                for( Class<?> concern : concerns.value() )
-                {
-                    if( helper.appliesTo( concern, method, types, mixinClass ) )
-                    {
-                        ConcernModel concernModel = helper.getConcernModel( concern );
-                        addConcernOrRepositionIfExists( concernsFor, concernModel );
-                    }
-                }
+                // Check @Concerns annotations directly on methods
+                Concerns concerns = (Concerns) annotation;
+                addConcerns( method, mixinClass, concernsFor, concerns );
+            }
+            else
+            {
+                // Check annotations on method that have @Concerns annotations themselves
+                Concerns concerns = annotation.annotationType().getAnnotation( Concerns.class );
+                addConcerns( method, mixinClass, concernsFor, concerns );
             }
         }
 
@@ -675,6 +673,21 @@ public abstract class CompositeAssemblyImpl
         else
         {
             return new ConcernsModel( concernsFor );
+        }
+    }
+
+    private void addConcerns( Method method, Class<?> mixinClass, List<ConcernModel> concernsFor, Concerns concerns )
+    {
+        if( concerns != null )
+        {
+            for( Class<?> concern : concerns.value() )
+            {
+                if( helper.appliesTo( concern, method, types, mixinClass ) )
+                {
+                    ConcernModel concernModel = helper.getConcernModel( concern );
+                    addConcernOrRepositionIfExists( concernsFor, concernModel );
+                }
+            }
         }
     }
 
@@ -719,21 +732,19 @@ public abstract class CompositeAssemblyImpl
                                        }
                                    } );
 
-        // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
         {
-            @SuppressWarnings( "raw" )
-            SideEffects sideEffects = annotation.annotationType().getAnnotation( SideEffects.class );
-            if( sideEffects != null )
+            if( annotation instanceof SideEffects )
             {
-                for( Class<?> sideEffect : sideEffects.value() )
-                {
-                    if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
-                    {
-                        SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
-                        addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
-                    }
-                }
+                // Check SideEffects annotation on method
+                SideEffects sideEffects = (SideEffects) annotation;
+                addSideEffects( method, mixinClass, sideEffectsFor, sideEffects );
+            }
+            else
+            {
+                // Check annotations on method that have @SideEffects annotations themselves
+                SideEffects sideEffects = annotation.annotationType().getAnnotation( SideEffects.class );
+                addSideEffects( method, mixinClass, sideEffectsFor, sideEffects );
             }
         }
 
@@ -744,6 +755,21 @@ public abstract class CompositeAssemblyImpl
         else
         {
             return new SideEffectsModel( sideEffectsFor );
+        }
+    }
+
+    private void addSideEffects( Method method, Class<?> mixinClass, List<SideEffectModel> sideEffectsFor, SideEffects sideEffects )
+    {
+        if( sideEffects != null )
+        {
+            for( Class<?> sideEffect : sideEffects.value() )
+            {
+                if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
+                {
+                    SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
+                    addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
+                }
+            }
         }
     }
 
