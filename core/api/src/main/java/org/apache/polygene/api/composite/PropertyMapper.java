@@ -103,7 +103,6 @@ public final class PropertyMapper
             {
                 String methodName = objectObjectEntry.getKey().toString();
                 Method propertyMethod = composite.getClass().getInterfaces()[ 0 ].getMethod( methodName );
-                propertyMethod.setAccessible( true );
                 Object value = objectObjectEntry.getValue();
                 Type propertyType = GenericPropertyInfo.propertyTypeOf( propertyMethod );
 

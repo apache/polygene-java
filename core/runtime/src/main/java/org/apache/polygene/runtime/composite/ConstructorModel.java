@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.composite.ConstructorDescriptor;
 import org.apache.polygene.api.composite.InvalidCompositeException;
+import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 import org.apache.polygene.runtime.injection.DependencyModel;
@@ -45,9 +46,8 @@ public final class ConstructorModel
 
     public ConstructorModel( Constructor<?> constructor, InjectedParametersModel parameters )
     {
-        this.constructor = constructor;
+        this.constructor = AccessibleObjects.accessible( constructor);
         this.parameters = parameters;
-        this.constructor.setAccessible( true );
     }
 
     @Override

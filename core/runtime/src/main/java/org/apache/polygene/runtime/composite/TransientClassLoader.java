@@ -390,7 +390,6 @@ import static org.objectweb.asm.Type.getInternalName;
             {
                 if( isOverloaded( method, baseClass ) )
                 {
-                    method.setAccessible( true );
                     Class methodClass = method.getDeclaringClass();
 
                     midx++;
@@ -484,8 +483,7 @@ import static org.objectweb.asm.Type.getInternalName;
         return interfacesOf( baseClass ).map( RAW_CLASS ).filter( Methods.HAS_METHODS ).anyMatch( clazz -> {
             try
             {
-                Method m = clazz.getMethod( method.getName(), method.getParameterTypes() );
-                m.setAccessible( true );
+                clazz.getMethod( method.getName(), method.getParameterTypes() );
                 return true;
             }
             catch( NoSuchMethodException e )

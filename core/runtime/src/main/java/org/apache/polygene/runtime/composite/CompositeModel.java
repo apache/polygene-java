@@ -33,6 +33,7 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 import org.apache.polygene.runtime.injection.Dependencies;
@@ -215,8 +216,7 @@ public abstract class CompositeModel
         {
             constructor = (Constructor<? extends Composite>) proxyClass.getConstructors()[ 0 ];
         }
-        constructor.setAccessible( true );
-        return constructor;
+        return AccessibleObjects.accessible( constructor );
     }
 
     // Context

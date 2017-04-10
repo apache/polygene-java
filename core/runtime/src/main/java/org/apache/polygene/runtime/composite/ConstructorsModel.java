@@ -72,11 +72,9 @@ public final class ConstructorsModel
         Class<?> injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
         for( Constructor<?> constructor : realConstructors )
         {
-            constructor.setAccessible( true );
             try
             {
                 Constructor<?> injectionConstructor = injectionClass.getDeclaredConstructor( constructor.getParameterTypes() );
-                injectionConstructor.setAccessible( true );
                 ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor,
                                                                          injectionConstructor );
                 if( constructorModel != null )

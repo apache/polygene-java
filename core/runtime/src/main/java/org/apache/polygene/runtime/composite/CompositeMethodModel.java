@@ -72,13 +72,7 @@ public final class CompositeMethodModel
         sideEffects = sideEffectsModel;
         constraints = constraintsModel;
         constraintsInstance = constraints.newInstance();
-        initialize();
-    }
-
-    private void initialize()
-    {
         annotations = new CompositeMethodAnnotatedElement();
-        this.method.setAccessible( true );
 //        instancePool = new SynchronizedCompositeMethodInstancePool();
     }
 

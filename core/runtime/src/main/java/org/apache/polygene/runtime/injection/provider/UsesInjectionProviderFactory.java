@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import org.apache.polygene.api.composite.NoSuchTransientException;
 import org.apache.polygene.api.object.NoSuchObjectException;
 import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.bootstrap.InvalidInjectionException;
 import org.apache.polygene.runtime.composite.UsesInstance;
 import org.apache.polygene.runtime.injection.DependencyModel;
@@ -102,10 +103,7 @@ public final class UsesInjectionProviderFactory
                             {
                                 Constructor constructor = injectionType.getDeclaredConstructor( context.instance()
                                                                                                     .getClass() );
-                                if( !constructor.isAccessible() )
-                                {
-                                    constructor.setAccessible( true );
-                                }
+                                AccessibleObjects.accessible( constructor );
                                 usesObject = constructor.newInstance( context.instance() );
                             }
                             catch( Throwable e3 )

@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.polygene.api.composite.DependencyDescriptor;
 import org.apache.polygene.api.composite.InjectedFieldDescriptor;
+import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
@@ -51,8 +52,7 @@ public final class InjectedFieldModel
 
     public InjectedFieldModel( Field injectedField, DependencyModel dependencyModel )
     {
-        injectedField.setAccessible( true );
-        this.injectedField = injectedField;
+        this.injectedField = AccessibleObjects.accessible( injectedField );
         this.dependencyModel = dependencyModel;
     }
 

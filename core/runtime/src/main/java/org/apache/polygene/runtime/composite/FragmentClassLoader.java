@@ -420,7 +420,6 @@ public class FragmentClassLoader
                 {
                     if( isOverridden( method, baseClass ) )
                     {
-                        method.setAccessible( true );
                         Class methodClass;
                         if( Modifier.isAbstract( method.getModifiers() ) )
                         {
@@ -544,8 +543,7 @@ public class FragmentClassLoader
     {
         try
         {
-            Method m = intface.getMethod( method.getName(), method.getParameterTypes() );
-            m.setAccessible( true );
+            intface.getMethod( method.getName(), method.getParameterTypes() );
             return true;
         }
         catch( NoSuchMethodException e )

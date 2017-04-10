@@ -239,7 +239,6 @@ public abstract class CompositeAssemblyImpl
                                                concat( sideEffectDeclarations( mixinModel.mixinClass() ),
                                                        sideEffectClasses.stream() )
                                                                                              );
-                                           method.setAccessible( true );
                                            ConstraintsModel constraints = constraintsFor(
                                                method,
                                                toList( concat( constraintDeclarations( mixinModel.mixinClass() ),

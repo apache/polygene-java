@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 import org.apache.polygene.api.composite.InjectedMethodDescriptor;
+import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 import org.apache.polygene.bootstrap.InjectionException;
@@ -40,8 +41,7 @@ public final class InjectedMethodModel
 
     public InjectedMethodModel( Method method, InjectedParametersModel parameters )
     {
-        this.method = method;
-        this.method.setAccessible( true );
+        this.method = AccessibleObjects.accessible( method );
         this.parameters = parameters;
     }
 
@@ -64,10 +64,6 @@ public final class InjectedMethodModel
         Object[] params = parameters.newParametersInstance( context );
         try
         {
-            if( !method.isAccessible() )
-            {
-                method.setAccessible( true );
-            }
             method.invoke( instance, params );
         }
         catch( IllegalAccessException e )
