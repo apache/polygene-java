@@ -31,13 +31,12 @@ import org.apache.polygene.api.usecase.Usecase;
 /**
  * MetaInfo holder for value-to-entity conversion in {@link UnitOfWork#toEntity(Class, HasIdentity)}.
  * <p>
- *     The implementation of this interface should be registered as metaInfo on the {@link Usecase}
- *     of the {@link UnitOfWork} where the conversion should take place. It is also possible to register
- *     the implementation to the {@link UnitOfWork}'s metaInfo.
+ * The implementation of this interface should be registered as metaInfo on the {@link Usecase}
+ * of the {@link UnitOfWork} where the conversion should take place. It is also possible to register
+ * the implementation to the {@link UnitOfWork}'s metaInfo.
  * </p>
  * <p>Example;</p>
- * <code><pre>
- *
+ * <pre><code>
  *     private static final Usecase USECASE_GET_USER_DETAILS = UseCaseBuilder
  *                                                                 .buildUseCase("get user details")
  *                                                                 .withMetaInfo( new UserToEntityConverter() )
@@ -56,7 +55,7 @@ import org.apache.polygene.api.usecase.Usecase;
  *     }
  *     :
  *     :
- * </pre></code>
+ * </code></pre>
  */
 public interface ToEntityConverter
 {
@@ -64,31 +63,43 @@ public interface ToEntityConverter
      * Returns the Function to convert each of the properties of the entities into the value.
      *
      * @param entityComposite the entity that is to be converted.
-     * @return The function to do the conversion, or null if the default converter should be used.
+     * @param defaultFn       The default converter function. This can be used to delegate non-special cases, or simply
+     *                        return to do all the conversions
+     * @return The function to do the conversion. It MUST NOT return null, and if no conversion is wanted, return the defaultFn.
      */
-    Function<PropertyDescriptor, Object> properties( Object entityComposite );
+    Function<PropertyDescriptor, Object> properties( Object entityComposite,
+                                                     Function<PropertyDescriptor, Object> defaultFn );
 
     /**
      * Returns the Function to convert each of the associations of the entities into the value.
      *
      * @param entityComposite the entity that is to be converted.
-     * @return The function to do the conversion, or null if the default converter should be used.
+     * @param defaultFn       The default converter function. This can be used to delegate non-special cases, or simply
+     *                        return to do all the conversions
+     * @return The function to do the conversion. It MUST NOT return null, and if no conversion is wanted, return the defaultFn.
      */
-    Function<AssociationDescriptor, EntityReference> associations( Object entityComposite );
+    Function<AssociationDescriptor, EntityReference> associations( Object entityComposite,
+                                                                   Function<AssociationDescriptor, EntityReference> defaultFn );
 
     /**
      * Returns the Function to convert each of the manyAssociations of the entities into the value.
      *
      * @param entityComposite the entity that is to be converted.
-     * @return The function to do the conversion, or null if the default converter should be used.
+     * @param defaultFn       The default converter function. This can be used to delegate non-special cases, or simply
+     *                        return to do all the conversions
+     * @return The function to do the conversion. It MUST NOT return null, and if no conversion is wanted, return the defaultFn.
      */
-    Function<AssociationDescriptor, Stream<EntityReference>> manyAssociations( Object entityComposite );
+    Function<AssociationDescriptor, Stream<EntityReference>> manyAssociations( Object entityComposite,
+                                                                               Function<AssociationDescriptor, Stream<EntityReference>> defaultFn );
 
     /**
      * Returns the Function to convert each of the NamedAssociations of the entities into the value.
      *
      * @param entityComposite the entity that is to be converted.
-     * @return The function to do the conversion, or null if the default converter should be used.
+     * @param defaultFn       The default converter function. This can be used to delegate non-special cases, or simply
+     *                        return to do all the conversions
+     * @return The function to do the conversion. It MUST NOT return null, and if no conversion is wanted, return the defaultFn.
      */
-    Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociations( Object entityComposite );
+    Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociations( Object entityComposite,
+                                                                                                   Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> defaultFn );
 }

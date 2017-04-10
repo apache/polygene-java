@@ -431,34 +431,21 @@ public class ModuleUnitOfWork
     public <T extends HasIdentity> T toValue( Class<T> primaryType, T entityComposite )
     {
         Objects.requireNonNull( primaryType );
-        Objects.requireNonNull( entityComposite );
-        Function<PropertyDescriptor, Object> propertyFunction = null;
-        Function<AssociationDescriptor, EntityReference> assocationFunction = null;
-        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = null;
-        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = null;
+        if( entityComposite == null )
+        {
+            return null;
+        }
+        Function<PropertyDescriptor, Object> propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
+        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
         ToValueConverter converter = getConverter( ToValueConverter.class );
         if( converter != null )
         {
-            propertyFunction = converter.properties( entityComposite );
-            manyAssocFunction = converter.manyAssociations( entityComposite );
-            assocationFunction = converter.associations( entityComposite );
-            namedAssocFunction = converter.namedAssociations( entityComposite );
-        }
-        if( propertyFunction == null )
-        {
-            propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
-        }
-        if( assocationFunction == null )
-        {
-            assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
-        }
-        if( manyAssocFunction == null )
-        {
-            manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
-        }
-        if( namedAssocFunction == null )
-        {
-            namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
+            propertyFunction = converter.properties( entityComposite, propertyFunction );
+            assocationFunction = converter.associations( entityComposite, assocationFunction );
+            manyAssocFunction = converter.manyAssociations( entityComposite, manyAssocFunction );
+            namedAssocFunction = converter.namedAssociations( entityComposite, namedAssocFunction );
         }
         @SuppressWarnings( "unchecked" )
         ValueBuilder<T> builder = module().instance().newValueBuilderWithState(
@@ -508,36 +495,23 @@ public class ModuleUnitOfWork
     @Override
     public <T extends HasIdentity> T toEntity( Class<T> primaryType, T valueComposite )
     {
-
-        Function<PropertyDescriptor, Object> propertyFunction = null;
-        Function<AssociationDescriptor, EntityReference> assocationFunction = null;
-        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = null;
-        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = null;
+        Objects.requireNonNull( primaryType );
+        if( valueComposite == null )
+        {
+            return null;
+        }
+        Function<PropertyDescriptor, Object> propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
         ToEntityConverter converter = getConverter( ToEntityConverter.class );
         if( converter != null )
         {
-            propertyFunction = converter.properties( valueComposite );
-            manyAssocFunction = converter.manyAssociations( valueComposite );
-            assocationFunction = converter.associations( valueComposite );
-            namedAssocFunction = converter.namedAssociations( valueComposite );
+            propertyFunction = converter.properties( valueComposite, propertyFunction );
+            assocationFunction = converter.associations( valueComposite, assocationFunction );
+            manyAssocFunction = converter.manyAssociations( valueComposite, manyAssocFunction );
+            namedAssocFunction = converter.namedAssociations( valueComposite, namedAssocFunction );
         }
-        if( propertyFunction == null )
-        {
-            propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
-        }
-        if( assocationFunction == null )
-        {
-            assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
-        }
-        if( manyAssocFunction == null )
-        {
-            manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
-        }
-        if( namedAssocFunction == null )
-        {
-            namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
-        }
-
         try
         {
             T entity = get( primaryType, valueComposite.identity().get() );
@@ -763,7 +737,7 @@ public class ModuleUnitOfWork
     {
         private final T value;
 
-        public ToEntityPropertyMappingFunction( T value )
+        private ToEntityPropertyMappingFunction( T value )
         {
             this.value = value;
         }
@@ -783,7 +757,7 @@ public class ModuleUnitOfWork
 
         private final T value;
 
-        public ToEntityAssociationMappingFunction( T value )
+        private ToEntityAssociationMappingFunction( T value )
         {
             this.value = value;
         }
@@ -803,7 +777,7 @@ public class ModuleUnitOfWork
 
         private final T value;
 
-        public ToEntityManyAssociationMappingFunction( T valueComposite )
+        private ToEntityManyAssociationMappingFunction( T valueComposite )
         {
             this.value = valueComposite;
         }
@@ -821,7 +795,7 @@ public class ModuleUnitOfWork
     {
         private final T value;
 
-        public ToEntityNameAssociationMappingFunction( T valueComposite )
+        private ToEntityNameAssociationMappingFunction( T valueComposite )
         {
             this.value = valueComposite;
         }
