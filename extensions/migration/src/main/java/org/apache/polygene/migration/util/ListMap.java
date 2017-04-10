@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.polygene.api.util;
+package org.apache.polygene.migration.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

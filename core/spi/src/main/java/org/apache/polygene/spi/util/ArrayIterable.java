@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.api.util;
+package org.apache.polygene.spi.util;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;

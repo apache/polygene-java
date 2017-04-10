@@ -23,7 +23,7 @@ package org.apache.polygene.migration.assembly;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.polygene.api.util.ListMap;
+import org.apache.polygene.migration.util.ListMap;
 
 /**
  * Set of migration rules.
