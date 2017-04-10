@@ -53,6 +53,9 @@ mkdir polygene-repos
 cd polygene-repos
 git clone https://git-wip-us.apache.org/repos/asf/polygene-java.git polygene-java
 git clone https://git-wip-us.apache.org/repos/asf/polygene-website.git polygene-website
+cd polygene-website
+git checkout asf-site
+cd ..
 svn checkout --depth empty https://dist.apache.org/repos/dist/ polygene-dist
 cd polygene-dist
 svn update --set-depth immediates dev
@@ -68,7 +71,7 @@ You should then get the following directory tree:
 .
 └── polygene-repos
     ├── polygene-java           # Apache Polygene™ (Java Edition) source
-    ├── polygene-web            # https://polygene.apache.org/ website
+    ├── polygene-website        # https://polygene.apache.org/ website
     └── polygene-dist
         ├── dev
         |   └── polygene        # Releases candidate distributions
@@ -92,11 +95,15 @@ Here is what should pass before going further:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" check website
+./gradlew -Dversion="<RELEASE-VERSION>" checkDistributions
 ----
 
 See the <<build-system, Build System>> tutorial for details.
 
+[IMPORTANT]
+====
+Also ensure that the link:https://builds.apache.org/view/P/view/Polygene/job/Polygene(JavaEdition)-develop-java8-checkDists/[`checkDists`] CI build is passing.
+====
 
 === Install Jekyll
 
@@ -393,6 +400,8 @@ Convenience artifacts in a maven repository are staged here: https://repository.
 
 Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/polygene/KEYS
 
+Some guidance on how to validate distributions and artifacts can be found here: https://polygene.apache.org/java/develop/releasing-apache.html#_verifying_a_release_candidate
+
 Please vote on releasing this package as Apache Polygene (Java Edition) <RELEASE-VERSION>.
 
 The vote is open for the next 72 hours and passes if a majority of at least three +1 PMC votes are cast and there must be more positive than negative votes.
@@ -665,23 +674,23 @@ Generate the documentation and javadoc minisite:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" publishAsfDocumentation
+./gradlew -Dversion="<RELEASE-VERSION>" copyAsfDocumentation
 ----
 
-This will automatically put all files into the `polygene-web` website repository.
+This will automatically put all files into the `polygene-website` website repository.
 
 Create a new post on the Polygene™ website by creating a new Markdown file:
 
 [source,shell]
 ----
-cd polygene-web
+cd polygene-website
 touch "src/_posts/YYYY-MM-DD-apache-polygene-java-<RELEASE-VERSION>.md"
 open !$
 ----
 
 You can reuse the Markdown formatted announcement content.
 
-Add the new released version in `polygene-web/site/content/java/versions.json` below the `latest` entry:
+Add the new released version in `polygene-website/site/content/java/versions.json` below the `latest` entry:
 
 [source,js]
 ----
@@ -694,7 +703,7 @@ Add the new released version in `polygene-web/site/content/java/versions.json` b
 }
 ----
 
-Finally, edit `polygene-web/site/src/_data/releases.yml` with the new release data.
+Finally, edit `polygene-website/site/src/_data/releases.yml` with the new release data.
 Upmost is the latest:
 
 [source,text]
@@ -709,7 +718,7 @@ You can run the Polygene™ website locally:
 
 [source,shell]
 ----
-cd polygene-web
+cd polygene-website
 jekyll serve
 ----
 
@@ -719,16 +728,26 @@ Once you are satisfied with the changes, build the production website:
 
 [source,shell]
 ----
-cd polygene-web
+cd polygene-website
 jekyll build
+----
+
+Link `/latest` to the latest release:
+
+[source,shell]
+----
+cd polygene-website/content/java
+ln -s <RELEASE_VERSION> latest
 ----
 
 And publish it:
 
 [source,shell]
 ----
+cd polygene-website
 git add .
 git commit -m "update website"
+git push
 ----
 
 
