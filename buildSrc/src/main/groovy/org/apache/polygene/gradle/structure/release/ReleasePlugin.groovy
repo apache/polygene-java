@@ -211,7 +211,7 @@ class ReleasePlugin implements Plugin<Project>
       // TODO Consume distributions through configurations
       task.dependsOn "${ distributions.path }:${ LifecycleBasePlugin.ASSEMBLE_TASK_NAME }"
       task.from new File( distributions.buildDir, 'distributions' )
-      task.into new File( project.rootProject.projectDir.parentFile, 'polygene-dist' )
+      task.into new File( project.rootProject.projectDir.parentFile, 'polygene-dist/dev/polygene' )
     }
     def commit = project.tasks.create( TaskNames.COMMIT_ASF_DIST ) { Task task ->
       task.mustRunAfter copy
