@@ -30,11 +30,10 @@ dependencies {
   api polygene.core.api
   api polygene.core.bootstrap
 
-  implementation libraries.groovy
-
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.core.testsupport
+  testImplementation libraries.groovy
 
   testRuntimeOnly libraries.logback
 }

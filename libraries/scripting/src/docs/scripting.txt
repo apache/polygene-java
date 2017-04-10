@@ -43,8 +43,7 @@ should be supported. On Java.Net there is a https://java.net/projects/scripting/
 
 
 It is important to understand that the ScriptEngines must be present on the classpath, or they will not be available,
-with the exception of JavaScript which uses the built-in Nashorn engine and Groovy that is an explicit dependency of
-this library.
+with the exception of JavaScript which uses the built-in Nashorn engine.
 
 We welcome additional information and samples of languages that has been tried and tested.
 
@@ -53,7 +52,7 @@ We welcome additional information and samples of languages that has been tried a
 |=======
 |Language | Supported | Tested | License | Implementation
 |JavaScript | Yes | Yes | ? |Nashorn, built-in Java 8 and later
-|Groovy | Yes | Yes |Apache |Apache Groovy, dependency exist from this library
+|Groovy | Yes | Yes |Apache |Apache Groovy
 |Ruby | Yes | No |(EPL\|GPL\|LGPL) + Ruby |JRuby
 |Python | Yes | No |https://opensource.org/licenses/Python-2.0[Python] |Jython, must use jython-standalone
 |Kotlin | Yes | No |Apache |Jetbrains
@@ -91,7 +90,7 @@ The following languages may or may not be supported, and was found at https://ja
 [options="header"]
 |=======
 | Language | Comment
-| Java | Implementation exists at https://github.com/nickman/javax-scripting/ which is forked from https://java.net/projects/scripting. It doesn't support Invocable, and additional work on ScriptMixin is required to support this. Althernatively, fork the ScriptEngine implementation and support Invocable in it.
+| Java | Implementation exists at https://github.com/nickman/javax-scripting/ which is forked from https://java.net/projects/scripting. It doesn't support Invocable, and additional work on ScriptMixin is required to support this. Alternatively, fork the ScriptEngine implementation and support Invocable in it.
 |=======
 
 include::../../../../libraries/scripting/src/docs/javascript.txt[]
