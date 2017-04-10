@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
@@ -32,8 +33,8 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.AmbiguousTypeException;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.entity.LifecycleException;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.query.Query;
@@ -41,6 +42,7 @@ import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.structure.MetaInfoHolder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.usecase.Usecase;
+import org.apache.polygene.api.value.ValueBuilder;
 
 /**
  * All operations on entities goes through an UnitOfWork.
@@ -95,7 +97,7 @@ import org.apache.polygene.api.usecase.Usecase;
  *     }
  * </pre>
  * <p>
- * It has the very same effect than the template above but is shorter.</p>
+ * It has the very same effect as the template above but is shorter.</p>
  */
 public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
 {
@@ -107,6 +109,13 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      */
     UnitOfWorkFactory unitOfWorkFactory();
 
+    /**
+     * Current Time is a relative concept in systems capable of event sourcing and other
+     * history-capable systems. Current time is always expected to be read from here, and
+     * history-capable systems will set the current time for each {@link UnitOfWorkFactory#newUnitOfWork(Instant)}
+     *
+     * @return the current time, either actual real time or historical time being part of some playback.
+     */
     Instant currentTime();
 
     /**
@@ -116,11 +125,26 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      */
     Usecase usecase();
 
+    /**
+     * Sets an arbitrary metaInfo object on this {@code UnitOfWork} which can be used for application-specific
+     * information.
+     * <p>
+     * The metaInfo object is retrieved by the {@link UnitOfWork#metaInfo(Class)} method on the same UnitOfWork
+     * instance.
+     * </p>
+     *
+     * @param metaInfo The metaInfo object that can be retrieved with {@link UnitOfWork#metaInfo(Class)}.
+     */
     void setMetaInfo( Object metaInfo );
 
+    /**
+     * Creates a {@link Query} from the given {@link QueryBuilder} on this {@code UnitOfWork}.
+     *
+     * @param queryBuilder The QueryBuilder holding the query specification/expression
+     * @param <T>          The resulting type of the query.
+     * @return A Query against this {@code UnitOfWork}
+     */
     <T> Query<T> newQuery( QueryBuilder<T> queryBuilder );
-
-//    DataSet newDataSetBuilder(Specification<?>... constraints);
 
     /**
      * Create a new Entity which implements the given mixin type.
@@ -136,9 +160,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param <T>  Entity type
      * @param type the mixin type that the EntityComposite must implement
-     *
      * @return a new Entity
-     *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException    If several mixins implement the given type
      * @throws LifecycleException        if the entity cannot be created
@@ -155,9 +177,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param <T>      Entity type
      * @param type     the mixin type that the EntityComposite must implement
      * @param identity the reference of the new Entity
-     *
      * @return a new Entity
-     *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException    If several mixins implement the given type
      * @throws LifecycleException        if the entity cannot be created
@@ -173,9 +193,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param <T>  Entity type
      * @param type the mixin type that the EntityComposite must implement
-     *
      * @return a new EntityBuilder
-     *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException    If several mixins implement the given type
      */
@@ -191,9 +209,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param <T>      Entity type
      * @param type     the mixin type that the EntityComposite must implement
      * @param identity the reference of the new Entity
-     *
      * @return a new EntityBuilder
-     *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException    If several mixins implement the given type
      */
@@ -213,9 +229,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param associationFunction      a function providing the state of associations
      * @param manyAssociationFunction  a function providing the state of many associations
      * @param namedAssociationFunction a function providing the state of named associations
-     *
      * @return a new EntityBuilder starting with the given state
-     *
      * @throws NoSuchEntityTypeException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException    If several mixins implement the given type
      */
@@ -224,7 +238,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<AssociationDescriptor, EntityReference> associationFunction,
                                                     Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
                                                     Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                  )
         throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
@@ -241,9 +255,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param associationFunction      a function providing the state of associations
      * @param manyAssociationFunction  a function providing the state of many associations
      * @param namedAssociationFunction a function providing the state of named associations
-     *
      * @return a new EntityBuilder starting with the given state
-     *
      * @throws NoSuchEntityTypeException If no mixins implements the given type
      * @throws AmbiguousTypeException    If several mixins implement the given type
      */
@@ -252,7 +264,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<AssociationDescriptor, EntityReference> associationFunction,
                                                     Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
                                                     Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                  )
         throws NoSuchEntityTypeException, AmbiguousTypeException;
 
     /**
@@ -262,9 +274,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param <T>      Entity type
      * @param type     of the entity
      * @param identity of the entity
-     *
      * @return the entity
-     *
      * @throws NoSuchEntityTypeException if no entity type could be found
      * @throws NoSuchEntityException     if the entity could not be found
      */
@@ -278,9 +288,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param <T>    Entity type
      * @param entity the Entity to be dereferenced
-     *
      * @return an Entity from this UnitOfWork
-     *
      * @throws NoSuchEntityTypeException if no entity type could be found
      */
     <T> T get( T entity )
@@ -290,7 +298,6 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * Remove the given Entity.
      *
      * @param entity the Entity to be removed.
-     *
      * @throws LifecycleException if the entity could not be removed
      */
     void remove( Object entity )
@@ -403,21 +410,18 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param primaryType     The shared type for which the properties and associations will
      *                        be converted. Properties outside this type will be ignored.
      * @param entityComposite The entity to be convered.
-     *
      * @return The Value
      */
-    <T extends HasIdentity> T toValue(Class<T> primaryType, T entityComposite );
+    <T extends HasIdentity> T toValue( Class<T> primaryType, T entityComposite );
 
     /**
      * Converts all the entities referenced in the ManyAssociation into a List of values of the same type.
-     *
      * <p>
      * All the referenced entities inside the association will be fetched from the underlying entity store,
      * which is potentially very expensive operation. Each of the fetched entities will be passed to
      * {@link #toValue(Class, HasIdentity)}, and its associations will NOT be converted into values, but remain
      * {@link EntityReference} values. Hence there is no problem with circular references.
      * </p>
-     *
      * <p>
      * For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
      * as seen in the method signature, also be sub-type of {@link HasIdentity}.
@@ -425,16 +429,13 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param association The association of entities to be converted into values.
      * @param <T>         The primary type of the association.
-     *
      * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
-     *
      * @see #toValue(Class, HasIdentity)
      */
-    <T extends HasIdentity> List<T> toValueList(ManyAssociation<T> association );
+    <T extends HasIdentity> List<T> toValueList( ManyAssociation<T> association );
 
     /**
      * Converts all the entities referenced in the ManyAssociation into a Set of values of the same type.
-     *
      * <p>
      * All the referenced entities inside the association will be fetched from the underlying entity store,
      * which is potentially very expensive operation. However, any duplicate EntityReferences in the association
@@ -442,7 +443,6 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * {@link #toValue(Class, HasIdentity)}, and its associations will NOT be converted into values, but remain
      * {@link EntityReference} values. Hence there is no problem with circular references.
      * </p>
-     *
      * <p>
      * For this to work, the type &lt;T&gt; must be registered at bootstrap as both an Entity and a Value, and
      * as seen in the method signature, also be sub-type of {@link HasIdentity}.
@@ -450,16 +450,13 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param association The association of entities to be converted into values.
      * @param <T>         The primary type of the association.
-     *
      * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
-     *
      * @see #toValue(Class, HasIdentity)
      */
-    <T extends HasIdentity> Set<T> toValueSet(ManyAssociation<T> association );
+    <T extends HasIdentity> Set<T> toValueSet( ManyAssociation<T> association );
 
     /**
      * Converts the {@link NamedAssociation} into a Map with a String key and a ValueComposite as the value.
-     *
      * <p>
      * A {@link NamedAssociation} is effectively a Map with a String key and an EntityReference as the value. The
      * EntityReference is fetched from the entity store and converted into a value of the same type.Each of the fetched
@@ -473,12 +470,10 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param association The association of entities to be converted into values.
      * @param <T>         The primary type of the association.
-     *
      * @return A List of ValueComposites that has been converted from EntityComposites referenced by the Associations.
-     *
      * @see #toValue(Class, HasIdentity)
      */
-    <T extends HasIdentity> Map<String, T> toValueMap(NamedAssociation<T> association );
+    <T extends HasIdentity> Map<String, T> toValueMap( NamedAssociation<T> association );
 
     /**
      * Converts the provided Value to an Entity of the same type.
@@ -519,10 +514,9 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param primaryType    The shared type for which the properties and associations will
      *                       be converted. Properties outside this type will be ignored.
      * @param valueComposite The Value to be convered into an Entity.
-     *
      * @return The new or updated Entity
      */
-    <T extends HasIdentity> T toEntity(Class<T> primaryType, T valueComposite );
+    <T extends HasIdentity> T toEntity( Class<T> primaryType, T valueComposite );
 
     /**
      * The Module of the UnitOfWork is defined as the Module the UnitOfWorkFactory belonged to from where the

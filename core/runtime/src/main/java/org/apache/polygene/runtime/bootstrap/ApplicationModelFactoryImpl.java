@@ -186,7 +186,6 @@ public final class ApplicationModelFactoryImpl
             {
                 layer = (LayerModel) visited;
             }
-
             return true;
         }
 

@@ -57,6 +57,13 @@ public final class ValueBuilderInstance<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
+    public Class<T> primaryType()
+    {
+        return (Class<T>) prototypeInstance.descriptor().primaryType();
+    }
+
+    @Override
     public AssociationStateHolder state()
     {
         return prototypeInstance.state();

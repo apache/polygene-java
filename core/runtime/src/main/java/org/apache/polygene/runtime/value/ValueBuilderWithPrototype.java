@@ -88,6 +88,13 @@ public class ValueBuilderWithPrototype<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
+    public Class<T> primaryType()
+    {
+        return (Class<T>) valueModel.primaryType();
+    }
+
+    @Override
     public AssociationStateHolder state()
     {
         verifyUnderConstruction();

@@ -22,14 +22,17 @@ package org.apache.polygene.api.unitofwork.concern;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.AppliesTo;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.injection.scope.Invocation;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
+import org.apache.polygene.api.usecase.UsecaseFactory;
 
 /**
  * {@code UnitOfWorkConcern} manages the unit of work complete, discard and retry policy.
@@ -49,15 +52,17 @@ public class UnitOfWorkConcern
     @Invocation
     private UnitOfWorkPropagation propagation;
 
+    @Optional
+    @Service
+    private UsecaseFactory usecaseFactory;
+
     /**
      * Handles method with {@code UnitOfWorkPropagation} annotation.
      *
      * @param proxy  The object.
      * @param method The invoked method.
      * @param args   The method arguments.
-     *
      * @return The returned value of method invocation.
-     *
      * @throws Throwable Thrown if the method invocation throw exception.
      */
     @Override
@@ -98,13 +103,20 @@ public class UnitOfWorkConcern
     {
         String usecaseName = propagation.usecase();
         Usecase usecase;
-        if( usecaseName == null )
+        if( usecaseFactory == null )
         {
-            usecase = Usecase.DEFAULT;
+            if( usecaseName.length() == 0 )
+            {
+                usecase = Usecase.DEFAULT;
+            }
+            else
+            {
+                usecase = UsecaseBuilder.newUsecase( usecaseName );
+            }
         }
         else
         {
-            usecase = UsecaseBuilder.newUsecase( usecaseName );
+            usecase = usecaseFactory.createUsecase( usecaseName );
         }
         return usecase;
     }
@@ -168,7 +180,7 @@ public class UnitOfWorkConcern
                                    long initialDelay,
                                    int retry,
                                    ConcurrentEntityModificationException e
-    )
+                                 )
         throws ConcurrentEntityModificationException, InterruptedException
     {
         if( retry >= maxTries )

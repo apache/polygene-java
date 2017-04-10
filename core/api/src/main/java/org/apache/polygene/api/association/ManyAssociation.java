@@ -30,24 +30,68 @@ import org.apache.polygene.api.entity.EntityReference;
  */
 public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {
+    boolean contains( T entity );
+
+    /** Adds an entity reference representing the given entity to the {@code index} slot of this collection.
+     * <p>
+     *     {@code index=0} represents the beginning of the collection and if the {@code index} is equal or larger
+     *     than the length of the collection, the entity reference will be added to the end.
+     * </p>
+     * @param entity The entity whose entity reference is to be added to this collection.
+     * @return true if the entity reference has been added, false otherwise.
+     */
+    boolean add( int index, T entity );
+
+    /** Adds an entity reference representing the given entity to the end of this collection.
+     *
+     * @param entity The entity whose entity reference is to be added to this collection.
+     * @return true if the entity reference has been added, false otherwise.
+     */
+    boolean add( T entity );
+
+    /**
+     * Removes the given entity from this {@code ManyAssociation}.
+     * <p>
+     *     The entity reference representing the given entity is removed from this collection.
+     * </p>
+     * @param entity The entity reference to be removed.
+     * @return true if an entity reference was removed, otherwise false
+     */
+    boolean remove( T entity );
+
+    /** Fetch the entity refrence at the given index and fetch the entity from the entity store.
+     *
+     * @param index The index location in the collection of the entity reference to be fetched.
+     * @return The retrieved entity that the entity reference of this collection represents.
+     */
+    T get( int index );
+
     /**
      * Returns the number of references in this association.
      * @return the number of references in this association.
      */
     int count();
 
-    boolean contains( T entity );
-
-    boolean add( int i, T entity );
-
-    boolean add( T entity );
-
-    boolean remove( T entity );
-
-    T get( int i );
-
+    /**
+     * Fetches all entities represented by entity references in this collection and returns a List of such
+     * entities.
+     * <p>
+     *     Multiple references to the same entity will be present multiple times in the List, unlike {@link #toSet()}.
+     *     The order in which the entities were added to this collection is preserved.
+     * </p>
+     * @return a List of entities represented by the entity references in this collection.
+     */
     List<T> toList();
 
+    /**
+     * Fetches all entities represented by entity references in this collection and returns a Set of such
+     * entities.
+     * <p>
+     *     Multiple references to the same entity will NOT be present, unlike {@link #toList()}. Sets are defined
+     *     to only contain any particular object once. Order is not preserved.
+     * </p>
+     * @return a Set of entities represented by the entity references in this collection.
+     */
     Set<T> toSet();
 
     /**

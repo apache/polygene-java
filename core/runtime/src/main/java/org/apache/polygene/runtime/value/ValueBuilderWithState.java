@@ -26,7 +26,8 @@ import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.runtime.composite.StateResolver;
 import org.apache.polygene.runtime.structure.ModuleInstance;
 
-public class ValueBuilderWithState<T> implements ValueBuilder<T>
+public class ValueBuilderWithState<T>
+    implements ValueBuilder<T>
 {
     private final ValueDescriptor model;
     private ValueInstance prototypeInstance;
@@ -47,6 +48,13 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
     {
         verifyUnderConstruction();
         return prototypeInstance.proxy();
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public Class<T> primaryType()
+    {
+        return (Class<T>) model.primaryType();
     }
 
     @Override

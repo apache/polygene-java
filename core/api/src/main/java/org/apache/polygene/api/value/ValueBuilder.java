@@ -62,4 +62,10 @@ public interface ValueBuilder<T>
      */
     T newInstance()
         throws ConstructionException;
+
+    /** Returns the primaryType that this builder is configured to build.
+     *
+     * @return the primaryType to be built.
+     */
+    Class<T> primaryType();
 }

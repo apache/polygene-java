@@ -60,6 +60,8 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
+import org.apache.polygene.api.unitofwork.ToEntityConverter;
+import org.apache.polygene.api.unitofwork.ToValueConverter;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCallback;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
@@ -213,7 +215,7 @@ public class ModuleUnitOfWork
         Function<AssociationDescriptor, EntityReference> associationFunction,
         Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
         Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                         )
         throws NoSuchEntityTypeException
     {
         return newEntityBuilderWithState( type, null,
@@ -230,7 +232,7 @@ public class ModuleUnitOfWork
         Function<AssociationDescriptor, EntityReference> associationFunction,
         Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
         Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                         )
         throws NoSuchEntityTypeException
     {
         Objects.requireNonNull( propertyFunction, "propertyFunction" );
@@ -259,7 +261,7 @@ public class ModuleUnitOfWork
             PropertyModel identityModel = (PropertyModel) model
                 .state()
                 .findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
-            String propertyState = (String) stateResolver.getPropertyState(identityModel);
+            String propertyState = (String) stateResolver.getPropertyState( identityModel );
             if( propertyState == null )
             {
                 // Generate reference
@@ -273,7 +275,7 @@ public class ModuleUnitOfWork
             }
             else
             {
-                identity = new StringIdentity(propertyState);
+                identity = new StringIdentity( propertyState );
             }
         }
 
@@ -426,13 +428,38 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends HasIdentity> T toValue(Class<T> primaryType, T entityComposite )
+    public <T extends HasIdentity> T toValue( Class<T> primaryType, T entityComposite )
     {
-        Function<PropertyDescriptor, Object> propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
-        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
-        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
-        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
-
+        Objects.requireNonNull( primaryType );
+        Objects.requireNonNull( entityComposite );
+        Function<PropertyDescriptor, Object> propertyFunction = null;
+        Function<AssociationDescriptor, EntityReference> assocationFunction = null;
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = null;
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = null;
+        ToValueConverter converter = getConverter( ToValueConverter.class );
+        if( converter != null )
+        {
+            propertyFunction = converter.properties( entityComposite );
+            manyAssocFunction = converter.manyAssociations( entityComposite );
+            assocationFunction = converter.associations( entityComposite );
+            namedAssocFunction = converter.namedAssociations( entityComposite );
+        }
+        if( propertyFunction == null )
+        {
+            propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
+        }
+        if( assocationFunction == null )
+        {
+            assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
+        }
+        if( manyAssocFunction == null )
+        {
+            manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
+        }
+        if( namedAssocFunction == null )
+        {
+            namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
+        }
         @SuppressWarnings( "unchecked" )
         ValueBuilder<T> builder = module().instance().newValueBuilderWithState(
             primaryType, propertyFunction, assocationFunction, manyAssocFunction, namedAssocFunction );
@@ -440,7 +467,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends HasIdentity> Map<String, T> toValueMap(NamedAssociation<T> association )
+    public <T extends HasIdentity> Map<String, T> toValueMap( NamedAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -449,11 +476,11 @@ public class ModuleUnitOfWork
             .toMap()
             .entrySet()
             .stream()
-            .collect( Collectors.toMap( Map.Entry::getKey, entry -> toValue( primaryType, entry.getValue()) ) );
+            .collect( Collectors.toMap( Map.Entry::getKey, entry -> toValue( primaryType, entry.getValue() ) ) );
     }
 
     @Override
-    public <T extends HasIdentity> List<T> toValueList(ManyAssociation<T> association )
+    public <T extends HasIdentity> List<T> toValueList( ManyAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -466,7 +493,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends HasIdentity> Set<T> toValueSet(ManyAssociation<T> association )
+    public <T extends HasIdentity> Set<T> toValueSet( ManyAssociation<T> association )
     {
         @SuppressWarnings( "unchecked" )
         Class<T> primaryType = (Class<T>) api.associationDescriptorFor( association ).type();
@@ -479,12 +506,37 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public <T extends HasIdentity> T toEntity(Class<T> primaryType, T valueComposite )
+    public <T extends HasIdentity> T toEntity( Class<T> primaryType, T valueComposite )
     {
-        Function<PropertyDescriptor, Object> propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
-        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
-        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
-        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
+
+        Function<PropertyDescriptor, Object> propertyFunction = null;
+        Function<AssociationDescriptor, EntityReference> assocationFunction = null;
+        Function<AssociationDescriptor, Stream<EntityReference>> manyAssocFunction = null;
+        Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssocFunction = null;
+        ToEntityConverter converter = getConverter( ToEntityConverter.class );
+        if( converter != null )
+        {
+            propertyFunction = converter.properties( valueComposite );
+            manyAssocFunction = converter.manyAssociations( valueComposite );
+            assocationFunction = converter.associations( valueComposite );
+            namedAssocFunction = converter.namedAssociations( valueComposite );
+        }
+        if( propertyFunction == null )
+        {
+            propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
+        }
+        if( assocationFunction == null )
+        {
+            assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
+        }
+        if( manyAssocFunction == null )
+        {
+            manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
+        }
+        if( namedAssocFunction == null )
+        {
+            namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
+        }
 
         try
         {
@@ -512,6 +564,21 @@ public class ModuleUnitOfWork
         }
     }
 
+    private <T> T getConverter( Class<T> converterType )
+    {
+        T converter = null;
+        Usecase usecase = usecase();
+        if( usecase != null )
+        {
+            converter = usecase.metaInfo( converterType );
+        }
+        if( converter == null )
+        {
+            converter = metaInfo( converterType );
+        }
+        return converter;
+    }
+
     private static class UoWQuerySource implements QuerySource
     {
         private final ModuleUnitOfWork moduleUnitOfWork;
@@ -528,12 +595,12 @@ public class ModuleUnitOfWork
                            Integer firstResult,
                            Integer maxResults,
                            Map<String, Object> variables
-        )
+                         )
         {
             final EntityFinder entityFinder = moduleUnitOfWork.module()
-                .instance()
-                .findService( EntityFinder.class )
-                .get();
+                                                              .instance()
+                                                              .findService( EntityFinder.class )
+                                                              .get();
 
             try
             {
@@ -565,7 +632,7 @@ public class ModuleUnitOfWork
                                Integer firstResult,
                                Integer maxResults,
                                Map<String, Object> variables
-        )
+                             )
         {
             EntityFinder entityFinder = moduleUnitOfWork.module().instance().findService( EntityFinder.class ).get();
 
@@ -599,18 +666,18 @@ public class ModuleUnitOfWork
                     firstResult,
                     maxResults,
                     variables == null ? Collections.emptyMap() : variables
-                ).map( ref ->
-                       {
-                           try
-                           {
-                               return moduleUnitOfWork.get( resultType, ref.identity() );
-                           }
-                           catch( NoSuchEntityException e )
-                           {
-                               // Index is out of sync - entity has been removed
-                               return null;
-                           }
-                       } );
+                                                ).map( ref ->
+                                                       {
+                                                           try
+                                                           {
+                                                               return moduleUnitOfWork.get( resultType, ref.identity() );
+                                                           }
+                                                           catch( NoSuchEntityException e )
+                                                           {
+                                                               // Index is out of sync - entity has been removed
+                                                               return null;
+                                                           }
+                                                       } );
             }
             catch( EntityFinderException e )
             {

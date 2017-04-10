@@ -62,7 +62,7 @@ public class Model2XML
     }
 
     @Override
-    public Document apply( ApplicationDescriptor Application )
+    public Document apply( ApplicationDescriptor application )
     {
         try
         {
@@ -72,7 +72,7 @@ public class Model2XML
             final Stack<Node> current = new Stack<Node>();
             current.push( document );
 
-            Application.accept( new HierarchicalVisitor<Object, Object, DOMException>()
+            application.accept( new HierarchicalVisitor<Object, Object, DOMException>()
             {
                 @Override
                 public boolean visitEnter( Object visited )
