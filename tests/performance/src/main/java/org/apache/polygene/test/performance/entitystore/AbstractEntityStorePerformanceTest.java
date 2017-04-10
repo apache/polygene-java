@@ -298,7 +298,7 @@ public abstract class AbstractEntityStorePerformanceTest
         throws IOException
     {
         File dir = new File( "build/reports/perf/" );
-        if( !dir.mkdirs() )
+        if( !dir.exists() && !dir.mkdirs() )
         {
             System.out.println( "Couldn't create Performance result directory." );
         }
