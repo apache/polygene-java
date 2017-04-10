@@ -27,7 +27,7 @@ public class Scripting
     public static final Scripting ECMASCRIPT = new Scripting( "nashorn", ".js" );
     public static final Scripting GROOVY = new Scripting( "groovy", ".groovy" );
     public static final Scripting JAVASCRIPT = new Scripting( "nashorn", ".js" );
-    public static final Scripting KOTLIN = new Scripting( "kotlin", ".kt" );
+    public static final Scripting KOTLIN = new Scripting( "kotlin", ".kts" );
     public static final Scripting LUA = new Scripting( "lua", ".lua" );
     public static final Scripting PYTHON = new Scripting( "python", ".py" );
     public static final Scripting RUBY = new Scripting( "jruby", ".rb" );
