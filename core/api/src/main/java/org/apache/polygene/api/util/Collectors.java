@@ -201,7 +201,7 @@ public class Collectors
                                             Function<? super T, ? extends U> valueMapper,
                                             Supplier<M> mapSupplier )
     {
-        return java.util.stream.Collector
+        return Collector
             .of( mapSupplier,
                  ( map, entry ) -> map.put( keyMapper.apply( entry ),
                                             valueMapper.apply( entry ) ),

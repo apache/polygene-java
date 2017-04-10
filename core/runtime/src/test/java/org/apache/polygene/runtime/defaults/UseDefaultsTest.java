@@ -27,9 +27,7 @@ import java.util.Map;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.TransientBuilder;
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
@@ -44,8 +42,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class UseDefaultsTest extends AbstractPolygeneTest
 {
+    @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( TestComposite.class );
         module.forMixin( TestComposite.class ).declareDefaults().assemblyString().set( "habba" );
@@ -92,7 +90,6 @@ public class UseDefaultsTest extends AbstractPolygeneTest
     }
 
     interface TestComposite
-        extends TransientComposite
     {
         @Optional
         Property<Integer> nullInt();

@@ -50,32 +50,32 @@ import static java.util.stream.StreamSupport.stream;
  */
 public final class Classes
 {
-    private final static Map<Type, Type> wrapperClasses = new HashMap<>();
+    private final static Map<Type, Type> WRAPPER_CLASSES = new HashMap<>();
 
     static
     {
-        wrapperClasses.put( boolean.class, Boolean.class );
-        wrapperClasses.put( byte.class, Byte.class );
-        wrapperClasses.put( short.class, Short.class );
-        wrapperClasses.put( char.class, Character.class );
-        wrapperClasses.put( int.class, Integer.class );
-        wrapperClasses.put( long.class, Long.class );
-        wrapperClasses.put( float.class, Float.class );
-        wrapperClasses.put( double.class, Double.class );
+        WRAPPER_CLASSES.put( boolean.class, Boolean.class );
+        WRAPPER_CLASSES.put( byte.class, Byte.class );
+        WRAPPER_CLASSES.put( short.class, Short.class );
+        WRAPPER_CLASSES.put( char.class, Character.class );
+        WRAPPER_CLASSES.put( int.class, Integer.class );
+        WRAPPER_CLASSES.put( long.class, Long.class );
+        WRAPPER_CLASSES.put( float.class, Float.class );
+        WRAPPER_CLASSES.put( double.class, Double.class );
     }
 
-    private final static Map<Type, Type> primitiveClasses = new HashMap<>();
+    private final static Map<Type, Type> PRIMITIVE_CLASSES = new HashMap<>();
 
     static
     {
-        primitiveClasses.put( boolean.class, Boolean.class );
-        primitiveClasses.put( byte.class, Byte.class );
-        primitiveClasses.put( short.class, Short.class );
-        primitiveClasses.put( char.class, Character.class );
-        primitiveClasses.put( int.class, Integer.class );
-        primitiveClasses.put( long.class, Long.class );
-        primitiveClasses.put( float.class, Float.class );
-        primitiveClasses.put( double.class, Double.class );
+        PRIMITIVE_CLASSES.put( boolean.class, Boolean.class );
+        PRIMITIVE_CLASSES.put( byte.class, Byte.class );
+        PRIMITIVE_CLASSES.put( short.class, Short.class );
+        PRIMITIVE_CLASSES.put( char.class, Character.class );
+        PRIMITIVE_CLASSES.put( int.class, Integer.class );
+        PRIMITIVE_CLASSES.put( long.class, Long.class );
+        PRIMITIVE_CLASSES.put( float.class, Float.class );
+        PRIMITIVE_CLASSES.put( double.class, Double.class );
     }
 
     /**
@@ -84,7 +84,7 @@ public final class Classes
      * to ensure that they are not primitives.
      */
     private static final Function<Type, Type> WRAPPER_CLASS = clazz -> {
-        Type wrapperClass = wrapperClasses.get( clazz );
+        Type wrapperClass = WRAPPER_CLASSES.get( clazz );
         return wrapperClass == null ? clazz : wrapperClass;
     };
 
@@ -95,7 +95,7 @@ public final class Classes
      */
     @SuppressWarnings( "UnusedDeclaration" )
     private static final Function<Type, Type> PRIMITIVE_CLASS = aClass -> {
-        Type primitiveClass = primitiveClasses.get( aClass );
+        Type primitiveClass = PRIMITIVE_CLASSES.get( aClass );
         return primitiveClass == null ? aClass : primitiveClass;
     };
 

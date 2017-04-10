@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
@@ -100,11 +99,7 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        Stream<? extends Dependencies> fragments = Stream.of( this.concerns, sideEffects );
-        Stream<? extends Dependencies> nonNullFragments = fragments.filter( Objects::nonNull );
-        Function<? super Dependencies, Stream<? extends DependencyModel>> dependencies = Dependencies::dependencies;
-        Stream<DependencyModel> modelStream = nonNullFragments.flatMap( dependencies );
-        return modelStream;
+        return Stream.of( concerns, sideEffects ).filter( Objects::nonNull ).flatMap( Dependencies::dependencies );
     }
 
     // Context
@@ -223,13 +218,9 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( Genericpredicate.INSTANCE.test( model.mixinClass() ) )
-                {
-                    return false;
-                }
-                return ( model.mixinClass()
-                             .getMethod( method.getName(), method.getParameterTypes() )
-                             .isAnnotationPresent( annotationClass ) );
+                return !Genericpredicate.INSTANCE.test( model.mixinClass() )
+                       && ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() )
+                                 .isAnnotationPresent( annotationClass ) );
             }
             catch( NoSuchMethodException e )
             {
@@ -268,7 +259,7 @@ public final class CompositeMethodModel
         public Annotation[] getAnnotations()
         {
             // Add mixin annotations
-            List<Annotation> annotations = new ArrayList<Annotation>();
+            List<Annotation> annotations = new ArrayList<>();
             MixinModel model = mixins.mixinFor( method );
             Annotation[] mixinAnnotations = new Annotation[ 0 ];
             if( !Genericpredicate.INSTANCE.test( model.mixinClass() ) )
