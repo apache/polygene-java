@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -44,19 +43,16 @@ import static org.junit.Assume.assumeTrue;
  * NOTE: This satisfiedBy MUST NOT be inside package org.apache.polygene.runtime, or it will fail.
  * </p>
  */
-public class CleanStackTraceTest
-    extends AbstractPolygeneTest
+public class CleanStackTraceTest extends AbstractPolygeneTest
 {
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
-    {   
+    {
         assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
-    }   
+    }
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( CleanStackTraceTest.TestComposite.class );
     }
@@ -82,14 +78,14 @@ public class CleanStackTraceTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:128)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:141)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:79)";
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:123)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:75)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:124)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:141)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:79)";
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:119)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:75)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );
         }
@@ -106,7 +102,7 @@ public class CleanStackTraceTest
     }
 
     @Concerns( NillyWilly.class )
-    @Mixins(DoStuffMixin.class)
+    @Mixins( DoStuffMixin.class )
     public interface TestComposite
     {
         void doStuff();
@@ -115,7 +111,6 @@ public class CleanStackTraceTest
     public static class DoStuffMixin
         implements TestComposite
     {
-
         @Override
         public void doStuff()
         {
@@ -133,7 +128,6 @@ public class CleanStackTraceTest
     static class NillyWilly extends GenericConcern
         implements InvocationHandler
     {
-
         @Override
         public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
