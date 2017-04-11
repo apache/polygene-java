@@ -44,7 +44,7 @@ import static org.junit.Assert.assertThat;
  * Note that keySet(), values() and entrySet() would ALSO require overloading, but this has been left out for
  * clarity reasons.
  */
-@Ignore( "Awaiting QI-298" )
+@Ignore( "Awaiting QI-298 - Allow Transients to be declared by classes" )
 public class MapOverrideTest
     extends AbstractPolygeneTest
 {
@@ -118,9 +118,9 @@ public class MapOverrideTest
     }
 
     @Test
-    @Ignore
     public void givenReadOnlyAnnotatedHashMapWhenCallingEntrySetExpectSuccess()
     {
+        // TODO
     }
 
     @Test
@@ -136,35 +136,30 @@ public class MapOverrideTest
     }
 
     @Test( expected = ReadOnlyException.class )
-    @Ignore
     public void givenReadOnlyAnnotatedHashMapWhenCallingPutExpectReadOnlyException()
     {
-
+        // TODO
     }
 
     @Test( expected = ReadOnlyException.class )
-    @Ignore
     public void givenReadOnlyAnnotatedHashMapWhenCallingRemoveExpectReadOnlyException()
     {
-
+        // TODO
     }
 
     @Test( expected = ReadOnlyException.class )
-    @Ignore
     public void givenReadOnlyAnnotatedHashMapWhenCallingPutAllExpectReadOnlyException()
     {
-
+        // TODO
     }
 
     @Test( expected = ReadOnlyException.class )
-    @Ignore
     public void givenReadOnlyAnnotatedHashMapWhenCallingClearExpectReadOnlyException()
     {
-
+        // TODO
     }
 
-    public static abstract class ReadOnlyMapConcern
-        extends ConcernOf<Map>
+    public static abstract class ReadOnlyMapConcern extends ConcernOf<Map>
         implements Map
     {
         @Invocation
