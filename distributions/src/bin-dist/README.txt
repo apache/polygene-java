@@ -19,11 +19,10 @@ Please see https://polygene.apache.org for more information.
 
 Licensing
 ---------
-All Apache Polygene™ code is licensed under an Apache License.
+All Polygene™ code is licensed subject to the Apache License.
 
 Third-Party Dependencies may be licensed under other terms. The only
-required dependencies are SLF4J (MIT Licence), ASM (BSD Licence) and
-Joda-Time (Apache Licence).
+required dependencies are SLF4J (MIT Licence) and ASM (BSD Licence)
 
 Finally, Polygene™ TestSupport depends on JUnit 4.x and its dependencies, which
 is also not included in the SDK itself, as it is present among most Java

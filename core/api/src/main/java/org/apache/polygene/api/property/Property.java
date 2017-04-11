@@ -31,9 +31,7 @@ package org.apache.polygene.api.property;
  * <li> String</li>
  * <li> BigInteger</li>
  * <li> BigDecimal</li>
- * <li> Date</li>
- * <li> DateTime (Joda Time)</li>
- * <li> LocalDateTime (Joda Time)</li>
+ * <li> Java Time API</li>
  * <li> A serializable</li>
  * <li> A ValueComposite</li>
  * <li> A List, Set or Collection of any of the above</li>
