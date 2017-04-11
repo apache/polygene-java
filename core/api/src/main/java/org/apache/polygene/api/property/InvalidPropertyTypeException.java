@@ -27,6 +27,11 @@ import org.apache.polygene.api.common.ConstructionException;
  */
 public class InvalidPropertyTypeException extends ConstructionException
 {
+    public InvalidPropertyTypeException( String message )
+    {
+        super(message);
+    }
+
     public InvalidPropertyTypeException( AccessibleObject accessor )
     {
         super( createMessage( accessor ) );

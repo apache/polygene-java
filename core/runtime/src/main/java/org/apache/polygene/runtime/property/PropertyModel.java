@@ -39,9 +39,9 @@ import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.service.ServiceFinder;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
@@ -56,13 +56,14 @@ import org.apache.polygene.runtime.type.ValueTypeFactoryInstance;
 
 /**
  * Model for a Property.
- *
+ * <p>
  * <p>Equality is based on the Property accessor object (property type and name), not on the QualifiedName.</p>
  */
 public class PropertyModel
     implements PropertyDescriptor, PropertyInfo, Binder, Visitable<PropertyModel>
 {
     private Type type;
+
     private transient AccessibleObject accessor; // Interface accessor
 
     private final QualifiedName qualifiedName;
@@ -88,7 +89,7 @@ public class PropertyModel
                           MetaInfo metaInfo,
                           Object initialValue,
                           InitialValueProvider initialValueProvider
-    )
+                        )
     {
         if( accessor instanceof Method )
         {
@@ -100,8 +101,9 @@ public class PropertyModel
         }
         this.immutable = immutable;
         this.metaInfo = metaInfo;
-        type = GenericPropertyInfo.propertyTypeOf( accessor );
         this.accessor = accessor;
+        type = GenericPropertyInfo.propertyTypeOf( accessor );
+        checkTypeValidity( type );
         qualifiedName = QualifiedName.fromAccessor( accessor );
         if( initialValueProvider != null )
         {
@@ -109,11 +111,35 @@ public class PropertyModel
         }
         else
         {
-            this.initialValueProvider = new DefaultInitialValueProvider(useDefaults, initialValue);
+            this.initialValueProvider = new DefaultInitialValueProvider( useDefaults, initialValue );
         }
         this.constraints = constraints;
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
+    }
+
+    private void checkTypeValidity( Type type )
+    {
+        // Make sure certain data types doesn't take hold in Polygene applications.
+        String typeName = type.getTypeName();
+        if( typeName.contains( "java.util.Date" )
+            || typeName.contains( "java.util.Calendar" )
+            || typeName.contains( "java.util.GregorianCalendar" )
+            || typeName.contains( "java.sql.Date" )
+            || typeName.contains( "java.sql.Time" )
+            || typeName.contains( "java.sql.Timestamp" )
+            || typeName.contains( "org.joda.time" )
+            )
+        {
+            throw new InvalidPropertyTypeException( type + " is not allowed in Polygene. Please use Java Time API instead." );
+        }
+        if( typeName.contains( "java.util.Dictionary" )
+            || typeName.contains( "java.util.Hashtable" )
+            || typeName.contains( "java.util.Vector" )
+            )
+        {
+            throw new InvalidPropertyTypeException( type + " is not allowed in Polygene. Please use the modern Java Collection API instead." );
+        }
     }
 
     @Override
@@ -175,11 +201,10 @@ public class PropertyModel
     }
 
     @Override
-    public Object resolveInitialValue(ModuleDescriptor moduleDescriptor)
+    public Object resolveInitialValue( ModuleDescriptor moduleDescriptor )
     {
-        return initialValueProvider.apply(moduleDescriptor.instance(), this);
+        return initialValueProvider.apply( moduleDescriptor.instance(), this );
     }
-
 
     @Override
     public void bind( Resolution resolution )
@@ -289,7 +314,7 @@ public class PropertyModel
         implements InitialValueProvider
     {
         @Override
-        public Object apply(Module module, PropertyDescriptor property)
+        public Object apply( Module module, PropertyDescriptor property )
         {
             return null;
         }
@@ -301,16 +326,16 @@ public class PropertyModel
         private final boolean useDefaults;
         private final Object initialValue;
 
-        private DefaultInitialValueProvider(boolean useDefaults, Object initialValue)
+        private DefaultInitialValueProvider( boolean useDefaults, Object initialValue )
         {
             this.useDefaults = useDefaults;
             this.initialValue = initialValue;
         }
 
         @Override
-        public Object apply(Module module, PropertyDescriptor property)
+        public Object apply( Module module, PropertyDescriptor property )
         {
-            return initialValue(module.descriptor(), initialValue, useDefaults);
+            return initialValue( module.descriptor(), initialValue, useDefaults );
         }
 
         private Object initialValue( ModuleDescriptor module, Object initialValue, boolean useDefaults )
