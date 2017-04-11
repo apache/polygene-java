@@ -20,11 +20,12 @@
 package org.apache.polygene.test.model;
 
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
  */
-public interface Protocol
+public interface Protocol extends ValueComposite
 {
     Property<String> value();
 }

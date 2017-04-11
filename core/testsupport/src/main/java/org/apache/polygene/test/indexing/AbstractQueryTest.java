@@ -432,7 +432,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        QueryParam queryParam = null; // oneOf( person.personalWebsite().get().queryParams() );
+        QueryParam queryParam = null; //oneOf( person.personalWebsite().get().queryParams() );
         Query<Person> query = unitOfWork.newQuery( qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) ) );
         System.out.println( "*** script30: " + query );
         verifyUnorderedResults( query, "Jack Doe" );

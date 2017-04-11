@@ -40,7 +40,7 @@ import org.apache.polygene.runtime.model.Resolution;
 public final class EntityMixinsModel
     extends MixinsModel
 {
-    List<Integer> lifecycleMixins;
+    private List<Integer> lifecycleMixins;
 
     @Override
     public void bind( Resolution resolution )
@@ -52,11 +52,12 @@ public final class EntityMixinsModel
         for( int i = 0; i < mixinModels.size(); i++ )
         {
             MixinModel mixinModel = mixinModels.get( i );
+
             if( Lifecycle.class.isAssignableFrom( mixinModel.mixinClass() ) )
             {
                 if( lifecycleMixins == null )
                 {
-                    lifecycleMixins = new ArrayList<Integer>();
+                    lifecycleMixins = new ArrayList<>();
                 }
 
                 lifecycleMixins.add( i );
@@ -64,7 +65,7 @@ public final class EntityMixinsModel
         }
     }
 
-    public Object newMixin( EntityInstance entityInstance, StateHolder state, Object[] mixins, Method method )
+    Object newMixin( EntityInstance entityInstance, StateHolder state, Object[] mixins, Method method )
     {
         MixinModel model = methodImplementation.get( method );
         InjectionContext injectionContext = new InjectionContext( entityInstance, UsesInstance.EMPTY_USES, state );
@@ -73,7 +74,7 @@ public final class EntityMixinsModel
         return mixin;
     }
 
-    public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )
+    void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )
     {
         if( lifecycleMixins != null )
         {

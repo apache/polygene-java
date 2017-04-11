@@ -35,6 +35,7 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entity.ManyAssociationState;
@@ -88,7 +89,7 @@ class SQLCompatEntityStateWrapper
                    // || DateTime.class.isAssignableFrom( primaryType )
                    // || LocalDateTime.class.isAssignableFrom( primaryType )
                    // || LocalDate.class.isAssignableFrom( primaryType )
-                   || valueType instanceof ValueCompositeType;
+                   || valueType.hasType( ValueComposite.class );
         }
     };
 

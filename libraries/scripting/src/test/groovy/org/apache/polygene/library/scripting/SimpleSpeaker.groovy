@@ -17,15 +17,10 @@
  *
  *
  */
-package org.apache.polygene.test.model;
+package org.apache.polygene.library.scripting
 
-import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.value.ValueComposite;
-
-/**
- * JAVADOC Add JavaDoc.
- */
-public interface Host extends ValueComposite
-{
-    Property<String> value();
+// START SNIPPET: script
+def sayHello() {
+    "Hello, Groovy"
 }
+// END SNIPPET: script

@@ -23,11 +23,12 @@ import java.util.Collection;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.value.ValueComposite;
 
 /**
  * JAVADOC Add JavaDoc.
  */
-public interface URL
+public interface URL extends ValueComposite
 {
     Property<Protocol> protocol();
 

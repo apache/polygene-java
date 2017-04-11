@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 import org.apache.polygene.api.injection.InjectionScope;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.util.Methods;
@@ -96,6 +97,7 @@ public final class InjectedMethodsModel
         } );
     }
 
+    @PostConstruct
     private Type createParameterizedTypeInstance( ParameterizedType genericType )
     {
         return new ParameterizedTypeInstance(

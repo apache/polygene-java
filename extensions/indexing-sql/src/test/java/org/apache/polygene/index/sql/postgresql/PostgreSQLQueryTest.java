@@ -36,7 +36,9 @@ public class PostgreSQLQueryTest
     extends AbstractQueryTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
+    public static final DockerRule DOCKER = new DockerRule( "postgres",
+                                                            10000L,
+                                                            "PostgreSQL init process complete; ready for start up." );
 
     @Override
     public void assemble( ModuleAssembly mainModule )
