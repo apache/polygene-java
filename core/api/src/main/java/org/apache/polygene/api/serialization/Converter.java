@@ -20,7 +20,7 @@ package org.apache.polygene.api.serialization;
 /**
  * Converter for (de)serialization.
  *
- * Convert instances of {@link T} to String and the other way around.
+ * Convert instances of {@code T} to String and the other way around.
  *
  * @param <T> the converted type
  */
@@ -34,7 +34,7 @@ public interface Converter<T>
     /**
      * Convert.
      *
-     * @param object the {@link T} to convert to String, never null
+     * @param object the {@code T} to convert to String, never null
      * @return the String representation of the given object
      */
     String toString( T object );
@@ -42,7 +42,7 @@ public interface Converter<T>
     /**
      * Revert.
      *
-     * @param string the String to convert back to {@link T}
+     * @param string the String to convert back to {@code T}
      * @return the {@link T}
      */
     T fromString( String string );
