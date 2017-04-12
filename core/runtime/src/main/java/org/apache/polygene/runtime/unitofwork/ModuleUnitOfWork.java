@@ -422,7 +422,7 @@ public class ModuleUnitOfWork
         return uow.toString();
     }
 
-    public void addEntity( EntityInstance instance )
+    void addEntity( EntityInstance instance )
     {
         uow.addEntity( instance );
     }
@@ -665,7 +665,7 @@ public class ModuleUnitOfWork
     {
         private Object entity;
 
-        public ToValuePropertyMappingFunction( Object entity )
+        ToValuePropertyMappingFunction( Object entity )
         {
             this.entity = entity;
         }
@@ -683,7 +683,7 @@ public class ModuleUnitOfWork
     {
         private final T entity;
 
-        public ToValueAssociationMappingFunction( T entity )
+        ToValueAssociationMappingFunction( T entity )
         {
             this.entity = entity;
         }
@@ -701,7 +701,7 @@ public class ModuleUnitOfWork
     {
         private final T entity;
 
-        public ToValueManyAssociationMappingFunction( T entity )
+        ToValueManyAssociationMappingFunction( T entity )
         {
             this.entity = entity;
         }
@@ -719,7 +719,7 @@ public class ModuleUnitOfWork
     {
         private final T entity;
 
-        public ToValueNameAssociationMappingFunction( T entity )
+        ToValueNameAssociationMappingFunction( T entity )
         {
             this.entity = entity;
         }
@@ -763,6 +763,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         public EntityReference apply( AssociationDescriptor associationDescriptor )
         {
             AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();

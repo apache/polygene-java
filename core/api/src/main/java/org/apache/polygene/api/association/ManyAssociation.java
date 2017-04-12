@@ -24,12 +24,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.Identity;
 
 /**
  * Association to a collection of entities.
  */
 public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {
+    /**
+     * Check is the entity is part of this {@code ManyAssociation}.
+     *
+     * @param entity The entity to be checking for.
+     * @return true if there is an entity in this ManyAssociation with the same {@link Identity} as the given
+     * entity , otherwise false.
+     */
     boolean contains( T entity );
 
     /** Adds an entity reference representing the given entity to the {@code index} slot of this collection.
@@ -38,6 +46,7 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
      *     than the length of the collection, the entity reference will be added to the end.
      * </p>
      * @param entity The entity whose entity reference is to be added to this collection.
+     * @param index the position for the entity to be inserted at.
      * @return true if the entity reference has been added, false otherwise.
      */
     boolean add( int index, T entity );

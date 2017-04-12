@@ -118,7 +118,7 @@ public class ModuleInstance
     private UnitOfWorkFactory uowf;
 
     @SuppressWarnings( "LeakingThisInConstructor" )
-    public ModuleInstance( ModuleModel moduleModel, LayerDescriptor layer, TypeLookup typeLookup,
+    ModuleInstance( ModuleModel moduleModel, LayerDescriptor layer, TypeLookup typeLookup,
                            ServicesModel servicesModel, ImportedServicesModel importedServicesModel
     )
     {
@@ -393,6 +393,7 @@ public class ModuleInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Stream<ServiceReference<T>> findServices( final Type serviceType )
     {
         List<? extends ModelDescriptor> serviceModels = typeLookup.lookupServiceModels( serviceType );
@@ -408,6 +409,7 @@ public class ModuleInstance
                             .map( ref -> (ServiceReference<T>) ref );
     }
 
+    @SuppressWarnings( "unchecked" )
     private <T> ServiceReference<T> findServiceReferenceInstance( ModelDescriptor model )
     {
         ModuleInstance moduleInstanceOfModel = (ModuleInstance) model.module().instance();

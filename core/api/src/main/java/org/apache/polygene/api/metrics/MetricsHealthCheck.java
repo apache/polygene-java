@@ -51,6 +51,7 @@ public interface MetricsHealthCheck extends Metric
 
         /** Factory method for reporting an unhealthy state.
          *
+         * @param message The message to relay in the result.
          * @return An unhealthy result.
          */
         public static Result unhealthy(String message) {
@@ -59,6 +60,8 @@ public interface MetricsHealthCheck extends Metric
 
         /** Factory method for reporting a state where an exception has occurred.
          *
+         * @param message The message to relay in the result.
+         * @param exception the exception that has occurred.
          * @return A failing health state.
          */
         public static Result exception(String message, Throwable exception) {

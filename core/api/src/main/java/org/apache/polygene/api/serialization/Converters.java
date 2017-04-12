@@ -70,6 +70,7 @@ public interface Converters
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         public <T> Converter<T> converterFor( ValueType valueType )
         {
             Converter<T> converter = castConverter( converters.keySet().stream()

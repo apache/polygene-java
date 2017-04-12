@@ -119,6 +119,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         return object -> doSerialize( options, object, true );
     }
 
+    @SuppressWarnings( "unchecked" )
     private JsonValue doSerialize( Options options, Object object, boolean root )
     {
         if( object == null )
