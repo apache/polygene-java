@@ -245,7 +245,7 @@ Make a complete build, deploying maven artifacts locally:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" checkDistributions
+./gradlew -Dversion="<RELEASE-VERSION>" assemble
 ----
 
 Review maven artifacts in `distributions/build/stage/maven-binaries`.
