@@ -62,6 +62,8 @@ svn update --set-depth immediates dev
 svn update --set-depth immediates release
 svn update --set-depth infinity dev/polygene
 svn update --set-depth infinity release/polygene
+cd ..
+
 ----
 
 You should then get the following directory tree:
@@ -95,6 +97,7 @@ Here is what should pass before going further:
 [source,shell]
 ----
 cd polygene-java
+git checkout develop
 ./gradlew -Dversion="<RELEASE-VERSION>" checkDistributions
 ----
 
