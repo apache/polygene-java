@@ -59,9 +59,13 @@ var metricses = [
 
 var featuresset = [
     [],
-    ['jmx']
-    ['mixin scripting']
-    ['security']
+    ['jmx'],
+    ['mixin scripting'],
+    ['security'],
+    ['jmx', 'mixin scripting'],
+    ['jmx', 'scripting'],
+    ['mixin scripting', 'scripting'],
+    ['jmx', 'mixin scripting', 'scripting']
 ];
 
 appTypes.forEach(function (appType) {
