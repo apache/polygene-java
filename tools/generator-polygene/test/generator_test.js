@@ -9,8 +9,8 @@ var shell = require('shelljs');
 test();
 
 var appTypes = [
-    'Command Line',
-    "Rest API"
+    "Rest API",
+    'Command Line'
 ];
 
 var entityStores = [
