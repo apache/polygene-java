@@ -117,7 +117,7 @@ module.exports = generators.Base.extend(
                                 'Preferences',
                                 'Redis',
                                 'Riak',
-                                'PostgresSQL',
+                                'PostgreSQL',
                                 'SQLite'
                             ],
                             message: 'Which entity store do you want to use?',
@@ -197,6 +197,22 @@ module.exports = generators.Base.extend(
                         this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
                         polygene = answers;
+                        polygene.entitystoremodule = polygene.entitystore.toLowerCase();
+                        if (polygene.entitystore === "DerbySQL") {
+                            polygene.entitystoremodule = "sql";
+                        }
+                        if (polygene.entitystore === "H2SQL") {
+                            polygene.entitystoremodule = "sql";
+                        }
+                        if (polygene.entitystore === "MySQL") {
+                            polygene.entitystoremodule = "sql";
+                        }
+                        if (polygene.entitystore === "PostgreSQL") {
+                            polygene.entitystoremodule = "sql";
+                        }
+                        if (polygene.entitystore === "SQLite") {
+                            polygene.entitystoremodule = "sql";
+                        }
                     }.bind(this)
                 );
             }

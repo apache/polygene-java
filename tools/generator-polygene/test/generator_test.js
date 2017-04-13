@@ -28,7 +28,7 @@ var entityStores = [
     'Preferences',
     'Redis',
     'Riak',
-    'PostgresSQL',
+    'PostgreSQL',
     'SQLite',
     'Memory'   // Somehow the last EntityStore is used in subsequent test arrays. Pick the fastest.
 ];

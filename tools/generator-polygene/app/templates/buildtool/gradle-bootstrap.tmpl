@@ -29,7 +29,7 @@ dependencies {
 <% if( polygene.applicationtype === 'Rest API' ) { %>
   compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystore.toLowerCase() %>:$polygeneVersion"
+  compile "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
   compile "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
 
