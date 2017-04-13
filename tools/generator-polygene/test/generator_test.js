@@ -59,6 +59,8 @@ var metricses = [
 
 var featuresset = [
     [],
+    ['jmx']
+    ['mixin scripting']
     ['security']
 ];
 

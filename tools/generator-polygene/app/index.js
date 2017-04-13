@@ -93,6 +93,7 @@ module.exports = generators.Base.extend(
                             name: 'applicationtype',
                             choices: [
                                 'Command Line',
+                                // 'Web Application',
                                 'Rest API'
                             ],
                             message: 'what type of application do you want to create?',
@@ -171,19 +172,16 @@ module.exports = generators.Base.extend(
                             type: 'checkbox',
                             name: 'features',
                             choices: [
-                                , 'security'
+                                // 'alarms'
+                                // 'circuit breakers'
+                                // 'file transactions'
+                                // 'logging'
+                                'jmx',
+                                // 'spring integration'
+                                // 'scheduling'
+                                'mixin scripting',
+                                'security'
                                 // ,'version migration'
-                                // ,'logging'
-                                // ,'jmx'
-                                // ,'circuit breakers'
-                                // ,'file transactions'
-                                // ,'spring integration'
-                                // ,'servlet deployment'
-                                // ,'osgi support'
-                                // ,'alarms'
-                                // ,'scheduling'
-                                // ,'groovy mixins'
-                                // ,'javascript mixins'
                             ],
                             message: 'Other features?',
                             default: polygene.features ? polygene.features : []

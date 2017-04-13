@@ -9,7 +9,7 @@ module.exports = {
 
         p.copyTemplate(p.ctx,
             'RestAPIApplication/web.xml.tmpl',
-            'app/src/main/web/WEB-INF/web.xml');
+            'app/src/main/webapp/WEB-INF/web.xml');
     }
 };
 

@@ -26,4 +26,11 @@ dependencies {
 <% if( polygene.applicationtype === 'Rest API' ) {
 %>    compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
+<% if( polygene.hasFeature( 'mixin scripting' ) ) {
+%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.scripting:$polygeneVersion"
+<% } %>
+<% if( polygene.hasFeature( 'jmx' ) ) {
+%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.jmx:$polygeneVersion"
+<% } %>
+
 }
