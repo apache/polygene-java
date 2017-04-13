@@ -87,13 +87,15 @@ featuresset.forEach(function (feature) {
 });
 
 // All Tests !!!!
-entityStores.forEach(function (entitystore) {
-    indexings.forEach(function (indexing) {
-        serializations.forEach(function (serialization) {
-            cachings.forEach(function (caching) {
-                metricses.forEach(function (metrics) {
-                    featuresset.forEach(function (features) {
-                        test(entitystore, indexing, serialization, caching, metrics, features)
+appTypes.forEach(function (appType) {
+    entityStores.forEach(function (entitystore) {
+        indexings.forEach(function (indexing) {
+            serializations.forEach(function (serialization) {
+                cachings.forEach(function (caching) {
+                    metricses.forEach(function (metrics) {
+                        featuresset.forEach(function (features) {
+                            test(appType, entitystore, indexing, serialization, caching, metrics, features)
+                        });
                     });
                 });
             });
@@ -101,10 +103,10 @@ entityStores.forEach(function (entitystore) {
     });
 });
 
-function test(entityStore, indexing, serialization, caching, metrics, features) {
+function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
     describe('polygene-generator', function () {
         this.timeout(10000);
-        it('generates a Gradle buildable Apache Polygene project with '
+        it('generates a Gradle buildable ' + appType + ' Apache Polygene project with '
             + entityStore + 'EntityStore, '
             + indexing + 'Indexing, '
             + serialization + 'Serialzation, '
@@ -117,6 +119,7 @@ function test(entityStore, indexing, serialization, caching, metrics, features) 
                     .withPrompts({
                         name: 'test-project',
                         packageName: 'org.apache.polygene.generator.test',
+                        applicationtype: appType,
                         entitystore: entityStore,
                         serialization: serialization,
                         indexing: indexing,
