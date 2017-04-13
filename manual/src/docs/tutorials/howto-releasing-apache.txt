@@ -245,7 +245,7 @@ Make a complete build, deploying maven artifacts locally:
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" checkDistributions
+./gradlew -Dversion="<RELEASE-VERSION>" assemble
 ----
 
 Review maven artifacts in `distributions/build/stage/maven-binaries`.
@@ -329,40 +329,40 @@ As this release still is a simple candidate, we'll rename them before upload to 
 [source,shell]
 ----
 # Source ZIP
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.MD5" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.MD5" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.SHA-512" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.SHA-512" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.asc" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.zip.asc" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc"
 # Source TAR.GZ
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
 # Binary ZIP
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
 # Binary TAR.GZ
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
-cp "polygene-java/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
+cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
 ----
 
