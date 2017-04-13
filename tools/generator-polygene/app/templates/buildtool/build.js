@@ -4,7 +4,9 @@ module.exports = {
         copyBuildFile(p, "app");
         copyBuildFile(p, "bootstrap");
         copyBuildFile(p, "model");
-        copyBuildFile(p, "rest");
+        if( p.applicationtype === 'Rest API'){
+            copyBuildFile(p, "rest");
+        }
         p.copyTemplate(p.ctx, 'buildtool/gradle-root.tmpl', 'build.gradle');
         p.copyTemplate(p.ctx, 'buildtool/settings.tmpl', 'settings.gradle');
         p.copyTemplate(p.ctx, 'buildtool/gradlew.tmpl', 'gradlew');
