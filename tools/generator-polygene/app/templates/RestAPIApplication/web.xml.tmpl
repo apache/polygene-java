@@ -23,18 +23,18 @@
          version="2.5">
 
     <display-name><%= polygene.name %></display-name>
-<% if( polygene.hasFeature( "security" ) { %>
+<% if( polygene.hasFeature( "security" )) { %>
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
     </listener>
 <% } %>
-<% if( polygene.hasFeature( "security" ) { %>
+<% if( polygene.hasFeature( "security" ) ) { %>
     <filter>
         <filter-name>ShiroFilter</filter-name>
         <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
     </filter>
 <% } %>
-<% if( polygene.hasFeature( "security" ) { %>
+<% if( polygene.hasFeature( "security" ) ) { %>
     <-- Filter all web requests.  This filter mapping is typically declared
         before all others to ensure any other filters are secured as well: -->
     <filter-mapping>
