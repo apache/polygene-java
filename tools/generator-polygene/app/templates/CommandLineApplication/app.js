@@ -1,14 +1,15 @@
+
 module.exports = {
 
     write: function (p) {
-        copyLayer("Configuration");
-        copyLayer("Infrastructure");
-        copyLayer("Domain");
-        copyLayer("UserInterface");
+        copyLayer(p, "Configuration");
+        copyLayer(p, "Infrastructure");
+        copyLayer(p, "Domain");
+        copyLayer(p, "UserInterface");
     }
 };
 
-function copyLayer(layerName) {
+function copyLayer(p, layerName) {
     var layer = require(__dirname + '/../' + layerName + 'Layer/layer.js');
-    layer.write(polygene);
+    layer.write(p);
 }

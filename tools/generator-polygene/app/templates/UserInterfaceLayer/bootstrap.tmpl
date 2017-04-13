@@ -33,7 +33,7 @@ public class UserInterfaceLayer extends LayeredLayerAssembler
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-<% if( polygene.applicationtype === 'Rest API' ) { %>
+<% if( polygene.applicationtype === 'Command Line' ) { %>
         createModule( layer, CommandLineModule.class );
 <% } -%>
         return layer;

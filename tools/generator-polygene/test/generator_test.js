@@ -62,28 +62,32 @@ var featuresset = [
     ['security']
 ];
 
+appTypes.forEach(function (appType) {
+    test(appType, "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
+});
+
 entityStores.forEach(function (entityStore) {
-    test(entityStore, "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
+    test("Rest API", entityStore, "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
 });
 
 indexings.forEach(function (indexing) {
-    test("Memory", indexing, "JavaxJson", "Memcache", "Codahale", "[]");
+    test("Rest API", "Memory", indexing, "JavaxJson", "Memcache", "Codahale", "[]");
 });
 
 serializations.forEach(function (serialization) {
-    test("Memory", "Rdf", serialization, "Memcache", "Codahale", "[]");
+    test("Rest API", "Memory", "Rdf", serialization, "Memcache", "Codahale", "[]");
 });
 
 cachings.forEach(function (caching) {
-    test("Memory", "Rdf", "JavaxJson", caching, "Codahale", "[]");
+    test("Rest API", "Memory", "Rdf", "JavaxJson", caching, "Codahale", "[]");
 });
 
 metricses.forEach(function (metrics) {
-    test("Memory", "Rdf", "JavaxJson", "Memcache", metrics, "[]");
+    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", metrics, "[]");
 });
 
 featuresset.forEach(function (feature) {
-    test("Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", feature);
+    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", feature);
 });
 
 // All Tests !!!!
