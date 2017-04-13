@@ -8,19 +8,28 @@ var shell = require('shelljs');
 // test with all defaults first.
 test();
 
+var appTypes = [
+    'Command Line',
+    "Rest API"
+];
+
 var entityStores = [
     'Cassandra',
     'File',
+    'DerbySQL',
     'Geode',
+    'H2SQL',
     'Hazelcast',
     'JClouds',
     'Jdbm',
     'LevelDB',
     'MongoDB',
+    'MySQL',
     'Preferences',
     'Redis',
     'Riak',
-    'SQL',
+    'PostgresSQL',
+    'SQLite',
     'Memory'   // Somehow the last EntityStore is used in subsequent test arrays. Pick the fastest.
 ];
 
@@ -50,9 +59,7 @@ var metricses = [
 
 var featuresset = [
     [],
-    ['rest api'],
-    ['security'],
-    ['rest api, security']
+    ['security']
 ];
 
 entityStores.forEach(function (entityStore) {
