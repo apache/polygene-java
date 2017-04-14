@@ -1,6 +1,6 @@
 {
   "name": "generator-polygene",
-  "version": "3.0.0",
+  "version": "3.0.0-RC0",
   "description": "Generates an Apache Polygene project.",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/**/*_test.js"

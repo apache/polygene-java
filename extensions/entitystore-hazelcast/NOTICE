@@ -1,0 +1,23 @@
+This subproject contains software from the hazelcast project, see
+https://github.com/hazelcast/hazelcast, under the Apache License
+with the following NOTICEs
+
+    The packages:
+
+    com.hazelcast.util.collection
+    com.hazelcast.internal.util.concurrent
+
+    and the classes:
+
+    com.hazelcast.util.QuickMath
+    com.hazelcast.client.impl.protocol.util.UnsafeBuffer
+    com.hazelcast.client.impl.protocol.util.BufferBuilder
+
+    contain code originating from the Agrona project
+    (https://github.com/real-logic/Agrona).
+
+    The class com.hazelcast.util.HashUtil contains code originating
+    from the Koloboke project (https://github.com/OpenHFT/Koloboke).
+
+    The class classloading.ThreadLocalLeakTestUtils contains code originating
+    from the Tomcat project (https://github.com/apache/tomcat).

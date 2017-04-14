@@ -21,6 +21,9 @@
 var generators = require('yeoman-generator');
 var fs = require('fs');
 
+// TODO: Automate the version here in build system.
+var polygeneVersion = "3.0-RC0";
+
 var polygene = {};
 
 module.exports = generators.Base.extend(
@@ -208,6 +211,7 @@ module.exports = generators.Base.extend(
                         if (polygene.entitystore === "SQLite") {
                             polygene.entitystoremodule = "sql";
                         }
+                        polygene.version = polygeneVersion;
                     }.bind(this)
                 );
             }
