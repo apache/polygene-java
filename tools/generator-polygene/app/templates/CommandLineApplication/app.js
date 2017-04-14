@@ -1,4 +1,3 @@
-
 module.exports = {
 
     write: function (p) {
@@ -6,6 +5,10 @@ module.exports = {
         copyLayer(p, "Infrastructure");
         copyLayer(p, "Domain");
         copyLayer(p, "UserInterface");
+
+
+
+
     }
 };
 

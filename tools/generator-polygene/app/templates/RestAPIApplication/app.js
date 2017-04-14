@@ -1,4 +1,3 @@
-
 module.exports = {
 
     write: function (p) {
@@ -13,7 +12,7 @@ module.exports = {
     }
 };
 
-function copyLayer( p, layerName ) {
+function copyLayer(p, layerName) {
     var layer = require(__dirname + '/../' + layerName + 'Layer/layer.js');
     layer.write(p);
 }

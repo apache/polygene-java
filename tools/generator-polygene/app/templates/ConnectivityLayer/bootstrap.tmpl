@@ -33,9 +33,7 @@ public class ConnectivityLayer extends LayeredLayerAssembler
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-<% if( polygene.applicationtype === 'Rest API' ) { %>
         createModule( layer, RestApiModule.class );
-<% } -%>
         return layer;
     }
 }
