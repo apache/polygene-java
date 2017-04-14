@@ -1,4 +1,13 @@
 
+This subproject contains software from the restlet project,
+see https://github.com/qos-ch/slf4j, under the Apache License
+
+This subproject contains software from the Apache Velocity project
+under the Apache License
+
+This subproject contains software from the Apache Freemarker project
+under the Apache License
+
 This subproject contains software from the slf4j project,
 see https://github.com/qos-ch/slf4j, under the MIT License
 
