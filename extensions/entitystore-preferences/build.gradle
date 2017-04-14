@@ -27,8 +27,6 @@ jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Preference
 dependencies {
   api polygene.core.bootstrap
 
-  implementation libraries.slf4j_api
-
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.core.testsupport

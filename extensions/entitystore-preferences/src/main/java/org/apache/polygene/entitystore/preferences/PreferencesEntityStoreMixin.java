@@ -67,8 +67,6 @@ import org.apache.polygene.spi.entitystore.EntityStoreSPI;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.StateCommitter;
 import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -101,8 +99,6 @@ public class PreferencesEntityStoreMixin
 
     private Preferences root;
 
-    public Logger logger;
-
     public ScheduledThreadPoolExecutor reloadExecutor;
 
     @Service
@@ -113,8 +109,6 @@ public class PreferencesEntityStoreMixin
         throws Exception
     {
         root = getApplicationRoot();
-        logger = LoggerFactory.getLogger( PreferencesEntityStoreService.class.getName() );
-        logger.info( "Preferences store:" + root.absolutePath() );
 
         // Reload underlying store every 60 seconds
         reloadExecutor = new ScheduledThreadPoolExecutor( 1 );
@@ -130,7 +124,7 @@ public class PreferencesEntityStoreMixin
             }
             catch( BackingStoreException e )
             {
-                logger.warn( "Could not reload preferences", e );
+                throw new EntityStoreException( "Could not reload preferences", e );
             }
         }, 0, 60, TimeUnit.SECONDS );
     }
