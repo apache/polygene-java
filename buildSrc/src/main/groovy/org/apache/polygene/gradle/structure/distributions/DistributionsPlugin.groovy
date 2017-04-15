@@ -19,8 +19,6 @@ package org.apache.polygene.gradle.structure.distributions
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import java.nio.file.Files
-import java.nio.file.Path
 import org.apache.commons.io.FileUtils
 import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.TaskGroups
@@ -54,6 +52,9 @@ import org.gradle.plugins.ide.internal.IdeDependenciesExtractor
 import org.gradle.plugins.ide.internal.resolver.model.IdeExtendedRepoFileDependency
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
+
+import java.nio.file.Files
+import java.nio.file.Path
 
 // TODO Expose all project outputs into configurations
 @CompileStatic
@@ -155,7 +156,11 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.git*'                // Git files
       spec.exclude '**/.gradle/**'           // Gradle caches
       spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
-      spec.into '.'
+
+        // TODO: Doesn't belong here. Should probably remove the use of ServiceLoader in 3.1, which solves the issue.
+        spec.exclude '**/META-INF/services/*Vendor' // SQL Vendor services
+
+        spec.into '.'
     }
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->
       spec.from project.file( 'src/src-dist' )
@@ -505,8 +510,8 @@ class DistributionsPlugin implements Plugin<Project>
         }
         // Copy Maven artifacts using the Gradle IDE Model
         // Include sources if available, otherwise include javadoc if available
-        IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor();
-        def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
+          IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
+          def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
                                                                                 [ configuration ], [ ],
                                                                                 true, true
         ideDependencies.each { IdeExtendedRepoFileDependency ideDependency ->
