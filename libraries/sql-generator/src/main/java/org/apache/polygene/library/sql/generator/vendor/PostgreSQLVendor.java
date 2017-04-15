@@ -28,9 +28,6 @@ import org.apache.polygene.library.sql.generator.grammar.factories.pgsql.PgSQLMa
  * these elements.
  *
  * @author Stanislav Muhametsin
- * @see PgSQLQueryFactory
- * @see LimitClause
- * @see OffsetClause
  */
 public interface PostgreSQLVendor
     extends SQLVendor

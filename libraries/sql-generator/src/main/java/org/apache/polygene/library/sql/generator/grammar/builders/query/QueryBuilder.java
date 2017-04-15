@@ -179,7 +179,6 @@ public interface QueryBuilder
      * {@code null} as second parameter.
      * </p>
      *
-     * @param setQuantifier The set quantifier for this union.
      * @param another       The query to perform {@code EXCEPT} with.
      * @return This builder.
      */
@@ -195,7 +194,7 @@ public interface QueryBuilder
      * {@link SetQuantifier#DISTINCT} as first parameter.
      * </p>
      *
-     * @param correspondingSpec The column correspondence specification.
+     * @param setQuantifier The set quantifier for this union.
      * @param another           The query to perform {@code EXCEPT} with.
      * @return This builder.
      */
@@ -205,7 +204,6 @@ public interface QueryBuilder
      * Adds {@code EXCEPT <setQuantifier> <correspondingSpec>} between current query and the given query. Then makes
      * resulting query the current query.
      *
-     * @param setQuantifier     The set quantifier for this union.
      * @param correspondingSpec The column correspondence specification. May be {@code null}.
      * @param another           The query to perform {@code EXCEPT} with.
      * @return This builder.

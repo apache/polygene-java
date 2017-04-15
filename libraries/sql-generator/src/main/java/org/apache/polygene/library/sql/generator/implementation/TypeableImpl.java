@@ -83,7 +83,7 @@ public abstract class TypeableImpl<ImplementedType extends Typeable<?>, RealImpl
      * Override this method to test equaling to other objects implementing same API type as this.
      *
      * @param another Another object implementing same API type as {@code this}. Is guaranteed to be non-null and
-     *                different reference than {@code this}, when called by {@link Typeable#equals(Object)}.
+     *                different reference than {@code this}, when called by {@code Typeable#equals(Object)}.
      * @return {@code true} if this object equals to {@code another}; false otherwise.
      */
     protected abstract boolean doesEqual( RealImplementedType another );

@@ -60,7 +60,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>
@@ -76,7 +78,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>
@@ -93,7 +97,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>
@@ -118,7 +124,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>
@@ -134,7 +142,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>
@@ -151,7 +161,9 @@ public interface DataTypeFactory
      * </p>
      * <p>
      * The site http://intelligent-enterprise.informationweek.com/000626/celko.jhtml explains difference between
-     * {@code NUMERIC} and {@code DECIMAL}:<br/>
+     * {@code NUMERIC} and {@code DECIMAL}:
+     * </p>
+     * <p>
      * The difference between DECIMAL(s,p) and NUMERIC(s,p) is subtle in the SQL-92 Standard -- DECIMAL(s,p) must be
      * exactly as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
      * </p>

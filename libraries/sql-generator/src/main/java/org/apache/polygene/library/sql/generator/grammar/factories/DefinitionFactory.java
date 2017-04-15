@@ -73,19 +73,19 @@ public interface DefinitionFactory
 
     /**
      * Creates a new definition of column with specified name and data type. Invoking this method is equivalent to
-     * invoking {@link #createColumnDefinition(String, String, String, Boolean)} and pass {@code null} and {@code true}
+     * invoking {@link #createColumnDefinition(String, SQLDataType, String, Boolean)} and pass {@code null} and {@code true}
      * as last two parameters (meaning that there is no default value for column, and it may have {@code NULL} values).
      *
      * @param columnName     The name of the column.
      * @param columnDataType The data type of the column.
      * @return The syntax element for definition of column with specified name and data type.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      */
     ColumnDefinition createColumnDefinition( String columnName, SQLDataType columnDataType );
 
     /**
      * Creates a new definition of column with specified name, data type, and {@code NULL} value policy. Invoking this
-     * method is equivalent to invoking {@link #createColumnDefinition(String, String, String, Boolean)} and pass
+     * method is equivalent to invoking {@link #createColumnDefinition(String, SQLDataType, String, Boolean)} and pass
      * {@code null} and {@code mayBeNull} as last two parameters (meaning that there is no default value for column).
      *
      * @param columnName     The name of the column.
@@ -94,27 +94,27 @@ public interface DefinitionFactory
      *                       {@code NOT NULL} in column definition in SQL.
      * @return The syntax element for definition of column with specified name, data type, and {@code NULL} value
      * policy.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      */
     ColumnDefinition createColumnDefinition( String columnName, SQLDataType columnDataType, Boolean mayBeNull );
 
     /**
      * Creates a new definition of column with specified name, data type, default value. Invoking this method is
-     * equivalent to invoking {@link #createColumnDefinition(String, String, String, Boolean)} and pass
+     * equivalent to invoking {@link #createColumnDefinition(String, SQLDataType, String, Boolean)} and pass
      * {@code columnDefault} and {@code true} as last two parameters (meaning that column may have {@code NULL} values).
      *
      * @param columnName     The name of the column.
      * @param columnDataType The data type of the column.
      * @param columnDefault  The default value of the column.
      * @return The syntax element for definition of column with specified name, data type, default value.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      */
     ColumnDefinition createColumnDefinition( String columnName, SQLDataType columnDataType, String columnDefault );
 
     /**
      * Creates a new definition of column with specified name, data type, default value, and {@code NULL} value policy.
      * Invoking this method is equivalent to invoking
-     * {@link #createColumnDefinition(String, SQLDataType, String, Boolean, AutoGenerationPolicy)} and pass {@code null}
+     * {@link #createColumnDefinition(String, SQLDataType, Boolean, AutoGenerationPolicy)} and pass {@code null}
      * as last parameter.
      *
      * @param columnName     The name of the column.
@@ -163,7 +163,7 @@ public interface DefinitionFactory
      *
      * @param constraint The constraint for the table.
      * @return The syntax element for unnamed table constraint without any {@link ConstraintCharacteristics}.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      */
     TableConstraintDefinition createTableConstraintDefinition( TableConstraint constraint );
 
@@ -176,7 +176,7 @@ public interface DefinitionFactory
      * @param name       The name for the constraint.
      * @param constraint The constraint for the table.
      * @return The syntax element for named table constraint without any {@link ConstraintCharacteristics}.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      */
     TableConstraintDefinition createTableConstraintDefinition( String name, TableConstraint constraint );
 
@@ -189,7 +189,7 @@ public interface DefinitionFactory
      * @param constraint      The constraint for the table.
      * @param characteristics The constraint characteristics for the constraint.
      * @return The syntax element for unnamed table constraint with specified {@link ConstraintCharacteristics}.
-     * @see #createColumnDefinition(String, String, String, Boolean)
+     * @see #createColumnDefinition(String, SQLDataType, String, Boolean)
      * @see ConstraintCharacteristics
      */
     TableConstraintDefinition createTableConstraintDefinition( TableConstraint constraint,
