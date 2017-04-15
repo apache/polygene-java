@@ -26,16 +26,16 @@ import java.sql.SQLException;
 import org.apache.polygene.index.sql.support.common.DBNames;
 import org.apache.polygene.index.sql.support.skeletons.AbstractSQLIndexing;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.generator.grammar.builders.modification.ColumnSourceByValuesBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.modification.pgsql.PgSQLInsertStatementBuilder;
+import org.apache.polygene.library.sql.generator.grammar.factories.ColumnsFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.LiteralFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.ModificationFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
+import org.apache.polygene.library.sql.generator.grammar.modification.InsertStatement;
+import org.apache.polygene.library.sql.generator.grammar.modification.ValueSource;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.spi.entity.EntityState;
-import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
-import org.sql.generation.api.grammar.builders.modification.pgsql.PgSQLInsertStatementBuilder;
-import org.sql.generation.api.grammar.factories.ColumnsFactory;
-import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.ModificationFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
-import org.sql.generation.api.grammar.modification.InsertStatement;
-import org.sql.generation.api.grammar.modification.ValueSource;
-import org.sql.generation.api.vendor.SQLVendor;
 
 public class PostgreSQLIndexing
     extends AbstractSQLIndexing

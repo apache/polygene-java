@@ -21,12 +21,12 @@ package org.apache.polygene.test.cache;
 
 import java.util.Collection;
 import java.util.Random;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -51,7 +51,7 @@ public abstract class AbstractCachePoolTest
     }
 
     @Test
-    public void givenInvalidCacheNameWhenFetchingCacheExpectNullArgumentException()
+    public void givenInvalidCacheNameWhenFetchingCacheExpectIllegalArgumentException()
     {
         try
         {
@@ -62,11 +62,15 @@ public abstract class AbstractCachePoolTest
         {
             // expected
         }
+    }
+
+    @Test
+    public void givenNullKeyWhenFetchingCacheExpectConstraintViolationException()
+    {
         try
         {
             cache = cachePool.fetchCache( null, String.class );
-            fail( "Expected " + NullPointerException.class.getSimpleName() );
-
+            fail( "Expected " + ConstraintViolationException.class.getSimpleName() );
         }
         catch( ConstraintViolationException e )
         {

@@ -19,14 +19,14 @@
  */
 package org.apache.polygene.runtime.instantiation;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
@@ -41,7 +41,7 @@ public class ValueInstantiationTests
     }
 
     @Test
-    public void whenTryingToCreateValueFromNullTypeThenExpectNullArgumentException()
+    public void whenTryingToCreateValueFromNullTypeThenExpectNullPointerException()
         throws Exception
     {
         // valueBuilderFactory.newValueBuilder()

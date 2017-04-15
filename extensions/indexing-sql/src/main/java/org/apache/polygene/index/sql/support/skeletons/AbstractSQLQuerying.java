@@ -36,7 +36,6 @@ import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
-import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -71,33 +70,33 @@ import org.apache.polygene.index.sql.support.api.SQLQuerying;
 import org.apache.polygene.index.sql.support.common.DBNames;
 import org.apache.polygene.index.sql.support.common.QNameInfo;
 import org.apache.polygene.index.sql.support.postgresql.PostgreSQLTypeHelper;
+import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpression;
+import org.apache.polygene.library.sql.generator.grammar.builders.booleans.BooleanBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.booleans.InBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.GroupByBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.QueryBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.QuerySpecificationBuilder;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.TableReferenceBuilder;
+import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpression;
+import org.apache.polygene.library.sql.generator.grammar.common.SQLFunctions;
+import org.apache.polygene.library.sql.generator.grammar.common.SetQuantifier;
+import org.apache.polygene.library.sql.generator.grammar.factories.BooleanFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.ColumnsFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.LiteralFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.QueryFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
+import org.apache.polygene.library.sql.generator.grammar.query.ColumnReference;
+import org.apache.polygene.library.sql.generator.grammar.query.ColumnReferenceByName;
+import org.apache.polygene.library.sql.generator.grammar.query.Ordering;
+import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
+import org.apache.polygene.library.sql.generator.grammar.query.QuerySpecification;
+import org.apache.polygene.library.sql.generator.grammar.query.TableReferenceByName;
+import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinType;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sql.generation.api.grammar.booleans.BooleanExpression;
-import org.sql.generation.api.grammar.builders.booleans.BooleanBuilder;
-import org.sql.generation.api.grammar.builders.booleans.InBuilder;
-import org.sql.generation.api.grammar.builders.query.GroupByBuilder;
-import org.sql.generation.api.grammar.builders.query.QueryBuilder;
-import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.builders.query.TableReferenceBuilder;
-import org.sql.generation.api.grammar.common.NonBooleanExpression;
-import org.sql.generation.api.grammar.common.SQLFunctions;
-import org.sql.generation.api.grammar.common.SetQuantifier;
-import org.sql.generation.api.grammar.factories.BooleanFactory;
-import org.sql.generation.api.grammar.factories.ColumnsFactory;
-import org.sql.generation.api.grammar.factories.LiteralFactory;
-import org.sql.generation.api.grammar.factories.QueryFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
-import org.sql.generation.api.grammar.query.ColumnReference;
-import org.sql.generation.api.grammar.query.ColumnReferenceByName;
-import org.sql.generation.api.grammar.query.Ordering;
-import org.sql.generation.api.grammar.query.QueryExpression;
-import org.sql.generation.api.grammar.query.QuerySpecification;
-import org.sql.generation.api.grammar.query.TableReferenceByName;
-import org.sql.generation.api.grammar.query.joins.JoinType;
-import org.sql.generation.api.vendor.SQLVendor;
 
 public abstract class AbstractSQLQuerying
     implements SQLQuerying
@@ -190,26 +189,26 @@ public abstract class AbstractSQLQuerying
         }
     }
 
-    public static interface SQLBooleanCreator
+    public interface SQLBooleanCreator
     {
-        public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+        BooleanExpression getExpression(
             BooleanFactory factory,
             NonBooleanExpression left, NonBooleanExpression right
-        );
+                                       );
     }
 
-    private static interface BooleanExpressionProcessor
+    private interface BooleanExpressionProcessor
     {
-        public QueryBuilder processBooleanExpression(
+        QueryBuilder processBooleanExpression(
             AbstractSQLQuerying thisObject,
             Predicate<Composite> expression,
             Boolean negationActive,
             SQLVendor vendor,
-            org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+            BooleanExpression entityTypeCondition,
             Map<String, Object> variables,
             List<Object> values,
             List<Integer> valueSQLTypes
-        );
+                                             );
     }
 
     private static final Map<Class<? extends Predicate>, SQLBooleanCreator> SQL_OPERATORS;
@@ -232,10 +231,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( EqPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.eq( left, right );
             }
@@ -243,10 +242,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( GePredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.geq( left, right );
             }
@@ -254,10 +253,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( GtPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.gt( left, right );
             }
@@ -265,10 +264,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( LePredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.leq( left, right );
             }
@@ -276,10 +275,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( LtPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.lt( left, right );
             }
@@ -287,10 +286,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( ManyAssociationContainsPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.eq( left, right );
             }
@@ -298,10 +297,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( MatchesPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.regexp( left, right );
             }
@@ -309,10 +308,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( ContainsPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.eq( left, right );
             }
@@ -320,10 +319,10 @@ public abstract class AbstractSQLQuerying
         SQL_OPERATORS.put( ContainsAllPredicate.class, new SQLBooleanCreator()
         {
             @Override
-            public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
+            public BooleanExpression getExpression(
                 BooleanFactory factory,
                 NonBooleanExpression left, NonBooleanExpression right
-            )
+                                                  )
             {
                 return factory.eq( left, right );
             }
@@ -605,10 +604,10 @@ public abstract class AbstractSQLQuerying
 
     private interface WhereClauseProcessor
     {
-        public void processWhereClause( QuerySpecificationBuilder builder,
-                                        BooleanBuilder afterWhere,
-                                        JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex
-        );
+        void processWhereClause( QuerySpecificationBuilder builder,
+                                 BooleanBuilder afterWhere,
+                                 JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex
+                               );
     }
 
     private static class PropertyNullWhereClauseProcessor
@@ -825,10 +824,10 @@ public abstract class AbstractSQLQuerying
         return result;
     }
 
-    protected org.sql.generation.api.grammar.booleans.BooleanExpression createTypeCondition(
+    protected BooleanExpression createTypeCondition(
         Class<?> resultType,
         SQLVendor vendor
-    )
+                                                   )
     {
         BooleanFactory b = vendor.getBooleanFactory();
         LiteralFactory l = vendor.getLiteralFactory();
@@ -862,7 +861,7 @@ public abstract class AbstractSQLQuerying
         Predicate<Composite> expression,
         Boolean negationActive,
         SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         Map<String, Object> variables,
         List<Object> values,
         List<Integer> valueSQLTypes
@@ -895,7 +894,7 @@ public abstract class AbstractSQLQuerying
 
     protected QuerySpecificationBuilder selectAllEntitiesOfCorrectType(
         SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition
+        BooleanExpression entityTypeCondition
     )
     {
         TableReferenceFactory t = vendor.getTableReferenceFactory();
@@ -918,7 +917,7 @@ public abstract class AbstractSQLQuerying
         final MatchesPredicate predicate,
         final Boolean negationActive,
         final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         final Map<String, Object> variables, final List<Object> values,
         final List<Integer> valueSQLTypes
     )
@@ -964,7 +963,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processComparisonPredicate(
         final ComparisonPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         final Map<String, Object> variables,
         final List<Object> values, final List<Integer> valueSQLTypes
     )
@@ -1018,7 +1017,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processManyAssociationContainsPredicate(
         final ManyAssociationContainsPredicate<?> predicate, final Boolean negationActive,
         final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         Map<String, Object> variables,
         final List<Object> values, final List<Integer> valueSQLTypes
     )
@@ -1073,7 +1072,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processPropertyNullPredicate(
         final PropertyNullPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition
+        BooleanExpression entityTypeCondition
     )
     {
         return this.singleQuery(
@@ -1091,7 +1090,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processPropertyNotNullPredicate(
         PropertyNotNullPredicate<?> predicate,
         boolean negationActive, SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition
+        BooleanExpression entityTypeCondition
     )
     {
         return this.singleQuery(
@@ -1109,7 +1108,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processAssociationNullPredicate(
         final AssociationNullPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition
+        BooleanExpression entityTypeCondition
     )
     {
         return this.singleQuery(
@@ -1127,7 +1126,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processAssociationNotNullPredicate(
         final AssociationNotNullPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition
+        BooleanExpression entityTypeCondition
     )
     {
         return this.singleQuery(
@@ -1145,7 +1144,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processContainsPredicate(
         final ContainsPredicate<?> predicate,
         final Boolean negationActive, final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         final Map<String, Object> variables,
         final List<Object> values, final List<Integer> valueSQLTypes
     )
@@ -1205,7 +1204,7 @@ public abstract class AbstractSQLQuerying
 
     protected QueryBuilder finalizeContainsQuery(
         SQLVendor vendor, QuerySpecification contains,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         Boolean negationActive
     )
     {
@@ -1230,7 +1229,7 @@ public abstract class AbstractSQLQuerying
     protected QueryBuilder processContainsAllPredicate(
         final ContainsAllPredicate<?> predicate, final Boolean negationActive,
         final SQLVendor vendor,
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
+        BooleanExpression entityTypeCondition,
         final Map<String, Object> variables, final List<Object> values,
         final List<Integer> valueSQLTypes
     )
@@ -1305,7 +1304,7 @@ public abstract class AbstractSQLQuerying
         Boolean includeLastAssoPathTable, //
         Boolean negationActive, //
         SQLVendor vendor, //
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+        BooleanExpression entityTypeCondition, //
         WhereClauseProcessor whereClauseGenerator//
     )
     {
@@ -1322,7 +1321,7 @@ public abstract class AbstractSQLQuerying
         Boolean includeLastAssoPathTable, //
         Boolean negationActive, //
         SQLVendor vendor, //
-        org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition, //
+        BooleanExpression entityTypeCondition, //
         WhereClauseProcessor whereClauseGenerator//
     )
     {

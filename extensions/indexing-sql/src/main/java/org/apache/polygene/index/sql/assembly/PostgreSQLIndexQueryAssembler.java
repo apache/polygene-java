@@ -21,9 +21,9 @@ package org.apache.polygene.index.sql.assembly;
 
 import java.io.IOException;
 import org.apache.polygene.index.sql.support.postgresql.PostgreSQLService;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
+import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
 public class PostgreSQLIndexQueryAssembler
     extends AbstractSQLIndexQueryAssembler<PostgreSQLIndexQueryAssembler>

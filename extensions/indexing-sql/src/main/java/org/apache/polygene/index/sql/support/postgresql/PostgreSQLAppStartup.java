@@ -27,13 +27,13 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.index.sql.support.skeletons.AbstractSQLStartup;
 import org.apache.polygene.library.sql.common.SQLUtil;
-import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
-import org.sql.generation.api.grammar.definition.table.TableScope;
-import org.sql.generation.api.grammar.definition.table.pgsql.PgSQLTableCommitAction;
-import org.sql.generation.api.grammar.factories.DataTypeFactory;
-import org.sql.generation.api.grammar.factories.DefinitionFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
+import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLDataType;
+import org.apache.polygene.library.sql.generator.grammar.definition.table.TableScope;
+import org.apache.polygene.library.sql.generator.grammar.definition.table.pgsql.PgSQLTableCommitAction;
+import org.apache.polygene.library.sql.generator.grammar.factories.DataTypeFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.DefinitionFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
+import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 
 public class PostgreSQLAppStartup
     extends AbstractSQLStartup

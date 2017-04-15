@@ -30,8 +30,8 @@ import org.apache.polygene.index.reindexer.ReindexerConfiguration;
 import org.apache.polygene.index.reindexer.ReindexerService;
 import org.apache.polygene.index.sql.SQLIndexingEngineConfiguration;
 import org.apache.polygene.index.sql.support.common.ReindexingStrategy;
-import org.sql.generation.api.vendor.SQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
 public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>

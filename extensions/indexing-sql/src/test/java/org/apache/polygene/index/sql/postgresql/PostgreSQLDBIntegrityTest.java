@@ -31,16 +31,15 @@ import org.apache.polygene.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.apache.polygene.index.sql.support.common.DBNames;
 import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer;
 import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
-import org.apache.polygene.index.sql.support.postgresql.PostgreSQLAppStartup;
-import org.apache.polygene.test.internal.DockerRule;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.internal.DockerRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.sql.generation.api.vendor.PostgreSQLVendor;
-import org.sql.generation.api.vendor.SQLVendorProvider;
 
 public class PostgreSQLDBIntegrityTest
     extends AbstractPolygeneTest
@@ -48,14 +47,14 @@ public class PostgreSQLDBIntegrityTest
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
 
-    public static interface TestEntity
+    public interface TestEntity
         extends EntityComposite
     {
         @UseDefaults
-        public Property<String> testString();
+        Property<String> testString();
 
         @UseDefaults
-        public Property<Integer> testInt();
+        Property<Integer> testInt();
     }
 
     @Override

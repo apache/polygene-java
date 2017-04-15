@@ -38,8 +38,8 @@ import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer.Data
 import org.apache.polygene.index.sql.support.common.GenericDatabaseExplorer.ForeignKeyInfo;
 import org.apache.polygene.index.sql.support.skeletons.SQLDBState;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.spi.query.IndexExporter;
-import org.sql.generation.api.vendor.SQLVendor;
 
 public class PostgreSQLIndexExporter
     implements IndexExporter

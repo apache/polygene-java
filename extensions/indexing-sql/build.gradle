@@ -27,12 +27,9 @@ jar { manifest { name = "Apache Polygene™ Extension - Indexing - SQL" } }
 dependencies {
   api polygene.core.bootstrap
   api polygene.library( 'sql' )
+  api polygene.library( 'sql-generator' )
 
   implementation polygene.extension( 'reindexer' )
-  implementation libraries.javaSqlGenerator
-  implementation( libraries.javaSqlGeneratorImpl ) {
-    exclude group: 'junit'
-  }
 
   runtimeOnly polygene.core.runtime
 

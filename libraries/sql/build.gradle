@@ -27,9 +27,9 @@ jar { manifest { name = "Apache Polygene™ Library - SQL" } }
 dependencies {
   api polygene.core.bootstrap
   api polygene.library( 'circuitbreaker' )
+  api libraries.slf4j_api
 
   implementation polygene.library( 'jmx' )
-  implementation libraries.slf4j_api
 
   runtimeOnly polygene.core.runtime
 

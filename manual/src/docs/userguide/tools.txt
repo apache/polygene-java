@@ -36,6 +36,7 @@ include::../../../../tools/src/docs/yeoman_polygene.txt[]
 
 :leveloffset: 2
 
-include::../../../../tools/envisage/src/docs/envisage.txt[]
+include::../../../../tools/src/docs/envisage.txt[]
+// include::../../../../tools/envisage/src/docs/envisage.txt[]
 
 :leveloffset: 2

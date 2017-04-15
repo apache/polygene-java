@@ -29,11 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.QuerySpecificationBuilder;
+import org.apache.polygene.library.sql.generator.grammar.factories.QueryFactory;
+import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.spi.query.IndexExporter;
-import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.factories.QueryFactory;
-import org.sql.generation.api.grammar.factories.TableReferenceFactory;
-import org.sql.generation.api.vendor.SQLVendor;
 
 /**
  * This is a helper class to traverse through all content in specified tables in database. Typical usecase would be by
@@ -41,7 +41,7 @@ import org.sql.generation.api.vendor.SQLVendor;
  */
 public final class GenericDatabaseExplorer
 {
-    public static enum IntegrityActions
+    public enum IntegrityActions
     {
         CASCADE,
         NO_ACTION,
@@ -50,7 +50,7 @@ public final class GenericDatabaseExplorer
         SET_NULL
     }
 
-    public static enum Deferrability
+    public enum Deferrability
     {
         INITIALLY_DEFERRED,
         INITIALLY_IMMEDIATE,
@@ -207,33 +207,33 @@ public final class GenericDatabaseExplorer
 
     }
 
-    public static interface DatabaseProcessor
+    public interface DatabaseProcessor
     {
-        public void beginProcessSchemaInfo( String schemaName );
+        void beginProcessSchemaInfo( String schemaName );
 
-        public void endProcessSchemaInfo( String schemaName );
+        void endProcessSchemaInfo( String schemaName );
 
-        public void beginProcessTableInfo( String schemaName, String tableName, String remarks );
+        void beginProcessTableInfo( String schemaName, String tableName, String remarks );
 
-        public void endProcessTableInfo( String schemaName, String tableName, String remarks );
+        void endProcessTableInfo( String schemaName, String tableName, String remarks );
 
-        public void beginProcessColumns( String schemaName, String tableName, String tableRemarks );
+        void beginProcessColumns( String schemaName, String tableName, String tableRemarks );
 
-        public void beginProcessColumnInfo( String schemaName, String tableName,
-                                            ColumnInfo colInfo, ForeignKeyInfo fkInfo );
+        void beginProcessColumnInfo( String schemaName, String tableName,
+                                     ColumnInfo colInfo, ForeignKeyInfo fkInfo );
 
-        public void endProcessColumnInfo( String schemaName, String tableName,
-                                          ColumnInfo colInfo, ForeignKeyInfo fkInfo );
+        void endProcessColumnInfo( String schemaName, String tableName,
+                                   ColumnInfo colInfo, ForeignKeyInfo fkInfo );
 
-        public void endProcessColumns( String schemaName, String tableName, String tableRemarks );
+        void endProcessColumns( String schemaName, String tableName, String tableRemarks );
 
-        public void beginProcessRows( String schemaName, String tableName, String tableRemarks );
+        void beginProcessRows( String schemaName, String tableName, String tableRemarks );
 
-        public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents );
+        void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents );
 
-        public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents );
+        void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents );
 
-        public void endProcessRows( String schemaName, String tableName, String tableRemarks );
+        void endProcessRows( String schemaName, String tableName, String tableRemarks );
     }
 
     public static abstract class DatabaseProcessorAdapter

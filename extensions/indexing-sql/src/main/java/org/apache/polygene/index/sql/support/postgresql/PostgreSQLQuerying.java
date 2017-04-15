@@ -25,9 +25,9 @@ import java.util.function.Predicate;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.query.grammar.OrderBy;
 import org.apache.polygene.index.sql.support.skeletons.AbstractSQLQuerying;
-import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
-import org.sql.generation.api.grammar.query.QueryExpression;
-import org.sql.generation.api.vendor.SQLVendor;
+import org.apache.polygene.library.sql.generator.grammar.builders.query.QuerySpecificationBuilder;
+import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
+import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 public class PostgreSQLQuerying
         extends AbstractSQLQuerying
