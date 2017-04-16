@@ -53,7 +53,7 @@ assemble it directly:
 
 [snippet,java]
 ----
-source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeakerTest.java
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerTest.java
 tag=direct
 ----
 
@@ -72,6 +72,6 @@ Then assemble it with the normal +ScriptMixin+:
 
 [snippet,java]
 ----
-source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeakerTest.java
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerTest.java
 tag=script
 ----

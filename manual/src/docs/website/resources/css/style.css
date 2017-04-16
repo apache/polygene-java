@@ -162,7 +162,7 @@ h2.title
 {
 }
 
-.sub-nav .toc
+.sub-nav div.toc
 {
     position: absolute;
     top: 65px;

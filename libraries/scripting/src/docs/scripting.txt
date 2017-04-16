@@ -34,7 +34,7 @@ The Scripting Library is a Generic mixin class that implements
 Composite interfaces by delegating to script functions using Java Scripting API. All Java Scripting API (JSR-223)
 implementations that support
 
-[code,java]
+[source,java]
 ----
     ((javax.script.Invocable) scriptEngine).invokeFunction( functionName, arguments );
 ----

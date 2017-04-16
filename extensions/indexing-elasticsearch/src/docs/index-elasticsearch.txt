@@ -122,7 +122,7 @@ Note that the `clusterName` is ignored as this is managed by the client.
 [snippet,java]
 ----
 source=extensions/indexing-elasticsearch/src/main/java/org/apache/polygene/index/elasticsearch/ElasticSearchConfiguration.java
-tag=client
+tag=config
 ----
 
 Again, all configuration properties are defaulted meaning that you can use ElasticSearch Index/Query service without

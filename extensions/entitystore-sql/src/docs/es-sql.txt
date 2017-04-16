@@ -55,7 +55,7 @@ Here are the available configuration properties:
 [snippet,java]
 ----
 source=extensions/entitystore-sql/src/main/java/org/apache/polygene/entitystore/sql/SQLMapEntityStoreConfiguration.java
-tag=assembly
+tag=config
 ----
 
 The assembly snippets below show the DataSource assembly alongside the SQL EntityStore assembly. Remember to configure

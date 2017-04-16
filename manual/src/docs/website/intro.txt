@@ -28,7 +28,7 @@ include::../../../../tutorials/introduction/src/docs/highlights.txt[]
 
 :leveloffset: 2
 
-include::../../../../tools/shell/src/docs/quick-start.txt[]
+include::../../../../tools/src/docs/yeoman_polygene.txt[]
 
 :leveloffset: 2
 

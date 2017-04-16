@@ -113,7 +113,6 @@ will be used by any of the entity stores that uses the internal MapEntityStore S
 ---------------------------
 
 === Serialization system ===
----------------------------
 Serialization is a key concept in business applications, and in Polygene that is a pluggable subsystem.
 
 ? Which serialization system do you want to use?
@@ -224,7 +223,7 @@ $ yo polygene --import=../model.json --noPrompt
 
 where the content of the +../model.json+ is as follows,
 
-[source,json]
+[source]
 ----
 {
   "name": "Sink",

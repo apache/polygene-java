@@ -20,7 +20,9 @@
 package org.apache.polygene.library.sql.generator.vendor;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.ServiceLoader;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides easy way of acquiring vendors for specific databases.
@@ -46,7 +48,13 @@ public class SQLVendorProvider
     public static <VendorType extends SQLVendor> VendorType createVendor( Class<VendorType> vendorClass )
         throws IOException
     {
+        LoggerFactory.getLogger( SQLVendorProvider.class ).info( "Trying to load implementation for " + vendorClass.getName() );
         ServiceLoader<VendorType> load = ServiceLoader.load( vendorClass );
-        return load.iterator().next();
+        Iterator<VendorType> vendorTypeIterator = load.iterator();
+        if( vendorTypeIterator.hasNext() )
+        {
+            return vendorTypeIterator.next();
+        }
+        throw new InternalError( "ServiceLoader of SQLVendor implementations is not finding the META-INF/services" );
     }
 }
