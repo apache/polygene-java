@@ -42,7 +42,6 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.NotEqualsPredi
 import org.apache.polygene.library.sql.generator.grammar.booleans.NotInPredicate;
 import org.apache.polygene.library.sql.generator.grammar.booleans.NotLikePredicate;
 import org.apache.polygene.library.sql.generator.grammar.booleans.NotRegexpPredicate;
-import org.apache.polygene.library.sql.generator.grammar.booleans.Predicate;
 import org.apache.polygene.library.sql.generator.grammar.booleans.RegexpPredicate;
 import org.apache.polygene.library.sql.generator.grammar.booleans.UniquePredicate;
 import org.apache.polygene.library.sql.generator.grammar.builders.booleans.BooleanBuilder;
@@ -267,7 +266,8 @@ public interface BooleanFactory
     BooleanTest test( BooleanExpression expression, TestType testType, TruthValue truthValue );
 
     /**
-     * Returns new {@link BooleanBuilder} with {@link Predicate.EmptyPredicate} as initial value.
+     * Returns new {@link BooleanBuilder} with {@link org.apache.polygene.library.sql.generator.grammar.booleans.Predicate.EmptyPredicate}
+     * as initial value.
      *
      * @return The new {@link BooleanBuilder}.
      */

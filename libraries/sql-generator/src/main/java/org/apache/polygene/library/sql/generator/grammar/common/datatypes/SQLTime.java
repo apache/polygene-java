@@ -37,8 +37,6 @@ public interface SQLTime
 
     /**
      * Returns whether the {@code TIME} should be with time zone. May be {@code null} if no choice specified.
-     *
-     * @return
      */
     Boolean isWithTimeZone();
 }

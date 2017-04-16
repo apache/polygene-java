@@ -50,7 +50,6 @@ public interface ColumnsBuilder
      * Add columns with aliases to this {@code SELECT} statement.
      *
      * @param namedColumns Columns with aliases to add to this {@code SELECT} statement.
-     * @return
      */
     ColumnsBuilder addNamedColumns( ColumnReferenceInfo... namedColumns );
 

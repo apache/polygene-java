@@ -35,8 +35,6 @@ public interface SQLTimeStamp
 
     /**
      * Returns whether the {@code TIMESTAMP} should be with time zone. May be {@code null} if no choice specified.
-     *
-     * @return
      */
     Boolean isWithTimeZone();
 }

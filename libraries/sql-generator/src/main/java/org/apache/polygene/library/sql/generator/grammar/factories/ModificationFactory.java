@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.builders.modification.D
 import org.apache.polygene.library.sql.generator.grammar.builders.modification.InsertStatementBuilder;
 import org.apache.polygene.library.sql.generator.grammar.builders.modification.UpdateBySearchBuilder;
 import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
-import org.apache.polygene.library.sql.generator.grammar.common.TableName;
 import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 import org.apache.polygene.library.sql.generator.grammar.modification.ColumnSourceByQuery;
@@ -109,7 +108,7 @@ public interface ModificationFactory
      * Creates new target table to use in modification statements.
      * </p>
      * <p>
-     * Calling this method is equivalent for calling {@link #createTargetTable(TableName, Boolean)} and passing
+     * Calling this method is equivalent for calling {@link #createTargetTable(TableNameDirect, Boolean)} and passing
      * {@code false} as second parameter.
      *
      * @param tableName The name of the table.

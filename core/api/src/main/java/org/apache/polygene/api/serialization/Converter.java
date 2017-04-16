@@ -43,7 +43,7 @@ public interface Converter<T>
      * Revert.
      *
      * @param string the String to convert back to {@code T}
-     * @return the {@link T}
+     * @return the {@code T}
      */
     T fromString( String string );
 }

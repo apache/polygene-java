@@ -58,8 +58,6 @@ public final class SQLTimeImpl extends TypeableImpl<SQLDataType, SQLTime>
 
     /**
      * Returns whether the {@code TIME} should be with time zone. May be {@code null} if no choice specified.
-     *
-     * @return
      */
     public Boolean isWithTimeZone()
     {
