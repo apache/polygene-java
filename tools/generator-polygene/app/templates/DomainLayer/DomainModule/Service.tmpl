@@ -26,9 +26,10 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 <%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %><%
+for( var imp in polygene.current.imported ) {
+    if( !imp.startsWith( "java.lang" )) {
+        %><%- "import " + imp + ";"; %>
+<%
     }
 } %>
 

@@ -322,36 +322,41 @@ function assignFunctions(polygene) {
         var imported = {};
         var props = current.clazz.properties;
         if (props) {
+            imported["org.apache.polygene.api.property.Property"] = true;
             for (var idx in props) {
                 var prop = props[idx];
-                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
-                imported[prop.type] = imported[prop.type];
+                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
+                imported[prop.type] = true;
             }
         } else {
+            imported["org.apache.polygene.api.property.Property"] = true;
             state.push('Property<String> name();    // TODO: remove sample property')
         }
         var assocs = current.clazz.associations;
         if (assocs) {
+            imported["org.apache.polygene.api.association.Association"] = true;
             for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + '>' + assoc.name + "();")
-                imported[assoc.type] = imported[assoc.type];
+                state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                imported[assoc.type] = true;
             }
         }
         assocs = current.clazz.manyassociations;
         if (assocs) {
+            imported["org.apache.polygene.api.association.ManyAssociation"] = true;
             for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
-                imported[assoc.type] = imported[assoc.type];
+                state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                imported[assoc.type] = true;
             }
         }
         assocs = current.clazz.namedassociations;
         if (assocs) {
+            imported["org.apache.polygene.api.association.NamedAssociation"] = true;
             for (var idx in assocs) {
                 var assoc = assocs[idx];
-                state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + ">" + assoc.name + "();")
-                imported[assoc.type] = imported[assoc.type];
+                state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                imported[assoc.type] = true;
             }
         }
         current.state = state;
@@ -366,7 +371,7 @@ function assignFunctions(polygene) {
         if (props) {
             for (var idx in props) {
                 var prop = props[idx];
-                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();")
+                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
                 imported[prop.type] = imported[prop.type];
                 var yamlDefault;
                 if (prop.type === "java.lang.String") {
@@ -393,7 +398,7 @@ function assignFunctions(polygene) {
                 yaml.push(prop.name + " : " + yamlDefault);
             }
         } else {
-            state.push('Property<String> name();    // TODO: remove sample property')
+            state.push('Property<String> name();    // TODO: remove sample property');
             yaml.push('name : "sample config value"');
         }
         current.state = state;

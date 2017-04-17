@@ -21,11 +21,11 @@ package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
 
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.property.Property;
 <%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %><%
+for( var imp in polygene.current.imported ) {
+    if( !imp.startsWith( "java.lang" )) {
+        %><%- "import " + imp + ";"; %>
+<%
     }
 } %>
 

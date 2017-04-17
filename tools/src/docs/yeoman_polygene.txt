@@ -22,11 +22,12 @@
 Apache Polygene comes with a Yeoman code generator, to quickly set up a development
 environment for Polygene applications.
 
----------------------------
+[source,shell]
+----
 mkdir projectdirname
 cd projectdirname
 yo polygene
----------------------------
+----
 
 It will ask a lot of questions. For choice questions, you operate up and down, and with multi-choice, you
 select with space bar.
@@ -36,15 +37,19 @@ select with space bar.
 === Project Name ===
 It starts with the Project name. This will be the project name in Gradle and any gradle driven naming of the
 project such as in IDEs. It defaults to current directory with initial uppercase letter.
----------------------------
+
+[source,shell]
+----
 ? Your project name
----------------------------
+----
 
 === Java Package Name ===
 This is the root of the package names in the multi-module, multi-package project.
----------------------------
+
+[source,shell]
+----
 ? Java package name
----------------------------
+----
 
 === Application Type ===
 
@@ -52,17 +57,19 @@ The Application Type that you want to create.
 
 NOTE: Command Line is currently not implemented correctly, and the Rest API is still not complete.
 
----------------------------
+[source,shell]
+----
 ? what type of application do you want to create?
   Command Line
 ❯ Rest API
----------------------------
+----
 
 === Entity Store ===
 Polygene has built-in persistence, and that is backed by entity store plugins. There are currently a fair
 number of implementations to choose from. Not that "memory" is not persistent, but looses the content on shutdown.
 
----------------------------
+[source,shell]
+----
 ? Which entity store do you want to use?
   Cassandra
   File
@@ -81,7 +88,7 @@ number of implementations to choose from. Not that "memory" is not persistent, b
   Riak
   PostgreSQL
   SQLite
----------------------------
+----
 
 === Indexin/Query system ===
 Select of a pluggable Indexing and Query subsystem.
@@ -93,44 +100,50 @@ from the document-oriented approach of most entity stores.
 
 NOTE: Not all indexing subsystems support all of the specified Indexing/Query SPI.
 
----------------------------
+[source,shell]
+----
 ? Which indexing system do you want to use?
 > Rdf
   ElasticSearch
   Solr
   SQL
----------------------------
+----
 
 === Caching System ===
 Some of the entity stores rely on a Polygene level caching SPI. This caching subsystem is pluggable and
 will be used by any of the entity stores that uses the internal MapEntityStore SPI
 
----------------------------
+[source,shell]
+----
 ? Which caching system do you want to use?
 > None
   Memcache
   EhCache
----------------------------
+----
 
 === Serialization system ===
 Serialization is a key concept in business applications, and in Polygene that is a pluggable subsystem.
 
 ? Which serialization system do you want to use?
----------------------------
+
+[source,shell]
+----
 > JavaxJson
   JavaxXml
   MessagePack
----------------------------
+----
 
 === Metrics System ===
 Metrics is the SPI for measuring the performance and health of an Polygene application. Currently only
 one implementation is available.
 
 ? Which metrics capturing system do you want to use?
----------------------------
+
+[source,shell]
+----
 > None
   Codahale
----------------------------
+----
 
 === Other Features ===
 
@@ -140,17 +153,19 @@ Mixin Scripting is allowing Mixin methods to be implemented in other languages p
 
 Security installs Apache Shiro and binds Users, Groups and Roles to entity store.
 
----------------------------
+[source,shell]
+----
 ? Other features?
  ◯ jmx
  ◯ mixin scripting
  ◯ security
----------------------------
+----
 
 
 === Example ===
 
----------------------------
+[source,shell]
+----
 ~/dev/sensetif/sink$ yo polygene
 ? Your project name Sink
 ? Java package name com.sensetif.sink
@@ -203,23 +218,26 @@ Features: [ 'jmx', 'security' ]
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/RestApiModule.java
    create rest/src/main/java/com/sensetif/sink/rest/security/DefaultEnroler.java
    create rest/src/main/java/com/sensetif/sink/rest/security/DefaultVerifier.java
----------------------------
+----
 
 == Command Line Options ==
 
----------
+[source,shell]
+----
 --import=<modelfile>   Imports the model from a JSON file and creates a project descibed therein.
 --export=<modelfile>   Exports the generated model to a JSON file in the same format as the import model.
 --noPrompt             If this option is not provided for --import-model, the user can still
                        input answers, which will override the values in the imported model
----------
+----
 
 === Example ===
 
 If we run the following,
-------------
+
+[source,shell]
+----
 $ yo polygene --import=../model.json --noPrompt
-------------
+----
 
 where the content of the +../model.json+ is as follows,
 

@@ -19,7 +19,6 @@
 -%>
 package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
 
-import org.apache.polygene.api.property.Property;
 <%
 for( var prop in polygene.current.imported ) {
     if( !prop.startsWith( "java.lang" )) {
