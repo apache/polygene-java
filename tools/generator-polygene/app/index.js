@@ -369,10 +369,11 @@ function assignFunctions(polygene) {
         var imported = {};
         var props = current.clazz.configuration;
         if (props) {
+            imported["org.apache.polygene.api.property.Property"] = true;
             for (var idx in props) {
                 var prop = props[idx];
                 state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
-                imported[prop.type] = imported[prop.type];
+                imported[prop.type] = true;
                 var yamlDefault;
                 if (prop.type === "java.lang.String") {
                     yamlDefault = '""';
@@ -398,6 +399,7 @@ function assignFunctions(polygene) {
                 yaml.push(prop.name + " : " + yamlDefault);
             }
         } else {
+            imported["org.apache.polygene.api.property.Property"] = true;
             state.push('Property<String> name();    // TODO: remove sample property');
             yaml.push('name : "sample config value"');
         }

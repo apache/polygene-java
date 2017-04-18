@@ -23,7 +23,8 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 <%
 for( var imp in polygene.current.imported ) {
-    if( !imp.startsWith( "java.lang" )) {
+    if( !imp.startsWith( "java.lang" )
+        && imp.includes(".") ) {
         %><%- "import " + imp + ";"; %>
 <%
     }

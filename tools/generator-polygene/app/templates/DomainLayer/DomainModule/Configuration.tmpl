@@ -18,11 +18,11 @@
  *
 -%>
 package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
-
 <%
-for( var prop in polygene.current.imported ) {
-    if( !prop.startsWith( "java.lang" )) {
-        %><%- "import " + prop + ";"; %>
+for( var imp in polygene.current.imported ) {
+    if( !imp.startsWith( "java.lang" )
+        && imp.includes(".") ) {
+        %><%- "import " + imp + ";"; %>
 <%
     }
 } %>

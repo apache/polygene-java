@@ -18,9 +18,6 @@
  *
 -%>
 package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
-
-import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.api.mixin.Mixins;
 <%
 for( var imp in polygene.current.imported ) {
     if( !imp.startsWith( "java.lang" )
@@ -30,21 +27,11 @@ for( var imp in polygene.current.imported ) {
     }
 } %>
 
-@Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
-public interface <%= polygene.current.clazz.name %>
-{
-    interface State
-    {
-<% for( var idx in polygene.current.state ) {
-%>        <%- polygene.current.state[idx]; %>
-<% }
-%>    }
-
-    class Mixin
-        implements <%= polygene.current.clazz.name %>
-    {
-        @This
-        private State state;        // Sample reference to hidden property
-
-    }
+public <%- polygene.current.clazz.type %> <%= polygene.current.clazz.name %>
+{<%
+if( polygene.current.clazz.type === 'enum' ) {
+%>
+    <%- polygene.current.clazz.values %>
+<%
 }
+%>}

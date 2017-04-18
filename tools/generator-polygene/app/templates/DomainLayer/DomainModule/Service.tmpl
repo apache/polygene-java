@@ -27,7 +27,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 <%
 for( var imp in polygene.current.imported ) {
-    if( !imp.startsWith( "java.lang" )) {
+    if( !imp.startsWith( "java.lang" )
+        && imp.includes(".") ) {
         %><%- "import " + imp + ";"; %>
 <%
     }

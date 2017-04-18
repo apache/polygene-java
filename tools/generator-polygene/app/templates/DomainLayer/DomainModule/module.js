@@ -28,6 +28,7 @@ function copyPolygeneDomainModule(p, moduleName, moduleDef) {
     copyComposites(p, moduleDef.transients, "Transient");
     copyComposites(p, moduleDef.objects, "Object");
     copyComposites(p, moduleDef.services, "Service");
+    copyComposites(p, moduleDef.plainTypes, "Plain");
     copyComposites(p, moduleDef.services, "Configuration");
 
     copyConfigurationYaml(p, moduleDef.services )

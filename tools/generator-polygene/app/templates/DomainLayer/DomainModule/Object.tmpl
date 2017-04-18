@@ -23,6 +23,14 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.value.ValueBuilderFactory;
+<%
+for( var imp in polygene.current.imported ) {
+    if( !imp.startsWith( "java.lang" )
+        && imp.includes(".") ) {
+        %><%- "import " + imp + ";"; %>
+<%
+    }
+} %>
 
 public class <%= polygene.current.clazz.name %>
 {
