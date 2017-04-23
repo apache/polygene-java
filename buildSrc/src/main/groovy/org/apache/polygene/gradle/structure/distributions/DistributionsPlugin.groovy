@@ -130,12 +130,14 @@ class DistributionsPlugin implements Plugin<Project>
         def relPath = new File( project.rootProject.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
         spec.include "$relPath/**"
       }
+      spec.include 'distributions/**'
+      spec.include 'reports/**'
+      spec.include 'release/**'
       spec.include 'internals/**'
       spec.include 'manual/**'
       spec.include 'samples/**'
       spec.include 'tests/**'
       spec.include 'tutorials/**'
-      spec.include 'tools/shell/**'
       // Filtered, see below
       spec.exclude 'settings.gradle'
       spec.exclude 'gradle.properties'
@@ -282,8 +284,6 @@ class DistributionsPlugin implements Plugin<Project>
         'samples/rental/src/main/resources/*.xsd',
         // Polygene Generator Heroes Templates - MIT
         'tools/generator-polygene/app/templates/Heroes/**',
-        // templates that will become the user's source files, should not have license headers
-        'tools/shell/src/dist/etc/templates/**',
       ]
     } as Action<RatTask> )
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
