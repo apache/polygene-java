@@ -37,8 +37,6 @@ class NpmToolPlugin implements Plugin<Project>
     def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
     def node = project.extensions.getByType NodeExtension
     node.download = true
-    node.workDir = project.file( "${ project.buildDir }/node-install" )
-    node.npmWorkDir = node.workDir
     node.version = dependencies.nodeVersions.node
     node.npmVersion = dependencies.nodeVersions.npm
     project.tasks.withType( NpmTask ) { NpmTask task ->

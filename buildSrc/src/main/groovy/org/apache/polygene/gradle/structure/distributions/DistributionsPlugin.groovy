@@ -156,6 +156,7 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.git*'                // Git files
       spec.exclude '**/.gradle/**'           // Gradle caches
       spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
+      spec.exclude '**/node_modules/**'      // Node's node_module dir
 
       spec.into '.'
     }
@@ -265,6 +266,8 @@ class DistributionsPlugin implements Plugin<Project>
         '**/src/test/resources/**/*.txt',
         'libraries/rest-server/src/main/resources/**/*.htm',
         'libraries/rest-server/src/main/resources/**/*.atom',
+        'tools/generator-polygene/app/templates/**/*.tmpl',
+        'tools/generator-polygene/app/templates/**/*.*_',
         'tools/qidea/src/main/resources/**/*.ft',
         'tools/qidea/src/main/resources/**/*.template',
         // Graphic Resources

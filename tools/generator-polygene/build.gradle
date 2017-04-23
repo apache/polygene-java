@@ -30,7 +30,8 @@ def setsCurrentVersionToPackageJson = task( 'setsCurrentVersionToPackageJson' ) 
   outputs.upToDateWhen { false }
   doLast {
     def packageJson = file( 'package.json' )
-    packageJson.text = packageJson.text.replaceFirst( /\"polygene_version\": \".*\"/, "\"polygene_version\": \"${project.version}\"" )
+    packageJson.text = packageJson.text.replaceFirst( /\"polygene_version\": \".*\"/,
+                                                      "\"polygene_version\": \"${ project.version }\"" )
   }
 }
 
@@ -49,9 +50,7 @@ def generateStageMavenRepositoryInitScript = task( 'generateStageMavenRepository
     initScript.text = """
       allprojects {
         repositories {
-          maven {
-            url = "file://${ repoDir.absolutePath }"
-          }
+          maven { url = "file://${ repoDir.absolutePath }" }
         }
       }
     """.stripIndent()
@@ -69,9 +68,12 @@ def npmTest = task( 'npmTest', type: NpmTask ) {
   inputs.dir file( 'app' )
   inputs.dir file( 'test' )
   outputs.dir file( "${ buildDir }/reports/tests/npmTest" )
+  doFirst {
+    // Cleanup generated projects to always run from a fresh state
+    file( "$buildDir/build/npm-test" ).deleteDir()
+  }
 }
 check.dependsOn npmTest
-
 
 /**
  * Runs ALL the generator tests.
@@ -84,4 +86,8 @@ task( 'npmTestAll', type: NpmTask ) {
   inputs.dir file( 'app' )
   inputs.dir file( 'test' )
   outputs.dir file( "${ buildDir }/reports/tests/npmTestAll" )
+  doFirst {
+    // Cleanup generated projects to always run from a fresh state
+    file( "$buildDir/build/npm-test" ).deleteDir()
+  }
 }
