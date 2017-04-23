@@ -67,27 +67,27 @@ class AggregatedJacocoReportTask extends DefaultTask
         structure( name: 'Apache Polygene™ (Java Edition) SDK' ) {
           group( name: 'Core' ) {
             classfiles { coreProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
           group( name: 'Libraries' ) {
             classfiles { libProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
           group( name: 'Extensions' ) {
             classfiles { extProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
           group( name: 'Tools' ) {
             classfiles { toolsProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
           group( name: 'Tutorials' ) {
             classfiles { tutoProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
           group( name: 'Samples' ) {
             classfiles { samplesProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
           }
         }
         csv destfile: "${ outputDirectory }/jacoco.csv", encoding: 'UTF-8'
