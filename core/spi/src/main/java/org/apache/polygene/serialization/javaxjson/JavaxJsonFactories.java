@@ -51,16 +51,55 @@ public interface JavaxJsonFactories
 
     JsonWriterFactory writerFactory();
 
+    /**
+     * Creates a {@link JsonString} with the {@link Object#toString()} result on the given object.
+     *
+     * @param object the object
+     * @return the JsonString
+     */
     JsonString toJsonString( Object object );
 
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}.
+     *
+     * @param jsonObject the JsonObject
+     * @return the builder
+     */
     JsonObjectBuilder cloneBuilder( JsonObject jsonObject );
 
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}, including only some keys.
+     *
+     * @param jsonObject the JsonObject
+     * @param keys the keys to include
+     * @return the builder
+     */
     JsonObjectBuilder cloneBuilderInclude( JsonObject jsonObject, String... keys );
 
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}, excluding some keys.
+     *
+     * @param jsonObject the JsonObject
+     * @param keys the keys to exclude
+     * @return the builder
+     */
     JsonObjectBuilder cloneBuilderExclude( JsonObject jsonObject, String... keys );
 
+    /**
+     * Creates a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}.
+     *
+     * @param jsonArray the JsonArray
+     * @return the builder
+     */
     JsonArrayBuilder cloneBuilder( JsonArray jsonArray );
 
+    /**
+     * Creates a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}, excluding some values.
+     *
+     * @param jsonArray the JsonArray
+     * @param values the values to exclude
+     * @return the builder
+     */
     JsonArrayBuilder cloneBuilderExclude( JsonArray jsonArray, JsonValue... values );
 
     class Mixin implements JavaxJsonFactories, Initializable
@@ -188,12 +227,6 @@ public interface JavaxJsonFactories
             return builder;
         }
 
-        /**
-         * Create a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}.
-         *
-         * @param jsonArray the JsonArray
-         * @return the builder
-         */
         @Override
         public JsonArrayBuilder cloneBuilder( JsonArray jsonArray )
         {
