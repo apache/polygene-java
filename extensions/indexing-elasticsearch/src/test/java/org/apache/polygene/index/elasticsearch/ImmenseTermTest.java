@@ -20,7 +20,6 @@
 
 package org.apache.polygene.index.elasticsearch;
 
-import java.util.List;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.Visibility;
@@ -78,9 +77,6 @@ public class ImmenseTermTest
     public interface TestEntity
         extends EntityComposite
     {
-        @Optional
-        Property<String> property();
-
         @Queryable( false )
         ManyAssociation<TestEntity2> manyAssociation();
     }
@@ -90,9 +86,6 @@ public class ImmenseTermTest
     {
         @Optional
         Property<String> property();
-
-        @Optional
-        Property<List<Byte>> binaryProperty();
     }
 
     @Override
@@ -128,12 +121,12 @@ public class ImmenseTermTest
     public void testManyAssociation()
         throws Exception
     {
-        long count = 10_000L;
+        int count = 10_000;
         TestEntity testEntity;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             testEntity = uow.newEntity( TestEntity.class );
-            for( long i = 0; i < count; i++ )
+            for( int i = 0; i < count; i++ )
             {
                 TestEntity2 testEntity2 = unitOfWorkFactory.currentUnitOfWork().newEntity( TestEntity2.class );
                 testEntity2.property().set( "test" );
@@ -149,8 +142,8 @@ public class ImmenseTermTest
                     eq( templateFor( TestEntity2.class ).property(), "test" )
                 )
             );
-            assertThat( query.count(), is( count ) );
-            assertThat( testEntity.manyAssociation().count(), is( (int) count ) );
+            assertThat( (int) query.count(), is( count ) );
+            assertThat( testEntity.manyAssociation().count(), is( count ) );
         }
     }
 }
