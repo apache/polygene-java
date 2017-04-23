@@ -67,27 +67,27 @@ class AggregatedJacocoReportTask extends DefaultTask
         structure( name: 'Apache Polygene™ (Java Edition) SDK' ) {
           group( name: 'Core' ) {
             classfiles { coreProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { coreProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
           group( name: 'Libraries' ) {
             classfiles { libProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { libProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
           group( name: 'Extensions' ) {
             classfiles { extProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { extProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
           group( name: 'Tools' ) {
             classfiles { toolsProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { toolsProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
           group( name: 'Tutorials' ) {
             classfiles { tutoProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { tutoProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
           group( name: 'Samples' ) {
             classfiles { samplesProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> fileset dir: "${ p.projectDir.path }/src/main/java" } }
+            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { fileset dir: it.absolutePath } } }
           }
         }
         csv destfile: "${ outputDirectory }/jacoco.csv", encoding: 'UTF-8'
@@ -95,5 +95,12 @@ class AggregatedJacocoReportTask extends DefaultTask
         html destdir: outputDirectory, encoding: 'UTF-8', locale: 'en', footer: 'Apache Polygene™ (Java Edition) SDK'
       }
     }
+  }
+
+  private static List<File> sourceRootsOf( Project project )
+  {
+    [ 'src/main/java', 'src/main/groovy', 'src/main/kotlin' ]
+      .collect { project.file( it ) }
+      .findAll { it.exists() }
   }
 }
