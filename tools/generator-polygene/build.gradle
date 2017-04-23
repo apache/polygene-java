@@ -1,0 +1,87 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+ */
+
+apply plugin: 'polygene-tool-npm'
+
+description = "Apache Polygene™ Project Generator."
+
+/**
+ * Modifies package.json in-place to set `polygene_version`.
+ * Loaded by the generator, see `app/index.js`
+ */
+def setsCurrentVersionToPackageJson = task( 'setsCurrentVersionToPackageJson' ) {
+  outputs.upToDateWhen { false }
+  doLast {
+    def packageJson = file( 'package.json' )
+    packageJson.text = packageJson.text.replaceFirst( /\"polygene_version\": \".*\"/, "\"polygene_version\": \"${project.version}\"" )
+  }
+}
+
+/**
+ * Generate a Gradle init script that registers a maven repository with the currently built artifacts.
+ * Used by the generator tests.
+ */
+def generateStageMavenRepositoryInitScript = task( 'generateStageMavenRepositoryInitScript' ) {
+  def initScript = file( "$buildDir/stagedMavenRepoInitScript.gradle" )
+  def repoDir = file( "${ rootProject.rootDir }/distributions/build/stage/maven-binaries" )
+  dependsOn ':distributions:stageBinariesMavenRepository'
+  inputs.property 'polygene_version', project.version
+  outputs.file initScript
+  doLast {
+    initScript.parentFile.mkdirs()
+    initScript.text = """
+      allprojects {
+        repositories {
+          maven {
+            url = "file://${ repoDir.absolutePath }"
+          }
+        }
+      }
+    """.stripIndent()
+  }
+}
+
+/**
+ * Runs the generator tests.
+ */
+def npmTest = task( 'npmTest', type: NpmTask ) {
+  dependsOn 'npmInstall', setsCurrentVersionToPackageJson, generateStageMavenRepositoryInitScript
+  description = 'Runs Polygene generator tests'
+  args = [ 'run', 'test' ]
+  inputs.file file( 'package.json' )
+  inputs.dir file( 'app' )
+  inputs.dir file( 'test' )
+  outputs.dir file( "${ buildDir }/reports/tests/npmTest" )
+}
+check.dependsOn npmTest
+
+
+/**
+ * Runs ALL the generator tests.
+ */
+task( 'npmTestAll', type: NpmTask ) {
+  dependsOn 'npmInstall', setsCurrentVersionToPackageJson, generateStageMavenRepositoryInitScript
+  description = 'Runs ALL possible permutations of the Polygene generator tests'
+  args = [ 'run', 'test_all' ]
+  inputs.file file( 'package.json' )
+  inputs.dir file( 'app' )
+  inputs.dir file( 'test' )
+  outputs.dir file( "${ buildDir }/reports/tests/npmTestAll" )
+}

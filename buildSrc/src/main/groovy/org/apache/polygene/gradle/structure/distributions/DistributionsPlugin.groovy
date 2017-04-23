@@ -458,8 +458,13 @@ class DistributionsPlugin implements Plugin<Project>
       task.group = TaskGroups.DISTRIBUTION
       task.description = 'Stages published binaries as a maven repository in the build directory.'
       releaseSpec.publishedProjects.each { p ->
-        task.dependsOn "${ p.path }:uploadStageArchives"
-        task.from "${ p.buildDir }/stage/archives"
+        p.afterEvaluate { evaluatedProject ->
+          if( p.plugins.hasPlugin( PublishedCodePlugin ) )
+          {
+            task.dependsOn "${ p.path }:uploadStageArchives"
+            task.from "${ p.buildDir }/stage/archives"
+          }
+        }
       }
       task.into project.file( "$project.buildDir/stage/maven-binaries" )
     } as Action<Sync> )
@@ -507,8 +512,8 @@ class DistributionsPlugin implements Plugin<Project>
         }
         // Copy Maven artifacts using the Gradle IDE Model
         // Include sources if available, otherwise include javadoc if available
-          IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
-          def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
+        IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
+        def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
                                                                                 [ configuration ], [ ],
                                                                                 true, true
         ideDependencies.each { IdeExtendedRepoFileDependency ideDependency ->

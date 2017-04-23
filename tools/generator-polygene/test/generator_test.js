@@ -97,35 +97,42 @@ featuresset.forEach(function (feature) {
 });
 
 // All Tests !!!!
-appTypes.forEach(function (appType) {
-    entityStores.forEach(function (entitystore) {
-        indexings.forEach(function (indexing) {
-            serializations.forEach(function (serialization) {
-                cachings.forEach(function (caching) {
-                    metricses.forEach(function (metrics) {
-                        featuresset.forEach(function (features) {
-                            test(appType, entitystore, indexing, serialization, caching, metrics, features)
+if(process.env.TEST_ALL == 'yes') {
+    appTypes.forEach(function (appType) {
+        entityStores.forEach(function (entitystore) {
+            indexings.forEach(function (indexing) {
+                serializations.forEach(function (serialization) {
+                    cachings.forEach(function (caching) {
+                        metricses.forEach(function (metrics) {
+                            featuresset.forEach(function (features) {
+                                test(appType, entitystore, indexing, serialization, caching, metrics, features)
+                            });
                         });
                     });
                 });
             });
         });
     });
-});
+}
 
 function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
     describe('polygene-generator', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable ' + appType + ' Apache Polygene project with '
+        var testName = 'generates a Gradle buildable Apache Polygene project with '
             + entityStore + 'EntityStore, '
             + indexing + 'Indexing, '
-            + serialization + 'Serialzation, '
+            + serialization + 'Serialization, '
             + caching + 'Caching, '
-            + metrics + 'Metrics, '
-            + ' and ' + features + '.',
+            + metrics + 'Metrics';
+        if(features) {
+            testName += ', and ' + features;
+        }
+        testName += '.';
+        var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
+        it(testName,
             function () {
+                this.timeout(10000);
                 return helpers.run(path.join(__dirname, '../app'))
-                    .inDir(path.join(__dirname, '../build/test-project'))
+                    .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
                     .withPrompts({
                         name: 'test-project',
                         packageName: 'org.apache.polygene.generator.test',
@@ -144,5 +151,5 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);
-    assert(shell.exec(path.join(dir, 'gradlew') + ' build').code == 0);
+    assert(shell.exec(path.join(dir, 'gradlew') + ' classes --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
 }

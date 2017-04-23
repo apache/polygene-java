@@ -31,4 +31,5 @@ class DependenciesDeclarationExtension
   BiConsumer<DependencySubstitution, ModuleComponentSelector> dependencySubstitutionSpec
   final Map<String, String> buildToolsVersions = [ : ]
   final Map<String, String> dockerImagesVersions = [ : ]
+  final Map<String, String> nodeVersions = [ : ]
 }

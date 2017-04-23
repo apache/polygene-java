@@ -255,6 +255,12 @@ dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution,
   }
 }
 
+// NodeJS
+dependencies.nodeVersions << [
+    node: '6.10.2',
+    npm: '4.4.4'
+]
+
 // Build Tools
 dependencies.buildToolsVersions << [
   jacoco: '0.7.9'
