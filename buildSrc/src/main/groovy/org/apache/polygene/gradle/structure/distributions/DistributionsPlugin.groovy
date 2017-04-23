@@ -157,10 +157,7 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.gradle/**'           // Gradle caches
       spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
 
-        // TODO: Doesn't belong here. Should probably remove the use of ServiceLoader in 3.1, which solves the issue.
-        spec.exclude '**/META-INF/services/*Vendor' // SQL Vendor services
-
-        spec.into '.'
+      spec.into '.'
     }
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->
       spec.from project.file( 'src/src-dist' )
