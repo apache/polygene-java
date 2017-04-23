@@ -4,8 +4,8 @@
   "polygene_version": "0",
   "description": "Generates an Apache Polygene project.",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTest/generator-polygene.xml",
-    "test_all": "TEST_ALL=yes ./node_modules/mocha/bin/mocha test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTestAll/generator-polygene.xml"
+    "test": "./node_modules/mocha/bin/mocha ./test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTest/generator-polygene.xml",
+    "test_all": "TEST_ALL=yes ./node_modules/mocha/bin/mocha ./test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTestAll/generator-polygene.xml"
   },
   "files": [
     "app"
