@@ -62,6 +62,12 @@ public class BoundManyAssociation<T> extends AbstractBinding<T>
         return actualAssociations.remove( o );
     }
 
+    @Override
+    public boolean clear()
+    {
+        return actualAssociations.clear();
+    }
+
     public T get( int index )
     {
         return actualAssociations.get( index );

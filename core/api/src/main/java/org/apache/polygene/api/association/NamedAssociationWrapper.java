@@ -75,6 +75,12 @@ public class NamedAssociationWrapper
     }
 
     @Override
+    public boolean clear()
+    {
+        return next.clear();
+    }
+
+    @Override
     public Object get( String name )
     {
         return next.get( name );

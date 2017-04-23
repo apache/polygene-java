@@ -75,6 +75,18 @@ public final class DefaultNamedAssociationState
     }
 
     @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            entityState.markUpdated();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public EntityReference get( String name )
     {
         return references.get( name );

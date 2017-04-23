@@ -104,6 +104,17 @@ public final class JSONManyAssociationState
     }
 
     @Override
+    public boolean clear()
+    {
+        if( count() > 0 )
+        {
+            entityState.stateCloneClearManyAssociation( stateName );
+            entityState.markUpdated();
+        }
+        return false;
+    }
+
+    @Override
     public EntityReference get( int i )
     {
         return EntityReference.parseEntityReference( getReferences().getString( i ) );

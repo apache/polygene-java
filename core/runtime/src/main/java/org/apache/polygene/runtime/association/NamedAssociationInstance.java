@@ -89,6 +89,13 @@ public class NamedAssociationInstance<T>
     }
 
     @Override
+    public boolean clear()
+    {
+        checkImmutable();
+        return namedAssociationState.clear();
+    }
+
+    @Override
     public T get( String name )
     {
         return getEntity( namedAssociationState.get( name ) );

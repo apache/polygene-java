@@ -95,7 +95,7 @@ public class FunctionStateResolver
             {
                 ManyAssociationState associationState = state.manyAssociationValueOf( manyAssDesc.qualifiedName() );
                 // First clear existing ones
-                associationState.forEach( associationState::remove );
+                associationState.clear();
                 // then add the new ones.
                 getManyAssociationState( manyAssDesc ).forEach( ref -> associationState.add( 0, ref ) );
             } );
@@ -104,7 +104,7 @@ public class FunctionStateResolver
             {
                 NamedAssociationState associationState = state.namedAssociationValueOf( namedAssDesc.qualifiedName() );
                 // First clear existing ones
-                associationState.forEach( associationState::remove );
+                associationState.clear();
                 // then add the new ones.
                 getNamedAssociationState( namedAssDesc )
                     .forEach( entry -> associationState.put( entry.getKey(), entry.getValue() ) );

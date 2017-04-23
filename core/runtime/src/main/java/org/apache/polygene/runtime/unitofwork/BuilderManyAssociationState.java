@@ -71,6 +71,17 @@ public final class BuilderManyAssociationState
     }
 
     @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public EntityReference get( int i )
     {
         return references.get( i );

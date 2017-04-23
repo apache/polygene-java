@@ -92,6 +92,13 @@ public class ManyAssociationInstance<T>
     }
 
     @Override
+    public boolean clear()
+    {
+        checkImmutable();
+        return manyAssociationState.clear();
+    }
+
+    @Override
     public T get( int i )
     {
         return getEntity( manyAssociationState.get( i ) );

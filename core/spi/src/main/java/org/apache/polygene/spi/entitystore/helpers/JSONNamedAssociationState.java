@@ -106,6 +106,17 @@ public final class JSONNamedAssociationState
     }
 
     @Override
+    public boolean clear()
+    {
+        if( count() > 0 )
+        {
+            entityState.stateCloneClearNamedAssociation( stateName );
+            entityState.markUpdated();
+        }
+        return false;
+    }
+
+    @Override
     public EntityReference get( String name )
     {
         String stringRef = getReferences().getString( name, null );

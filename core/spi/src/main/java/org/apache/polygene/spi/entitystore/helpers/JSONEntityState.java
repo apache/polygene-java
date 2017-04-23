@@ -307,6 +307,20 @@ public final class JSONEntityState
         }
     }
 
+    void stateCloneClearManyAssociation( String stateName )
+    {
+        JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+        if( valueState.containsKey( stateName ) )
+        {
+            valueState = jsonFactories.cloneBuilderExclude( valueState, stateName )
+                                      .add( stateName, jsonFactories.builderFactory().createArrayBuilder().build() )
+                                      .build();
+            state = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                 .add( JSONKeys.VALUE, valueState )
+                                 .build();
+        }
+    }
+
     void stateCloneAddNamedAssociation( String stateName, String name, EntityReference ref )
     {
         JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
@@ -331,6 +345,20 @@ public final class JSONEntityState
                                                  .build();
             valueState = jsonFactories.cloneBuilderExclude( valueState, stateName )
                                       .add( stateName, namedAssoc )
+                                      .build();
+            state = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                 .add( JSONKeys.VALUE, valueState )
+                                 .build();
+        }
+    }
+
+    void stateCloneClearNamedAssociation( String stateName )
+    {
+        JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+        if( valueState.containsKey( stateName ) )
+        {
+            valueState = jsonFactories.cloneBuilderExclude( valueState, stateName )
+                                      .add( stateName, jsonFactories.builderFactory().createObjectBuilder().build() )
                                       .build();
             state = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
                                  .add( JSONKeys.VALUE, valueState )

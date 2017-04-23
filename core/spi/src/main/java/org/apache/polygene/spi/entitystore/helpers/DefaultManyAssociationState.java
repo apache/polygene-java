@@ -69,8 +69,23 @@ public final class DefaultManyAssociationState
     public boolean remove( EntityReference entity )
     {
         boolean removed = references.remove( entity );
-        entityState.markUpdated();
+        if( removed )
+        {
+            entityState.markUpdated();
+        }
         return removed;
+    }
+
+    @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            entityState.markUpdated();
+            return true;
+        }
+        return false;
     }
 
     @Override
