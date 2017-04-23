@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -270,7 +269,6 @@ public abstract class CompositeAssemblyImpl
                                }
                                catch( Exception e )
                                {
-                                   System.out.println( "NICLAS 2: " + e.getClass() + " - " + e.getMessage() );
                                    exceptions.add( e );
                                }
                            }
@@ -806,14 +804,7 @@ public abstract class CompositeAssemblyImpl
     {
         return types
             .filter( mixinType -> Annotations.annotationOn( mixinType, Concerns.class ) != null )
-            .flatMap( new Function<Type, Stream<? extends Class<?>>>()
-            {
-                @Override
-                public Stream<? extends Class<?>> apply( Type mixinType )
-                {
-                    return Arrays.stream( Annotations.annotationOn( mixinType, Concerns.class ).value() );
-                }
-            } );
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Concerns.class ).value() ) );
     }
 
     @SuppressWarnings( "unchecked" )

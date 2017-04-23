@@ -24,7 +24,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import org.apache.polygene.api.common.InvalidApplicationException;
-import org.apache.polygene.api.composite.AmbiguousTypeException;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
