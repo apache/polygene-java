@@ -66,28 +66,52 @@ class AggregatedJacocoReportTask extends DefaultTask
         }
         structure( name: 'Apache Polygene™ (Java Edition) SDK' ) {
           group( name: 'Core' ) {
-            classfiles { coreProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { coreProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              coreProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
           group( name: 'Libraries' ) {
-            classfiles { libProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { libProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              libProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
           group( name: 'Extensions' ) {
-            classfiles { extProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { extProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              extProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
           group( name: 'Tools' ) {
-            classfiles { toolsProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { toolsProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              toolsProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
           group( name: 'Tutorials' ) {
-            classfiles { tutoProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { tutoProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              tutoProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
           group( name: 'Samples' ) {
-            classfiles { samplesProjects.collect { p -> fileset dir: "${ p.buildDir.path }/classes/main" } }
-            sourcefiles { samplesProjects.collect { p -> sourceRootsOf( p ).each { sourceRoot -> fileset dir: sourceRoot.absolutePath } } }
+            classfiles { samplesProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
+            sourcefiles {
+              samplesProjects.collect { p ->
+                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
+              }
+            }
           }
         }
         csv destfile: "${ outputDirectory }/jacoco.csv", encoding: 'UTF-8'
@@ -97,10 +121,10 @@ class AggregatedJacocoReportTask extends DefaultTask
     }
   }
 
-  private static List<File> sourceRootsOf( Project project )
+  private static List<String> sourceRootsOf( Project project )
   {
-    [ 'src/main/java', 'src/main/groovy', 'src/main/kotlin' ]
-      .collect { project.file( it ) }
-      .findAll { it.exists() }
+    [ 'src/main/java', 'src/main/groovy', 'src/main/kotlin' ].collect { project.file it }
+                                                             .findAll { it.directory }
+                                                             .collect { it.absolutePath }
   }
 }
