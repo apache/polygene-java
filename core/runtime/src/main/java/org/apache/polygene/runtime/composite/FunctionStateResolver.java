@@ -36,10 +36,10 @@ import org.apache.polygene.spi.entity.NamedAssociationState;
 public class FunctionStateResolver
     implements StateResolver
 {
-    final Function<PropertyDescriptor, Object> propertyFunction;
-    final Function<AssociationDescriptor, EntityReference> associationFunction;
-    final Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction;
-    final Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction;
+    private final Function<PropertyDescriptor, Object> propertyFunction;
+    private final Function<AssociationDescriptor, EntityReference> associationFunction;
+    private final Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction;
+    private final Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction;
 
     public FunctionStateResolver( Function<PropertyDescriptor, Object> propertyFunction,
                                   Function<AssociationDescriptor, EntityReference> associationFunction,
@@ -53,28 +53,27 @@ public class FunctionStateResolver
     }
 
     @Override
-    public Object getPropertyState( PropertyDescriptor propertyDescriptor )
+    public Object getPropertyState( PropertyDescriptor descriptor )
     {
-        return propertyFunction.apply( propertyDescriptor );
+        return propertyFunction.apply( descriptor );
     }
 
     @Override
-    public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
+    public EntityReference getAssociationState( AssociationDescriptor descriptor )
     {
-        return associationFunction.apply( associationDescriptor );
+        return associationFunction.apply( descriptor );
     }
 
     @Override
-    public Stream<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
+    public Stream<EntityReference> getManyAssociationState( AssociationDescriptor descriptor )
     {
-        return manyAssociationFunction.apply( associationDescriptor );
+        return manyAssociationFunction.apply( descriptor );
     }
 
     @Override
-    public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState(
-        AssociationDescriptor associationDescriptor )
+    public Stream<Map.Entry<String, EntityReference>> getNamedAssociationState( AssociationDescriptor descriptor )
     {
-        return namedAssociationFunction.apply( associationDescriptor );
+        return namedAssociationFunction.apply( descriptor );
     }
 
     public void populateState( EntityModel model, EntityState state )
@@ -98,8 +97,7 @@ public class FunctionStateResolver
                 // First clear existing ones
                 associationState.forEach( associationState::remove );
                 // then add the new ones.
-                getManyAssociationState( manyAssDesc )
-                    .forEach( ref -> associationState.add( 0, ref ) );
+                getManyAssociationState( manyAssDesc ).forEach( ref -> associationState.add( 0, ref ) );
             } );
         model.state().namedAssociations().forEach(
             namedAssDesc ->

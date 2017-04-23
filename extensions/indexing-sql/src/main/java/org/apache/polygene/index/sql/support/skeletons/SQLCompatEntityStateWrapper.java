@@ -33,6 +33,7 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
+import org.apache.polygene.api.type.EntityCompositeType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.value.ValueComposite;
@@ -191,6 +192,12 @@ class SQLCompatEntityStateWrapper
         return wrappedEntityState.hashCode();
     }
 
+    @Override
+    public String toString()
+    {
+        return wrappedEntityState.toString();
+    }
+
     private static class CompatEntityDescriptorWrapper
         implements EntityDescriptor
     {
@@ -199,6 +206,12 @@ class SQLCompatEntityStateWrapper
         private CompatEntityDescriptorWrapper( EntityDescriptor wrappedEntityDescriptor )
         {
             this.wrappedEntityDescriptor = wrappedEntityDescriptor;
+        }
+
+        @Override
+        public EntityCompositeType valueType()
+        {
+            return wrappedEntityDescriptor.valueType();
         }
 
         @Override

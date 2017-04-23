@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
 
@@ -38,25 +38,27 @@ import org.apache.polygene.spi.entitystore.EntityStoreException;
 public final class JSONNamedAssociationState
     implements NamedAssociationState
 {
-
+    private final JavaxJsonFactories jsonFactories;
     private final JSONEntityState entityState;
     private final String stateName;
 
-    /* package */ JSONNamedAssociationState( JSONEntityState entityState, String stateName )
+    /* package */ JSONNamedAssociationState( JavaxJsonFactories jsonFactories,
+                                             JSONEntityState entityState,
+                                             String stateName )
     {
+        this.jsonFactories = jsonFactories;
         this.entityState = entityState;
         this.stateName = stateName;
     }
 
     private JsonObject getReferences()
     {
-        JsonObject namedAssociations = entityState.state().getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
-        JsonValue references = namedAssociations.get( stateName );
+        JsonValue references = entityState.state().getJsonObject( JSONKeys.VALUE ).get( stateName );
         if( references != null && references.getValueType() == JsonValue.ValueType.OBJECT )
         {
             return (JsonObject) references;
         }
-        return Json.createObjectBuilder().build();
+        return jsonFactories.builderFactory().createObjectBuilder().build();
     }
 
     @Override

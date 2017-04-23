@@ -47,19 +47,7 @@ public interface JSONKeys
      */
     String MODIFIED = "modified";
     /**
-     * Map of properties.
+     * Entity value state.
      */
-    String PROPERTIES = "properties";
-    /**
-     * Map of associations.
-     */
-    String ASSOCIATIONS = "associations";
-    /**
-     * Map of manyassociations.
-     */
-    String MANY_ASSOCIATIONS = "manyassociations";
-    /**
-     * Map of namedassociations.
-     */
-    String NAMED_ASSOCIATIONS = "namedassociations";
+    String VALUE = "value";
 }

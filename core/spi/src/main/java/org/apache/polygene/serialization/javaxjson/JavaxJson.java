@@ -17,13 +17,9 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonException;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
@@ -33,51 +29,6 @@ import javax.json.JsonValue;
  */
 public class JavaxJson
 {
-    public static JsonValue EMPTY_STRING = toJsonString( "" );
-
-    /**
-     * Create a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}.
-     *
-     * @param jo the JsonObject
-     * @return the builder
-     */
-    public static JsonObjectBuilder toBuilder( JsonObject jo )
-    {
-        JsonObjectBuilder job = Json.createObjectBuilder();
-        for( Map.Entry<String, JsonValue> entry : jo.entrySet() )
-        {
-            job.add( entry.getKey(), entry.getValue() );
-        }
-        return job;
-    }
-
-    /**
-     * Create a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}.
-     *
-     * @param ja the JsonArray
-     * @return the builder
-     */
-    public static JsonArrayBuilder toBuilder( JsonArray ja )
-    {
-        JsonArrayBuilder job = Json.createArrayBuilder();
-        for( JsonValue value : ja )
-        {
-            job.add( value );
-        }
-        return job;
-    }
-
-    /**
-     * Create a {@link JsonString} from {@link Object#toString()}.
-     *
-     * @param object the Object
-     * @return the JsonString
-     */
-    public static JsonString toJsonString( Object object )
-    {
-        return Json.createObjectBuilder().add( "value", object.toString() ).build().getJsonString( "value" );
-    }
-
     /**
      * Get a {@link String} out of a {@link JsonValue}.
      *

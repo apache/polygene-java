@@ -38,12 +38,12 @@ public interface JavaxJsonAdapter<T>
     /**
      * Serialize.
      *
-     * @param builderFactory Factory to create JSON
+     * @param jsonFactories Factories to create JSON
      * @param object Object to serialize, never null
      * @param serialize Serialization function for nested structure serialization
      * @return Serialized JSON representation
      */
-    JsonValue serialize( JsonBuilderFactory builderFactory, Object object, Function<Object, JsonValue> serialize );
+    JsonValue serialize( JavaxJsonFactories jsonFactories, Object object, Function<Object, JsonValue> serialize );
 
     /**
      * Deserialize.

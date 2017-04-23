@@ -82,20 +82,29 @@ public interface Serializer
      * All options provided by the builder are safe to use with all serialization extensions. Serialization extensions
      * might provide more options, see {@link #option(String)} and the respective extension documentation.
      */
-    // TODO rootTypeInfo / nestedTypeInfo
     interface Options
     {
         /**
          * Default state serializer options.
          *
-         * {@link #includeTypeInfo()} set to {@literal true}.
+         * {@link #rootTypeInfo()} set to {@literal false}.
+         * {@link #nestedTypeInfo()} set to {@literal true}.
          */
-        Options DEFAULT = builder().build();
+        Options DEFAULT = builder().withoutRootTypeInfo().withNestedTypeInfo().build();
 
         /**
-         * Default state serializer options with {@link #includeTypeInfo()} set to {@literal false}.
+         * State serializer options with both {@link #rootTypeInfo()} and {@link #nestedTypeInfo()}
+         * set to {@literal false}.
          */
-        Options NO_TYPE_INFO = builder().withoutTypeInfo().build();
+        Options NO_TYPE_INFO = builder().withoutRootTypeInfo().withoutNestedTypeInfo().build();
+
+        /**
+         * State serializer options with both {@link #rootTypeInfo()} and {@link #nestedTypeInfo()}
+         * set to {@literal true}.
+         */
+        Options ALL_TYPE_INFO = builder().withRootTypeInfo().withNestedTypeInfo().build();
+
+        boolean rootTypeInfo();
 
         /**
          * Include type information in the serialized form of nested values.
@@ -126,12 +135,12 @@ public interface Serializer
          * If the deserializer can't know it use the type information from the
          * {@link org.apache.polygene.api.type.ValueType} provided at deserialization time.
          *
-         * Disable it using {@link Builder#withoutTypeInfo()} if you are sure you don't need this.
+         * Disable it using {@link Builder#withoutNestedTypeInfo()} if you are sure you don't need this.
          *
          * @return {@literal true} if type information must be included in the serialized form of nested values,
          *         {@literal false} otherwise
          */
-        boolean includeTypeInfo();
+        boolean nestedTypeInfo();
 
         /**
          * Query for an option's value.
@@ -158,7 +167,8 @@ public interface Serializer
          */
         final class Builder
         {
-            private static final String INCLUDE_TYPE_INFO = "includeTypeInfo";
+            private static final String ROOT_TYPE_INFO = "rootTypeInfo";
+            private static final String NESTED_TYPE_INFO = "nestedTypeInfo";
 
             private static class Instance implements Options
             {
@@ -170,9 +180,15 @@ public interface Serializer
                 }
 
                 @Override
-                public boolean includeTypeInfo()
+                public boolean rootTypeInfo()
                 {
-                    return "true".equals( options.get( INCLUDE_TYPE_INFO ) );
+                    return "true".equals( options.get( ROOT_TYPE_INFO ) );
+                }
+
+                @Override
+                public boolean nestedTypeInfo()
+                {
+                    return "true".equals( options.get( NESTED_TYPE_INFO ) );
                 }
 
                 @Override
@@ -184,17 +200,28 @@ public interface Serializer
 
             private final Map<String, String> options = new HashMap<String, String>()
             {{
-                put( INCLUDE_TYPE_INFO, "true" );
+                put( ROOT_TYPE_INFO, "false" );
+                put( NESTED_TYPE_INFO, "true" );
             }};
+
+            public Builder withRootTypeInfo()
+            {
+                return withOption( ROOT_TYPE_INFO, "true" );
+            }
+
+            public Builder withoutRootTypeInfo()
+            {
+                return withOption( ROOT_TYPE_INFO, "false" );
+            }
 
             /**
              * Include type information in the serialized form of nested values.
              *
              * @return this builder
              */
-            public Builder withTypeInfo()
+            public Builder withNestedTypeInfo()
             {
-                return withOption( INCLUDE_TYPE_INFO, "true" );
+                return withOption( NESTED_TYPE_INFO, "true" );
             }
 
             /**
@@ -203,14 +230,14 @@ public interface Serializer
              * <strong>WARNING</strong>
              * Without this, {@link Deserializer}s will use the provided
              * {@link org.apache.polygene.api.type.ValueType} for instantiation potentially breaking polymorphism,
-             * see {@link Options#includeTypeInfo()}.
+             * see {@link Options#nestedTypeInfo()}.
              *
              * @return this builder
-             * @see Builder#withTypeInfo()
+             * @see Builder#withNestedTypeInfo()
              */
-            public Builder withoutTypeInfo()
+            public Builder withoutNestedTypeInfo()
             {
-                return withOption( INCLUDE_TYPE_INFO, "false" );
+                return withOption( NESTED_TYPE_INFO, "false" );
             }
 
             /**

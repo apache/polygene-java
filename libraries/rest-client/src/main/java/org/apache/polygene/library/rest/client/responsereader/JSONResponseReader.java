@@ -21,9 +21,9 @@
 package org.apache.polygene.library.rest.client.responsereader;
 
 import java.io.IOException;
-import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
@@ -32,6 +32,7 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.library.rest.client.spi.ResponseReader;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.restlet.Response;
 import org.restlet.data.Form;
@@ -50,6 +51,9 @@ public class JSONResponseReader
     @Service
     private JsonDeserializer jsonDeserializer;
 
+    @Service
+    private JavaxJsonFactories jsonFactories;
+
     @Override
     public Object readResponse( Response response, Class<?> resultType )
     {
@@ -63,14 +67,14 @@ public class JSONResponseReader
             }
             else if( resultType.equals( Form.class ) )
             {
-                try
+                try( JsonReader reader = jsonFactories.readerFactory()
+                                                      .createReader( response.getEntity().getReader() ) )
                 {
-                    JsonObject jsonObject = Json.createReader( response.getEntity().getReader() ).readObject();
+                    JsonObject jsonObject = reader.readObject();
                     Form form = new Form();
                     jsonObject.entrySet().forEach(
                         entry ->
                         {
-
                             String key = entry.getKey();
                             JsonValue value = entry.getValue();
                             String valueString = value.getValueType() == JsonValue.ValueType.STRING

@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.type.HasTypes;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.Annotations;
 
 import static org.apache.polygene.api.type.HasTypesCollectors.closestType;
 
@@ -62,28 +63,59 @@ public interface Converters
     class Mixin implements Converters
     {
         private final Map<ValueType, Converter<?>> converters = new LinkedHashMap<>();
+        private final Map<ValueType, Converter<?>> resolvedConvertersCache = new HashMap<>();
 
         @Override
         public void registerConverter( ValueType valueType, Converter<?> converter )
         {
             converters.put( valueType, converter );
+            resolvedConvertersCache.put( valueType, converter );
         }
 
         @Override
-        @SuppressWarnings( "unchecked" )
         public <T> Converter<T> converterFor( ValueType valueType )
         {
-            Converter<T> converter = castConverter( converters.keySet().stream()
-                                                              .collect( closestType( valueType ) )
-                                                              .map( converters::get )
-                                                              .orElse( null ) );
-            if( converter != null )
+            if( resolvedConvertersCache.containsKey( valueType ) )
             {
-                return converter;
+                return castConverter( resolvedConvertersCache.get( valueType ) );
             }
-            if( valueType.primaryType().isEnum() )
+            Converter<T> converter = lookupConverter( valueType );
+            resolvedConvertersCache.put( valueType, converter );
+            return converter;
+        }
+
+        @SuppressWarnings( "unchecked" )
+        private <T> Converter<T> lookupConverter( ValueType valueType )
+        {
+            Converter<T> converter = lookupConvertedByConverter( valueType );
+            if( converter == null )
             {
-                return new EnumConverter( valueType.primaryType() );
+                converter = castConverter( converters.keySet().stream()
+                                                     .collect( closestType( valueType ) )
+                                                     .map( converters::get )
+                                                     .orElse( null ) );
+            }
+            if( converter == null && valueType.primaryType().isEnum() )
+            {
+                converter = new EnumConverter( valueType.primaryType() );
+            }
+            return converter;
+        }
+
+        private <T> Converter<T> lookupConvertedByConverter( ValueType valueType )
+        {
+            ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
+            if( convertedBy != null )
+            {
+                Class<? extends Converter> converterClass = convertedBy.value();
+                try
+                {
+                    return castConverter( converterClass.newInstance() );
+                }
+                catch( IllegalAccessException | InstantiationException e )
+                {
+                    throw new IllegalArgumentException( "Cannot use class " + converterClass + " as Converter", e );
+                }
             }
             return null;
         }

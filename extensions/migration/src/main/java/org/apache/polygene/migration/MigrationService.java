@@ -22,11 +22,10 @@ package org.apache.polygene.migration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
@@ -44,6 +43,7 @@ import org.apache.polygene.migration.assembly.EntityMigrationRule;
 import org.apache.polygene.migration.assembly.MigrationBuilder;
 import org.apache.polygene.migration.assembly.MigrationContext;
 import org.apache.polygene.migration.assembly.MigrationRule;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.Migration;
@@ -87,35 +87,84 @@ public interface MigrationService
     class MigrationMixin
         implements MigrationService, Migrator
     {
+        private static final Logger LOGGER = LoggerFactory.getLogger( MigrationService.class );
+
         @Structure
-        Application app;
+        private Application app;
 
         @This
-        Configuration<MigrationConfiguration> config;
+        private Configuration<MigrationConfiguration> config;
 
         @Uses
-        ServiceDescriptor descriptor;
+        private ServiceDescriptor descriptor;
 
         @Service
-        StateStore store;
+        private StateStore store;
 
         @Service
-        EntityStore entityStore;
+        private EntityStore entityStore;
 
         @Service
-        JsonSerialization serialization;
+        private JsonSerialization serialization;
+
+        @Service
+        private JavaxJsonFactories jsonFactories;
 
         @Structure
-        UnitOfWorkFactory uowf;
+        private UnitOfWorkFactory uowf;
 
         @This
-        Migrator migrator;
-
-        public MigrationBuilder builder;
-        public Logger log;
+        private Migrator migrator;
 
         @Service
-        Iterable<MigrationEvents> migrationEvents;
+        private Iterable<MigrationEvents> migrationEvents;
+
+        private MigrationBuilder builder;
+
+
+        @Override
+        public void initialize()
+            throws Exception
+        {
+            builder = descriptor.metaInfo( MigrationBuilder.class );
+
+            String version = app.version();
+            String lastVersion = config.get().lastStartupVersion().get();
+
+            // Run general rules if version has changed
+            if( !app.version().equals( lastVersion ) )
+            {
+                Iterable<MigrationRule> rules = builder.migrationRules().rulesBetweenVersions( lastVersion, version );
+                List<MigrationRule> executedRules = new ArrayList<>();
+                try
+                {
+                    if( rules != null )
+                    {
+                        for( MigrationRule rule : rules )
+                        {
+                            rule.upgrade( store, this );
+                            executedRules.add( rule );
+                            LOGGER.debug( rule.toString() );
+                        }
+
+                        LOGGER.info( "Migrated to " + version );
+                    }
+
+                    config.get().lastStartupVersion().set( version );
+                    config.save();
+                }
+                catch( Exception e )
+                {
+                    LOGGER.error( "Upgrade failed", e );
+
+                    // Downgrade the migrated rules
+                    for( MigrationRule executedRule : executedRules )
+                    {
+                        executedRule.downgrade( store, this );
+                    }
+                }
+            }
+        }
 
         @Override
         public JsonObject migrate( final JsonObject state, String toVersion, StateStore stateStore )
@@ -138,9 +187,9 @@ public interface MigrationService
 
                     migratedState = matchedRule.upgrade( context, migratedState, stateStore, migrator );
 
-                    if( context.isSuccess() && context.hasChanged() && log.isDebugEnabled() )
+                    if( context.isSuccess() && context.hasChanged() && LOGGER.isDebugEnabled() )
                     {
-                        log.debug( matchedRule.toString() );
+                        LOGGER.debug( matchedRule.toString() );
                     }
 
                     failures.addAll( context.failures() );
@@ -148,7 +197,7 @@ public interface MigrationService
                 }
             }
 
-            JsonObjectBuilder appVersionBuilder = Json.createObjectBuilder();
+            JsonObjectBuilder appVersionBuilder = jsonFactories.builderFactory().createObjectBuilder();
             for( Map.Entry<String, JsonValue> entry : migratedState.entrySet() )
             {
                 appVersionBuilder.add( entry.getKey(), entry.getValue() );
@@ -158,16 +207,16 @@ public interface MigrationService
 
             if( failures.size() > 0 )
             {
-                log.warn( "Migration of {} from {} to {} aborted, failed operation(s):\n{}",
-                          state.getString( JSONKeys.IDENTITY ), fromVersion, toVersion,
-                          String.join( "\n\t", failures ) );
+                LOGGER.warn( "Migration of {} from {} to {} aborted, failed operation(s):\n{}",
+                             state.getString( JSONKeys.IDENTITY ), fromVersion, toVersion,
+                             String.join( "\n\t", failures ) );
                 return state;
             }
 
             if( changed )
             {
-                log.info( "Migrated {} from {} to {}",
-                          migratedState.getString( JSONKeys.IDENTITY ), fromVersion, toVersion );
+                LOGGER.info( "Migrated {} from {} to {}",
+                             migratedState.getString( JSONKeys.IDENTITY ), fromVersion, toVersion );
                 return migratedState;
             }
 
@@ -175,77 +224,20 @@ public interface MigrationService
             return state;
         }
 
-        @Override
-        public void initialize()
-            throws Exception
-        {
-            builder = descriptor.metaInfo( MigrationBuilder.class );
-
-            log = LoggerFactory.getLogger( MigrationService.class );
-
-            String version = app.version();
-            String lastVersion = config.get().lastStartupVersion().get();
-
-            // Run general rules if version has changed
-            if( !app.version().equals( lastVersion ) )
-            {
-                Iterable<MigrationRule> rules = builder.migrationRules().rulesBetweenVersions( lastVersion, version );
-                List<MigrationRule> executedRules = new ArrayList<>();
-                try
-                {
-                    if( rules != null )
-                    {
-                        for( MigrationRule rule : rules )
-                        {
-                            rule.upgrade( store, this );
-                            executedRules.add( rule );
-                            log.debug( rule.toString() );
-                        }
-
-                        log.info( "Migrated to " + version );
-                    }
-
-                    config.get().lastStartupVersion().set( version );
-                    config.save();
-                }
-                catch( Exception e )
-                {
-                    log.error( "Upgrade failed", e );
-
-                    // Downgrade the migrated rules
-                    for( MigrationRule executedRule : executedRules )
-                    {
-                        executedRule.downgrade( store, this );
-                    }
-                }
-            }
-        }
-
         // Migrator implementation
         @Override
         public JsonObject addProperty( MigrationContext context, JsonObject state, String name, Object defaultValue )
             throws JsonException
         {
-            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
-            if( !properties.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( !valueState.containsKey( name ) )
             {
-                JsonValue value = serialization.toJson( defaultValue );
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.PROPERTIES.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
-                {
-                    propBuilder.add( entry.getKey(), entry.getValue() );
-                }
-                propBuilder.add( name, value );
-                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
+                valueState = jsonFactories.cloneBuilder( valueState )
+                                          .add( name, serialization.toJson( defaultValue ) )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
                 context.markAsChanged();
 
                 for( MigrationEvents migrationEvent : migrationEvents )
@@ -253,7 +245,7 @@ public interface MigrationService
                     migrationEvent.propertyAdded( state.getString( JSONKeys.IDENTITY ), name, defaultValue );
                 }
 
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -266,42 +258,20 @@ public interface MigrationService
         public JsonObject removeProperty( MigrationContext context, JsonObject state, String name )
             throws JsonException
         {
-            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
-            if( properties.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                valueState = jsonFactories.cloneBuilderExclude( valueState, name ).build();
+                JsonObject migratedState = jsonFactories
+                    .cloneBuilderExclude( state, JSONKeys.VALUE )
+                    .add( JSONKeys.VALUE, valueState )
+                    .build();
+                context.markAsChanged();
+                for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    String key = entry.getKey();
-                    if( !JSONKeys.PROPERTIES.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
+                    migrationEvent.propertyRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
-                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !name.equals( key ) )
-                    {
-                        propBuilder.add( key, entry.getValue() );
-                    }
-                    else
-                    {
-                        context.markAsChanged();
-                    }
-                }
-                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
-
-                if( context.hasChanged() )
-                {
-                    for( MigrationEvents migrationEvent : migrationEvents )
-                    {
-                        migrationEvent.propertyRemoved( state.getString( JSONKeys.IDENTITY ), name );
-                    }
-                }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -314,40 +284,22 @@ public interface MigrationService
         public JsonObject renameProperty( MigrationContext context, JsonObject state, String from, String to )
             throws JsonException
         {
-            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
-            if( properties.containsKey( from ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( from ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.PROPERTIES.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder propBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : properties.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( from.equals( key ) )
-                    {
-                        propBuilder.add( to, entry.getValue() );
-                        context.markAsChanged();
-                    }
-                    else
-                    {
-                        propBuilder.add( key, entry.getValue() );
-                    }
-                }
-                builder.add( JSONKeys.PROPERTIES, propBuilder.build() );
-
+                JsonValue jsonValue = valueState.get( from );
+                valueState = jsonFactories.cloneBuilderExclude( valueState, from )
+                                          .add( to, jsonValue )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.propertyRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -361,34 +313,21 @@ public interface MigrationService
                                           String defaultReference )
             throws JsonException
         {
-            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
-            if( !associations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( !valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
-                {
-                    assocBuilder.add( entry.getKey(), entry.getValue() );
-                }
-                JsonValue value = serialization.toJson( defaultReference );
-                assocBuilder.add( name, value );
-                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
+                valueState = jsonFactories.cloneBuilder( valueState )
+                                          .add( name, defaultReference )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
                 context.markAsChanged();
-
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReference );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -401,39 +340,19 @@ public interface MigrationService
         public JsonObject removeAssociation( MigrationContext context, JsonObject state, String name )
             throws JsonException
         {
-            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
-            if( associations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !name.equals( key ) )
-                    {
-                        assocBuilder.add( key, entry.getValue() );
-                    }
-                    else
-                    {
-                        context.markAsChanged();
-                    }
-                }
-                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
-
+                valueState = jsonFactories.cloneBuilderExclude( valueState, name ).build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -446,40 +365,22 @@ public interface MigrationService
         public JsonObject renameAssociation( MigrationContext context, JsonObject state, String from, String to )
             throws JsonException
         {
-            JsonObject associations = state.getJsonObject( JSONKeys.ASSOCIATIONS );
-            if( associations.containsKey( from ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( from ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : associations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( from.equals( key ) )
-                    {
-                        assocBuilder.add( to, entry.getValue() );
-                        context.markAsChanged();
-                    }
-                    else
-                    {
-                        assocBuilder.add( to, entry.getValue() );
-                    }
-                }
-                builder.add( JSONKeys.ASSOCIATIONS, assocBuilder.build() );
-
+                JsonValue jsonValue = valueState.get( from );
+                valueState = jsonFactories.cloneBuilderExclude( valueState, from )
+                                          .add( to, jsonValue )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.associationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -493,35 +394,27 @@ public interface MigrationService
                                               String... defaultReferences )
             throws JsonException
         {
-            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( !manyAssociations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( !valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                JsonArrayBuilder refArrayBuilder = jsonFactories.builderFactory().createArrayBuilder();
+                for( String ref : defaultReferences )
                 {
-                    String key = entry.getKey();
-                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
+                    refArrayBuilder.add( ref );
                 }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
-                {
-                    assocBuilder.add( entry.getKey(), entry.getValue() );
-                }
-                JsonValue value = serialization.toJson( defaultReferences );
-                assocBuilder.add( name, value );
-                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
+                valueState = jsonFactories.cloneBuilder( valueState )
+                                          .add( name, refArrayBuilder.build() )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
                 context.markAsChanged();
-
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationAdded( state.getString( JSONKeys.IDENTITY ), name,
                                                          defaultReferences );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -534,39 +427,19 @@ public interface MigrationService
         public JsonObject removeManyAssociation( MigrationContext context, JsonObject state, String name )
             throws JsonException
         {
-            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( manyAssociations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !name.equals( key ) )
-                    {
-                        assocBuilder.add( key, entry.getValue() );
-                    }
-                    else
-                    {
-                        context.markAsChanged();
-                    }
-                }
-                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
-
+                valueState = jsonFactories.cloneBuilderExclude( valueState, name ).build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -579,40 +452,22 @@ public interface MigrationService
         public JsonObject renameManyAssociation( MigrationContext context, JsonObject state, String from, String to )
             throws JsonException
         {
-            JsonObject manyAssociations = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
-            if( manyAssociations.containsKey( from ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( from ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.MANY_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : manyAssociations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( from.equals( key ) )
-                    {
-                        context.markAsChanged();
-                        assocBuilder.add( to, entry.getValue() );
-                    }
-                    else
-                    {
-                        assocBuilder.add( key, entry.getValue() );
-                    }
-                }
-                builder.add( JSONKeys.MANY_ASSOCIATIONS, assocBuilder.build() );
-
+                JsonValue jsonValue = valueState.get( from );
+                valueState = jsonFactories.cloneBuilderExclude( valueState, from )
+                                          .add( to, jsonValue )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -626,35 +481,27 @@ public interface MigrationService
                                                Map<String, String> defaultReferences )
             throws JsonException
         {
-            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( !namedAssociations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( !valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+                JsonObjectBuilder refBuilder = jsonFactories.builderFactory().createObjectBuilder();
+                for( Map.Entry<String, String> entry : defaultReferences.entrySet() )
                 {
-                    String key = entry.getKey();
-                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
+                    refBuilder.add( entry.getKey(), entry.getValue() );
                 }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
-                {
-                    assocBuilder.add( entry.getKey(), entry.getValue() );
-                }
-                JsonValue value = serialization.toJson( defaultReferences );
-                assocBuilder.add( name, value );
-                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
+                valueState = jsonFactories.cloneBuilder( valueState )
+                                          .add( name, refBuilder.build() )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
                 context.markAsChanged();
-
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.namedAssociationAdded( state.getString( JSONKeys.IDENTITY ), name,
                                                           defaultReferences );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -667,39 +514,19 @@ public interface MigrationService
         public JsonObject removeNamedAssociation( MigrationContext context, JsonObject state, String name )
             throws JsonException
         {
-            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( namedAssociations.containsKey( name ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( !valueState.containsKey( name ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !name.equals( key ) )
-                    {
-                        assocBuilder.add( key, entry.getValue() );
-                    }
-                    else
-                    {
-                        context.markAsChanged();
-                    }
-                }
-                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
-
+                valueState = jsonFactories.cloneBuilderExclude( valueState, name ).build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.namedAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -712,40 +539,22 @@ public interface MigrationService
         public JsonObject renameNamedAssociation( MigrationContext context, JsonObject state, String from, String to )
             throws JsonException
         {
-            JsonObject namedAssociations = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
-            if( namedAssociations.containsKey( from ) )
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            if( valueState.containsKey( from ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : state.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( !JSONKeys.NAMED_ASSOCIATIONS.equals( key ) )
-                    {
-                        builder.add( key, entry.getValue() );
-                    }
-                }
-                JsonObjectBuilder assocBuilder = Json.createObjectBuilder();
-                for( Map.Entry<String, JsonValue> entry : namedAssociations.entrySet() )
-                {
-                    String key = entry.getKey();
-                    if( from.equals( key ) )
-                    {
-                        assocBuilder.add( to, entry.getValue() );
-                        context.markAsChanged();
-                    }
-                    else
-                    {
-                        assocBuilder.add( key, entry.getValue() );
-                    }
-                }
-                builder.add( JSONKeys.NAMED_ASSOCIATIONS, assocBuilder.build() );
-
+                JsonValue jsonValue = valueState.get( from );
+                valueState = jsonFactories.cloneBuilderExclude( valueState, from )
+                                          .add( to, jsonValue )
+                                          .build();
+                JsonObject migratedState = jsonFactories.cloneBuilderExclude( state, JSONKeys.VALUE )
+                                                        .add( JSONKeys.VALUE, valueState )
+                                                        .build();
+                context.markAsChanged();
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.namedAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
-
-                return builder.build();
+                return migratedState;
             }
             else
             {
@@ -759,35 +568,23 @@ public interface MigrationService
                                             String fromType, String toType )
             throws JsonException
         {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            for( Map.Entry<String, JsonValue> entry : state.entrySet() )
+            String currentType = state.getString( JSONKeys.TYPE );
+            if( fromType.equals( currentType ) )
             {
-                String key = entry.getKey();
-                if( JSONKeys.TYPE.equals( key ) )
+                JsonObject migratedState = jsonFactories.cloneBuilder( state )
+                                                        .add( JSONKeys.TYPE, toType )
+                                                        .build();
+                for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    String oldValue = entry.getValue().getValueType() == JsonValue.ValueType.STRING
-                                      ? ( (JsonString) entry.getValue() ).getString()
-                                      : entry.getValue().toString();
-                    if( !fromType.equals( oldValue ) )
-                    {
-                        context.addFailure( "Change entity type from " + fromType + " to " + toType );
-                        return state;
-                    }
-                    builder.add( JSONKeys.TYPE, toType );
-                    context.markAsChanged();
+                    migrationEvent.entityTypeChanged( state.getString( JSONKeys.IDENTITY ), toType );
                 }
-                else
-                {
-                    builder.add( key, entry.getValue() );
-                }
+                return migratedState;
             }
-
-            for( MigrationEvents migrationEvent : migrationEvents )
+            else
             {
-                migrationEvent.entityTypeChanged( state.getString( JSONKeys.IDENTITY ), toType );
+                context.addFailure( "Change entity type from " + fromType + " to " + toType );
+                return state;
             }
-
-            return builder.build();
         }
     }
 }

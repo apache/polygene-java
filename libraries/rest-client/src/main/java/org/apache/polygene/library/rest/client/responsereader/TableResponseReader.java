@@ -23,9 +23,9 @@ package org.apache.polygene.library.rest.client.responsereader;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
@@ -34,6 +34,7 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.library.rest.client.spi.ResponseReader;
 import org.apache.polygene.library.rest.common.table.Table;
 import org.apache.polygene.library.rest.common.table.TableBuilder;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
@@ -52,15 +53,19 @@ public class TableResponseReader
     @Service
     private JsonDeserializer jsonDeserializer;
 
+    @Service
+    private JavaxJsonFactories jsonFactories;
+
     @Override
     public Object readResponse( Response response, Class<?> resultType ) throws ResourceException
     {
         if( response.getEntity().getMediaType().equals( MediaType.APPLICATION_JSON )
             && Table.class.isAssignableFrom( resultType ) )
         {
-            try
+            try( JsonReader reader = jsonFactories.readerFactory()
+                                                  .createReader( response.getEntity().getReader() ) )
             {
-                JsonObject jsonObject = Json.createReader( response.getEntity().getReader() ).readObject();
+                JsonObject jsonObject = reader.readObject();
                 JsonObject table = jsonObject.getJsonObject( "table" );
 
                 TableBuilder builder = new TableBuilder( module );

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
@@ -39,6 +38,7 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.index.solr.EmbeddedSolrService;
 import org.apache.polygene.index.solr.SolrQueryService;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.solr.client.solrj.SolrServer;
@@ -65,6 +65,9 @@ public abstract class SolrEntityIndexerMixin
 {
     @Service
     private EmbeddedSolrService solr;
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
 
     @Uses
     private EntityStateSerializer stateSerializer;
@@ -177,19 +180,22 @@ public abstract class SolrEntityIndexerMixin
                     String value = statement.getObject().stringValue();
                     if( field.getType().getTypeName().equals( "json" ) )
                     {
-                        try( JsonParser parser = Json.createParser( new StringReader( value ) ) )
+                        try( JsonParser parser = jsonFactories.parserFactory()
+                                                              .createParser( new StringReader( value ) ) )
                         {
                             JsonParser.Event event = parser.next();
                             switch( event )
                             {
                                 case START_ARRAY:
-                                    try( JsonReader reader = Json.createReader( new StringReader( value ) ) )
+                                    try( JsonReader reader = jsonFactories.readerFactory()
+                                                                          .createReader( new StringReader( value ) ) )
                                     {
                                         indexJson( input, reader.readArray() );
                                     }
                                     break;
                                 case START_OBJECT:
-                                    try( JsonReader reader = Json.createReader( new StringReader( value ) ) )
+                                    try( JsonReader reader = jsonFactories.readerFactory()
+                                                                          .createReader( new StringReader( value ) ) )
                                     {
                                         indexJson( input, reader.readObject() );
                                     }

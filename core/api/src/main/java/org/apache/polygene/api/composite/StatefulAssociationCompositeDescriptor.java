@@ -20,12 +20,15 @@
 package org.apache.polygene.api.composite;
 
 import org.apache.polygene.api.association.AssociationStateDescriptor;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 
 /**
  * Stateful Association Composite Descriptor.
  */
 public interface StatefulAssociationCompositeDescriptor extends StatefulCompositeDescriptor
 {
+    StatefulAssociationValueType<?> valueType();
+
     @Override
     AssociationStateDescriptor state();
 }

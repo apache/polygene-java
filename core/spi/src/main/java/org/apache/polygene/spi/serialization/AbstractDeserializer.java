@@ -18,17 +18,16 @@
 package org.apache.polygene.spi.serialization;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.polygene.api.composite.AmbiguousTypeException;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.serialization.Deserializer;
-import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.MapType;
@@ -163,15 +162,23 @@ public abstract class AbstractDeserializer implements Deserializer
         return ( (ModuleSpi) module.instance() ).valueTypeFactory().valueTypeOf( module, type );
     }
 
-    protected Object deserializeJava( byte[] bytes )
+    protected final StatefulAssociationCompositeDescriptor statefulCompositeDescriptorFor( ModuleDescriptor module,
+                                                                                           String typeName )
     {
-        try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
+        StatefulAssociationCompositeDescriptor descriptor = null;
+        try
         {
-            return oin.readObject();
+            descriptor = module.valueDescriptor( typeName );
         }
-        catch( IOException | ClassNotFoundException ex )
+        catch( AmbiguousTypeException ex ) { }
+        if( descriptor == null )
         {
-            throw new SerializationException( "Unable to deserialize using Java serialization", ex );
+            try
+            {
+                descriptor = module.entityDescriptor( typeName );
+            }
+            catch( AmbiguousTypeException ex ) { }
         }
+        return descriptor;
     }
 }

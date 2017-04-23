@@ -26,7 +26,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.json.Json;
 import javax.sql.DataSource;
 import liquibase.Contexts;
 import liquibase.Liquibase;
@@ -42,6 +41,7 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.library.sql.liquibase.LiquibaseService;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entitystore.EntityNotFoundException;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
@@ -68,6 +68,9 @@ public class SQLMapEntityStoreMixin
 
     @Service
     private LiquibaseService liquibaseService;
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
 
     @Uses
     private ServiceDescriptor descriptor;
@@ -194,8 +197,9 @@ public class SQLMapEntityStoreMixin
                     {
                         super.close();
                         String state = toString();
-                        String version = Json.createReader( new StringReader( state ) ).readObject()
-                                             .getString( JSONKeys.VERSION );
+                        String version = jsonFactories.readerFactory().createReader( new StringReader( state ) )
+                                                      .readObject()
+                                                      .getString( JSONKeys.VERSION );
                         operations.add(
                             dsl.insertInto( table )
                                .columns( identityColumn, versionColumn, stateColumn )

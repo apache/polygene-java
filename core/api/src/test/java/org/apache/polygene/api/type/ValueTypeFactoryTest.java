@@ -27,12 +27,15 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.spi.module.ModuleSpi;
 import org.apache.polygene.spi.type.ValueTypeFactory;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,10 +50,12 @@ public class ValueTypeFactoryTest extends AbstractPolygeneTest
     @Override
     public void assemble( ModuleAssembly module )
     {
-        module.values( SomeValue.class );
+        module.values( SomeState.class );
+        module.entities( SomeState.class );
+        new EntityTestAssembler().assemble( module );
     }
 
-    interface SomeValue
+    interface SomeState
     {
         @UseDefaults
         Property<List<String>> list();
@@ -106,16 +111,29 @@ public class ValueTypeFactoryTest extends AbstractPolygeneTest
     @Test
     public void valueComposites()
     {
-        assertThat( valueTypeFactory.valueTypeOf( module, SomeValue.class ),
+        assertThat( valueTypeFactory.valueTypeOf( module, SomeState.class ),
                     instanceOf( ValueCompositeType.class ) );
-        assertThat( valueTypeFactory.valueTypeOf( module, valueBuilderFactory.newValue( SomeValue.class ) ),
+        assertThat( valueTypeFactory.valueTypeOf( module, valueBuilderFactory.newValue( SomeState.class ) ),
                     instanceOf( ValueCompositeType.class ) );
+    }
+
+    @Test
+    public void entityComposites()
+    {
+        assertThat( valueTypeFactory.valueTypeOf( module, SomeState.class ),
+                    instanceOf( StatefulAssociationValueType.class ) );
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            assertThat(
+                valueTypeFactory.valueTypeOf( module, uow.newEntity( SomeState.class, new StringIdentity( "abc" ) ) ),
+                instanceOf( EntityCompositeType.class ) );
+        }
     }
 
     @Test
     public void genericsAreResolvedOnValueCompositeProperties()
     {
-        ValueDescriptor descriptor = module.typeLookup().lookupValueModel( SomeValue.class );
+        ValueDescriptor descriptor = module.typeLookup().lookupValueModel( SomeState.class );
         assertThat( descriptor.state().findPropertyModelByName( "list" ).valueType(),
                     equalTo( CollectionType.listOf( ValueType.STRING ) ) );
         assertThat( descriptor.state().findPropertyModelByName( "map" ).valueType(),

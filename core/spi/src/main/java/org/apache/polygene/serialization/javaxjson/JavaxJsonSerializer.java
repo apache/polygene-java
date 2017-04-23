@@ -35,7 +35,9 @@ import javax.json.JsonValue;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -43,15 +45,13 @@ import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.api.type.ValueType;
-import org.apache.polygene.api.util.Annotations;
-import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextSerializer;
 import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.apache.polygene.spi.util.ArrayIterable;
@@ -127,11 +127,6 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
             return JsonValue.NULL;
         }
         Class<?> objectClass = object.getClass();
-        ConvertedBy convertedBy = Annotations.annotationOn( objectClass, ConvertedBy.class );
-        if( convertedBy != null )
-        {
-            return doSerialize( options, module.newObject( convertedBy.value() ).toString( object ), false );
-        }
         Converter<Object> converter = converters.converterFor( objectClass );
         if( converter != null )
         {
@@ -140,12 +135,11 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         JavaxJsonAdapter<?> adapter = adapters.adapterFor( objectClass );
         if( adapter != null )
         {
-            return adapter.serialize( jsonFactories.builderFactory(), object,
-                                      obj -> doSerialize( options, obj, false ) );
+            return adapter.serialize( jsonFactories, object, obj -> doSerialize( options, obj, false ) );
         }
-        if( ValueCompositeType.isValueComposite( objectClass ) )
+        if( StatefulAssociationValueType.isStatefulAssociationValue( objectClass ) )
         {
-            return serializeValueComposite( options, object, root );
+            return serializeStatefulAssociationValue( options, object, root );
         }
         if( MapType.isMap( objectClass ) )
         {
@@ -163,17 +157,16 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         {
             return serializeStream( options, (Stream<?>) object );
         }
-        // Fallback to Java Serialization in Base 64
-        byte[] bytes = Base64.getEncoder().encode( serializeJava( object ) );
-        return JavaxJson.toJsonString( new String( bytes, UTF_8 ) );
+        throw new SerializationException( "Don't know how to serialize " + object );
     }
 
-    private JsonObject serializeValueComposite( Options options, Object composite, boolean root )
+    private JsonObject serializeStatefulAssociationValue( Options options, Object composite, boolean root )
     {
-        CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) composite );
-        ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
+        CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) composite );
+        StatefulAssociationCompositeDescriptor descriptor =
+            (StatefulAssociationCompositeDescriptor) instance.descriptor();
         AssociationStateHolder state = (AssociationStateHolder) instance.state();
-        ValueCompositeType valueType = descriptor.valueType();
+        StatefulAssociationValueType<?> valueType = descriptor.valueType();
 
         JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
         valueType.properties().forEach(
@@ -204,16 +197,16 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
                              state.namedAssociationFor( association.accessor() ).references()
                                   .collect( toMap() ),
                              false ) ) );
-        if( !root && options.includeTypeInfo() )
+        if( ( root && options.rootTypeInfo() ) || ( !root && options.nestedTypeInfo() ) )
         {
             withTypeInfo( builder, valueType );
         }
         return builder.build();
     }
 
-    private JsonObjectBuilder withTypeInfo( JsonObjectBuilder builder, ValueType valueType )
+    private void withTypeInfo( JsonObjectBuilder builder, ValueType valueType )
     {
-        return builder.add( settings.getTypeInfoPropertyName(), valueType.primaryType().getName() );
+        builder.add( settings.getTypeInfoPropertyName(), valueType.primaryType().getName() );
     }
 
     /**
@@ -258,7 +251,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         if( valueType.isArrayOfPrimitiveBytes() )
         {
             byte[] base64 = Base64.getEncoder().encode( (byte[]) object );
-            return JavaxJson.toJsonString( new String( base64, UTF_8 ) );
+            return jsonFactories.toJsonString( new String( base64, UTF_8 ) );
         }
         if( valueType.isArrayOfPrimitives() )
         {

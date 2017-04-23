@@ -21,26 +21,26 @@ package org.apache.polygene.api.type;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
+import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.util.Classes;
-import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDescriptor;
 
 /**
- * ValueComposite ValueType.
+ * EntityComposite ValueType.
  */
-public final class ValueCompositeType extends StatefulAssociationValueType<ValueDescriptor>
+public class EntityCompositeType extends StatefulAssociationValueType<EntityDescriptor>
 {
-    public static ValueCompositeType of( ValueDescriptor model )
+    public static EntityCompositeType of( EntityDescriptor model )
     {
-        return new ValueCompositeType( model );
+        return new EntityCompositeType( model );
     }
 
-    public static boolean isValueComposite( Type type )
+    public static boolean isEntityComposite( Type type )
     {
-        return ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.apply( type ) );
+        return EntityComposite.class.isAssignableFrom( Classes.RAW_CLASS.apply( type ) );
     }
 
-    public ValueCompositeType( ValueDescriptor model )
+    public EntityCompositeType( EntityDescriptor model )
     {
         super( model );
     }
@@ -51,7 +51,7 @@ public final class ValueCompositeType extends StatefulAssociationValueType<Value
         if( this == o ) { return true; }
         if( o == null || getClass() != o.getClass() ) { return false; }
         if( !super.equals( o ) ) { return false; }
-        ValueCompositeType that = (ValueCompositeType) o;
+        EntityCompositeType that = (EntityCompositeType) o;
         return Objects.equals( model, that.model );
     }
 

@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.association.AssociationStateDescriptor;
-import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.structure.ModuleDescriptor;
@@ -98,7 +98,7 @@ public final class EntityInstance
     }
 
     @Override
-    public CompositeDescriptor descriptor()
+    public EntityDescriptor descriptor()
     {
         return entityModel;
     }
@@ -232,7 +232,7 @@ public final class EntityInstance
     {
         if( Boolean.getBoolean( "polygene.entity.print.state" ) )
         {
-            return state.toString();
+            return state().toString();
         }
         else
         {

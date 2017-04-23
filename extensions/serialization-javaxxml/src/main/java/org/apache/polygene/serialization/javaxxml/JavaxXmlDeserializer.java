@@ -38,6 +38,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.polygene.api.association.AssociationDescriptor;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -53,11 +55,10 @@ import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
 import org.apache.polygene.spi.serialization.XmlDeserializer;
 import org.w3c.dom.Element;
@@ -149,35 +150,38 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         {
             return (T) adapter.deserialize( xml, ( element, type ) -> doDeserialize( module, type, element ) );
         }
-        if( EnumType.class.isAssignableFrom( valueType.getClass() ) )
+        Class<? extends ValueType> valueTypeClass = valueType.getClass();
+        if( EnumType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) Enum.valueOf( (Class) valueType.primaryType(), xml.getNodeValue() );
         }
-        if( ArrayType.class.isAssignableFrom( valueType.getClass() ) )
+        if( ArrayType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) deserializeArray( module, (ArrayType) valueType, xml );
         }
-        if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
+        if( CollectionType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) deserializeCollection( module, (CollectionType) valueType, xml );
         }
-        if( MapType.class.isAssignableFrom( valueType.getClass() ) )
+        if( MapType.class.isAssignableFrom( valueTypeClass ) )
         {
             return (T) deserializeMap( module, (MapType) valueType, xml );
         }
-        if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
+        if( StatefulAssociationValueType.class.isAssignableFrom( valueTypeClass ) )
         {
-            return (T) deserializeValueComposite( module, (ValueCompositeType) valueType, xml );
+            return (T) deserializeStatefulAssociationValue( module, (StatefulAssociationValueType<?>) valueType, xml );
         }
         return (T) doGuessDeserialize( module, valueType, xml );
     }
 
-    private Object deserializeValueComposite( ModuleDescriptor module, ValueCompositeType valueType, Node xml )
+    private Object deserializeStatefulAssociationValue( ModuleDescriptor module,
+                                                        StatefulAssociationValueType<?> valueType, Node xml )
     {
         Optional<String> typeInfo = getTypeInfo( xml );
         if( typeInfo.isPresent() )
         {
-            ValueDescriptor descriptor = module.valueDescriptor( typeInfo.get() );
+            StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor( module,
+                                                                                                typeInfo.get() );
             if( descriptor == null )
             {
                 String typeInfoName = settings.getTypeInfoTagName();
@@ -354,22 +358,12 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         Optional<String> typeInfo = getTypeInfo( xml );
         if( typeInfo.isPresent() )
         {
-            ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo.get() );
-            if( valueDescriptor != null )
+            StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor( module,
+                                                                                                typeInfo.get() );
+            if( descriptor != null )
             {
-                return deserializeValueComposite( valueDescriptor.module(), valueDescriptor.valueType(), xml );
-            }
-        }
-        if( xml.getNodeType() == Node.CDATA_SECTION_NODE || xml.getNodeType() == Node.TEXT_NODE )
-        {
-            byte[] bytes = Base64.getDecoder().decode( xml.getNodeValue().getBytes( UTF_8 ) );
-            try
-            {
-                return deserializeJava( bytes );
-            }
-            catch( SerializationException ex )
-            {
-                throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml, ex );
+                return deserializeStatefulAssociationValue( ( (CompositeDescriptor) descriptor ).module(),
+                                                            descriptor.valueType(), xml );
             }
         }
         throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + xml );

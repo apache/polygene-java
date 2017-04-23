@@ -21,12 +21,11 @@ package org.apache.polygene.spi.entitystore.helpers;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
-import javax.json.JsonObject;
 import javax.json.JsonValue;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 import org.apache.polygene.spi.entitystore.EntityStoreException;
 
@@ -37,24 +36,27 @@ import org.apache.polygene.spi.entitystore.EntityStoreException;
 public final class JSONManyAssociationState
     implements ManyAssociationState
 {
+    private final JavaxJsonFactories jsonFactories;
     private final JSONEntityState entityState;
     private final String stateName;
 
-    /* package */ JSONManyAssociationState( JSONEntityState entityState, String stateName )
+    /* package */ JSONManyAssociationState( JavaxJsonFactories jsonFactories,
+                                            JSONEntityState entityState,
+                                            String stateName )
     {
+        this.jsonFactories = jsonFactories;
         this.entityState = entityState;
         this.stateName = stateName;
     }
 
     private JsonArray getReferences()
     {
-        JsonObject manyAssociations = entityState.state().getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
-        JsonValue references = manyAssociations.get( stateName );
+        JsonValue references = entityState.state().getJsonObject( JSONKeys.VALUE ).get( stateName );
         if( references != null && references.getValueType() == JsonValue.ValueType.ARRAY )
         {
             return (JsonArray) references;
         }
-        return Json.createArrayBuilder().build();
+        return jsonFactories.builderFactory().createArrayBuilder().build();
     }
 
     @Override

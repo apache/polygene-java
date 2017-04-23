@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.json.JsonValue;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
@@ -31,7 +32,7 @@ import org.apache.polygene.spi.module.ModuleSpi;
  */
 public interface JsonDeserializer extends Deserializer
 {
-    <T> T fromJson( ModuleDescriptor module, ValueType valueType, JsonValue state );
+    <T> T fromJson( ModuleDescriptor module, ValueType valueType, @Optional JsonValue state );
 
     default <T> Function<JsonValue, T> fromJsonFunction( ModuleDescriptor module, ValueType valueType )
     {
@@ -53,7 +54,7 @@ public interface JsonDeserializer extends Deserializer
         return fromJsonEach( module, valueType, Stream.of( states ) );
     }
 
-    default <T> T fromJson( ModuleDescriptor module, Class<T> type, JsonValue state )
+    default <T> T fromJson( ModuleDescriptor module, Class<T> type, @Optional JsonValue state )
     {
         // TODO Remove (ModuleSpi) cast
         ValueType valueType = ( (ModuleSpi) module.instance() ).valueTypeFactory().valueTypeOf( module, type );

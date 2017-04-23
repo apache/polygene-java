@@ -45,6 +45,8 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.serialization.ConvertedBy;
+import org.apache.polygene.api.serialization.JavaSerializationConverter;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -91,12 +93,13 @@ public abstract class AbstractValueCompositeSerializationTest
     @Override
     public void assemble( ModuleAssembly module )
     {
+        module.objects( JavaSerializationConverter.class );
         module.values( Some.class, SomeExtended.class, SomeShuffled.class,
                        AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
+        module.entities( Some.class, BarEntity.class );
 
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
-        module.entities( Some.class, BarEntity.class );
     }
 
     @Structure
@@ -112,6 +115,45 @@ public abstract class AbstractValueCompositeSerializationTest
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             Some some = buildSomeValue( moduleInstance, uow, "23" );
+
+            // Serialize using injected service
+            String stateString = serialization.serialize( some );
+            System.out.println( stateString );
+
+            // Deserialize using Module API
+            Some some2 = moduleInstance.newValueFromSerializedState( Some.class, stateString );
+
+            assertThat( "Map<String, Integer>",
+                        some2.stringIntMap().get().get( "foo" ),
+                        equalTo( 42 ) );
+            assertThat( "Map<String, Value>",
+                        some2.stringValueMap().get().get( "foo" ).internalVal(),
+                        equalTo( "Bar" ) );
+
+            assertThat( "Nested Entities",
+                        some2.barAssociation().get().cathedral().get(),
+                        equalTo( "bazar in barAssociation" ) );
+
+            assertThat( "Polymorphic deserialization of value type NOT extending ValueComposite",
+                        some.customFoo().get() instanceof CustomFooValue,
+                        is( true ) );
+            assertThat( "Polymorphic deserialization of value type extending ValueComposite",
+                        some.customFooValue().get() instanceof CustomFooValue,
+                        is( true ) );
+
+            assertThat( "Value equality", some, equalTo( some2 ) );
+
+            uow.complete();
+        }
+    }
+
+    @Test
+    public void givenEntityCompositeWhenSerializingAndDeserializingExpectEquals()
+        throws Exception
+    {
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
+        {
+            Some some = buildSomeEntity( moduleInstance, uow, "23" );
 
             // Serialize using injected service
             String stateString = serialization.serialize( some );
@@ -253,6 +295,15 @@ public abstract class AbstractValueCompositeSerializationTest
 
         assertThat( "Create from Value/Read equality",
                     createdValue, equalTo( loadedValue ) );
+    }
+
+    protected static Some buildSomeEntity( Module module, UnitOfWork uow, String identity )
+    {
+        EntityBuilder<Some> builder = uow.newEntityBuilder( Some.class );
+        Some proto = builder.instance();
+        proto.identity().set( StringIdentity.fromString( identity ) );
+        setSomeValueState( module, uow, proto );
+        return builder.newInstance();
     }
 
     /**
@@ -436,7 +487,7 @@ public abstract class AbstractValueCompositeSerializationTest
         @Optional
         Property<Byte[]> byteArrayNull();
 
-        Property<Object> serializable();
+        Property<SerializableObject> serializable();
 
         Property<Foo> foo();
 
@@ -591,6 +642,7 @@ public abstract class AbstractValueCompositeSerializationTest
     {
     }
 
+    @ConvertedBy( JavaSerializationConverter.class )
     public static class SerializableObject
         implements Serializable
     {

@@ -19,10 +19,8 @@ package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
-import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;

@@ -37,11 +37,14 @@ import java.util.stream.Stream;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParsingException;
 import org.apache.polygene.api.association.AssociationDescriptor;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
@@ -56,11 +59,10 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
 
@@ -92,11 +94,14 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
     private ServiceDescriptor descriptor;
 
     private JavaxJsonSettings settings;
+    private JsonString emptyJsonString;
 
     @Override
     public void initialize() throws Exception
     {
         settings = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
+        emptyJsonString = jsonFactories.builderFactory().createObjectBuilder().add( "s", "" ).build()
+                                       .getJsonString( "s" );
     }
 
     @Override
@@ -170,7 +175,7 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
             return outOfStructureFunction.apply( stateString );
         }
         // Empty state string?
-        return fromJson( module, valueType, JavaxJson.EMPTY_STRING );
+        return fromJson( module, valueType, emptyJsonString );
     }
 
     @Override
@@ -215,9 +220,10 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
         {
             return (T) deserializeMap( module, (MapType) valueType, requireJsonStructure( json ) );
         }
-        if( ValueCompositeType.class.isAssignableFrom( valueTypeClass ) )
+        if( StatefulAssociationValueType.class.isAssignableFrom( valueTypeClass ) )
         {
-            return (T) deserializeValueComposite( module, (ValueCompositeType) valueType, requireJsonObject( json ) );
+            return (T) deserializeStatefulAssociationValue( module, (StatefulAssociationValueType<?>) valueType,
+                                                            requireJsonObject( json ) );
         }
         return doGuessDeserialize( module, valueType, json );
     }
@@ -254,23 +260,12 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
                 JsonObject object = (JsonObject) json;
                 String typeInfo = object.getString( settings.getTypeInfoPropertyName(),
                                                     valueType.primaryType().getName() );
-                ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
-                if( valueDescriptor != null )
+                StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor( module, typeInfo );
+                if( descriptor != null )
                 {
-                    return (T) deserializeValueComposite( valueDescriptor.module(),
-                                                          valueDescriptor.valueType(),
-                                                          object );
-                }
-            case STRING:
-                byte[] bytes = Base64.getDecoder().decode( asString( json ).getBytes( UTF_8 ) );
-                try
-                {
-                    return (T) deserializeJava( bytes );
-                }
-                catch( SerializationException ex )
-                {
-                    throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + json,
-                                                      ex );
+                    return (T) deserializeStatefulAssociationValue( ( (CompositeDescriptor) descriptor ).module(),
+                                                                    descriptor.valueType(),
+                                                                    object );
                 }
             default:
                 throw new SerializationException( "Don't know how to deserialize " + valueType + " from " + json );
@@ -317,13 +312,15 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
         throw new SerializationException( "Don't know how to deserialize " + mapType + " from " + json );
     }
 
-    private Object deserializeValueComposite( ModuleDescriptor module, ValueCompositeType valueType, JsonObject json )
+    private Object deserializeStatefulAssociationValue( ModuleDescriptor module,
+                                                        StatefulAssociationValueType<?> valueType,
+                                                        JsonObject json )
     {
         String typeInfoName = settings.getTypeInfoPropertyName();
         String typeInfo = json.getString( typeInfoName, null );
         if( typeInfo != null )
         {
-            ValueDescriptor descriptor = module.valueDescriptor( typeInfo );
+            StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor( module, typeInfo );
             if( descriptor == null )
             {
                 throw new SerializationException(

@@ -21,6 +21,7 @@ package org.apache.polygene.runtime.value;
 
 import java.lang.reflect.Proxy;
 import org.apache.polygene.api.composite.CompositeInstance;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.runtime.composite.MixinsInstance;
 import org.apache.polygene.runtime.composite.TransientInstance;
@@ -164,6 +165,7 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return ( (ModuleSpi) module().instance() ).serialization().serialize( proxy() );
+        Serializer serialization = ( (ModuleSpi) module().instance() ).serialization();
+        return serialization.serialize( Serializer.Options.NO_TYPE_INFO, proxy() );
     }
 }

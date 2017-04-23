@@ -20,12 +20,10 @@
 package org.apache.polygene.runtime.entity;
 
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.AssociationStateHolder;
@@ -223,10 +221,6 @@ public final class EntityStateInstance
     @Override
     public String toString()
     {
-        return "EntityState[" + state.entrySet().stream()
-            .map( entry -> ((Method) entry.getKey()).getName() + "=" + entry.getValue())
-            .collect( Collectors.joining("\n  ", "  ", "\n") )
-            + "]"
-            ;
+        return entityState.toString();
     }
 }

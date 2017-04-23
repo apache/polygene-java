@@ -32,6 +32,7 @@ import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.property.StateHolder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.EntityCompositeType;
 import org.apache.polygene.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.runtime.composite.CompositeMethodsModel;
@@ -51,7 +52,7 @@ import static org.apache.polygene.api.identity.HasIdentity.IDENTITY_METHOD;
 public final class EntityModel extends CompositeModel
     implements EntityDescriptor
 {
-
+    private final EntityCompositeType valueType;
     private final boolean queryable;
 
     public EntityModel( ModuleDescriptor module,
@@ -65,12 +66,19 @@ public final class EntityModel extends CompositeModel
     {
         super( module, types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
+        this.valueType = EntityCompositeType.of( this );
         this.queryable = types.stream()
             .flatMap( Annotations.ANNOTATIONS_OF )
             .filter( Annotations.isType( Queryable.class ) )
             .map( annot -> ( (Queryable) annot ).value() )
             .findFirst()
             .orElse( true );
+    }
+
+    @Override
+    public EntityCompositeType valueType()
+    {
+        return valueType;
     }
 
     @Override

@@ -24,6 +24,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import org.apache.polygene.api.common.InvalidApplicationException;
+import org.apache.polygene.api.composite.AmbiguousTypeException;
+import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
@@ -34,6 +37,7 @@ import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
+import org.apache.polygene.runtime.entity.EntityInstance;
 import org.apache.polygene.runtime.value.ValueInstance;
 import org.apache.polygene.spi.type.ValueTypeFactory;
 
@@ -53,6 +57,10 @@ public class ValueTypeFactoryInstance implements ValueTypeFactory
         {
             return ValueInstance.valueInstanceOf( (ValueComposite) object ).descriptor().valueType();
         }
+        if( object instanceof EntityComposite )
+        {
+            return EntityInstance.entityInstanceOf( (EntityComposite) object ).descriptor().valueType();
+        }
         if( object instanceof Enum )
         {
             return EnumType.of( ( (Enum) object ).getDeclaringClass() );
@@ -67,6 +75,11 @@ public class ValueTypeFactoryInstance implements ValueTypeFactory
         if( valueDescriptor != null )
         {
             return valueDescriptor.valueType();
+        }
+        EntityDescriptor entityDescriptor = module.typeLookup().lookupEntityModel( type );
+        if( entityDescriptor != null )
+        {
+            return entityDescriptor.valueType();
         }
         return newValueType( type, type, type, module );
     }

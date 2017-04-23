@@ -28,17 +28,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonException;
 import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.library.rest.common.table.Cell;
 import org.apache.polygene.library.rest.common.table.Column;
 import org.apache.polygene.library.rest.common.table.Row;
 import org.apache.polygene.library.rest.common.table.Table;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.restlet.Response;
 import org.restlet.data.CharacterSet;
@@ -55,11 +55,11 @@ public class TableResponseWriter extends AbstractResponseWriter
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML,
                                                                               MediaType.APPLICATION_JSON );
 
-    @Structure
-    private ModuleDescriptor module;
-
     @Service
     private JsonSerializer jsonSerializer;
+
+    @Service
+    private JavaxJsonFactories json;
 
     @Service
     private Configuration cfg;
@@ -81,7 +81,8 @@ public class TableResponseWriter extends AbstractResponseWriter
                     {
                         try
                         {
-                            JsonObjectBuilder builder = Json.createObjectBuilder();
+                            JsonBuilderFactory jsonBuilderFactory = json.builderFactory();
+                            JsonObjectBuilder builder = jsonBuilderFactory.createObjectBuilder();
                             Table tableValue = (Table) result;
 
                             // Parse parameters
@@ -111,23 +112,23 @@ public class TableResponseWriter extends AbstractResponseWriter
                             }
                             builder.add( "status", "ok" );
 
-                            JsonObjectBuilder tableBuilder = Json.createObjectBuilder();
-                            JsonArrayBuilder colsBuilder = Json.createArrayBuilder();
+                            JsonObjectBuilder tableBuilder = jsonBuilderFactory.createObjectBuilder();
+                            JsonArrayBuilder colsBuilder = jsonBuilderFactory.createArrayBuilder();
                             List<Column> columnList = tableValue.cols().get();
                             for( Column columnValue : columnList )
                             {
-                                colsBuilder.add( Json.createObjectBuilder()
-                                                     .add( "id", columnValue.id().get() )
-                                                     .add( "label", columnValue.label().get() )
-                                                     .add( "type", columnValue.columnType().get() )
-                                                     .build() );
+                                colsBuilder.add( jsonBuilderFactory.createObjectBuilder()
+                                                                   .add( "id", columnValue.id().get() )
+                                                                   .add( "label", columnValue.label().get() )
+                                                                   .add( "type", columnValue.columnType().get() )
+                                                                   .build() );
                             }
                             tableBuilder.add( "cols", colsBuilder.build() );
 
-                            JsonArrayBuilder rowsBuilder = Json.createArrayBuilder();
+                            JsonArrayBuilder rowsBuilder = jsonBuilderFactory.createArrayBuilder();
                             for( Row rowValue : tableValue.rows().get() )
                             {
-                                JsonArrayBuilder cellsBuilder = Json.createArrayBuilder();
+                                JsonArrayBuilder cellsBuilder = jsonBuilderFactory.createArrayBuilder();
                                 int idx = 0;
                                 for( Cell cellValue : rowValue.c().get() )
                                 {
@@ -148,10 +149,10 @@ public class TableResponseWriter extends AbstractResponseWriter
                                         value = value.toString();
                                     }
 
-                                    JsonObjectBuilder cellBuilder = Json.createObjectBuilder();
+                                    JsonObjectBuilder cellBuilder = jsonBuilderFactory.createObjectBuilder();
                                     if( value != null )
                                     {
-                                        cellBuilder.add( "v", jsonSerializer.toJson( value ) );
+                                        cellBuilder.add( "v", jsonSerializer.toJson( Serializer.Options.ALL_TYPE_INFO, value ) );
                                     }
                                     if( cellValue.f().get() != null )
                                     {
@@ -160,7 +161,7 @@ public class TableResponseWriter extends AbstractResponseWriter
                                     cellsBuilder.add( cellBuilder.build() );
                                     idx++;
                                 }
-                                JsonObjectBuilder rowBuilder = Json.createObjectBuilder();
+                                JsonObjectBuilder rowBuilder = jsonBuilderFactory.createObjectBuilder();
                                 rowBuilder.add( "c", cellsBuilder.build() );
                                 rowsBuilder.add( rowBuilder.build() );
                             }

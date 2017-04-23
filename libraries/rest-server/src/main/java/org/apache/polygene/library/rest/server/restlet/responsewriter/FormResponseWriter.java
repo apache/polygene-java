@@ -29,11 +29,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -55,6 +55,9 @@ public class FormResponseWriter
     @Service
     private Configuration cfg;
 
+    @Service
+    private JavaxJsonFactories jsonFactories;
+
     @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
@@ -64,7 +67,7 @@ public class FormResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                JsonObjectBuilder builder = Json.createObjectBuilder();
+                JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
                 Form form = (Form) result;
                 try
                 {
@@ -100,7 +103,7 @@ public class FormResponseWriter
                     public void write( Writer writer )
                         throws IOException
                     {
-                        Map<String, Object> root = new HashMap<String, Object>();
+                        Map<String, Object> root = new HashMap<>();
                         root.put( "request", response.getRequest() );
                         root.put( "response", response );
                         root.put( "result", result );
