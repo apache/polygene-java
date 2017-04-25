@@ -216,6 +216,7 @@ class DocumentationTask extends DefaultTask
       def xdocOutputPath = relativePath( project.rootDir, new File( tempDir, 'xdoc-temp.xml' ) )
       def asciidocIndexPath = relativePath( project.rootDir, new File( tempAsciidocDir, "$docName/index.txt" ) )
       spec.args = [
+        '--verbose',
         '--attribute', 'revnumber=' + project.version,
         '--attribute', 'level1=' + ( docType == 'article' ? 1 : 0 ),
         '--attribute', 'level2=' + ( docType == 'article' ? 2 : 1 ),
