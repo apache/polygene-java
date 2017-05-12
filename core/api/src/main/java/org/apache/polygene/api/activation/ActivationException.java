@@ -24,7 +24,6 @@ package org.apache.polygene.api.activation;
  */
 public class ActivationException extends Exception
 {
-    private static final long serialVersionUID = 1L;
     public ActivationException( String message, Throwable cause )
     {
         super( message, cause );

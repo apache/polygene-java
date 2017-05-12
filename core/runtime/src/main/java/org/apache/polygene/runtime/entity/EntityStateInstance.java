@@ -55,7 +55,7 @@ public final class EntityStateInstance
     private EntityState entityState;
     private final BiFunction<EntityReference, Type, Object> entityFunction;
 
-    public EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState )
+    EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState )
     {
         this.stateModel = stateModel;
         this.entityState = entityState;
@@ -104,9 +104,7 @@ public final class EntityStateInstance
         {
             final AssociationModel associationModel = stateModel.getAssociation( accessor );
             association = new AssociationInstance<>(
-                entityState instanceof BuilderEntityState
-                ? associationModel.getBuilderInfo()
-                : associationModel,
+                entityState instanceof BuilderEntityState ? associationModel.builderInfo() : associationModel,
                 entityFunction,
                 new Property<EntityReference>()
                 {
@@ -125,7 +123,6 @@ public final class EntityStateInstance
                 } );
             state.put( accessor, association );
         }
-
         return association;
     }
 
@@ -140,21 +137,16 @@ public final class EntityStateInstance
     public <T> ManyAssociation<T> manyAssociationFor( AccessibleObject accessor )
     {
         Map<AccessibleObject, Object> state = state();
-
         ManyAssociation<T> manyAssociation = (ManyAssociation<T>) state.get( accessor );
-
         if( manyAssociation == null )
         {
             ManyAssociationModel associationModel = stateModel.getManyAssociation( accessor );
             manyAssociation = new ManyAssociationInstance<>(
-                entityState instanceof BuilderEntityState
-                ? associationModel.getBuilderInfo()
-                : associationModel,
+                entityState instanceof BuilderEntityState ? associationModel.builderInfo() : associationModel,
                 entityFunction,
                 entityState.manyAssociationValueOf( associationModel.qualifiedName() ) );
             state.put( accessor, manyAssociation );
         }
-
         return manyAssociation;
     }
 
@@ -169,21 +161,16 @@ public final class EntityStateInstance
     public <T> NamedAssociation<T> namedAssociationFor( AccessibleObject accessor )
     {
         Map<AccessibleObject, Object> state = state();
-
         NamedAssociation<T> namedAssociation = (NamedAssociation<T>) state.get( accessor );
-
         if( namedAssociation == null )
         {
             NamedAssociationModel associationModel = stateModel.getNamedAssociation( accessor );
             namedAssociation = new NamedAssociationInstance<>(
-                entityState instanceof BuilderEntityState
-                ? associationModel.getBuilderInfo()
-                : associationModel,
+                entityState instanceof BuilderEntityState ? associationModel.builderInfo() : associationModel,
                 entityFunction,
                 entityState.namedAssociationValueOf( associationModel.qualifiedName() ) );
             state.put( accessor, namedAssociation );
         }
-
         return namedAssociation;
     }
 
@@ -195,15 +182,17 @@ public final class EntityStateInstance
 
     public void checkConstraints()
     {
-        stateModel.properties().forEach( propertyDescriptor -> {
-            Property<Object> property = this.propertyFor( propertyDescriptor.accessor() );
-            propertyDescriptor.checkConstraints( property.get() );
-        } );
+        stateModel.properties().forEach( propertyDescriptor ->
+                                         {
+                                             Property<Object> property = this.propertyFor( propertyDescriptor.accessor() );
+                                             propertyDescriptor.checkConstraints( property.get() );
+                                         } );
 
-        stateModel.associations().forEach( associationDescriptor -> {
-            Association<Object> association = this.associationFor( associationDescriptor.accessor() );
-            associationDescriptor.checkConstraints( association.get() );
-        } );
+        stateModel.associations().forEach( associationDescriptor ->
+                                           {
+                                               Association<Object> association = this.associationFor( associationDescriptor.accessor() );
+                                               associationDescriptor.checkConstraints( association.get() );
+                                           } );
 
         // TODO Should ManyAssociations and NamedAssociations be checked too?
     }

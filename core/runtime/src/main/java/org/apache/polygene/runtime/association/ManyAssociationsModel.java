@@ -120,7 +120,9 @@ public final class ManyAssociationsModel
     {
         for( ManyAssociationModel manyAssociationModel : mapAccessorAssociationModel.values() )
         {
-            manyAssociationModel.checkAssociationConstraints( state.manyAssociationFor( manyAssociationModel.accessor() ) );
+            AccessibleObject accessor = manyAssociationModel.accessor();
+            ManyAssociationInstance<?> instance = state.manyAssociationFor( accessor );
+            manyAssociationModel.checkAssociationConstraints( instance );
         }
     }
 }

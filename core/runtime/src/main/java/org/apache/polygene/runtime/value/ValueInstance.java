@@ -111,17 +111,17 @@ public final class ValueInstance
 
         descriptor().state().associations().forEach( associationDescriptor -> {
             state().associationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
+                   .setAssociationInfo( associationDescriptor.builderInfo() );
         } );
 
         descriptor().state().manyAssociations().forEach( associationDescriptor -> {
             state().manyAssociationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
+                   .setAssociationInfo( associationDescriptor.builderInfo() );
         } );
 
         descriptor().state().namedAssociations().forEach( associationDescriptor -> {
             state().namedAssociationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
+                   .setAssociationInfo( associationDescriptor.builderInfo() );
         } );
     }
 

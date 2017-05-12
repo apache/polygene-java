@@ -107,12 +107,10 @@ public final class ValueConstraintsInstance
                 }
             }
         }
-
         if( violations == null )
         {
             violations = Collections.emptyList();
         }
-
         return violations;
     }
 

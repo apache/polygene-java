@@ -31,8 +31,6 @@ import java.util.List;
 public final class PassivationException
     extends Exception
 {
-
-    private static final long serialVersionUID = 1L;
     private final List<Exception> causes;
 
     /**

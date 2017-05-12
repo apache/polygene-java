@@ -80,7 +80,7 @@ public final class EntityReference
      *
      * @return The reference of the Entity that this EntityReference.is referring to
      */
-    public final Identity identity()
+    public Identity identity()
     {
         return identity;
     }

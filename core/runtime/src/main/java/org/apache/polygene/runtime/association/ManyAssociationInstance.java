@@ -38,8 +38,7 @@ import org.apache.polygene.spi.entity.ManyAssociationState;
 /**
  * JAVADOC
  */
-public class ManyAssociationInstance<T>
-    extends AbstractAssociationInstance<T>
+public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
     private ManyAssociationState manyAssociationState;
