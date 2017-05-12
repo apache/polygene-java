@@ -1,0 +1,58 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[extension-es-orm,ORM EntityStore]]
+= ORM EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-orm/dev-status.xml
+--------------
+
+This entitystore is backed by a SQL server, and maps each type of the Composite into separate tables. This is more
+enterprise-friendly, but comes at the cost of less performance compared to the <<extension-es-sql>>.
+
+This extension fully leverage the <<library-sql>> meaning that you must use it to assemble your DataSource and that you
+get <<library-circuitbreaker,Circuit Breaker>> and <<library-jmx, JMX>> integration for free.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/test/java/org/apache/polygene/entitystore/orm/OrmEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the available configuration properties:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/main/java/org/apache/polygene/entitystore/orm/OrmEntityStoreConfiguration.java
+tag=config
+----
+
+All authentication related properties are optional.
+By default no authentication is used.
+As soon as you provide a `username`, authentication is set up.
