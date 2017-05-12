@@ -21,8 +21,13 @@ package org.apache.polygene.api.cache;
 
 /**
  * CacheOptions is a metaInfo class for the Cache system for Entity persistence.
+ * <p>
  * CacheOptions should be assigned to the Usecase of the UnitOfWork, to give hint on caching to entity stores.
  * See {@link org.apache.polygene.api.usecase.UsecaseBuilder} on how to set the metaInfo on Usecases.
+ * </p>
+ * <p>
+ * Note that EntityStore implementations are not required to support caching.
+ * </p>
  */
 public final class CacheOptions
 {

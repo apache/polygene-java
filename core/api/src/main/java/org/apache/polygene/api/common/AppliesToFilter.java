@@ -66,14 +66,7 @@ public interface AppliesToFilter
      * internal class in Polygene.
      * </p>
      */
-    AppliesToFilter ALWAYS = new AppliesToFilter()
-    {
-        @Override
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
-        {
-            return true;
-        }
-    };
+    AppliesToFilter ALWAYS = ( method, mixin, compositeType, fragmentClass ) -> true;
 
     /**
      * Check if the Fragment should be applied or not. Will be call when applied to Mixins, Concerns, SideEffects.
