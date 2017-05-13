@@ -326,8 +326,10 @@ public abstract class CompositeAssemblyImpl
         {
             return implementMethodWithClass( method, mixinClass );
         }
-
-        handleInvalidCompositeType( "No implementation found for method ", null, null, null, null, method, types );
+        if( !method.isDefault() )  // if it is NOT a default method in an interface, we don't have an implementation.
+        {
+            handleInvalidCompositeType( "No implementation found for method ", null, null, null, null, method, types );
+        }
         return null;
     }
 
