@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.runtime.mixin;
 
+import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -38,6 +39,7 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         throws AssemblyException
     {
         module.values( Hello.class );
+        module.transients( Hello.class ).withMixins( SpeakMixin.class );
     }
 
     @Test
@@ -46,13 +48,23 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         ValueBuilder<Hello> builder = valueBuilderFactory.newValueBuilder( Hello.class );
         Hello prototype = builder.prototype();
         Property<String> phrase = prototype.phrase();
-        phrase.set( "Hello!" );
+        phrase.set( "Hello" );
         Hello hello = builder.newInstance();
-        assertThat( hello.phrase().get(), equalTo( "Hello!" ) );
+        assertThat( hello.speak(), equalTo( "Hello" ) );
     }
 
-    //    @Mixins( { PropertyMixin.class, NoopMixin.class } )
-    interface Hello
+    @Test
+    public void givenInterfaceWithDefaultMethodAndMixinImplementationWhenCallingExpectMixinValueReturned()
+    {
+        TransientBuilder<Hello> builder = transientBuilderFactory.newTransientBuilder( Hello.class );
+        Hello prototype = builder.prototype();
+        Property<String> phrase = prototype.phrase();
+        phrase.set( "Hello" );
+        Hello hello = builder.newInstance();
+        assertThat( hello.speak(), equalTo( "Hello, Mixin!" ) );
+    }
+
+    public interface Hello
     {
         Property<String> phrase();
 
@@ -61,4 +73,15 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
             return phrase().get();
         }
     }
+
+    public static abstract class SpeakMixin
+        implements Hello
+    {
+        @Override
+        public String speak()
+        {
+            return phrase().get() + ", Mixin!";
+        }
+    }
+
 }
