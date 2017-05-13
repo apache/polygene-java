@@ -20,6 +20,7 @@
 
 package org.apache.polygene.bootstrap;
 
+import java.util.function.Consumer;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -38,12 +39,20 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
  * an Application which can be accessed from {@link org.apache.polygene.bootstrap.SingletonAssembler#application()}.
  * You can also easily access any resources specific for the single Module, such as the TransientBuilderFactory.
  */
-public abstract class SingletonAssembler
+public class SingletonAssembler
     implements Assembler
 {
-    private Energy4Java polygene;
-    private Application applicationInstance;
+    private final Energy4Java polygene;
+    private final Application applicationInstance;
     private final Module moduleInstance;
+    private Consumer<ModuleAssembly> assemble;
+
+    public SingletonAssembler( Consumer<ModuleAssembly> assemble )
+        throws ActivationException
+    {
+        this();
+        this.assemble = assemble;
+    }
 
     /**
      * Creates a Polygene Runtime instance containing one Layer with one Module.
@@ -125,5 +134,15 @@ public abstract class SingletonAssembler
     protected ObjectFactory objectFactory()
     {
         return moduleInstance.objectFactory();
+    }
+
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        if( assemble != null )
+        {
+            assemble.accept( module );
+        }
     }
 }
