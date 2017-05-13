@@ -217,7 +217,7 @@ class DocumentationTask extends DefaultTask
       def asciidocIndexPath = relativePath( project.rootDir, new File( tempAsciidocDir, "$docName/index.txt" ) )
       spec.args = [
         '--verbose',
-        '--attribute', 'revnumber=' + project.version,
+        '--attribute', 'revnumber=' + project.version.toString(),
         '--attribute', 'level1=' + ( docType == 'article' ? 1 : 0 ),
         '--attribute', 'level2=' + ( docType == 'article' ? 2 : 1 ),
         '--attribute', 'level3=' + ( docType == 'article' ? 3 : 2 ),
@@ -257,8 +257,8 @@ class DocumentationTask extends DefaultTask
         '--nonet',
         '--noout',
         '--output', outputPath,
-        xsltFile,
-        "$tempDir/xdoc-temp.xml"
+        xsltFile.toString(),
+        "$tempDir/xdoc-temp.xml".toString()
       ]
     } as Action<? super ExecSpec> )
   }
@@ -274,9 +274,9 @@ class DocumentationTask extends DefaultTask
       spec.args = [
         '--nonet',
         '--noout',
-        '--output', "$outputDir/${ docName }.html",
-        xsltFile,
-        "$tempDir/xdoc-temp.xml"
+        '--output', "$outputDir/${ docName }.html".toString(),
+        xsltFile.toString(),
+        "$tempDir/xdoc-temp.xml".toString()
       ]
     } as Action<? super ExecSpec> )
   }
@@ -291,9 +291,9 @@ class DocumentationTask extends DefaultTask
       spec.executable = 'xsltproc'
       spec.args = [
         '--nonet',
-        '--output', "$tempDir/${ docName }.fo",
+        '--output', "$tempDir/${ docName }.fo".toString(),
         xsltFile,
-        "$tempDir/xdoc-temp.xml"
+        "$tempDir/xdoc-temp.xml".toString()
       ]
     } as Action<? super ExecSpec> )
 
@@ -303,8 +303,8 @@ class DocumentationTask extends DefaultTask
     ExecLogged.execLogged( project, outLog, errLog, { ExecSpec spec ->
       spec.executable = 'fop'
       spec.args = [
-        "$tempDir/${ docName }.fo",
-        "$outputDir/${ docName }.pdf"
+        "$tempDir/${ docName }.fo".toString(),
+        "$outputDir/${ docName }.pdf".toString()
       ]
     } as Action<? super ExecSpec> )
   }
