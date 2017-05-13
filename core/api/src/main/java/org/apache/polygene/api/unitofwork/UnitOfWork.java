@@ -328,7 +328,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * support for UnitOfWork.
      */
     @Override
-    public void close();
+    void close();
 
     /**
      * Check if the UnitOfWork is open. It is closed after either complete() or discard()
