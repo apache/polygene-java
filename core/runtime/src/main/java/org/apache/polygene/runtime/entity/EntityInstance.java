@@ -20,7 +20,6 @@
 package org.apache.polygene.runtime.entity;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
@@ -51,11 +50,6 @@ import static java.util.stream.Collectors.toList;
 public final class EntityInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static EntityInstance entityInstanceOf( EntityComposite composite )
-    {
-        return (EntityInstance) Proxy.getInvocationHandler( composite );
-    }
-
     private final EntityComposite proxy;
     private final UnitOfWork uow;
     private final EntityModel entityModel;

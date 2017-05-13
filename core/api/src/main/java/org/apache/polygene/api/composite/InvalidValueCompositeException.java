@@ -22,8 +22,7 @@ package org.apache.polygene.api.composite;
 /**
  * This exception is thrown if a ValueComposite is invalid.
  */
-public class InvalidValueCompositeException
-    extends RuntimeException
+public class InvalidValueCompositeException extends RuntimeException
 {
     public InvalidValueCompositeException( String message )
     {

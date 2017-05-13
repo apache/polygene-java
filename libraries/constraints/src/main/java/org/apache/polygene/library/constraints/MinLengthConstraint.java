@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.MinLength;
 public class MinLengthConstraint
     implements Constraint<MinLength, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( MinLength annotation, String parameter )
         throws NullPointerException
@@ -39,8 +36,6 @@ public class MinLengthConstraint
         {
             return parameter.length() >= annotation.value();
         }
-
         return false;
     }
-
 }

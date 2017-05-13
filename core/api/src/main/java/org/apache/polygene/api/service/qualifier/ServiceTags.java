@@ -20,8 +20,6 @@
 
 package org.apache.polygene.api.service.qualifier;
 
-import java.io.Serializable;
-
 /**
  * Use this as metainfo about a Service to specify tags. Easiest way to set them on a service
  * is to use the <code>ServiceDeclaration.taggedWith(String...)</code> method.
@@ -30,7 +28,6 @@ import java.io.Serializable;
  * Selector.
  */
 public final class ServiceTags
-    implements Serializable
 {
     private String[] tags;
 

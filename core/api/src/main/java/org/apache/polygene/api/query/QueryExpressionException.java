@@ -25,9 +25,6 @@ package org.apache.polygene.api.query;
 public class QueryExpressionException
     extends QueryException
 {
-
-    private static final long serialVersionUID = 1L;
-
     public QueryExpressionException( String message )
     {
         super( message );

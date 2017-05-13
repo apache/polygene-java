@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.OneOf;
 public class OneOfConstraint
     implements Constraint<OneOf, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( OneOf oneOf, String value )
     {

@@ -66,7 +66,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.NoSuchValueException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.runtime.activation.ActivationDelegate;
 import org.apache.polygene.runtime.composite.FunctionStateResolver;
@@ -94,6 +93,7 @@ import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Stream.concat;
+import static org.apache.polygene.api.composite.CompositeInstance.compositeInstanceOf;
 
 /**
  * Instance of a Polygene Module. Contains the various composites for this Module.
@@ -326,7 +326,7 @@ public class ModuleInstance
     {
         Objects.requireNonNull( prototype, "prototype" );
 
-        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
+        ValueInstance valueInstance = (ValueInstance) compositeInstanceOf( (Composite) prototype );
         Class<Composite> valueType = (Class<Composite>) valueInstance.types().findFirst().orElse( null );
 
         ValueDescriptor model = typeLookup.lookupValueModel( valueType );

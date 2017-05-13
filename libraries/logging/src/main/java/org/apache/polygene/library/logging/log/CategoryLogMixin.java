@@ -20,8 +20,6 @@
 
 package org.apache.polygene.library.logging.log;
 
-import java.io.Serializable;
-
 public class CategoryLogMixin
     implements CategoryLog
 {
@@ -31,17 +29,17 @@ public class CategoryLogMixin
     }
 
     @Override
-    public void info( String category, String message, Serializable param1 )
+    public void info( String category, String message, Object param1 )
     {
     }
 
     @Override
-    public void info( String category, String message, Serializable param1, Serializable param2 )
+    public void info( String category, String message, Object param1, Object param2 )
     {
     }
 
     @Override
-    public void info( String category, String message, Serializable... params )
+    public void info( String category, String message, Object... params )
     {
     }
 
@@ -51,17 +49,17 @@ public class CategoryLogMixin
     }
 
     @Override
-    public void warning( String category, String message, Serializable param1 )
+    public void warning( String category, String message, Object param1 )
     {
     }
 
     @Override
-    public void warning( String category, String message, Serializable param1, Serializable param2 )
+    public void warning( String category, String message, Object param1, Object param2 )
     {
     }
 
     @Override
-    public void warning( String category, String message, Serializable... params )
+    public void warning( String category, String message, Object... params )
     {
     }
 
@@ -71,17 +69,17 @@ public class CategoryLogMixin
     }
 
     @Override
-    public void error( String category, String message, Serializable param1 )
+    public void error( String category, String message, Object param1 )
     {
     }
 
     @Override
-    public void error( String category, String message, Serializable param1, Serializable param2 )
+    public void error( String category, String message, Object param1, Object param2 )
     {
     }
 
     @Override
-    public void error( String category, String message, Serializable... params )
+    public void error( String category, String message, Object... params )
     {
     }
 }

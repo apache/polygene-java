@@ -29,9 +29,6 @@ import org.apache.polygene.library.constraints.annotation.Matches;
 public class MatchesConstraint
     implements Constraint<Matches, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( Matches annotation, String argument )
     {

@@ -22,7 +22,6 @@ package org.apache.polygene.runtime.value;
 import java.lang.reflect.Proxy;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.runtime.composite.MixinsInstance;
 import org.apache.polygene.runtime.composite.TransientInstance;
 import org.apache.polygene.runtime.property.PropertyInstance;
@@ -31,15 +30,9 @@ import org.apache.polygene.spi.module.ModuleSpi;
 /**
  * ValueComposite instance
  */
-public final class ValueInstance
-    extends TransientInstance
+public final class ValueInstance extends TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueInstance valueInstanceOf( ValueComposite composite )
-    {
-        return (ValueInstance) Proxy.getInvocationHandler( composite );
-    }
-
     public ValueInstance( ValueModel compositeModel, Object[] mixins, ValueStateInstance state )
     {
         super( compositeModel, mixins, state );

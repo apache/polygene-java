@@ -19,14 +19,12 @@
  */
 package org.apache.polygene.entitystore.preferences;
 
-import java.io.Serializable;
 import java.util.prefs.Preferences;
 
 /**
  * @author edward.yakop@gmail.com
  */
 public final class PreferencesEntityStoreInfo
-    implements Serializable
 {
     private Preferences rootNode;
 

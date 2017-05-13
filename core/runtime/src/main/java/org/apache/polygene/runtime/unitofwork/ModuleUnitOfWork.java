@@ -68,13 +68,12 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.runtime.association.AssociationInstance;
 import org.apache.polygene.runtime.composite.FunctionStateResolver;
 import org.apache.polygene.runtime.entity.EntityInstance;
 import org.apache.polygene.runtime.entity.EntityModel;
 import org.apache.polygene.runtime.property.PropertyModel;
-import org.apache.polygene.runtime.value.ValueInstance;
+import org.apache.polygene.runtime.value.ValueStateInstance;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -84,6 +83,7 @@ import org.apache.polygene.spi.query.EntityFinderException;
 import org.apache.polygene.spi.query.QueryBuilderSPI;
 import org.apache.polygene.spi.query.QuerySource;
 
+import static org.apache.polygene.api.composite.CompositeInstance.compositeInstanceOf;
 import static org.apache.polygene.api.identity.HasIdentity.IDENTITY_STATE_NAME;
 
 /**
@@ -306,7 +306,7 @@ public class ModuleUnitOfWork
         throws NoSuchEntityTypeException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
-        EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
+        EntityInstance compositeInstance = (EntityInstance) compositeInstanceOf( entityComposite );
         EntityDescriptor model = compositeInstance.entityModel();
         Class<T> type = (Class<T>) compositeInstance.types().findFirst().orElse( null );
         return uow.get( compositeInstance.reference(), this, Collections.singletonList( model ), type );
@@ -320,7 +320,7 @@ public class ModuleUnitOfWork
 
         EntityComposite entityComposite = (EntityComposite) entity;
 
-        EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
+        EntityInstance compositeInstance = (EntityInstance) compositeInstanceOf( entityComposite );
 
         if( compositeInstance.status() == EntityStatus.NEW )
         {
@@ -516,13 +516,13 @@ public class ModuleUnitOfWork
         {
             T entity = get( primaryType, valueComposite.identity().get() );
             // If successful, then this entity is to by modified.
-            EntityInstance instance = EntityInstance.entityInstanceOf( (EntityComposite) entity );
+            EntityInstance instance = (EntityInstance) compositeInstanceOf( (EntityComposite) entity );
             EntityState state = instance.entityState();
             FunctionStateResolver stateResolver = new FunctionStateResolver( propertyFunction,
                                                                              assocationFunction,
                                                                              manyAssocFunction,
                                                                              namedAssocFunction );
-            EntityModel model = (EntityModel) EntityInstance.entityInstanceOf( (EntityComposite) entity ).descriptor();
+            EntityModel model = (EntityModel) compositeInstanceOf( (Composite) entity ).descriptor();
             stateResolver.populateState( model, state );
             return entity;
         }
@@ -551,6 +551,11 @@ public class ModuleUnitOfWork
             converter = metaInfo( converterType );
         }
         return converter;
+    }
+
+    private static EntityState getEntityState( Object entity )
+    {
+        return ( (EntityInstance) compositeInstanceOf( (Composite) entity ) ).entityState();
     }
 
     private static class UoWQuerySource implements QuerySource
@@ -673,8 +678,7 @@ public class ModuleUnitOfWork
         @Override
         public Object apply( PropertyDescriptor propertyDescriptor )
         {
-            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            return entityState.propertyValueOf( propertyDescriptor.qualifiedName() );
+            return getEntityState( entity ).propertyValueOf( propertyDescriptor.qualifiedName() );
         }
     }
 
@@ -691,8 +695,7 @@ public class ModuleUnitOfWork
         @Override
         public EntityReference apply( AssociationDescriptor associationDescriptor )
         {
-            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            return entityState.associationValueOf( associationDescriptor.qualifiedName() );
+            return getEntityState( entity ).associationValueOf( associationDescriptor.qualifiedName() );
         }
     }
 
@@ -709,8 +712,7 @@ public class ModuleUnitOfWork
         @Override
         public Stream<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
-            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            return entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
+            return getEntityState( entity ).manyAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
         }
     }
 
@@ -727,9 +729,9 @@ public class ModuleUnitOfWork
         @Override
         public Stream<Map.Entry<String, EntityReference>> apply( AssociationDescriptor associationDescriptor )
         {
-            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
-            return entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
+            return getEntityState( entity ).namedAssociationValueOf( associationDescriptor.qualifiedName() ).stream();
         }
+
     }
 
     private class ToEntityPropertyMappingFunction<T>
@@ -745,7 +747,7 @@ public class ModuleUnitOfWork
         @Override
         public Object apply( PropertyDescriptor propertyDescriptor )
         {
-            StateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            StateHolder state = getValueStateInstance( value );
             Property<Object> property = state.propertyFor( propertyDescriptor.accessor() );
             return property.get();
         }
@@ -766,7 +768,7 @@ public class ModuleUnitOfWork
         @SuppressWarnings( "unchecked" )
         public EntityReference apply( AssociationDescriptor associationDescriptor )
         {
-            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            AssociationStateHolder state = getValueStateInstance( value );
             AssociationInstance<T> association = (AssociationInstance<T>) state.associationFor( associationDescriptor.accessor() );
             return association.getAssociationState().get();
         }
@@ -786,8 +788,7 @@ public class ModuleUnitOfWork
         @Override
         public Stream<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
-            ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
-            return valueInstance.state().manyAssociationFor( associationDescriptor.accessor() ).references();
+            return getValueStateInstance( value ).manyAssociationFor( associationDescriptor.accessor() ).references();
         }
     }
 
@@ -804,8 +805,12 @@ public class ModuleUnitOfWork
         @Override
         public Stream<Map.Entry<String, EntityReference>> apply( AssociationDescriptor associationDescriptor )
         {
-            ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
-            return valueInstance.state().namedAssociationFor( associationDescriptor.accessor() ).references();
+            return getValueStateInstance( value ).namedAssociationFor( associationDescriptor.accessor() ).references();
         }
+    }
+
+    private static ValueStateInstance getValueStateInstance( Object value )
+    {
+        return (ValueStateInstance) compositeInstanceOf( (Composite) value ).state();
     }
 }

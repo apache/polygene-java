@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.api.query;
 
-import java.io.Serializable;
 import java.util.stream.Stream;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.query.grammar.OrderBy;
@@ -39,8 +38,7 @@ import org.apache.polygene.api.query.grammar.OrderBy;
  *
  * @param <T> Entity type
  */
-public interface Query<T>
-    extends Iterable<T>, Serializable
+public interface Query<T> extends Iterable<T>
 {
     /**
      * Set the ordering rules. If many segments are used for ordering

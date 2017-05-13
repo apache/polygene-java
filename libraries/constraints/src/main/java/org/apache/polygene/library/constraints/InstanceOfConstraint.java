@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.InstanceOf;
 public class InstanceOfConstraint
     implements Constraint<InstanceOf, Object>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( InstanceOf annotation, Object parameter )
         throws NullPointerException

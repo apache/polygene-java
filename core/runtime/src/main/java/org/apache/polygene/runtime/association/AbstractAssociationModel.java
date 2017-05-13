@@ -6,6 +6,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Objects;
 import org.apache.polygene.api.association.AbstractAssociation;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.association.GenericAssociationInfo;
@@ -42,6 +43,8 @@ public class AbstractAssociationModel<AT>
                                      ValueConstraintsInstance associationConstraintsInstance,
                                      MetaInfo metaInfo )
     {
+        Objects.requireNonNull( accessor );
+        Objects.requireNonNull( metaInfo );
         this.metaInfo = metaInfo;
         this.constraints = valueConstraintsInstance;
         this.associationConstraints = associationConstraintsInstance;
@@ -101,13 +104,19 @@ public class AbstractAssociationModel<AT>
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        constraints.checkConstraints( value, accessor );
+        if( constraints != null )
+        {
+            constraints.checkConstraints( value, accessor );
+        }
     }
 
     public void checkAssociationConstraints( AbstractAssociation association )
         throws ConstraintViolationException
     {
-        associationConstraints.checkConstraints( association, accessor );
+        if( associationConstraints != null )
+        {
+            associationConstraints.checkConstraints( association, accessor );
+        }
     }
 
     public AssociationInfo builderInfo()

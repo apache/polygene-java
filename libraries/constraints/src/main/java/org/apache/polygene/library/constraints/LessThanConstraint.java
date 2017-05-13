@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.LessThan;
 public class LessThanConstraint
     implements Constraint<LessThan, Number>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( LessThan annotation, Number argument )
     {

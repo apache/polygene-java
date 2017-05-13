@@ -26,9 +26,6 @@ import org.apache.polygene.library.constraints.annotation.URL;
 public class URLConstraint
     implements Constraint<URL, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
     public boolean isValid( URL annotation, String value )
@@ -43,5 +40,4 @@ public class URLConstraint
             return false;
         }
     }
-
 }

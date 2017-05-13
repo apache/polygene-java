@@ -20,7 +20,6 @@
 package org.apache.polygene.library.restlet;
 
 import javax.servlet.Servlet;
-
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.structure.Module;
@@ -36,8 +35,6 @@ public interface PolygeneServerServlet extends Servlet
     class Mixin
         extends ServerServlet
     {
-        private static final long serialVersionUID = 1L;
-
         @Structure
         private Module module;
 

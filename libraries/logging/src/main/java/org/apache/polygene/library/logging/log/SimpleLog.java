@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.logging.log;
 
-import java.io.Serializable;
 import org.apache.polygene.api.concern.Concerns;
 
 @Concerns( { SimpleLogConcern.class } )
@@ -27,27 +26,27 @@ public interface SimpleLog
 {
     void info( String message );
 
-    void info( String message, Serializable param1 );
+    void info( String message, Object param1 );
 
-    void info( String message, Serializable param1, Serializable param2 );
+    void info( String message, Object param1, Object param2 );
 
-    void info( String message, Serializable... params );
+    void info( String message, Object... params );
 
     void warning( String message );
 
-    void warning( String message, Serializable param1 );
+    void warning( String message, Object param1 );
 
-    void warning( String message, Serializable param1, Serializable param2 );
+    void warning( String message, Object param1, Object param2 );
 
-    void warning( String message, Serializable... params );
+    void warning( String message, Object... params );
 
     void error( String message );
 
-    void error( String message, Serializable param1 );
+    void error( String message, Object param1 );
 
-    void error( String message, Serializable param1, Serializable param2 );
+    void error( String message, Object param1, Object param2 );
 
-    void error( String message, Serializable... params );
+    void error( String message, Object... params );
 
 
 }

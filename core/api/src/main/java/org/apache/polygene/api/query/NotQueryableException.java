@@ -29,11 +29,8 @@ import org.apache.polygene.api.util.Classes;
  * Thrown in case that a non queryable type or accessor (marked with @Queriable(false)) is used during query building,
  * or when non-Property, non-Associations are trying to be queried (possibly can not happen).
  */
-public class NotQueryableException
-    extends QueryException
+public class NotQueryableException extends QueryException
 {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Constructor.
      *

@@ -23,11 +23,8 @@ package org.apache.polygene.api.entity;
 /**
  * Thrown if Lifecycle invocation fails
  */
-public class LifecycleException
-    extends RuntimeException
+public class LifecycleException extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
-
     public LifecycleException()
     {
     }

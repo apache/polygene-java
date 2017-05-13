@@ -88,7 +88,7 @@ public class DockerRule
                 .publishAllPorts( true )
                 .waitForTimeout( 60000 )
                 .waitFor( rule -> new AndChecker( rule, waitFor ) );
-            environment.entrySet().forEach( entry -> builder.env( entry.getKey(), entry.getValue() ) );
+            environment.forEach( builder::env );
             dockerRule = builder.build();
         }
     }

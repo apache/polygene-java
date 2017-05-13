@@ -28,14 +28,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.property.PropertyWrapper;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.runtime.value.ValueInstance;
+
+import static org.apache.polygene.api.composite.CompositeInstance.compositeInstanceOf;
 
 /**
  * {@code PropertyInstance} represents a property.
@@ -226,7 +228,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareToBuild();
+                prepareToBuild( value );
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -249,10 +251,7 @@ public class PropertyInstance<T>
                 if( collection.collectedType() instanceof ValueCompositeType )
                 {
                     Collection coll = (Collection) value;
-                    for( Object instance : coll )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
-                    }
+                    coll.forEach( this::prepareToBuild );
                 }
 
                 set( (T) value );
@@ -270,22 +269,20 @@ public class PropertyInstance<T>
                 MapType mapType = (MapType) propertyDescriptor.valueType();
                 if( mapType.keyType() instanceof ValueCompositeType )
                 {
-                    for( Object instance : map.keySet() )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
-                    }
+                    map.keySet().forEach( this::prepareToBuild );
                 }
                 if( mapType.valueType() instanceof ValueCompositeType )
                 {
-                    for( Object instance : map.values() )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
-                    }
+                    map.values().forEach( this::prepareToBuild );
                 }
-
                 set( (T) value );
             }
         }
+    }
+
+    private void prepareToBuild( Object instance )
+    {
+        ( (ValueInstance) compositeInstanceOf( (Composite) instance ) ).prepareToBuild();
     }
 
     @SuppressWarnings( {"raw", "unchecked"} )
@@ -297,7 +294,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareBuilderState();
+                prepareBuilderState( value );
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -309,15 +306,15 @@ public class PropertyInstance<T>
                 {
                     if( value instanceof List )
                     {
-                        value = (T) Collections.unmodifiableList( (List<? extends Object>) value );
+                        value = (T) Collections.unmodifiableList( (List<?>) value );
                     }
                     else if( value instanceof Set )
                     {
-                        value = (T) Collections.unmodifiableSet( (Set<? extends Object>) value );
+                        value = (T) Collections.unmodifiableSet( (Set<?>) value );
                     }
                     else
                     {
-                        value = (T) Collections.unmodifiableCollection( (Collection<? extends Object>) value );
+                        value = (T) Collections.unmodifiableCollection( (Collection<?>) value );
                     }
 
                     this.value = value;
@@ -327,10 +324,7 @@ public class PropertyInstance<T>
                 if( collection.collectedType() instanceof ValueCompositeType )
                 {
                     Collection coll = (Collection) value;
-                    for( Object instance : coll )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
-                    }
+                    coll.forEach( this::prepareBuilderState );
                 }
             }
         }
@@ -344,18 +338,12 @@ public class PropertyInstance<T>
                 if( mapType.keyType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
-                    for( Object instance : map.keySet() )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
-                    }
+                    map.keySet().forEach( this::prepareBuilderState );
                 }
                 if( mapType.valueType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
-                    for( Object instance : map.values() )
-                    {
-                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
-                    }
+                    map.values().forEach( this::prepareBuilderState );
                 }
                 if( propertyDescriptor.isImmutable() )
                 {
@@ -367,5 +355,10 @@ public class PropertyInstance<T>
         }
 
         model = propertyDescriptor;
+    }
+
+    private void prepareBuilderState( Object value )
+    {
+        ( (ValueInstance) compositeInstanceOf( (Composite) value ) ).prepareBuilderState();
     }
 }

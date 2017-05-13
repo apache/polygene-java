@@ -51,6 +51,7 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         phrase.set( "Hello" );
         Hello hello = builder.newInstance();
         assertThat( hello.speak(), equalTo( "Hello" ) );
+        assertThat( Hello.noise(), equalTo( "Good Bye" ) );
     }
 
     @Test
@@ -62,6 +63,8 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         phrase.set( "Hello" );
         Hello hello = builder.newInstance();
         assertThat( hello.speak(), equalTo( "Hello, Mixin!" ) );
+        assertThat( Hello.noise(), equalTo( "Good Bye" ) );
+
     }
 
     public interface Hello
@@ -71,6 +74,11 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         default String speak()
         {
             return phrase().get();
+        }
+
+        static String noise()
+        {
+            return "Good Bye";
         }
     }
 

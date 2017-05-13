@@ -20,7 +20,6 @@
 
 package org.apache.polygene.api.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
@@ -31,7 +30,6 @@ import org.apache.polygene.api.identity.StringIdentity;
  * <pre>123456-abcde</pre>
  */
 public final class EntityReference
-        implements Serializable
 {
     /**
      * Parse an Entity reference string to an EntityReference.
@@ -61,8 +59,6 @@ public final class EntityReference
         }
         return new EntityReference(identity);
     }
-
-    private static final long serialVersionUID = 1L;
 
     private Identity identity;
 

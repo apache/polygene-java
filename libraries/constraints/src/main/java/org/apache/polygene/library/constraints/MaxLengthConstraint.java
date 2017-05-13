@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.MaxLength;
 public class MaxLengthConstraint
     implements Constraint<MaxLength, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( MaxLength annotation, String argument )
     {
@@ -38,8 +35,6 @@ public class MaxLengthConstraint
         {
             return argument.length() <= annotation.value();
         }
-
         return false;
     }
-
 }

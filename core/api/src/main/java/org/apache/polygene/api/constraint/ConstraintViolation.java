@@ -20,7 +20,6 @@
 
 package org.apache.polygene.api.constraint;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 /**
@@ -28,7 +27,6 @@ import java.lang.annotation.Annotation;
  * is put in a collection of all violations that have occurred for this value check.
  */
 public final class ConstraintViolation
-    implements Serializable
 {
     private String name;
     private final Annotation constraint;

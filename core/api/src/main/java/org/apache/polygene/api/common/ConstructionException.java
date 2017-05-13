@@ -37,8 +37,6 @@ package org.apache.polygene.api.common;
 public class ConstructionException
     extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
-
     public ConstructionException()
     {
     }

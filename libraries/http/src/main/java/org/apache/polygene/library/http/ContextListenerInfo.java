@@ -25,7 +25,6 @@ import java.util.Map;
 public class ContextListenerInfo
         implements Serializable
 {
-
     private static final long serialVersionUID = 1L;
 
     private final Map<String, String> initParams;
@@ -39,5 +38,4 @@ public class ContextListenerInfo
     {
         return initParams;
     }
-
 }

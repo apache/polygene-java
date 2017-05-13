@@ -146,7 +146,6 @@ public class FragmentClassLoader
             {
                 name = "polygene." + name;
             }
-
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }

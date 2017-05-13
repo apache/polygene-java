@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.debug.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +59,7 @@ public class DebuggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             createDebugRecord( uow, composite, message, paramsList );
             uow.complete();
         }
@@ -75,12 +74,12 @@ public class DebuggingServiceMixin
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable param1 )
+    public void debug( Composite composite, String message, Object param1 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             createDebugRecord( uow, composite, message, paramsList );
             uow.complete();
@@ -96,12 +95,12 @@ public class DebuggingServiceMixin
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
+    public void debug( Composite composite, String message, Object param1, Object param2 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             paramsList.add( param2 );
             createDebugRecord( uow, composite, message, paramsList );
@@ -118,12 +117,12 @@ public class DebuggingServiceMixin
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable... params )
+    public void debug( Composite composite, String message, Object... params )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>( Arrays.asList( params ) );
+            List<Object> paramsList = new ArrayList<Object>( Arrays.asList( params ) );
             createDebugRecord( uow, composite, message, paramsList );
             uow.complete();
         }
@@ -137,7 +136,7 @@ public class DebuggingServiceMixin
         }
     }
 
-    private void createDebugRecord( UnitOfWork uow, Composite composite, String message, List<Serializable> params )
+    private void createDebugRecord( UnitOfWork uow, Composite composite, String message, List<Object> params )
     {
         if( composite instanceof ServiceComposite )
         {
@@ -165,7 +164,7 @@ public class DebuggingServiceMixin
         }
     }
 
-    private void setStandardStuff( Composite composite, String message, DebugRecord state, List<Serializable> params )
+    private void setStandardStuff( Composite composite, String message, DebugRecord state, List<Object> params )
     {
         state.time().set( SystemTime.now() );
         state.message().set( message );

@@ -211,98 +211,108 @@ public abstract class CompositeAssemblyImpl
     {
         List<Throwable> exceptions = new ArrayList<>();
         Set<Class<?>> thisDependencies = new HashSet<>();
-        types.forEach( mixinType ->
-                       {
-
-                           for( Method method : mixinType.getMethods() )
-                           {
-                               try
-                               {
-                                   if( !compositeMethodsModel.isImplemented( method )
-                                       && !Proxy.class.equals( method.getDeclaringClass().getSuperclass() )
-                                       && !Proxy.class.equals( method.getDeclaringClass() )
-                                       && !Modifier.isStatic( method.getModifiers() ) )
-                                   {
-                                       MixinModel mixinModel = implementMethod( method, mixinClasses );
-                                       if( mixinModel != null )
-                                       {
-                                           ConcernsModel concernsModel = concernsFor(
-                                               method,
-                                               mixinModel.mixinClass(),
-                                               concat( concernDeclarations( mixinModel.mixinClass() ),
-                                                       concernClasses.stream() )
-                                                                                    );
-                                           SideEffectsModel sideEffectsModel = sideEffectsFor(
-                                               method,
-                                               mixinModel.mixinClass(),
-                                               concat( sideEffectDeclarations( mixinModel.mixinClass() ),
-                                                       sideEffectClasses.stream() )
-                                                                                             );
-                                           ConstraintsModel constraints = constraintsFor(
-                                               method,
-                                               toList( concat( constraintDeclarations( mixinModel.mixinClass() ),
-                                                               constraintClasses.stream() ) )
-                                                                                        );
-                                           CompositeMethodModel methodComposite = new CompositeMethodModel(
-                                               method,
-                                               constraints,
-                                               concernsModel,
-                                               sideEffectsModel,
-                                               mixinsModel
-                                           );
-
-                                           Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
-                                           source.flatMap( Dependencies::dependencies )
-                                                 .filter( new DependencyModel.ScopeSpecification( This.class ) )
-                                                 .map( DependencyModel::rawInjectionType )
-                                                 .forEach( thisDependencies::add );
-
-                                           interfacesOf( mixinModel.mixinClass() )
-                                               .map( Classes.RAW_CLASS )
-                                               .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
-                                                                       .noneMatch( c -> c.equals( clazz ) ) )
-                                               .forEach( thisDependencies::add );
-
-                                           compositeMethodsModel.addMethod( methodComposite );
-                                       }
-                                   }
-                               }
-                               catch( Exception e )
-                               {
-                                   exceptions.add( e );
-                               }
-                           }
-                           // Add type to set of mixin types
-                           mixinsModel.addMixinType( mixinType );
-                       } );
+        types.stream()
+             .peek( mixinType -> mixinsModel.addMixinType( mixinType ) )
+             .flatMap( mixinType -> Arrays.stream( mixinType.getMethods() ) )
+             .forEach( method -> implementMixinMethod( method, mixinClasses, constraintClasses,
+                                                       concernClasses,
+                                                       sideEffectClasses,
+                                                       exceptions,
+                                                       thisDependencies
+                                                     )
+                     );
 
         // Implement all @This dependencies that were found
-        thisDependencies.forEach( thisDependency ->
-                                  {
-                                      // Add additional declarations from the @This type
-                                      Stream<Class<?>> typeConstraintClasses = concat(
-                                          constraintClasses.stream(),
-                                          constraintDeclarations( thisDependency ) );
-                                      Stream<Class<?>> typeConcernClasses = concat(
-                                          concernClasses.stream(),
-                                          concernDeclarations( thisDependency ) );
-                                      Stream<Class<?>> typeSideEffectClasses = concat(
-                                          sideEffectClasses.stream(),
-                                          sideEffectDeclarations( thisDependency ) );
-                                      Stream<Class<?>> typeMixinClasses = concat(
-                                          mixinClasses.stream(),
-                                          mixinDeclarations( thisDependency ) );
-                                      List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
-                                      implementMixinType( singleton,
-                                                          toList( typeConstraintClasses ),
-                                                          toList( typeConcernClasses ),
-                                                          toList( typeSideEffectClasses ),
-                                                          toList( typeMixinClasses )
-                                                        );
-                                  } );
+        thisDependencies.forEach(
+            thisDependency ->
+            {
+                // Add additional declarations from the @This type
+                Stream<Class<?>> typeConstraintClasses = concat(
+                    constraintClasses.stream(),
+                    constraintDeclarations( thisDependency ) );
+                Stream<Class<?>> typeConcernClasses = concat(
+                    concernClasses.stream(),
+                    concernDeclarations( thisDependency ) );
+                Stream<Class<?>> typeSideEffectClasses = concat(
+                    sideEffectClasses.stream(),
+                    sideEffectDeclarations( thisDependency ) );
+                Stream<Class<?>> typeMixinClasses = concat(
+                    mixinClasses.stream(),
+                    mixinDeclarations( thisDependency ) );
+                List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
+                implementMixinType( singleton,
+                                    toList( typeConstraintClasses ),
+                                    toList( typeConcernClasses ),
+                                    toList( typeSideEffectClasses ),
+                                    toList( typeMixinClasses )
+                                  );
+            } );
         if( exceptions.size() > 0 )
         {
             throw new AssemblyReportException( exceptions );
+        }
+    }
+
+    private void implementMixinMethod( Method method,
+                                       List<Class<?>> mixinClasses,
+                                       List<Class<?>> constraintClasses,
+                                       List<Class<?>> concernClasses,
+                                       List<Class<?>> sideEffectClasses,
+                                       List<Throwable> exceptions,
+                                       Set<Class<?>> thisDependencies )
+    {
+        try
+        {
+            if( !compositeMethodsModel.isImplemented( method )
+                && !Proxy.class.equals( method.getDeclaringClass().getSuperclass() )
+                && !Proxy.class.equals( method.getDeclaringClass() )
+                && !Modifier.isStatic( method.getModifiers() ) )
+            {
+                MixinModel mixinModel = implementMethod( method, mixinClasses );
+                if( mixinModel != null )
+                {
+                    ConcernsModel concernsModel = concernsFor(
+                        method,
+                        mixinModel.mixinClass(),
+                        concat( concernDeclarations( mixinModel.mixinClass() ),
+                                concernClasses.stream() )
+                                                             );
+                    SideEffectsModel sideEffectsModel = sideEffectsFor(
+                        method,
+                        mixinModel.mixinClass(),
+                        concat( sideEffectDeclarations( mixinModel.mixinClass() ),
+                                sideEffectClasses.stream() )
+                                                                      );
+                    Stream<Class<?>> concat = concat( constraintDeclarations( mixinModel.mixinClass() ),
+                                                      constraintClasses.stream() );
+                    ConstraintsModel constraints = constraintsFor( method, toList( concat ) );
+                    CompositeMethodModel methodComposite = new CompositeMethodModel(
+                        method,
+                        constraints,
+                        concernsModel,
+                        sideEffectsModel,
+                        mixinsModel
+                    );
+
+                    Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
+                    source.flatMap( Dependencies::dependencies )
+                          .filter( new DependencyModel.ScopeSpecification( This.class ) )
+                          .map( DependencyModel::rawInjectionType )
+                          .forEach( thisDependencies::add );
+
+                    interfacesOf( mixinModel.mixinClass() )
+                        .map( Classes.RAW_CLASS )
+                        .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
+                                                .noneMatch( c -> c.equals( clazz ) ) )
+                        .forEach( thisDependencies::add );
+
+                    compositeMethodsModel.addMethod( methodComposite );
+                }
+            }
+        }
+        catch( Exception e )
+        {
+            exceptions.add( e );
         }
     }
 

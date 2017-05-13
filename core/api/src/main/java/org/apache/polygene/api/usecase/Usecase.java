@@ -20,7 +20,6 @@
 
 package org.apache.polygene.api.usecase;
 
-import java.io.Serializable;
 import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.structure.MetaInfoHolder;
 
@@ -29,11 +28,10 @@ import org.apache.polygene.api.structure.MetaInfoHolder;
  * implementations decide what to do in certain circumstances.
  */
 public final class Usecase
-    implements Serializable, MetaInfoHolder
+    implements MetaInfoHolder
 {
     public static final Usecase DEFAULT = new Usecase( "Default", new MetaInfo() );
 
-    private static final long serialVersionUID = 1L;
     private final String name;
     private final MetaInfo metaInfo;
 

@@ -38,11 +38,9 @@ import org.apache.polygene.spi.query.QuerySource;
 /**
  * Default implementation of {@link org.apache.polygene.api.query.Query}.
  */
-/* package */ class QueryImpl<T>
+class QueryImpl<T>
     implements Query<T>
 {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Type of queried entities.
      */
@@ -75,10 +73,10 @@ import org.apache.polygene.spi.query.QuerySource;
      * @param resultType  type of queried entities; cannot be null
      * @param whereClause where clause
      */
-    /* package */ QueryImpl( final Class<T> resultType,
+    QueryImpl( final Class<T> resultType,
                final Predicate<Composite> whereClause,
                final QuerySource querySource
-    )
+             )
     {
         this.resultType = resultType;
         this.whereClause = whereClause;
@@ -148,7 +146,7 @@ import org.apache.polygene.spi.query.QuerySource;
     {
         if( variables == null )
         {
-            variables = new HashMap<String, Object>();
+            variables = new HashMap<>();
         }
         variables.put( name, value );
 
