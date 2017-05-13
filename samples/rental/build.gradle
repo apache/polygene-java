@@ -18,16 +18,21 @@
  *
  */
 
+buildscript {
+  repositories { maven { url "https://plugins.gradle.org/m2/" } }
+  dependencies { classpath "gradle.plugin.org.akhikhl.gretty:gretty:1.4.2" }
+}
+
 apply plugin: 'polygene-sample'
 apply plugin: 'war'
-apply plugin: 'jetty'
+apply plugin: 'org.akhikhl.gretty'
 
 description = "Sample of implementation of a Car Rental application."
 
 // To run in an embedded Jetty use:
-//      ../../gradlew appRun
+//      ../../gradlew appRunWar
 // And then go to:
-//      http://localhost:8080/org.apache.polygene.sample.rental/rental/main
+//      http://localhost:8080/rental/rental/main
 
 jar { manifest { name = "Apache Polygene™ Sample - Car Rental" } }
 
