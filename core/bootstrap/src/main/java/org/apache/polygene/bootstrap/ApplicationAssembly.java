@@ -56,6 +56,13 @@ public interface ApplicationAssembly
     String name();
 
     /**
+     * Get the currently set version of the application
+     *
+     * @return the version of the application
+     */
+    String version();
+
+    /**
      * Get the currently set mode of the application
      *
      * @return the application mode
