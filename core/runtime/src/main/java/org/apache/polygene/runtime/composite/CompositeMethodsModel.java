@@ -20,10 +20,18 @@
 
 package org.apache.polygene.runtime.composite;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.MissingMethodException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
@@ -37,6 +45,7 @@ import org.apache.polygene.runtime.injection.DependencyModel;
 public final class CompositeMethodsModel
     implements VisitableHierarchy<Object, Object>, Dependencies
 {
+    private final ConcurrentMap<Method, MethodCallHandler> methodHandleCache = new ConcurrentHashMap<>();
     private final LinkedHashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
@@ -58,33 +67,57 @@ public final class CompositeMethodsModel
                           Method method,
                           Object[] args,
                           ModuleDescriptor moduleInstance
-    )
+                        )
         throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
         if( compositeMethod == null )
         {
-            if( method.getDeclaringClass().equals( Object.class ) )
+            Class<?> declaringClass = method.getDeclaringClass();
+            if( declaringClass.equals( Object.class ) )
             {
                 return mixins.invokeObject( proxy, args, method );
             }
 
             // TODO: Figure out what was the intention of this code block, added by Rickard in 2009. It doesn't do anything useful.
-            if( !method.getDeclaringClass().isInterface() )
+            // Update (niclas): My guess is that this is preparation for mixins in Objects.
+            if( !declaringClass.isInterface() )
             {
-                compositeMethod = mixinsModel.mixinTypes().map( aClass -> {
-                    try
-                    {
-                        Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
-                        return methods.get( realMethod );
-                    }
-                    catch( NoSuchMethodException | SecurityException e )
-                    {
+                compositeMethod = mixinsModel.mixinTypes().map( aClass ->
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
+                                                                        return methods.get( realMethod );
+                                                                    }
+                                                                    catch( NoSuchMethodException | SecurityException e )
+                                                                    {
 
-                    }
-                    return null;
-                }).filter( model -> model != null ).findFirst().orElse( null );
+                                                                    }
+                                                                    return null;
+                                                                } ).filter( model -> model != null ).findFirst().orElse( null );
+            }
+            if( method.isDefault() )
+            {
+                if( proxy instanceof Composite )
+                {
+                    MethodCallHandler callHandler = forMethod( method );
+                    return callHandler.invoke( proxy, args );
+                }
+                // Does this next line actually make any sense? Can we have a default method on an interface where the instance is not a Composite? Maybe... Let's try to trap a usecase by disallowing it.
+//                return method.invoke( proxy, args );
+                String message = "We have detected a default method on an interface that is not backed by a Composite. "
+                                 + "Please report this to dev@polygene.apache.org together with the information below, "
+                                 + "that/those class(es) and the relevant assembly information. Thank you\nMethod:"
+                                 + method.toGenericString()
+                                 + "\nDeclaring Class:"
+                                 + method.getDeclaringClass().toGenericString()
+                                 + "\nTypes:"
+                                 + mixinsModel.mixinTypes()
+                                              .map( Class::toGenericString )
+                                              .collect( Collectors.joining( "\n" ) );
+                throw new UnsupportedOperationException( message );
             }
             throw new MissingMethodException( "Method '" + method + "' is not implemented" );
         }
@@ -130,5 +163,34 @@ public final class CompositeMethodsModel
     public String toString()
     {
         return methods().toString();
+    }
+
+    private MethodCallHandler forMethod( Method method )
+    {
+        return methodHandleCache.computeIfAbsent( method, this::createMethodCallHandler );
+    }
+
+    private MethodCallHandler createMethodCallHandler( Method method )
+    {
+        Class<?> declaringClass = method.getDeclaringClass();
+        try
+        {
+            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class, int.class );
+            constructor.setAccessible( true );
+            MethodHandles.Lookup lookup = constructor.newInstance( declaringClass, MethodHandles.Lookup.PRIVATE );
+            MethodHandle handle = lookup.unreflectSpecial( method, declaringClass );
+            return ( proxy, args ) -> handle.bindTo( proxy ).invokeWithArguments( args );
+        }
+        catch( IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    @FunctionalInterface
+    private interface MethodCallHandler
+    {
+        Object invoke( Object proxy, Object[] args )
+            throws Throwable;
     }
 }
