@@ -22,8 +22,10 @@ import groovy.transform.TypeCheckingMode
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
@@ -34,7 +36,8 @@ class AggregatedJacocoReportTask extends DefaultTask
   @InputFiles
   FileCollection getJacocoExecDataDirectories()
   {
-    return project.files( project.subprojects.collect( { Project p -> "${ p.buildDir.absolutePath }/jacoco" } ) )
+    return project.files( project.rootProject.subprojects
+                                 .collect( { Project p -> "${ p.buildDir.absolutePath }/jacoco" } ) )
   }
 
   @OutputDirectory
@@ -47,71 +50,62 @@ class AggregatedJacocoReportTask extends DefaultTask
   @TaskAction
   void report()
   {
-    def coveredProjects = project.rootProject.subprojects.findAll { p -> new File( p.buildDir, 'jacoco' ).exists() }
-    def coreProjects = coveredProjects.findAll { p -> p.path.startsWith ':core' }
-    def libProjects = coveredProjects.findAll { p -> p.path.startsWith ':libraries' }
-    def extProjects = coveredProjects.findAll { p -> p.path.startsWith ':extensions' }
-    def toolsProjects = coveredProjects.findAll { p -> p.path.startsWith ':tools' }
-    def tutoProjects = coveredProjects.findAll { p -> p.path.startsWith ':tutorials' }
-    def samplesProjects = coveredProjects.findAll { p -> p.path.startsWith ':samples' }
     def classpath = project.configurations.getByName( JACOCO_CONFIGURATION ).asPath
+
+    def coveredProjects = project.rootProject.subprojects.findAll { p -> new File( p.buildDir, 'jacoco' ).exists() }
+
+    def allExecutionData = coveredProjects.collect { "${ it.buildDir.absolutePath }/jacoco" }
+
+    def sourceSetsOf = { String projectPathPrefix, Set<Project> projects ->
+      projects.findAll { p -> p.path.startsWith( projectPathPrefix ) }
+              .collect { it.convention.getPlugin( JavaPluginConvention ).sourceSets }
+              .flatten() as List<SourceSet>
+    }
+    def sourceDirsOf = { List<SourceSet> sourceSets ->
+      def sourceDirs = sourceSets.collect { it.allSource.srcDirs }.flatten() as List<File>
+      sourceDirs.findAll { it.directory }.collect { it.absolutePath }
+    }
+    def classesDirsOf = { List<SourceSet> sourceSets ->
+      def classesDirs = sourceSets.collect { it.output.classesDir } as List<File>
+      classesDirs.findAll { it.directory }.collect { it.absolutePath }
+    }
+
+    def coreSourceSets = sourceSetsOf( ':core', coveredProjects )
+    def libSourceSets = sourceSetsOf( ':libraries', coveredProjects )
+    def extSourceSets = sourceSetsOf( ':extensions', coveredProjects )
+    def toolsSourceSets = sourceSetsOf( ':tools', coveredProjects )
+    def tutoSourceSets = sourceSetsOf( ':tutorials', coveredProjects )
+    def samplesSourceSets = sourceSetsOf( ':samples', coveredProjects )
+
     project.ant {
       taskdef name: 'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: classpath
       mkdir dir: outputDirectory
       jacocoreport {
-        executiondata {
-          coveredProjects.collect { p ->
-            fileset( dir: "${ p.buildDir.path }/jacoco" ) { include name: '*.exec' }
-          }
-        }
+        executiondata { allExecutionData.collect { fileset( dir: it ) { include name: '*.exec' } } }
         structure( name: 'Apache Polygene™ (Java Edition) SDK' ) {
           group( name: 'Core' ) {
-            classfiles { coreProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              coreProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(coreSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(coreSourceSets).collect { fileset( dir: it ) } }
           }
           group( name: 'Libraries' ) {
-            classfiles { libProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              libProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(libSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(libSourceSets).collect { fileset( dir: it ) } }
           }
           group( name: 'Extensions' ) {
-            classfiles { extProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              extProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(extSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(extSourceSets).collect { fileset( dir: it ) } }
           }
           group( name: 'Tools' ) {
-            classfiles { toolsProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              toolsProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(toolsSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(toolsSourceSets).collect { fileset( dir: it ) } }
           }
           group( name: 'Tutorials' ) {
-            classfiles { tutoProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              tutoProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(tutoSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(tutoSourceSets).collect { fileset( dir: it ) } }
           }
           group( name: 'Samples' ) {
-            classfiles { samplesProjects.collect { p -> fileset( dir: "${ p.buildDir.path }/classes/main" ) } }
-            sourcefiles {
-              samplesProjects.collect { p ->
-                AggregatedJacocoReportTask.sourceRootsOf( p ).each { sourceRoot -> fileset( dir: "${ sourceRoot }" ) }
-              }
-            }
+            classfiles { classesDirsOf(samplesSourceSets).collect { fileset( dir: it ) } }
+            sourcefiles { sourceDirsOf(samplesSourceSets).collect { fileset( dir: it ) } }
           }
         }
         csv destfile: "${ outputDirectory }/jacoco.csv", encoding: 'UTF-8'
@@ -119,12 +113,5 @@ class AggregatedJacocoReportTask extends DefaultTask
         html destdir: outputDirectory, encoding: 'UTF-8', locale: 'en', footer: 'Apache Polygene™ (Java Edition) SDK'
       }
     }
-  }
-
-  private static List<String> sourceRootsOf( Project project )
-  {
-    [ 'src/main/java', 'src/main/groovy', 'src/main/kotlin' ].collect { project.file it }
-                                                             .findAll { it.directory }
-                                                             .collect { it.absolutePath }
   }
 }
