@@ -165,6 +165,7 @@ public final class PolygeneRuntimeImpl
         }
         throw new IllegalArgumentException( "Wrong type. Must be one of "
                                             + Arrays.asList( TransientComposite.class, ValueComposite.class,
+                                                             EntityComposite.class,
                                                              ServiceComposite.class, ServiceReference.class,
                                                              UnitOfWork.class ) );
     }
