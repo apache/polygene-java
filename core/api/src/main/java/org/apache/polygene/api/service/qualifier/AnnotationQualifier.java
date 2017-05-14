@@ -29,5 +29,5 @@ import org.apache.polygene.api.service.ServiceReference;
  */
 public interface AnnotationQualifier<QUALIFIER extends Annotation>
 {
-    public <T> Predicate<ServiceReference<?>> qualifier( QUALIFIER qualifier );
+    <T> Predicate<ServiceReference<?>> qualifier( QUALIFIER qualifier );
 }

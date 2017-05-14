@@ -50,64 +50,34 @@ public abstract class ServiceQualifier
 {
     public static Predicate<ServiceReference<?>> withId( final String anId )
     {
-        return new Predicate<ServiceReference<?>>()
-        {
-            @Override
-            public boolean test( ServiceReference<?> service )
-            {
-                return service.identity().toString().equals( anId );
-            }
-        };
+        return service -> service.identity().toString().equals( anId );
     }
 
     public static Predicate<ServiceReference<?>> whereMetaInfoIs( final Object metaInfo )
     {
-        return new Predicate<ServiceReference<?>>()
+        return service ->
         {
-            @Override
-            public boolean test( ServiceReference<?> service )
-            {
-                Object metaObject = service.metaInfo( metaInfo.getClass() );
-                return metaObject != null && metaInfo.equals( metaObject );
-            }
+            Object metaObject = service.metaInfo( metaInfo.getClass() );
+            return metaObject != null && metaInfo.equals( metaObject );
         };
     }
 
     public static Predicate<ServiceReference<?>> whereActive()
     {
-        return new Predicate<ServiceReference<?>>()
-        {
-            @Override
-            public boolean test( ServiceReference<?> service )
-            {
-                return service.isActive();
-            }
-        };
+        return ServiceReference::isActive;
     }
 
     public static Predicate<ServiceReference<?>> whereAvailable()
     {
-        return new Predicate<ServiceReference<?>>()
-        {
-            @Override
-            public boolean test( ServiceReference<?> service )
-            {
-                return service.isAvailable();
-            }
-        };
+        return ServiceReference::isAvailable;
     }
 
     public static Predicate<ServiceReference<?>> withTags( final String... tags )
     {
-        return new Predicate<ServiceReference<?>>()
+        return service ->
         {
-            @Override
-            public boolean test( ServiceReference<?> service )
-            {
-                ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
-
-                return serviceTags != null && serviceTags.hasTags( tags );
-            }
+            ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
+            return serviceTags != null && serviceTags.hasTags( tags );
         };
     }
 }

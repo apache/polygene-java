@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public final class DefaultValues
 {
-    private static final Map<Type, Object> DEFAULT_VALUES = new HashMap<Type, Object>();
+    private static final Map<Type, Object> DEFAULT_VALUES = new HashMap<>();
 
     static
     {

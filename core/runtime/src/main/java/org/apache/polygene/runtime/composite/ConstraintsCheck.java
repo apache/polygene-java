@@ -27,6 +27,6 @@ import org.apache.polygene.api.constraint.ConstraintViolationException;
  */
 public interface ConstraintsCheck
 {
-    public void checkConstraints( Object value )
+    void checkConstraints( Object value )
         throws ConstraintViolationException;
 }
