@@ -34,7 +34,7 @@ Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that t
 the `org.apache.polygene.core.runtime` jar.
 
 == Custom AssemblyHelper ==
-BUT, there are super-rare cases, where a custom AssemblyHelper might be needed. One known use-case is tp introduce
+BUT, there are super-rare cases, where a custom AssemblyHelper might be needed. One known use-case is to introduce
 an alternative bytecode generation algorithm, either better than the one we have, or for a different system, such
 as Dalvik.
 
