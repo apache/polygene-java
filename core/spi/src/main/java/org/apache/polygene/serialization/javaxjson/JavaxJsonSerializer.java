@@ -222,19 +222,18 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         if( map.keySet().stream().allMatch( characterKeyPredicate ) )
         {
             JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
-            map.entrySet().forEach( entry -> builder.add( entry.getKey().toString(),
-                                                          doSerialize( options, entry.getValue(), false ) ) );
+            map.forEach( ( key, value ) -> builder.add( key.toString(),
+                                                        doSerialize( options, value, false ) ) );
             return builder.build();
         }
         else
         {
             JsonArrayBuilder builder = jsonFactories.builderFactory().createArrayBuilder();
-            map.entrySet().forEach(
-                entry -> builder.add(
-                    jsonFactories.builderFactory().createObjectBuilder()
-                                 .add( "key", doSerialize( options, entry.getKey(), false ) )
-                                 .add( "value", doSerialize( options, entry.getValue(), false ) )
-                                 .build() ) );
+            map.forEach( ( key, value ) -> builder.add(
+                jsonFactories.builderFactory().createObjectBuilder()
+                             .add( "key", doSerialize( options, key, false ) )
+                             .add( "value", doSerialize( options, value, false ) )
+                             .build() ) );
             return builder.build();
         }
     }

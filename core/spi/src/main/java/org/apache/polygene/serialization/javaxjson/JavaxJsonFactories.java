@@ -19,7 +19,6 @@ package org.apache.polygene.serialization.javaxjson;
 
 import java.util.Arrays;
 import java.util.List;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;

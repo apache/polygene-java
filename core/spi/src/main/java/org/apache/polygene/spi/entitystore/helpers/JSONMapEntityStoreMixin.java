@@ -93,7 +93,7 @@ public class JSONMapEntityStoreMixin
     private JavaxJsonFactories jsonFactories;
 
     @Service
-    IdentityGenerator identityGenerator;
+    private IdentityGenerator identityGenerator;
 
     @Optional
     @Service
@@ -241,7 +241,7 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public StateCommitter applyChanges( EntityStoreUnitOfWork uow, Iterable<EntityState> state )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork uow, Iterable<EntityState> entityStates )
         throws EntityStoreException
     {
         return new StateCommitter()
@@ -251,10 +251,8 @@ public class JSONMapEntityStoreMixin
             {
                 try
                 {
-                    mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
-                    {
-                        @Override
-                        public void visitMap( MapEntityStore.MapChanger changer ) throws Exception
+                    mapEntityStore.applyChanges(
+                        changer ->
                         {
                             CacheOptions options = uow.usecase().metaInfo( CacheOptions.class );
                             if( options == null )
@@ -262,7 +260,7 @@ public class JSONMapEntityStoreMixin
                                 options = CacheOptions.ALWAYS;
                             }
 
-                            for( EntityState entityState : state )
+                            for( EntityState entityState : entityStates )
                             {
                                 JSONEntityState state = (JSONEntityState) entityState;
                                 String newVersion = uow.identity().toString();
@@ -302,8 +300,7 @@ public class JSONMapEntityStoreMixin
                                     cache.remove( state.entityReference().identity().toString() );
                                 }
                             }
-                        }
-                    } );
+                        } );
                 }
                 catch( Exception e )
                 {
