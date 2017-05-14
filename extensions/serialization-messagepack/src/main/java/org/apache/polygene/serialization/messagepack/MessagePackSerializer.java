@@ -28,15 +28,12 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -63,9 +60,6 @@ public interface MessagePackSerializer extends Serializer
 
         @This
         private MessagePackAdapters adapters;
-
-        @Structure
-        private Module module;
 
         @Override
         public void serialize( Options options, OutputStream output, @Optional Object object )
@@ -146,10 +140,10 @@ public interface MessagePackSerializer extends Serializer
                 property ->
                 {
                     Object value = state.propertyFor( property.accessor() ).get();
-                    ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                    if( convertedBy != null )
+                    Converter<Object> converter = converters.converterFor( property );
+                    if( converter != null )
                     {
-                        value = module.newObject( convertedBy.value() ).toString( value );
+                        value = converter.toString( value );
                     }
                     builder.put(
                         ValueFactory.newString( property.qualifiedName().name() ),

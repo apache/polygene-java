@@ -45,7 +45,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
@@ -57,7 +56,6 @@ import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.api.type.ValueType;
-import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.spi.serialization.AbstractTextDeserializer;
 import org.apache.polygene.spi.serialization.XmlDeserializer;
@@ -134,12 +132,6 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
         {
             return null;
         }
-        ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
-        if( convertedBy != null )
-        {
-            return (T) module.instance().newObject( convertedBy.value() )
-                             .fromString( doDeserialize( module, ValueType.STRING, xml ).toString() );
-        }
         Converter<Object> converter = converters.converterFor( valueType );
         if( converter != null )
         {
@@ -208,11 +200,10 @@ public class JavaxXmlDeserializer extends AbstractTextDeserializer
             {
                 Node valueNode = JavaxXml.firstStateChildNode( element.get() ).orElse( null );
                 Object value;
-                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                if( convertedBy != null )
+                Converter<Object> converter = converters.converterFor( property );
+                if( converter != null )
                 {
-                    value = module.instance().newObject( convertedBy.value() )
-                                  .fromString( doDeserialize( module, ValueType.STRING, valueNode ) );
+                    value = converter.fromString( doDeserialize( module, ValueType.STRING, valueNode ) );
                 }
                 else
                 {

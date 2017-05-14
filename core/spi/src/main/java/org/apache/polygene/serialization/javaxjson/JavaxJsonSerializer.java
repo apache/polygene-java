@@ -38,16 +38,13 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.StatefulAssociationValueType;
@@ -74,9 +71,6 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
 
     @Uses
     private ServiceDescriptor descriptor;
-
-    @Structure
-    private Module module;
 
     private JavaxJsonSettings settings;
 
@@ -173,10 +167,10 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
             property ->
             {
                 Object value = state.propertyFor( property.accessor() ).get();
-                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                if( convertedBy != null )
+                Converter converter = converters.converterFor( property );
+                if( converter != null )
                 {
-                    value = module.newObject( convertedBy.value() ).toString( value );
+                    value = converter.toString( value );
                 }
                 builder.add( property.qualifiedName().name(), doSerialize( options, value, false ) );
             } );

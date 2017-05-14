@@ -35,16 +35,13 @@ import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
@@ -79,9 +76,6 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
 
     @Uses
     private ServiceDescriptor descriptor;
-
-    @Structure
-    private Module module;
 
     private JavaxXmlSettings settings;
 
@@ -195,10 +189,10 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
             property ->
             {
                 Object value = state.propertyFor( property.accessor() ).get();
-                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                if( convertedBy != null )
+                Converter<Object> converter = converters.converterFor( property );
+                if( converter != null )
                 {
-                    value = module.newObject( convertedBy.value() ).toString( value );
+                    value = converter.toString( value );
                 }
                 Element element = document.createElement( property.qualifiedName().name() );
                 element.appendChild( doSerialize( document, options, value, false ) );

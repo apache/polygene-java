@@ -37,7 +37,10 @@ public abstract class AbstractConvertersSerializationTest extends AbstractPolyge
     public void assemble( ModuleAssembly module )
     {
         module.values( SomeValue.class );
-        module.objects( CustomPlainValueConverter.class, CustomPropertyConverter.class );
+        module.forMixin( SomeValue.class )
+              .setMetaInfo( new CustomPropertyConverter() )
+              .declareDefaults()
+              .customAssemblyConvertedProperty();
     }
 
     protected abstract String getStringFromValueState( String state, String key ) throws Exception;
@@ -48,6 +51,8 @@ public abstract class AbstractConvertersSerializationTest extends AbstractPolyge
 
         @ConvertedBy( CustomPropertyConverter.class )
         Property<String> customConvertedProperty();
+
+        Property<String> customAssemblyConvertedProperty();
     }
 
     @ConvertedBy( CustomPlainValueConverter.class )
@@ -132,11 +137,16 @@ public abstract class AbstractConvertersSerializationTest extends AbstractPolyge
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototype().customPlainValue().set( new CustomPlainValue( "foo" ) );
         builder.prototype().customConvertedProperty().set( "bar" );
+        builder.prototype().customAssemblyConvertedProperty().set( "bazar" );
         SomeValue value = builder.newInstance();
 
         String serialized = serialization.serialize( value );
-        assertThat( getStringFromValueState( serialized, "customPlainValue" ), equalTo( rot13( "foo" ) ) );
-        assertThat( getStringFromValueState( serialized, "customConvertedProperty" ), equalTo( rot13( "bar" ) ) );
+        assertThat( getStringFromValueState( serialized, "customPlainValue" ),
+                    equalTo( rot13( "foo" ) ) );
+        assertThat( getStringFromValueState( serialized, "customConvertedProperty" ),
+                    equalTo( rot13( "bar" ) ) );
+        assertThat( getStringFromValueState( serialized, "customAssemblyConvertedProperty" ),
+                    equalTo( rot13( "bazar" ) ) );
 
         SomeValue deserialized = serialization.deserialize( module, SomeValue.class, serialized );
         assertThat( deserialized, equalTo( value ) );
