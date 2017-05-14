@@ -34,6 +34,7 @@ public final class NoopMixin
     private static final Short SHORT_DEFAULT = 0;
     private static final Character CHARACTER_DEFAULT = 0;
     private static final Integer INTEGER_DEFAULT = 0;
+    private static final Byte BYTE_DEFAULT = 0;
     private static final Long LONG_DEFAULT = 0L;
     private static final Float FLOAT_DEFAULT = 0f;
     private static final Double DOUBLE_DEFAULT = 0.0;
@@ -66,6 +67,10 @@ public final class NoopMixin
         if( Integer.TYPE == retType )
         {
             return INTEGER_DEFAULT;
+        }
+        if( Byte.TYPE == retType )
+        {
+            return BYTE_DEFAULT;
         }
         if( Long.TYPE == retType )
         {
