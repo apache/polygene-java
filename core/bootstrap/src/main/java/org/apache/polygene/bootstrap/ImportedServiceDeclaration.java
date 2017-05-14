@@ -35,10 +35,10 @@ import org.apache.polygene.api.service.importer.ServiceSelectorImporter;
 public interface ImportedServiceDeclaration
 {
     // Convenience constants for common service importers
-    public static final Class<? extends ServiceImporter> INSTANCE = InstanceImporter.class;
-    public static final Class<? extends ServiceImporter> NEW_OBJECT = NewObjectImporter.class;
-    public static final Class<? extends ServiceImporter> SERVICE_SELECTOR = ServiceSelectorImporter.class;
-    public static final Class<? extends ServiceImporter> SERVICE_IMPORTER = ServiceInstanceImporter.class;
+    Class<? extends ServiceImporter> INSTANCE = InstanceImporter.class;
+    Class<? extends ServiceImporter> NEW_OBJECT = NewObjectImporter.class;
+    Class<? extends ServiceImporter> SERVICE_SELECTOR = ServiceSelectorImporter.class;
+    Class<? extends ServiceImporter> SERVICE_IMPORTER = ServiceInstanceImporter.class;
 
     ImportedServiceDeclaration visibleIn( Visibility visibility );
 

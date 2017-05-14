@@ -31,30 +31,30 @@ package org.apache.polygene.bootstrap;
  */
 public interface AssemblyVisitor<ThrowableType extends Throwable>
 {
-    public void visitApplication( ApplicationAssembly assembly )
+    void visitApplication( ApplicationAssembly assembly )
         throws ThrowableType;
 
-    public void visitLayer( LayerAssembly assembly )
+    void visitLayer( LayerAssembly assembly )
         throws ThrowableType;
 
-    public void visitModule( ModuleAssembly assembly )
+    void visitModule( ModuleAssembly assembly )
         throws ThrowableType;
 
-    public void visitComposite( TransientDeclaration declaration )
+    void visitComposite( TransientDeclaration declaration )
         throws ThrowableType;
 
-    public void visitEntity( EntityDeclaration declaration )
+    void visitEntity( EntityDeclaration declaration )
         throws ThrowableType;
 
-    public void visitService( ServiceDeclaration declaration )
+    void visitService( ServiceDeclaration declaration )
         throws ThrowableType;
 
-    public void visitImportedService( ImportedServiceDeclaration declaration )
+    void visitImportedService( ImportedServiceDeclaration declaration )
         throws ThrowableType;
 
-    public void visitValue( ValueDeclaration declaration )
+    void visitValue( ValueDeclaration declaration )
         throws ThrowableType;
 
-    public void visitObject( ObjectDeclaration declaration )
+    void visitObject( ObjectDeclaration declaration )
         throws ThrowableType;
 }
