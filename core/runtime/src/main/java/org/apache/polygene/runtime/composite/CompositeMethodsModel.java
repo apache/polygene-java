@@ -17,7 +17,6 @@
  *
  *
  */
-
 package org.apache.polygene.runtime.composite;
 
 import java.lang.invoke.MethodHandle;
