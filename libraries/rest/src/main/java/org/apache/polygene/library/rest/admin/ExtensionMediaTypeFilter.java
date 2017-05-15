@@ -75,7 +75,7 @@ public class ExtensionMediaTypeFilter
             if( metadata != null && metadata instanceof MediaType )
             {
                 request.getClientInfo()
-                    .setAcceptedMediaTypes( Collections.singletonList( new Preference<MediaType>( (MediaType) metadata ) ) );
+                    .setAcceptedMediaTypes( Collections.singletonList( new Preference<>( (MediaType) metadata ) ) );
                 String path = request.getResourceRef().getPath();
                 path = path.substring( 0, path.length() - extensions.length() - 1 );
                 request.getResourceRef().setPath( path );

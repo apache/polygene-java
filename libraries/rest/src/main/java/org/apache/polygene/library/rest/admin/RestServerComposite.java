@@ -23,13 +23,12 @@ package org.apache.polygene.library.rest.admin;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 
 @Mixins( { RestServerMixin.class } )
 @Activators( RestServerComposite.Activator.class )
 public interface RestServerComposite
-    extends ServiceComposite, RestServer
+    extends RestServer
 {
     
     void startServer()
@@ -38,7 +37,7 @@ public interface RestServerComposite
     void stopServer()
             throws Exception;
     
-    static class Activator extends ActivatorAdapter<ServiceReference<RestServerComposite>>
+    class Activator extends ActivatorAdapter<ServiceReference<RestServerComposite>>
     {
 
         @Override
