@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -95,7 +96,8 @@ public final class CompositeMethodsModel
 
                                                                     }
                                                                     return null;
-                                                                } ).filter( model -> model != null ).findFirst().orElse( null );
+                                                                } ).filter( Objects::nonNull ).findFirst().orElse( null );
+                return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
             }
             if( method.isDefault() )
             {
