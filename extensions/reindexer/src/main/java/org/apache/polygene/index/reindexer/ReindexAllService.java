@@ -21,11 +21,10 @@
 package org.apache.polygene.index.reindexer;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.reindexer.internal.ReindexAllMixin;
 
 @Mixins( ReindexAllMixin.class )
 public interface ReindexAllService
-    extends Reindexer, ServiceComposite
+    extends Reindexer
 {
 }
