@@ -23,7 +23,6 @@ import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
@@ -43,7 +42,6 @@ public interface JCloudsMapEntityStoreService
             JSONMapEntityStoreActivation,
             EntityStore,
             EntityStateVersions,
-            ServiceComposite,
             LockingAbstractComposite,
             Configuration
 {

@@ -23,14 +23,12 @@ package org.apache.polygene.entitystore.jclouds;
 import java.util.Map;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
  * Configuration of JCloudsMapEntityStore service.
  */
 public interface JCloudsMapEntityStoreConfiguration
-        extends ConfigurationComposite
 {
     // START SNIPPET: config
     /**
