@@ -314,7 +314,9 @@ class DistributionsPlugin implements Plugin<Project>
       def workDir = project.file( "$project.buildDir/tmp/${ TaskNames.BUILD_SOURCE_DIST }" )
       task.inputs.dir unpackedSrcDistDir
       task.workingDir = workDir
-      task.commandLine = [ './gradlew', 'build', '-u', '-s', /* '-g', workDir */ ]
+      def gradlew = new File( project.rootDir, 'gradlew' ).absolutePath
+      def settings = new File( workDir, 'settings.gradle' ).absolutePath
+      task.commandLine = [ gradlew, '-c', settings, 'build', '-u', '-s', /* '-g', workDir */ ]
       task.doFirst {
         project.copy { CopySpec spec ->
           spec.from unpackedSrcDistDir
