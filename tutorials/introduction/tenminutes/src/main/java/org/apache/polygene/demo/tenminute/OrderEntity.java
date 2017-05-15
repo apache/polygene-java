@@ -21,7 +21,7 @@
 package org.apache.polygene.demo.tenminute;
 
 import org.apache.polygene.api.concern.Concerns;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.sideeffect.SideEffects;
 
 // START SNIPPET: sideEffect
@@ -31,8 +31,8 @@ import org.apache.polygene.api.sideeffect.SideEffects;
 public interface OrderEntity
     extends Order, Confirmable,
             HasSequenceNumber, HasCustomer, HasLineItems,
-            EntityComposite
+            HasIdentity
 {
-// END SNIPPET: sideEffect
 }
+// END SNIPPET: sideEffect
 // END SNIPPET: mainClass
