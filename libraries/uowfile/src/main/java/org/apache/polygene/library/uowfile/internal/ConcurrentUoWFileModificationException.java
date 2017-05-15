@@ -20,8 +20,6 @@
 package org.apache.polygene.library.uowfile.internal;
 
 import java.util.Collections;
-import org.apache.polygene.api.entity.EntityComposite;
-import org.apache.polygene.api.type.HasTypes;
 import org.apache.polygene.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.polygene.api.usecase.Usecase;
 
