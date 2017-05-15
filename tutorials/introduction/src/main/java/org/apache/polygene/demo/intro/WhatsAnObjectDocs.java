@@ -20,7 +20,7 @@
 package org.apache.polygene.demo.intro;
 
 import org.apache.polygene.api.entity.EntityBuilder;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -28,24 +28,21 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 public class WhatsAnObjectDocs
 {
         // START SNIPPET: wo1
-        @Mixins(SomeMixin.class)
-        interface MyEntity
-                extends Some, Other, EntityComposite
-        {}
-// END SNIPPET: wo1
+        @Mixins( SomeMixin.class )
+        interface MyEntity extends Some, Other, HasIdentity {}
+        // END SNIPPET: wo1
 
         // START SNIPPET: wo2
         interface SomeState
         {
             Property<String> someProperty();
         }
-// END SNIPPET: wo2
+        // END SNIPPET: wo2
 
         // START SNIPPET: wo3
-        interface MyState
-                extends SomeState, OtherState //, ...
+        interface MyState extends SomeState, OtherState //, ...
         {}
-// END SNIPPET: wo3
+        // END SNIPPET: wo3
 
 
         abstract class SomeMixin implements Some
@@ -61,18 +58,15 @@ public class WhatsAnObjectDocs
         {}
 
         {
-
             UnitOfWork uow = null;
-// START SNIPPET: wo4
+            // START SNIPPET: wo4
             EntityBuilder<MyEntity> builder = uow.newEntityBuilder(MyEntity.class);
             MyState state = builder.instanceFor(MyState.class);
 
             //... init state ...
 
             MyEntity instance = builder.newInstance();
-// END SNIPPET: wo4        }
-
-
+            // END SNIPPET: wo4
         }
 
     }
