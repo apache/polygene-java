@@ -269,10 +269,10 @@ dependencies.buildToolsVersions << [
 // Docker Images
 dependencies.dockerImagesVersions << [
   cassandra: 'cassandra:3.10',
-  memcached: 'memcached:1.4-alpine',
-  mariadb  : 'mariadb:10.1',
-  postgres : 'postgres:9.6-alpine',
-  redis    : 'redis:3.2-alpine',
-  riak     : 'basho/riak-kv:ubuntu-2.2.0',
-  s3server : 'scality/s3server:mem-1fcb189'
+  memcached: 'memcached:1.4.36-alpine',
+  mariadb  : 'mariadb:10.1.21',
+  postgres : 'postgres:9.6.2-alpine',
+  redis    : 'redis:3.2.8-alpine',
+  riak     : 'basho/riak-kv:ubuntu-2.2.3',
+  s3server : 'scality/s3server:mem-6a8e1cd'
 ]
