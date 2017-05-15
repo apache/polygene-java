@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public class ResponseReaderDelegator
    implements ResponseReader, Initializable
 {
-   List<ResponseReader> responseReaders = new ArrayList<ResponseReader>( );
+   List<ResponseReader> responseReaders = new ArrayList<>();
 
    @Structure
    private Module module;

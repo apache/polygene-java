@@ -41,25 +41,25 @@ public interface TableQuery
 {
    Property<String> tq();
 
-   public String select();
+   String select();
 
-   public String where();
+   String where();
 
-   public String groupBy();
+   String groupBy();
 
-   public String pivot();
+   String pivot();
 
-   public String orderBy();
+   String orderBy();
 
-   public String limit();
+   String limit();
 
-   public String offset();
+   String offset();
 
-   public String label();
+   String label();
 
-   public String options();
+   String options();
 
-   public Table applyTo(Table table);
+   Table applyTo(Table table);
 
    abstract class Mixin
            implements TableQuery
@@ -126,7 +126,7 @@ public interface TableQuery
       {
          if (parts == null)
          {
-            parts = new HashMap<String, String>();
+            parts = new HashMap<>();
 
             String value = tq().get();
             List<String> values = Arrays.asList(value.split(" "));
@@ -219,7 +219,7 @@ public interface TableQuery
                   }
                };
 
-               Collections.sort(tableBuilder.prototype().rows().get(), comparator);
+               tableBuilder.prototype().rows().get().sort( comparator );
             }
          }
 

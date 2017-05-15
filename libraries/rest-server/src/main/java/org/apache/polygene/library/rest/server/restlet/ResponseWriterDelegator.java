@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class ResponseWriterDelegator
     implements ResponseWriter
 {
-    List<ResponseWriter> responseWriters = new ArrayList<ResponseWriter>();
+    List<ResponseWriter> responseWriters = new ArrayList<>();
 
     @Structure
     Module module;

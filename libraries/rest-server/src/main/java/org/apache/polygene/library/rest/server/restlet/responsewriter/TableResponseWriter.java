@@ -185,7 +185,7 @@ public class TableResponseWriter extends AbstractResponseWriter
                     public void write( Writer writer )
                         throws IOException
                     {
-                        Map<String, Object> context = new HashMap<String, Object>();
+                        Map<String, Object> context = new HashMap<>();
                         context.put( "request", response.getRequest() );
                         context.put( "response", response );
 

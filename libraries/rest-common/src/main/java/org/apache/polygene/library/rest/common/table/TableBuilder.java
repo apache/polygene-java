@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.rest.common.table;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -237,7 +236,7 @@ public class TableBuilder
                     comparator = reverseOrder( comparator );
                 }
 
-                Collections.sort( tableBuilder.prototype().rows().get(), comparator );
+                tableBuilder.prototype().rows().get().sort( comparator );
             }
         }
 

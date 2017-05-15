@@ -72,11 +72,9 @@ public class JSONResponseReader
                 {
                     JsonObject jsonObject = reader.readObject();
                     Form form = new Form();
-                    jsonObject.entrySet().forEach(
-                        entry ->
+                    jsonObject.forEach(
+                        ( key, value ) ->
                         {
-                            String key = entry.getKey();
-                            JsonValue value = entry.getValue();
                             String valueString = value.getValueType() == JsonValue.ValueType.STRING
                                                  ? ( (JsonString) value ).getString()
                                                  : value.toString();

@@ -58,9 +58,9 @@ public class ContextResourceClient
     private ResponseHandler errorHandler = NullResponseHandler.INSTANCE;
     private ResponseHandler resourceHandler = NullResponseHandler.INSTANCE;
     private ResponseHandler deleteHandler = NullResponseHandler.INSTANCE;
-    private Map<String, ResponseHandler> queryHandlers = new HashMap<String, ResponseHandler>(  );
-    private Map<String, ResponseHandler> commandHandlers = new HashMap<String, ResponseHandler>(  );
-    private Map<String, ResponseHandler> processingErrorHandlers = new HashMap<String, ResponseHandler>();
+    private Map<String, ResponseHandler> queryHandlers = new HashMap<>();
+    private Map<String, ResponseHandler> commandHandlers = new HashMap<>();
+    private Map<String, ResponseHandler> processingErrorHandlers = new HashMap<>();
 
     // DSL for registering rules
     public ContextResourceClient onError(ResponseHandler handler)

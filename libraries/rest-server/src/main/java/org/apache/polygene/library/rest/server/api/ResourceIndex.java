@@ -25,5 +25,5 @@ package org.apache.polygene.library.rest.server.api;
  */
 public interface ResourceIndex<T>
 {
-    public T index();
+    T index();
 }
