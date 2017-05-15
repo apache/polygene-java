@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
@@ -280,9 +280,9 @@ public class ThirtyMinutesDocs
 
     @Mixins( TrailableMixin.class )
     public interface OrderEntity
-            extends Order, Confirmable,
-            HasSequenceNumber, HasCustomer, HasLineItems,
-            EntityComposite
+        extends Order, Confirmable,
+                HasSequenceNumber, HasCustomer, HasLineItems,
+                HasIdentity
     {
     }
 // END SNIPPET: 5
