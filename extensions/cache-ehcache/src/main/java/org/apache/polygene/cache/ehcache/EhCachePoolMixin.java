@@ -43,7 +43,6 @@ import static org.ehcache.expiry.Expirations.*;
 public abstract class EhCachePoolMixin
     implements EhCachePoolService
 {
-    private static final long DEFAULT_HEAP_SIZE = 1024 * 1024;
     private final ConcurrentHashMap<String, EhCacheImpl<?>> caches = new ConcurrentHashMap<>();
 
     @This

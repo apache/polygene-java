@@ -21,12 +21,11 @@ package org.apache.polygene.cache.ehcache;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.constraints.annotation.OneOf;
 
 // START SNIPPET: config
-public interface EhCacheConfiguration extends ConfigurationComposite {
+public interface EhCacheConfiguration {
 
     /**
      * Heap tier size.
