@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.tutorials.hello;
 
-import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
@@ -28,10 +27,10 @@ import org.apache.polygene.library.constraints.annotation.NotEmpty;
 // START SNIPPET: body
 
 /**
- * This Composite interface declares a simple "Hello World" interface with a single say() method. What is being
- * said is defined in the HelloWorldState interface, which is a private mixin.
+ * This Composite interface declares a simple "Hello World" interface with a single say() method.
+ * What is being said is defined in the HelloWorldState interface, which is a private mixin.
  */
-@Mixins( { Hello.HelloWorldMixin.class } )
+@Mixins( Hello.HelloWorldMixin.class )
 public interface Hello
 {
     String say();
@@ -39,10 +38,11 @@ public interface Hello
     /**
      * This is the implementation of the say() method.
      */
-    public abstract class HelloWorldMixin
+    class HelloWorldMixin
         implements Hello
     {
-        // @This reference the composite itself, and since HelloWorldState is not part of the public interface,
+        // @This reference the composite itself,
+        // and since HelloWorldState is not part of the public interface,
         // it is a private mixin.
         @This
         private State state;
@@ -57,14 +57,12 @@ public interface Hello
     /**
      * This interface contains only the state of the HelloWorld object.
      */
-    public interface State
+    interface State
     {
         @NotEmpty
-        @UseDefaults
         Property<String> phrase();
 
         @NotEmpty
-        @UseDefaults
         Property<String> name();
     }
 }
