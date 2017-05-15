@@ -50,14 +50,7 @@ public class Envisage
 
         this.application = application;
 
-        SwingUtilities.invokeLater( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                showMainFrame();
-            }
-        } );
+        SwingUtilities.invokeLater( this::showMainFrame );
     }
 
     public void stop()
@@ -82,14 +75,7 @@ public class Envisage
             @Override
             public void windowOpened( WindowEvent evt )
             {
-                SwingUtilities.invokeLater( new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mainFrame.initPolygene();
-                    }
-                } );
+                SwingUtilities.invokeLater( () -> mainFrame.initPolygene() );
             }
         } );
     }

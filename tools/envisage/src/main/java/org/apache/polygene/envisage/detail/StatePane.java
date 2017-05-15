@@ -94,14 +94,7 @@ import org.apache.polygene.tools.model.util.DescriptorUtilities;
         columnModel.getColumn( 1 ).setPreferredWidth( 400 );
 
         //splitPane.setDividerLocation( .1 );
-        methodList.addListSelectionListener( new ListSelectionListener()
-        {
-            @Override
-            public void valueChanged( ListSelectionEvent evt )
-            {
-                methodListValueChanged( evt );
-            }
-        } );
+        methodList.addListSelectionListener( this::methodListValueChanged );
     }
 
     @Override

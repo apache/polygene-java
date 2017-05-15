@@ -99,14 +99,7 @@ public final class DetailModelPane
 
     public void setDescriptor( final Object objectDescriptor )
     {
-        SwingUtilities.invokeLater( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                setDescriptorImpl( objectDescriptor );
-            }
-        } );
+        SwingUtilities.invokeLater( () -> setDescriptorImpl( objectDescriptor ) );
     }
 
     private void setDescriptorImpl( Object objectDescriptor )

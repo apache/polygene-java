@@ -35,7 +35,7 @@ public final class MethodConstraintsDetailDescriptor
     {
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
-        constraints = new LinkedList<MethodConstraintDetailDescriptor>();
+        constraints = new LinkedList<>();
     }
 
     /**

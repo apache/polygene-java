@@ -35,7 +35,7 @@ public final class MethodConcernsDetailDescriptor
     {
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
-        concerns = new LinkedList<MethodConcernDetailDescriptor>();
+        concerns = new LinkedList<>();
     }
 
     /**

@@ -89,14 +89,7 @@ import org.apache.polygene.tools.model.util.DescriptorUtilities;
 
         //splitPane.setResizeWeight( .1 );
         //splitPane.setDividerLocation( .3 );
-        methodList.addListSelectionListener( new ListSelectionListener()
-        {
-            @Override
-            public void valueChanged( ListSelectionEvent evt )
-            {
-                methodListValueChanged( evt );
-            }
-        } );
+        methodList.addListSelectionListener( this::methodListValueChanged );
     }
 
     @Override

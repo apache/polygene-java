@@ -25,7 +25,6 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.envisage.school.domain.school.School;
 import org.apache.polygene.envisage.school.domain.school.SchoolRepository;
@@ -35,7 +34,7 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 
 @Mixins( SchoolRepositoryService.SchoolRepositoryMixin.class )
 public interface SchoolRepositoryService
-    extends SchoolRepository, ServiceComposite
+    extends SchoolRepository
 {
 
     class SchoolRepositoryMixin

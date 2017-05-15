@@ -36,7 +36,7 @@ public final class MethodSideEffectsDetailDescriptor
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
 
         descriptor = aDescriptor;
-        sideEffects = new LinkedList<MethodSideEffectDetailDescriptor>();
+        sideEffects = new LinkedList<>();
     }
 
     /**
