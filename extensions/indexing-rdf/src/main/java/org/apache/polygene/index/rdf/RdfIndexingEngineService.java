@@ -20,12 +20,11 @@
 
 package org.apache.polygene.index.rdf;
 
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.rdf.indexing.RdfExporter;
 import org.apache.polygene.index.rdf.indexing.RdfIndexingService;
 import org.apache.polygene.index.rdf.query.RdfQueryService;
 
 public interface RdfIndexingEngineService
-    extends RdfQueryService, RdfIndexingService, RdfExporter, ServiceComposite
+    extends RdfQueryService, RdfIndexingService, RdfExporter
 {
 }

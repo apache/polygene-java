@@ -31,7 +31,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.query.grammar.OrderBy;
 import org.apache.polygene.api.query.grammar.QuerySpecification;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.spi.query.EntityFinder;
 import org.apache.polygene.spi.query.EntityFinderException;
 import org.openrdf.query.QueryLanguage;
@@ -41,12 +40,12 @@ import org.openrdf.query.QueryLanguage;
  */
 @Mixins( { RdfQueryService.RdfEntityFinderMixin.class } )
 public interface RdfQueryService
-    extends EntityFinder, RdfQueryParserFactory, ServiceComposite
+    extends EntityFinder, RdfQueryParserFactory
 {
     /**
      * JAVADOC Add JavaDoc
      */
-    public static class RdfEntityFinderMixin
+    class RdfEntityFinderMixin
         implements EntityFinder
     {
 
