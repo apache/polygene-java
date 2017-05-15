@@ -26,11 +26,11 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.apache.polygene.api.common.AppliesTo;
-import org.apache.polygene.api.common.AppliesToFilter;
 import org.apache.polygene.api.composite.Composite;
+import org.apache.polygene.api.composite.DefaultMethodsFilter;
 import org.apache.polygene.api.injection.scope.This;
 
-@AppliesTo( { InterfaceDefaultMethodsMixin.DefaultMethodsFilter.class } )
+@AppliesTo( { DefaultMethodsFilter.class } )
 public class InterfaceDefaultMethodsMixin
     implements InvocationHandler
 {
@@ -52,19 +52,6 @@ public class InterfaceDefaultMethodsMixin
         }
         // call the composite's method instead.
         return method.invoke( me, args );
-    }
-
-    /**
-     * Filter Default Interface Methods to apply generic Mixin.
-     */
-    public static class DefaultMethodsFilter
-        implements AppliesToFilter
-    {
-        @Override
-        public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
-        {
-            return method.isDefault();
-        }
     }
 
     private MethodCallHandler forMethod( Method method )

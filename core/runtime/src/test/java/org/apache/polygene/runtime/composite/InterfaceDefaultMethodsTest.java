@@ -17,7 +17,11 @@
  */
 package org.apache.polygene.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.composite.DefaultMethodsFilter;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
@@ -102,6 +106,36 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
+    @Concerns( DefaultMethodsGenericConcern.class )
+    public interface DefaultMethodsGenericConcerns extends DefaultMethods
+    {
+        @Override
+        default String sayHello( String name )
+        {
+            return greeting().get() + ", " + name + '!';
+        }
+
+        default String sayGoodBye( String name )
+        {
+            return "Good Bye, " + name + '!';
+        }
+    }
+
+    @AppliesTo( DefaultMethodsFilter.class )
+    public static class DefaultMethodsGenericConcern extends ConcernOf<InvocationHandler>
+        implements InvocationHandler
+    {
+        static int count = 0;
+
+        @Override
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
+        {
+            count++;
+            return next.invoke( o, method, objects );
+        }
+    }
+
     @SideEffects( DefaultMethodsSideEffect.class )
     public interface DefaultMethodsSideEffects extends DefaultMethods
     {
@@ -125,6 +159,31 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
+    @SideEffects( DefaultMethodsGenericSideEffect.class )
+    public interface DefaultMethodsGenericSideEffects extends DefaultMethods
+    {
+        @Override
+        default String sayHello( String name )
+        {
+            return greeting().get() + ", " + name + '!';
+        }
+    }
+
+    @AppliesTo( DefaultMethodsFilter.class )
+    public static class DefaultMethodsGenericSideEffect extends SideEffectOf<InvocationHandler>
+        implements InvocationHandler
+    {
+        static int count = 0;
+
+        @Override
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
+        {
+            count++;
+            return null;
+        }
+    }
+
     @Override
     public void assemble( final ModuleAssembly module )
         throws AssemblyException
@@ -134,7 +193,9 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
                            MixinDefaultMethods.class,
                            DefaultMethodsConstraints.class,
                            DefaultMethodsConcerns.class,
-                           DefaultMethodsSideEffects.class
+                           DefaultMethodsSideEffects.class,
+                           DefaultMethodsGenericConcerns.class,
+                           DefaultMethodsGenericSideEffects.class
                          );
     }
 
@@ -182,6 +243,15 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
     }
 
     @Test
+    public void defaultMethodsGenericConcerns()
+    {
+        DefaultMethodsGenericConcerns composite = transientBuilderFactory.newTransient( DefaultMethodsGenericConcerns.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayGoodBye( "John" ), equalTo( "Good Bye, John!" ) );
+        assertThat( DefaultMethodsGenericConcern.count, equalTo( 2 ) );
+    }
+
+    @Test
     public void defaultMethodsSideEffects()
     {
         DefaultMethodsSideEffects composite = transientBuilderFactory.newTransient( DefaultMethodsSideEffects.class );
@@ -189,5 +259,15 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
         assertThat( DefaultMethodsSideEffect.count, equalTo( 3 ) );
+    }
+
+    @Test
+    public void defaultMethodsGenericSideEffects()
+    {
+        DefaultMethodsGenericSideEffects composite = transientBuilderFactory.newTransient( DefaultMethodsGenericSideEffects.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( DefaultMethodsGenericSideEffect.count, equalTo( 3 ) );
     }
 }
