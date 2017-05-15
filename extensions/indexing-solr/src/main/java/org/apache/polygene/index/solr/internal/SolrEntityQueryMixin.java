@@ -71,7 +71,7 @@ public class SolrEntityQueryMixin
 
             SolrServer server = solr.solrServer();
 
-            NamedList<Object> list = new NamedList<Object>();
+            NamedList<Object> list = new NamedList<>();
 
             list.add( "q", expr.query() );
             list.add( "rows", maxResults != 0 ? maxResults : 10000 );
@@ -95,7 +95,7 @@ public class SolrEntityQueryMixin
 
             SolrDocumentList results = query.getResults();
 
-            List<EntityReference> references = new ArrayList<EntityReference>( results.size() );
+            List<EntityReference> references = new ArrayList<>( results.size() );
             for( SolrDocument result : results )
             {
                 references.add( EntityReference.parseEntityReference( result.getFirstValue( "id" ).toString() ) );
@@ -127,7 +127,7 @@ public class SolrEntityQueryMixin
     {
         SolrServer server = solr.solrServer();
 
-        NamedList<Object> list = new NamedList<Object>();
+        NamedList<Object> list = new NamedList<>();
 
         list.add( "q", queryString );
 

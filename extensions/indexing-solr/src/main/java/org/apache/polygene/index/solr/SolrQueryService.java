@@ -22,7 +22,6 @@ package org.apache.polygene.index.solr;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.index.solr.internal.SolrEntityIndexerMixin;
 import org.apache.polygene.index.solr.internal.SolrEntityQueryMixin;
@@ -35,7 +34,7 @@ import org.apache.polygene.spi.query.EntityFinder;
 @Mixins( { SolrEntityIndexerMixin.class, SolrEntityQueryMixin.class } )
 @Activators( SolrQueryService.Activator.class )
 public interface SolrQueryService
-        extends EntityFinder, StateChangeListener, SolrSearch, ServiceComposite
+        extends EntityFinder, StateChangeListener, SolrSearch
 {
 
     void inflateSolrSchema();
