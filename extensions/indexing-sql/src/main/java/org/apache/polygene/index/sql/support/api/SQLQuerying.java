@@ -53,7 +53,7 @@ public interface SQLQuerying
      * @return The SQL query, which may be used with {@link PreparedStatement}.
      * @throws EntityFinderException If SQLException or something else bad happens.
      */
-    public String constructQuery( //
+    String constructQuery( //
         Class<?> resultType, //
         @Optional Predicate<Composite> whereClause, //
         @Optional List<OrderBy> orderBySegments, //
@@ -66,9 +66,9 @@ public interface SQLQuerying
     )
         throws EntityFinderException;
 
-    public Boolean isFirstResultSettingSupported();
+    Boolean isFirstResultSettingSupported();
 
-    public Integer getResultSetType( //
+    Integer getResultSetType( //
         @Optional Integer firstResult, //
         @Optional Integer maxResults //
     );

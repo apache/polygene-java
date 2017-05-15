@@ -36,7 +36,7 @@ public interface RebuildingStrategy
      * The re-building strategy which ALWAYS re-builds the database schema. Useful with tests and
      * during early development stage of application.
      */
-    public class AlwaysNeed
+    class AlwaysNeed
         implements RebuildingStrategy
     {
         @Override
@@ -50,7 +50,7 @@ public interface RebuildingStrategy
      * The re-building strategy which NEVER re-builds the database schema. Useful when current
      * Polygene-related database schema structure must be preserved at all costs.
      */
-    public class NeverNeed
+    class NeverNeed
         implements RebuildingStrategy
     {
         @Override
@@ -65,7 +65,7 @@ public interface RebuildingStrategy
      * when migration from versions is implemented, or when application structure changes along with
      * version (but not during same version).
      */
-    public class NeedOnChange
+    class NeedOnChange
         implements RebuildingStrategy
     {
         @Override
