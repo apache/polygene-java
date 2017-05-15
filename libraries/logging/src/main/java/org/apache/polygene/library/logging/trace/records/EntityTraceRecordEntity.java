@@ -25,7 +25,7 @@ import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.Queryable;
 
 @Queryable( false )
-public interface EntityTraceRecordEntity extends TraceRecord, EntityComposite
+public interface EntityTraceRecordEntity extends TraceRecord
 {
     Association<EntityComposite> source();
 }

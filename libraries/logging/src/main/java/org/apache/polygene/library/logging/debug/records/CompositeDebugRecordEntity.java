@@ -21,10 +21,9 @@
 package org.apache.polygene.library.logging.debug.records;
 
 import org.apache.polygene.api.composite.Composite;
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 
-public interface CompositeDebugRecordEntity extends DebugRecord, EntityComposite
+public interface CompositeDebugRecordEntity extends DebugRecord
 {
     Property<Composite> source();
 }

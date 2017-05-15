@@ -20,10 +20,9 @@
 
 package org.apache.polygene.library.logging.trace.records;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 
-public interface ServiceTraceRecordEntity extends TraceRecord, EntityComposite
+public interface ServiceTraceRecordEntity extends TraceRecord
 {
     Property<String> source();
 }

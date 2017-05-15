@@ -122,7 +122,7 @@ public class DebuggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Object> paramsList = new ArrayList<Object>( Arrays.asList( params ) );
+            List<Object> paramsList = new ArrayList<>( Arrays.asList( params ) );
             createDebugRecord( uow, composite, message, paramsList );
             uow.complete();
         }

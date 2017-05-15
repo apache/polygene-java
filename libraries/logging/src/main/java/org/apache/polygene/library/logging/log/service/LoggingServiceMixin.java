@@ -51,7 +51,7 @@ public abstract class LoggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Object> paramsList = new ArrayList<Object>();
+            List<Object> paramsList = new ArrayList<>();
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
         }
@@ -70,7 +70,7 @@ public abstract class LoggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Object> paramsList = new ArrayList<Object>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
@@ -90,7 +90,7 @@ public abstract class LoggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Object> paramsList = new ArrayList<Object>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             paramsList.add( param2 );
             createLogRecord( uow, type, composite, category, message, paramsList );
@@ -112,7 +112,7 @@ public abstract class LoggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Object> paramsList = new ArrayList<Object>( Arrays.asList( params ) );
+            List<Object> paramsList = new ArrayList<>( Arrays.asList( params ) );
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
         }

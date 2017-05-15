@@ -20,10 +20,9 @@
 
 package org.apache.polygene.library.logging.debug.records;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 
-public interface ServiceDebugRecordEntity extends DebugRecord, EntityComposite
+public interface ServiceDebugRecordEntity extends DebugRecord
 {
     Property<String> source();
 }

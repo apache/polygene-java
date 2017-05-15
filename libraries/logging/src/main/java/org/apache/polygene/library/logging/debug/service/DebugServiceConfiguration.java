@@ -20,11 +20,9 @@
 
 package org.apache.polygene.library.logging.debug.service;
 
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 public interface DebugServiceConfiguration
-    extends ConfigurationComposite
 {
     Property<Integer> debugLevel();
 }

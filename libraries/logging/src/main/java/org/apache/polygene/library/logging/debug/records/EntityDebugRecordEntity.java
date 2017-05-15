@@ -23,7 +23,7 @@ package org.apache.polygene.library.logging.debug.records;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.entity.EntityComposite;
 
-public interface EntityDebugRecordEntity extends DebugRecord, EntityComposite
+public interface EntityDebugRecordEntity extends DebugRecord
 {
     Association<EntityComposite> source();
 }

@@ -20,10 +20,9 @@
 package org.apache.polygene.library.logging.log.records;
 
 import org.apache.polygene.api.composite.Composite;
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 
-public interface CompositeLogRecord extends LogRecord, EntityComposite
+public interface CompositeLogRecord extends LogRecord
 {
     Property<Composite> source();
 }
