@@ -74,12 +74,13 @@ public @interface HasMetaInfo
         implements AnnotationQualifier<HasMetaInfo>
     {
         @Override
-        public <T> Predicate<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
+        public Predicate<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
         {
             return service ->
             {
                 for( Class metaInfoType : hasMetaInfo.value() )
                 {
+                    @SuppressWarnings( "unchecked" )
                     Object metaInfo = service.metaInfo( metaInfoType );
                     if( hasMetaInfo.anded() )
                     {
