@@ -19,7 +19,6 @@ package org.apache.polygene.entitystore.riak;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.constraints.annotation.OneOf;
 
@@ -29,7 +28,7 @@ import java.util.List;
  * Configuration for RiakEntityStoreService.
  */
 // START SNIPPET: config
-public interface RiakEntityStoreConfiguration extends ConfigurationComposite
+public interface RiakEntityStoreConfiguration
 {
     /**
      * List of Riak Protocol Buffer hosts.
