@@ -19,16 +19,10 @@
  */
 package org.apache.polygene.runtime.composite;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.composite.Composite;
@@ -45,7 +39,6 @@ import org.apache.polygene.runtime.injection.DependencyModel;
 public final class CompositeMethodsModel
     implements VisitableHierarchy<Object, Object>, Dependencies
 {
-    private final ConcurrentMap<Method, MethodCallHandler> methodHandleCache = new ConcurrentHashMap<>();
     private final LinkedHashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
@@ -103,8 +96,7 @@ public final class CompositeMethodsModel
             {
                 if( proxy instanceof Composite )
                 {
-                    MethodCallHandler callHandler = forMethod( method );
-                    return callHandler.invoke( proxy, args );
+                    throw new InternalError( "This shouldn't happen!" );
                 }
                 // Does this next line actually make any sense? Can we have a default method on an interface where the instance is not a Composite? Maybe... Let's try to trap a usecase by disallowing it.
 //                return method.invoke( proxy, args );
@@ -166,32 +158,4 @@ public final class CompositeMethodsModel
         return methods().toString();
     }
 
-    private MethodCallHandler forMethod( Method method )
-    {
-        return methodHandleCache.computeIfAbsent( method, this::createMethodCallHandler );
-    }
-
-    private MethodCallHandler createMethodCallHandler( Method method )
-    {
-        Class<?> declaringClass = method.getDeclaringClass();
-        try
-        {
-            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class, int.class );
-            constructor.setAccessible( true );
-            MethodHandles.Lookup lookup = constructor.newInstance( declaringClass, MethodHandles.Lookup.PRIVATE );
-            MethodHandle handle = lookup.unreflectSpecial( method, declaringClass );
-            return ( proxy, args ) -> handle.bindTo( proxy ).invokeWithArguments( args );
-        }
-        catch( IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
-
-    @FunctionalInterface
-    private interface MethodCallHandler
-    {
-        Object invoke( Object proxy, Object[] args )
-            throws Throwable;
-    }
 }

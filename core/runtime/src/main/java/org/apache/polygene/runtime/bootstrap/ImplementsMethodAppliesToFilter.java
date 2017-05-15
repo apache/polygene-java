@@ -35,8 +35,8 @@ final class ImplementsMethodAppliesToFilter
     {
         try
         {
-            return !Modifier.isAbstract( fragmentClass.getMethod( method.getName(), method.getParameterTypes() )
-                                             .getModifiers() );
+            Method fragmentMethod = fragmentClass.getMethod( method.getName(), method.getParameterTypes() );
+            return !Modifier.isAbstract( fragmentMethod.getModifiers() );
         }
         catch( NoSuchMethodException e )
         {

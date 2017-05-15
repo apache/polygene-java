@@ -21,7 +21,6 @@ import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.cache.ehcache.EhCacheConfiguration;
 import org.apache.polygene.cache.ehcache.EhCachePoolService;
@@ -43,20 +42,15 @@ public class JdbmEntityStorePerformanceTest
 
     private static Assembler createAssembler()
     {
-        return new Assembler()
+        return module ->
         {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                new JdbmEntityStoreAssembler().assemble( module );
-                ModuleAssembly configModule = module.layer().module( "Config" );
-                configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-                new EntityTestAssembler().assemble( configModule );
+            new JdbmEntityStoreAssembler().assemble( module );
+            ModuleAssembly configModule = module.layer().module( "Config" );
+            configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
+            new EntityTestAssembler().assemble( configModule );
 
-                module.services( EhCachePoolService.class );
-                configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );
-            }
+            module.services( EhCachePoolService.class );
+            configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );
         };
     }
 

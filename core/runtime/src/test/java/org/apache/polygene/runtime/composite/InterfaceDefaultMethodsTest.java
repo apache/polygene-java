@@ -28,12 +28,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.NotEmpty;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -79,18 +77,23 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
+    @Concerns( DefaultMethodsConcern.class )
     public interface DefaultMethodsConcerns extends DefaultMethods
     {
-        @Concerns( DefaultMethodsConcern.class )
         @Override
         default String sayHello( String name )
         {
             return greeting().get() + ", " + name + '!';
         }
+
+        default String sayGoodBye( String name )
+        {
+            return "Good Bye, " + name + '!';
+        }
     }
 
-    public static abstract class DefaultMethodsConcern extends ConcernOf<DefaultMethods>
-        implements DefaultMethods
+    public static abstract class DefaultMethodsConcern extends ConcernOf<DefaultMethodsConcerns>
+        implements DefaultMethodsConcerns
     {
         @Override
         public String sayHello( String name )
@@ -99,9 +102,9 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
+    @SideEffects( DefaultMethodsSideEffect.class )
     public interface DefaultMethodsSideEffects extends DefaultMethods
     {
-        @SideEffects( DefaultMethodsSideEffect.class )
         @Override
         default String sayHello( String name )
         {
@@ -112,25 +115,27 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
     public static abstract class DefaultMethodsSideEffect extends SideEffectOf<DefaultMethodsSideEffects>
         implements DefaultMethodsSideEffects
     {
-        static boolean invoked = false;
+        static int count;
 
         @Override
         public String sayHello( String name )
         {
-            invoked = true;
+            count++;
             return null;
         }
     }
 
     @Override
-    public void assemble( final ModuleAssembly module ) throws AssemblyException
+    public void assemble( final ModuleAssembly module )
+        throws AssemblyException
     {
         module.transients( DefaultMethods.class,
                            OverrideDefaultMethods.class,
                            MixinDefaultMethods.class,
                            DefaultMethodsConstraints.class,
                            DefaultMethodsConcerns.class,
-                           DefaultMethodsSideEffects.class );
+                           DefaultMethodsSideEffects.class
+                         );
     }
 
     @Test
@@ -168,20 +173,21 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsConcerns()
     {
         DefaultMethodsConcerns composite = transientBuilderFactory.newTransient( DefaultMethodsConcerns.class );
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, concerned John!" ) );
+        assertThat( composite.sayGoodBye( "John" ), equalTo( "Good Bye, John!" ) );
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsSideEffects()
     {
         DefaultMethodsSideEffects composite = transientBuilderFactory.newTransient( DefaultMethodsSideEffects.class );
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
-        assertThat( DefaultMethodsSideEffect.invoked, is( true ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( DefaultMethodsSideEffect.count, equalTo( 3 ) );
     }
 }

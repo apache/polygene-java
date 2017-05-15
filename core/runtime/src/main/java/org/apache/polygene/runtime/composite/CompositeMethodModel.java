@@ -93,7 +93,9 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( concerns, sideEffects ).filter( Objects::nonNull ).flatMap( Dependencies::dependencies );
+        Stream<? extends Dependencies> concerns = Stream.of( this.concerns, sideEffects );
+        Stream<? extends Dependencies> filteredNonNull = concerns.filter( Objects::nonNull );
+        return filteredNonNull.flatMap( Dependencies::dependencies );
     }
 
     // Context

@@ -189,7 +189,12 @@ public class MixinsModel
 
     public FragmentInvocationHandler newInvocationHandler( final Method method )
     {
-        return mixinFor( method ).newInvocationHandler( method );
+        MixinModel mixinModel = mixinFor( method );
+        if( mixinModel == null )
+        {
+            throw new InternalError( "MixinModel can't be found." );
+        }
+        return mixinModel.newInvocationHandler( method );
     }
 
     public Stream<DependencyModel> dependencies()
