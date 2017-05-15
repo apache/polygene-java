@@ -32,8 +32,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.NotEmpty;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.apache.polygene.test.util.Assume.assumeJavaVersion;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -43,6 +45,9 @@ import static org.junit.Assert.assertThat;
  */
 public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
+    @BeforeClass
+    public static void assumeJavaVersionIs8() { assumeJavaVersion( 8 ); }
+
     public interface DefaultMethods
     {
         @UseDefaults( "Hello" )

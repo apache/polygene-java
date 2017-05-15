@@ -23,8 +23,10 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.apache.polygene.test.util.Assume.assumeJavaVersion;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -33,6 +35,8 @@ import static org.junit.Assert.assertThat;
  */
 public class DefaultMethodsTest extends AbstractPolygeneTest
 {
+    @BeforeClass
+    public static void assumeJavaVersionIs8() { assumeJavaVersion( 8 ); }
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -64,7 +68,6 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
         Hello hello = builder.newInstance();
         assertThat( hello.speak(), equalTo( "Hello, Mixin!" ) );
         assertThat( Hello.noise(), equalTo( "Good Bye" ) );
-
     }
 
     public interface Hello
@@ -91,5 +94,4 @@ public class DefaultMethodsTest extends AbstractPolygeneTest
             return phrase().get() + ", Mixin!";
         }
     }
-
 }

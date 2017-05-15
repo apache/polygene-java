@@ -28,6 +28,7 @@ import java.util.Enumeration;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 
 /**
  * A set of methods useful for stating assumptions about the conditions in which a test is meaningful.
@@ -35,6 +36,14 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class Assume
     extends org.junit.Assume
 {
+    /**
+     * If called on a JDK which version is different than the given one, the test will halt and be ignored.
+     * @param version the java version, 6, 7, 8, 9, 10
+     */
+    public static void assumeJavaVersion( int version )
+    {
+        assumeThat( System.getProperty( "java.version" ), startsWith( "1." + version ) );
+    }
 
     /**
      * If called on a IBM JDK, the test will halt and be ignored.
@@ -55,7 +64,8 @@ public class Assume
             String display = System.getenv( "DISPLAY" );
             assumeThat( display, is( notNullValue() ) );
             assumeTrue( display.length() > 0 );
-        } catch( UnsatisfiedLinkError e )
+        }
+        catch( UnsatisfiedLinkError e )
         {
             // assuming that this is caused due to missing video subsystem, or similar
             assumeNoException( "Grahics system is missing?", e );
