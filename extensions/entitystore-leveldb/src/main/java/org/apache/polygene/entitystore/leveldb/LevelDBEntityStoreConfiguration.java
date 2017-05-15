@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.leveldb;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -28,9 +27,7 @@ import org.apache.polygene.api.property.Property;
  */
 // START SNIPPET: config
 public interface LevelDBEntityStoreConfiguration
-    extends ConfigurationComposite
 {
-
     /**
      * LevelDB flavour, can be 'java' or 'jni'.
      * By default, tries 'jni' and fallback to 'java'.
@@ -61,6 +58,5 @@ public interface LevelDBEntityStoreConfiguration
 
     @Optional
     Property<Integer> writeBufferSize();
-
 }
 // END SNIPPET: config
