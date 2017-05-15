@@ -34,6 +34,7 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
@@ -56,6 +57,9 @@ public class FileEntityStoreMixin
     FileConfiguration fileConfiguration;
 
     @This
+    private HasIdentity hasIdentity;
+
+    @This
     private Configuration<FileEntityStoreConfiguration> config;
 
     private String storeId;
@@ -68,7 +72,7 @@ public class FileEntityStoreMixin
         throws Exception
     {
         config.refresh();
-        storeId = config.get().identity().get().toString();
+        storeId = hasIdentity.identity().get().toString();
         String pathName = config.get().directory().get();
         if( pathName == null )
         {
