@@ -18,13 +18,12 @@
 package org.apache.polygene.index.elasticsearch.client;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.elasticsearch.ElasticSearchFinder;
 import org.apache.polygene.index.elasticsearch.ElasticSearchIndexer;
 import org.apache.polygene.index.elasticsearch.ElasticSearchSupport;
 
 @Mixins( ESClientSupport.class )
 public interface ESClientIndexQueryService
-    extends ElasticSearchIndexer, ElasticSearchFinder, ElasticSearchSupport, ServiceComposite
+    extends ElasticSearchIndexer, ElasticSearchFinder, ElasticSearchSupport
 {
 }

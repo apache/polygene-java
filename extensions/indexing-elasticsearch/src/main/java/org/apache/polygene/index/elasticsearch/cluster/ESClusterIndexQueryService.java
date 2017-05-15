@@ -20,13 +20,12 @@
 package org.apache.polygene.index.elasticsearch.cluster;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.elasticsearch.ElasticSearchFinder;
 import org.apache.polygene.index.elasticsearch.ElasticSearchIndexer;
 import org.apache.polygene.index.elasticsearch.ElasticSearchSupport;
 
 @Mixins( ESClusterSupport.class )
 public interface ESClusterIndexQueryService
-        extends ElasticSearchIndexer, ElasticSearchFinder, ElasticSearchSupport, ServiceComposite
+        extends ElasticSearchIndexer, ElasticSearchFinder, ElasticSearchSupport
 {
 }

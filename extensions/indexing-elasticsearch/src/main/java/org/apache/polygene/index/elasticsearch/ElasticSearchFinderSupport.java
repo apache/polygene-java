@@ -49,7 +49,7 @@ import org.elasticsearch.index.query.QueryBuilder;
         return value;
     }
 
-    /* package */ static interface ComplexTypeSupport
+    /* package */ interface ComplexTypeSupport
     {
 
         QueryBuilder comparison( ComparisonPredicate<?> spec, Map<String, Object> variables );
