@@ -205,7 +205,7 @@ public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         private final Iterator<EntityReference> idIterator;
 
-        public ManyAssociationIterator( Iterator<EntityReference> idIterator )
+        ManyAssociationIterator( Iterator<EntityReference> idIterator )
         {
             this.idIterator = idIterator;
         }

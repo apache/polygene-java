@@ -107,21 +107,19 @@ public final class ValueModel extends CompositeModel
                 catch( ConstraintViolationException e )
                 {
                     Stream<? extends Type> types = Classes.interfacesOf( associationModel.type() );
-                    throw new ConstraintViolationException( "<builder>", types, (Member) associationModel.accessor(), e.constraintViolations() );
+                    throw new ConstraintViolationException( "<builder>", types,
+                                                            (Member) associationModel.accessor(),
+                                                            e.constraintViolations() );
                 }
             }
         );
 
-        ( (ValueStateModel) stateModel ).manyAssociations().forEach( associationModel ->
-                                                                         associationModel.checkAssociationConstraints( state
-                                                                                                                           .manyAssociationFor( associationModel
-                                                                                                                                                    .accessor() ) )
+        ( (ValueStateModel) stateModel ).manyAssociations().forEach(
+            model -> model.checkAssociationConstraints( state.manyAssociationFor( model.accessor() ) )
         );
 
-        ( (ValueStateModel) stateModel ).namedAssociations().forEach( associationModel ->
-                                                                          associationModel.checkAssociationConstraints( state
-                                                                                                                            .namedAssociationFor( associationModel
-                                                                                                                                                      .accessor() ) )
+        ( (ValueStateModel) stateModel ).namedAssociations().forEach(
+            model -> model.checkAssociationConstraints( state.namedAssociationFor( model.accessor() ) )
         );
     }
 

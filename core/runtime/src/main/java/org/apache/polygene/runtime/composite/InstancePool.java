@@ -24,7 +24,7 @@ package org.apache.polygene.runtime.composite;
  */
 public interface InstancePool<T>
 {
-    public T obtainInstance();
+    T obtainInstance();
 
-    public void releaseInstance( T instance );
+    void releaseInstance( T instance );
 }

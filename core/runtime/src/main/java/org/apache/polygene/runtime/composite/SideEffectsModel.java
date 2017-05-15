@@ -59,7 +59,7 @@ public final class SideEffectsModel
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
-        List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
+        List<InvocationHandler> sideEffects = new ArrayList<>( sideEffectModels.size() );
         for( SideEffectModel sideEffectModel : sideEffectModels )
         {
             InvocationHandler sideEffect = sideEffectModel.newInstance( module, result, proxyHandler, method );

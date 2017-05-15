@@ -171,9 +171,7 @@ public final class ImportedServiceReferenceInstance<T>
                     {
                         activation.activate(
                             serviceModel.newActivatorsInstance( module ),
-                            serviceInstanceBeingActivated, () -> {
-                                active = true;
-                            }
+                            serviceInstanceBeingActivated, () -> active = true
                         );
                     }
                     catch( Exception e )

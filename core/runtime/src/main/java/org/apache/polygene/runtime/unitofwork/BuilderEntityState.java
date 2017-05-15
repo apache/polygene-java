@@ -118,25 +118,15 @@ public final class BuilderEntityState
     @Override
     public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
-        ManyAssociationState state = manyAssociations.get( stateName );
-        if( state == null )
-        {
-            state = new BuilderManyAssociationState();
-            manyAssociations.put( stateName, state );
-        }
-        return state;
+        return manyAssociations.computeIfAbsent( stateName,
+                                                 qualifiedName -> new BuilderManyAssociationState() );
     }
 
     @Override
     public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
     {
-        NamedAssociationState state = namedAssociations.get( stateName );
-        if( state == null )
-        {
-            state = new BuilderNamedAssociationState();
-            namedAssociations.put( stateName, state );
-        }
-        return state;
+        return namedAssociations.computeIfAbsent( stateName,
+                                                  qualifiedName -> new BuilderNamedAssociationState() );
     }
 
     public void copyTo( EntityState newEntityState )

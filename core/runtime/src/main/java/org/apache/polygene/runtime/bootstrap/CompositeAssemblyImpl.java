@@ -83,7 +83,7 @@ import org.apache.polygene.runtime.composite.ConcernModel;
 import org.apache.polygene.runtime.composite.ConcernsModel;
 import org.apache.polygene.runtime.composite.ConstraintModel;
 import org.apache.polygene.runtime.composite.ConstraintsModel;
-import org.apache.polygene.runtime.composite.Genericpredicate;
+import org.apache.polygene.runtime.composite.GenericPredicate;
 import org.apache.polygene.runtime.composite.MixinModel;
 import org.apache.polygene.runtime.composite.MixinsModel;
 import org.apache.polygene.runtime.composite.SideEffectModel;
@@ -350,7 +350,7 @@ public abstract class CompositeAssemblyImpl
         // side only.
         Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
         return mixins.filter( isAssignableFrom( method.getDeclaringClass() )
-                                  .and( Genericpredicate.INSTANCE.or( appliesToSpec ) ) )
+                                  .and( GenericPredicate.INSTANCE.or( appliesToSpec ) ) )
                      .findFirst().orElse( null );
     }
 
@@ -358,7 +358,7 @@ public abstract class CompositeAssemblyImpl
     {
         // Check if mixinClass is generic and the applies-to filter passes
         Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
-        return mixins.filter( Genericpredicate.INSTANCE.and( appliesToSpec ) ).findFirst().orElse( null );
+        return mixins.filter( GenericPredicate.INSTANCE.and( appliesToSpec ) ).findFirst().orElse( null );
     }
 
     private MixinModel implementMethodWithClass( Method method, Class mixinClass )
@@ -524,8 +524,7 @@ public abstract class CompositeAssemblyImpl
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
             boolean optional = Stream.of( parameterAnnotation )
-                                     .filter( isType( Optional.class ) )
-                                     .findFirst().isPresent();
+                                     .anyMatch( isType( Optional.class ) );
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
                 Arrays.stream( parameterAnnotation ),
                 parameterTypes[ i ],

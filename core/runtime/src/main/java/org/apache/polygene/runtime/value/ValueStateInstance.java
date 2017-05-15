@@ -51,18 +51,6 @@ public final class ValueStateInstance
     private final Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations;
     private final Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations;
 
-    public ValueStateInstance( Map<AccessibleObject, PropertyInstance<?>> properties,
-                               Map<AccessibleObject, AssociationInstance<?>> associations,
-                               Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations,
-                               Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations
-    )
-    {
-        this.properties = properties;
-        this.associations = associations;
-        this.manyAssociations = manyAssociations;
-        this.namedAssociations = namedAssociations;
-    }
-
     public ValueStateInstance( ValueDescriptor compositeModelModule,
                                ModuleInstance currentModule,
                                StateResolver stateResolver

@@ -33,12 +33,7 @@ import org.apache.polygene.spi.entity.ManyAssociationState;
 public final class BuilderManyAssociationState
     implements ManyAssociationState
 {
-    private List<EntityReference> references;
-
-    public BuilderManyAssociationState()
-    {
-        references = new ArrayList<EntityReference>();
-    }
+    private List<EntityReference> references = new ArrayList<>();
 
     @Override
     public int count()

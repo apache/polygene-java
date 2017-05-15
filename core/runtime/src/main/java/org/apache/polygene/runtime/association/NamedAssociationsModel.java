@@ -82,10 +82,6 @@ public final class NamedAssociationsModel
     public NamedAssociationModel getNamedAssociation( AccessibleObject accessor )
         throws IllegalArgumentException
     {
-        if( false )
-        {
-            return (NamedAssociationModel) getNamedAssociationByName( QualifiedName.fromAccessor( accessor ).name() );
-        }
         NamedAssociationModel namedAssociationModel = mapAccessorAssociationModel.get( accessor );
         if( namedAssociationModel == null )
         {

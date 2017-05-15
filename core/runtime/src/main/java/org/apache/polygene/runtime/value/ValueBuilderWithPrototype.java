@@ -146,7 +146,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public PropertyDescriptorFunction( ValueStateInstance prototypeState )
+        PropertyDescriptorFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -163,7 +163,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorEntityReferenceFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorEntityReferenceFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -180,7 +180,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorIterableFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorIterableFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -197,7 +197,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorMapFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorMapFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }

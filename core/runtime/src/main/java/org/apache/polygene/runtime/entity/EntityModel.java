@@ -139,24 +139,22 @@ public final class EntityModel extends CompositeModel
     public void initState( ModuleDescriptor module, EntityState entityState )
     {
         // Set new properties to default value
-        state().properties().forEach( propertyDescriptor -> {
-            entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.resolveInitialValue(module) );
-        } );
+        state().properties().forEach(
+            propertyDescriptor -> entityState.setPropertyValue( propertyDescriptor.qualifiedName(),
+                                                                propertyDescriptor.resolveInitialValue( module ) ) );
 
         // Set new associations to null
-        state().associations().forEach( associationDescriptor -> {
-            entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
-        } );
+        state().associations().forEach(
+            associationDescriptor -> entityState.setAssociationValue( associationDescriptor.qualifiedName(),
+                                                                      null ) );
 
         // Set new many-associations to empty
-        state().manyAssociations().forEach( associationDescriptor -> {
-            entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
-        } );
+        state().manyAssociations().forEach(
+            associationDescriptor -> entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() ) );
 
         // Set new named-associations to empty
-        state().namedAssociations().forEach( associationDescriptor -> {
-            entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
-        } );
+        state().namedAssociations().forEach(
+            associationDescriptor -> entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() ) );
     }
 
     public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )

@@ -64,14 +64,7 @@ import static org.apache.polygene.api.unitofwork.UnitOfWorkCallback.UnitOfWorkSt
 
 public final class UnitOfWorkInstance
 {
-    private static final ThreadLocal<Stack<UnitOfWorkInstance>> CURRENT = new ThreadLocal<Stack<UnitOfWorkInstance>>()
-    {
-        @Override
-        protected Stack<UnitOfWorkInstance> initialValue()
-        {
-            return new Stack<>();
-        }
-    };
+    private static final ThreadLocal<Stack<UnitOfWorkInstance>> CURRENT = ThreadLocal.withInitial( Stack::new );
 
     public static Stack<UnitOfWorkInstance> getCurrent()
     {
@@ -114,13 +107,8 @@ public final class UnitOfWorkInstance
 
     public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store )
     {
-        EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
-        if( uow == null )
-        {
-            uow = store.newUnitOfWork( module.descriptor(), usecase, currentTime );
-            storeUnitOfWork.put( store, uow );
-        }
-        return uow;
+        return storeUnitOfWork.computeIfAbsent( store,
+                                                s -> s.newUnitOfWork( module.descriptor(), usecase, currentTime ) );
     }
 
     public <T> T get( EntityReference reference,

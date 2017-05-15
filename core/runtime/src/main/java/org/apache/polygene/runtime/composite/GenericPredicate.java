@@ -17,23 +17,22 @@
  *
  *
  */
+package org.apache.polygene.runtime.composite;
 
-package org.apache.polygene.runtime.unitofwork;
-
-import org.apache.polygene.api.association.AssociationStateHolder;
-import org.apache.polygene.spi.entity.EntityState;
+import java.lang.reflect.InvocationHandler;
+import java.util.function.Predicate;
 
 /**
- * JAVADOC
+ * Specification that checks whether a given class implements InvocationHandler or not.
  */
-final class EntityStateStore
+public class GenericPredicate
+    implements Predicate<Class<?>>
 {
-    AssociationStateHolder stateHolder;
-    EntityState state;
+    public static final GenericPredicate INSTANCE = new GenericPredicate();
 
     @Override
-    public String toString()
+    public boolean test( Class<?> item )
     {
-        return state.entityReference().toString();
+        return InvocationHandler.class.isAssignableFrom( item );
     }
 }

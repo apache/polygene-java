@@ -27,8 +27,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
@@ -263,16 +261,13 @@ public final class ConstructorsModel
         }
 
         // Sort based on parameter count
-        Collections.sort( boundConstructors, new Comparator<ConstructorModel>()
-        {
-            @Override
-            public int compare( ConstructorModel o1, ConstructorModel o2 )
+        boundConstructors.sort(
+            ( o1, o2 ) ->
             {
                 Integer model2ParametersCount = o2.constructor().getParameterTypes().length;
                 int model1ParametersCount = o1.constructor().getParameterTypes().length;
                 return model2ParametersCount.compareTo( model1ParametersCount );
-            }
-        } );
+            } );
     }
 
     public Object newInstance( InjectionContext injectionContext )

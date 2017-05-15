@@ -108,8 +108,7 @@ public final class InvocationInjectionProviderFactory
                 if( isAnIterable && haveOneGenericType && thatIsOfTypeMethod )
                 {
                     Class<?> injectedClass = dependencyModel.injectedClass();
-                    Iterable<Method> result = methodModel.invocationsFor( injectedClass );
-                    return result;
+                    return methodModel.invocationsFor( injectedClass );
                 }
             }
             return null;

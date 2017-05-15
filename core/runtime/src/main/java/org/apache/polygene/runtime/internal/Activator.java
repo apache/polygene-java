@@ -19,12 +19,11 @@
  */
 package org.apache.polygene.runtime.internal;
 
+import org.apache.polygene.bootstrap.RuntimeFactory;
+import org.apache.polygene.runtime.PolygeneRuntimeImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.polygene.bootstrap.PolygeneRuntime;
-import org.apache.polygene.bootstrap.RuntimeFactory;
-import org.apache.polygene.runtime.PolygeneRuntimeImpl;
 
 /**
  *
@@ -38,14 +37,7 @@ public class Activator
     public void start( BundleContext bundleContext )
         throws Exception
     {
-        RuntimeFactory factory = new RuntimeFactory()
-        {
-            @Override
-            public PolygeneRuntime createRuntime()
-            {
-                return new PolygeneRuntimeImpl();
-            }
-        };
+        RuntimeFactory factory = PolygeneRuntimeImpl::new;
         registration = bundleContext.registerService( RuntimeFactory.class.getName(), factory, null );
     }
 
