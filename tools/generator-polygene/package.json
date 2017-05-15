@@ -1,18 +1,29 @@
 {
   "name": "generator-polygene",
-  "version": "3.0.0-RC0",
+  "version": "3.0.0",
   "polygene_version": "0",
   "description": "Generates an Apache Polygene project.",
+  "homepage": "https://polygene.apache.org",
+  "license": "Apache-2.0",
+  "bugs": {
+    "mail": "dev@polygene.apache.org",
+    "url": "https://issues.apache.org/jira/browse/POLYGENE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git-wip-us.apache.org/repos/asf/polygene-java.git"
+  },
   "scripts": {
     "test": "mocha ./test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTest/generator-polygene.xml",
     "test_all": "TEST_ALL=yes mocha ./test/generator_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=../../reports/tests/npmTestAll/generator-polygene.xml"
   },
-  "files": [
-    "app"
-  ],
   "keywords": [
     "yeoman-generator",
     "apache-polygene"
+  ],
+  "preferGlobal": true,
+  "files": [
+    "app"
   ],
   "dependencies": {
     "yeoman-generator": "^0.24.1"
