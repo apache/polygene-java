@@ -29,7 +29,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceComposite;
-import org.apache.polygene.api.value.ValueComposite;
 
 /**
  * Event for indicating change of AlarmStatus of an AlarmPoint.
@@ -38,7 +37,7 @@ import org.apache.polygene.api.value.ValueComposite;
  */
 @Mixins( AlarmEvent.Mixin.class )
 public interface AlarmEvent
-    extends ValueComposite, HasIdentity
+    extends HasIdentity
 {
     /**
      * Returns the reference of the AlarmPoint that generated the event.

@@ -19,10 +19,9 @@
  */
 package org.apache.polygene.library.alarm;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.mixin.Mixins;
 
 @Mixins(AlarmPoint.AlarmPointMixin.class)
-public interface AlarmPointEntity extends AlarmPoint, EntityComposite
+public interface AlarmPointEntity extends AlarmPoint
 {
 }

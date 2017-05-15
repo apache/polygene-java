@@ -346,11 +346,8 @@ public interface AlarmPoint extends HasIdentity
         @Override
         public List<String> attributeNames()
         {
-            ArrayList<String> result = new ArrayList<String>();
-            for( String name : state.attributes().get().keySet() )
-            {
-                result.add( name );
-            }
+            ArrayList<String> result = new ArrayList<>();
+            result.addAll( state.attributes().get().keySet() );
             return result;
         }
 

@@ -158,7 +158,7 @@ public interface AlarmSystem
 
         public AlarmSystemMixin()
         {
-            alarmListeners = new CopyOnWriteArrayList<AlarmListener>();
+            alarmListeners = new CopyOnWriteArrayList<>();
         }
 
         /**
@@ -167,7 +167,7 @@ public interface AlarmSystem
         @Override
         public List<AlarmModelDescriptor> alarmModels()
         {
-            List<AlarmModelDescriptor> descriptors = new ArrayList<AlarmModelDescriptor>();
+            List<AlarmModelDescriptor> descriptors = new ArrayList<>();
             for( ServiceReference<AlarmModel> model : models )
             {
                 descriptors.add( model.metaInfo( AlarmModelDescriptor.class ) );
