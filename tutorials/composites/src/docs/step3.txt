@@ -31,7 +31,7 @@ Steps for this tutorial:
 
 - Refactor the Mixin into one which implement the behaviour interface and one which implements the state interface. Use the @This injection annotation to allow the behaviour to access the state.
 - Add a @Mixins annotations on the behaviour and state interfaces which declare the Mixins as default implementations.
-- Remove the @Mixins annotation from the TransientComposite interface.
+- Remove the @Mixins annotation from the HelloWorldComposite interface.
 
 == Solution ==
 

@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.tutorials.composites.tutorial4;
 
-import org.apache.polygene.api.composite.TransientComposite;
-
 // START SNIPPET: solution
 
 /**
@@ -34,7 +32,7 @@ import org.apache.polygene.api.composite.TransientComposite;
  * </p>
  */
 public interface HelloWorldComposite
-    extends HelloWorld, TransientComposite
+    extends HelloWorld
 {
 }
 // END SNIPPET: solution

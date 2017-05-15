@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.tutorials.composites.tutorial7;
 
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.sideeffect.SideEffects;
 
@@ -35,7 +34,7 @@ import org.apache.polygene.api.sideeffect.SideEffects;
 @Mixins( { HelloWorldBehaviourMixin.class, HelloWorldStateMixin.class } )
 @SideEffects( HelloWorldBehaviourSideEffect.class )
 public interface HelloWorldComposite
-    extends HelloWorld, TransientComposite
+    extends HelloWorld
 {
 }
 // END SNIPPET: solution
