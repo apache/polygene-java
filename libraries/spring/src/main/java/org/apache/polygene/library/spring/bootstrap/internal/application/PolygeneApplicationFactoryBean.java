@@ -87,18 +87,13 @@ public final class PolygeneApplicationFactoryBean
         Energy4Java energy4Java = new Energy4Java();
         try
         {
-            return energy4Java.newApplication( new ApplicationAssembler()
-            {
-
-                @Override
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                        throws AssemblyException
+            return energy4Java.newApplication(
+                factory ->
                 {
-                    final ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
-                    PolygeneApplicationFactoryBean.this.applicationBootstrap.assemble( applicationAssembly );
+                    ApplicationAssembly applicationAssembly = factory.newApplicationAssembly();
+                    applicationBootstrap.assemble( applicationAssembly );
                     return applicationAssembly;
-                }
-            } );
+                } );
         } catch ( AssemblyException e )
         {
             throw new BeanInitializationException( "Fail to bootstrap Polygene application.", e );

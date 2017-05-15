@@ -54,7 +54,7 @@ public final class PolygeneBootstrapBeanDefinitionParser
     private PolygeneApplicationBootstrap createPolygeneApplicationBootstrap( Element anElement, ParserContext aParserContext )
     {
         String bootstrapClassString = anElement.getAttribute( CLASS );
-        hasText( bootstrapClassString );
+        hasText( bootstrapClassString, "No " + CLASS + " attribute found" );
         XmlReaderContext readerContext = aParserContext.getReaderContext();
 
         Class<?> bootstrapClass;
