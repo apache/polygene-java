@@ -29,13 +29,12 @@ import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 
 @Mixins( HttpRepositoryService.HttpRepositoryMixin.class )
 @Activators( HttpRepositoryService.Activator.class )
 public interface HttpRepositoryService
-    extends Repository, ServiceComposite
+    extends Repository
 {
     @Override
     void initialize()
@@ -45,7 +44,7 @@ public interface HttpRepositoryService
     void shutDown()
             throws RepositoryException;
 
-    public static class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<HttpRepositoryService>>
     {
 
@@ -65,7 +64,7 @@ public interface HttpRepositoryService
 
     }
 
-    public static class HttpRepositoryMixin
+    class HttpRepositoryMixin
         extends HTTPRepository
         implements Repository
     {

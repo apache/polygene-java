@@ -30,13 +30,12 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 
 @Mixins( MemoryRepositoryService.MemoryRepositoryMixin.class )
 @Activators( MemoryRepositoryService.Activator.class )
 public interface MemoryRepositoryService
-    extends Repository, ServiceComposite
+    extends Repository
 {
 
     @Override
@@ -47,7 +46,7 @@ public interface MemoryRepositoryService
     void shutDown()
         throws RepositoryException;
 
-    public static class Activator
+    class Activator
         extends ActivatorAdapter<ServiceReference<MemoryRepositoryService>>
     {
 
@@ -66,7 +65,7 @@ public interface MemoryRepositoryService
         }
     }
 
-    public static abstract class MemoryRepositoryMixin
+    abstract class MemoryRepositoryMixin
         implements MemoryRepositoryService, ResetableRepository
     {
 

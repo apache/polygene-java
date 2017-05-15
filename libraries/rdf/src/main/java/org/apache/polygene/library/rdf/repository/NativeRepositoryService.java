@@ -35,13 +35,12 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.Availability;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
 
 @Mixins( { NativeRepositoryService.NativeRepositoryMixin.class } )
 @Activators( NativeRepositoryService.Activator.class )
-public interface NativeRepositoryService extends Repository, ServiceComposite, Availability
+public interface NativeRepositoryService extends Repository, Availability
 {
     @Override
     void initialize()

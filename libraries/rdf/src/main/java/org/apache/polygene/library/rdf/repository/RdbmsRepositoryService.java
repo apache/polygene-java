@@ -32,23 +32,22 @@ import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 
 @Mixins( RdbmsRepositoryService.RdbmsRepositoryMixin.class )
 @Activators( RdbmsRepositoryService.Activator.class )
-public interface RdbmsRepositoryService extends Repository, ServiceComposite
+public interface RdbmsRepositoryService extends Repository
 {
 
     @Override
-    public void initialize()
+    void initialize()
             throws RepositoryException;
 
     @Override
-    public void shutDown()
+    void shutDown()
             throws RepositoryException;
 
-    public static class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<RdbmsRepositoryService>>
     {
 
@@ -68,7 +67,7 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
 
     }
 
-    public static abstract class RdbmsRepositoryMixin
+    abstract class RdbmsRepositoryMixin
         implements RdbmsRepositoryService
     {
         @This
