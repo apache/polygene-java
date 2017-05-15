@@ -20,14 +20,10 @@
 package org.apache.polygene.library.shiro.domain.permissions;
 
 import org.apache.polygene.api.association.Association;
-import org.apache.polygene.api.entity.EntityComposite;
 
 public interface RoleAssignment
-        extends EntityComposite
 {
-
     Association<Role> role();
 
     Association<RoleAssignee> assignee();
-
 }

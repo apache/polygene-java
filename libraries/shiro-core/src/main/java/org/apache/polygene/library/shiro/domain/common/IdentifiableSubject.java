@@ -23,7 +23,5 @@ import org.apache.polygene.api.property.Property;
 
 public interface IdentifiableSubject
 {
-
     Property<String> subjectIdentifier();
-
 }

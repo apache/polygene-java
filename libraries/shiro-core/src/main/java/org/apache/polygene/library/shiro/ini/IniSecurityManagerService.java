@@ -45,7 +45,7 @@ public interface IniSecurityManagerService
 
     SecurityManager getSecurityManager();
 
-    public class Mixin
+    class Mixin
             extends IniSecurityManagerFactory
             implements IniSecurityManagerService
     {
@@ -79,7 +79,7 @@ public interface IniSecurityManagerService
 
                 // Register Realms Services
                 RealmSecurityManager realmSecurityManager = ( RealmSecurityManager ) securityManager;
-                Collection<Realm> iniRealms = new ArrayList<Realm>( realmSecurityManager.getRealms() );
+                Collection<Realm> iniRealms = new ArrayList<>( realmSecurityManager.getRealms() );
                 for ( ServiceReference<Realm> realmRef : realmsRefs ) {
                     iniRealms.add( realmRef.get() );
                     LOG.debug( "Realm Service '{}' registered!", realmRef.identity() );

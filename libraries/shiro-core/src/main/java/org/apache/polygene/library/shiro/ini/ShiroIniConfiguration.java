@@ -20,14 +20,11 @@
 package org.apache.polygene.library.shiro.ini;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 // START SNIPPET: config
 public interface ShiroIniConfiguration
-        extends ConfigurationComposite
 {
-
     /**
      * Resource path of the ini configuration file.
      * "classpath:", "file": and "url:" prefixes are supported.
@@ -35,6 +32,5 @@ public interface ShiroIniConfiguration
      */
     @Optional
     Property<String> iniResourcePath();
-
 }
 // END SNIPPET: config

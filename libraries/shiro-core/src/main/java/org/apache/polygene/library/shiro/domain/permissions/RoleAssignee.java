@@ -25,16 +25,15 @@ import java.util.Set;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.entity.Aggregated;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.library.shiro.domain.common.IdentifiableSubject;
 
 @Mixins( RoleAssignee.Mixin.class )
 public interface RoleAssignee
-        extends IdentifiableSubject, EntityComposite
+    extends IdentifiableSubject, HasIdentity
 {
-
     @Aggregated
     @UseDefaults
     ManyAssociation<RoleAssignment> roleAssignments();
@@ -43,17 +42,16 @@ public interface RoleAssignee
 
     Set<String> permissionStrings();
 
-    public abstract class Mixin
+    abstract class Mixin
             implements RoleAssignee
     {
-
         @This
         private RoleAssignee roleAssignee;
 
         @Override
         public Set<String> roleNames()
         {
-            Set<String> roleNames = new HashSet<String>();
+            Set<String> roleNames = new HashSet<>();
             for ( RoleAssignment assignment : roleAssignee.roleAssignments() ) {
                 roleNames.add( assignment.role().get().name().get() );
             }
@@ -63,13 +61,11 @@ public interface RoleAssignee
         @Override
         public Set<String> permissionStrings()
         {
-            Set<String> permissionStrings = new HashSet<String>();
+            Set<String> permissionStrings = new HashSet<>();
             for ( RoleAssignment assignment : roleAssignee.roleAssignments() ) {
                 permissionStrings.addAll( assignment.role().get().permissions().get() );
             }
             return Collections.unmodifiableSet( permissionStrings );
         }
-
     }
-
 }

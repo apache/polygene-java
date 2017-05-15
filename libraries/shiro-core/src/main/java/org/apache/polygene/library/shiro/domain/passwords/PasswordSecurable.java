@@ -19,16 +19,13 @@
  */
 package org.apache.polygene.library.shiro.domain.passwords;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.shiro.domain.common.IdentifiableSubject;
 
 public interface PasswordSecurable
-        extends IdentifiableSubject, EntityComposite
+    extends IdentifiableSubject
 {
-
     @Queryable( false )
     Property<String> password();
-
 }

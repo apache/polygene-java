@@ -20,13 +20,10 @@
 package org.apache.polygene.library.shiro.domain.passwords;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 public interface PasswordRealmConfiguration
-        extends ConfigurationComposite
 {
-
     // START SNIPPET: config
     /**
      * Sets the name of the MessageDigest algorithm that will be used to compute hashes.
@@ -40,5 +37,4 @@ public interface PasswordRealmConfiguration
     @Optional
     Property<Integer> hashIterationsCount();
     // END SNIPPET: config
-
 }
