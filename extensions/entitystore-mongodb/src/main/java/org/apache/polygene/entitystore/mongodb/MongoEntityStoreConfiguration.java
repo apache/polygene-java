@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.entitystore.mongodb;
 
-import com.mongodb.ServerAddress;
 import java.util.List;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
@@ -36,7 +35,7 @@ public interface MongoEntityStoreConfiguration
     Property<Integer> port();
 
     @UseDefaults
-    Property<List<ServerAddress>> nodes();
+    Property<List<String>> nodes();
 
     @UseDefaults
     Property<String> username();
@@ -86,7 +85,7 @@ public interface MongoEntityStoreConfiguration
          * Exceptions are raised for network issues, and server errors;
          * waits on a majority of servers for the write operation.
          */
-        MAJORITY;
+        MAJORITY
 
     }
 }

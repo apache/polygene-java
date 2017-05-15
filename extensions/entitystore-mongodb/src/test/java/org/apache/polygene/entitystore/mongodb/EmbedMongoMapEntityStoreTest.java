@@ -45,14 +45,14 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
     private static int port;
     private static MongodExecutable mongod;
 
-
     @BeforeClass
-    public static void startEmbedMongo() throws IOException
+    public static void startEmbedMongo()
+        throws IOException
     {
         port = FreePortFinder.findFreePortOnLoopback();
         mongod = MONGO_STARTER.prepare( new MongodConfigBuilder()
                                             .version( Version.Main.PRODUCTION )
-					.net( new Net( "localhost", port, Network.localhostIsIPv6() ) )
+                                            .net( new Net( "localhost", port, Network.localhostIsIPv6() ) )
                                             .build() );
         mongod.start();
     }
@@ -76,7 +76,6 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
         new EntityTestAssembler().assemble( config );
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-
 
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
                                                           .declareDefaults();

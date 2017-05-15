@@ -34,8 +34,7 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
  * Test the MongoMapEntityStoreService.
  * <p>Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017</p>
  */
-public class MongoMapEntityStoreTest
-    extends AbstractEntityStoreTest
+public class MongoMapEntityStoreTest extends AbstractEntityStoreTest
 {
     @BeforeClass
     public static void beforeRedisMapEntityStoreTests()
@@ -64,6 +63,7 @@ public class MongoMapEntityStoreTest
         mongoConfig.collection().set( "polygene:test:entities" );
         // START SNIPPET: assembly
     }
+
     // END SNIPPET: assembly
     private Mongo mongo;
     private String dbName;
@@ -76,7 +76,6 @@ public class MongoMapEntityStoreTest
         MongoMapEntityStoreService es = serviceFinder.findService( MongoMapEntityStoreService.class ).get();
         mongo = es.mongoInstanceUsed();
         dbName = es.dbInstanceUsed().getName();
-
     }
 
     @Override
