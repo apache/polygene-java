@@ -51,12 +51,12 @@ import static org.apache.polygene.api.util.Classes.interfacesOf;
 public class MixinsModel
     implements Binder, VisitableHierarchy<Object, Object>, Dependencies
 {
-    protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
-    protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
-    protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
+    protected final Map<Method, MixinModel> methodImplementation = new HashMap<>();
+    protected final Map<Method, Integer> methodIndex = new HashMap<>();
+    protected List<MixinModel> mixinModels = new ArrayList<>();
 
-    private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
-    private final Set<Class<?>> mixinTypes = new LinkedHashSet<Class<?>>();
+    private final Map<Class, Integer> mixinIndex = new HashMap<>();
+    private final Set<Class<?>> mixinTypes = new LinkedHashSet<>();
 
     public Stream<Class<?>> mixinTypes()
     {
@@ -127,7 +127,7 @@ public class MixinsModel
         throws BindingException
     {
         // Order mixins based on @This usages
-        UsageGraph<MixinModel> deps = new UsageGraph<MixinModel>( mixinModels, new Uses(), true );
+        UsageGraph<MixinModel> deps = new UsageGraph<>( mixinModels, new Uses(), true );
         mixinModels = deps.resolveOrder();
 
         // Populate mappings
