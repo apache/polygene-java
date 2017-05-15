@@ -35,7 +35,7 @@ public class LibraryMixin
 
     public LibraryMixin( @This Configuration<LibraryConfiguration> config, @Structure ValueBuilderFactory factory )
     {
-        books = new HashMap<String, ArrayList<Book>>();
+        books = new HashMap<>();
         String titles = config.get().titles().get();
         String authors = config.get().authors().get();
         int copies = config.get().copies().get();
@@ -84,7 +84,7 @@ public class LibraryMixin
 
     private void createBook( ValueBuilderFactory factory, String author, String title, int copies )
     {
-        ArrayList<Book> bookCopies = new ArrayList<Book>();
+        ArrayList<Book> bookCopies = new ArrayList<>();
         String key = constructKey( author, title );
         books.put( key, bookCopies );
 

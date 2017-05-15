@@ -19,11 +19,9 @@
  */
 package org.apache.polygene.tutorials.services.step4;
 
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 public interface LibraryConfiguration
-    extends ConfigurationComposite
 {
     Property<String> titles();
 

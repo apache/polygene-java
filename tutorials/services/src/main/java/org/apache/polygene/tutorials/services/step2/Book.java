@@ -20,10 +20,8 @@
 package org.apache.polygene.tutorials.services.step2;
 
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.value.ValueComposite;
 
 public interface Book
-    extends ValueComposite
 {
     Property<String> title();
 

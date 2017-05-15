@@ -20,10 +20,9 @@
 package org.apache.polygene.tutorials.services.step2;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 @Mixins( LibraryMixin.class )
 public interface LibraryService
-    extends Library, ServiceComposite
+    extends Library
 {
 }
