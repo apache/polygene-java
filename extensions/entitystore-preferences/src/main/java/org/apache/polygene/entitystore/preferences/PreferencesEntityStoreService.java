@@ -23,7 +23,6 @@ package org.apache.polygene.entitystore.preferences;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -55,6 +54,6 @@ import org.apache.polygene.spi.entitystore.EntityStore;
 @Concerns( ConcurrentModificationCheckConcern.class )
 @Mixins( PreferencesEntityStoreMixin.class )
 public interface PreferencesEntityStoreService
-    extends EntityStore, ServiceComposite, EntityStateVersions, ServiceActivation
+    extends EntityStore, EntityStateVersions, ServiceActivation
 {
 }
