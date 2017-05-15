@@ -23,26 +23,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.polygene.api.activation.ActivationEvent;
-import org.apache.polygene.api.activation.ActivationEventListener;
 import org.apache.polygene.api.structure.Application;
 
 public final class FileConfigurationDataWiper
 {
-
     public static void registerApplicationPassivationDataWiper( FileConfiguration fileConfig, Application application )
     {
-        final List<File> dataDirectories = new ArrayList<File>();
+        final List<File> dataDirectories = new ArrayList<>();
         dataDirectories.add( fileConfig.configurationDirectory() );
         dataDirectories.add( fileConfig.cacheDirectory() );
         dataDirectories.add( fileConfig.dataDirectory() );
         dataDirectories.add( fileConfig.logDirectory() );
         dataDirectories.add( fileConfig.temporaryDirectory() );
-        application.registerActivationEventListener( new ActivationEventListener()
-        {
-            @Override
-            public void onEvent( ActivationEvent event )
+        application.registerActivationEventListener(
+            event ->
             {
-                if( event.type() == ActivationEvent.EventType.PASSIVATED && Application.class.isAssignableFrom( event.source().getClass() ) )
+                if( event.type() == ActivationEvent.EventType.PASSIVATED
+                    && Application.class.isAssignableFrom( event.source().getClass() ) )
                 {
                     for( File dataDir : dataDirectories )
                     {
@@ -52,8 +49,7 @@ public final class FileConfigurationDataWiper
                         }
                     }
                 }
-            }
-        } );
+            } );
     }
 
     private static boolean delete( File file )
@@ -68,11 +64,15 @@ public final class FileConfigurationDataWiper
         }
         else
         {
-            for( File childFile : file.listFiles() )
+            File[] files = file.listFiles();
+            if( files != null )
             {
-                if( !delete( childFile ) )
+                for( File childFile : files )
                 {
-                    return false;
+                    if( !delete( childFile ) )
+                    {
+                        return false;
+                    }
                 }
             }
             return file.delete();
@@ -82,5 +82,4 @@ public final class FileConfigurationDataWiper
     private FileConfigurationDataWiper()
     {
     }
-
 }
