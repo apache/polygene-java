@@ -21,12 +21,10 @@ package org.apache.polygene.entitystore.cassandra;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 // START SNIPPET: config
 public interface CassandraEntityStoreConfiguration
-    extends ConfigurationComposite
 {
     /**
      * A comma or space separated list of <code>hostname:port</code> to the Cassandra cluster.

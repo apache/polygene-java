@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import org.apache.polygene.api.mixin.Mixins;
 
-@Mixins(ClusterBuilder.DefaultBuilder.class)
+@Mixins( ClusterBuilder.DefaultBuilder.class )
 public interface ClusterBuilder
 {
     String DEFAULT_HOST_PORT = "localhost:9042";
