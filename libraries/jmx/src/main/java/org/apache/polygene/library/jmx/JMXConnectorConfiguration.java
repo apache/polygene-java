@@ -22,7 +22,6 @@ package org.apache.polygene.library.jmx;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.configuration.Enabled;
 import org.apache.polygene.api.property.Property;
 
@@ -30,7 +29,7 @@ import org.apache.polygene.api.property.Property;
  * Configuration for JMXConnector. Username+password is optional.
  */
 public interface JMXConnectorConfiguration
-        extends ConfigurationComposite, Enabled
+        extends Enabled
 {
     // Set this to 1099 as default in assembly
     @UseDefaults

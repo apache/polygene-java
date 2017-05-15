@@ -33,7 +33,7 @@ public class MBeanTracker
     private boolean started = false;
     private ObjectName pattern;
     private MBeanServer server;
-    private List<TrackerCallback> callbacks = new ArrayList<TrackerCallback>();
+    private List<TrackerCallback> callbacks = new ArrayList<>();
     private List<ObjectName> tracked = Collections.synchronizedList( new ArrayList<ObjectName>() );
     private RegistrationListener registrationListener;
 
@@ -45,7 +45,7 @@ public class MBeanTracker
 
     public MBeanTracker registerCallback(TrackerCallback callback)
     {
-       List<TrackerCallback> newList = new ArrayList<TrackerCallback>(callbacks);
+       List<TrackerCallback> newList = new ArrayList<>( callbacks );
        newList.add(callback);
        callbacks = newList;
        return this;
@@ -53,7 +53,7 @@ public class MBeanTracker
 
     public MBeanTracker unregisterCallback(TrackerCallback callback)
     {
-       List<TrackerCallback> newList = new ArrayList<TrackerCallback>(callbacks);
+       List<TrackerCallback> newList = new ArrayList<>( callbacks );
        newList.remove(callback);
        callbacks = newList;
        return this;
