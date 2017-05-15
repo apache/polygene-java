@@ -21,14 +21,12 @@
 package org.apache.polygene.migration;
 
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
  * JAVADOC
  */
 public interface MigrationConfiguration
-    extends ConfigurationComposite
 {
     @UseDefaults
     Property<String> lastStartupVersion();
