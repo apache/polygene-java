@@ -20,7 +20,6 @@
 package org.apache.polygene.cache.memcache;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -28,7 +27,6 @@ import org.apache.polygene.api.property.Property;
  */
 // START SNIPPET: config
 public interface MemcacheConfiguration
-    extends Configuration<MemcachePoolService>
 {
     /**
      * Cached items expiration in seconds.
