@@ -56,6 +56,7 @@ import org.gradle.plugins.signing.SigningExtension
 import java.nio.file.Files
 import java.nio.file.Path
 
+// TODO Split each distribution as a separate plugin
 // TODO Expose all project outputs into configurations
 @CompileStatic
 class DistributionsPlugin implements Plugin<Project>
@@ -78,6 +79,7 @@ class DistributionsPlugin implements Plugin<Project>
     static final String CHECK_SOURCE_DIST = 'checkSourceDistribution'
     static final String CHECK_BINARY_DIST = 'checkBinaryDistribution'
     private static final String RAT_SOURCE_DIST = 'ratSourceDistribution'
+    private static final String INSPECT_SOURCE_DIST = 'inspectSourceDistribution'
     private static final String BUILD_SOURCE_DIST = 'buildSourceDistribution'
     private static final String RAT_BINARY_DIST = 'ratBinaryDistribution'
   }
@@ -121,7 +123,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.include '*.txt'
       spec.include 'doap.rdf'
       spec.include '*.gradle'
-      spec.include 'gradlew*'
       spec.include 'gradle/**'
       spec.include 'etc/**'
       spec.include 'buildSrc/**'
@@ -142,7 +143,14 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude 'settings.gradle'
       spec.exclude 'gradle.properties'
       // Excludes
+      spec.exclude '**/.git/**'              // Git directories
+      spec.exclude '**/.git*'                // Git files
       spec.exclude '**/build/**'             // Build output
+      spec.exclude 'gradlew*'                // Gradle wrapper scripts
+      spec.exclude 'gradle/wrapper/*.jar'    // Gradle wrapper JAR
+      spec.exclude '**/.gradle/**'           // Gradle caches
+      spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
+      spec.exclude '**/node_modules/**'      // Node's node_module dir
       spec.exclude 'derby.log'               // Derby test garbage
       spec.exclude '**/*.iml'                // IDEA files
       spec.exclude '**/*.ipr'                // IDEA files
@@ -154,11 +162,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.settings'            // Eclipse files
       spec.exclude '**/.nb-gradle/**'        // Netbeans files
       spec.exclude '**/.nb-gradle*'          // Netbeans files
-      spec.exclude '**/.git/**'              // Git directories
-      spec.exclude '**/.git*'                // Git files
-      spec.exclude '**/.gradle/**'           // Gradle caches
-      spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
-      spec.exclude '**/node_modules/**'      // Node's node_module dir
 
       spec.into '.'
     }
@@ -286,11 +289,28 @@ class DistributionsPlugin implements Plugin<Project>
         'tools/generator-polygene/app/templates/Heroes/**',
       ]
     } as Action<RatTask> )
+    project.tasks.create( TaskNames.INSPECT_SOURCE_DIST ) { Task task ->
+      task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = 'Inspects various aspects of the source distribution.'
+      task.dependsOn TaskNames.STAGE_SOURCE_DIST
+      task.onlyIf { !releaseSpec.developmentVersion }
+      task.doLast {
+        // ad-hoc checks to the source distribution -----------------------
+        def assertFilePresent = { String path -> assert new File( unpackedSrcDistDir, path ).isFile() }
+        def assertFileAbsent = { String path -> assert !new File( unpackedSrcDistDir, path ).isFile() }
+
+        assertFileAbsent 'gradlew'
+        assertFileAbsent 'gradlew.bat'
+        assertFileAbsent 'gradle/wrapper/gradle-wrapper.jar'
+        assertFilePresent 'gradle/wrapper/gradle-wrapper.properties'
+      }
+    }
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
       task.description = 'Checks the source distribution by running `gradle build` inside.'
       task.dependsOn TaskNames.STAGE_SOURCE_DIST
       task.mustRunAfter TaskNames.RAT_SOURCE_DIST
+      task.mustRunAfter TaskNames.INSPECT_SOURCE_DIST
       def workDir = project.file( "$project.buildDir/tmp/${ TaskNames.BUILD_SOURCE_DIST }" )
       task.inputs.dir unpackedSrcDistDir
       task.workingDir = workDir
@@ -310,7 +330,7 @@ class DistributionsPlugin implements Plugin<Project>
     } as Action<ExecLogged> )
     project.tasks.create( TaskNames.CHECK_SOURCE_DIST ) { Task task ->
       task.description = "Checks the source distribution."
-      task.dependsOn TaskNames.RAT_SOURCE_DIST, TaskNames.BUILD_SOURCE_DIST
+      task.dependsOn TaskNames.RAT_SOURCE_DIST, TaskNames.INSPECT_SOURCE_DIST, TaskNames.BUILD_SOURCE_DIST
     }
   }
 

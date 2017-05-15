@@ -45,6 +45,13 @@ Build System configuration is done through Gradle properties.
 This can be done in many ways, see
 https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
 
+== The Wrapper ==
+
+`gradlew` and `gradlew.bat` scripts that can be found at the root of the Polygene sources is *The Wrapper*.
+Any build invocation starts from this script.
+It will download the Gradle distribution version required by the build.
+See the https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper] documentation for more details.
+
 == Main tasks ==
 
 The Polygene™ SDK project has tasks that work with the whole SDK.
