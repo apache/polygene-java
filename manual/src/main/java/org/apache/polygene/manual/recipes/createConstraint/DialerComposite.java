@@ -20,11 +20,10 @@
 package org.apache.polygene.manual.recipes.createConstraint;
 
 import org.apache.polygene.api.constraint.Constraints;
-import org.apache.polygene.api.service.ServiceComposite;
 
 // START SNIPPET: composite
 @Constraints( PhoneNumberConstraint.class )
-public interface DialerComposite extends ServiceComposite, Dialer
+public interface DialerComposite extends Dialer
 {
 }
 // END SNIPPET: composite
