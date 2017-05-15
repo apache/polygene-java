@@ -27,7 +27,7 @@ public interface Interface
 
     Protocol protocol();
 
-    public enum Protocol
+    enum Protocol
     {
         http, https
     }

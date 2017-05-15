@@ -22,12 +22,11 @@ package org.apache.polygene.library.http;
 
 import javax.servlet.Servlet;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 /**
  * JAVADOC
  */
 @Mixins( WelcomeServlet.class )
-public interface WelcomeServletService extends Servlet, ServiceComposite
+public interface WelcomeServletService extends Servlet
 {
 }

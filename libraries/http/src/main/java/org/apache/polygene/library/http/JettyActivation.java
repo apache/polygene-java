@@ -32,7 +32,7 @@ public interface JettyActivation
     void stopJetty()
             throws Exception;
 
-    public class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<JettyActivation>>
     {
 

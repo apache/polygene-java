@@ -22,14 +22,13 @@ package org.apache.polygene.library.http;
 
 import javax.servlet.Filter;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 /**
  * JAVADOC
  */
 // START SNIPPET: filterservice
 @Mixins( UnitOfWorkFilter.class )
-public interface UnitOfWorkFilterService extends Filter, ServiceComposite
+public interface UnitOfWorkFilterService extends Filter
 {
 }
 // END SNIPPET: filterservice

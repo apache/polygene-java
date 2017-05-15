@@ -21,11 +21,10 @@ package org.apache.polygene.library.http;
 
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 @Mixins( JettyMixin.class )
 @Activators( JettyActivation.Activator.class )
 public interface JettyService
-        extends HttpService, JettyActivation, ServiceComposite
+        extends HttpService, JettyActivation
 {
 }

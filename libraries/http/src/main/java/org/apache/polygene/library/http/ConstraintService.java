@@ -23,18 +23,16 @@ import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.util.security.Constraint;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.library.http.ConstraintInfo.HttpMethod;
 
 @Mixins( ConstraintService.Mixin.class )
 public interface ConstraintService
-        extends ServiceComposite
 {
 
     ConstraintMapping buildConstraintMapping();
 
-    static abstract class Mixin
+    abstract class Mixin
             implements ConstraintService
     {
 
@@ -48,8 +46,6 @@ public interface ConstraintService
             ConstraintInfo constraintInfo = myRef.metaInfo( ConstraintInfo.class );
             if ( constraintInfo != null && constraintInfo.getConstraint() != null ) {
                 Constraint constraint = new Constraint();
-                switch ( constraintInfo.getConstraint() ) {
-                }
                 csMapping = new ConstraintMapping();
                 csMapping.setConstraint( constraint );
                 csMapping.setPathSpec( constraintInfo.getPath() );
