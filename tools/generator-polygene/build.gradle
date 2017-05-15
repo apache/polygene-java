@@ -73,9 +73,7 @@ def npmTest = task( 'npmTest', type: NpmTask ) {
     file( "$buildDir/build/npm-test" ).deleteDir()
   }
 }
-// TODO This disable generator checks that fails on CI - TODO REMOVE ME
-// See https://builds.apache.org/view/P/view/Polygene/job/Polygene(JavaEdition)-develop-java8-check/341/console
-// check.dependsOn npmTest
+check.dependsOn npmTest
 
 /**
  * Runs ALL the generator tests.
@@ -92,4 +90,11 @@ task( 'npmTestAll', type: NpmTask ) {
     // Cleanup generated projects to always run from a fresh state
     file( "$buildDir/build/npm-test" ).deleteDir()
   }
+}
+
+// TODO This disable generator checks that fails on CI - TODO REMOVE ME
+// See https://builds.apache.org/view/P/view/Polygene/job/Polygene(JavaEdition)-develop-java8-check/341/console
+if( System.getenv( 'BUILD_ID' ) != null )
+{
+  npmTest.enabled = false
 }
