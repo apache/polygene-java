@@ -20,8 +20,6 @@
 package org.apache.polygene.manual.recipes.assemble;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.entity.EntityComposite;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.*;
 
@@ -39,18 +37,14 @@ public class Main
         polygene = new Energy4Java();
 
         // Instantiate the Application Model.
-        application = polygene.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble(
-                    ApplicationAssemblyFactory factory )
-                    throws AssemblyException
+        application = polygene.newApplication(
+            factory ->
             {
-                ApplicationAssembly assembly =
-                        factory.newApplicationAssembly();
+                ApplicationAssembly assembly = factory.newApplicationAssembly();
                 LayerAssembly runtime = createRuntimeLayer( assembly );
                 LayerAssembly designer = createDesignerLayer( assembly );
                 LayerAssembly domain = createDomainLayer( assembly );
-                LayerAssembly messaging= createMessagingLayer( assembly );
+                LayerAssembly messaging = createMessagingLayer( assembly );
                 LayerAssembly persistence = createPersistenceLayer( assembly );
 
                 // declare structure between layers
@@ -61,8 +55,7 @@ public class Main
                 runtime.uses( domain );
 
                 return assembly;
-            }
-        } );
+            } );
 
         // We need to handle shutdown.
         installShutdownHook();
@@ -74,26 +67,22 @@ public class Main
 // END SNIPPET: main
     private static LayerAssembly createRuntimeLayer( ApplicationAssembly app )
     {
-        LayerAssembly layer = app.layer( "runtime-layer" );
-        return layer;
+        return app.layer( "runtime-layer" );
     }
 
     private static LayerAssembly createDesignerLayer( ApplicationAssembly app )
     {
-        LayerAssembly layer = app.layer( "designer-layer" );
-        return layer;
+        return app.layer( "designer-layer" );
     }
 
     private static LayerAssembly createMessagingLayer( ApplicationAssembly app )
     {
-        LayerAssembly layer = app.layer( "messaging-layer" );
-        return layer;
+        return app.layer( "messaging-layer" );
     }
 
     private static LayerAssembly createPersistenceLayer( ApplicationAssembly app )
     {
-        LayerAssembly layer = app.layer( "persistence-layer" );
-        return layer;
+        return app.layer( "persistence-layer" );
     }
 
 // START SNIPPET: domainLayer
@@ -165,10 +154,10 @@ public class Main
 }
 
 // END SNIPPET: main
-interface AccountEntity extends EntityComposite {};
-interface EntryEntity extends EntityComposite {};
+interface AccountEntity {}
+interface EntryEntity {}
 
-interface AccountFactoryService extends ServiceComposite{};
-interface EntryFactoryService extends ServiceComposite{};
-interface EntryRepositoryService extends ServiceComposite{};
-interface AccountRepositoryService extends ServiceComposite{};
+interface AccountFactoryService {}
+interface EntryFactoryService {}
+interface EntryRepositoryService {}
+interface AccountRepositoryService {}

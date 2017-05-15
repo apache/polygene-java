@@ -19,14 +19,14 @@
  */
 package org.apache.polygene.manual.recipes.sideeffects;
 
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.sideeffect.SideEffects;
 
 // START SNIPPET: body
 @SideEffects( MailNotifySideEffect.class )
 public interface OrderEntity
     extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
+            HasLineItems, Confirmable, HasIdentity
 {
 }
 // END SNIPPET: body

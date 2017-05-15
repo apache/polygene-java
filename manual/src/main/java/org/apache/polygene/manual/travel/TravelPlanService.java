@@ -23,10 +23,9 @@ package org.apache.polygene.manual.travel;
 // END SNIPPET: serviceComposite
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 // START SNIPPET: serviceComposite
 @Mixins( { TravelPlanMixin.class } )
-public interface TravelPlanService extends TravelPlan, ServiceComposite
+public interface TravelPlanService extends TravelPlan
 {}
 // END SNIPPET: serviceComposite
