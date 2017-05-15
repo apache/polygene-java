@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.PropertyMapper;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.Identity;
@@ -142,7 +143,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
                 InputStream asStream = DataSourceConfiguration.class.getClassLoader().getResourceAsStream( s );
                 if ( asStream != null ) {
                     try {
-                        PropertyMapper.map( asStream, configBuilder.instance() );
+                        PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
                     } catch ( IOException e1 ) {
                         uow.discard();
                         InstantiationException exception = new InstantiationException( "Could not read underlying Properties file." );

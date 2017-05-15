@@ -19,13 +19,12 @@
  */
 package org.apache.polygene.library.sql.datasource;
 
-import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.identity.HasIdentity;
 
 /**
  * Configuration Entity for a DataSource.
  */
 public interface DataSourceConfiguration
-        extends HasIdentity, Composite, DataSourceConfigurationState
+        extends HasIdentity, DataSourceConfigurationState
 {
 }
