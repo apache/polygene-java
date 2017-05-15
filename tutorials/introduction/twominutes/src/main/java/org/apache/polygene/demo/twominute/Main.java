@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.demo.twominute;
 
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 
 // START SNIPPET: documentation
@@ -29,15 +27,8 @@ public class Main
     public static void main( String[] args )
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler() // <1>
-        {
-            @Override
-            public void assemble( ModuleAssembly assembly )
-                throws AssemblyException
-            {
-                assembly.transients( Speaker.class );           // <2>
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(              // <1>
+            module -> module.transients( Speaker.class ) );                 // <2>
         Speaker speaker = assembler.module().newTransient( Speaker.class ); // <3>
         System.out.println( speaker.sayHello() );
     }
