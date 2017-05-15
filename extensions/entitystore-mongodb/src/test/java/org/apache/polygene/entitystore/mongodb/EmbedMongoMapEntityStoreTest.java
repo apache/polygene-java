@@ -24,6 +24,7 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import java.io.IOException;
+import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -82,7 +83,6 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene-test" );
         mongoConfig.collection().set( testName.getMethodName() );
-        mongoConfig.hostname().set( "localhost" );
-        mongoConfig.port().set( port );
+        mongoConfig.nodes().set( Collections.singletonList( "localhost:" + port ) );
     }
 }
