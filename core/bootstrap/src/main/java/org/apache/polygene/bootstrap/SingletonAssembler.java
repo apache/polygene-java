@@ -47,11 +47,25 @@ public class SingletonAssembler
     private final Module moduleInstance;
     private Consumer<ModuleAssembly> assemble;
 
+    /**
+     * Creates a Polygene Runtime instance containing one Layer with one Module.
+     * The Layer will be named "Layer 1" and the Module will be named "Module 1". It is possible to add
+     * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
+     * class.
+     *
+     * @param assemble An Assembler lambda containing the module assembly.
+     * @throws AssemblyException   Either if the model can not be created from the disk, or some inconsistency in
+     *                             the programming model makes it impossible to create it.
+     * @throws ActivationException If the automatic {@code activate()} method is throwing this Exception..
+     */
     public SingletonAssembler( Consumer<ModuleAssembly> assemble )
         throws ActivationException
     {
-        this();
         this.assemble = assemble;
+        polygene = new Energy4Java();
+        applicationInstance = createApplicationInstance();
+        activateApplication();
+        moduleInstance = applicationInstance.findModule( layerName(), moduleName() );
     }
 
     /**
@@ -69,10 +83,23 @@ public class SingletonAssembler
     {
 // START SNIPPET: actual
         polygene = new Energy4Java();
-        applicationInstance = polygene.newApplication(
+        applicationInstance = createApplicationInstance();
+        activateApplication();
+// END SNIPPET: actual
+        moduleInstance = applicationInstance.findModule( layerName(), moduleName() );
+    }
+
+    // START SNIPPET: actual
+    private Application createApplicationInstance()
+    {
+        return polygene.newApplication(
             applicationFactory -> applicationFactory.newApplicationAssembly( SingletonAssembler.this )
         );
+    }
 
+    private void activateApplication()
+        throws ActivationException
+    {
         try
         {
             beforeActivation( applicationInstance );
@@ -86,10 +113,8 @@ public class SingletonAssembler
             }
             throw new ActivationException( "Could not activate application", e );
         }
-// START SNIPPET: actual
-
-        moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }
+// END SNIPPET: actual
 
     public final PolygeneAPI runtime()
     {
@@ -104,6 +129,16 @@ public class SingletonAssembler
     public final Module module()
     {
         return moduleInstance;
+    }
+
+    protected String layerName()
+    {
+        return "Layer 1";
+    }
+
+    protected String moduleName()
+    {
+        return "Module 1";
     }
 
     protected void beforeActivation( Application application )

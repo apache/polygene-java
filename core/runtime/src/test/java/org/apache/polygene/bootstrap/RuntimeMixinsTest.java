@@ -22,33 +22,28 @@ package org.apache.polygene.bootstrap;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.mixin.NoopMixin;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 public class RuntimeMixinsTest
 {
     @Test
     public void givenValueWithRuntimeMixinsWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module ->
             {
-                module.values( TestType1.class ).withMixins( DoThisMixin.class, DoThatMixin.class );
+                module.values( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
             }
-        };
-        TestType1 value = singletonAssembler.valueBuilderFactory().newValue( TestType1.class );
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), equalTo( "that" ) );
+        );
+
+        SayWhat value = singletonAssembler.valueBuilderFactory().newValue( SayWhat.class );
+        assertThat( value.sayThis(), equalTo( "this" ) );
+        assertThat( value.sayThat(), equalTo( "that" ) );
     }
 
     @Test
@@ -57,17 +52,16 @@ public class RuntimeMixinsTest
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {
-
             @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.values( TestType2.class ).withMixins( DoThisMixin.class );
+                module.values( SayWhere.class ).withMixins( SayHereMixin.class );
             }
         };
-        TestType2 value = singletonAssembler.valueBuilderFactory().newValue( TestType2.class );
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), nullValue() );
+        SayWhere value = singletonAssembler.valueBuilderFactory().newValue( SayWhere.class );
+        assertThat( value.sayHere(), equalTo( "here" ) );
+        assertThat( value.sayThere(), nullValue() );
     }
 
     @Test
@@ -81,12 +75,12 @@ public class RuntimeMixinsTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.transients( TestType1.class ).withMixins( DoThisMixin.class, DoThatMixin.class );
+                module.transients( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
             }
         };
-        TestType1 value = singletonAssembler.transientBuilderFactory().newTransient( TestType1.class );
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), equalTo( "that" ) );
+        SayWhat value = singletonAssembler.transientBuilderFactory().newTransient( SayWhat.class );
+        assertThat( value.sayThis(), equalTo( "this" ) );
+        assertThat( value.sayThat(), equalTo( "that" ) );
     }
 
     @Test
@@ -100,12 +94,12 @@ public class RuntimeMixinsTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.transients( TestType2.class ).withMixins( DoThisMixin.class );
+                module.transients( SayWhere.class ).withMixins( SayHereMixin.class );
             }
         };
-        TestType2 value = singletonAssembler.transientBuilderFactory().newTransient( TestType2.class );
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), nullValue() );
+        SayWhere value = singletonAssembler.transientBuilderFactory().newTransient( SayWhere.class );
+        assertThat( value.sayHere(), equalTo( "here" ) );
+        assertThat( value.sayThere(), nullValue() );
     }
 
     @Test
@@ -119,12 +113,12 @@ public class RuntimeMixinsTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.services( TestType1.class ).withMixins( DoThisMixin.class, DoThatMixin.class );
+                module.services( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
             }
         };
-        TestType1 value = singletonAssembler.serviceFinder().findService( TestType1.class ).get();
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), equalTo( "that" ) );
+        SayWhat value = singletonAssembler.serviceFinder().findService( SayWhat.class ).get();
+        assertThat( value.sayThis(), equalTo( "this" ) );
+        assertThat( value.sayThat(), equalTo( "that" ) );
     }
 
     @Test
@@ -138,46 +132,56 @@ public class RuntimeMixinsTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.services( TestType2.class ).withMixins( DoThisMixin.class );
+                module.services( SayWhere.class ).withMixins( SayHereMixin.class );
             }
         };
-        TestType2 value = singletonAssembler.serviceFinder().findService( TestType2.class ).get();
-        assertThat( value.doThis(), equalTo( "this" ) );
-        assertThat( value.doThat(), nullValue() );
+        SayWhere value = singletonAssembler.serviceFinder().findService( SayWhere.class ).get();
+        assertThat( value.sayHere(), equalTo( "here" ) );
+        assertThat( value.sayThere(), nullValue() );
     }
 
-    public interface TestType1
+    public interface SayWhat
     {
-        String doThis();
+        String sayThis();
 
-        String doThat();
+        String sayThat();
     }
 
     @Mixins( NoopMixin.class )
-    public interface TestType2
+    public interface SayWhere
     {
-        String doThis();
+        String sayHere();
 
-        String doThat();
+        String sayThere();
     }
 
-    protected abstract static class DoThisMixin
-        implements TestType1
+    protected abstract static class SayThisMixin
+        implements SayWhat
     {
         @Override
-        public String doThis()
+        public String sayThis()
         {
             return "this";
         }
     }
 
-    protected abstract static class DoThatMixin
-        implements TestType1
+    protected abstract static class SayThatMixin
+        implements SayWhat
     {
         @Override
-        public String doThat()
+        public String sayThat()
         {
             return "that";
+        }
+    }
+
+    protected abstract static class SayHereMixin
+        implements SayWhere
+    {
+        @Override
+        public String sayHere()
+        {
+            return "here";
         }
     }
 }
