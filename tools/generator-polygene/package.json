@@ -1,7 +1,7 @@
 {
   "name": "generator-polygene",
   "version": "3.0.0",
-  "polygene_version": "0",
+  "polygene_version": "3.0.0",
   "description": "Generates an Apache Polygene project.",
   "homepage": "https://polygene.apache.org",
   "license": "Apache-2.0",
