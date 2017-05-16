@@ -20,13 +20,13 @@
 [[tut-services-step3,Step 3 - Reading the Service Configuration]]
 = Step 3 - Reading the Service Configuration =
 
-Services typically have configuration. Configurations are directly supported in Zest™. A
+Services typically have configuration. Configurations are directly supported in Polygene™. A
 ConfigurationComposite is a subtype of EntityComposite. That is because
 configurations are stored in EntityStores, can be modified in runtime by client code and has
 the same semantics as regular entities.
 
-Zest™ also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
-not found in the configured entity store, then Zest™ will automatically locate a properties file for each
+Polygene™ also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
+not found in the configured entity store, then Polygene™ will automatically locate a properties file for each
 service instance, read those properties into a ConfigurationComposite instance, save that to the
 entity store and provide the values to the service. The properties file must be with the same name as
 the service instance with the extension "properties" in the same package as the service.
@@ -41,7 +41,7 @@ Steps to do.
 - Delete the LibraryActivator and remove the @Activators annotation from the LibraryService and the corresponding createInitialData method.
 - In the LibraryMixin remove the member injection of the ValueBuilderFactory, and instead inject the ValueBuilderFactory in the constructor.
 - Inject the LibraryConfiguration via the constructor. The injection scope is @This.
-- Create a resource called LibraryService.properties and place it in the directory org/qi4j/tutorials/services/step4 in the classpath (for instance, src/main/resources ). Put something like this in:
+- Create a resource called LibraryService.properties and place it in the directory +org/apache/polygene/tutorials/services/step4+ in the classpath (for instance, src/main/resources ). Put something like this in:
     titles=Domain Driven Design, Pragmatic Programmer, Extreme Programming Explained
     authors=Eric Evans, Andy Hunt, Kent Beck
     #Number of copies of each book.

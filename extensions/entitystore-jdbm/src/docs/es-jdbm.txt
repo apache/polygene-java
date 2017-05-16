@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+source=extensions/entitystore-jdbm/src/test/java/org/apache/polygene/entitystore/jdbm/DocumentationSupport.java
 tag=UsingAssembler
 ----
 
@@ -45,12 +45,12 @@ Here are the configuration properties for the JDBM EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmConfiguration.java
+source=extensions/entitystore-jdbm/src/main/java/org/apache/polygene/entitystore/jdbm/JdbmConfiguration.java
 tag=config
 ----
 
 +file+ is optional and represent the file where the JDBM EntityStore will keep its persisted state.
 
-It defaults to System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data"
+It defaults to System.getProperty( "user.dir" ) + "/polygene/jdbmstore.data"
 If the given path is not absolute, then it's relative to the current working directory.
 If you use the <<library-fileconfig>> then this property value is ignored and FileConfig is prefered.

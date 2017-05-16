@@ -1,6 +1,4 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +19,7 @@
 source=core/api/dev-status.xml
 --------------
 
-The Zest™ Core API is the primary interface for client application code during the main execution phase, i.e. after the
+The Polygene™ Core API is the primary interface for client application code during the main execution phase, i.e. after the
 application has been activated.
 
 include::../../build/docs/buildinfo/artifact.txt[]
@@ -60,6 +58,10 @@ include::transientcomposite.txt[]
 
 :leveloffset: {level3}
 
+include::objects.txt[]
+
+:leveloffset: {level3}
+
 // include::dependency-injection.txt[]
 
 :leveloffset: {level3}
@@ -89,6 +91,10 @@ include::sideeffect.txt[]
 :leveloffset: {level3}
 
 include::decoratormixin.txt[]
+
+:leveloffset: {level3}
+
+include::serialization.txt[]
 
 :leveloffset: {level3}
 

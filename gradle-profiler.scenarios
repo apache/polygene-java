@@ -1,0 +1,11 @@
+# Configuration
+help {
+    tasks = ["help"]
+}
+
+# Verification from a clean working copy
+clean_check {
+    gradle-args = ["--parallel"]
+    tasks = ["check"]
+    cleanup-tasks = ["clean"]
+}

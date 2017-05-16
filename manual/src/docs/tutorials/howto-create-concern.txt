@@ -26,7 +26,7 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == Typed Concern ==
 
@@ -34,22 +34,22 @@ A typed Concern is a Java class that implements the MixinType it can be used on:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/InventoryConcern.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/InventoryConcern.java
 tag=allClass
 -----------
 
 Note that we could have implemented the InventoryConcern as an abstract class if we were not interested in __all__ the methods in the Order interface.
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on
 a private field, which can be used in rare occasions when you are not able to extend. This base class defines the next
-field, which is set up by the Zest™ runtime and points to the next fragment in the call stack. We can also see that the
-InventoryService is provided to the concern, which is done with dependency injection. Zest™ also supports dependency
+field, which is set up by the Polygene™ runtime and points to the next fragment in the call stack. We can also see that the
+InventoryService is provided to the concern, which is done with dependency injection. Polygene™ also supports dependency
 injection via constructors and methods.
 
 It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/Order.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/Order.java
 tag=class
 -----------
 
@@ -63,7 +63,7 @@ arbitrary MixinType.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/MyGenericConcern.java
 tag=class
 -----------
 
@@ -71,7 +71,7 @@ It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/AnyMixinType.java
 tag=class
 -----------
 
@@ -90,7 +90,7 @@ Here is how the declaration goes ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/MyGenericConcern.java
 tag=appliesTo
 -----------
 
@@ -98,7 +98,7 @@ And how to use the annotation ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/AnyMixinType.java
 tag=annotationUse
 -----------
 
@@ -108,6 +108,6 @@ Finally here is how to implement an AppliesToFilter:
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyAppliesToFilter.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/concern/MyAppliesToFilter.java
 tag=filter
 -----------

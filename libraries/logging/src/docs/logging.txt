@@ -1,16 +1,19 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
 //////////////////////
 
 [[library-logging, Logging Library]]
@@ -21,7 +24,7 @@
 source=libraries/logging/dev-status.xml
 --------------
 
-First of all, Zest™ is taking a fresh look at all things that we take for granted. Logging is one such thing.
+First of all, Polygene™ is taking a fresh look at all things that we take for granted. Logging is one such thing.
 
 It should (but is not) obvious that Logging are used for three very distinct purposes, and in our opinion the concepts
 are not related and should not be abstracted in the same fashion, as has been the norm in Log4j, JDK logging, Commons
@@ -58,7 +61,7 @@ To produce debugging output in your code you just need to add the field
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/qi4j/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging1
 -----------
 
@@ -66,7 +69,7 @@ and then check for null at each usage
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/qi4j/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging2
 -----------
 
@@ -80,7 +83,7 @@ visible.
 == Tracing ==
 
 Tracing is the process of tracking all the methods that has been called. There are two levels of tracing available in
-Zest. Either Trace All or trace where a annotation has been given.
+Polygene. Either Trace All or trace where a annotation has been given.
 
 If the TraceAllConcern is added to a composite, and there is a TraceService visible, then all method calls into that
 composite is traced.
@@ -90,7 +93,7 @@ interface or the mixin implementation. You will also need to add the TraceConcer
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/qi4j/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging3
 -----------
 
@@ -107,6 +110,6 @@ sideeffects and mixins to composites during the bootstrap phase instead of hard-
 
 [snippet,java]
 -----------
-source=libraries/logging/src/test/java/org/qi4j/logging/docsupport/LoggingDocs.java
+source=libraries/logging/src/test/java/org/apache/polygene/library/logging/docsupport/LoggingDocs.java
 tag=logging4
 -----------

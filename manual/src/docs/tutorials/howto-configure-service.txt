@@ -1,31 +1,34 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 //////////////////////
 
 [[howto-configure-service,Configure a Service]]
 = Configure a Service =
-Zest™ supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
+Polygene™ supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
 readable, writeable and queryable, just like other Entities. This should make Configuration management much simpler,
 since you can easily build GUI tools to allow editing of these in runtime. However, to simplify the initial values of
-the Configuration instance, Zest™ also does the initial bootstrapping of the Configuration entity for you. This HowTo is
+the Configuration instance, Polygene™ also does the initial bootstrapping of the Configuration entity for you. This HowTo is
 going to show how.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == We need a Service ==
 
@@ -34,7 +37,7 @@ Destinations. For the sake of simplicity, we are leaving out the domain details.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlan.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlan.java
 tag=service
 -----------
 
@@ -42,7 +45,7 @@ So, then there is the ServiceComposite...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanService.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlanService.java
 tag=serviceComposite
 -----------
 
@@ -52,7 +55,7 @@ configuration interface.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanConfiguration.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlanConfiguration.java
 tag=configuration
 -----------
 
@@ -63,7 +66,7 @@ Now we can access this configuration in the TravelPlanMixin like this;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlanMixin.java
 tag=mixin
 -----------
 
@@ -74,7 +77,7 @@ with the refresh() method in the Configuration interface;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlanMixin.java
 tag=refresh
 -----------
 
@@ -95,7 +98,7 @@ So, we create a properties file, where the keys are the names of the properties 
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanService.properties
+source=manual/src/main/java/org/apache/polygene/manual/travel/TravelPlanService.properties
 tag=params
 -----------
 File: org/hedhman/niclas/travel/TravelPlanService.properties
@@ -106,7 +109,7 @@ And this would work with the standard assembly.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/Main.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/Main.java
 tag=simple
 -----------
 
@@ -117,7 +120,7 @@ the same package as the ServiceComposite sub type, the TravelPlanService in the 
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/Main.java
+source=manual/src/main/java/org/apache/polygene/manual/travel/Main.java
 tag=assemble
 -----------
 
@@ -125,21 +128,21 @@ And the two files for configuration,
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/ExpediaService.properties
+source=manual/src/main/java/org/apache/polygene/manual/travel/ExpediaService.properties
 tag=params
 -----------
-File: org/qi4j/manual/travel/ExpediaService.properties
+File: org/apache/polygene/manual/travel/ExpediaService.properties
 
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/OrbitzService.properties
+source=manual/src/main/java/org/apache/polygene/manual/travel/OrbitzService.properties
 tag=params
 -----------
-File: org/qi4j/manual/travel/OrbitzService.properties
+File: org/apache/polygene/manual/travel/OrbitzService.properties
 
 == Changing Configuration in runtime ==
-Unlike most frameworks, the Configuration in Zest™ is an active Entity, and once the properties file has been read once
+Unlike most frameworks, the Configuration in Polygene™ is an active Entity, and once the properties file has been read once
 at the first(!) startup, it no longer serves any purpose. The Configuration will always be retrieved from the
 EntityStore. Changes to the properties file are not taken into consideration if the Configuration entity is found in the
 entity store.

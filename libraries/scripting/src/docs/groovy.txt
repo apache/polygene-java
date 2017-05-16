@@ -1,0 +1,77 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[groovy, Scripting with Groovy]]
+== Groovy ==
+
+The Groovy Scripting Library is a Generic mixin that implements interfaces by delegating to Groovy code from classpath resources.
+
+But before looking at how to use the Scripting library we'll see that *you don't need Scripting library at all if you
+simply need to use Groovy classes as Fragments*. Groovy is a fully Java compatible language and can be used directly,
+similarly to Scala.
+
+Then we'll see how to use Groovy class scripts and method scripts.
+
+All examples below are based on this type:
+
+[snippet,java]
+----
+source=libraries/scripting/src/test/java/org/apache/polygene/library/scripting/HelloSpeaker.java
+tag=speaker
+----
+
+== Using compiled Groovy classes ==
+
+To directly use compiled Groovy classes as Fragments you don't need this library at all.
+
+Having this Groovy class compiled ;
+
+.HelloSpeakerMixin.groovy
+[snippet,groovy]
+----
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerMixin.groovy
+tag=direct
+----
+
+assemble it directly:
+
+[snippet,java]
+----
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerTest.java
+tag=direct
+----
+
+== Using Groovy function scripts ==
+
+Declare a Groovy function in a resource file located in the same package as the implemented type with the name +<type>.groovy+:
+
+.HelloSpeaker.groovy
+[snippet,groovy]
+----
+source=libraries/scripting/src/test/resources/org/apache/polygene/library/scripting/HelloSpeaker.groovy
+tag=script
+----
+
+Then assemble it with the normal +ScriptMixin+:
+
+[snippet,java]
+----
+source=libraries/scripting/src/test/groovy/org/apache/polygene/library/scripting/HelloSpeakerTest.java
+tag=script
+----

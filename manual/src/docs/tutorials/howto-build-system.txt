@@ -18,98 +18,120 @@
 ///////////////////////////////////////////////////////////////
 
 [[build-system,Build System]]
-= Zest™ Build System =
+= Polygene™ Build System =
 
-This tutorial is intended for developpers who want to build the Zest™ SDK themselves.
-It describe the Zest™ SDK Build System from compilation to publication of artifacts for consumption by other
+This tutorial is intended for developers who want to build the Polygene™ SDK themselves.
+It describe the Polygene™ SDK Build System from compilation to publication of artifacts for consumption by other
 applications.
 
-If instead you want to setup your project build system to depend on modules of the Zest™ SDK see the
-<<howto-depend-on-zest,dedicated tutorial>>.
+If instead you want to setup your project build system to depend on modules of the Polygene™ SDK see the
+<<howto-depend-on-polygene,dedicated tutorial>>.
 
 
 == Gradle ==
 
 NOTE: All major Java IDEs have great Gradle support.
-Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Zest™ SDK build into your
+Visit the https://www.gradle.org/resources[Gradle] website to learn how to import the Polygene™ SDK build into your
 favorite IDE.
 
-Zest™ community migrated away from Maven after several years of frustration, especially around release management,
+Polygene™ community migrated away from Maven after several years of frustration, especially around release management,
 versioning and cross-module dependency resolution issues, in Feb 2011.
 The tool of choice is now Gradle, and it doesn't require any installation, there are +gradlew+ and +gradlew.bat+ in
-the root folder of the Zest™ SDK that will bootstrap Gradle if not done so already.
+the root folder of the Polygene™ SDK that will bootstrap Gradle if not done so already.
 
-If you are new to Gradle, you should keep the http://www.gradle.org/documentation[documentation] at hands.
+If you are new to Gradle, you should keep the https://gradle.org/docs[documentation] at hands.
 
 Build System configuration is done through Gradle properties.
 This can be done in many ways, see
-http://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
+https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
 
+== The Wrapper ==
 
-== Root project tasks ==
+`gradlew` and `gradlew.bat` scripts that can be found at the root of the Polygene sources is *The Wrapper*.
+Any build invocation starts from this script.
+It will download the Gradle distribution version required by the build.
+See the https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper] documentation for more details.
 
-The Zest™ SDK root project has tasks that work with the whole SDK.
-The default build, triggered when running gradle without any command line arguments, compiles the code and run the
-tests, but nothing else.
-A quick way to check that nothing broke.
+== Main tasks ==
 
-Here are some of theses global tasks we defined:
+The Polygene™ SDK project has tasks that work with the whole SDK.
 
-goOffline::
-+
+`./gradlew downloadDependencies`::
 --
 Resolve, download and cache all needed dependencies.
 Useful to go offline.
 --
 
-clean::
-+
+`./gradlew`::
+--
+The default build, triggered when running gradle without any command line arguments, compiles the code and run the
+tests, but nothing else. A quick way to check that nothing broke.
+--
+
+`./gradlew clean`::
 --
 Clean up of all build output and restore the code base to a fresh state.
 --
 
-check::
-+
+`./gradlew assemble`::
 --
-Run the tests and other checks like checkstyle.
-Reports are generated in +build/reports+.
+Produces all the archives, javadocs, manuals and website content.
+Global output is generated into +distributions/build+.
 --
 
-install::
-+
+`./gradlew check`::
+--
+Run the tests and other checks like checkstyle.
+Global reports are generated in +reports/build/reports+.
+--
+
+`./gradlew build`::
+--
+Equivalent to `./gradlew assemble check`
+--
+
+`./gradlew checkDistributions`::
+--
+Run global checks against the assembled distributions.
+Can take a while.
+--
+
+`./gradlew install`::
 --
 Is roughly the same as Maven's install goal.
 It produces the test reports, javadocs and installs all the Jars into the local disk repository, for consumption
 by other applications.
 --
 
-buildAll::
-+
---
-Produces all the archives, javadocs, manuals and website content.
-The output is generated to +build+.
---
 
-release::
-+
---
-Uploads the release artifacts to the distribution servers and creates the release output into the
-+build/distributions+ directory.
---
-
-
-== Submodules tasks ==
+== Other tasks ==
 
 In addition to that, some submodules have specific tasks.
-To see all available tasks on a submodule issue the following command:
+To see all available tasks, issue the following command:
 
 [source,bash]
 ----
-./gradlew -p tests/performance tasks
+./gradlew tasks
 ----
 
-This example will output all gradle tasks available in the +tests/performance+ module where you should find
-the +testPerf+ task that run the Zest™ performance test suite.
+All available tasks from all modules of the SDK are shown.
+If you want to narrow your exploration to submodules use the following:
+
+[source,bash]
+----
+./gradlew :test:performance:tasks
+./gradlew :release:tasks
+----
+
+These examples will respectively output all gradle tasks available in the +:tests:performance+ module where you should find
+the +performanceTest+ task that runs the Polygene™ performance test suite and the +:release+ module tasks.
+
++tasks+ itself is a task, in the same way we can target module(s) with tasks, e.g.:
+
+[source,bash]
+----
+./gradlew :core:check :libraries:alarm:check
+----
 
 
 == Versions ==
@@ -127,11 +149,12 @@ To build a particular version, you specify a +version+ property on the command-l
 -----------
 
 If a +version+ property is not defined, the build system will refuse to make a release and upload.
+It will also try hard to do less and not get in your way.
 
 
 == Tests ==
 
-NOTE: See the https://builds.apache.org/view/S-Z/view/Zest/[Zest™ Continuous Integration] for current tests results
+NOTE: See the https://builds.apache.org/view/P/view/Polygene/[Polygene™ Continuous Integration] for current tests results
 
 Unit and integration tests are located near the code under test.
 You'll find theses tests across the whole SDK.
@@ -139,33 +162,44 @@ You'll find theses tests across the whole SDK.
 === Unit tests requiring external services ===
 
 Among unit tests, some require an external service to be run.
-For example, the MongoDB EntityStore extension requires an actual MongoDB server to run its tests.
+For example, the Redis EntityStore extension requires an actual Redis server to run its tests.
 
-NOTE: The HTML test reports generated by Gradle show skipped tests.
+NOTE: The HTML test reports generated by Gradle shows skipped tests.
 
-All thoses tests should be part of the default build and check if the service is available at its default location
-on +localhost+ and skip if not.
-This is easily achieved using http://junit.sourceforge.net/javadoc/org/junit/Assume.html[JUnit assumptions].
+Testing against external services is automated using Docker and is enabled automatically if a running Docker service
+is reachable.
+The build creates the necessary Docker images and start/stop containers around the tests.
 
-We'll list here services that the unit tests will use if available.
+On Linux it should work out of the box.
 
-- Memcached, ASCII protocol, no authentication on +localhost:4444+ for +extensions/cache-memcache+
-- MongoDB without authentication on +localhost:27017+ for +extensions/entitystore-mongodb+
-- Riak without authentication on +localhost:4444+ for +extensions/entitystore-riak+
-- Redis without authentication on +localhost:4444+ for +extensions/entitystore-redis+
-- PostgreSQL for +extensions/entitystore-sql+ and +extensions/indexing-sql+ (need setup, see test source)
-- MySQL for +extensions/entitystore-sql+ (need setup, see test source)
+The simplest way to get this running on other systems (macOS and Windows) is to use `docker-machine` to create a
+development Docker virtual machine where all images will be built and containers started:
+
+[source,bash]
+----
+docker-machine create dev
+docker-machine start dev
+eval $(docker-machine env dev)
+----
+
+The last stanza set environment variables for Docker to use the newly created Docker virtual machine.
+
+If you want to run the Docker containers in a remote machine, simply set the `DOCKER_HOST` and `DOCKER_CERT_PATH`
+environment variables to something sensible for your setup.
+
+If you want to forcibly skip all Docker related work, set the `skipDocker` Gradle property by e.g. appending
+`-PskipDocker` to your Gradle command line.
 
 === Performance tests ===
 
-Performance tests provide performance mesurements for typical Zest™ use cases.
+Performance tests provide performance measurements for typical Polygene™ use cases.
 They are not part of the default build and are located in the `tests/performance` directory of the SDK.
 
 They can be run with the following Gradle command:
 
 [source,bash]
 -----------
-./gradlew :org.qi4j.tests:org.qi4j.test.performance:testPerf
+./gradlew :tests:performance:performanceTest
 -----------
 
 Results will then be available in the test reports.
@@ -177,7 +211,7 @@ The build generates a documentation minisite:
 
 [source,bash]
 -----------
-./gradlew -p manual website
+./gradlew :manual:assemble
 -----------
 
 Output is in `~/manual/build/docs/website`.
@@ -190,8 +224,8 @@ You'll need Asciidoc and docbook-xsl installed.
 
 IMPORTANT: Remember that if a +version+ property is not defined, the build system will refuse to make a release and upload.
 
-The Zest™ SDK build system is setup for an easy release process.
-This is very useful to the Zest™ Core Team but can also be useful to third parties that want to cut a in-house release.
+The Polygene™ SDK build system is setup for an easy release process.
+This is very useful to the Polygene™ Core Team but can also be useful to third parties that want to cut a in-house release.
 In this regard, we try to make every aspect of the release process usable for such cases.
 
 The following sections describe various aspects of the release process.
@@ -200,12 +234,12 @@ By default you need to have a proper PGP setup, see below.
 
 === Release Criteria ===
 
-The Zest™ SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
+The Polygene™ SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
 how good the codebase, documentation and unit tests are for each of the modules. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
-The Zest™ SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
+The Polygene™ SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
 the +javadocs+ and +uploadArchives+ root project tasks.
 Moreover, the +release+ task ensure that no releasable module depends on module(s) that don't fit the release criteria
 and throw a detailed exception if need be.
@@ -260,7 +294,5 @@ And here is how to deploy a signed release to the local filesystem:
 ./gradlew uploadArchives -Dversion=3.2.1 -PuploadRepository=file:///path/to/local/repository
 -----------
 
-See the http://www.gradle.org/docs/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
+See the https://docs.gradle.org/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
 supported protocols.
-
-

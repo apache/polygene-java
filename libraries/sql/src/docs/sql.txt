@@ -29,7 +29,7 @@ source=libraries/sql/dev-status.xml
 The SQL Library provides facilities for working with SQL databases.
 
 The center piece is the DataSource support that comes with
-<<library-circuitbreaker>> and <<library-jmx>> support. Facilities for doing SQL I/O with the <<core-io>> are provided.
+<<library-circuitbreaker>> and <<library-jmx>> support.
 
 TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
 <<extension-indexing-sql>>.
@@ -69,7 +69,7 @@ BoneCP support resides in the *sql-bonecp* module.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/DocumentationSupport.java
 tag=bonecp
 ----
 
@@ -84,7 +84,7 @@ include::../../../sql-dbcp/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/DocumentationSupport.java
 tag=dbcp
 ----
 
@@ -98,7 +98,7 @@ tag=dbcp
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/DocumentationSupport.java
 tag=datasource
 ----
 
@@ -111,7 +111,7 @@ See <<howto-configure-service>>.
 
 [snippet,java]
 ----
-source=libraries/sql/src/main/java/org/qi4j/library/sql/datasource/DataSourceConfigurationState.java
+source=libraries/sql/src/main/java/org/apache/polygene/library/sql/datasource/DataSourceConfigurationState.java
 tag=config
 ----
 
@@ -126,12 +126,12 @@ include::../test/resources/testds.properties[]
 
 === Importing an existing DataSource ===
 
-Importing an existing DataSource at assembly time is usefull when your Zest
+Importing an existing DataSource at assembly time is usefull when your Polygene
 Application runs in an environment where DataSource are already provided.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/datasource/ExternalDataSourceTest.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/datasource/ExternalDataSourceTest.java
 tag=assembly
 ----
 
@@ -149,7 +149,7 @@ CircuitBreaker and set it as <<def-metainfo>> of the DataSource.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/DocumentationSupport.java
 tag=cb-assembly
 ----
 
@@ -158,21 +158,8 @@ by a CircuitBreaker proxy.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/DocumentationSupport.java
 tag=cb-datasource
-----
-
-
-
-
-== I/O ==
-
-Here is a simple example:
-
-[snippet,java]
-----
-source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
-tag=io
 ----
 
 
@@ -184,7 +171,7 @@ through JMX.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/jmx/DataSourceConfigurationManagerServiceTest.java
+source=libraries/sql/src/test/java/org/apache/polygene/library/sql/jmx/DataSourceConfigurationManagerServiceTest.java
 tag=jmx
 ----
 
@@ -212,7 +199,7 @@ include::../../../sql-liquibase/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+source=libraries/sql-liquibase/src/test/java/org/apache/polygene/library/sql/liquibase/LiquibaseServiceTest.java
 tag=assembly
 ----
 
@@ -223,7 +210,7 @@ applies the configured changelog.
 
 [snippet,java]
 ----
-source=libraries/sql-liquibase/src/main/java/org/qi4j/library/sql/liquibase/LiquibaseConfiguration.java
+source=libraries/sql-liquibase/src/main/java/org/apache/polygene/library/sql/liquibase/LiquibaseConfiguration.java
 tag=config
 ----
 

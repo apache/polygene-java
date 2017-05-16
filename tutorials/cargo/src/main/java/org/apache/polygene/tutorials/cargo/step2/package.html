@@ -1,0 +1,75 @@
+<!--
+  ~  Licensed to the Apache Software Foundation (ASF) under one
+  ~  or more contributor license agreements.  See the NOTICE file
+  ~  distributed with this work for additional information
+  ~  regarding copyright ownership.  The ASF licenses this file
+  ~  to you under the Apache License, Version 2.0 (the
+  ~  "License"); you may not use this file except in compliance
+  ~  with the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  ~
+  -->
+<body>
+<h1>Step 2 - Polygene™ "Making a booking."</h1>
+
+<p>
+    Location: Page 17, "Knowledge-Rich Design.
+</p>
+
+<h2>Results from Step1</h2>
+<ul>
+    <li>For the Cargo and Voyage interfaces, we have introduced the <i>Property&lt;Double&gt;</i>.
+        <i>Property</i> is an explicitly supported type in Polygene™, which makes life a lot easier
+        for everyone involved.
+    </li>
+    <li>The SequenceGenerator has changed the name to "HasSequence", since it doesn't handle the
+        generation of new numbers. It is given <i>Property&lt;Integer&gt;</i> to hold the last
+        sequence number, but it doesn't handle the <i>next()</i> equivalent from Evans' code.
+    </li>
+    <li>
+        The increment of the sequence number is instead handled in the SequencingConcern. One
+        advantage is that the number will only be incremented if the policies are met, as we
+        will place this concern at the top of the call chain.
+    </li>
+    <li>
+        Overbooking is a concern (according to Mr Evans in this part of the book) for the
+        <i>makeBooking()</i> method. So, we create an <i>OverbookingConcern</i>, that implements
+        the ShippingService. See below for more details.
+    </li>
+    <li>
+        The ShippingService remains the same. But notice that there is <b>No Implementation!</b>
+    </li>
+    <li>
+        We introduce a new interface, ShippingServiceComposite. This interface binds together the
+        parts to form the Composite. It <b>extends</b> the <i>ShippingService</i> and the
+        <i>Composite</i> and has annotations about how it should be wire together.
+    </li>
+</ul>
+
+<h3>The ShippingServiceComposite</h3>
+
+<p>
+    The <i>ShippingServiceComposite</i> declares which concerns should be used, and the order is significant. The
+    <i>SequencingConcern</i> is placed first, that means it will be invoked before the <i>OverbookingConcern</i>,
+    but it performs its own work <b>after</b> the call to the <i>next.makeBooking()</i> method.
+</p>
+
+<h3>The OverbookingConcern</h3>
+
+<p>
+    It extends <i>ConcernOf</i> to show which MixinType it is chained into.
+</p>
+
+<h2>Moving on</h2>
+
+<p>
+</p>
+</body>

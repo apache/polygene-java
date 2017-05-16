@@ -1,0 +1,84 @@
+<!--
+  ~  Licensed to the Apache Software Foundation (ASF) under one
+  ~  or more contributor license agreements.  See the NOTICE file
+  ~  distributed with this work for additional information
+  ~  regarding copyright ownership.  The ASF licenses this file
+  ~  to you under the Apache License, Version 2.0 (the
+  ~  "License"); you may not use this file except in compliance
+  ~  with the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  ~
+  -->
+<html>
+    <body>
+        <h2>Common API.</h2>
+        <p>
+            The Common API package is a collection of really low-level types needed at the core of the Polygene™ Runtime. It is also
+            a collection of types that are not particularly cohesive, and effectively this package contains the loose ends
+            that does not belong elsewhere.
+        </p>
+        <p>
+            In this package, you can safely ignore the following classes;
+        </p>
+        <ul>
+            <li>MetaInfo</li>
+            <li>QualifiedName</li>
+            <li>TypeName</li>
+        </ul>
+        <p>UNLESS you are into deep integration into the Polygene™ Runtime.</p>
+
+        <h3>&#64;AppliesTo and AppliesToFilter</h3>
+        <p>
+            This tandem of interface + annotation are primarily used for Generic Fragments, to indicate which methods on the
+            interface the fragment should be applied to.
+        </p>
+
+        <h3>&#64;Optional</h3>
+        <p>
+            In Polygene™, method arguments, property values and injected fields are not allowed to be null by default. To allow
+            any of these to be null, i.e. undeclared, it is required that the argument, field or method is marked with the
+            &#64;Optional annotation.
+        </p>
+
+        <h3>&#64;UseDefaults</h3>
+        <p>
+            Since null is not allowed without the &#64;Optional annotation, it can sometimes by tedious to initialize all
+            the property values. And the &#64;UseDefaults annotation allows us to declare that Polygene™ should set the Property
+            to a default value. These are either the pre-defined ones, or can be set per property declaration during the
+            assembly.
+        </p>
+
+        <h3>&#64;Visibility</h3>
+        <p>
+            Visibility is another innovative concept in Polygene™, which leverage the structure system (Application, Layer, Module)
+            to limit the 'reach' when requesting composites and objects. The Visibility is declared per Composite/Object,
+            preferably in the most restrictive mode possible, and the visibility resolver will ensure a predictable resolution
+            algorithm;
+        </p>
+        <ol>
+            <li>Search the module of the caller first. If one and only one composite type fulfilling the request is available
+                return that to the caller. If two or more are found, throw an AmbiguousTypeException. If no composite found
+                continue to the next step.
+            </li>
+            <li>Search all modules in the Layer of the caller for composite that has a declaration other than
+                <code>Visibility.module</code>. If one and only one composite type fulfilling the request is available
+                return that to the caller. If two or more are found, throw an AmbiguousTypeException. If no composite found
+                continue to the next step.
+            </li>
+            <li>Search all modules in the Layer(s) (if any) directly below of the caller for composite that has a declaration of
+                <code>Visibility.application</code>. If one and only one composite type fulfilling the request is available
+                return that to the caller. If two or more are found, throw an AmbiguousTypeException. If no composite found
+                continue to the next step.
+            </li>
+            <li>Throw an NoSuchCompositeException (or related) exception.</li>
+        </ol>
+    </body>
+</html>

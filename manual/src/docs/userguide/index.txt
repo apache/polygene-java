@@ -17,11 +17,11 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-= Zest™ v{revnumber} User Guide =
+= Polygene™ v{revnumber} User Guide =
 
-:qi4j-version: {revnumber}
-:qi4j-buildnumber: {revnumber}
-:qi4j-git-tag: {gitversion}
+:polygene-version: {revnumber}
+:polygene-buildnumber: {revnumber}
+:polygene-git-tag: {gitversion}
 
 
 :leveloffset: {level2}

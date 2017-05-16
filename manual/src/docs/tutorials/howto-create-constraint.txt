@@ -26,7 +26,7 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == Method Constraint ==
 
@@ -34,7 +34,7 @@ Method Constraints are declared with annotations on the method argument. The ann
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/Dialer.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/Dialer.java
 tag=dialer
 -----------
 
@@ -42,7 +42,7 @@ In the code above we say that we want the argument to the callPhoneNumber() meth
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumber.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/PhoneNumber.java
 tag=annotation
 -----------
 
@@ -50,7 +50,7 @@ We then need to provide the Constraint implementation.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberConstraint.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/PhoneNumberConstraint.java
 tag=constraint
 -----------
 
@@ -58,7 +58,7 @@ We also need to include the Constraint on the Composites we want to have them pr
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/DialerComposite.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/DialerComposite.java
 tag=composite
 -----------
 
@@ -67,7 +67,7 @@ in the method invocation. Concerns can be used to catch and report these violati
 
 [snippet,java]
 ----
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/ParameterViolationConcern.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/ParameterViolationConcern.java
 tag=report
 ----
 
@@ -77,7 +77,7 @@ Property Constraints are declared on the Property method.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/HasPhoneNumber.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/HasPhoneNumber.java
 tag=property
 -----------
 
@@ -89,6 +89,6 @@ which can be done like this;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberParameterViolationConcern.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createConstraint/PhoneNumberParameterViolationConcern.java
 tag=property
 -----------

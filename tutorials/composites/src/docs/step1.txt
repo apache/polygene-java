@@ -22,12 +22,12 @@
 
 == Initial Hello World ==
 
-This whole tutorial describes how to step-by-step modify a typical HelloWorld "application" into a full-fledged Zest™
+This whole tutorial describes how to step-by-step modify a typical HelloWorld "application" into a full-fledged Polygene™
 Composite Oriented application. Here is the initial code of HelloWorld.
 
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial1/HelloWorld.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial1/HelloWorld.java
 tag=initial
 ----
 
@@ -36,7 +36,7 @@ tag=initial
 In this step we start with a basic Java class, which when invoked will concatenate the two properties "phrase" 
 and "name". If invoked with the properties set to "Hello" and "World" respectively it will hence return "Hello World".
 
-Zest™ relies heavily on the use of interfaces. This makes it possible for an object to externally implement a number of
+Polygene™ relies heavily on the use of interfaces. This makes it possible for an object to externally implement a number of
 interfaces which internally is backed by a number of Mixins, some of which you may have written yourself, and some of 
 which may have been reused. This also makes it easy to introduce Modifiers (aka "interceptors", aka "advice"), which 
 are Fragments which execute before and/or after the method on the Mixin is invoked.
@@ -57,28 +57,28 @@ If you have successfully completed the task, you should end up with the followin
 *HelloWorld.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorld.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial2/HelloWorld.java
 tag=solution
 ----
 
 *HelloWorldState.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldState.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial2/HelloWorldState.java
 tag=solution
 ----
 
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldBehaviour.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial2/HelloWorldBehaviour.java
 tag=solution
 ----
 
 *HelloWorldMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial2/HelloWorldMixin.java
 tag=solution
 ----
 

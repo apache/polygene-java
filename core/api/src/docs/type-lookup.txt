@@ -23,7 +23,7 @@
 Composite Types Lookup can occurs when you explicitely lookup for a Composite by Type
 (ex. ServiceFinder.findService(..) methods), when you ask for an injection or when you create a new composite instance.
 
-All theses type lookup start from a Module, are lazy, cached and obey the Zest™ Visibility rules. Type Lookup works
+All theses type lookup start from a Module, are lazy, cached and obey the Polygene™ Visibility rules. Type Lookup works
 equally accross Composite Types with some subtle differences when it comes to Services and Entities.
 
 

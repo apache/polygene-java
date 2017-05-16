@@ -1,39 +1,43 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
 
-description = "Apache Zest™ JClouds EntityStore Extension"
+apply plugin: 'polygene-extension'
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - JClouds" } }
+description = "Apache Polygene™ JClouds EntityStore Extension"
+
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - JClouds" } }
 
 dependencies {
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
-  compile project( ":org.qi4j.libraries:org.qi4j.library.locking" )
-  compile libraries.slf4j_api
-  compile libraries.jclouds_core
-  compile libraries.jclouds_blobstore
+  implementation polygene.library( 'locking' )
+  implementation libraries.slf4j_api
+  implementation libraries.jclouds_core
+  implementation libraries.jclouds_blobstore
 
-  testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
-  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson" ) )
-  testCompile libraries.jclouds_filesystem
+  runtimeOnly polygene.core.runtime
+  runtimeOnly libraries.jaxb_api
 
-  testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
-  testRuntime libraries.logback
+  testImplementation polygene.internals.testsupport
+  testImplementation libraries.jclouds_filesystem
+
+  testRuntimeOnly libraries.logback
 }
-

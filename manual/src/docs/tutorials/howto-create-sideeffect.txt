@@ -26,7 +26,7 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == Typed SideEffect ==
 
@@ -34,22 +34,22 @@ A typed SideEffect is a Java class that implements the MixinType it can be used 
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/MailNotifySideEffect.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/MailNotifySideEffect.java
 tag=allClass
 -----------
 
 The MailNotifySideEffect is implemented as an abstract class, since we are not interested in the many other methods in
 the Confirmable interface. Extending the SideEffectOf is a convenience mechanism, instead of an explicit @SideEffectFor
 annotation on a private field, which can be used in rare occasions when you are not able to extend. This base class
-defines the next field, which is set up by the Zest™ runtime and points to the next fragment in the call stack. We can
+defines the next field, which is set up by the Polygene™ runtime and points to the next fragment in the call stack. We can
 also see that the MailService, HasLineItems and HasCustomer are provided to the side-effect, which is done with
-dependency injection. Zest™ also supports dependency injection via constructors and methods.
+dependency injection. Polygene™ also supports dependency injection via constructors and methods.
 
 It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/OrderEntity.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/OrderEntity.java
 tag=body
 -----------
 
@@ -62,7 +62,7 @@ arbitrary MixinType.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyGenericSideEffect.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/MyGenericSideEffect.java
 tag=body
 -----------
 
@@ -70,7 +70,7 @@ It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/AnyMixinType.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/AnyMixinType.java
 tag=body
 -----------
 
@@ -90,7 +90,7 @@ Here is how the declaration goes ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyGenericSideEffect.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/MyGenericSideEffect.java
 tag=appliesTo
 -----------
 
@@ -98,7 +98,7 @@ And how to use the annotation ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/AnyMixinType.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/AnyMixinType.java
 tag=annotation
 -----------
 
@@ -108,7 +108,7 @@ Finally here is how to implement an AppliesToFilter:
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyAppliesToFilter.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/sideeffects/MyAppliesToFilter.java
 tag=filter
 -----------
 

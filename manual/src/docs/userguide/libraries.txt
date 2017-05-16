@@ -24,22 +24,14 @@
 
 == Overview ==
 
-The Zest™ Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
+The Polygene™ Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
 how good the codebase, documentation and unit tests are for each of the libraries. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
 :leveloffset: 2
 
-include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
+include::../../../../libraries/scripting/src/docs/scripting.txt[]
 
 :leveloffset: 2
 
@@ -52,14 +44,6 @@ include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
 :leveloffset: 2
 
 include::../../../../libraries/constraints/src/docs/constraints.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/conversion/src/docs/conversion.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/eventsourcing/src/docs/eventsourcing.txt[]
 
 :leveloffset: 2
 
@@ -87,10 +71,6 @@ include::../../../../libraries/logging/src/docs/logging.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/metrics/src/docs/metrics.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/osgi/src/docs/osgi.txt[]
 
 :leveloffset: 2
@@ -115,7 +95,7 @@ include::../../../../libraries/rest-server/src/docs/rest-server.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
+include::../../../../libraries/restlet/src/docs/restlet.txt[]
 
 :leveloffset: 2
 

@@ -25,25 +25,25 @@
 source=libraries/osgi/dev-status.xml
 --------------
 
-OSGi Library allows you to import OSGi services as Zest™ Services and to export Zest™ Services as OSGi Services both
-leveraging the Zest™ Availability and OSGi FallbackStrategy mechanisms.
+OSGi Library allows you to import OSGi services as Polygene™ Services and to export Polygene™ Services as OSGi Services both
+leveraging the Polygene™ Availability and OSGi FallbackStrategy mechanisms.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
-== Export Zest™ services to an OSGi Bundle ==
+== Export Polygene™ services to an OSGi Bundle ==
 
 [snippet,java]
 ----
-source=libraries/osgi/src/test/java/org/qi4j/library/osgi/DocumentationSupport.java
+source=libraries/osgi/src/test/java/org/apache/polygene/library/osgi/DocumentationSupport.java
 tag=export
 ----
 
 
-== Import OSGi services in a Zest™ Module ==
+== Import OSGi services in a Polygene™ Module ==
 
 [snippet,java]
 ----
-source=libraries/osgi/src/test/java/org/qi4j/library/osgi/DocumentationSupport.java
+source=libraries/osgi/src/test/java/org/apache/polygene/library/osgi/DocumentationSupport.java
 tag=import
 ----
 

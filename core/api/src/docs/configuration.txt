@@ -1,6 +1,4 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,17 +13,24 @@
 
 [[core-api-service-configuration,Service Configuration]]
 = Service Configuration =
-Configuration in Zest™ is for Zest™ <<core-api-service>> only. The Configuration is stored in a visible Entity
+Configuration in Polygene™ is for Polygene™ <<core-api-service>> only. The Configuration is stored in a visible Entity
 Store and is therefor runtime modifiable and not static in properties or XML files as in most other dependency
 injection frameworks.
 
 The Configuration system itself will handle all the details with interfacing with reading and writing the configuration.
 The normal UnitOfWork management is used, but handled internally by the configuration system.
 
-In Zest, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
-it can not be found, then it will try to bootstrap it from a properties file, with the same name as the
+In Polygene, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
+it can not be found, then it will try to bootstrap it from the file system, with the same name as the
 ServiceDescriptor.identifiedBy(), which is set during <<core-bootstrap-assembly>> and defaults to the fully qualified
-classname of the <<core-api-service>> type.
+classname of the <<core-api-service>> type, followed by an extension dependent on the file type.
+
+The following file types for default configuration is supported (listed in read priority order);
+
+1. Java Properties
+2. JSON
+3. YAML
+4. XML
 
 == Defining a Configuration Type ==
 The Configuration type is simply listing the properties that are available. The standard rules on @UseDefaults and
@@ -34,9 +39,26 @@ Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/configuration/MailServiceConfiguration.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailServiceConfiguration.java
 tag=configuration
 --------------
+
+== Default Configuration formats ==
+The default configuration read will happen if the Entity Store backing the Configuration system does not contain the
+identifiable configuration. That will trigger the reading attempts of the supported configuration formats. Once the
+configuration is parsed from the file system it is written to the Entity Store, and if the Entity Store is not
+ephemeral, then on the next start, any changes to the configuration will NOT be detected, and will simply be ignored.
+
+To be able to read JSON, YAML and XML configuration, you must configure a Serialization system that supports
+the configuration format that you want to use.
+
+* extension/serialization-javaxjson supports JSON
+* extension/serialization-javaxxml supports XML
+
+== Support for Complex Types ==
+Since the regular Value Serialization platform is used, for JSON, YAML and XML, the configuration can contain
+arbitrary composite types. This is not true for the Java properties file format.
+
 
 == Using a Configuration Type ==
 It is important to remember that Configuration is not static values that are set prior to application start-up and
@@ -49,7 +71,7 @@ changes take effect. Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/configuration/MailService.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailService.java
 tag=read
 --------------
 
@@ -59,7 +81,6 @@ must be called. Example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/configuration/MailService.java
+source=core/api/src/test/java/org/apache/polygene/api/configuration/MailService.java
 tag=write
 --------------
-

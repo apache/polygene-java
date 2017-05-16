@@ -1,22 +1,25 @@
 //////////////////////
- * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 //////////////////////
 
 [[howto-leverage-properties,Leverage Properties]]
 = Leverage Properties =
 
-Zest™ does not follow the JavaBeans standard for property support. Instead, a much more explicit concept is in place. The
+Polygene™ does not follow the JavaBeans standard for property support. Instead, a much more explicit concept is in place. The
 advantages are enormous, and the only real downside is that people are already destroyed, thinking in so called POJO
 terms.
 
@@ -24,19 +27,19 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/api/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
-So in Zest, instead of writing;
+So in Polygene, instead of writing;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/pojo/Book.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/pojo/Book.java
 tag=book
 -----------
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/pojo/MutableBook.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/pojo/MutableBook.java
 tag=mutableBook
 -----------
 
@@ -51,7 +54,7 @@ like this;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/Book.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/Book.java
 tag=book
 -----------
 
@@ -64,13 +67,13 @@ There is more to this than meets the eye.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/BookFactory.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/BookFactory.java
 tag=create
 -----------
 
 == Persistence ==
 
-The Property concept also allows a much better defined persistence model. In Zest, only Property and Association
+The Property concept also allows a much better defined persistence model. In Polygene, only Property and Association
 instances are persisted, and that makes the semantics around the persistence system very clear.
 
 Properties reference values only, and these values must be Serializable, which means that Properties can not contain
@@ -87,7 +90,7 @@ actual domain model. Such Swing client will utilize a SwingInfo property info if
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/SwingInfo.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/SwingInfo.java
 tag=info
 -----------
 
@@ -95,6 +98,6 @@ Our generic Swing UI will be mainly reflective in nature, but when it gets hold 
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/SwingPanel.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/properties/SwingPanel.java
 tag=info-use
 -----------

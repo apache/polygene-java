@@ -24,11 +24,11 @@
 
 == Overview ==
 
-We try to keep the Zest™ Core Runtime as lean as possible, and a lot of the power to the Zest™ Platform comes via its
+We try to keep the Polygene™ Core Runtime as lean as possible, and a lot of the power to the Polygene™ Platform comes via its
 Extension SPI, which defines clear ways to extend the platform. There are currently the following Extensions types,
 each with possibly more than one implementation;
 
-   * Value Serialization
+   * Serialization
    * Entity Stores
    * Index / Query Engines
    * Entity Caches
@@ -37,7 +37,7 @@ each with possibly more than one implementation;
    * Migration
 
 This section will go through each of the available extensions.
-The Zest™ Extensions are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
+The Polygene™ Extensions are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
 how good the codebase, documentation and unit tests are for each of the libraries. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
@@ -45,23 +45,15 @@ for our users.
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-orgjson/src/docs/vs-orgjson.txt[]
+include::../../../../extensions/serialization-javaxjson/src/docs/serialization-javaxjson.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-jackson/src/docs/vs-jackson.txt[]
+include::../../../../extensions/serialization-javaxxml/src/docs/serialization-javaxxml.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/valueserialization-stax/src/docs/vs-stax.txt[]
-
-:leveloffset: 2
-
-include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
-
-:leveloffset: 2
-
-include::../../../../extensions/cache-memcache/src/docs/cache-memcache.txt[]
+include::../../../../extensions/serialization-messagepack/src/docs/serialization-messagepack.txt[]
 
 :leveloffset: 2
 
@@ -70,6 +62,10 @@ include::../../../../extensions/entitystore-memory/src/docs/es-memory.txt[]
 :leveloffset: 2
 
 include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/entitystore-geode/src/docs/es-geode.txt[]
 
 :leveloffset: 2
 
@@ -109,6 +105,14 @@ include::../../../../extensions/entitystore-sql/src/docs/es-sql.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/cache-memcache/src/docs/cache-memcache.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/indexing-elasticsearch/src/docs/index-elasticsearch.txt[]
 
 :leveloffset: 2
@@ -125,7 +129,7 @@ include::../../../../extensions/indexing-sql/src/docs/index-sql.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/metrics-yammer/src/docs/metrics-yammer.txt[]
+include::../../../../extensions/metrics-codahale/src/docs/metrics-codahale.txt[]
 
 :leveloffset: 2
 
@@ -136,4 +140,3 @@ include::../../../../extensions/migration/src/docs/migration.txt[]
 include::../../../../extensions/reindexer/src/docs/reindexer.txt[]
 
 :leveloffset: 2
-

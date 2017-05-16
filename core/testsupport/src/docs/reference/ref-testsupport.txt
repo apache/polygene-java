@@ -17,9 +17,9 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-include::AbstractQi4jTest.txt
+include::AbstractPolygeneTest.txt
 
-include::AbstractQi4jScenarioTest.txt
+include::AbstractPolygeneScenarioTest.txt
 
 include::AbstractEntityStoreTest.txt
 

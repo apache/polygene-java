@@ -1,6 +1,4 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,3 +13,58 @@
 
 [[core-api-sideeffect,SideEffect]]
 = SideEffect =
+
+SideEffects have no equivalent in Aspect Oriented Programming. They are executed AFTER the method invocation, and
+they are potentially concurrent with the method invocation itself. The SideEffect receives the incoming method arguments
+and can query the result of the method call by accessing the +next+ field. SideEffects can NOT influence the method
+call in any way, and both return values from the SideEffect, as well as any exceptions thrown, will be ignored.
+
+To create a sideeffect, you need to create a class that,
+
+    * implements the Mixin Type (Typed SideEffects) or java.lang.reflect.InvocationHandler (Generic SideEffects),
+    * extend SideEffectOf (Typed Concerns) or GenericSideEffect (Generic SideEffects) [1]
+
+You are allowed to modify both the in-arguments as well as the returned value, including throw exceptions if that is
+suitable, perhaps for post condition checks.
+
+== Applicability ==
+SideEffects are applied to composite types in several ways;
+
+    * @SideEffects annotation on the Mixin Type.
+    * withSideEffects() assembly instruction at bootstrap.
+    * @SideEffects annotation of custom annotations to be applied to either Mixin Types or methods on Mixin Types.
+    * @SideEffects annotation directly on a method.
+
+== Typed SideEffect ==
+As mentioned above, side effects that implements the _Mixin Type_ are called *Typed SideEffects*.
+
+A Typed SideEffect doesn't have to implement all the methods in the Mixin Type. By making the class abstract and only
+implementing the methods of interest, Polygene™ runtime will subclass the side effect (otherwise not valid for the
+JVM/compiler), but the generated methods will never be invoked.
+
+== Generic SideEffect ==
+Generic SideEffects implement the +java.lang.reflect.InvocationHandler+ and can potentially serve any method it is
+applied to. Generic SideEffects will be added to all methods that the AppliesToFilter evaluates to true. By default,
+that is all methods.
+
+AppliesToFilters is a mechanism to limit, or direct, which methods that the concern should be added to. You have full
+control over this selection process, via several mechanisms.
+
+    * @AppliesTo annotation can be put on the side effect, with either;
+        * an interface for which the methods should be wrapped, or
+        * an AppliesToFilter implementation that is consulted during building the invocation stack, or
+        * an annotation type that must be given on the method.
+    * SideEffects are added only to composites that declares the SideEffect, either in
+        * the Composite Type, or
+        * on any method of the Composite Type, or
+        * on an annotation that is in turn declared on a Composite Type method
+        * during assembly in the withSideEffects() method.
+
+== Invocation Order ==
+The invocation order of SideEffects is UNDEFINED, and one MUST NOT rely on SideEffects executing in any particular order.
+They MAY be concurrent and outside the thread that executed the method, so the SideEffect can also not depend on
+the UnitOfWork that may be observed as present.
+
+To be clear; the method call to the SideEffect is NOT its own Polygene-controlled invocation stack, and any annotations
+on the SideEffect methods will be ignored (or it is a bug). That means that IF the SideEffect needs a UnitOfWork it
+either needs to manage one explicitly or call out to a service that has the @UnitOfWorkPropagation annotation.

@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[community-docs,Writing Documentation]]
-= Writing Zest™ Documentation =
+= Polygene™ Documentation =
 
 The documents use the asciidoc format, see:
 
@@ -33,7 +33,7 @@ You need to install `asciidoc` and `docbook-xsl`.
 [[community-docs-overall-flow,Documentation Flow]]
 == Overall Flow ==
 
-TIP: To generate the website locally use `./gradlew -p manual website`. Output is in `~/manual/build/docs/website`.
+TIP: To generate the website locally use `./gradlew website`. Output is in `~/manual/build/docs/website`.
 
 Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
 
@@ -127,28 +127,28 @@ External links are added like this:
 
 [source]
 ----
-https://zest.apache.org/[Link text here]
+https://polygene.apache.org/[Link text here]
 ----
 
-Which renders like: https://zest.apache.org/[Link text here]
+Which renders like: https://polygene.apache.org/[Link text here]
 
 For short links it may be better not to add a link text, just do:
 
 [source]
 ----
-https://zest.apache.org/
+https://polygene.apache.org/
 ----
 
-Which renders like: https://zest.apache.org/
+Which renders like: https://polygene.apache.org/
 
 It's ok to have a dot right after the URL, it won't be part of the link.
 
 [source]
 ----
-https://zest.apache.org/.
+https://polygene.apache.org/.
 ----
 
-Which renders like: https://zest.apache.org/.
+Which renders like: https://polygene.apache.org/.
 
 == Text Formatting ==
 
@@ -226,7 +226,7 @@ Most source code that is included in the documentation should be extract via +SN
 ----
  [snippet,java]
  -----------
- source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+ source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
  tag=mainClass
  -----------
 ----
@@ -236,11 +236,11 @@ The above could be bringing in content that looks like;
 
 [source]
 ----
-package org.qi4j.demo.tenminute;
+package org.apache.polygene.demo.tenminute;
 
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.sideeffect.SideEffects;
+import org.apache.polygene.api.concern.Concerns;
+import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.sideeffect.SideEffects;
 
 // START SNIPPET: sideEffect
 @SideEffects( MailNotifySideEffect.class )
@@ -259,7 +259,7 @@ which will be rendered as;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -322,8 +322,8 @@ For other highlighters we could add see http://alexgorbatchev.com/SyntaxHighligh
 
 Common attributes you can use in documents:
 
-* \{qi4j-revnumber} - rendered as "{qi4j-revnumber}"
-* \{qi4j-importdir} - rendered as "{qi4j-importdir}"
+* \{polygene-revnumber} - rendered as "{polygene-revnumber}"
+* \{polygene-importdir} - rendered as "{polygene-importdir}"
 
 These can substitute part of URLs that point to for example APIdocs or source code.
 
@@ -339,5 +339,3 @@ Useful links when configuring the docbook toolchain:
 * http://www.sagehill.net/docbookxsl/index.html
 * http://docbook.sourceforge.net/release/xsl/1.76.1/doc/html/index.html
 * http://docbook.sourceforge.net/release/xsl/1.76.1/doc/fo/index.html
-
-

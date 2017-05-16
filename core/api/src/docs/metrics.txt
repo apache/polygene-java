@@ -1,6 +1,4 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +13,7 @@
 
 [[core-api-metrics, Metrics API]]
 = Metrics API =
-The Zest™ platform defines an advanced Metrics SPI to capture runtime metrics of Zest's internals as well be used by
+The Polygene™ platform defines an advanced Metrics SPI to capture runtime metrics of Polygene's internals as well be used by
 application code (via this API) to provide production metrics for operations personnel, ensuring healthy state of
 the applications.
 
@@ -25,12 +23,12 @@ There are quite a lot of different Metrics components available, which are insta
 factory for each component type, to allow for additional components to be created in the future without breaking
 compatibility in the existing implementations.
 
-The MetricsProvider is a standard Zest™ Service and simply acquired via the @Service annotation on a field or
+The MetricsProvider is a standard Polygene™ Service and simply acquired via the @Service annotation on a field or
 constructor argument.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=common
 --------------
 
@@ -41,37 +39,50 @@ handling.
 
 A Gauge can represent anything, for instance, thread pool levels, queue sizes and other resource allocations. It is
 useful to have separate gauges for percentage (%) and absolute numbers of the same resource. Operations are mainly
-interested in being alerted when threshold are reach as a percentage, as it is otherwise too many numbers to keep
+interested in being alerted when threshold are reached as a percentage, as it is otherwise too many numbers to keep
 track of.
 
 To create a Gauge, you do something like;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=gauge
 --------------
 
 == Counter ==
+Often we want to track the many counters in a system. This might be "number of HTTP requests" or
+"filesystem access frequency". By creating a _Counter_ metrics, it is simply a matter of calling the _increment_
+or _decrement_ on that metric. This will track both number of counts/steps as well as the rate (per second), and
+many visualization platforms. such as Kibana, Graphite and Grafana, are made to handle this particular metric very well.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=counter
 --------------
 
 == Histogram ==
+Histograms is about computing the running standard deviations and variances. Please see
+http://www.johndcook.com/standard_deviation.html["Accurately computing running variance"] for more detailed information.
+
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=histogram
 --------------
 
 == Meter ==
+The _Meter_ is a more advanced _Counter_, which measures mean throughput and one-, five-, and fifteen-minute
+exponentially-weighted moving average throughputs.
+
+Wikipedia has a section
+http://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average["Exponential moving average"] in the
+"Moving Average" article.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=meter
 --------------
 
@@ -81,14 +92,60 @@ critical sections, or even HTTP requests duration and similar.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=timer
 --------------
 
 == HealthCheck ==
+HealthCheck is a metric to report the health of a system or component. The HealthCheck metric will be called upon
+regularly to report its status, which is then forwarded to the monitoring system.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
 tag=healthcheck
 --------------
+
+
+= Timing Capture =
+A lot of metrics are around the time it takes to execute something and Polygene supports this at its core.
+
+== Usage ==
+There are currently the following possibilities available;
+
+    * @TimingCapture - capture timing on a single method
+    * TimingCaptureAll - capture timing on all methods of a composite
+
+Before looking at the details of these, we need to point out that there are some pre-conditions for Metrics to be
+working. First of all, you need to install a Metrics Extensions, most likely the
+<<extension-metrics-codahale, Codahale Metrics Extension>>. See your chosen extension for details on how to do that.
+
+Once the Metrics extension is installed, you will also need a suitable backend to gather all the data out of a
+production plant and likewise a good front-end to view this. See your chosen Metrics Extension for this as well.
+
+== TimingCaptureAll ==
+There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
+in the composite.
+
+== @TimingCapture ==
+The +@TimingCapture+ annotation can be placed on any method of the composite, to indicate that
+a Timer is wanted on that method.
+
+Example;
+
+[snippet,java]
+----
+source=core/api/src/test/java/org/apache/polygene/api/metrics/DocumentationSupport.java
+tag=capture
+----
+
+== Which method? ==
+It is valid to annotate either the composite interface methods or the mixin implementation methods.
+Any of the method declarations should work. From the testcases we have the following example;
+
+[snippet,java]
+----
+source=core/testsupport/src/main/java/org/apache/polygene/test/metrics/AbstractTimingCaptureTest.java
+tag=complex-capture
+----
+

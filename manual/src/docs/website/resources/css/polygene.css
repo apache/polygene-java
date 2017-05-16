@@ -1,0 +1,825 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+ */
+
+span.remark
+{
+    background: yellow;
+}
+
+td p
+{
+    margin: 0.125em 0;
+}
+
+#disqus_thread
+{
+    max-width: 40em;
+}
+
+body #toolbar_item command_help
+{
+    /* display: none !important; */
+}
+
+pre {
+    max-width: 55em;
+    overflow: scroll;
+}
+
+.syntaxhighlighter a,
+.syntaxhighlighter div,
+.syntaxhighlighter code,
+.syntaxhighlighter table,
+.syntaxhighlighter table td,
+.syntaxhighlighter table tr,
+.syntaxhighlighter table tbody,
+.syntaxhighlighter table thead,
+.syntaxhighlighter table caption,
+.syntaxhighlighter textarea
+{
+    font-size: 12px !important;
+    font-family: Consolas, Monaco, "Bitstream Vera Sans Mono", monospace !important;
+    line-height: 14px !important;
+}
+
+.syntaxhighlighter {
+    background-color: rgba(11,117,188,0.1) !important;
+    /*
+    overflow: visible !important;
+    */
+    border: 1px solid #0b75bc;
+    padding: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.syntaxhighlighter .line.alt1 {
+    background-color: rgba(11,117,188,0.05) !important;
+}
+.syntaxhighlighter .line.alt2 {
+    background-color:  rgba(11,117,188,0.1)  !important;
+}
+
+html
+{
+    text-align: center;
+}
+
+html body
+{
+    background: url("bg.png");
+    margin: 0 auto;
+    text-align: left;
+}
+
+div.navheader, div.navfooter {
+    padding: 0 5%;
+}
+
+body, div.navheader th, div.navheader td, div.navfooter td
+{
+    font-family: Georgia, "Times New Roman", Times, serif;
+    color: #4c4c4c;
+}
+
+a {
+    color: #0b75bc;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:visited {
+    color: #0b75bc;
+    /* color: #08568a; */
+}
+
+hr {
+    border-color: #0b75bc;
+    border-style: solid;
+}
+
+.navheader a {
+    color: #acacac;
+    text-decoration: none;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.navheader a:hover, .navfooter a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6,
+div.toc p b,
+div.important th, div.info th, div.tip th,
+div.warning th, div.note th, div.caution th,
+p.legalnotice-title,
+div.refnamediv p,
+div.sidebar p.title,
+th,
+div.table-contents td p span.strong strong,
+tr.question td b p
+{
+    color: #0b75bc;
+    font-family: Helvetica, Arial, sans-serif;
+    text-shadow: 0 1px 0 #fff;
+}
+
+
+.book, .chapter, .part {
+    width:90%;
+    margin: 0 auto;
+}
+
+td p strong
+{
+    font-size: 1.067em;
+}
+
+tr.question td b p
+{
+    font-size: 1em;
+    margin: 0.5em 0 0 0;
+}
+
+tr.question td
+{
+    padding: 0;
+}
+
+tr.answer td, tr.answer td p
+{
+    padding-top: 0;
+}
+
+tr.answer td
+{
+    padding-left: 1em;
+}
+
+div.navheader
+{
+    height: 50px;
+    background: url(../../../../resources/css/navHead_bg.png) repeat-x;
+}
+
+div.navheader hr
+{
+    display: none;
+}
+
+div.refentry body h2.title, div.refentry body h1.title, div.refentry div.refnamediv p,
+body > div.section h1, body > div.section h2,
+body > div.part h1, body > div.part h2,
+body > div.chapter h1, body > div.chapter h2,
+body > div.book h1,
+body > div.preface h2,
+body > div.appendix h2
+{
+    border-bottom: none;
+    margin-top: 2.2em;
+    margin-bottom: .7em;
+}
+
+div.legalnotice
+{
+    padding-top: 3em;
+}
+
+p.legalnotice-title b
+{
+    font-size: 1.5em;
+    font-style: normal;
+    font-weight: bold;
+}
+
+p.legalnotice-title
+{
+    margin-bottom: 2em;
+}
+
+body > div.book h1.title
+{
+    margin-top: 0.5em;
+    padding-top: 0;
+    margin-bottom: 0;
+}
+
+div.part h1.title
+{
+    margin-top: 1.5em;
+}
+
+.book div.titlepage {
+    position: absolute;
+    top: 40px;
+    background: url(logo.png) no-repeat left top;
+    min-height: 250px;
+    padding-left: 150px;
+}
+
+.book div.titlepage .authorgroup {
+    font-size: 150%;
+}
+
+.book div.titlepage hr {
+    display: none;
+}
+
+div.titlepage h3.corpauthor
+{
+}
+
+div.refnamediv
+{
+    padding-top: 24px;
+    margin-bottom: 24px;
+}
+
+div.refsynopsisdiv h2, div.refsect1 h2
+{
+    border-bottom: none;
+}
+
+div.titlepage h3.corpauthor a.ulink, div.titlepage h3.corpauthor a.ulink:link,
+div.titlepage h3.corpauthor a.ulink:visited, div.titlepage h3.corpauthor a.ulink:hover
+div.titlepage h3.corpauthor a.ulink:focus, div.titlepage h3.corpauthor a.ulink:active
+{
+    color: #dddddd;
+    text-decoration: none;
+    font-style: normal;
+    padding-left: 0.6em;
+}
+
+div.refnamediv h2
+{
+    display: none;
+}
+
+div.refnamediv p
+{
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 3em;
+    margin-bottom: 2em;
+    width: 60%;
+    line-height: 1.2;
+}
+
+p, li, dt, div.navheader th, div.navheader td, div.navfooter td
+{
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: .9375em;
+    text-shadow: 0 1px 0 #fff;
+}
+
+p, ul, ol
+{
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+li p
+{
+    margin-bottom: 0.5em;
+}
+
+div.list-of-figures p, div.list-of-tables p
+{
+    margin-top: 1.5em;
+}
+
+div.list-of-figures p b, div.list-of-tables p b, div.sidebar p b
+{
+    font-style: normal;
+    font-weight: bold;
+}
+
+div.toc
+{
+    margin-bottom: 1em;
+}
+
+.book .toc {
+    margin-top: 220px;
+}
+
+div.toc p {
+    width: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #0b75bc;
+    font-size: 120%;
+    border-bottom: 1px solid #0b75bc;
+}
+
+div.toc a, div.toc a:visited {
+    color: #0b75bc;
+}
+
+div.toc dt {
+    margin-bottom: 8px;
+}
+
+div.toc dl dl {
+    margin: 5px 0;
+}
+
+p.copyright
+{
+    margin: 0;
+    padding: 10px 0 5px 0;
+    text-align: center;
+    max-width: 100%;
+    background: #0b75bc url(../../../../resources/css/copyright_bg.png) repeat-x top;
+    color: #fff;
+    text-shadow: none;
+    border-bottom: 1px solid #095e96;
+}
+
+.titlepage p.copyright {
+    background: none;
+    border: none;
+    text-align: left;
+    color: #0b75bc;
+}
+
+code.literal
+{
+    font-family: Consolas, Monaco, monospace;
+    font-size: .9375em;
+}
+
+td code.literal
+{
+    font-size: .8em;
+}
+
+li
+{
+    line-height: 1.3em;
+}
+
+p
+{
+    line-height: 1.6em;
+}
+
+.toc p {
+    max-width: 100%;
+}
+
+ul, ol
+{
+    max-width: 38em;
+}
+
+div.sidebar
+{
+    max-width: 30em;
+    padding: 0.67em 1em;
+    background: #c1d5d9 url("../../../../resources/css/content-bg.png") repeat-x;
+}
+
+div.sidebar p.title
+{
+    margin: 0;
+}
+
+div.sidebar ul
+{
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+p b, div.figure p.title b, div.table p.title b
+{
+    font-style: italic;
+    font-weight: normal;
+}
+
+/* BEGIN SIDE NOTES */
+div.important, div.info, div.tip, div.note,
+div.warning, div.caution
+{
+    float: right;
+    max-width: 20em;
+    margin: 1em 0 1em 1em !important;
+    padding: 1em !important;
+    font-size: 0.9em;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+div.important, div.info, div.tip, div.note
+{
+    background-color:  rgba(11, 117, 188, 0.1) !important;
+    border: 1px solid #0b75bc;
+}
+div.warning
+{
+    background-color:  rgba(188, 117, 11, 0.1) !important;
+    border: 1px solid #bc750b;
+}
+div.caution
+{
+    background-color:  rgba(188, 11, 11, 0.1) !important;
+    border: 1px solid #bc0b0b;
+}
+div.important h3, div.info h3, div.tip h3, div.note h3,
+div.warning h3, div.caution h3
+{
+    margin: 0 0 0.5em 0 !important;
+    line-height: 50px;
+    padding-right: 55px;
+    background-position: top right !important;
+    background-repeat: no-repeat !important;
+}
+div.important h3
+{
+    background-image: url("important.png");
+}
+div.info h3, div.tip h3
+{
+    background-image: url("tip.png");
+}
+div.note h3
+{
+    background-image: url("note.png");
+}
+div.warning h3
+{
+    background-image: url("warning.png");
+    color: #bc750b;
+}
+div.caution h3
+{
+    background-image: url("caution.png");
+    color: #bc0b0b;
+}
+div.important p, div.info p, div.tip p, div.note p,
+div.warning p, div.caution p
+{
+    margin: 0 0 0.5em 0 !important;
+}
+/* END SIDE NOTES */
+
+
+div.table, div.informaltable
+{
+    width: 100%;
+    clear: both;
+}
+div.table div.table-contents, div.informaltable div.table-contents
+{
+    background-color: rgba(11,117,188,0.1) !important;
+    border: 1px solid #0b75bc;
+    padding: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.table table, div.informaltable table
+{
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+}
+
+td, th
+{
+    padding: 2px 4px;
+}
+
+div.table table, div.informaltable table,
+div.table table th, div.informaltable table th,
+div.table table td, div.informaltable table td,
+div.table table tr, div.informaltable table tr,
+div.table table tbody, div.informaltable table tbody,
+div.table table thead, div.informaltable table thead,
+div.table table tfoot, div.informaltable table tfoot
+{
+    font-size: 15px;
+    text-align: center;
+}
+div.table table td,
+div.informaltable table td,
+div.table table th,
+div.informaltable table th
+{
+    border: 1px solid #3D8AC9;
+}
+div.table table tr:first-child th,
+div.informaltable table tr:first-child th
+{
+  border-top: 0;
+}
+div.table table tr:last-child td,
+div.informaltable table tr:last-child td
+{
+  border-bottom: 0;
+}
+div.table table tr td:first-child,
+div.informaltable table tr td:first-child,
+div.table table tr th:first-child,
+div.informaltable table tr th:first-child
+{
+  border-left: 0;
+}
+div.table table tr td:last-child,
+div.informaltable table tr td:last-child,
+div.table table tr th:last-child,
+div.informaltable table tr th:last-child
+{
+  border-right: 0;
+}
+
+div.queryresult table tbody td p code.literal
+{
+    color: #000000;
+}
+
+div.queryresult table thead tr,
+div.queryresult table tfoot tr
+{
+    background: #cad9dc;
+}
+
+div.queryresult table tbody
+{
+    background: #d1dee1;
+}
+
+div.queryresult table tbody tr.evenresult
+{
+    background: #dfe8eb;
+}
+
+div.queryresult table thead th
+{
+    font-size: 0.9375em;
+}
+
+div.queryresult table tfoot th
+{
+    font-size: 0.8125em;
+    font-weight: normal;
+}
+
+div.table table th, div.informaltable table th
+{
+    color: #3D8AC9;
+}
+div.table-contents td p span.strong strong
+{
+    color: #333333;
+}
+
+div.informaltable span.strong strong
+{
+    font-weight: normal;
+    font-style: italic;
+}
+
+div.informalfigure a img, div.figure a img
+{
+    border: none;
+}
+
+/* additional styles for slides */
+
+div.slide h1
+{
+    margin-top: 40px;
+    margin-bottom: 1em;
+    color: white;
+    border-bottom: none;
+}
+
+div.slide p, div.slide li
+{
+    font-size: 1.25em;
+}
+
+.navfooter{
+    background: #0b75bc;
+    border: 1px solid #0b75bc;
+    border-top: 1px solid #3c91c9;
+}
+
+.navfooter a {
+    color: #fff;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    text-shadow: none;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+h1 { font-size: 1.8em; margin-bottom: 1em; }
+h2 { font-size: 1.6em; margin-bottom: 1em; }
+h3 { font-size: 1.4em; margin-bottom: 1em; }
+h4 { font-size: 1.2em; margin-bottom: 0.5em; }
+h5 { font-size: 1em; margin-bottom: 0.5em; }
+
+.devstatus-code-none {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #f08080;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-code-early {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: orange;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-code-beta {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bold;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: yellow;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-code-stable {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #adff2f;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-code-mature {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #7cfc00;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-docs-none {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #f08080;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-docs-brief {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: yellow;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-docs-good {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #adff2f;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-docs-complete {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #7cfc00;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-tests-none {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #f08080;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-tests-some {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: yellow;
+    text-align: center;
+    text-shadow: none  !important;
+}
+.devstatus-tests-good {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #adff2f;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+.devstatus-tests-complete {
+    border: solid black 2px;
+    margin-right: 5px !important;
+    display: block;
+    float: right;
+    width: 4em;
+    font-size: 10pt !important;
+    font-weight: bolder;
+    font-family: "Courier New", "Courier", monospace !important;
+    background-color: #7cfc00;
+    text-align: center;
+    text-shadow: none  !important;
+}
+
+
+.section .variablelist dt .term {
+    font-weight: bolder;
+    font-family: Consolas, Monaco, monospace;
+    background: #DEDEDE;
+}

@@ -1,23 +1,26 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 //////////////////////
 
 [[howto-create-entity,Create an Entity]]
 = Create an Entity =
-One of the most common tasks in Zest™ is the management of the life cycle of Entities. Since Zest™ is capable of
+One of the most common tasks in Polygene™ is the management of the life cycle of Entities. Since Polygene™ is capable of
 delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people
-use Entities more frequently in Zest™ applications, so it is a very important topic to cover.
+use Entities more frequently in Polygene™ applications, so it is a very important topic to cover.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
 
@@ -26,7 +29,7 @@ include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-polygene>> tutorial for details.
 
 == Basics First ==
 
@@ -39,7 +42,7 @@ Domain code typically don't need to know of the EntityComposite types directly, 
 interface. The Visibility rules will be applied to associate the right EntityComposite when a domain type is requested.
 Ambiguities are not accepted and will result in runtime exceptions.
 
-Zest™ supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
+Polygene™ supports that each entity instance can have more than one entity type, and it is managed per instance. This feature
 is beyond the scope of this HowTO and will be covered subsequently.
 
 == Good Practice ==
@@ -65,17 +68,17 @@ Entity management.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/Car.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Car.java
 tag=entity
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/Manufacturer.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Manufacturer.java
 tag=entity
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/Accident.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/Accident.java
 tag=entity
 -----------
 
@@ -90,17 +93,17 @@ We will also need to define the composites for the above domain structure;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntity.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntity.java
 tag=composite
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerEntity.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerEntity.java
 tag=composite
 -----------
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/AccidentValue.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/AccidentValue.java
 tag=composite
 -----------
 
@@ -114,7 +117,7 @@ We must also assemble an EntityStore for the entire application, but that is out
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/MyAssembler.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/MyAssembler.java
 tag=assembler1
 -----------
 
@@ -125,21 +128,21 @@ available as services.
 
 == The Entity Factory ==
 
-The entity factory is something you need to write yourself, but as with most things in Zest™ it will end up being a
+The entity factory is something you need to write yourself, but as with most things in Polygene™ it will end up being a
 fairly small implementation. So how is that done?
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactory.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactory.java
 tag=carFactory
 -----------
 
-That is just the domain interface. We now need to make the service interface, which Zest™ needs to identify services and
+That is just the domain interface. We now need to make the service interface, which Polygene™ needs to identify services and
 make it possible for the service injection later.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryService.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryService.java
 tag=carFactoryService
 -----------
 
@@ -147,11 +150,11 @@ Then we need an implementation of the mixin.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin1
 -----------
 
-And doing that, first of all we need to request Zest™ runtime to give us the Module
+And doing that, first of all we need to request Polygene™ runtime to give us the Module
 that our code belongs to, and the UnitOfWork current context the execution is happening in.
 
 Injections that are related to the Visibility rules are handled by the @Structure annotation. And the easiest way for us
@@ -159,16 +162,16 @@ to obtain a Module is simply to;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin2
 -----------
 
-Here Zest™ will inject the member module with the correct Module. In case we only need the Module
+Here Polygene™ will inject the member module with the correct Module. In case we only need the Module
 during the construction, we can also request it in the same manner as constructor argument.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=carFactoryMixin3
 -----------
 
@@ -179,7 +182,7 @@ We then need to provide the implementation for the create() method.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/CarEntityFactoryMixin.java
 tag=create
 -----------
 
@@ -191,7 +194,7 @@ re-usable. So let's create one for the Manufacturer type.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerRepository.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepository.java
 tag=repo
 -----------
 
@@ -199,7 +202,7 @@ And then we repeat the process for creating a Service...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerRepositoryService.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepositoryService.java
 tag=manufacturerRepositoryService
 -----------
 
@@ -207,7 +210,7 @@ and a Mixin that implements it...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/ManufacturerRepositoryMixin.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/ManufacturerRepositoryMixin.java
 tag=repo
 -----------
 
@@ -216,7 +219,7 @@ Services to be available to the application layer above, and not restricted to w
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/MyAssembler.java
+source=manual/src/main/java/org/apache/polygene/manual/recipes/createEntity/MyAssembler.java
 tag=assembler2
 -----------
 

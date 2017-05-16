@@ -40,7 +40,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/cache-ehcache/src/test/java/org/qi4j/cache/ehcache/EhCacheTest.java
+source=extensions/cache-ehcache/src/test/java/org/apache/polygene/cache/ehcache/EhCacheTest.java
 tag=assembly
 ----
 
@@ -51,6 +51,9 @@ Here are the configuration properties for the EhCache EntityStore Cache:
 
 [snippet,java]
 ----
-source=extensions/cache-ehcache/src/main/java/org/qi4j/cache/ehcache/EhCacheConfiguration.java
+source=extensions/cache-ehcache/src/main/java/org/apache/polygene/cache/ehcache/EhCacheConfiguration.java
 tag=config
 ----
+
+Cache overflow to disk may be configured using the <<library-fileconfig>>.
+If the FileConfig library is not in use, then it defaults to a temporary directory in `java.io.tmpdir`.

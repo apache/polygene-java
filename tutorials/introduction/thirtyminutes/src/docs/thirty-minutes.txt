@@ -17,31 +17,31 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[thirty-minutes-intro,Zest™ in 30 minutes]]
-= Zest™ in 30 minutes =
+[[thirty-minutes-intro,Polygene™ in 30 minutes]]
+= Polygene™ in 30 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://polygene.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
-This introduction will deepen your understanding of Zest™, as we touches on a couple of the common features of Zest™. It
-is expected that you have gone through and understood the "Zest™ in 10 minutes" introduction.
+This introduction will deepen your understanding of Polygene™, as we touches on a couple of the common features of Polygene™. It
+is expected that you have gone through and understood the "Polygene™ in 10 minutes" introduction.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-See the <<howto-depend-on-zest>> tutorial for details.
+See the <<howto-depend-on-polygene>> tutorial for details.
 
 We will go back to the OrderEntity example;
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -52,12 +52,12 @@ First we need to create (or also find in a library) the mechanics of the audit t
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=2
 -----------
 
-Quite a lot of Zest™ features are leveraged above;
-[1] Property is a first class citizen in Zest™, instead of getters/setters naming convention to declare properties.
+Quite a lot of Polygene™ features are leveraged above;
+[1] Property is a first class citizen in Polygene™, instead of getters/setters naming convention to declare properties.
 [2] ValueComposite for Action means that it is among other things Immutable.
 [3] The Action extends a Property. We call that Property subtyping and highly recommended.
 [4] The CompositeBuilder creates Immutable Action instances.
@@ -66,7 +66,7 @@ We also need a Concern to hang into the methods of the Order interface.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=3
 -----------
 
@@ -81,19 +81,19 @@ the re-use value. It could look like this;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=4
 -----------
 
 The above construct is called a Generic Concern, since it implements java.lang.reflect.InvocationHandler instead of the
 interface of the domain model. The ConcernOf baseclass will also need to be of InvocationHandler type, and the
-Zest™ Runtime will handle the chaining between domain model style and this generic style of interceptor call chain.
+Polygene™ Runtime will handle the chaining between domain model style and this generic style of interceptor call chain.
 
 Finally, we need to declare the Concern in the OrderEntity;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=5
 -----------
 
@@ -109,13 +109,13 @@ Glad you asked. It is done via the Query API. It is important to understand that
 the persistence concern of storage and retrieval. This enables many performance optimization opportunities as well as a
 more flexible Indexing strategy. The other thing to understand is that the Query API is using the domain model, in Java,
 and not some String based query language. We have made this choice to ensure refactoring safety. In rare cases, the
-Query API is not capable enough, in which case Zest™ still provides the ability to look up and execute native queries.
+Query API is not capable enough, in which case Polygene™ still provides the ability to look up and execute native queries.
 
 Let's say that we want to find a particular Order from its SequenceNumber.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=6
 -----------
 
@@ -132,7 +132,7 @@ Another example,
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=7
 -----------
 
@@ -144,7 +144,7 @@ that has made an Order in the last 30 days;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+source=tutorials/introduction/thirtyminutes/src/main/java/org/apache/polygene/demo/thirtyminutes/ThirtyMinutesDocs.java
 tag=8
 -----------
 
@@ -152,13 +152,15 @@ This covers the most basic Query capabilities and how to use it. For Querying to
 assembled during bootstrap. At the time of this writing, only an RDF indexing subsystem exist, and is added most easily
 by assembly.addAssembler( new RdfNativeSesameStoreAssembler() ).
 
-It can be a bit confusing to see Zest™ use Java itself as a Query language, but since we have practically killed the
+It can be a bit confusing to see Polygene™ use Java itself as a Query language, but since we have practically killed the
 classes and only operate with interfaces, it is possible to do a lot of seemingly magic stuff. Just keep in mind that
 it is pure Java, albeit heavy use of dynamic proxies to capture the intent of the query.
 
 == Conclusion ==
 
-We have now explored a couple more intricate features of Zest™, hopefully without being overwhelmed with details on how
-to create applications from scratch, how to structure applications, and how the entire Zest™ Extension system works.
+We have now explored a couple more intricate features of Polygene™, hopefully without being overwhelmed with details on how
+to create applications from scratch, how to structure applications, and how the entire Polygene™ Extension system works.
 We have looked at how to add a Concern that uses a private Mixin, we have touched a bit on Generic Concerns, and
 finally a short introduction to the Query API.
+
+// Next step, <<two-hours-intro>>.

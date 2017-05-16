@@ -17,36 +17,36 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[ten-minutes-intro,Zest™ in 10 minutes]]
-= Zest™ in 10 minutes =
+[[ten-minutes-intro,Polygene™ in 10 minutes]]
+= Polygene™ in 10 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://polygene.apache.org/download.html[Polygene™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
-    * Zest™ does not introduce any new programming language, no additional compilers needed and all your existing tools
+    * Polygene™ does not introduce any new programming language, no additional compilers needed and all your existing tools
       work just like before. It is pure Java.
-    * Zest™ works with Composites.
-    * The equivalent of an Object instance in OOP, is a Composite instance in Zest™.
+    * Polygene™ works with Composites.
+    * The equivalent of an Object instance in OOP, is a Composite instance in Polygene™.
     * Composites are constructed from Fragments.
     * Fragments are Mixins, Concerns, Constraints and SideEffects.
     * Only Mixins carry Composite state. The others are shared between Composite instances.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
-on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+on Core API, Core SPI, and Core Bootstrap:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-See the <<howto-depend-on-zest>> tutorial for details.
+See the <<howto-depend-on-polygene>> tutorial for details.
 
 Composition is done with Java interfaces and Annotations. Example;
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -56,21 +56,20 @@ methods that they declare, for instance;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/InventoryConcern.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/InventoryConcern.java
 tag=allClass
 -----------
 
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on a private field,
 which can be used in rare occasions when you are not able to extend. This base class defines the `next` field, which is
-set up by the Zest™ runtime and points to the next fragment in the call stack.
+set up by the Polygene™ runtime and points to the next fragment in the call stack.
 
-We can also see that the InventoryService is provided to the concern, which is done with dependency injection. Zest™
+We can also see that the InventoryService is provided to the concern, which is done with dependency injection. Polygene™
 also supports dependency injection via constructors and methods.
 
-The above example is obviously doing persistence, and we have no code handling this. But Zest™ supports persistence
-directly in its Core, and it is taken care of by Zest™, since it is declared as an EntityComposite.
-Nothing else is needed, provided that the Zest™ Runtime has been setup with one or more persisted EntityStores. But
-we have a naming convention that EntityComposites have "Entity" as the suffix in its name.
+The above example is obviously doing persistence, and we have no code handling this. But Polygene™ supports persistence
+directly in its Core, and it is taken care of by Polygene™.
+Nothing else is needed, provided that the Polygene™ Runtime has been setup with one or more persisted EntityStores.
 
 There are other built-in Composite subtypes as well, such as ValueComposite and ServiceComposite. This distinction helps
 both to communicate intent as well as having more precisely defined functionality.
@@ -80,7 +79,7 @@ will execute after the Constraints, Concerns and Mixins. We add the SideEffect t
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/OrderEntity.java
 tag=sideEffect
 -----------
 
@@ -88,15 +87,15 @@ The SideEffect implementation is fairly simple.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/MailNotifySideEffect.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/polygene/demo/tenminute/MailNotifySideEffect.java
 tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.
 
-@This is telling Zest™ that the SideEffect needs a reference to the Composite instance that it belongs to.
+@This is telling Polygene™ that the SideEffect needs a reference to the Composite instance that it belongs to.
 
 By asking for both the HasCustomer and the HasLineItems types, we get type-safety and don't need to bother with casts.
-In fact, Zest™ will ensure that you can't even cast the `hasCustomer` instance to the HasLineItems type.
+In fact, Polygene™ will ensure that you can't even cast the `hasCustomer` instance to the HasLineItems type.
 
 By not referencing the aggregated interface OrderEntity, we reduce the coupling of this SideEffect and it can be used
 in any other Composite where the HasCustomer and HasLineItems combination is used, for instance in an InvoiceEntity.
@@ -105,5 +104,7 @@ So, build the report, send it via the MailService.
 
 == Conclusion ==
 
-In this short introduction, we have covered the essence of Zest™. We have looked at what is a Composite, seen some of the
+In this short introduction, we have covered the essence of Polygene™. We have looked at what is a Composite, seen some of the
 Fragments in action, and how simple it is to turn a Composite into a persisted Composite, known as an EntityComposite.
+
+Next step, <<thirty-minutes-intro>>.

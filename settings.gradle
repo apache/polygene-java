@@ -1,25 +1,26 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
-include 'core:functional',
-        'core:io',
-        'core:api',
+apply plugin: 'polygene-settings'
+
+rootProject.name = 'polygene-java'
+
+include 'core:api',
         'core:spi',
         'core:testsupport',
         'core:bootstrap',
@@ -27,27 +28,19 @@ include 'core:functional',
         'libraries:alarm',
         'libraries:circuitbreaker',
         'libraries:constraints',
-        'libraries:conversion',
-        'libraries:eventsourcing',
-        'libraries:eventsourcing-jdbm',
-        'libraries:eventsourcing-rest',
         'libraries:fileconfig',
         'libraries:http',
         'libraries:invocation-cache',
-        'libraries:lang-groovy',
-        'libraries:lang-javascript',
-        'libraries:lang-scala',
         'libraries:jmx',
         'libraries:locking',
         'libraries:logging',
-        'libraries:metrics',
         'libraries:osgi',
         'libraries:rdf',
         'libraries:rest',
         'libraries:rest-client',
         'libraries:rest-common',
         'libraries:rest-server',
-        'libraries:scheduler',
+        'libraries:restlet',
         'libraries:scripting',
         'libraries:servlet',
         'libraries:shiro-core',
@@ -56,17 +49,20 @@ include 'core:functional',
         'libraries:sql',
         'libraries:sql-bonecp',
         'libraries:sql-dbcp',
+        'libraries:sql-generator',
         'libraries:sql-liquibase',
         'libraries:uid',
         'libraries:uowfile',
         'extensions:cache-ehcache',
         'extensions:cache-memcache',
-        'extensions:entitystore-memory',
+        'extensions:entitystore-cassandra',
         'extensions:entitystore-file',
+        'extensions:entitystore-geode',
         'extensions:entitystore-hazelcast',
         'extensions:entitystore-jclouds',
         'extensions:entitystore-jdbm',
         'extensions:entitystore-leveldb',
+        'extensions:entitystore-memory',
         'extensions:entitystore-mongodb',
         'extensions:entitystore-preferences',
         'extensions:entitystore-redis',
@@ -76,24 +72,18 @@ include 'core:functional',
         'extensions:indexing-rdf',
         'extensions:indexing-solr',
         'extensions:indexing-sql',
-        'extensions:metrics-yammer',
+        'extensions:metrics-codahale',
         'extensions:migration',
         'extensions:reindexer',
-        'extensions:valueserialization-orgjson',
-        'extensions:valueserialization-jackson',
-        'extensions:valueserialization-stax',
-        'manual',
-        'samples:dci',
-        'samples:dci-cargo:dcisample_a',
-        'samples:dci-cargo:dcisample_b',
-        'samples:forum',
-        'samples:rental',
-        'samples:sql-support',
-        'samples:swing',
+        'extensions:serialization-javaxjson',
+        'extensions:serialization-javaxxml',
+        'extensions:serialization-messagepack',
         'tools:model-detail',
         'tools:envisage',
-        'tools:shell',
+        'tools:generator-polygene',
 //        'tools:qidea',
+        'tests:regression',
+        'tests:performance',
         'tutorials:cargo',
         'tutorials:composites',
         'tutorials:hello',
@@ -103,35 +93,12 @@ include 'core:functional',
         'tutorials:introduction:thirtyminutes',
 //        'tutorials:introduction:twohours',
         'tutorials:services',
-        'tests:regression',
-        'tests:performance'
+        'samples:dci',
+        'samples:forum',
+        'samples:rental',
+        'samples:sql-support',
+        'samples:swing'
 
-rootProject.name = "org.qi4j"
+include 'internals:testsupport-internal'
 
-validateProject(rootProject, "")
-
-def validateProject(project, parentName)
-{
-    assert project.projectDir.isDirectory()
-    if( new File("$project.projectDir/src/main/java").exists() )
-    {
-        assert project.buildFile.isFile()
-    }
-    if( parentName == 'org.qi4j.libraries' )
-    {
-        parentName = 'org.qi4j.library'
-    }
-    if( parentName.endsWith('s') )
-    {
-        parentName = parentName.substring(0, parentName.length() - 1)
-    }
-    if( parentName.length() > 0 )
-    {
-        project.name = parentName + "." + project.name
-    }
-    println "Project: " + project.name
-    project.children.each { child ->
-        validateProject(child, project.name)
-    }
-}
-
+include 'manual', 'reports', 'distributions', 'release'

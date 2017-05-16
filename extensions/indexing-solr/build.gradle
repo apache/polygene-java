@@ -1,36 +1,40 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
 
-description = "Apache Zest™ Solr Indexing Extension"
+apply plugin: 'polygene-extension'
 
-jar { manifest {name = "Apache Zest™ Extension - Indexing - Solr" }}
+description = "Apache Polygene™ Solr Indexing Extension"
+
+jar { manifest { name = "Apache Polygene™ Extension - Indexing - Solr" } }
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-  compile(libraries.solr)
-  compile libraries.slf4j_api
+  api polygene.core.bootstrap
+  api polygene.library( 'fileconfig' )
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  implementation polygene.library( 'rdf' )
+  implementation libraries.solr
 
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.servlet_api)
-  testRuntime(libraries.logback)
+  runtimeOnly polygene.core.runtime
+
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
+  testRuntimeOnly libraries.servlet_api
 }

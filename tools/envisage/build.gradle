@@ -1,48 +1,56 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
+import org.apache.polygene.gradle.TaskGroups
 
-description = "Visualizer of a Apache Zest™ Application Structure."
+apply plugin: 'polygene-tool'
 
-jar { manifest { name = "Apache Zest™ Envisage" }}
+description = "Visualizer of a Apache Polygene™ Application Structure."
+
+jar { manifest { name = "Apache Polygene™ Envisage" } }
 
 dependencies {
+  api polygene.core.bootstrap
 
-  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
-  compile project( ":org.qi4j.tools:org.qi4j.tool.model-detail" )
-  compile libraries.jgoodies_looks
-  compile libraries.pdfbox
-  compile libraries.prefuse
+  implementation polygene.tool( 'model-detail' )
+  implementation libraries.jgoodies_looks
+  implementation libraries.pdfbox
+  implementation libraries.prefuse
 
-  testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
-  testCompile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
+  runtimeOnly polygene.core.runtime
 
-  testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
-  testRuntime libraries.logback
+  testImplementation polygene.core.testsupport
+  testImplementation polygene.extension( 'indexing-rdf' )
 
+  testRuntimeOnly libraries.logback
 }
 
-task(runSample, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.qi4j.envisage.sample.EnvisageSample'
-    classpath = sourceSets.test.runtimeClasspath
+task( runEnvisageSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name sample."
+  main = 'org.apache.polygene.envisage.sample.EnvisageSample'
+  classpath = sourceSets.test.runtimeClasspath
 }
 
-task(runSchool, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.qi4j.envisage.school.EnvisageSchoolSample'
-    classpath = sourceSets.test.runtimeClasspath
+task( runEnvisageSchoolSample, dependsOn: 'testClasses', type: JavaExec ) {
+  group = TaskGroups.SAMPLES
+  description = "Runs $project.name School sample."
+  main = 'org.apache.polygene.envisage.school.EnvisageSchoolSample'
+  classpath = sourceSets.test.runtimeClasspath
 }

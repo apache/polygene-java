@@ -1,0 +1,41 @@
+//////////////////////
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-object,Objects]]
+= Objects =
+There are times when Apache Polygene needs to interoperate with other systems, which
+does not have interfaces as their abstraction. Polygene has a notion of
+Objects, which are Polygene-managed classes and can still be injected with
+the Polygene runtime model, such as @Structure and @Service.
+
+
+The characteristics of an Object compared to Composite meta types are;
+
+    * It is a Class, not an interface.
+    * It can have injections applied to it after it has been created.
+    * No Mixins, Concerns or SideEffects.
+    * No Constraints.
+    * Can not have Property instances managed by the Polygene runtime.
+
+== Serialization ==
+Objects can be serialized and deserialized using the Serialization API, if and only
+if they are used as types in Properties in Values or Entities. It depends on the
+Serialization implementation on how the objects are serialized, and
+what the requirements are to allow for deserialization. In general, the Spring
+POJO setter/getter approach will always work, a default constructor is needed, and
+to be safe, make it into +java.io.Serializable+.
+
+== Usage ==
+Objects are instantiated either by calling +ObjectFactory.newObject( type, ... )+ or
+instantiating it in some other fashion and then call +ObjectFactory.injectInto(...)+
+to populate the fields.

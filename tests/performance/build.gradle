@@ -1,60 +1,44 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
+import org.apache.polygene.gradle.structure.tests.PerformanceTestsPlugin
 
-description = "Apache Zest™ Performance Test Suite."
+apply plugin: 'polygene-test'
 
-jar { manifest { name = "Apache Zest™ Tests - Performance" }}
+description = "Apache Polygene™ Performance Test Suite."
 
-sourceSets {
-    perf
-}
+jar { manifest { name = "Apache Polygene™ Tests - Performance" } }
+
+apply plugin: PerformanceTestsPlugin
 
 dependencies {
+  implementation polygene.core.bootstrap
+  implementation libraries.junit
+  implementation libraries.slf4j_api
 
-    compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
-    compile libraries.junit
-    compile libraries.slf4j_api
+  perfImplementation polygene.core.testsupport
+  perfImplementation polygene.library( 'sql-dbcp' )
+  perfImplementation polygene.extension( 'entitystore-memory' )
+  perfImplementation polygene.extension( 'entitystore-jdbm' )
+  perfImplementation polygene.extension( 'entitystore-sql' )
+  perfImplementation polygene.extension( 'cache-ehcache' )
+  perfImplementation polygene.extension( 'indexing-rdf' )
+  perfImplementation libraries.derby
 
-    perfCompile sourceSets.main.output
-    perfCompile configurations.testCompile
-    perfCompile sourceSets.test.output
-    perfRuntime configurations.testRuntime
-    
-    perfCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
-    perfCompile project( ":org.qi4j.libraries:org.qi4j.library.sql-dbcp" )
-    perfCompile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
-    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-memory" )
-    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm" )
-    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-sql" )
-    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.cache-ehcache" )
-    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
-    perfCompile libraries.derby
-
-    perfRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
-    perfRuntime libraries.logback
-
-}
-
-check.dependsOn compilePerfJava
-
-task testPerf( type: Test, dependsOn: jar ) {
-    testClassesDir = sourceSets.perf.output.classesDir
-    classpath = sourceSets.perf.runtimeClasspath
-    systemProperties['jar.path'] = jar.archivePath
+  perfRuntimeOnly polygene.core.runtime
+  perfRuntimeOnly libraries.logback
 }

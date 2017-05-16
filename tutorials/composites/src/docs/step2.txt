@@ -29,12 +29,12 @@ Constraints. In this tutorial we will only use Mixins. When a TransientComposite
 framework will inspect the interface to determine what the TransientComposite instance should look like in terms of 
 used Fragments.
 
-In Zest™ all method parameters are considered mandatory unless marked as @Optional. Therefore you can remove the null
-checks in the Mixin. If a null value is passed in an exception will be thrown by Zest™.
+In Polygene™ all method parameters are considered mandatory unless marked as @Optional. Therefore you can remove the null
+checks in the Mixin. If a null value is passed in an exception will be thrown by Polygene™.
 
 Steps for this tutorial:
 
-- Create an interface that extends the domain interface HelloWorld and org.qi4j.api.composite.TransientComposite.
+- Create an interface that extends the domain interface +HelloWorld+.
 - Add a @Mixins annotation to it with the name of the Mixin as argument.
 
 == Solution ==
@@ -48,14 +48,14 @@ These ones remain unchanged:
 *HelloWorldComposite.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial3/HelloWorldComposite.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial3/HelloWorldComposite.java
 tag=solution
 ----
 
 *HelloWorldMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
+source=tutorials/composites/src/main/java/org/apache/polygene/tutorials/composites/tutorial2/HelloWorldMixin.java
 tag=solution
 ----
 

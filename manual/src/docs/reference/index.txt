@@ -18,11 +18,11 @@
 ///////////////////////////////////////////////////////////////
 
 [[reference-documentation,Reference Manual]]
-= Apache Zest™ v{revnumber} Reference Manual =
+= Apache Polygene™ v{revnumber} Reference Manual =
 
-:qi4j-version: {revnumber}
-:qi4j-buildnumber: {revnumber}
-:qi4j-git-tag: {gitversion}
+:polygene-version: {revnumber}
+:polygene-buildnumber: {revnumber}
+:polygene-git-tag: {gitversion}
 
 
 :leveloffset: 2

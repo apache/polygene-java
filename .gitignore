@@ -16,3 +16,7 @@ derby.log
 .nb-gradle
 .gradletasknamecache
 private/cache
+node_modules
+gradle-user-home
+profile-out*
+npm-debug.log

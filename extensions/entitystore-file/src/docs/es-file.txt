@@ -37,7 +37,7 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=extensions/entitystore-file/src/test/java/org/qi4j/entitystore/file/FileEntityStoreTest.java
+source=extensions/entitystore-file/src/test/java/org/apache/polygene/entitystore/file/FileEntityStoreTest.java
 tag=assembly
 ----
 
@@ -47,13 +47,13 @@ Here are the configuration properties for the File EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-file/src/main/java/org/qi4j/entitystore/file/FileEntityStoreConfiguration.java
+source=extensions/entitystore-file/src/main/java/org/apache/polygene/entitystore/file/FileEntityStoreConfiguration.java
 tag=config
 ----
 
 +directory+ is optional and represent the directory where the File EntityStore will keep its persisted state.
 
-It defaults to System.getProperty( "user.dir" ) + "/qi4j/filestore"
+It defaults to System.getProperty( "user.dir" ) + "/polygene/filestore"
 If the given path is not absolute, then it's relative to the current working directory.
 If you use the <<library-fileconfig>> then this property value is ignored and FileConfig is prefered.
 

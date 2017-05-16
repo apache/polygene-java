@@ -1,19 +1,22 @@
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
-  
-  http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  ~  Licensed to the Apache Software Foundation (ASF) under one
+  ~  or more contributor license agreements.  See the NOTICE file
+  ~  distributed with this work for additional information
+  ~  regarding copyright ownership.  The ASF licenses this file
+  ~  to you under the Apache License, Version 2.0 (the
+  ~  "License"); you may not use this file except in compliance
+  ~  with the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  ~
+  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
   <xsl:template name="user.footer.content">
@@ -23,7 +26,7 @@
 <script type="text/javascript">
 // DISQUS
   var disqus_identifier = "manual";
-  var disqus_title = "The Qi4j Manual";
+  var disqus_title = "The Apache Polygene Manual";
   function getIdFromHeading ( headingElement )
   {
     var id = disqus_identifier;
@@ -98,7 +101,7 @@
   var disqus_url = window.location;
   if ( disqus_url.protocol === "http:" || disqus_url.protocol === "https:" )
   {
-    var docsLocation = "http://www.qi4j.org/chunked/snapshot/";
+    var docsLocation = "http://polygene.apache.org/chunked/snapshot/";
     var path = disqus_url.pathname;
     var position = path.lastIndexOf('/');
     if ( position === -1 )
@@ -111,7 +114,7 @@
       disqus_url = docsLocation + page;
     }
   }
-  var disqus_shortname = "qi4j";
+  var disqus_shortname = "polygene";
   var disqus_developer = 0;
 
 (function() {

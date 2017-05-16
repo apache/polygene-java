@@ -1,6 +1,4 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +23,7 @@ the @Mixins annotation of a Composite declaration) implements one or more method
 Mixin Type can be very simple, like;
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/BankAccount.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/BankAccount.java
 tag=mixinType
 -----------
 
@@ -68,12 +66,12 @@ Mixins are declared as annotations on the composite interface.
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Something.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/Something.java
 tag=something
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/SomethingMixin.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/SomethingMixin.java
 tag=something
 -----------
 In the above sample, the SomethingMixin will be made part of the Something composite.
@@ -83,17 +81,17 @@ the mixins required.
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Car.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/Car.java
 tag=mixin
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Startable.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/Startable.java
 tag=mixin
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Vehicle.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/Vehicle.java
 tag=mixin
 -----------
 
@@ -103,35 +101,35 @@ which are ordinary mixins but are lacking some methods. This is simply done by d
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/Car.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/partial/Car.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/Vehicle.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/partial/Vehicle.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedLocation.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/partial/SpeedLocation.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedMixin.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/partial/SpeedMixin.java
 tag=partial
 -----------
 
-Above the SpeedMixin only implements the accelerate() method, and Zest™ will only map that method to this mixin. The
+Above the SpeedMixin only implements the accelerate() method, and Polygene™ will only map that method to this mixin. The
 other method of the SpeedLocation interface is not satisfied as the example is written and will generate a runtime
 exception.
 
 == Private Mixins ==
-Public mixins expose their methods in the composite interface, and this is not always desirable. Zest™ supports
+Public mixins expose their methods in the composite interface, and this is not always desirable. Polygene™ supports
 _Private Mixins_, which are only visible within the composite itself. That means that other fragments in the composite
 can see/use it, but it is not visible to the clients of the composite.
 
-Private Mixins are handled automatically. When Zest™ detects a +@This+ annotation referring to a type that is not defined
+Private Mixins are handled automatically. When Polygene™ detects a +@This+ annotation referring to a type that is not defined
 in the Composite interface, then that is a Private Mixin. The Mixin implementation class, however, must exist in the
 list of Mixins in the @Mixins annotation. But often, the Private Mixin only list internal Property methods in the Mixin
 Type, which will be satisfied by the standard PropertyMixin and hence always available.
@@ -142,7 +140,7 @@ the Cargo interface like;
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/Cargo.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/privateMixin/Cargo.java
 tag=private
 -----------
 
@@ -152,12 +150,12 @@ probably do something like;
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoMixin.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/privateMixin/CargoMixin.java
 tag=private
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoState.java
+source=core/api/src/test/java/org/apache/polygene/api/mixin/privateMixin/CargoState.java
 tag=private
 -----------
 
@@ -172,14 +170,14 @@ Typically, AppliesTo annotation is used to filter the methods that such Generic 
 and sometimes Generic Mixin implementations are "last resort".
 
 Experience shows that Generic Mixin implementations are rare, and should only be used in extreme cases. They are
-less frequent than Generic Concern or Generic SideEffect implementations, but inside the Zest™ API are a couple of
+less frequent than Generic Concern or Generic SideEffect implementations, but inside the Polygene™ API are a couple of
 Generic Mixin implementations that are always present to make the life of the developer easier, such as PropertyMixin,
 AssociationMixin, ManyAssociationMixin, NoopMixin. The first 3 are declared on the Composite and EntityComposite
 interfaces and automatically included if needed. They also serve as excellent example of what they can be used for.
 
 [snippet,java]
 -----------
-source=core/api/src/main/java/org/qi4j/api/property/PropertyMixin.java
+source=core/api/src/main/java/org/apache/polygene/api/property/PropertyMixin.java
 tag=actual
 -----------
 
@@ -193,6 +191,6 @@ which seems to indicate that Generic Mixin implementations are likely to be used
 
 Typed Mixin implementations are much preferred in general business logic, as they will be first-class citizens of
 the IDE as well, for navigation, find usage, refactoring and many other common tasks. This is one of the main
-advantages of the Zest™ way of doing AOP compared to AspectJ et al, where "weaving" is something bolted onto an
+advantages of the Polygene™ way of doing AOP compared to AspectJ et al, where "weaving" is something bolted onto an
 application's classes via regular expressions and known naming conventions, which can change in an instance by a
 developer being unaware of which PointCuts applies to his code.

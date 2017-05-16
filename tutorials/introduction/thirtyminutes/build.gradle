@@ -1,32 +1,36 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
 
-description = "A 30-minute Introduction Tutorial to Apache Zest™ in its simplest form."
+apply plugin: 'polygene-tutorial'
 
-jar { manifest { name = "Apache Zest™ Tutorial - 30 minute Introduction" }}
+description = "A 30-minute Introduction Tutorial to Apache Polygene™ in its simplest form."
+
+jar { manifest { name = "Apache Polygene™ Tutorial - 30 minute Introduction" } }
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.tutorials:org.qi4j.tutorial.introduction:org.qi4j.tutorial.introduction.tenminutes"))
+  implementation polygene.core.bootstrap
+  implementation project( ':tutorials:introduction:tenminutes' )
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.logback)
+  runtimeOnly polygene.core.runtime
+
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

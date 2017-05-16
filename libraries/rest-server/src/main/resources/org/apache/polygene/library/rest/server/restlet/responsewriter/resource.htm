@@ -1,0 +1,77 @@
+<!--
+  ~  Licensed to the Apache Software Foundation (ASF) under one
+  ~  or more contributor license agreements.  See the NOTICE file
+  ~  distributed with this work for additional information
+  ~  regarding copyright ownership.  The ASF licenses this file
+  ~  to you under the Apache License, Version 2.0 (the
+  ~  "License"); you may not use this file except in compliance
+  ~  with the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  ~
+  -->
+
+<!-- Default resource template -->
+<html>
+<head>
+    <title>${request.resourceRef.remainingPart}</title>
+</head>
+
+<body>
+
+<h1>${request.resourceRef.remainingPart}</h1>
+
+<div class="block">
+    <h2>Queries</h2>
+    <ul>
+        <#list result.queries as query>
+            <li>
+                <a rel="${query.rel}" href="${query.href}">${query.text}</a></li>
+        </#list>
+    </ul>
+</div>
+
+<div class="block">
+    <h2>Commands</h2>
+    <#list result.commands as command>
+        <form name="${command.id}" action="${command.href}" method="POST"><input type="submit" value="${command.text}"/>
+        </form>
+    </#list>
+</div>
+
+<div class="block">
+    <h2>Resources</h2>
+    <ul>
+        <#list result.resources as resource>
+            <li>
+                <a rel="${resource.rel}" href="${resource.href}">${resource.text}</a>
+            </li>
+        </#list>
+    </ul>
+</div>
+
+<#if result.index??>
+    <h2>Index</h2>
+    <#if result.index.links??>
+        <div class="block">
+            <ul>
+                <#list result.index.links as link>
+                    <li><a href="${link.href}" rel="${link.rel!}" title="${link.title!}">${link.text}</a></li>
+                </#list>
+            </ul>
+        </div>
+        <#else>
+            <h2>Index</h2>
+            <pre>$result.index</pre>
+    </#if>
+</#if>
+
+</body>
+</html>

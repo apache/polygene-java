@@ -47,7 +47,7 @@ Assembly is done using the +MemcacheAssembler+:
 
 [snippet,java]
 ----
-source=extensions/cache-memcache/src/test/java/org/qi4j/cache/memcache/MemcacheCachePoolTest.java
+source=extensions/cache-memcache/src/test/java/org/apache/polygene/cache/memcache/MemcacheCachePoolTest.java
 tag=assembly
 ----
 
@@ -58,7 +58,7 @@ Here are the configuration properties for the Memcache EntityStore Cache:
 
 [snippet,java]
 ----
-source=extensions/cache-memcache/src/main/java/org/qi4j/cache/memcache/MemcacheConfiguration.java
+source=extensions/cache-memcache/src/main/java/org/apache/polygene/cache/memcache/MemcacheConfiguration.java
 tag=config
 ----
 

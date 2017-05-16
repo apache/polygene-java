@@ -26,7 +26,7 @@ source=libraries/constraints/dev-status.xml
 --------------
 
 The Constraints library provide a bunch of often used Constraints based on the
-Zest™ Constraints api described in <<def-constraint>>.
+Polygene™ Constraints api described in <<def-constraint>>.
 
 Remember that you are not limited to constraints presents in this library, you
 are encouraged to write your own constraints. See <<howto-create-constraint>>
@@ -41,7 +41,7 @@ Here are some examples:
 
 [snippet,java]
 ----
-source=libraries/constraints/src/test/java/org/qi4j/library/constraints/TestCaseComposite.java
+source=libraries/constraints/src/test/java/org/apache/polygene/library/constraints/TestCaseComposite.java
 tag=constraints
 ----
 

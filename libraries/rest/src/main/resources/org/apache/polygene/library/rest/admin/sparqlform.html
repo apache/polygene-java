@@ -1,0 +1,99 @@
+<!--
+  ~  Licensed to the Apache Software Foundation (ASF) under one
+  ~  or more contributor license agreements.  See the NOTICE file
+  ~  distributed with this work for additional information
+  ~  regarding copyright ownership.  The ASF licenses this file
+  ~  to you under the Apache License, Version 2.0 (the
+  ~  "License"); you may not use this file except in compliance
+  ~  with the License.  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  ~
+  -->
+
+<html>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<head>
+    <title>
+        SPARQL Query
+    </title>
+</head>
+<body>
+<form method="GET" action="">
+    <label>Query:</label><br/>
+    <textarea rows="20" cols="80" name="query">PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
+        PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        SELECT DISTINCT ?entityType ?identity
+        WHERE {
+        ?entityType rdfs:subClassOf &lt;urn:polygene:type:org.apache.polygene.api.entity.Entity&gt;.
+        ?entity rdf:type ?entityType.
+        ?entity ns0:identity ?identity.
+        }
+    </textarea> <br/>
+    <input type="submit" value="Query"/>
+</form>
+
+<h2>Examples</h2>
+
+<h3>Get all entities</h3>
+<pre>
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
+        PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        SELECT DISTINCT ?entityType ?identity
+        WHERE {
+        ?entityType rdfs:subClassOf &lt;urn:polygene:type:org.apache.polygene.api.entity.Entity&gt;.
+        ?entity rdf:type ?entityType.
+        ?entity ns0:identity ?identity.
+        }
+
+</pre>
+<h3>Get entities of a given type</h3>
+<pre>
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
+        PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        SELECT DISTINCT ?identity
+        WHERE {
+        ?entity rdf:type &lt;urn:polygene:type:org.apache.polygene.rest.TestEntity&gt;.
+        ?entity ns0:identity ?identity.
+        }
+</pre>
+
+<h3>Get entities with a given property value</h3>
+<pre>
+PREFIX ns0: &lt;urn:polygene:type:org.apache.polygene.api.identity.HasIdentity#&gt;
+        PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        SELECT DISTINCT ?identity
+        WHERE {
+        ?entity rdf:type &lt;urn:polygene:type:org.apache.polygene.rest.TestEntity&gt;.
+        ?entity ns0:identity ?identity.
+        ?entity &lt;urn:polygene:type:org.apache.polygene.rest.Named#name&gt; "Foo bar"
+        }
+</pre>
+</body>
+</html>

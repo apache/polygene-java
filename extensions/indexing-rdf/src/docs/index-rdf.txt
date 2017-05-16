@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/DocumentationSupport.java
 tag=memory
 ----
 
@@ -49,7 +49,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/DocumentationSupport.java
 tag=native
 ----
 
@@ -59,7 +59,7 @@ Here are the configuration properties for the Native RDF Index/Query:
 
 [snippet,java]
 ----
-source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/NativeConfiguration.java
+source=libraries/rdf/src/main/java/org/apache/polygene/library/rdf/repository/NativeConfiguration.java
 tag=config
 ----
 
@@ -72,7 +72,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/DocumentationSupport.java
 tag=rdbms
 ----
 
@@ -82,6 +82,151 @@ Here are the configuration properties for the RDBMS based RDF Index/Query:
 
 [snippet,java]
 ----
-source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/RdbmsRepositoryConfiguration.java
+source=libraries/rdf/src/main/java/org/apache/polygene/library/rdf/repository/RdbmsRepositoryConfiguration.java
 tag=config
+----
+
+== Named RDF Queries ==
+RDF queries are rather difficult to create manually. Not only do you need to learn a difficult language and a new
+syntax, but also need to understand the indexing model that happens in Apache Polygene RDF indexing system.
+
+Below follows a large set of working queries, which can be used as a starting point. See the testcases for
+details of the Entity model that is being indexed.
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query1
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query2
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query3
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query4
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query5
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query6
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query7
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query8
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query9
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query10
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query11
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query12
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query13
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query14
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query15
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query16
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query17
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query18
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query19
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query20
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query21
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query22
+----
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/apache/polygene/index/rdf/RdfNamedQueryTest.java
+tag=query24
 ----

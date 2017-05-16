@@ -22,7 +22,7 @@
 The @Invocation annotation is relatively unknown but can be rather powerful to use, especially when creating
 libraries that needs to be flexible of what the user needs to do.
 
-@Invocation is a different +InjectionScope+, which is a concept to tell Zest runtime where to look for the
+@Invocation is a different +InjectionScope+, which is a concept to tell Polygene runtime where to look for the
 instances to be injected. Other, more well-known, +InjectionScope+ annotations are +@This+, +@Structure+ and
 +@Service+.
 
@@ -40,20 +40,20 @@ will be the same as the second argument in the +java.lang.reflect.InvocationHand
 it is useful to obtain this for typed fragment as well, to reduce names in Strings.
 
 == java.lang.reflect.AnnotatedElement ==
-This Reflection API class encapsulates the annotation aspect of any element that can be annotated. Zest implements
+This Reflection API class encapsulates the annotation aspect of any element that can be annotated. Polygene implements
 this interface for the Composite. That means that annotations for both the method as well as the composite is provided
 through this injection.
 
 == Custom Annotations ==
 It is often useful to introduce one's own annotations, especially for libraries, and use these annotations to direct
-the runtime to do different things. Many of the "built-in" features in Zest is actually done by this mechanism and
+the runtime to do different things. Many of the "built-in" features in Polygene is actually done by this mechanism and
 not directly implemented in the Core Runtime.
 
 First create an annotation of your own liking, it must have +java.lang.annotation.Retention+ set to +RUNTIME+
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/polygene/runtime/injection/InvocationInjectionTest.java
 tag=annotation
 -----------
 
@@ -61,7 +61,7 @@ After that it is possible to have this annotation placed on composite type metho
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/polygene/runtime/injection/InvocationInjectionTest.java
 tag=declaration
 -----------
 
@@ -69,7 +69,7 @@ and then the annotation can simply be injected into your Concerns or Mixins, lik
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/polygene/runtime/injection/InvocationInjectionTest.java
 tag=use1
 -----------
 

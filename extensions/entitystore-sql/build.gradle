@@ -1,45 +1,46 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
 
-description = "Apache Zest™ SQL EntityStore Extension"
+apply plugin: 'polygene-extension'
 
-jar { manifest { name = "Apache Zest™ Extension - EntityStore - SQL" }}
+description = "Apache Polygene™ SQL EntityStore Extension"
+
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL" } }
 
 dependencies {
+  api polygene.core.bootstrap
+  api polygene.library( 'sql' )
+  api libraries.jooq
 
-  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
-  compile project(":org.qi4j.libraries:org.qi4j.library.sql")
-  compile libraries.javaSqlGenerator
-  compile( libraries.javaSqlGeneratorImpl ) { 
-      exclude group: 'junit'
-  }
+  implementation polygene.library( 'sql-liquibase' )
 
-  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
-  testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
-  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
-  testCompile libraries.derby // Needed at compile time for polite test shutdown
+  runtimeOnly polygene.core.runtime
 
-  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
-  testRuntime libraries.logback
-  testRuntime libraries.h2
-  testRuntime libraries.mysql_connector
-  testRuntime libraries.postgres
-  testRuntime libraries.sqlite
+  testImplementation polygene.internals.testsupport
+  testImplementation polygene.library( 'sql-dbcp' )
+  testImplementation libraries.docker_junit
 
+  testRuntimeOnly libraries.logback
+  testRuntimeOnly libraries.derby
+  testRuntimeOnly libraries.h2
+  testRuntimeOnly libraries.mysql_connector
+  testRuntimeOnly libraries.postgres
+  testRuntimeOnly libraries.sqlite
 }

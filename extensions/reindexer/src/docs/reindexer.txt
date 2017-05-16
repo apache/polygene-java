@@ -25,8 +25,40 @@
 source=extensions/reindexer/dev-status.xml
 --------------
 
-Reindexer
-
-NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
+This extension allows you to trigger a complete indexing of EntityStores into Index/Query systems.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+The `Reindexer` is totally under your control and doesn't kick in automatically in any way or form.
+
+[snippet,java]
+----
+source=extensions/reindexer/src/test/java/org/apache/polygene/index/reindexer/ReindexerTest.java
+tag=assembly
+----
+
+It will be bound to the `EntityStore` that is Visible, ask for all Entities, by calling
+`entityStates()` and forward those to all `StateChangeListeners` that are Visible.
+
+[snippet,java]
+----
+source=extensions/reindexer/src/test/java/org/apache/polygene/index/reindexer/ReindexerTest.java
+tag=usage
+----
+
+So, you call `reindex()` on the `Reindexer`. If you have many reindexers, you could call
+`reindexAll()` which will locate all reindexers and call `reindex()`
+on each. This is useful when there are many modules of entity stores.
+
+There are two general issues that you need to keep in mind;
+
+1. Not all entity stores implements `entityStates()`, mostly because the
+   underlying store doesn't provide a convenient mechanism to iterate
+   everything.
+
+2. Unless you first clear all in the Index, deletions will not be
+   detected, and therefor the index might contain to many entity references in
+   that case.
+
+Additionally, reindexing is not really thread safe, so need to bring the
+system down while reindexing is happening.

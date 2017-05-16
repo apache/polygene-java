@@ -1,4 +1,4 @@
-This file contains the GPG keys of Apache Zest developers.
+This file contains the GPG keys of Apache Polygene developers.
 
 Users:    gpg --import KEYS
 
@@ -24,9 +24,9 @@ Developers:
 ********************************* PLEASE NOTE **********************************
 
   Releases will be signed using one of the keys present in this file. This file
-  will be available with the distributed Apache Zest releases at:
+  will be available with the distributed Apache Polygene releases at:
 
-      https://dist.apache.org/repos/dist/zest/KEYS
+      https://dist.apache.org/repos/dist/release/polygene/KEYS
 
 ********************************************************************************
 
@@ -156,11 +156,13 @@ jTyg19IQRme7
 -----END PGP PUBLIC KEY BLOCK-----
 
 
-pub   8192R/7D0391AC 2015-04-27
-uid                  Paul Merlin (Apache) <paulmerlin@apache.org>
-sig 3        7D0391AC 2015-04-27  Paul Merlin (Apache) <paulmerlin@apache.org>
-sub   8192R/091BA717 2015-04-27
-sig          7D0391AC 2015-04-27  Paul Merlin (Apache) <paulmerlin@apache.org>
+pub   rsa8192 2015-04-27 [SC]
+      2E8933D9CBD2C88991E7B186D79DEC497D0391AC
+uid           [  full  ] Paul Merlin (Apache) <paulmerlin@apache.org>
+sig 3        D79DEC497D0391AC 2015-04-27  Paul Merlin (Apache) <paulmerlin@apache.org>
+sig          995ADEF432D40AD6 2017-04-12  Niclas Hedhman <niclas@hedhman.org>
+sub   rsa8192 2015-04-27 [E]
+sig          D79DEC497D0391AC 2015-04-27  Paul Merlin (Apache) <paulmerlin@apache.org>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)

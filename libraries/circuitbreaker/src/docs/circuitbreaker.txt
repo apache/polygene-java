@@ -27,7 +27,7 @@ source=libraries/circuitbreaker/dev-status.xml
 
 The Circuit Breaker library provides a way to guard your application
 against faulty external systems (e.g. mail servers  being down, web
-services being down). It is used by many Zest™ Extensions and Libraries.
+services being down).
 
 There's a couple of differences between this implementation and others
 seen on the net, but we've also heavily borrowed from others. The
@@ -44,7 +44,7 @@ of exceptions cause the circuit to break. The most crude is "all", more
 advanced ones allow exceptions that be excepted to be registered, but in
 real cases this is not enough. Case in point is JDBC exceptions where
 you want to fail on "connect exception" but not necessarily "invalid SQL
-syntax". So instead we've leveraged `Specification` from <<core-functional,Core Functional API>> where
+syntax". So instead we've leveraged `Predicate` where
 you get to provide your own specification that can use any logic to
 determine whether a particular exception is ok or not.
 
@@ -54,7 +54,7 @@ track service levels and see exception messages, and trip/enable circuit
 breakers.
 
 Fourth, if an external system is unavailable due to a circuitbreaker
-tripping it should be possible to expose this to other Zest™ services.
+tripping it should be possible to expose this to other Polygene™ services.
 There is a standard implementation of the Availability interface that
 delegates to a circuit breaker and the Enabled configuration flag, which
 is what we'd suspect will be used in most cases where external systems
@@ -64,13 +64,13 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 == Direct usage ==
 
-The CircuitBreaker can be used directly, even without using anything else from the Zest™ SDK.
+The CircuitBreaker can be used directly, even without using anything else from the Polygene™ SDK.
 
 Here is a code snippet that demonstrate how to create a CircuitBreaker and how it behave:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/CircuitBreakerTest.java
+source=libraries/circuitbreaker/src/test/java/org/apache/polygene/library/circuitbreaker/CircuitBreakerTest.java
 tag=direct
 ----
 
@@ -88,7 +88,7 @@ Here is how to declare such a Service:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/BreaksCircuitOnThrowableTest.java
+source=libraries/circuitbreaker/src/test/java/org/apache/polygene/library/circuitbreaker/BreaksCircuitOnThrowableTest.java
 tag=service
 ----
 
@@ -106,14 +106,14 @@ Here is how it goes:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/jmx/CircuitBreakerManagementSample.java
+source=libraries/circuitbreaker/src/test/java/org/apache/polygene/library/circuitbreaker/jmx/CircuitBreakerManagementSample.java
 tag=jmx
 ----
 
 
 == Interactive sample ==
 
-A gradle task runSample is defined in this library as a shortcut to run a
+From the sources you can run the `runCircuitBreakerSample` Gradle task to run a
 simple interactive example. You'll need a MBean client to connect to the
 sample, VisualVM with its MBean plugin does the job. See <<build-system>>
 if you need some guidance.

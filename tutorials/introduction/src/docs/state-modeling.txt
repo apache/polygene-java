@@ -18,11 +18,11 @@
 ///////////////////////////////////////////////////////////////
 
 [[state-modeling,State Modeling]]
-= Zest™ and state modeling =
+= Polygene™ and state modeling =
 
 (From Rickard Oberg's blog, http://www.jroller.com/rickard/entry/qi4j_and_state_modeling, 2009-02-19)
 
-In the Zest™ project we strive to being able to express our domain as directly as possible, with as little translation
+In the Polygene™ project we strive to being able to express our domain as directly as possible, with as little translation
 as possible between how we think about a domain and how it is actually coded.
 This then affects our entire view of how application frameworks should be constructed, and what we consider good and
 bad ways of implementing certain features.
@@ -36,7 +36,7 @@ In Domain Driven Design terms, POJOs are not in our Ubiquitous Language.
 
 From a DDD perspective we want to talk about Entities and Values, Properties and Associations.
 If our code does not reflect this, then there is translation going on, and translation inevitably leads to information loss.
-In Zest™, where Composites and not Objects, are the basic construct, we have created specialized forms to model these
+In Polygene™, where Composites and not Objects, are the basic construct, we have created specialized forms to model these
 concepts more explicitly.
 We have EntityComposites and ValueComposites, each with different ways of creating them and managing them.
 Both EntityComposites and ValueComposites can then have Properties, as first-class objects, but Properties in
@@ -48,7 +48,7 @@ Here's an example of how you could define an EntityComposite:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=intro1
 -----------
 
@@ -57,7 +57,7 @@ express is very explicit.
 To define a property you would have had to write a field and two accessors, and if you use interfaces then those
 accessors would have to be duplicated.
 
-The EntityComposite base interface also includes an identity property for you, as that's an intrinsic feature of
+The `HasIdentity` base interface also includes an identity property for you, as that's an intrinsic feature of
 Entities, so that's all taken care of.
 So if you speak about Entities in your domain discussions, each having Properties, then you can put that down in
 code pretty much as-is.
@@ -72,7 +72,7 @@ context instead of classes you would probably do something like this instead:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=roles
 -----------
 
@@ -93,7 +93,7 @@ For Collections they are set to empty collections of the type indicated.
 "@UseDefaults Property<List<String>> addresses();" would be initialized to an empty ArrayList, for example.
 
 In addition I have set surName() to be @Optional.
-In Zest™ we have defined all properties to be not-null as the default, and the same goes for all parameters in method
+In Polygene™ we have defined all properties to be not-null as the default, and the same goes for all parameters in method
 invocations.
 If you explicitly want to allow properties to be null, so that for example "Madonna" would be an acceptable name,
 then you can mark it as @Optional.
@@ -108,14 +108,14 @@ checks when they are updated. What you want are ValueComposites:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=values
 -----------
 
 Normally if you want a property to be immutable, meaning, you can set an initial value but not change it later, you
 would have to mark the Property as @Immutable.
-But since NameValue extends ValueComposite, which itself is marked with @Immutable, this is implicit for all subtypes
-of ValueComposite, and there's no way to "opt out" of it.
+But since NameValue will be assembled as a ValueComposite, which itself is marked with @Immutable, this is implicit
+for all ValueComposites, and there's no way to "opt out" of it.
 
 By introducing one more level in the state model you have created an easy way to access the name as a whole and hand
 it around the system, instead of as two separate properties.
@@ -134,7 +134,7 @@ What should have been a neat and tidy little package is instead a anorectic litt
 around your code, looking all soggy and unappetizing.
 
 What to do about this?
-One of the great inventions of Zest™, I believe, is the notion of private mixins.
+One of the great inventions of Polygene™, I believe, is the notion of private mixins.
 That we can have mixins in an object which are explicitly HIDDEN from usage outside of it.
 How can we use this for state modeling?
 What you'd want to do is to model the state of an Entity as a private mixin, which is hidden from clients, and then
@@ -142,7 +142,7 @@ you write role mixins which map domain methods to that internal state. Here's an
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=private
 -----------
 
@@ -164,18 +164,18 @@ Entity doesn't need the "Listable" interface the mixin will never be instantiate
 
 And so much more...
 
-The above is just a small taste of what you can do with state modeling in Zest™.
+The above is just a small taste of what you can do with state modeling in Polygene™.
 There is also support for associations and many-associations, the notion of aggregates, and a complete pluggable
 system for persistence and indexing/querying of data.
-To end with, here's a sample of how some other state modeling concepts can be expressed in Zest™:
+To end with, here's a sample of how some other state modeling concepts can be expressed in Polygene™:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/StateModelingDocs.java
+source=tutorials/introduction/src/main/java/org/apache/polygene/demo/intro/StateModelingDocs.java
 tag=more
 -----------
 
 I hope they are self-explanatory.
 
-My hope is that with Composite Oriented Programming and Zest™ we can come one step closer to being able to express our
+My hope is that with Composite Oriented Programming and Polygene™ we can come one step closer to being able to express our
 domain as clearly as possible in code.

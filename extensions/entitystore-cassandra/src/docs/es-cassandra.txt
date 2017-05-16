@@ -1,0 +1,117 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[extension-es-cassandra,Cassandra EntityStore]]
+= Cassandra EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-cassandra/dev-status.xml
+--------------
+
+EntityStore service backed by a http://cassandra.apache.org/ in which Entity state is stored in single rows of a
+single table.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-cassandra/src/test/java/org/apache/polygene/entitystore/cassandra/CassandraMapEntityStoreTest.java
+tag=assembly
+----
+
+=== Custom Cluster Client ===
+There are many options in Apache Cassandra on how the cluster is set up and how to connect to it. Instead of mapping
+all possible features, a ClusterBuilder type, which by default sets it up according to this page. By overriding the
+DefaultBuilder mixin, on the CassandraCluster composite, it is possible to provide your configuration.
+
+[snippet,java]
+----
+source=extensions/entitystore-cassandra/src/test/java/org/apache/polygene/entitystore/cassandra/DocSupport.java
+tag=assembly
+----
+
+And we then have a choice to override any of the provided extension points in DefaultBuilder. For instance;
+
+[snippet,java]
+----
+source=extensions/entitystore-cassandra/src/test/java/org/apache/polygene/entitystore/cassandra/DocSupport.java
+tag=builder
+----
+
+Of course, it is possible to simply override the entire Mixin and not subtype it at all.
+
+== Configuration ==
+
+Here are the configuration properties for the Cassandra EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-cassandra/src/main/java/org/apache/polygene/entitystore/cassandra/CassandraEntityStoreConfiguration.java
+tag=config
+----
+
+== Cassandra Authentication ==
+It is possible to configure Cassandra with many types of authentication. User/password is provided in this library's
+configuration, and for more advanced setups, you need to provide an implementation of com.datastax.driver.core.AuthProvider
+as a Polygene service (and visible to the ClusterBuilder as usual).
+
+== Cassandra Keyspace ==
+The Cassandra EntityStore can either use an existing Cassandra Keyspace, which is the default, OR create its own
+keyspace.
+
+The CassandraEntityStoreConfiguration#keyspaceName() defines the name of the keyspace to use, or to be created. If not
+defined, then the default name is "polygene".
+
+The CassandraEntityStoreConfiguration#createIfMissing() defines if new missing resources should be created or an
+Exception should be thrown if missing.
+
+If the keyspace is created, then the CassandraEntityStoreConfiguration#replicationFactor() will define the replication
+factor, defaults to 3, and the command to create the keyspace is;
+
+[source]
+-----------------
+    CREATE KEYSPACE &lt;keyspaceName&gt; WITH replication = {'class':'SimpleStrategy', 'replication_factor' : &lt;replicationFactor&gt; };
+-----------------
+
+== Polygene's Cassandra Table ==
+
+Polygene will store all entities in a single Cassandra TABLE
+
+[source]
+-----------------
+    CREATE TABLE &lt;tableName&gt; (
+        id text,
+        version text,
+        type text,
+        appversion text,
+        storeversion text,
+        usecase text,
+        modified timestamp,
+        properties map&lt;string,string&gt;
+        assocs map&lt;string,string&gt;
+        manyassocs map&lt;string,string&gt;
+        namedassocs map&lt;string,string&gt;
+        PRIMARY KEY ( id )
+    );
+-----------------

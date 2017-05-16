@@ -1,34 +1,36 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
  */
 
+apply plugin: 'polygene-sample'
 
-description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Zest™."
+description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Polygene™."
 
-jar { manifest { name = "Apache Zest™ Sample - DCI" }}
+jar { manifest { name = "Apache Polygene™ Sample - DCI" } }
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  /* TODO: Get rid of this dependency */
-  compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
+  implementation polygene.core.bootstrap
+  implementation polygene.core.runtime  /* TODO: Get rid of this dependency */
+  implementation polygene.library( 'constraints' )
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(libraries.easymock)
+  testImplementation polygene.core.testsupport
+  testImplementation libraries.easymock
 
-  testRuntime(libraries.logback)
+  testRuntimeOnly libraries.logback
 }

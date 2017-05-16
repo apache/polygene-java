@@ -1,0 +1,115 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[core-spi-serialization,Serialization SPI]]
+= Serialization SPI =
+
+TIP: Find Serialization extensions in the <<extensions>> list.
+
+== Overview ==
+
+The Polygene™ Core Runtime use Serialization to provide string representation of ValueComposites via their `toString()`
+method, and, their instantiation from the very same representation via the `newValueFromSerializedState(..)` method of
+the ValueBuilderFactory API.
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=default
+--------------
+
+In each Module, if no Serialization service is assembled, a default one supporting the JSON format is used.
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/apache/polygene/api/value/DocumentationSupport.java
+tag=service
+--------------
+
+== Text or Binary?
+
+The Core SPI provides adapters for text or bytes based serialization, extends the following types to implement a custom
+serialization.
+
+For text based serialization:
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractTextSerializer.java
+tag=text
+--------------
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractTextDeserializer.java
+tag=text
+--------------
+
+For bytes based serialization:
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractBinarySerializer.java
+tag=binary
+--------------
+
+[snippet,java]
+--------------
+source=core/spi/src/main/java/org/apache/polygene/spi/serialization/AbstractBinaryDeserializer.java
+tag=binary
+--------------
+
+== JSON or XML?
+
+The Core SPI provides JSON and XML serialization respectively based on `javax.json` and `javax.xml` types and APIs to
+work directly with these types so you can work with the actual object representations without serializing to text or
+bytes. They both rely on the text serialization adapters shown above.
+
+Here is an example using the `JsonSerialization` service:
+
+[snippet,java]
+--------------
+source=extensions/serialization-javaxjson/src/test/java/org/apache/polygene/serialization/javaxjson/JavaxJsonValueCompositeSerializationTest.java
+tag=json-serialization
+--------------
+
+And another using the `XmlSerialization` service:
+
+[snippet,java]
+--------------
+source=extensions/serialization-javaxxml/src/test/java/org/apache/polygene/serialization/javaxxml/JavaxXmlValueCompositeSerializationTest.java
+tag=xml-serialization
+--------------
+
+
+== Implementation notes ==
+
+Simply implement Serialization to create an extension for the Serialization SPI.
+The Core SPI module provides adapters to create Serializers and Deserializers.
+
+The behaviour described here apply to all Serialization services implemented using the Core SPI adapters. Note that
+nothing stops you from implementing an extension for the Serialization SPI without relying on theses adapters.
+
+Theses adapters are tailored for serialization mechanisms that support the following two structures that can be nested:
+
+    * a collection of name/value pairs. In various languages, this is realized as an object, record, struct,
+      dictionary, hash table, keyed list, or associative array,
+    * an ordered list of values. In most languages, this is realized as an array, vector, list, or sequence ;
+
+in other words, a JSON-like structure.

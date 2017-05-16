@@ -1,0 +1,193 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[howto-depend-on-polygene,Depend on Polygene™]]
+= Depend on Polygene™ =
+
+NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
+add other repositories to your build scripts accordingly.
+
+Release artifacts, including sources and javadoc, are deployed to Maven Central:
+
+http://repo1.maven.org/maven2/ (US)
+
+http://uk.maven.org/maven2/ (Europe)
+
+Snapshot artifacts, including sources and javadoc, are built against the `develop` branch and deployed weekly to the Apache SNAPSHOTS repository:
+
+http://repository.apache.org/snapshots/
+
+
+== Manually ==
+
+If you don't rely on your build scripts dependency resolution mechanism you should
+https://polygene.apache.org/download.html[download] the SDK distribution.
+
+
+== Using Maven ==
+
+You simply declare dependencies on Polygene™ artifacts:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.bootstrap</artifactId>
+        <version>POLYGENE_VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.runtime</artifactId>
+        <version>POLYGENE_VERSION</version>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.polygene.core</groupId>
+        <artifactId>org.apache.polygene.core.testsupport</artifactId>
+        <version>POLYGENE_VERSION</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+----
+
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
+
+If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
+
+[source,xml]
+----
+<repositories>
+    <repository>
+        <id>apache-snapshots</id>
+        <url>https://repository.apache.org/snapshots/</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+</repositories>
+----
+
+
+== Using Gradle ==
+
+You simply declare dependencies on Polygene™ artifacts:
+
+[source,groovy]
+----
+dependencies {
+    compile     "org.apache.polygene.core:org.apache.polygene.core.bootstrap:POLYGENE_VERSION"
+    runtime     "org.apache.polygene.core:org.apache.polygene.core.runtime:POLYGENE_VERSION"
+    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:POLYGENE_VERSION"
+}
+----
+
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
+
+If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
+
+[source,groovy]
+----
+repositories {
+    maven { name 'apache-snapshots'; url "https://repository.apache.org/snapshots/" }
+}
+----
+
+
+== Using Buildr ==
+
+You simply declare dependencies on Polygene™ artifacts:
+
+[source,ruby]
+----
+compile.with 'org.apache.polygene.core:org.apache.polygene.core.bootstrap:POLYGENE_VERSION'
+package(:war).with :libs => 'org.apache.polygene.core:org.apache.polygene.core.runtime:POLYGENE_VERSION'
+test.with 'org.apache.polygene.core:org.apache.polygene.core.testsupport:POLYGENE_VERSION'
+----
+
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
+
+If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
+
+[source,ruby]
+----
+repositories.remote << 'https://repository.apache.org/snapshots/'
+----
+
+
+== Using SBT ==
+
+You simply declare dependencies on Polygene™ artifacts:
+
+[source,scala]
+----
+libraryDependencies += \
+    "org.apache.polygene.core" % "org.apache.polygene.core.bootstrap" % "POLYGENE_VERSION" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.apache.polygene.core" % "org.apache.polygene.core.runtime" % "POLYGENE_VERSION" % "runtime" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.apache.polygene.core" % "org.apache.polygene.core.testsupport" % "POLYGENE_VERSION" % "test" \
+    withSources() withJavadoc()
+----
+
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
+
+If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository:
+
+[source,scala]
+----
+resolvers += "apache-snapshots" at "https://repository.apache.org/snapshots/"
+----
+
+
+== Using Ivy ==
+
+You simply declare dependencies on Polygene™ artifacts:
+
+[source,xml]
+----
+<ivy-module>
+    <dependencies>
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.bootstrap"
+                    rev="POLYGENE_VERSION"  conf="default" />
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.runtime"
+                    rev="POLYGENE_VERSION"  conf="runtime" />
+        <dependency org="org.apache.polygene.core" name="org.apache.polygene.core.testsupport"
+                    rev="POLYGENE_VERSION"  conf="test" />
+    </dependencies>
+</ivy-module>
+----
+
+Where `POLYGENE_VERSION` is the Polygene™ version you want to use.
+
+If you want to use +-SNAPSHOT+ versions, you need to register the Apache Snapshots repository in a `ivysettings.xml` file:
+
+[source,xml]
+----
+<ivysettings>
+    <settings defaultResolver="chain"/>
+    <resolvers>
+        <chain name="chain">
+            <ibiblio name="apache-snapshots" m2compatible="true"
+                     root="https://repository.apache.org/snapshots/"/>
+        </chain>
+    </resolvers>
+</ivysettings>
+----
