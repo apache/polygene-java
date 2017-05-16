@@ -149,21 +149,13 @@ class PublishingPlugin implements Plugin<Project>
       }
     }
     mavenDeployer.configuration = project.configurations.getByName( 'deployersJars' )
-    def repository = new MavenRemoteRepository()
+    def repository = config.releases ? mavenDeployer.repository : mavenDeployer.snapshotRepository
     repository.id = config.repositoryName
     repository.url = config.repositoryUrl
     if( config.username )
     {
       repository.authentication.userName = config.username
       repository.authentication.password = config.password
-    }
-    if( config.releases )
-    {
-      mavenDeployer.repository = repository
-    }
-    else
-    {
-      mavenDeployer.snapshotRepository = repository
     }
   }
 
