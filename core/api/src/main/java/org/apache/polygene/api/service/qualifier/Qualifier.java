@@ -29,5 +29,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention( RetentionPolicy.RUNTIME )
 public @interface Qualifier
 {
-    public abstract Class<? extends AnnotationQualifier> value();
+    Class<? extends AnnotationQualifier> value();
 }

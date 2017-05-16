@@ -68,6 +68,15 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
      */
     boolean remove( T entity );
 
+    /**
+     * Clear all entities from this {@code ManyAssociation}.
+     * <p>
+     *     All entity references present is removed from this collection.
+     * </p>
+     * @return true if any entity reference was removed, otherwise false
+     */
+    boolean clear();
+
     /** Fetch the entity refrence at the given index and fetch the entity from the entity store.
      *
      * @param index The index location in the collection of the entity reference to be fetched.

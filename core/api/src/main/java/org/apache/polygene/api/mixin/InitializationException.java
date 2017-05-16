@@ -22,11 +22,8 @@ package org.apache.polygene.api.mixin;
 /**
  * Thrown when a Fragment or object could not be initialized.
  */
-public class InitializationException
-    extends RuntimeException
+public class InitializationException extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
-
     public InitializationException()
     {
     }

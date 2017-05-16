@@ -23,21 +23,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import org.apache.polygene.api.configuration.Configuration;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 
 @Mixins( LibraryService.LibraryMixin.class )
 public interface LibraryService
-    extends Library, ServiceComposite
+    extends Library
 {
-    public static interface LibraryConfiguration
-        extends ConfigurationComposite
+    interface LibraryConfiguration
     {
         Property<String> titles();
 
@@ -46,7 +43,7 @@ public interface LibraryService
         Property<Integer> copies();
     }
 
-    public static class LibraryMixin
+    class LibraryMixin
         implements Library
     {
 
@@ -56,7 +53,7 @@ public interface LibraryService
                              @Structure ValueBuilderFactory factory
         )
         {
-            books = new HashMap<String, ArrayList<Book>>();
+            books = new HashMap<>();
             String titles = config.get().titles().get();
             String authors = config.get().authors().get();
             int copies = config.get().copies().get();
@@ -105,7 +102,7 @@ public interface LibraryService
 
         private void createBook( ValueBuilderFactory factory, String author, String title, int copies )
         {
-            ArrayList<Book> bookCopies = new ArrayList<Book>();
+            ArrayList<Book> bookCopies = new ArrayList<>();
             String key = constructKey( author, title );
             books.put( key, bookCopies );
 

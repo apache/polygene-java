@@ -64,7 +64,6 @@ import org.apache.polygene.runtime.composite.TransientInstance;
 import org.apache.polygene.runtime.entity.EntityInstance;
 import org.apache.polygene.runtime.property.PropertyInstance;
 import org.apache.polygene.runtime.service.ImportedServiceReferenceInstance;
-import org.apache.polygene.runtime.service.ServiceInstance;
 import org.apache.polygene.runtime.service.ServiceReferenceInstance;
 import org.apache.polygene.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.polygene.runtime.value.ValueInstance;
@@ -72,7 +71,7 @@ import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.entity.EntityState;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
-import static org.apache.polygene.runtime.composite.TransientInstance.compositeInstanceOf;
+import static org.apache.polygene.api.composite.CompositeInstance.compositeInstanceOf;
 
 /**
  * Incarnation of Polygene.
@@ -134,31 +133,20 @@ public final class PolygeneRuntimeImpl
     @Override
     public ModuleDescriptor moduleOf( Object compositeOrServiceReferenceOrUow )
     {
-        if( compositeOrServiceReferenceOrUow instanceof TransientComposite )
+        if( compositeOrServiceReferenceOrUow instanceof Composite )
         {
-            TransientComposite composite = (TransientComposite) compositeOrServiceReferenceOrUow;
-            return TransientInstance.compositeInstanceOf( composite ).module();
+            return compositeInstanceOf( (Composite) compositeOrServiceReferenceOrUow ).module();
         }
-        else if( compositeOrServiceReferenceOrUow instanceof EntityComposite )
-        {
-            EntityComposite composite = (EntityComposite) compositeOrServiceReferenceOrUow;
-            return EntityInstance.entityInstanceOf( composite ).module();
-        }
-        else if( compositeOrServiceReferenceOrUow instanceof ValueComposite )
-        {
-            ValueComposite composite = (ValueComposite) compositeOrServiceReferenceOrUow;
-            return ValueInstance.valueInstanceOf( composite ).module();
-        }
-        else if( compositeOrServiceReferenceOrUow instanceof ServiceComposite )
-        {
-            ServiceComposite composite = (ServiceComposite) compositeOrServiceReferenceOrUow;
-            InvocationHandler handler = getInvocationHandler( composite );
-            if( handler instanceof ServiceInstance )
-            {
-                return ( (ServiceInstance) handler ).module();
-            }
-            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).module();
-        }
+//        else if( compositeOrServiceReferenceOrUow instanceof ServiceComposite )
+//        {
+//            ServiceComposite composite = (ServiceComposite) compositeOrServiceReferenceOrUow;
+//            InvocationHandler handler = getInvocationHandler( composite );
+//            if( handler instanceof ServiceInstance )
+//            {
+//                return ( (ServiceInstance) handler ).module();
+//            }
+//            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).module();
+//        }
         else if( compositeOrServiceReferenceOrUow instanceof UnitOfWork )
         {
             ModuleUnitOfWork unitOfWork = (ModuleUnitOfWork) compositeOrServiceReferenceOrUow;
@@ -177,6 +165,7 @@ public final class PolygeneRuntimeImpl
         }
         throw new IllegalArgumentException( "Wrong type. Must be one of "
                                             + Arrays.asList( TransientComposite.class, ValueComposite.class,
+                                                             EntityComposite.class,
                                                              ServiceComposite.class, ServiceReference.class,
                                                              UnitOfWork.class ) );
     }
@@ -184,31 +173,20 @@ public final class PolygeneRuntimeImpl
     @Override
     public ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference )
     {
-        if( compositeOrServiceReference instanceof TransientComposite )
+        if( compositeOrServiceReference instanceof Composite )
         {
-            TransientComposite composite = (TransientComposite) compositeOrServiceReference;
-            return TransientInstance.compositeInstanceOf( composite ).descriptor();
+            return compositeInstanceOf( (Composite) compositeOrServiceReference ).descriptor();
         }
-        else if( compositeOrServiceReference instanceof EntityComposite )
-        {
-            EntityComposite composite = (EntityComposite) compositeOrServiceReference;
-            return EntityInstance.entityInstanceOf( composite ).descriptor();
-        }
-        else if( compositeOrServiceReference instanceof ValueComposite )
-        {
-            ValueComposite composite = (ValueComposite) compositeOrServiceReference;
-            return ValueInstance.valueInstanceOf( composite ).descriptor();
-        }
-        else if( compositeOrServiceReference instanceof ServiceComposite )
-        {
-            ServiceComposite composite = (ServiceComposite) compositeOrServiceReference;
-            InvocationHandler handler = getInvocationHandler( composite );
-            if( handler instanceof ServiceInstance )
-            {
-                return ( (ServiceInstance) handler ).descriptor();
-            }
-            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).descriptor();
-        }
+//        else if( compositeOrServiceReference instanceof ServiceComposite )
+//        {
+//            ServiceComposite composite = (ServiceComposite) compositeOrServiceReference;
+//            InvocationHandler handler = getInvocationHandler( composite );
+//            if( handler instanceof ServiceInstance )
+//            {
+//                return ( (ServiceInstance) handler ).descriptor();
+//            }
+//            return ( (ServiceReferenceInstance.ServiceInvocationHandler) handler ).descriptor();
+//        }
         else if( compositeOrServiceReference instanceof ServiceReferenceInstance )
         {
             ServiceReferenceInstance<?> reference = (ServiceReferenceInstance<?>) compositeOrServiceReference;
@@ -221,8 +199,9 @@ public final class PolygeneRuntimeImpl
             return importedServiceReference.serviceDescriptor();
         }
         throw new IllegalArgumentException( "Wrong type. Must be one of "
-                                            + Arrays.asList( TransientComposite.class, ValueComposite.class,
-                                                             ServiceComposite.class, ServiceReference.class ) );
+                                            + Arrays.asList( TransientComposite.class, ValueComposite.class, EntityComposite.class,
+                                                             ServiceComposite.class, ServiceReference.class,
+                                                             ImportedServiceReferenceInstance.class ) );
     }
 
     @Override
@@ -238,7 +217,7 @@ public final class PolygeneRuntimeImpl
     {
         if( transsient instanceof TransientComposite )
         {
-            TransientInstance transientInstance = compositeInstanceOf( (Composite) transsient );
+            TransientInstance transientInstance = (TransientInstance) compositeInstanceOf( (Composite) transsient );
             return (TransientDescriptor) transientInstance.descriptor();
         }
         throw new IllegalArgumentException( "Wrong type. Must be subtype of " + TransientComposite.class );
@@ -247,7 +226,7 @@ public final class PolygeneRuntimeImpl
     @Override
     public StateHolder stateOf( TransientComposite composite )
     {
-        return TransientInstance.compositeInstanceOf( composite ).state();
+        return compositeInstanceOf( composite ).state();
     }
 
     @Override
@@ -264,7 +243,7 @@ public final class PolygeneRuntimeImpl
     @Override
     public AssociationStateHolder stateOf( EntityComposite composite )
     {
-        return EntityInstance.entityInstanceOf( composite ).state();
+        return ( (EntityInstance) compositeInstanceOf( composite ) ).state();
     }
 
     @Override
@@ -272,7 +251,7 @@ public final class PolygeneRuntimeImpl
     {
         if( value instanceof ValueComposite )
         {
-            ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
+            ValueInstance valueInstance = (ValueInstance) compositeInstanceOf( (Composite) value );
             return valueInstance.descriptor();
         }
         throw new IllegalArgumentException( "Wrong type. {" + value + "} must be subtype of " + ValueComposite.class );
@@ -281,7 +260,7 @@ public final class PolygeneRuntimeImpl
     @Override
     public AssociationStateHolder stateOf( ValueComposite composite )
     {
-        return ValueInstance.valueInstanceOf( composite ).state();
+        return ( (ValueInstance) compositeInstanceOf( composite ) ).state();
     }
 
     @Override
@@ -295,7 +274,7 @@ public final class PolygeneRuntimeImpl
         if( service instanceof ServiceComposite )
         {
             ServiceComposite composite = (ServiceComposite) service;
-            return (ServiceDescriptor) ServiceInstance.serviceInstanceOf( composite ).descriptor();
+            return (ServiceDescriptor) compositeInstanceOf( composite ).descriptor();
         }
         throw new IllegalArgumentException( "Wrong type. Must be subtype of "
                                             + ServiceComposite.class + " or " + ServiceReference.class );
@@ -337,7 +316,7 @@ public final class PolygeneRuntimeImpl
     @Override
     public EntityState entityStateOf( EntityComposite composite )
     {
-        return EntityInstance.entityInstanceOf( composite ).entityState();
+        return ( (EntityInstance) compositeInstanceOf( composite ) ).entityState();
     }
 
     @Override

@@ -17,12 +17,15 @@
  */
 package org.apache.polygene.bootstrap.serialization;
 
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonAdapters;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonSerialization;
 import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.apache.polygene.spi.serialization.JsonSerialization;
@@ -35,8 +38,13 @@ public class DefaultSerializationAssembler
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.services( JavaxJsonSerialization.class )
-              .withTypes( Serialization.class, Serializer.class, Deserializer.class,
-                          JsonSerialization.class, JsonSerializer.class, JsonDeserializer.class )
+              .withTypes( Serialization.class,
+                          Serializer.class, Deserializer.class,
+                          Converters.class,
+                          JsonSerialization.class,
+                          JsonSerializer.class, JsonDeserializer.class,
+                          JavaxJsonAdapters.class,
+                          JavaxJsonFactories.class )
               .taggedWith( Serialization.Format.JSON );
     }
 }

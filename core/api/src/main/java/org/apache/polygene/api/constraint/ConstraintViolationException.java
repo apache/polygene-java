@@ -46,11 +46,8 @@ import static java.util.stream.Collectors.joining;
  * was invoked. The Exception also has support for localized messages of these violations.
  * </p>
  */
-public class ConstraintViolationException
-    extends IllegalArgumentException
+public class ConstraintViolationException extends IllegalArgumentException
 {
-    private static final long serialVersionUID = 1L;
-
     private final Collection<ConstraintViolation> constraintViolations;
     private String methodName;
     private String mixinTypeName;

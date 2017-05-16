@@ -20,7 +20,6 @@
 
 package org.apache.polygene.api.constraint;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 /**
@@ -28,7 +27,6 @@ import java.lang.annotation.Annotation;
  * value validation.
  */
 public interface Constraint<ANNOTATION extends Annotation, TYPE>
-    extends Serializable
 {
     /**
      * For each value or parameter which should be checked this method will be invoked.

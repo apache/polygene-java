@@ -39,9 +39,9 @@ public final class MethodSideEffectDetailDescriptor
     {
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
         descriptor = aDescriptor;
-        constructors = new LinkedList<ConstructorDetailDescriptor>();
-        injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
-        injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
+        constructors = new LinkedList<>();
+        injectedMethods = new LinkedList<>();
+        injectedFields = new LinkedList<>();
     }
 
     /**

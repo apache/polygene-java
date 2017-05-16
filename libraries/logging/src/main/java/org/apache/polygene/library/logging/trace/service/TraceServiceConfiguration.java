@@ -21,10 +21,9 @@
 package org.apache.polygene.library.logging.trace.service;
 
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
-public interface TraceServiceConfiguration extends ConfigurationComposite
+public interface TraceServiceConfiguration
 {
     @UseDefaults Property<Integer> traceLevel();
 }

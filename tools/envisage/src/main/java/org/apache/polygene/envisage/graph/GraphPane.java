@@ -71,23 +71,9 @@ public final class GraphPane
         this.setLayout( new BorderLayout() );
         add( tabPane, BorderLayout.CENTER );
 
-        treeDisplay.addLinkListener( new LinkListener()
-        {
-            @Override
-            public void activated( LinkEvent evt )
-            {
-                graphItemLinkActivated( evt );
-            }
-        } );
+        treeDisplay.addLinkListener( this::graphItemLinkActivated );
 
-        stackedDisplay.addLinkListener( new LinkListener()
-        {
-            @Override
-            public void activated( LinkEvent evt )
-            {
-                graphItemLinkActivated( evt );
-            }
-        } );
+        stackedDisplay.addLinkListener( this::graphItemLinkActivated );
 
         this.addComponentListener( new ComponentAdapter()
         {

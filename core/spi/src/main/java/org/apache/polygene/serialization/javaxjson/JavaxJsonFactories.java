@@ -17,9 +17,17 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
+import java.util.Arrays;
+import java.util.List;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonReaderFactory;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.json.JsonWriterFactory;
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGeneratorFactory;
@@ -41,6 +49,57 @@ public interface JavaxJsonFactories
     JsonBuilderFactory builderFactory();
 
     JsonWriterFactory writerFactory();
+
+    /**
+     * Creates a {@link JsonString} with the {@link Object#toString()} result on the given object.
+     *
+     * @param object the object
+     * @return the JsonString
+     */
+    JsonString toJsonString( Object object );
+
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}.
+     *
+     * @param jsonObject the JsonObject
+     * @return the builder
+     */
+    JsonObjectBuilder cloneBuilder( JsonObject jsonObject );
+
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}, including only some keys.
+     *
+     * @param jsonObject the JsonObject
+     * @param keys the keys to include
+     * @return the builder
+     */
+    JsonObjectBuilder cloneBuilderInclude( JsonObject jsonObject, String... keys );
+
+    /**
+     * Creates a {@link JsonObjectBuilder} populated with the state of a {@link JsonObject}, excluding some keys.
+     *
+     * @param jsonObject the JsonObject
+     * @param keys the keys to exclude
+     * @return the builder
+     */
+    JsonObjectBuilder cloneBuilderExclude( JsonObject jsonObject, String... keys );
+
+    /**
+     * Creates a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}.
+     *
+     * @param jsonArray the JsonArray
+     * @return the builder
+     */
+    JsonArrayBuilder cloneBuilder( JsonArray jsonArray );
+
+    /**
+     * Creates a {@link JsonArrayBuilder} populated with the state of a {@link JsonArray}, excluding some values.
+     *
+     * @param jsonArray the JsonArray
+     * @param values the values to exclude
+     * @return the builder
+     */
+    JsonArrayBuilder cloneBuilderExclude( JsonArray jsonArray, JsonValue... values );
 
     class Mixin implements JavaxJsonFactories, Initializable
     {
@@ -117,6 +176,80 @@ public interface JavaxJsonFactories
         public JsonWriterFactory writerFactory()
         {
             return writerFactory;
+        }
+
+        @Override
+        public JsonString toJsonString( Object object )
+        {
+            return builderFactory.createObjectBuilder().add( "value", object.toString() ).build()
+                                 .getJsonString( "value" );
+        }
+
+        @Override
+        public JsonObjectBuilder cloneBuilder( JsonObject jsonObject )
+        {
+            JsonObjectBuilder builder = builderFactory.createObjectBuilder();
+            for( String key : jsonObject.keySet() )
+            {
+                builder.add( key, jsonObject.get( key ) );
+            }
+            return builder;
+        }
+
+        @Override
+        public JsonObjectBuilder cloneBuilderInclude( JsonObject jsonObject, String... keys )
+        {
+            List<String> includes = Arrays.asList( keys );
+            JsonObjectBuilder builder = builderFactory.createObjectBuilder();
+            for( String include : includes )
+            {
+                if( jsonObject.containsKey( include ) )
+                {
+                    builder.add( include, jsonObject.get( include ) );
+                }
+            }
+            return builder;
+        }
+
+        @Override
+        public JsonObjectBuilder cloneBuilderExclude( JsonObject jsonObject, String... keys )
+        {
+            List<String> excludes = Arrays.asList( keys );
+            JsonObjectBuilder builder = builderFactory.createObjectBuilder();
+            for( String key : jsonObject.keySet() )
+            {
+                if( !excludes.contains( key ) )
+                {
+                    builder.add( key, jsonObject.get( key ) );
+                }
+            }
+            return builder;
+        }
+
+        @Override
+        public JsonArrayBuilder cloneBuilder( JsonArray jsonArray )
+        {
+            JsonArrayBuilder builder = builderFactory.createArrayBuilder();
+            for( JsonValue entry : jsonArray )
+            {
+                builder.add( entry );
+            }
+            return builder;
+        }
+
+        @Override
+        public JsonArrayBuilder cloneBuilderExclude( JsonArray jsonArray, JsonValue... values )
+        {
+            List<JsonValue> excludes = Arrays.asList( values );
+            JsonArrayBuilder job = builderFactory.createArrayBuilder();
+            for( JsonValue entry : jsonArray )
+            {
+                if( !excludes.contains( entry ) )
+                {
+                    job.add( entry );
+                }
+            }
+            return job;
         }
     }
 }

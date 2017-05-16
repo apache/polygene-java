@@ -50,8 +50,8 @@ public final class ConstraintsModel
         }
         else
         {
-            List<ValueConstraintsInstance> parameterConstraintsInstances = new ArrayList<ValueConstraintsInstance>( parameterConstraintModels
-                                                                                                                        .size() );
+            List<ValueConstraintsInstance> parameterConstraintsInstances = new ArrayList<>( parameterConstraintModels
+                                                                                                .size() );
             for( ValueConstraintsModel parameterConstraintModel : parameterConstraintModels )
             {
                 parameterConstraintsInstances.add( parameterConstraintModel.newInstance() );

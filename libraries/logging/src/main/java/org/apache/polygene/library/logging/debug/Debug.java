@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.debug;
 
-import java.io.Serializable;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.mixin.NoopMixin;
@@ -40,10 +39,10 @@ public interface Debug
 
     void debug( int level, String message );
 
-    void debug( int level, String message, Serializable param1 );
+    void debug( int level, String message, Object param1 );
 
-    void debug( int level, String message, Serializable param1, Serializable param2 );
+    void debug( int level, String message, Object param1, Object param2 );
 
-    void debug( int level, String message, Serializable... params );
+    void debug( int level, String message, Object... params );
 
 }

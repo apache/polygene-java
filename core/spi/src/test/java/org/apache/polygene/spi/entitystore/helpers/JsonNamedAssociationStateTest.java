@@ -25,8 +25,13 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.time.SystemTime;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.EntityStatus;
+import org.apache.polygene.spi.serialization.JsonSerialization;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,27 +39,36 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class JsonNamedAssociationStateTest
+public class JsonNamedAssociationStateTest extends AbstractPolygeneTest
 {
+    @Override
+    public void assemble( ModuleAssembly module )
+    {
+    }
+
+    @Service
+    private JsonSerialization serialization;
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
+
     @Test
     public void givenJsonNamedAssociationStateWhenChangingReferencesExpectCorrectBehavior()
     {
         // Fake JsonNamedAssociationState
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add( JSONKeys.PROPERTIES, Json.createObjectBuilder().build() );
-        builder.add( JSONKeys.ASSOCIATIONS, Json.createObjectBuilder().build() );
-        builder.add( JSONKeys.MANY_ASSOCIATIONS, Json.createObjectBuilder().build() );
-        builder.add( JSONKeys.NAMED_ASSOCIATIONS, Json.createObjectBuilder().build() );
+        builder.add( JSONKeys.VALUE, Json.createObjectBuilder().build() );
         JsonObject state = builder.build();
-        JSONEntityState entityState = new JSONEntityState( null,
-                                                           null,
+        JSONEntityState entityState = new JSONEntityState( module,
+                                                           serialization,
+                                                           jsonFactories,
                                                            "0",
                                                            SystemTime.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,
                                                            state );
-        JSONNamedAssociationState jsonState = new JSONNamedAssociationState( entityState, "under-test" );
+        JSONNamedAssociationState jsonState = new JSONNamedAssociationState( jsonFactories, entityState, "under-test" );
 
 
         assertThat( jsonState.containsName( "foo" ), is( false ) );

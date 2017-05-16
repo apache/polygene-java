@@ -17,12 +17,14 @@
  */
 package org.apache.polygene.serialization.javaxxml.assembly;
 
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.serialization.javaxxml.JavaxXmlAdapters;
 import org.apache.polygene.serialization.javaxxml.JavaxXmlFactories;
 import org.apache.polygene.serialization.javaxxml.JavaxXmlSerialization;
 import org.apache.polygene.serialization.javaxxml.JavaxXmlSettings;
@@ -46,9 +48,10 @@ public class JavaxXmlSerializationAssembler extends Assemblers.VisibilityIdentit
         ServiceDeclaration declaration = module.services( JavaxXmlSerialization.class )
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,
+                                                           Converters.class,
                                                            XmlSerialization.class,
                                                            XmlSerializer.class, XmlDeserializer.class,
-                                                           JavaxXmlFactories.class )
+                                                           JavaxXmlFactories.class, JavaxXmlAdapters.class )
                                                .taggedWith( Serialization.Format.XML )
                                                .visibleIn( visibility() );
         if( hasIdentity() )

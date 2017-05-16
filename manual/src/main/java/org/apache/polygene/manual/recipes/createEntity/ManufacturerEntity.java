@@ -19,10 +19,10 @@
  */
 package org.apache.polygene.manual.recipes.createEntity;
 
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 
 // START SNIPPET: composite
-public interface ManufacturerEntity extends Manufacturer, EntityComposite
+public interface ManufacturerEntity extends HasIdentity, Manufacturer
 {}
 
 // END SNIPPET: composite

@@ -17,12 +17,14 @@
  */
 package org.apache.polygene.serialization.javaxjson.assembly;
 
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonAdapters;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonSerialization;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonSettings;
@@ -46,9 +48,10 @@ public class JavaxJsonSerializationAssembler extends Assemblers.VisibilityIdenti
         ServiceDeclaration declaration = module.services( JavaxJsonSerialization.class )
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,
+                                                           Converters.class,
                                                            JsonSerialization.class,
                                                            JsonSerializer.class, JsonDeserializer.class,
-                                                           JavaxJsonFactories.class )
+                                                           JavaxJsonFactories.class, JavaxJsonAdapters.class )
                                                .taggedWith( Serialization.Format.JSON )
                                                .visibleIn( visibility() );
         if( hasIdentity() )

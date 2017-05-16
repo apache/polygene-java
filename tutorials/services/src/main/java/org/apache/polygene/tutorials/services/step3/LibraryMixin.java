@@ -34,7 +34,7 @@ public class LibraryMixin
 
     public LibraryMixin()
     {
-        books = new HashMap<String, ArrayList<Book>>();
+        books = new HashMap<>();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class LibraryMixin
 
     private void createBook( String author, String title, int copies )
     {
-        ArrayList<Book> bookCopies = new ArrayList<Book>();
+        ArrayList<Book> bookCopies = new ArrayList<>();
         String key = constructKey( author, title );
         books.put( key, bookCopies );
 

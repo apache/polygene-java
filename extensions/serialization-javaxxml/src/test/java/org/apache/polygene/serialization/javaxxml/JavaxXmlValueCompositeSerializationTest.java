@@ -18,6 +18,7 @@
 package org.apache.polygene.serialization.javaxxml;
 
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
@@ -55,22 +56,25 @@ public class JavaxXmlValueCompositeSerializationTest extends AbstractValueCompos
         // START SNIPPET: xml-serialization
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
-            Some some = buildSomeValue( moduleInstance, uow, "23" );
+            Some valueInstance = buildSomeValue( moduleInstance, uow, "42" );
 
             // Serialize using injected service
-            String stateString = serialization.serialize( some );
-            System.out.println( stateString );
+            String serializedXml = xmlSerialization.serialize( valueInstance );
+            System.out.println( serializedXml );
 
             // Deserialize using Module API
-            Some some2 = moduleInstance.newValueFromSerializedState( Some.class, stateString );
+            Some valueFromSerializedState = moduleInstance.newValueFromSerializedState( Some.class, serializedXml );
+            assertThat( "Deserialized Value equality", valueInstance, equalTo( valueFromSerializedState ) );
+            // END SNIPPET: xml-serialization
 
-            assertThat( "Deserialized Value equality", some, equalTo( some2 ) );
-
+            // value.toString()
             // Need to loosely compare because of HashMaps not retaining order
+            String valueXmlWithoutTypeInfo = xmlSerialization.serialize( Serializer.Options.NO_TYPE_INFO, valueFromSerializedState );
             assertThat( "value.toString() XML equality",
-                        stateString,
-                        isSimilarTo( some2.toString() )
+                        valueFromSerializedState.toString(),
+                        isSimilarTo( valueXmlWithoutTypeInfo )
                             .withNodeMatcher( new DefaultNodeMatcher( ElementSelectors.byNameAndAllAttributes ) ) );
+            // START SNIPPET: xml-serialization
         }
         // END SNIPPET: xml-serialization
     }

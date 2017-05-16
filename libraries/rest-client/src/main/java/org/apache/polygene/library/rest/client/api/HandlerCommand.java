@@ -109,14 +109,10 @@ public abstract class HandlerCommand
     public <T> HandlerCommand onProcessingError(final ResultHandler<T> resultHandler)
     {
         final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.apply(( (ParameterizedType) resultHandler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
-        this.processingErrorHandler = new ResponseHandler()
+        this.processingErrorHandler = ( response, client ) ->
         {
-            @Override
-            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
-            {
-                T result = client.getContextResourceClientFactory().readResponse( response, resultType );
-                return resultHandler.handleResult( result, client );
-            }
+            T result = client.getContextResourceClientFactory().readResponse( response, resultType );
+            return resultHandler.handleResult( result, client );
         };
         return this;
     }

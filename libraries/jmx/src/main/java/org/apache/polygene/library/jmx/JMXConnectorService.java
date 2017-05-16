@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 @Mixins(JMXConnectorService.JmxConnectorMixin.class)
 @Activators( JMXConnectorService.Activator.class )
 public interface JMXConnectorService
-        extends ServiceComposite
 {
 
     void startJMXConnector()
@@ -64,7 +63,7 @@ public interface JMXConnectorService
     void stopJMXConnector()
             throws Exception;
 
-    static class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<JMXConnectorService>>
     {
 

@@ -28,7 +28,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.value.ValueComposite;
 
 /**
  * Status of an AlarmPoint.
@@ -36,7 +35,7 @@ import org.apache.polygene.api.value.ValueComposite;
  * @author Niclas Hedhman
  */
 @Mixins( AlarmStatus.AlarmStatusMixin.class )
-public interface AlarmStatus extends ValueComposite
+public interface AlarmStatus
 {
 
     /**

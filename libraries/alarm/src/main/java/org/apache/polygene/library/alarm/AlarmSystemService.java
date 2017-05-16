@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.library.alarm;
 
-import org.apache.polygene.api.service.ServiceComposite;
-
-public interface AlarmSystemService extends AlarmSystem, ServiceComposite
+public interface AlarmSystemService extends AlarmSystem
 {
 }

@@ -30,7 +30,7 @@ import org.apache.polygene.library.rest.server.api.ObjectSelection;
  */
 public interface InteractionConstraints
 {
-    public boolean isValid( Method method, ObjectSelection objectSelection, Module module );
+    boolean isValid( Method method, ObjectSelection objectSelection, Module module );
 
-    public boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module );
+    boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module );
 }

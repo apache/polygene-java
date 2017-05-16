@@ -24,12 +24,13 @@ import java.io.Serializable;
 public class ConstraintInfo
         implements Serializable
 {
+    private static final long serialVersionUID = 1L;
 
-    public static enum Constraint
+    public enum Constraint
     {
     }
 
-    public static enum HttpMethod
+    public enum HttpMethod
     {
 
         GET, POST, HEAD, PUT, OPTIONS, TRACE, DELETE;

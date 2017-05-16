@@ -56,6 +56,7 @@ import org.gradle.plugins.signing.SigningExtension
 import java.nio.file.Files
 import java.nio.file.Path
 
+// TODO Split each distribution as a separate plugin
 // TODO Expose all project outputs into configurations
 @CompileStatic
 class DistributionsPlugin implements Plugin<Project>
@@ -78,6 +79,7 @@ class DistributionsPlugin implements Plugin<Project>
     static final String CHECK_SOURCE_DIST = 'checkSourceDistribution'
     static final String CHECK_BINARY_DIST = 'checkBinaryDistribution'
     private static final String RAT_SOURCE_DIST = 'ratSourceDistribution'
+    private static final String INSPECT_SOURCE_DIST = 'inspectSourceDistribution'
     private static final String BUILD_SOURCE_DIST = 'buildSourceDistribution'
     private static final String RAT_BINARY_DIST = 'ratBinaryDistribution'
   }
@@ -121,7 +123,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.include '*.txt'
       spec.include 'doap.rdf'
       spec.include '*.gradle'
-      spec.include 'gradlew*'
       spec.include 'gradle/**'
       spec.include 'etc/**'
       spec.include 'buildSrc/**'
@@ -130,17 +131,26 @@ class DistributionsPlugin implements Plugin<Project>
         def relPath = new File( project.rootProject.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
         spec.include "$relPath/**"
       }
+      spec.include 'distributions/**'
+      spec.include 'reports/**'
+      spec.include 'release/**'
       spec.include 'internals/**'
       spec.include 'manual/**'
       spec.include 'samples/**'
       spec.include 'tests/**'
       spec.include 'tutorials/**'
-      spec.include 'tools/shell/**'
       // Filtered, see below
       spec.exclude 'settings.gradle'
       spec.exclude 'gradle.properties'
       // Excludes
+      spec.exclude '**/.git/**'              // Git directories
+      spec.exclude '**/.git*'                // Git files
       spec.exclude '**/build/**'             // Build output
+      spec.exclude 'gradlew*'                // Gradle wrapper scripts
+      spec.exclude 'gradle/wrapper/*.jar'    // Gradle wrapper JAR
+      spec.exclude '**/.gradle/**'           // Gradle caches
+      spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
+      spec.exclude '**/node_modules/**'      // Node's node_module dir
       spec.exclude 'derby.log'               // Derby test garbage
       spec.exclude '**/*.iml'                // IDEA files
       spec.exclude '**/*.ipr'                // IDEA files
@@ -152,15 +162,8 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.settings'            // Eclipse files
       spec.exclude '**/.nb-gradle/**'        // Netbeans files
       spec.exclude '**/.nb-gradle*'          // Netbeans files
-      spec.exclude '**/.git/**'              // Git directories
-      spec.exclude '**/.git*'                // Git files
-      spec.exclude '**/.gradle/**'           // Gradle caches
-      spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
 
-        // TODO: Doesn't belong here. Should probably remove the use of ServiceLoader in 3.1, which solves the issue.
-        spec.exclude '**/META-INF/services/*Vendor' // SQL Vendor services
-
-        spec.into '.'
+      spec.into '.'
     }
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->
       spec.from project.file( 'src/src-dist' )
@@ -268,6 +271,8 @@ class DistributionsPlugin implements Plugin<Project>
         '**/src/test/resources/**/*.txt',
         'libraries/rest-server/src/main/resources/**/*.htm',
         'libraries/rest-server/src/main/resources/**/*.atom',
+        'tools/generator-polygene/app/templates/**/*.tmpl',
+        'tools/generator-polygene/app/templates/**/*.*_',
         'tools/qidea/src/main/resources/**/*.ft',
         'tools/qidea/src/main/resources/**/*.template',
         // Graphic Resources
@@ -282,19 +287,36 @@ class DistributionsPlugin implements Plugin<Project>
         'samples/rental/src/main/resources/*.xsd',
         // Polygene Generator Heroes Templates - MIT
         'tools/generator-polygene/app/templates/Heroes/**',
-        // templates that will become the user's source files, should not have license headers
-        'tools/shell/src/dist/etc/templates/**',
       ]
     } as Action<RatTask> )
+    project.tasks.create( TaskNames.INSPECT_SOURCE_DIST ) { Task task ->
+      task.group = TaskGroups.DISTRIBUTION_VERIFICATION
+      task.description = 'Inspects various aspects of the source distribution.'
+      task.dependsOn TaskNames.STAGE_SOURCE_DIST
+      task.onlyIf { !releaseSpec.developmentVersion }
+      task.doLast {
+        // ad-hoc checks to the source distribution -----------------------
+        def assertFilePresent = { String path -> assert new File( unpackedSrcDistDir, path ).isFile() }
+        def assertFileAbsent = { String path -> assert !new File( unpackedSrcDistDir, path ).isFile() }
+
+        assertFileAbsent 'gradlew'
+        assertFileAbsent 'gradlew.bat'
+        assertFileAbsent 'gradle/wrapper/gradle-wrapper.jar'
+        assertFilePresent 'gradle/wrapper/gradle-wrapper.properties'
+      }
+    }
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
       task.description = 'Checks the source distribution by running `gradle build` inside.'
       task.dependsOn TaskNames.STAGE_SOURCE_DIST
       task.mustRunAfter TaskNames.RAT_SOURCE_DIST
+      task.mustRunAfter TaskNames.INSPECT_SOURCE_DIST
       def workDir = project.file( "$project.buildDir/tmp/${ TaskNames.BUILD_SOURCE_DIST }" )
       task.inputs.dir unpackedSrcDistDir
       task.workingDir = workDir
-      task.commandLine = [ './gradlew', 'build', '-u', '-s', /* '-g', workDir */ ]
+      def gradlew = new File( project.rootDir, 'gradlew' ).absolutePath
+      def settings = new File( workDir, 'settings.gradle' ).absolutePath
+      task.commandLine = [ gradlew, '-c', settings, 'build', '-u', '-s', /* '-g', workDir */ ]
       task.doFirst {
         project.copy { CopySpec spec ->
           spec.from unpackedSrcDistDir
@@ -310,7 +332,7 @@ class DistributionsPlugin implements Plugin<Project>
     } as Action<ExecLogged> )
     project.tasks.create( TaskNames.CHECK_SOURCE_DIST ) { Task task ->
       task.description = "Checks the source distribution."
-      task.dependsOn TaskNames.RAT_SOURCE_DIST, TaskNames.BUILD_SOURCE_DIST
+      task.dependsOn TaskNames.RAT_SOURCE_DIST, TaskNames.INSPECT_SOURCE_DIST, TaskNames.BUILD_SOURCE_DIST
     }
   }
 
@@ -461,8 +483,13 @@ class DistributionsPlugin implements Plugin<Project>
       task.group = TaskGroups.DISTRIBUTION
       task.description = 'Stages published binaries as a maven repository in the build directory.'
       releaseSpec.publishedProjects.each { p ->
-        task.dependsOn "${ p.path }:uploadStageArchives"
-        task.from "${ p.buildDir }/stage/archives"
+        p.afterEvaluate { evaluatedProject ->
+          if( p.plugins.hasPlugin( PublishedCodePlugin ) )
+          {
+            task.dependsOn "${ p.path }:uploadStageArchives"
+            task.from "${ p.buildDir }/stage/archives"
+          }
+        }
       }
       task.into project.file( "$project.buildDir/stage/maven-binaries" )
     } as Action<Sync> )
@@ -510,8 +537,8 @@ class DistributionsPlugin implements Plugin<Project>
         }
         // Copy Maven artifacts using the Gradle IDE Model
         // Include sources if available, otherwise include javadoc if available
-          IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
-          def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
+        IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
+        def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
                                                                                 [ configuration ], [ ],
                                                                                 true, true
         ideDependencies.each { IdeExtendedRepoFileDependency ideDependency ->

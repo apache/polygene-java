@@ -21,20 +21,14 @@ package org.apache.polygene.api.type;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.stream.Stream;
-import org.apache.polygene.api.association.AssociationDescriptor;
-import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * ValueComposite ValueType.
  */
-public final class ValueCompositeType extends ValueType
+public final class ValueCompositeType extends StatefulAssociationValueType<ValueDescriptor>
 {
     public static ValueCompositeType of( ValueDescriptor model )
     {
@@ -46,41 +40,13 @@ public final class ValueCompositeType extends ValueType
         return ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.apply( type ) );
     }
 
-    private final ValueDescriptor model;
-
     public ValueCompositeType( ValueDescriptor model )
     {
-        super( model.types().collect( toList() ) );
-        this.model = model;
-    }
-
-    public ModuleDescriptor module()
-    {
-        return model.module();
-    }
-
-    public Stream<? extends PropertyDescriptor> properties()
-    {
-        return model.state().properties();
-    }
-
-    public Stream<? extends AssociationDescriptor> associations()
-    {
-        return model.state().associations();
-    }
-
-    public Stream<? extends AssociationDescriptor> manyAssociations()
-    {
-        return model.state().manyAssociations();
-    }
-
-    public Stream<? extends AssociationDescriptor> namedAssociations()
-    {
-        return model.state().namedAssociations();
+        super( model );
     }
 
     @Override
-    public boolean equals( final Object o )
+    public boolean equals( Object o )
     {
         if( this == o ) { return true; }
         if( o == null || getClass() != o.getClass() ) { return false; }

@@ -21,7 +21,6 @@
 package org.apache.polygene.library.logging.debug.service;
 
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
@@ -67,7 +66,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable param1 )
+    public void debug( Composite composite, String message, Object param1 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1 );
@@ -79,7 +78,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
+    public void debug( Composite composite, String message, Object param1, Object param2 )
     {
         String localized = bundle.getString( message );
         String formatted = MessageFormat.format( localized, param1, param2 );
@@ -91,10 +90,10 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
     }
 
     @Override
-    public void debug( Composite composite, String message, Serializable... params )
+    public void debug( Composite composite, String message, Object... params )
     {
         String localized = bundle.getString( message );
-        String formatted = MessageFormat.format( localized, (Serializable) params );
+        String formatted = MessageFormat.format( localized, (Object) params );
         OUT.println( "DEBUG:" + getCompositeName( composite ) + ": " + formatted );
         if( params[ 0 ] instanceof Throwable )
         {

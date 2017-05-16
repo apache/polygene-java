@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.api.common;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import org.apache.polygene.api.util.Classes;
@@ -28,7 +27,7 @@ import org.apache.polygene.api.util.Classes;
  * Represents a Type name.
  */
 public final class TypeName
-    implements Serializable, Comparable<TypeName>
+    implements Comparable<TypeName>
 {
     private final String name;
 

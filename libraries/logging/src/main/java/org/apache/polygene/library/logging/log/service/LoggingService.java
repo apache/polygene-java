@@ -20,11 +20,10 @@
 
 package org.apache.polygene.library.logging.log.service;
 
-import java.io.Serializable;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.library.logging.log.LogType;
 
 public interface LoggingService
 {
-    void log( LogType type, Composite composite, String category, String message, Serializable... params );
+    void log( LogType type, Composite composite, String category, String message, Object... params );
 }

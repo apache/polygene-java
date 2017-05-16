@@ -42,11 +42,19 @@ https://polygene.apache.org/java/latest/howto-depend-on-polygene.html
 
 Building Apache Polygene
 ---------------------
-To build Polygene™ from sources you only need to have a valid Java JDK >= 7
-installation.
+To build Polygene™ from sources you only need to have a valid Java JDK >= 8
+installation and any version of Gradle.
 
-If you want to build the Polygene™ manual, then you also need valid Asciidoc
-(http://www.methods.co.nz/asciidoc/) and Docbook-XSL installations.
+This distribution embeds the exact version of Gradle needed to build Polygene™.
+It is in the gradle/wrapper/gradle-wrapper.properties file.
+Here is how to bootstrap that version:
+
+    gradle wrapper
+
+This will download the required Gradle distribution and create gradlew and
+gradlew.bat script files that you should use from now on.
+
+Once you have the wrapper installed you can invoke the build system.
 
 Here is how to run a full build with checks:
 

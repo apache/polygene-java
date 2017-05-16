@@ -17,19 +17,20 @@
  *
  *
  */
-
-package org.apache.polygene.api.mixin;
+package org.apache.polygene.api.composite;
 
 import java.lang.reflect.Method;
+import org.apache.polygene.api.common.AppliesToFilter;
 
 /**
- * This exception is thrown if a Mixin is invalid (missing method implementation).
+ * Filter Default Interface Methods to apply a generic fragment.
  */
-public class InvalidMixinException
-    extends RuntimeException
+public class DefaultMethodsFilter
+    implements AppliesToFilter
 {
-    public InvalidMixinException( Class mixinClass, Method method )
+    @Override
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
     {
-        super( mixinClass.getName() + "does not have a method implementation for " + method );
+        return method.isDefault();
     }
 }

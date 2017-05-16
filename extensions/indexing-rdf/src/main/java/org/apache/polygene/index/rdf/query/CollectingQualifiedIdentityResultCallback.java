@@ -27,7 +27,7 @@ import org.apache.polygene.api.entity.EntityReference;
 public class CollectingQualifiedIdentityResultCallback
     implements QualifiedIdentityResultCallback
 {
-    private final Collection<EntityReference> entities = new ArrayList<EntityReference>();
+    private final Collection<EntityReference> entities = new ArrayList<>();
 
     @Override
     public boolean processRow( long row, EntityReference entityReference )

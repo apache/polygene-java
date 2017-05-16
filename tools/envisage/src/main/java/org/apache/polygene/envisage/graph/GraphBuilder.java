@@ -21,7 +21,6 @@
 package org.apache.polygene.envisage.graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.EntityDetailDescriptor;
@@ -160,7 +159,7 @@ import prefuse.data.Table;
             childList.add( obj );
         }
 
-        Collections.sort( childList, nameComparator );
+        childList.sort( nameComparator );
     }
 
     private void buildServicesNode( Node parent, Iterable<ServiceDetailDescriptor> iter )

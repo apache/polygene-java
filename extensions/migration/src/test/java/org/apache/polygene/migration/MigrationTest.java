@@ -221,8 +221,8 @@ public class MigrationTest
         @Override
         public JsonObject upgrade( MigrationContext context, JsonObject state, StateStore store, Migrator migrator )
         {
-            JsonObject properties = state.getJsonObject( JSONKeys.PROPERTIES );
-            return migrator.addProperty( context, state, "customBar", "Hello " + properties.getString( "bar" ) );
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
+            return migrator.addProperty( context, state, "customBar", "Hello " + valueState.getString( "bar" ) );
         }
 
         @Override

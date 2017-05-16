@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.manual.travel;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 
@@ -30,9 +29,9 @@ public class Main
     {
         SingletonAssembler singleton = new SingletonAssembler()
         {
+            // START SNIPPET: assemble
             @Override
-// START SNIPPET: assemble
-            public void assemble(ModuleAssembly module) throws AssemblyException
+            public void assemble(ModuleAssembly module)
             {
                 module.addServices(TravelPlanService.class)
                         .instantiateOnStartup()
@@ -42,7 +41,7 @@ public class Main
                         .instantiateOnStartup()
                         .identifiedBy("OrbitzService");
             }
-// END SNIPPET: assemble
+            // END SNIPPET: assemble
         };
     }
 
@@ -50,13 +49,13 @@ public class Main
     {
         SingletonAssembler singleton = new SingletonAssembler()
         {
+            // START SNIPPET: simple
             @Override
-// START SNIPPET: simple
-            public void assemble(ModuleAssembly module) throws AssemblyException
+            public void assemble(ModuleAssembly module)
             {
                 module.addServices(TravelPlanService.class).instantiateOnStartup();
             }
-// END SNIPPET: simple
+            // END SNIPPET: simple
         };
     }
 

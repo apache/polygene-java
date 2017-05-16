@@ -28,12 +28,11 @@ import java.util.ResourceBundle;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 
 @Mixins( SimpleAlarmModelService.SimpleAlarmModelMixin.class)
-public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
+public interface SimpleAlarmModelService extends AlarmModel
 {
     /**
      * The Simple AlarmPoint Model is centered around the Normal and Activated.
@@ -55,13 +54,13 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
 
         static
         {
-            List<String> list1 = new ArrayList<String>();
+            List<String> list1 = new ArrayList<>();
 
             list1.add( AlarmPoint.TRIGGER_ACTIVATE );
             list1.add( AlarmPoint.TRIGGER_DEACTIVATE );
             ALARM_TRIGGERS = Collections.unmodifiableList( list1 );
 
-            List<String> list2 = new ArrayList<String>();
+            List<String> list2 = new ArrayList<>();
             list2.add( AlarmPoint.STATUS_NORMAL );
             list2.add( AlarmPoint.STATUS_ACTIVATED );
             ALARM_STATUSES = Collections.unmodifiableList( list2 );

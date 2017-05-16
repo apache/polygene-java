@@ -20,11 +20,11 @@
 
 package org.apache.polygene.envisage.sample;
 
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
@@ -136,7 +136,7 @@ public class EnvisageSample
     }
 
     public interface CarEntity
-        extends Car, EntityComposite
+        extends Car, HasIdentity
     {
     }
 
@@ -148,7 +148,7 @@ public class EnvisageSample
     }
 
     public interface AnimalEntity
-        extends Animal, EntityComposite
+        extends Animal, HasIdentity
     {
     }
 

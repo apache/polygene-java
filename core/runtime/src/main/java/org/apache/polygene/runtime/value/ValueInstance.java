@@ -21,7 +21,7 @@ package org.apache.polygene.runtime.value;
 
 import java.lang.reflect.Proxy;
 import org.apache.polygene.api.composite.CompositeInstance;
-import org.apache.polygene.api.value.ValueComposite;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.runtime.composite.MixinsInstance;
 import org.apache.polygene.runtime.composite.TransientInstance;
 import org.apache.polygene.runtime.property.PropertyInstance;
@@ -30,15 +30,9 @@ import org.apache.polygene.spi.module.ModuleSpi;
 /**
  * ValueComposite instance
  */
-public final class ValueInstance
-    extends TransientInstance
+public final class ValueInstance extends TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueInstance valueInstanceOf( ValueComposite composite )
-    {
-        return (ValueInstance) Proxy.getInvocationHandler( composite );
-    }
-
     public ValueInstance( ValueModel compositeModel, Object[] mixins, ValueStateInstance state )
     {
         super( compositeModel, mixins, state );
@@ -101,27 +95,21 @@ public final class ValueInstance
      */
     public void prepareToBuild()
     {
-        descriptor().state().properties().forEach( propertyDescriptor -> {
-            PropertyInstance<Object> propertyInstance =
-                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+        descriptor().state().properties().forEach(
+            descriptor -> ( (PropertyInstance<Object>) state.propertyFor( descriptor.accessor() ) )
+                .prepareToBuild( descriptor ) );
 
-            propertyInstance.prepareToBuild( propertyDescriptor );
-        } );
+        descriptor().state().associations().forEach(
+            descriptor -> state().associationFor( descriptor.accessor() )
+                                 .setAssociationInfo( descriptor.builderInfo() ) );
 
-        descriptor().state().associations().forEach( associationDescriptor -> {
-            state().associationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        } );
+        descriptor().state().manyAssociations().forEach(
+            descriptor -> state().manyAssociationFor( descriptor.accessor() )
+                                 .setAssociationInfo( descriptor.builderInfo() ) );
 
-        descriptor().state().manyAssociations().forEach( associationDescriptor -> {
-            state().manyAssociationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        } );
-
-        descriptor().state().namedAssociations().forEach( associationDescriptor -> {
-            state().namedAssociationFor( associationDescriptor.accessor() )
-                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        } );
+        descriptor().state().namedAssociations().forEach(
+            descriptor -> state().namedAssociationFor( descriptor.accessor() )
+                                 .setAssociationInfo( descriptor.builderInfo() ) );
     }
 
     /**
@@ -130,23 +118,18 @@ public final class ValueInstance
      */
     public void prepareBuilderState()
     {
-        descriptor().state().properties().forEach( propertyDescriptor -> {
-            PropertyInstance<Object> propertyInstance =
-                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
-            propertyInstance.prepareBuilderState( propertyDescriptor );
-        } );
+        descriptor().state().properties().forEach(
+            descriptor -> ( (PropertyInstance<Object>) state.propertyFor( descriptor.accessor() ) )
+                .prepareBuilderState( descriptor ) );
 
-        descriptor().state().associations().forEach( associationDescriptor -> {
-            state().associationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        } );
+        descriptor().state().associations().forEach(
+            descriptor -> state().associationFor( descriptor.accessor() ).setAssociationInfo( descriptor ) );
 
-        descriptor().state().manyAssociations().forEach( associationDescriptor -> {
-            state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        } );
+        descriptor().state().manyAssociations().forEach(
+            descriptor -> state().manyAssociationFor( descriptor.accessor() ).setAssociationInfo( descriptor ) );
 
-        descriptor().state().namedAssociations().forEach( associationDescriptor -> {
-            state().namedAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        } );
+        descriptor().state().namedAssociations().forEach(
+            descriptor -> state().namedAssociationFor( descriptor.accessor() ).setAssociationInfo( descriptor ) );
     }
 
     /**
@@ -164,6 +147,7 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return ( (ModuleSpi) module().instance() ).serialization().serialize( proxy() );
+        Serializer serialization = ( (ModuleSpi) module().instance() ).serialization();
+        return serialization.serialize( Serializer.Options.NO_TYPE_INFO, proxy() );
     }
 }

@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.redis;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -28,7 +27,6 @@ import org.apache.polygene.api.property.Property;
  */
 // START SNIPPET: config
 public interface RedisEntityStoreConfiguration
-        extends ConfigurationComposite
 {
 
     /**

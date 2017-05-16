@@ -42,6 +42,7 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
@@ -108,6 +109,9 @@ public class ContextResource
 
     @Service
     private InteractionConstraints constraints;
+
+    @Service
+    private Serializer serializer;
 
     @Optional
     @Service
@@ -883,7 +887,7 @@ public class ContextResource
                     Object initialValue = propertyDescriptor.resolveInitialValue(module.descriptor());
                     if( initialValue != null )
                     {
-                        value = initialValue.toString();
+                        value = serializer.serialize( initialValue );
                     }
                 }
                 form.add( propertyDescriptor.qualifiedName().name(), value );

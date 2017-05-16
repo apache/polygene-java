@@ -22,6 +22,7 @@ package org.apache.polygene.api.entity;
 
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
+import org.apache.polygene.api.type.EntityCompositeType;
 
 /**
  * Entity Descriptor.
@@ -29,5 +30,8 @@ import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 public interface EntityDescriptor
     extends CompositeDescriptor, StatefulAssociationCompositeDescriptor
 {
+    @Override
+    EntityCompositeType valueType();
+
     boolean queryable();
 }

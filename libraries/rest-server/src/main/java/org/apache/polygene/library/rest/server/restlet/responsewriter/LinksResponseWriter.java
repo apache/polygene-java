@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.library.rest.common.link.Link;
 import org.apache.polygene.library.rest.common.link.Links;
+import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -53,6 +54,9 @@ public class LinksResponseWriter
     @Service
     Configuration cfg;
 
+    @Service
+    JsonSerializer jsonSerializer;
+
     @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
@@ -62,7 +66,8 @@ public class LinksResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedLinkMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                response.setEntity( new StringRepresentation( result.toString(), MediaType.APPLICATION_JSON ) );
+                String json = jsonSerializer.serialize( result );
+                response.setEntity( new StringRepresentation( json, MediaType.APPLICATION_JSON ) );
                 return true;
             }
             else
@@ -102,7 +107,8 @@ public class LinksResponseWriter
 
     private StringRepresentation createJsonRepresentation( Links result )
     {
-        return new StringRepresentation( result.toString(), MediaType.APPLICATION_JSON );
+        String json = jsonSerializer.serialize( result );
+        return new StringRepresentation( json, MediaType.APPLICATION_JSON );
     }
 
     private Representation createTextHtmlRepresentation( final Object result, final Response response )
@@ -113,7 +119,7 @@ public class LinksResponseWriter
                         public void write( Writer writer )
                             throws IOException
                         {
-                            Map<String, Object> context = new HashMap<String, Object>();
+                            Map<String, Object> context = new HashMap<>();
                             context.put( "request", response.getRequest() );
                             context.put( "response", response );
                             context.put( "result", result );
@@ -137,7 +143,7 @@ public class LinksResponseWriter
             public void write( Writer writer )
                 throws IOException
             {
-                Map<String, Object> context = new HashMap<String, Object>();
+                Map<String, Object> context = new HashMap<>();
                 context.put( "request", response.getRequest() );
                 context.put( "response", response );
                 context.put( "result", result );

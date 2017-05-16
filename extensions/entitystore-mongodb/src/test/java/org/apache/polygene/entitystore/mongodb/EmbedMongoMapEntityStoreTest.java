@@ -24,6 +24,7 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import java.io.IOException;
+import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -45,14 +46,14 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
     private static int port;
     private static MongodExecutable mongod;
 
-
     @BeforeClass
-    public static void startEmbedMongo() throws IOException
+    public static void startEmbedMongo()
+        throws IOException
     {
         port = FreePortFinder.findFreePortOnLoopback();
         mongod = MONGO_STARTER.prepare( new MongodConfigBuilder()
                                             .version( Version.Main.PRODUCTION )
-					.net( new Net( "localhost", port, Network.localhostIsIPv6() ) )
+                                            .net( new Net( "localhost", port, Network.localhostIsIPv6() ) )
                                             .build() );
         mongod.start();
     }
@@ -77,13 +78,11 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 
-
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
                                                           .declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene-test" );
         mongoConfig.collection().set( testName.getMethodName() );
-        mongoConfig.hostname().set( "localhost" );
-        mongoConfig.port().set( port );
+        mongoConfig.nodes().set( Collections.singletonList( "localhost:" + port ) );
     }
 }

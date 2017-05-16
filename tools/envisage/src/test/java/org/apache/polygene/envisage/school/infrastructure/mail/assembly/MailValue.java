@@ -20,10 +20,9 @@
 
 package org.apache.polygene.envisage.school.infrastructure.mail.assembly;
 
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.envisage.school.infrastructure.mail.Mail;
 
 public interface MailValue
-    extends Mail, ValueComposite
+    extends Mail
 {
 }

@@ -21,11 +21,10 @@
 package org.apache.polygene.library.logging.log.service;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.sideeffect.SideEffects;
 
 @SideEffects( { LogOnConsoleSideEffect.class } )
 @Mixins( { LoggingServiceMixin.class } )
-public interface LoggingServiceComposite extends LoggingService, ServiceComposite
+public interface LoggingServiceComposite extends LoggingService
 {
 }

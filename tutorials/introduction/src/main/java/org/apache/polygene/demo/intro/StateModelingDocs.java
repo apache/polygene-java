@@ -25,6 +25,7 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.entity.Aggregated;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
@@ -33,39 +34,34 @@ import org.apache.polygene.api.value.ValueComposite;
 public class StateModelingDocs
 {
 
-// START SNIPPET: intro1
-    interface PersonEntity
-            extends EntityComposite
+    // START SNIPPET: intro1
+    interface PersonEntity extends HasIdentity
     {
         Property<String> givenName();
         Property<String> surName();
     }
-
-// END SNIPPET: intro1
+    // END SNIPPET: intro1
 
 
 
 
     static class Roles {
 
-// START SNIPPET: roles
+        // START SNIPPET: roles
         interface Nameable
         {
             @UseDefaults Property<String> givenName();
             @UseDefaults @Optional Property<String> surName();
         }
 
-        interface PersonEntity
-                extends Nameable, EntityComposite
-        {}
-// END SNIPPET: roles
+        interface PersonEntity extends Nameable, HasIdentity {}
+        // END SNIPPET: roles
     }
 
     static class Values {
 
-// START SNIPPET: values
+        // START SNIPPET: values
         interface NameValue
-                extends ValueComposite
         {
             @UseDefaults Property<String> givenName();
             @UseDefaults @Optional Property<String> surName();
@@ -75,19 +71,16 @@ public class StateModelingDocs
         {
             Property<NameValue> name();
         }
-// END SNIPPET: values
+        // END SNIPPET: values
 
 
-// START SNIPPET: private
-        @Mixins(ListablePersonMixin.class)
-        interface PersonEntity
-                extends Listable, EntityComposite {}
+        // START SNIPPET: private
+        @Mixins( ListablePersonMixin.class )
+        interface PersonEntity extends Listable, HasIdentity {}
 
-        interface PersonState
-                extends Nameable {}
+        interface PersonState extends Nameable {}
 
-        public class ListablePersonMixin
-                implements Listable
+        public class ListablePersonMixin implements Listable
         {
             @This PersonState person;
 
@@ -103,17 +96,16 @@ public class StateModelingDocs
 
         interface Listable
         {
-            public String listName();
+            String listName();
         }
-// END SNIPPET: private
+        // END SNIPPET: private
 
     }
 
 
     static class More {
-// START SNIPPET: more
-        interface PersonEntity
-                extends EntityComposite
+        // START SNIPPET: more
+        interface PersonEntity extends HasIdentity
         {
             Association<PersonEntity> father();
             @Optional Association<PersonEntity> spouse();
@@ -121,17 +113,14 @@ public class StateModelingDocs
             @Aggregated ManyAssociation<BookNoteEntity> favouriteBooks();
         }
 
-        interface BookNoteEntity
-                extends EntityComposite
+        interface BookNoteEntity extends HasIdentity
         {
             Property<String> note();
             Association<BookEntity> book();
         }
 
-// END SNIPPET: more
-        interface BookEntity
-                extends EntityComposite
-        {}
+        // END SNIPPET: more
+        interface BookEntity extends HasIdentity {}
     }
 
 }

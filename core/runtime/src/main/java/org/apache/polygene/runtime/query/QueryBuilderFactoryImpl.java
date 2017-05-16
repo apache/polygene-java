@@ -59,11 +59,11 @@ public final class QueryBuilderFactoryImpl
         try
         {
             serviceReference = finder.findService( EntityFinder.class );
-            return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
+            return new QueryBuilderImpl<>( serviceReference.get(), resultType, null );
         }
         catch( NoSuchServiceException e )
         {
-            return new QueryBuilderImpl<T>( null, resultType, null );
+            return new QueryBuilderImpl<>( null, resultType, null );
         }
     }
 }

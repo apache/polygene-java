@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.debug.service;
 
-import java.io.Serializable;
 import org.apache.polygene.api.composite.Composite;
 
 public interface DebuggingService
@@ -29,9 +28,9 @@ public interface DebuggingService
 
     void debug( Composite composite, String message );
 
-    void debug( Composite composite, String message, Serializable param1 );
+    void debug( Composite composite, String message, Object param1 );
 
-    void debug( Composite composite, String message, Serializable param1, Serializable param2 );
+    void debug( Composite composite, String message, Object param1, Object param2 );
 
-    void debug( Composite composite, String message, Serializable... params );
+    void debug( Composite composite, String message, Object... params );
 }

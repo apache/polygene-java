@@ -53,6 +53,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import static com.mongodb.client.model.Filters.eq;
+import static java.util.stream.Collectors.toList;
 
 /**
  * MongoDB implementation of MapEntityStore.
@@ -112,7 +113,8 @@ public class MongoMapEntityStoreMixin
         // If no configuration, use 127.0.0.1:27017
         serverAddresses = new ArrayList<>();
         int port = config.port().get() == null ? 27017 : config.port().get();
-        if( config.nodes().get().isEmpty() )
+        List<String> nodes = config.nodes().get();
+        if( nodes.isEmpty() )
         {
             String hostname = config.hostname().get() == null ? "127.0.0.1" : config.hostname().get();
             serverAddresses.add( new ServerAddress( hostname, port ) );
@@ -123,7 +125,10 @@ public class MongoMapEntityStoreMixin
             {
                 serverAddresses.add( new ServerAddress( config.hostname().get(), port ) );
             }
-            serverAddresses.addAll( config.nodes().get() );
+            serverAddresses.addAll( nodes.stream()
+                                         .map( this::parseNode )
+                                         .collect( toList() )
+                                  );
         }
 
         // If database name not configured, set it to polygene:entitystore
@@ -143,32 +148,44 @@ public class MongoMapEntityStoreMixin
         // If write concern not configured, set it to normal
         switch( config.writeConcern().get() )
         {
-            case W1:
-                writeConcern = WriteConcern.W1;
-                break;
-            case W2:
-                writeConcern = WriteConcern.W2;
-                break;
-            case W3:
-                writeConcern = WriteConcern.W3;
-                break;
-            case UNACKNOWLEDGED:
-                writeConcern = WriteConcern.UNACKNOWLEDGED;
-                break;
-            case JOURNALED:
-                writeConcern = WriteConcern.JOURNALED;
-                break;
-            case MAJORITY:
-                writeConcern = WriteConcern.MAJORITY;
-                break;
-            case ACKNOWLEDGED:
-            default:
-                writeConcern = WriteConcern.ACKNOWLEDGED;
+        case W1:
+            writeConcern = WriteConcern.W1;
+            break;
+        case W2:
+            writeConcern = WriteConcern.W2;
+            break;
+        case W3:
+            writeConcern = WriteConcern.W3;
+            break;
+        case UNACKNOWLEDGED:
+            writeConcern = WriteConcern.UNACKNOWLEDGED;
+            break;
+        case JOURNALED:
+            writeConcern = WriteConcern.JOURNALED;
+            break;
+        case MAJORITY:
+            writeConcern = WriteConcern.MAJORITY;
+            break;
+        case ACKNOWLEDGED:
+        default:
+            writeConcern = WriteConcern.ACKNOWLEDGED;
         }
 
         // Username and password are defaulted to empty strings
         username = config.username().get();
         password = config.password().get().toCharArray();
+    }
+
+    private <R> ServerAddress parseNode( String nodeString )
+    {
+        String[] parts = nodeString.split( ":" );
+        String host = parts[ 0 ];
+        if( parts.length == 2 )
+        {
+            int port = Integer.parseInt( parts[ 1 ] );
+            return new ServerAddress( host, port );
+        }
+        return new ServerAddress( host );
     }
 
     @Override

@@ -25,10 +25,10 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.ConstructionException;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.runtime.composite.FunctionStateResolver;
 import org.apache.polygene.runtime.composite.MixinModel;
@@ -37,6 +37,8 @@ import org.apache.polygene.runtime.composite.StateResolver;
 import org.apache.polygene.runtime.composite.UsesInstance;
 import org.apache.polygene.runtime.injection.InjectionContext;
 import org.apache.polygene.runtime.structure.ModuleInstance;
+
+import static org.apache.polygene.api.composite.CompositeInstance.compositeInstanceOf;
 
 /**
  * Implementation of ValueBuilder with a prototype supplied
@@ -50,12 +52,12 @@ public class ValueBuilderWithPrototype<T>
     public ValueBuilderWithPrototype( ValueDescriptor compositeModelModule,
                                       ModuleInstance currentModule,
                                       T prototype
-    )
+                                    )
     {
         valueModel = (ValueModel) compositeModelModule;
         MixinsModel mixinsModel = valueModel.mixinsModel();
         Object[] mixins = mixinsModel.newMixinHolder();
-        final ValueStateInstance prototypeState = ValueInstance.valueInstanceOf( (ValueComposite) prototype ).state();
+        final ValueStateInstance prototypeState = ( (ValueInstance) compositeInstanceOf( (Composite) prototype ) ).state();
         StateResolver resolver = new FunctionStateResolver(
             new PropertyDescriptorFunction( prototypeState ),
             new AssociationDescriptorEntityReferenceFunction( prototypeState ),
@@ -144,7 +146,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public PropertyDescriptorFunction( ValueStateInstance prototypeState )
+        PropertyDescriptorFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -161,7 +163,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorEntityReferenceFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorEntityReferenceFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -178,7 +180,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorIterableFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorIterableFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }
@@ -195,7 +197,7 @@ public class ValueBuilderWithPrototype<T>
     {
         private final ValueStateInstance prototypeState;
 
-        public AssociationDescriptorMapFunction( ValueStateInstance prototypeState )
+        AssociationDescriptorMapFunction( ValueStateInstance prototypeState )
         {
             this.prototypeState = prototypeState;
         }

@@ -30,14 +30,8 @@ public class Main
         Energy4Java polygene = new Energy4Java();
 
         // Instantiate the Application Model.
-        Application application = polygene.newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException
-            {
-                return applicationFactory.newApplicationAssembly( new MyAssembler()) ;
-            }
-        });
+        Application application = polygene.newApplication(
+            factory -> factory.newApplicationAssembly( new MyAssembler()) );
 
         application.activate();
 

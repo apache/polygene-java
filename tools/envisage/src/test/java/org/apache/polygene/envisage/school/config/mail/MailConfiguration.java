@@ -21,11 +21,9 @@
 package org.apache.polygene.envisage.school.config.mail;
 
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 public interface MailConfiguration
-    extends ConfigurationComposite
 {
     @UseDefaults
     Property<String> host();

@@ -28,7 +28,6 @@ import java.util.ResourceBundle;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 
@@ -83,7 +82,7 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 
 @Mixins(ExtendedAlarmModelService.ExtendedAlarmModelMixin.class)
 public interface ExtendedAlarmModelService
-    extends AlarmModel, ServiceComposite
+    extends AlarmModel
 {
     class ExtendedAlarmModelMixin
         implements AlarmModel
@@ -97,7 +96,7 @@ public interface ExtendedAlarmModelService
 
         static
         {
-            List<String> list1 = new ArrayList<String>();
+            List<String> list1 = new ArrayList<>();
             list1.add( AlarmPoint.STATUS_NORMAL );
             list1.add( AlarmPoint.STATUS_ACTIVATED );
             list1.add( AlarmPoint.STATUS_DEACTIVATED );
@@ -107,7 +106,7 @@ public interface ExtendedAlarmModelService
             list1.add( AlarmPoint.STATUS_DISABLED );
             STATUS_LIST = Collections.unmodifiableList( list1 );
 
-            List<String> list2 = new ArrayList<String>();
+            List<String> list2 = new ArrayList<>();
             list2.add( AlarmPoint.TRIGGER_ACTIVATE );
             list2.add( AlarmPoint.TRIGGER_DEACTIVATE );
             list2.add( AlarmPoint.TRIGGER_ACKNOWLEDGE );

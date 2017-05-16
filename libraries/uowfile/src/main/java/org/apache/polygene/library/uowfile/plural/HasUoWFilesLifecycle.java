@@ -31,7 +31,7 @@ import org.apache.polygene.api.mixin.Mixins;
 public interface HasUoWFilesLifecycle<T extends Enum<T>>
     extends HasUoWFiles<T>, Lifecycle
 {
-    public class Mixin
+    class Mixin
         implements Lifecycle
     {
         @This

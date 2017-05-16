@@ -21,7 +21,7 @@
 package org.apache.polygene.envisage.school.domain.school.assembly;
 
 import org.apache.polygene.api.association.Association;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
@@ -31,9 +31,9 @@ import org.apache.polygene.envisage.school.domain.school.Subject;
 
 @Mixins( SubjectEntity.SubjectMixin.class )
 public interface SubjectEntity
-    extends Subject, EntityComposite
+    extends Subject, HasIdentity
 {
-    public class SubjectMixin
+    class SubjectMixin
         implements Subject
     {
         @This
@@ -58,7 +58,7 @@ public interface SubjectEntity
         }
     }
 
-    static interface SubjectState
+    interface SubjectState
     {
         Property<String> name();
 

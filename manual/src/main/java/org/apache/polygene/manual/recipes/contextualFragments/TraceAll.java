@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.manual.recipes.contextualFragments;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.library.logging.trace.TraceAllConcern;
@@ -28,7 +27,6 @@ import org.apache.polygene.library.logging.trace.TraceAllConcern;
 public class TraceAll
 {
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
     {
         ServiceDeclaration decl = module.addServices( PinSearchService.class );
         if( Boolean.getBoolean( "trace.all"  ) )

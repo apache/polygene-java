@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.file;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.spi.entitystore.BackupRestore;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
@@ -46,7 +45,6 @@ public interface FileEntityStoreService
                 EntityStateVersions,
                 StateStore,
                 BackupRestore,
-                ServiceComposite,
                 LockingAbstractComposite,
                 Configuration
 {

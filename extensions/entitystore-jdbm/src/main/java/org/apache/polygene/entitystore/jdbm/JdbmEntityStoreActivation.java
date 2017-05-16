@@ -36,7 +36,7 @@ public interface JdbmEntityStoreActivation
     void tearDownJdbm()
             throws Exception;
 
-    public class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<JdbmEntityStoreActivation>>
     {
 

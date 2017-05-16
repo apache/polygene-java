@@ -64,6 +64,17 @@ public final class BuilderNamedAssociationState
     }
 
     @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public EntityReference get( String name )
     {
         return references.get( name );

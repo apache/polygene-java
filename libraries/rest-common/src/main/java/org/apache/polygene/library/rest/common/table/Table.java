@@ -34,12 +34,12 @@ import org.apache.polygene.api.value.ValueComposite;
 public interface Table
       extends ValueComposite
 {
-   public static final String STRING = "string";
-   public static final String NUMBER = "number";
-   public static final String BOOLEAN = "boolean";
-   public static final String DATE = "date";
-   public static final String DATETIME = "datetime";
-   public static final String TIME_OF_DAY = "timeofday";
+   String STRING = "string";
+   String NUMBER = "number";
+   String BOOLEAN = "boolean";
+   String DATE = "date";
+   String DATETIME = "datetime";
+   String TIME_OF_DAY = "timeofday";
 
    @UseDefaults
    Property<List<Column>> cols();

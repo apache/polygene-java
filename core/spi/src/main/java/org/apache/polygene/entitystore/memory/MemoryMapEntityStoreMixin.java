@@ -27,9 +27,10 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.json.Json;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entitystore.BackupRestore;
 import org.apache.polygene.spi.entitystore.EntityAlreadyExistsException;
 import org.apache.polygene.spi.entitystore.EntityNotFoundException;
@@ -45,6 +46,9 @@ public class MemoryMapEntityStoreMixin
     implements MapEntityStore, BackupRestore, MapEntityStoreActivation
 {
     private final Map<EntityReference, String> store;
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
 
     public MemoryMapEntityStoreMixin()
     {
@@ -96,8 +100,8 @@ public class MemoryMapEntityStoreMixin
         stream.forEach(
             item ->
             {
-                String id = Json.createReader( new StringReader( item ) )
-                                .readObject().getString( JSONKeys.IDENTITY );
+                String id = jsonFactories.readerFactory().createReader( new StringReader( item ) )
+                                         .readObject().getString( JSONKeys.IDENTITY );
                 store.put( EntityReference.parseEntityReference( id ), item );
             } );
     }
@@ -160,5 +164,4 @@ public class MemoryMapEntityStoreMixin
 //            }
         }
     }
-
 }

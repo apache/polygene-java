@@ -92,14 +92,7 @@ import org.apache.polygene.tools.model.descriptor.ObjectDetailDescriptor;
         Dimension minSize = new Dimension( 20, 20 );
         detailPane.setMinimumSize( minSize );
 
-        fieldList.addListSelectionListener( new ListSelectionListener()
-        {
-            @Override
-            public void valueChanged( ListSelectionEvent evt )
-            {
-                fieldListValueChanged( evt );
-            }
-        } );
+        fieldList.addListSelectionListener( this::fieldListValueChanged );
 
         defaultCursor = getCursor();
         linkCursor = LinkEvent.LINK_CURSOR;

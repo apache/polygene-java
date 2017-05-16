@@ -22,6 +22,7 @@ package org.apache.polygene.bootstrap.layered;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 
+@FunctionalInterface
 public interface LayerAssembler
 {
     LayerAssembly assemble( LayerAssembly layer )

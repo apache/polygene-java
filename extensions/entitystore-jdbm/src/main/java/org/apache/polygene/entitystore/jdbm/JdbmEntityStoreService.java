@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.jdbm;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.library.locking.ReadLockConcern;
 import org.apache.polygene.library.locking.WriteLockConcern;
@@ -44,7 +43,6 @@ public interface JdbmEntityStoreService
             EntityStateVersions,
             StateStore,
             BackupRestore,
-            ServiceComposite,
             LockingAbstractComposite,
             Configuration<JdbmConfiguration>
 {

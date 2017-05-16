@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.debug;
 
-import java.io.Serializable;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.Composite;
@@ -61,7 +60,7 @@ public class DebugConcern
     }
 
     @Override
-    public void debug( int priority, String message, Serializable param1 )
+    public void debug( int priority, String message, Object param1 )
     {
         if( loggingService == null )
         {
@@ -74,7 +73,7 @@ public class DebugConcern
     }
 
     @Override
-    public void debug( int priority, String message, Serializable param1, Serializable param2 )
+    public void debug( int priority, String message, Object param1, Object param2 )
     {
         if( loggingService == null )
         {
@@ -87,7 +86,7 @@ public class DebugConcern
     }
 
     @Override
-    public void debug( int priority, String message, Serializable... params )
+    public void debug( int priority, String message, Object... params )
     {
         if( loggingService == null )
         {

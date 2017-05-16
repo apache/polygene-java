@@ -76,6 +76,12 @@ public class ManyAssociationWrapper
     }
 
     @Override
+    public boolean clear()
+    {
+        return next.clear();
+    }
+
+    @Override
     public Object get( int i )
     {
         return next.get( i );

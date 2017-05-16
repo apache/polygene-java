@@ -37,7 +37,7 @@ public @interface ServiceAvailable
 {
     Class value();
 
-    public class ServiceAvailableConstraint
+    class ServiceAvailableConstraint
         implements InteractionConstraint<ServiceAvailable>
     {
         @Structure

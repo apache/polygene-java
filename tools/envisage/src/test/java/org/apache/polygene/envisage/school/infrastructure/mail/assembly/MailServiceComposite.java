@@ -22,7 +22,6 @@ package org.apache.polygene.envisage.school.infrastructure.mail.assembly;
 
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.envisage.school.config.mail.MailConfiguration;
 import org.apache.polygene.envisage.school.infrastructure.mail.Mail;
 import org.apache.polygene.envisage.school.infrastructure.mail.MailService;
@@ -30,9 +29,9 @@ import org.apache.polygene.envisage.school.infrastructure.mail.MailService;
 import java.util.Arrays;
 
 public interface MailServiceComposite
-    extends MailService, ServiceComposite
+    extends MailService
 {
-    public static class MailServiceMixin
+    class MailServiceMixin
         implements MailService
     {
         @This

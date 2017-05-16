@@ -112,10 +112,8 @@ public final class TreeModelPane
         gridBagConstraints.weightx = 1.0;
         viewAsPane.add( viewAsCombo, gridBagConstraints );
 
-        viewAsCombo.addItemListener( new ItemListener()
-        {
-            @Override
-            public void itemStateChanged( ItemEvent evt )
+        viewAsCombo.addItemListener(
+            evt ->
             {
                 if( evt.getStateChange() == ItemEvent.DESELECTED )
                 {
@@ -123,8 +121,7 @@ public final class TreeModelPane
                 }
                 cardLayout.show( mainPane, evt.getItem().toString() );
                 repaint();
-            }
-        } );
+            } );
 
         add( viewAsPane, BorderLayout.PAGE_START );
     }
@@ -143,23 +140,9 @@ public final class TreeModelPane
         structureTree.setModel( new DefaultTreeModel( rootNode1 ) );
         typeTree.setModel( new DefaultTreeModel( rootNode2 ) );
 
-        structureTree.addTreeSelectionListener( new TreeSelectionListener()
-        {
-            @Override
-            public void valueChanged( TreeSelectionEvent evt )
-            {
-                structureTreeValueChanged();
-            }
-        } );
+        structureTree.addTreeSelectionListener( evt -> structureTreeValueChanged() );
 
-        typeTree.addTreeSelectionListener( new TreeSelectionListener()
-        {
-            @Override
-            public void valueChanged( TreeSelectionEvent evt )
-            {
-                typeTreeValueChanged();
-            }
-        } );
+        typeTree.addTreeSelectionListener( evt -> typeTreeValueChanged() );
     }
 
     public Object getLastSelected()

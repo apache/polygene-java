@@ -43,7 +43,7 @@ public @interface Available
      * Available Annotation Qualifier.
      * See {@link Available}.
      */
-    public final class AvailableQualifier
+    final class AvailableQualifier
         implements AnnotationQualifier<Available>
     {
         @Override

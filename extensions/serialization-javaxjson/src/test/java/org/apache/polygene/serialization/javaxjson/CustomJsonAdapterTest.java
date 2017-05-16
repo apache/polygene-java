@@ -20,7 +20,6 @@ package org.apache.polygene.serialization.javaxjson;
 import java.time.LocalDate;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -86,11 +85,10 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
         public Class<CustomValue> type() { return CustomValue.class; }
 
         @Override
-        public JsonValue serialize( JsonBuilderFactory builderFactory,
+        public JsonValue serialize( JavaxJsonFactories jsonFactories,
                                     Object object, Function<Object, JsonValue> serialize )
         {
-            // TODO FUCK JSON
-            return JavaxJson.toJsonString( type().cast( object ).state );
+            return jsonFactories.toJsonString( type().cast( object ).state );
         }
 
         @Override
@@ -112,14 +110,14 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
         public Class<CustomStructure> type() { return CustomStructure.class; }
 
         @Override
-        public JsonValue serialize( JsonBuilderFactory builderFactory,
+        public JsonValue serialize( JavaxJsonFactories jsonFactories,
                                     Object object, Function<Object, JsonValue> serialize )
         {
             CustomStructure customStructure = type().cast( object );
-            return builderFactory.createObjectBuilder()
-                                 .add( "foo", customStructure.foo )
-                                 .add( "bar", serialize.apply( customStructure.bar ) )
-                                 .build();
+            return jsonFactories.builderFactory().createObjectBuilder()
+                                .add( "foo", customStructure.foo )
+                                .add( "bar", serialize.apply( customStructure.bar ) )
+                                .build();
         }
 
         @Override

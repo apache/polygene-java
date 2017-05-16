@@ -17,13 +17,15 @@
  *
  *
  */
-
 package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.MissingMethodException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
@@ -58,33 +60,57 @@ public final class CompositeMethodsModel
                           Method method,
                           Object[] args,
                           ModuleDescriptor moduleInstance
-    )
+                        )
         throws Throwable
     {
         CompositeMethodModel compositeMethod = methods.get( method );
 
         if( compositeMethod == null )
         {
-            if( method.getDeclaringClass().equals( Object.class ) )
+            Class<?> declaringClass = method.getDeclaringClass();
+            if( declaringClass.equals( Object.class ) )
             {
                 return mixins.invokeObject( proxy, args, method );
             }
 
             // TODO: Figure out what was the intention of this code block, added by Rickard in 2009. It doesn't do anything useful.
-            if( !method.getDeclaringClass().isInterface() )
+            // Update (niclas): My guess is that this is preparation for mixins in Objects.
+            if( !declaringClass.isInterface() )
             {
-                compositeMethod = mixinsModel.mixinTypes().map( aClass -> {
-                    try
-                    {
-                        Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
-                        return methods.get( realMethod );
-                    }
-                    catch( NoSuchMethodException | SecurityException e )
-                    {
+                compositeMethod = mixinsModel.mixinTypes().map( aClass ->
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
+                                                                        return methods.get( realMethod );
+                                                                    }
+                                                                    catch( NoSuchMethodException | SecurityException e )
+                                                                    {
 
-                    }
-                    return null;
-                }).filter( model -> model != null ).findFirst().orElse( null );
+                                                                    }
+                                                                    return null;
+                                                                } ).filter( Objects::nonNull ).findFirst().orElse( null );
+                return compositeMethod.invoke( proxy, args, mixins, moduleInstance );
+            }
+            if( method.isDefault() )
+            {
+                if( proxy instanceof Composite )
+                {
+                    throw new InternalError( "This shouldn't happen!" );
+                }
+                // Does this next line actually make any sense? Can we have a default method on an interface where the instance is not a Composite? Maybe... Let's try to trap a usecase by disallowing it.
+//                return method.invoke( proxy, args );
+                String message = "We have detected a default method on an interface that is not backed by a Composite. "
+                                 + "Please report this to dev@polygene.apache.org together with the information below, "
+                                 + "that/those class(es) and the relevant assembly information. Thank you\nMethod:"
+                                 + method.toGenericString()
+                                 + "\nDeclaring Class:"
+                                 + method.getDeclaringClass().toGenericString()
+                                 + "\nTypes:"
+                                 + mixinsModel.mixinTypes()
+                                              .map( Class::toGenericString )
+                                              .collect( Collectors.joining( "\n" ) );
+                throw new UnsupportedOperationException( message );
             }
             throw new MissingMethodException( "Method '" + method + "' is not implemented" );
         }
@@ -131,4 +157,5 @@ public final class CompositeMethodsModel
     {
         return methods().toString();
     }
+
 }

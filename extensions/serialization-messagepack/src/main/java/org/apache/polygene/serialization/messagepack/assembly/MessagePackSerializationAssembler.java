@@ -17,12 +17,14 @@
  */
 package org.apache.polygene.serialization.messagepack.assembly;
 
+import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.apache.polygene.serialization.messagepack.MessagePackAdapters;
 import org.apache.polygene.serialization.messagepack.MessagePackSerialization;
 import org.apache.polygene.serialization.messagepack.MessagePackSettings;
 
@@ -40,7 +42,10 @@ public class MessagePackSerializationAssembler extends Assemblers.VisibilityIden
     public void assemble( ModuleAssembly module )
     {
         ServiceDeclaration declaration = module.services( MessagePackSerialization.class )
-                                               .withTypes( Serialization.class, Serializer.class, Deserializer.class )
+                                               .withTypes( Serialization.class,
+                                                           Serializer.class, Deserializer.class,
+                                                           Converters.class,
+                                                           MessagePackAdapters.class )
                                                .visibleIn( visibility() );
         if( hasIdentity() )
         {

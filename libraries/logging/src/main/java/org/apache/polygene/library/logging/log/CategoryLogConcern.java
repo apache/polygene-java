@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.logging.log;
 
-import java.io.Serializable;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.Composite;
@@ -51,7 +50,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void info( String category, String message, Serializable param1 )
+    public void info( String category, String message, Object param1 )
     {
         if( loggingService == null )
         {
@@ -61,7 +60,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void info( String category, String message, Serializable param1, Serializable param2 )
+    public void info( String category, String message, Object param1, Object param2 )
     {
         if( loggingService == null )
         {
@@ -71,7 +70,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void info( String category, String message, Serializable... params )
+    public void info( String category, String message, Object... params )
     {
         if( loggingService == null )
         {
@@ -91,7 +90,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void warning( String category, String message, Serializable param1 )
+    public void warning( String category, String message, Object param1 )
     {
         if( loggingService == null )
         {
@@ -101,7 +100,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void warning( String category, String message, Serializable param1, Serializable param2 )
+    public void warning( String category, String message, Object param1, Object param2 )
     {
         if( loggingService == null )
         {
@@ -111,7 +110,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void warning( String category, String message, Serializable... params )
+    public void warning( String category, String message, Object... params )
     {
         if( loggingService == null )
         {
@@ -131,7 +130,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void error( String category, String message, Serializable param1 )
+    public void error( String category, String message, Object param1 )
     {
         if( loggingService == null )
         {
@@ -141,7 +140,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void error( String category, String message, Serializable param1, Serializable param2 )
+    public void error( String category, String message, Object param1, Object param2 )
     {
         if( loggingService == null )
         {
@@ -151,7 +150,7 @@ public final class CategoryLogConcern
     }
 
     @Override
-    public void error( String category, String message, Serializable... params )
+    public void error( String category, String message, Object... params )
     {
         if( loggingService == null )
         {

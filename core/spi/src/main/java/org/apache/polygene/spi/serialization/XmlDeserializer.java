@@ -20,6 +20,7 @@ package org.apache.polygene.spi.serialization;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.ValueType;
@@ -31,7 +32,7 @@ import org.w3c.dom.Node;
  */
 public interface XmlDeserializer extends Deserializer
 {
-    <T> T fromXml( ModuleDescriptor module, ValueType valueType, Node state );
+    <T> T fromXml( ModuleDescriptor module, ValueType valueType, @Optional Node state );
 
     default <T> Function<Node, T> fromXmlFunction( ModuleDescriptor module, ValueType valueType )
     {
@@ -53,7 +54,7 @@ public interface XmlDeserializer extends Deserializer
         return fromXmlEach( module, valueType, Stream.of( states ) );
     }
 
-    default <T> T fromXml( ModuleDescriptor module, Class<T> type, Node state )
+    default <T> T fromXml( ModuleDescriptor module, Class<T> type, @Optional Node state )
     {
         // TODO Remove (ModuleSpi) cast
         ValueType valueType = ( (ModuleSpi) module.instance() ).valueTypeFactory().valueTypeOf( module, type );

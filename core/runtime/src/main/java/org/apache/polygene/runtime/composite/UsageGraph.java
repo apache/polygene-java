@@ -91,7 +91,7 @@ public final class UsageGraph<K>
         if( resolved == null )
         {
             buildUsageGraph();
-            resolved = new LinkedList<K>();
+            resolved = new LinkedList<>();
             for( K item : data )
             {
                 int pos = resolved.size();
@@ -112,7 +112,7 @@ public final class UsageGraph<K>
     private void buildUsageGraph()
         throws BindingException
     {
-        transitive = new HashMap<K, List<K>>();
+        transitive = new HashMap<>();
         for( K sourceItem : data )
         {
             LinkedList<K> visited = new LinkedList<K>();

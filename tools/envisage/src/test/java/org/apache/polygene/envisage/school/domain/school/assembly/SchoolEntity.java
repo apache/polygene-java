@@ -20,7 +20,6 @@
 
 package org.apache.polygene.envisage.school.domain.school.assembly;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
@@ -44,7 +43,7 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 
 @Mixins( SchoolEntity.SchoolMixin.class )
 public interface SchoolEntity
-    extends School, EntityComposite
+    extends School, HasIdentity
 {
     class SchoolMixin
         implements School
@@ -112,7 +111,7 @@ public interface SchoolEntity
         }
     }
 
-    static interface SchoolState
+    interface SchoolState
     {
         Property<String> name();
     }

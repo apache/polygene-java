@@ -41,9 +41,7 @@ import static org.apache.polygene.api.util.Classes.interfacesOf;
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 @Activators( OSGiServiceExporter.Activator.class )
 public interface OSGiServiceExporter
-    extends ServiceComposite
 {
-
     void registerServices()
         throws Exception;
 
@@ -70,14 +68,14 @@ public interface OSGiServiceExporter
 
     }
 
-    public static abstract class OSGiServiceExporterMixin
+    abstract class OSGiServiceExporterMixin
         implements OSGiServiceExporter
     {
 
         @Service
         @HasMetaInfo( BundleContext.class )
         private Iterable<ServiceReference<ServiceComposite>> services;
-        private ArrayList<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
+        private ArrayList<ServiceRegistration> registrations = new ArrayList<>();
 
         @Override
         public void registerServices()

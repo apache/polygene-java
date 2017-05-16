@@ -36,7 +36,7 @@ public interface ReindexingStrategy
      * The re-indexing strategy which ALWAYS re-indexes everything. Useful with tests and during
      * early development stage of application.
      */
-    public class AlwaysNeed
+    class AlwaysNeed
         implements ReindexingStrategy
     {
         @Override
@@ -50,7 +50,7 @@ public interface ReindexingStrategy
      * The re-indexing strategy which NEVER re-indexes anything. Useful when deleting and re-reading
      * data is something to be avoided at all costs.
      */
-    public class NeverNeed
+    class NeverNeed
         implements ReindexingStrategy
     {
         @Override
@@ -65,7 +65,7 @@ public interface ReindexingStrategy
      * Useful when migration from versions is implemented, or when application structure changes
      * along with version (but not during same version).
      */
-    public class NeedOnChange
+    class NeedOnChange
         implements ReindexingStrategy
     {
         @Override

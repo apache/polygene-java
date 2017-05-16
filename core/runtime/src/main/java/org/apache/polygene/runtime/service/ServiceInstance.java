@@ -20,14 +20,12 @@
 
 package org.apache.polygene.runtime.service;
 
-import java.lang.reflect.Proxy;
 import org.apache.polygene.api.activation.Activation;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.PassivationException;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.configuration.Enabled;
 import org.apache.polygene.api.service.Availability;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.runtime.composite.TransientInstance;
 import org.apache.polygene.runtime.composite.TransientStateInstance;
@@ -38,11 +36,6 @@ import org.apache.polygene.runtime.composite.TransientStateInstance;
 public class ServiceInstance extends TransientInstance
     implements Activation
 {
-    public static TransientInstance serviceInstanceOf( ServiceComposite composite )
-    {
-        return (TransientInstance) Proxy.getInvocationHandler( composite );
-    }
-
     private final boolean implementsServiceAvailable;
     private final boolean hasEnabledConfiguration;
 

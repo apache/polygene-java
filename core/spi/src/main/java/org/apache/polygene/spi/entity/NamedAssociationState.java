@@ -42,6 +42,8 @@ public interface NamedAssociationState
 
     boolean remove( String name );
 
+    boolean clear();
+
     EntityReference get( String name );
 
     String nameOf( EntityReference entityReference );

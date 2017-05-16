@@ -78,6 +78,12 @@ public class BoundNamedAssociation<T>
     }
 
     @Override
+    public boolean clear()
+    {
+        return actualAssociations.clear();
+    }
+
+    @Override
     public T get( String name )
     {
         return actualAssociations.get( name );

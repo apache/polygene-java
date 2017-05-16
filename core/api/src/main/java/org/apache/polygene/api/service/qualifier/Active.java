@@ -45,7 +45,7 @@ public @interface Active
      * Active Annotation Qualifier.
      * See {@link Active}.
      */
-    public final class ActiveQualifier
+    final class ActiveQualifier
         implements AnnotationQualifier<Active>
     {
         @Override

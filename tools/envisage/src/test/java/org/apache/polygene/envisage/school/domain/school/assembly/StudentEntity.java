@@ -22,7 +22,7 @@ package org.apache.polygene.envisage.school.domain.school.assembly;
 
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
@@ -33,7 +33,7 @@ import org.apache.polygene.envisage.school.domain.school.Subject;
 
 @Mixins( StudentEntity.StudentMixin.class )
 public interface StudentEntity
-    extends Student, EntityComposite
+    extends Student, HasIdentity
 {
     class StudentMixin
         implements Student
@@ -54,7 +54,7 @@ public interface StudentEntity
         }
     }
 
-    static interface StudentState
+    interface StudentState
     {
         ManyAssociation<Subject> subjects();
 

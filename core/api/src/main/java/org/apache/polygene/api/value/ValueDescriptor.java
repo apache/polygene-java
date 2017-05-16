@@ -30,5 +30,6 @@ import org.apache.polygene.api.type.ValueCompositeType;
 public interface ValueDescriptor
     extends CompositeDescriptor, StatefulAssociationCompositeDescriptor
 {
+    @Override
     ValueCompositeType valueType();
 }

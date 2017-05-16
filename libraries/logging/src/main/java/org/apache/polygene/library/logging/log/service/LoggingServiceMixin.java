@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.log.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +51,7 @@ public abstract class LoggingServiceMixin
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
         }
@@ -66,12 +65,12 @@ public abstract class LoggingServiceMixin
         }
     }
 
-    public void log( LogType type, Composite composite, String category, String message, Serializable param1 )
+    public void log( LogType type, Composite composite, String category, String message, Object param1 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
@@ -86,12 +85,12 @@ public abstract class LoggingServiceMixin
         }
     }
 
-    public void log( LogType type, Composite composite, String category, String message, Serializable param1, Serializable param2 )
+    public void log( LogType type, Composite composite, String category, String message, Object param1, Object param2 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>();
+            List<Object> paramsList = new ArrayList<>();
             paramsList.add( param1 );
             paramsList.add( param2 );
             createLogRecord( uow, type, composite, category, message, paramsList );
@@ -108,12 +107,12 @@ public abstract class LoggingServiceMixin
     }
 
     @Override
-    public void log( LogType type, Composite composite, String category, String message, Serializable... params )
+    public void log( LogType type, Composite composite, String category, String message, Object... params )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            List<Serializable> paramsList = new ArrayList<Serializable>( Arrays.asList( params ) );
+            List<Object> paramsList = new ArrayList<>( Arrays.asList( params ) );
             createLogRecord( uow, type, composite, category, message, paramsList );
             uow.complete();
         }
@@ -127,7 +126,7 @@ public abstract class LoggingServiceMixin
         }
     }
 
-    private void createLogRecord( UnitOfWork uow, LogType type, Composite composite, String category, String message, List<Serializable> params )
+    private void createLogRecord( UnitOfWork uow, LogType type, Composite composite, String category, String message, List<Object> params )
     {
         if( composite instanceof ServiceComposite )
         {
@@ -156,7 +155,7 @@ public abstract class LoggingServiceMixin
     }
 
     private void setStandardStuff( LogType type, Composite composite, String category, String message,
-                                   LogRecord state, List<Serializable> params )
+                                   LogRecord state, List<Object> params )
     {
         state.logtype().set( type );
         state.time().set( SystemTime.now() );

@@ -17,7 +17,6 @@
  *
  *
  */
-
 package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
@@ -55,11 +54,12 @@ public final class SideEffectsModel
     }
 
     // Context
-    public SideEffectsInstance newInstance( Method method, ModuleDescriptor module, InvocationHandler invoker )
+    public SideEffectsInstance newInstance( Method method, ModuleDescriptor module,
+                                            InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
-        List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
+        List<InvocationHandler> sideEffects = new ArrayList<>( sideEffectModels.size() );
         for( SideEffectModel sideEffectModel : sideEffectModels )
         {
             InvocationHandler sideEffect = sideEffectModel.newInstance( module, result, proxyHandler, method );

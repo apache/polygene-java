@@ -22,13 +22,12 @@ package org.apache.polygene.library.rest.admin;
 
 import javax.servlet.Servlet;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 /**
  * JAVADOC
  */
 @Mixins( PolygeneServerServlet.class )
 public interface PolygeneServerServletService
-    extends Servlet, ServiceComposite
+    extends Servlet
 {
 }

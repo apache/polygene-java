@@ -41,13 +41,13 @@ import org.apache.polygene.api.service.ServiceReference;
 @Qualifier( IdentifiedBy.IdentifiedByQualifier.class )
 public @interface IdentifiedBy
 {
-    public abstract String value();
+    String value();
 
     /**
      * IdentifiedBy Annotation Qualifier.
      * See {@link IdentifiedBy}.
      */
-    public final class IdentifiedByQualifier
+    final class IdentifiedByQualifier
         implements AnnotationQualifier<IdentifiedBy>
     {
         @Override

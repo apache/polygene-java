@@ -19,11 +19,10 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -38,7 +37,7 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.time.SystemTime;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.api.util.Classes;
-import org.apache.polygene.serialization.javaxjson.JavaxJson;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entity.ManyAssociationState;
@@ -73,6 +72,9 @@ public interface ElasticSearchIndexer extends StateChangeListener
 
         @Service
         private JsonSerializer jsonSerializer;
+
+        @Service
+        private JavaxJsonFactories jsonFactories;
 
         @This
         private ElasticSearchSupport support;
@@ -118,13 +120,13 @@ public interface ElasticSearchIndexer extends StateChangeListener
                         case UPDATED:
                             LOGGER.trace( "Updating Entity State in Index: {}", changedState );
                             remove( bulkBuilder, changedState.entityReference().identity().toString() );
-                            String updatedJson = toJSON( changedState, newStates, uow );
+                            String updatedJson = toJSON( changedState, newStates, uow ).toString();
                             LOGGER.trace( "Will index: {}", updatedJson );
                             index( bulkBuilder, changedState.entityReference().identity().toString(), updatedJson );
                             break;
                         case NEW:
                             LOGGER.trace( "Creating Entity State in Index: {}", changedState );
-                            String newJson = toJSON( changedState, newStates, uow );
+                            String newJson = toJSON( changedState, newStates, uow ).toString();
                             LOGGER.trace( "Will index: {}", newJson );
                             index( bulkBuilder, changedState.entityReference().identity().toString(), newJson );
                             break;
@@ -182,13 +184,13 @@ public interface ElasticSearchIndexer extends StateChangeListener
          * }
          * </pre>
          */
-        private String toJSON( EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
+        private JsonObject toJSON( EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
         {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
+            JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
 
             builder.add( "_identity", state.entityReference().identity().toString() );
 
-            JsonArrayBuilder typesBuilder = Json.createArrayBuilder();
+            JsonArrayBuilder typesBuilder = jsonFactories.builderFactory().createArrayBuilder();
             state.entityDescriptor().mixinTypes().map( Classes.toClassName() ).forEach( typesBuilder::add );
             builder.add( "_types", typesBuilder.build() );
 
@@ -225,26 +227,20 @@ public interface ElasticSearchIndexer extends StateChangeListener
                             {
                                 if( newStates.containsKey( associated.identity().toString() ) )
                                 {
-                                    builder.add( key,
-                                                 Json.createReader( new StringReader(
-                                                     toJSON( newStates.get( associated.identity().toString() ),
-                                                             newStates, uow )
-                                                 ) ).readObject() );
+                                    builder.add( key, toJSON( newStates.get( associated.identity().toString() ),
+                                                              newStates, uow ) );
                                 }
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( associated.identity() );
                                     EntityState assocState = uow.entityStateOf( entityType.module(), reference );
-                                    builder.add( key,
-                                                 Json.createReader( new StringReader(
-                                                     toJSON( assocState, newStates, uow )
-                                                 ) ).readObject() );
+                                    builder.add( key, toJSON( assocState, newStates, uow ) );
                                 }
                             }
                             else
                             {
-                                builder.add( key, Json.createObjectBuilder()
-                                                      .add( "reference", associated.identity().toString() ) );
+                                builder.add( key, jsonFactories.builderFactory().createObjectBuilder()
+                                                               .add( "reference", associated.identity().toString() ) );
                             }
                         }
                     }
@@ -257,7 +253,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                     if( manyAssocDesc.queryable() )
                     {
                         String key = manyAssocDesc.qualifiedName().name();
-                        JsonArrayBuilder assBuilder = Json.createArrayBuilder();
+                        JsonArrayBuilder assBuilder = jsonFactories.builderFactory().createArrayBuilder();
                         ManyAssociationState assocs = state.manyAssociationValueOf( manyAssocDesc.qualifiedName() );
                         for( EntityReference associated : assocs )
                         {
@@ -265,25 +261,21 @@ public interface ElasticSearchIndexer extends StateChangeListener
                             {
                                 if( newStates.containsKey( associated.identity().toString() ) )
                                 {
-                                    assBuilder.add(
-                                        Json.createReader( new StringReader(
-                                            toJSON( newStates.get( associated.identity().toString() ), newStates, uow )
-                                        ) ).readObject() );
+                                    assBuilder.add( toJSON( newStates.get( associated.identity().toString() ),
+                                                            newStates, uow ) );
                                 }
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( associated.identity() );
                                     EntityState assocState = uow.entityStateOf( entityType.module(), reference );
-                                    assBuilder.add(
-                                        Json.createReader( new StringReader(
-                                            toJSON( assocState, newStates, uow )
-                                        ) ).readObject() );
+                                    assBuilder.add( toJSON( assocState, newStates, uow ) );
                                 }
                             }
                             else
                             {
-                                assBuilder.add( Json.createObjectBuilder().add( "reference",
-                                                                                associated.identity().toString() ) );
+                                assBuilder.add( jsonFactories.builderFactory().createObjectBuilder()
+                                                             .add( "reference",
+                                                                   associated.identity().toString() ) );
                             }
                         }
                         builder.add( key, assBuilder.build() );
@@ -297,7 +289,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                     if( namedAssocDesc.queryable() )
                     {
                         String key = namedAssocDesc.qualifiedName().name();
-                        JsonArrayBuilder assBuilder = Json.createArrayBuilder();
+                        JsonArrayBuilder assBuilder = jsonFactories.builderFactory().createArrayBuilder();
                         NamedAssociationState assocs = state.namedAssociationValueOf(
                             namedAssocDesc.qualifiedName() );
                         for( String name : assocs )
@@ -309,36 +301,32 @@ public interface ElasticSearchIndexer extends StateChangeListener
                                 if( newStates.containsKey( identityString ) )
                                 {
                                     assBuilder.add(
-                                        JavaxJson.toBuilder(
-                                            Json.createReader( new StringReader(
-                                                toJSON( newStates.get( identityString ), newStates, uow ) )
-                                            ).readObject()
-                                        ).add( "_named", name ).build() );
+                                        jsonFactories.cloneBuilder( toJSON( newStates.get( identityString ),
+                                                                            newStates, uow ) )
+                                                     .add( "_named", name )
+                                                     .build() );
                                 }
                                 else
                                 {
                                     EntityReference reference = EntityReference.create( identity );
                                     EntityState assocState = uow.entityStateOf( entityType.module(), reference );
                                     assBuilder.add(
-                                        JavaxJson.toBuilder(
-                                            Json.createReader( new StringReader(
-                                                toJSON( assocState, newStates, uow )
-                                            ) ).readObject()
-                                        ).add( "_named", name ).build() );
+                                        jsonFactories.cloneBuilder( toJSON( assocState, newStates, uow ) )
+                                                     .add( "_named", name ).build() );
                                 }
                             }
                             else
                             {
-                                assBuilder.add( Json.createObjectBuilder()
-                                                    .add( "_named", name )
-                                                    .add( "reference", identity.toString() )
-                                                    .build() );
+                                assBuilder.add( jsonFactories.builderFactory().createObjectBuilder()
+                                                             .add( "_named", name )
+                                                             .add( "reference", identity.toString() )
+                                                             .build() );
                             }
                         }
                         builder.add( key, assBuilder.build() );
                     }
                 } );
-            return builder.build().toString();
+            return builder.build();
         }
     }
 }

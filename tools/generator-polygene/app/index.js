@@ -21,8 +21,7 @@
 var generators = require('yeoman-generator');
 var fs = require('fs');
 
-// TODO: Automate the version here in build system.
-var polygeneVersion = "3.0-RC0";
+var polygeneVersion = require(__dirname + '/../package.json').polygene_version;
 
 var polygene = {};
 

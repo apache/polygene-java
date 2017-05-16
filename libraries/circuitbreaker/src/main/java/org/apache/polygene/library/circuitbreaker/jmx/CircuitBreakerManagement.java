@@ -31,7 +31,6 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.library.circuitbreaker.CircuitBreaker;
@@ -47,7 +46,6 @@ import org.slf4j.LoggerFactory;
 @Mixins( CircuitBreakerManagement.Mixin.class )
 @Activators( CircuitBreakerManagement.Activator.class )
 public interface CircuitBreakerManagement
-        extends ServiceComposite
 {
 
     /**

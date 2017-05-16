@@ -21,7 +21,6 @@
 package org.apache.polygene.envisage.tree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -76,12 +75,11 @@ import org.apache.polygene.tools.model.util.DescriptorNameComparator;
 
     private void addTypeChildren( DefaultMutableTreeNode parent, List<Object> childList )
     {
-        Collections.sort( childList, nameComparator );
+        childList.sort( nameComparator );
 
-        for( int i = 0; i < childList.size(); i++ )
+        for( Object child : childList )
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode( childList.get( i ) );
-            parent.add( node );
+            parent.add( new DefaultMutableTreeNode( child ) );
         }
     }
 

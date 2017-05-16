@@ -174,28 +174,7 @@ public final class ActivationDelegate
         Set<Exception> exceptions = new LinkedHashSet<>();
 
         // Before Passivation Events
-        if( fireEvents )
-        {
-            ActivationEvent event = new ActivationEvent( target, PASSIVATING );
-            for( ActivationEventListener listener : listeners )
-            {
-                try
-                {
-                    listener.onEvent( event );
-                }
-                catch( Exception ex )
-                {
-                    if( ex instanceof PassivationException )
-                    {
-                        exceptions.addAll( ( (PassivationException) ex ).causes() );
-                    }
-                    else
-                    {
-                        exceptions.add( ex );
-                    }
-                }
-            }
-        }
+        fireEvents( PASSIVATING, exceptions );
 
         // Before Passivation for Activators
         if( targetActivators != null )
@@ -254,9 +233,20 @@ public final class ActivationDelegate
         targetActivators = null;
 
         // After Passivation Events
+        fireEvents( PASSIVATED, exceptions );
+
+        // Error handling
+        if( exceptions.isEmpty() )
+        {
+            return;
+        }
+        throw new PassivationException( exceptions );
+    }
+
+    private void fireEvents( ActivationEvent.EventType eventType, Set<Exception> exceptions ) {
         if( fireEvents )
         {
-            ActivationEvent event = new ActivationEvent( target, PASSIVATED );
+            ActivationEvent event = new ActivationEvent( target, eventType );
             for( ActivationEventListener listener : listeners )
             {
                 try
@@ -276,13 +266,6 @@ public final class ActivationDelegate
                 }
             }
         }
-
-        // Error handling
-        if( exceptions.isEmpty() )
-        {
-            return;
-        }
-        throw new PassivationException( exceptions );
     }
 
     @SuppressWarnings( "TooBroadCatch" )

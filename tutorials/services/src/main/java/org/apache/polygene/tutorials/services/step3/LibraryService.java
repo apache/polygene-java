@@ -21,11 +21,10 @@ package org.apache.polygene.tutorials.services.step3;
 
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 @Mixins( LibraryMixin.class )
 @Activators( LibraryActivator.class )
 public interface LibraryService
-    extends Library, ServiceComposite
+    extends Library
 {
 }

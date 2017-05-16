@@ -20,11 +20,10 @@
 package org.apache.polygene.manual.recipes.createEntity;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 
 // START SNIPPET: manufacturerRepositoryService
 @Mixins( ManufacturerRepositoryMixin.class  )
 public interface ManufacturerRepositoryService
-        extends ManufacturerRepository, ServiceComposite
+    extends ManufacturerRepository
 {}
 // END SNIPPET: manufacturerRepositoryService

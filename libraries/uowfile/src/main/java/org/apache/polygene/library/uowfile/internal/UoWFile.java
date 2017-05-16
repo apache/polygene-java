@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 public class UoWFile
 {
-    /* package */ static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.polygene.library.uowfile" );
+    private static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.polygene.library.uowfile" );
     private static final AtomicLong COUNT = new AtomicLong( 0L );
     private final long originalIdentity;
     private final File original;

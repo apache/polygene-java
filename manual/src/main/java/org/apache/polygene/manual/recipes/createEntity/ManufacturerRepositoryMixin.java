@@ -32,7 +32,7 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 
 // START SNIPPET: repo
 public class ManufacturerRepositoryMixin
-        implements ManufacturerRepository
+    implements ManufacturerRepository
 {
     @Structure
     private UnitOfWorkFactory uowf;

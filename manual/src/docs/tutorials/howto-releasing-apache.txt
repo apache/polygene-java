@@ -136,6 +136,22 @@ See the https://git-scm.com/book/tr/v2/Git-Tools-Signing-Your-Work[Git Tools - S
 See the Apache https://www.apache.org/dev/publishing-maven-artifacts.html[Publishing Maven Artifacts] guide and the Apache Polygene™ (Java Edition) <<build-system,Build System>> tutorial.
 
 
+=== Setup nodejs and NPM registry credentials
+
+First, https://nodejs.org/en/download/[install NodeJS].
+
+If you don't have a `npmjs.org` user yet, create one now:
+
+[source,shell]
+----
+npm adduser
+----
+
+If your `npmjs.org` user is not registered as a maintainer for the
+https://www.npmjs.com/package/generator-polygene[generator-polygene] package, ask for the privilege on
+`dev@polygene.apache.org`.
+
+
 === Update the `KEYS` files if needed.
 
 The reference `KEYS` file can be found at the `polygene-java` repository's root, that is `polygene-java/KEYS`.
@@ -318,6 +334,22 @@ cd polygene-java
 ----
 
 Close the staging Nexus repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#close-stage[Closing the staged repository] guide.
+
+
+=== Stage NPM registry packages
+
+Publish the new version of the `generator-polygene` NPM package tagged as `beta`:
+
+[source,shell]
+----
+cd polygene-java/tools/generator-polygene
+npm publish --tag beta
+----
+
+If the release VOTE passes, we'll remove the `beta` tag, making the new version available.
+
+Then open https://www.npmjs.com/package/generator-polygene[https://www.npmjs.com/package/generator-polygene] to check
+that the new version was published and is tagged as `beta`.
 
 
 === Upload RC distributions
@@ -668,6 +700,17 @@ You can reuse the release-notes content from the `txt`/`adoc`/`md` files created
 
 This annoucement will be used in a variety of media like emails, websites etc...
 Start with a text version and once satisfied create at least a Markdown version for the website, see below.
+
+
+=== Publish `generator-polygene` to the NPM registry
+
+[source,shell]
+----
+npm dist-tag rm generator-polygene beta
+----
+
+Then open https://www.npmjs.com/package/generator-polygene[https://www.npmjs.com/package/generator-polygene] to check
+that the package is not tagged as `beta` anymore.
 
 
 === Update the Polygene™ website

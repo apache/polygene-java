@@ -64,7 +64,6 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
@@ -82,7 +81,6 @@ import org.apache.polygene.spi.PolygeneSPI;
 @Mixins( ConfigurationManagerService.Mixin.class )
 @Activators( ConfigurationManagerService.Activator.class )
 public interface ConfigurationManagerService
-    extends ServiceComposite
 {
     void exportConfigurableServices()
             throws Exception;

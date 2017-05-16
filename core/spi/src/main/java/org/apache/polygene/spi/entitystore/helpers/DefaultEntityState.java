@@ -59,7 +59,7 @@ public final class DefaultEntityState
     {
         this( "",
               currentTime,
-                reference,
+              reference,
               EntityStatus.NEW,
               entityDescriptor,
               new HashMap<>(),
@@ -138,24 +138,16 @@ public final class DefaultEntityState
     @Override
     public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
-        List<EntityReference> manyAssociationState = manyAssociations.get( stateName );
-        if( manyAssociationState == null )
-        {
-            manyAssociationState = new ArrayList<>();
-            manyAssociations.put( stateName, manyAssociationState );
-        }
+        List<EntityReference> manyAssociationState = manyAssociations.computeIfAbsent(
+            stateName, key -> new ArrayList<>() );
         return new DefaultManyAssociationState( this, manyAssociationState );
     }
 
     @Override
     public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
     {
-        Map<String, EntityReference> namedAssociationState = namedAssociations.get( stateName );
-        if( namedAssociationState == null )
-        {
-            namedAssociationState = new LinkedHashMap<>();
-            namedAssociations.put( stateName, namedAssociationState );
-        }
+        Map<String, EntityReference> namedAssociationState = namedAssociations.computeIfAbsent(
+            stateName, key -> new LinkedHashMap<>() );
         return new DefaultNamedAssociationState( this, namedAssociationState );
     }
 

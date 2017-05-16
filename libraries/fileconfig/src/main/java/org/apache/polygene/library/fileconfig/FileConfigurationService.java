@@ -33,7 +33,6 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
@@ -43,12 +42,12 @@ import org.slf4j.LoggerFactory;
 @Mixins( FileConfigurationService.Mixin.class )
 @Activators( FileConfigurationService.Activator.class )
 public interface FileConfigurationService
-        extends FileConfiguration, ServiceComposite
+        extends FileConfiguration
 {
 
     void resolveFileConfiguration();
 
-    public static class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<FileConfigurationService>>
     {
 
@@ -146,7 +145,7 @@ public interface FileConfigurationService
             }
 
             // Arguments available to use in directory specifications
-            Map<String, String> arguments = new HashMap<String, String>();
+            Map<String, String> arguments = new HashMap<>();
             arguments.put( "application", application );
             arguments.put( "user", user );
             arguments.put( "os", os.name() );
@@ -232,9 +231,9 @@ public interface FileConfigurationService
         {
             String osName = System.getProperty( "os.name" ).toLowerCase();
             OS os;
-            if ( osName.indexOf( "win" ) != -1 ) {
+            if ( osName.contains( "win" ) ) {
                 os = OS.windows;
-            } else if ( osName.indexOf( "mac" ) != -1 ) {
+            } else if ( osName.contains( "mac" ) ) {
                 os = OS.mac;
             } else {
                 os = OS.unix;

@@ -144,6 +144,7 @@ public final class ApplicationAssemblyImpl
         return name;
     }
 
+    @Override
     public String version()
     {
         return version;

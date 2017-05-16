@@ -24,5 +24,5 @@ package org.apache.polygene.library.rest.server.spi;
  */
 public interface CommandResult
 {
-    public Object getResult();
+    Object getResult();
 }

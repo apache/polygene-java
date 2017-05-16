@@ -440,10 +440,8 @@ import prefuse.visual.sort.TreeDepthItemSorter;
 
         private void zoom( final int rotation )
         {
-            SwingUtilities.invokeLater( new Runnable()
-            {
-                @Override
-                public void run()
+            SwingUtilities.invokeLater(
+                () ->
                 {
                     if( rotation == 0 )
                     {
@@ -457,8 +455,7 @@ import prefuse.visual.sort.TreeDepthItemSorter;
                     {
                         zoomIn();
                     }
-                }
-            } );
+                } );
         }
     }
 

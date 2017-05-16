@@ -20,8 +20,8 @@
 
 package org.apache.polygene.envisage.school.domain.person.assembly;
 
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
@@ -30,7 +30,7 @@ import org.apache.polygene.envisage.school.domain.person.Role;
 
 @Mixins( PersonEntity.PersonMixin.class )
 public interface PersonEntity
-    extends Person, EntityComposite
+    extends Person, HasIdentity
 {
     class PersonMixin
         implements Person

@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.GreaterThan;
 public class GreaterThanConstraint
     implements Constraint<GreaterThan, Number>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( GreaterThan annotation, Number argument )
     {

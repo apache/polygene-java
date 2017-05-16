@@ -19,7 +19,6 @@ package org.apache.polygene.serialization.javaxjson;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonValue;
 import org.apache.polygene.api.type.ValueType;
 
@@ -38,12 +37,12 @@ public interface JavaxJsonAdapter<T>
     /**
      * Serialize.
      *
-     * @param builderFactory Factory to create JSON
+     * @param jsonFactories Factories to create JSON
      * @param object Object to serialize, never null
      * @param serialize Serialization function for nested structure serialization
      * @return Serialized JSON representation
      */
-    JsonValue serialize( JsonBuilderFactory builderFactory, Object object, Function<Object, JsonValue> serialize );
+    JsonValue serialize( JavaxJsonFactories jsonFactories, Object object, Function<Object, JsonValue> serialize );
 
     /**
      * Deserialize.

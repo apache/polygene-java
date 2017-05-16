@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.logging.log;
 
-import java.io.Serializable;
 import org.apache.polygene.api.concern.Concerns;
 
 @Concerns( StandardLogConcern.class )
@@ -27,10 +26,10 @@ public interface StandardLog
 {
     void log( LogType type, String category, String message );
 
-    void log( LogType type, String category, String message, Serializable param1 );
+    void log( LogType type, String category, String message, Object param1 );
 
-    void log( LogType type, String category, String message, Serializable param1, Serializable param2 );
+    void log( LogType type, String category, String message, Object param1, Object param2 );
 
-    void log( LogType type, String category, String message, Serializable... params );
+    void log( LogType type, String category, String message, Object... params );
 
 }

@@ -417,7 +417,7 @@ public final class Classes
             return subClass;
         } )
             .map( subClass -> resolveTypeVariable( name, declaringClass, mappings, subClass ) )
-            .filter( type -> type != null )
+            .filter( Objects::nonNull )
             .findAny().orElse( null );
     }
 

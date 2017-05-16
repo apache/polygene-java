@@ -33,25 +33,12 @@ import org.restlet.resource.ResourceException;
 public class ErrorHandler
     implements ResponseHandler
 {
-    public static Predicate<Response> AUTHENTICATION_REQUIRED = new Predicate<Response>()
-    {
-        @Override
-        public boolean test( Response item )
-        {
-            return item.getStatus().equals( Status.CLIENT_ERROR_UNAUTHORIZED );
-        }
-    };
+    public static Predicate<Response> AUTHENTICATION_REQUIRED = item ->
+        item.getStatus().equals( Status.CLIENT_ERROR_UNAUTHORIZED );
 
-    public static Predicate<Response> RECOVERABLE_ERROR = new Predicate<Response>()
-    {
-        @Override
-        public boolean test( Response item )
-        {
-            return item.getStatus().isRecoverableError();
-        }
-    };
+    public static Predicate<Response> RECOVERABLE_ERROR = item -> item.getStatus().isRecoverableError();
 
-    LinkedHashMap<Predicate<Response>, ResponseHandler> handlers = new LinkedHashMap<Predicate<Response>, ResponseHandler>(  );
+    LinkedHashMap<Predicate<Response>, ResponseHandler> handlers = new LinkedHashMap<>();
 
     public ErrorHandler()
     {

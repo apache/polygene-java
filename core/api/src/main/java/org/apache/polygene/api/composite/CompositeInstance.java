@@ -21,6 +21,7 @@
 package org.apache.polygene.api.composite;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.apache.polygene.api.property.StateHolder;
 import org.apache.polygene.api.structure.MetaInfoHolder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
@@ -42,4 +43,11 @@ public interface CompositeInstance
     CompositeDescriptor descriptor();
 
     StateHolder state();
+
+    static CompositeInstance compositeInstanceOf( Composite composite )
+    {
+        InvocationHandler handler = Proxy.getInvocationHandler( composite );
+        return (CompositeInstance) handler;
+    }
+
 }

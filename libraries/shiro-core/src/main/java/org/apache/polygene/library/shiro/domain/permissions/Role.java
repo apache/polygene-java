@@ -22,7 +22,7 @@ package org.apache.polygene.library.shiro.domain.permissions;
 import java.util.List;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.entity.EntityBuilder;
-import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
@@ -32,9 +32,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 
 @Mixins( Role.Mixin.class )
 public interface Role
-    extends EntityComposite
+    extends HasIdentity
 {
-
     Property<String> name();
 
     @UseDefaults
@@ -45,7 +44,6 @@ public interface Role
     abstract class Mixin
         implements Role
     {
-
         @Structure
         private UnitOfWorkFactory uowf;
 
@@ -64,7 +62,5 @@ public interface Role
             assignee.roleAssignments().add( assignment );
             return assignment;
         }
-
     }
-
 }

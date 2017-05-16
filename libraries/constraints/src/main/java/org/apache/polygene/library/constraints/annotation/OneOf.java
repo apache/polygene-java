@@ -33,5 +33,5 @@ import org.apache.polygene.library.constraints.OneOfConstraint;
 @Constraints( OneOfConstraint.class )
 public @interface OneOf
 {
-    public String[] value();
+    String[] value();
 }

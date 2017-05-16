@@ -549,14 +549,7 @@ public final class PropertyMapper
         {
             final Class arrayType = ( (Class) type ).getComponentType();
             final ArrayList result = new ArrayList();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, arrayType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, arrayType, token ) ) );
             return result.toArray( (Object[]) Array.newInstance( arrayType, result.size() ) );
         }
     }
@@ -580,14 +573,7 @@ public final class PropertyMapper
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new ArrayList();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, dataType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, dataType, token ) ) );
             return result;
         }
     }
@@ -601,14 +587,7 @@ public final class PropertyMapper
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new HashSet();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, dataType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, dataType, token ) ) );
             return result;
         }
     }

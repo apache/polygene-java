@@ -25,14 +25,14 @@ package org.apache.polygene.library.circuitbreaker.jmx;
 */
 public interface CircuitBreakerJMXMBean
 {
-   public String getStatus();
-   public int getThreshold();
-   public double getServiceLevel();
-   public String getLastErrorMessage();
-   public String getTrippedOn();
-   public String getEnableOn();
+   String getStatus();
+   int getThreshold();
+   double getServiceLevel();
+   String getLastErrorMessage();
+   String getTrippedOn();
+   String getEnableOn();
 
-   public String turnOn();
+   String turnOn();
 
-   public void trip();
+   void trip();
 }

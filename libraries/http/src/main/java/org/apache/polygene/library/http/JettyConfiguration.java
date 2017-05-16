@@ -21,7 +21,6 @@ package org.apache.polygene.library.http;
 
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.constraints.annotation.GreaterThan;
 import org.apache.polygene.library.constraints.annotation.Range;
@@ -34,7 +33,6 @@ import org.apache.polygene.library.constraints.annotation.Range;
  */
 // START SNIPPET: config
 public interface JettyConfiguration
-        extends ConfigurationComposite
 {
 
     // ## Connector Configuration Properties ##################################

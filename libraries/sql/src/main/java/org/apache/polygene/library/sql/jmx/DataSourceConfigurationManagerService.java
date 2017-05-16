@@ -54,7 +54,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceImporter;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
@@ -72,7 +71,6 @@ import org.apache.polygene.spi.PolygeneSPI;
 @Mixins( DataSourceConfigurationManagerService.Mixin.class )
 @Activators( DataSourceConfigurationManagerService.Activator.class )
 public interface DataSourceConfigurationManagerService
-        extends ServiceComposite
 {
 
     void exportDataSources()

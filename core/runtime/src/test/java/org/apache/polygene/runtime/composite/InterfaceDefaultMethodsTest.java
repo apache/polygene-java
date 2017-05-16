@@ -17,29 +17,45 @@
  */
 package org.apache.polygene.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import org.apache.polygene.api.common.AppliesTo;
+import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.composite.DefaultMethodsFilter;
+import org.apache.polygene.api.concern.ConcernOf;
+import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.api.sideeffect.SideEffectOf;
+import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.NotEmpty;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.apache.polygene.test.util.Assume.assumeJavaVersion;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 /**
  * Assert that interface default methods are mixed in composites.
  */
 public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
+    @BeforeClass
+    public static void assumeJavaVersionIs8() { assumeJavaVersion( 8 ); }
+
     public interface DefaultMethods
     {
+        @UseDefaults( "Hello" )
+        Property<String> greeting();
+
         default String sayHello( String name )
         {
-            return "Hello, " + name + '!';
+            return greeting().get() + ", " + name + '!';
         }
     }
 
@@ -48,7 +64,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         @Override
         default String sayHello( String name )
         {
-            return "Hello, overridden in " + name + '!';
+            return greeting().get() + ", overridden in " + name + '!';
         }
     }
 
@@ -57,7 +73,7 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         @Override
         public String sayHello( String name )
         {
-            return "Hello, mixed in " + name + '!';
+            return greeting().get() + ", mixed in " + name + '!';
         }
     }
 
@@ -66,42 +82,128 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         @Override
         default String sayHello( @NotEmpty String name )
         {
-            return "Hello, " + name + '!';
+            return greeting().get() + ", " + name + '!';
         }
     }
 
+    @Concerns( DefaultMethodsConcern.class )
     public interface DefaultMethodsConcerns extends DefaultMethods
     {
-        // TODO Add concern
         @Override
         default String sayHello( String name )
         {
-            return "Hello, " + name + '!';
+            return greeting().get() + ", " + name + '!';
+        }
+
+        default String sayGoodBye( String name )
+        {
+            return "Good Bye, " + name + '!';
         }
     }
 
-    public interface DefaultMethodsSideEffects extends DefaultMethods
+    public static abstract class DefaultMethodsConcern extends ConcernOf<DefaultMethodsConcerns>
+        implements DefaultMethodsConcerns
     {
-        // TODO Add side effect
+        @Override
+        public String sayHello( String name )
+        {
+            return next.sayHello( "concerned " + name );
+        }
+    }
+
+    @Concerns( DefaultMethodsGenericConcern.class )
+    public interface DefaultMethodsGenericConcerns extends DefaultMethods
+    {
         @Override
         default String sayHello( String name )
         {
-            return "Hello, " + name + '!';
+            return greeting().get() + ", " + name + '!';
+        }
+
+        default String sayGoodBye( String name )
+        {
+            return "Good Bye, " + name + '!';
+        }
+    }
+
+    @AppliesTo( DefaultMethodsFilter.class )
+    public static class DefaultMethodsGenericConcern extends ConcernOf<InvocationHandler>
+        implements InvocationHandler
+    {
+        static int count = 0;
+
+        @Override
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
+        {
+            count++;
+            return next.invoke( o, method, objects );
+        }
+    }
+
+    @SideEffects( DefaultMethodsSideEffect.class )
+    public interface DefaultMethodsSideEffects extends DefaultMethods
+    {
+        @Override
+        default String sayHello( String name )
+        {
+            return greeting().get() + ", " + name + '!';
+        }
+    }
+
+    public static abstract class DefaultMethodsSideEffect extends SideEffectOf<DefaultMethodsSideEffects>
+        implements DefaultMethodsSideEffects
+    {
+        static int count;
+
+        @Override
+        public String sayHello( String name )
+        {
+            count++;
+            return null;
+        }
+    }
+
+    @SideEffects( DefaultMethodsGenericSideEffect.class )
+    public interface DefaultMethodsGenericSideEffects extends DefaultMethods
+    {
+        @Override
+        default String sayHello( String name )
+        {
+            return greeting().get() + ", " + name + '!';
+        }
+    }
+
+    @AppliesTo( DefaultMethodsFilter.class )
+    public static class DefaultMethodsGenericSideEffect extends SideEffectOf<InvocationHandler>
+        implements InvocationHandler
+    {
+        static int count = 0;
+
+        @Override
+        public Object invoke( Object o, Method method, Object[] objects )
+            throws Throwable
+        {
+            count++;
+            return null;
         }
     }
 
     @Override
-    public void assemble( final ModuleAssembly module ) throws AssemblyException
+    public void assemble( final ModuleAssembly module )
+        throws AssemblyException
     {
         module.transients( DefaultMethods.class,
                            OverrideDefaultMethods.class,
                            MixinDefaultMethods.class,
                            DefaultMethodsConstraints.class,
                            DefaultMethodsConcerns.class,
-                           DefaultMethodsSideEffects.class );
+                           DefaultMethodsSideEffects.class,
+                           DefaultMethodsGenericConcerns.class,
+                           DefaultMethodsGenericSideEffects.class
+                         );
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethods()
     {
@@ -109,15 +211,13 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void overrideDefaultMethods()
     {
         OverrideDefaultMethods composite = transientBuilderFactory.newTransient( OverrideDefaultMethods.class );
-        assertThat( composite.sayHello( "John" ), equalTo( "Hello, overridden John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, overridden in John!" ) );
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void mixinDefaultMethods()
     {
@@ -125,7 +225,6 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         assertThat( composite.sayHello( "John" ), equalTo( "Hello, mixed in John!" ) );
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsConstraints()
     {
@@ -140,17 +239,40 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         }
     }
 
-    @Ignore( "POLYGENE-120" )
     @Test
     public void defaultMethodsConcerns()
     {
-        fail( "Test not implemented" );
+        DefaultMethodsConcerns composite = transientBuilderFactory.newTransient( DefaultMethodsConcerns.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, concerned John!" ) );
+        assertThat( composite.sayGoodBye( "John" ), equalTo( "Good Bye, John!" ) );
     }
 
-    @Ignore( "POLYGENE-120" )
+    @Test
+    public void defaultMethodsGenericConcerns()
+    {
+        DefaultMethodsGenericConcerns composite = transientBuilderFactory.newTransient( DefaultMethodsGenericConcerns.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayGoodBye( "John" ), equalTo( "Good Bye, John!" ) );
+        assertThat( DefaultMethodsGenericConcern.count, equalTo( 2 ) );
+    }
+
     @Test
     public void defaultMethodsSideEffects()
     {
-        fail( "Test not implemented" );
+        DefaultMethodsSideEffects composite = transientBuilderFactory.newTransient( DefaultMethodsSideEffects.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( DefaultMethodsSideEffect.count, equalTo( 3 ) );
+    }
+
+    @Test
+    public void defaultMethodsGenericSideEffects()
+    {
+        DefaultMethodsGenericSideEffects composite = transientBuilderFactory.newTransient( DefaultMethodsGenericSideEffects.class );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( composite.sayHello( "John" ), equalTo( "Hello, John!" ) );
+        assertThat( DefaultMethodsGenericSideEffect.count, equalTo( 3 ) );
     }
 }

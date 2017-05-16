@@ -36,6 +36,7 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -45,9 +46,11 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Assert that Serialization behaviour on plain values is correct.
@@ -74,6 +77,20 @@ public abstract class AbstractPlainValueSerializationTest extends AbstractPolyge
     }
 
     protected abstract String getSingleStringRawState( String state ) throws Exception;
+
+    @Test
+    public void dontKnowHowToSerializeJavaLangObject()
+    {
+        try
+        {
+            serialization.serialize( new Object() );
+            fail( "serialization.serialize( new Object() ) should have failed" );
+        }
+        catch( SerializationException ex )
+        {
+            assertThat( ex.getMessage(), startsWith( "Don't know how to serialize" ) );
+        }
+    }
 
     @Test
     public void givenNullValueWhenSerializingAndDeserializingExpectNull()

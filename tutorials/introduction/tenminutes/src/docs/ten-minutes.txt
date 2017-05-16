@@ -68,9 +68,8 @@ We can also see that the InventoryService is provided to the concern, which is d
 also supports dependency injection via constructors and methods.
 
 The above example is obviously doing persistence, and we have no code handling this. But Polygene™ supports persistence
-directly in its Core, and it is taken care of by Polygene™, since it is declared as an EntityComposite.
-Nothing else is needed, provided that the Polygene™ Runtime has been setup with one or more persisted EntityStores. But
-we have a naming convention that EntityComposites have "Entity" as the suffix in its name.
+directly in its Core, and it is taken care of by Polygene™.
+Nothing else is needed, provided that the Polygene™ Runtime has been setup with one or more persisted EntityStores.
 
 There are other built-in Composite subtypes as well, such as ValueComposite and ServiceComposite. This distinction helps
 both to communicate intent as well as having more precisely defined functionality.

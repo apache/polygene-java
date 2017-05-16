@@ -31,14 +31,13 @@ import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
 
 @Mixins( EmbeddedSolrService.Mixin.class )
 @Activators( EmbeddedSolrService.Activator.class )
-public interface EmbeddedSolrService extends ServiceComposite
+public interface EmbeddedSolrService
 {
    SolrServer solrServer();
 
@@ -91,7 +90,7 @@ public interface EmbeddedSolrService extends ServiceComposite
          try
          {
             File directory = new File( fileConfig.dataDirectory(), descriptor.identity().toString() );
-            directory.mkdir();
+            directory.mkdirs();
 
             System.setProperty( "solr.solr.home", directory.getAbsolutePath() );
 

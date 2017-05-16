@@ -56,32 +56,32 @@ public interface PolygeneAPI
     <T> T dereference( T composite );
 
     /**
-     * Returns the Module or UnitOfWork where the Composite belongs.
+     * Returns the Module where the Composite, ServiceReference or UnitOfWork belongs.
      *
-     * @param compositeOrUow The Composite (Service, Value, Entity or Transient) or UnitOfWork to lookup the Module it
-     *                       belongs to.
+     * @param compositeOrServiceReferenceOrUow The Composite (Service, Value, Entity or Transient) or ServiceReference
+     *                                         or UnitOfWork to lookup the Module it belongs to
      *
-     * @return The Module instance where the Composite or UnitOfWork belongs to.
+     * @return The Module instance where the Composite, ServiceReference or UnitOfWork belongs to
      */
-    ModuleDescriptor moduleOf( Object compositeOrUow );
+    ModuleDescriptor moduleOf( Object compositeOrServiceReferenceOrUow );
 
     /**
-     * Returns the ModelDescriptor of the Composite.
+     * Returns the ModelDescriptor of the Composite or ServiceReference.
      *
-     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
-     *                                    ModelDescriptor
+     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) of ServiceReference
+     *                                    for which to lookup the ModelDescriptor
      *
-     * @return The ModelDescriptor of the Composite
+     * @return The ModelDescriptor of the Composite or ServiceReference
      */
     ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference );
 
     /**
-     * Returns the CompositeDescriptor of the Composite.
+     * Returns the CompositeDescriptor of the Composite or ServiceReference.
      *
-     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
-     *                                    CompositeDescriptor
+     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient)  or ServiceReference
+     *                                    for which to lookup the CompositeDescriptor
      *
-     * @return The CompositeDescriptor of the Composite
+     * @return The CompositeDescriptor of the Composite or ServiceReference
      */
     CompositeDescriptor compositeDescriptorFor( Object compositeOrServiceReference );
 

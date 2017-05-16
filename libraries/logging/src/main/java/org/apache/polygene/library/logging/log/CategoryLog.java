@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.logging.log;
 
-import java.io.Serializable;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
 
@@ -29,27 +28,27 @@ public interface CategoryLog
 {
     void info( String category, String message );
 
-    void info( String category, String message, Serializable param1 );
+    void info( String category, String message, Object param1 );
 
-    void info( String category, String message, Serializable param1, Serializable param2 );
+    void info( String category, String message, Object param1, Object param2 );
 
-    void info( String category, String message, Serializable... params );
+    void info( String category, String message, Object... params );
 
     void warning( String category, String message );
 
-    void warning( String category, String message, Serializable param1 );
+    void warning( String category, String message, Object param1 );
 
-    void warning( String category, String message, Serializable param1, Serializable param2 );
+    void warning( String category, String message, Object param1, Object param2 );
 
-    void warning( String category, String message, Serializable... params );
+    void warning( String category, String message, Object... params );
 
     void error( String category, String message );
 
-    void error( String category, String message, Serializable param1 );
+    void error( String category, String message, Object param1 );
 
-    void error( String category, String message, Serializable param1, Serializable param2 );
+    void error( String category, String message, Object param1, Object param2 );
 
-    void error( String category, String message, Serializable... params );
+    void error( String category, String message, Object... params );
 
 
 }

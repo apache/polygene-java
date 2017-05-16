@@ -310,16 +310,6 @@ public class PropertyModel
         }
     }
 
-    private static class NullInitialValueProvider
-        implements InitialValueProvider
-    {
-        @Override
-        public Object apply( Module module, PropertyDescriptor property )
-        {
-            return null;
-        }
-    }
-
     private class DefaultInitialValueProvider
         implements InitialValueProvider
     {

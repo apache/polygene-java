@@ -59,6 +59,7 @@ public class OSGiServiceTest
         {
             "org.apache.polygene.library.osgi.OSGiServiceTest$MyService",
             "org.apache.polygene.library.osgi.OSGiEnabledService",
+            "org.apache.polygene.api.identity.HasIdentity",
             "org.apache.polygene.api.service.ServiceComposite",
             "org.apache.polygene.api.identity.HasIdentity",
             "org.apache.polygene.api.composite.Composite"

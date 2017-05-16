@@ -51,18 +51,6 @@ public final class ValueStateInstance
     private final Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations;
     private final Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations;
 
-    public ValueStateInstance( Map<AccessibleObject, PropertyInstance<?>> properties,
-                               Map<AccessibleObject, AssociationInstance<?>> associations,
-                               Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations,
-                               Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations
-    )
-    {
-        this.properties = properties;
-        this.associations = associations;
-        this.manyAssociations = manyAssociations;
-        this.namedAssociations = namedAssociations;
-    }
-
     public ValueStateInstance( ValueDescriptor compositeModelModule,
                                ModuleInstance currentModule,
                                StateResolver stateResolver
@@ -81,7 +69,7 @@ public final class ValueStateInstance
 
         this.associations = new LinkedHashMap<>();
         valueModel.state().associations().forEach( associationDescriptor -> {
-            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
+            AssociationInfo builderInfo = associationDescriptor.builderInfo();
             EntityReference value = stateResolver.getAssociationState( associationDescriptor );
             AssociationInstance<Object> associationInstance1 = new AssociationInstance<>(
                 builderInfo,
@@ -92,7 +80,7 @@ public final class ValueStateInstance
 
         this.manyAssociations = new LinkedHashMap<>();
         valueModel.state().manyAssociations().forEach( associationDescriptor -> {
-            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
+            AssociationInfo builderInfo = associationDescriptor.builderInfo();
             List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor )
                                                        .collect( toList() );
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
@@ -105,7 +93,7 @@ public final class ValueStateInstance
 
         this.namedAssociations = new LinkedHashMap<>();
         valueModel.state().namedAssociations().forEach( associationDescriptor -> {
-            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
+            AssociationInfo builderInfo = associationDescriptor.builderInfo();
             Map<String, EntityReference> value = stateResolver.getNamedAssociationState( associationDescriptor )
                                                               .collect( toMap( LinkedHashMap::new ) );
             NamedAssociationValueState namedAssociationState = new NamedAssociationValueState( value );

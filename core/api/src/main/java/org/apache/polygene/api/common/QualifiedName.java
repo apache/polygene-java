@@ -20,7 +20,6 @@
 
 package org.apache.polygene.api.common;
 
-import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.Objects;
@@ -52,7 +51,7 @@ import java.util.Objects;
  * object and can safely be used as keys in {@link java.util.Map}.
  */
 public final class QualifiedName
-    implements Comparable<QualifiedName>, Serializable
+    implements Comparable<QualifiedName>
 {
     private final TypeName typeName;
     private final String name;

@@ -1,3 +1,21 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 var path = require('path');
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
@@ -97,35 +115,42 @@ featuresset.forEach(function (feature) {
 });
 
 // All Tests !!!!
-appTypes.forEach(function (appType) {
-    entityStores.forEach(function (entitystore) {
-        indexings.forEach(function (indexing) {
-            serializations.forEach(function (serialization) {
-                cachings.forEach(function (caching) {
-                    metricses.forEach(function (metrics) {
-                        featuresset.forEach(function (features) {
-                            test(appType, entitystore, indexing, serialization, caching, metrics, features)
+if(process.env.TEST_ALL == 'yes') {
+    appTypes.forEach(function (appType) {
+        entityStores.forEach(function (entitystore) {
+            indexings.forEach(function (indexing) {
+                serializations.forEach(function (serialization) {
+                    cachings.forEach(function (caching) {
+                        metricses.forEach(function (metrics) {
+                            featuresset.forEach(function (features) {
+                                test(appType, entitystore, indexing, serialization, caching, metrics, features)
+                            });
                         });
                     });
                 });
             });
         });
     });
-});
+}
 
 function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
     describe('polygene-generator', function () {
-        this.timeout(10000);
-        it('generates a Gradle buildable ' + appType + ' Apache Polygene project with '
+        var testName = 'generates a Gradle buildable Apache Polygene project with '
             + entityStore + 'EntityStore, '
             + indexing + 'Indexing, '
-            + serialization + 'Serialzation, '
+            + serialization + 'Serialization, '
             + caching + 'Caching, '
-            + metrics + 'Metrics, '
-            + ' and ' + features + '.',
+            + metrics + 'Metrics';
+        if(features) {
+            testName += ', and ' + features;
+        }
+        testName += '.';
+        var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
+        it(testName,
             function () {
+                this.timeout(10000);
                 return helpers.run(path.join(__dirname, '../app'))
-                    .inDir(path.join(__dirname, '../build/test-project'))
+                    .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
                     .withPrompts({
                         name: 'test-project',
                         packageName: 'org.apache.polygene.generator.test',
@@ -144,5 +169,5 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);
-    assert(shell.exec(path.join(dir, 'gradlew') + ' build').code == 0);
+    assert(shell.exec(path.join(dir, 'gradlew') + ' classes --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
 }

@@ -22,7 +22,7 @@ package org.apache.polygene.manual.recipes.createEntity;
 import org.apache.polygene.api.value.ValueComposite;
 
 // START SNIPPET: composite
-public interface AccidentValue extends Accident, ValueComposite
+public interface AccidentValue extends Accident
 {}
 
 // END SNIPPET: composite

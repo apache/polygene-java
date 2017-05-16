@@ -93,7 +93,9 @@ public final class CompositeMethodModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( concerns, sideEffects ).filter( Objects::nonNull ).flatMap( Dependencies::dependencies );
+        Stream<? extends Dependencies> concerns = Stream.of( this.concerns, sideEffects );
+        Stream<? extends Dependencies> filteredNonNull = concerns.filter( Objects::nonNull );
+        return filteredNonNull.flatMap( Dependencies::dependencies );
     }
 
     // Context
@@ -212,7 +214,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                return !Genericpredicate.INSTANCE.test( model.mixinClass() )
+                return !GenericPredicate.INSTANCE.test( model.mixinClass() )
                        && ( model.mixinClass().getMethod( method.getName(), method.getParameterTypes() )
                                  .isAnnotationPresent( annotationClass ) );
             }
@@ -229,7 +231,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( !Genericpredicate.INSTANCE.test( model.mixinClass() ) )
+                if( !GenericPredicate.INSTANCE.test( model.mixinClass() ) )
                 {
                     T annotation = annotationClass.cast( model.mixinClass()
                                                              .getMethod( method.getName(), method.getParameterTypes() )
@@ -256,7 +258,7 @@ public final class CompositeMethodModel
             List<Annotation> annotations = new ArrayList<>();
             MixinModel model = mixins.mixinFor( method );
             Annotation[] mixinAnnotations = new Annotation[ 0 ];
-            if( !Genericpredicate.INSTANCE.test( model.mixinClass() ) )
+            if( !GenericPredicate.INSTANCE.test( model.mixinClass() ) )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
                 annotations.addAll( Arrays.asList( mixinAnnotations ) );

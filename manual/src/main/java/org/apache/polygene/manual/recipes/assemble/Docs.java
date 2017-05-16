@@ -22,7 +22,6 @@ package org.apache.polygene.manual.recipes.assemble;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.ValueComposite;
 
 public class Docs
 {
@@ -49,7 +48,7 @@ public class Docs
     {
     }
 
-    public interface PersonEntity extends ValueComposite
+    public interface PersonEntity
     {
     }
 }

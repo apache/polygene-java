@@ -24,10 +24,10 @@ import java.util.Dictionary;
 import java.util.stream.Stream;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Module;
@@ -42,9 +42,8 @@ import static org.apache.polygene.api.util.Classes.typesOf;
  */
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
 @Activators( OSGiEnabledService.Activator.class )
-public interface OSGiEnabledService extends ServiceComposite
+public interface OSGiEnabledService extends HasIdentity
 {
-
     void registerServices()
         throws Exception;
 
@@ -70,7 +69,7 @@ public interface OSGiEnabledService extends ServiceComposite
         }
     }
 
-    public abstract class OSGiEnabledServiceMixin
+    abstract class OSGiEnabledServiceMixin
         implements OSGiEnabledService
     {
         @Uses

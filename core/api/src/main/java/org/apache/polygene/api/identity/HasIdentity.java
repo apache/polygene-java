@@ -49,7 +49,6 @@ public interface HasIdentity
         @State
         private Property<Identity> identity;
 
-
         @Override
         public Property<Identity> identity()
         {

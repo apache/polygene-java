@@ -33,11 +33,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
@@ -47,11 +48,9 @@ import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.api.type.ValueType;
-import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.spi.serialization.AbstractBinaryDeserializer;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
@@ -79,8 +78,7 @@ public interface MessagePackDeserializer extends Deserializer
         @Override
         public <T> T deserialize( ModuleDescriptor module, ValueType valueType, InputStream state )
         {
-            MessageUnpacker unpacker = MessagePack.newDefaultUnpacker( state );
-            try
+            try( MessageUnpacker unpacker = MessagePack.newDefaultUnpacker( state ) )
             {
                 if( !unpacker.hasNext() )
                 {
@@ -89,9 +87,9 @@ public interface MessagePackDeserializer extends Deserializer
                 ImmutableValue value = unpacker.unpackValue();
                 return doDeserialize( module, valueType, value );
             }
-            catch( IOException e )
+            catch( IOException ex )
             {
-                throw new SerializationException( "Unable to deserialize " + valueType );
+                throw new SerializationException( "Unable to deserialize " + valueType, ex );
             }
         }
 
@@ -104,12 +102,6 @@ public interface MessagePackDeserializer extends Deserializer
                 {
                     return null;
                 }
-                ConvertedBy convertedBy = Annotations.annotationOn( valueType.primaryType(), ConvertedBy.class );
-                if( convertedBy != null )
-                {
-                    return (T) module.instance().newObject( convertedBy.value() )
-                                     .fromString( doDeserialize( module, ValueType.STRING, value ).toString() );
-                }
                 Converter<Object> converter = converters.converterFor( valueType );
                 if( converter != null )
                 {
@@ -120,25 +112,28 @@ public interface MessagePackDeserializer extends Deserializer
                 {
                     return (T) adapter.deserialize( value, ( val, type ) -> doDeserialize( module, valueType, val ) );
                 }
-                if( EnumType.class.isAssignableFrom( valueType.getClass() ) )
+                Class<? extends ValueType> valueTypeClass = valueType.getClass();
+                if( EnumType.class.isAssignableFrom( valueTypeClass ) )
                 {
                     return (T) Enum.valueOf( (Class) valueType.primaryType(), value.asStringValue().asString() );
                 }
-                if( ArrayType.class.isAssignableFrom( valueType.getClass() ) )
+                if( ArrayType.class.isAssignableFrom( valueTypeClass ) )
                 {
                     return (T) deserializeArray( module, (ArrayType) valueType, value );
                 }
-                if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
+                if( CollectionType.class.isAssignableFrom( valueTypeClass ) )
                 {
                     return (T) deserializeCollection( module, (CollectionType) valueType, value.asArrayValue() );
                 }
-                if( MapType.class.isAssignableFrom( valueType.getClass() ) )
+                if( MapType.class.isAssignableFrom( valueTypeClass ) )
                 {
                     return (T) deserializeMap( module, (MapType) valueType, value.asMapValue() );
                 }
-                if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
+                if( StatefulAssociationValueType.class.isAssignableFrom( valueTypeClass ) )
                 {
-                    return (T) deserializeValueComposite( module, (ValueCompositeType) valueType, value.asMapValue() );
+                    return (T) deserializeStatefulAssociationValue( module,
+                                                                    (StatefulAssociationValueType<?>) valueType,
+                                                                    value.asMapValue() );
                 }
                 return (T) doGuessDeserialize( module, valueType, value );
             }
@@ -189,8 +184,9 @@ public interface MessagePackDeserializer extends Deserializer
             return map;
         }
 
-        private Object deserializeValueComposite( ModuleDescriptor module, ValueCompositeType valueType,
-                                                  MapValue value ) throws IOException
+        private Object deserializeStatefulAssociationValue( ModuleDescriptor module,
+                                                            StatefulAssociationValueType<?> valueType,
+                                                            MapValue value ) throws IOException
         {
             Map<String, Value> namedValues = value.map().entrySet().stream().map(
                 entry ->
@@ -207,7 +203,8 @@ public interface MessagePackDeserializer extends Deserializer
             }
             if( typeInfo != null )
             {
-                ValueDescriptor descriptor = module.valueDescriptor( typeInfo );
+                // TODO What to do with typeInfo? Value or Entity ?
+                StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor( module, typeInfo );
                 if( descriptor == null )
                 {
                     throw new SerializationException(
@@ -234,11 +231,10 @@ public interface MessagePackDeserializer extends Deserializer
                 if( messagePackValue != null )
                 {
                     Object value;
-                    ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                    if( convertedBy != null )
+                    Converter<Object> converter = converters.converterFor( property );
+                    if( converter != null )
                     {
-                        value = module.instance().newObject( convertedBy.value() )
-                                      .fromString( doDeserialize( module, ValueType.STRING, messagePackValue ) );
+                        value = converter.fromString( doDeserialize( module, ValueType.STRING, messagePackValue ) );
                     }
                     else
                     {
@@ -299,17 +295,6 @@ public interface MessagePackDeserializer extends Deserializer
         {
             switch( value.getValueType() )
             {
-                case BINARY:
-                    try
-                    {
-                        return deserializeJava( value.asBinaryValue().asByteArray() );
-                    }
-                    catch( SerializationException ex )
-                    {
-                        throw new SerializationException( "Don't know how to deserialize " + valueType
-                                                          + " from " + value + " (" + value.getValueType() + ")",
-                                                          ex );
-                    }
                 case MAP:
                     MapValue mapValue = value.asMapValue();
                     Optional<String> typeInfo = mapValue
@@ -325,12 +310,13 @@ public interface MessagePackDeserializer extends Deserializer
                         .map( entry -> doDeserialize( module, ValueType.STRING, entry.getValue() ) );
                     if( typeInfo.isPresent() )
                     {
-                        ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo.get() );
-                        if( valueDescriptor != null )
+                        StatefulAssociationCompositeDescriptor descriptor = statefulCompositeDescriptorFor(
+                            module, typeInfo.get() );
+                        if( descriptor != null )
                         {
-                            return deserializeValueComposite( valueDescriptor.module(),
-                                                              valueDescriptor.valueType(),
-                                                              mapValue );
+                            return deserializeStatefulAssociationValue( ( (CompositeDescriptor) descriptor ).module(),
+                                                                        descriptor.valueType(),
+                                                                        mapValue );
                         }
                     }
                 default:

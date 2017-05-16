@@ -87,10 +87,10 @@ public class ContextResourceClientFactory
 
     public void setAcceptedLanguages(Language... acceptedLanguages)
     {
-        List<Preference<Language>> languages = new ArrayList<Preference<Language>>();
+        List<Preference<Language>> languages = new ArrayList<>();
         for( Language acceptedLanguage : acceptedLanguages )
         {
-            languages.add( new Preference<Language>( ));
+            languages.add( new Preference<>());
         }
 
         info.setAcceptedLanguages( languages );
@@ -99,10 +99,10 @@ public class ContextResourceClientFactory
 
     public void setAcceptedMediaTypes(MediaType... acceptedMediaTypes)
     {
-        List<Preference<MediaType>> mediatypes = new ArrayList<Preference<MediaType>>();
+        List<Preference<MediaType>> mediatypes = new ArrayList<>();
         for( MediaType mediaType : acceptedMediaTypes )
         {
-            mediatypes.add( new Preference<MediaType>(mediaType) );
+            mediatypes.add( new Preference<>( mediaType ) );
         }
 
         info.setAcceptedMediaTypes( mediatypes );

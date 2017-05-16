@@ -21,14 +21,12 @@
 package org.apache.polygene.library.rdf.repository;
 
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.property.Property;
 
 /**
  * JAVADOC Add JavaDoc
  */
 public interface HttpRepositoryConfiguration
-    extends ConfigurationComposite
 {
     /**
      * The URL of the remote Sesame HTTP Repository.

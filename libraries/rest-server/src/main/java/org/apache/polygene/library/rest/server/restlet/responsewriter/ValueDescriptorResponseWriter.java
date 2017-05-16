@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -36,6 +35,8 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.value.ValueDescriptor;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
+import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -57,6 +58,12 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
     private ModuleDescriptor module;
 
     @Service
+    private JsonSerializer jsonSerializer;
+
+    @Service
+    private JavaxJsonFactories json;
+
+    @Service
     private Configuration cfg;
 
     @Override
@@ -69,7 +76,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
             if( APPLICATION_JSON.equals( type ) )
             {
                 ValueDescriptor vd = (ValueDescriptor) result;
-                JsonObjectBuilder builder = Json.createObjectBuilder();
+                JsonObjectBuilder builder = json.builderFactory().createObjectBuilder();
                 vd.state().properties().forEach(
                     property ->
                     {
@@ -82,7 +89,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
                             }
                             else
                             {
-                                builder.add( property.qualifiedName().name(), o.toString() );
+                                builder.add( property.qualifiedName().name(), jsonSerializer.toJson( o ) );
                             }
                         }
                         catch( JsonException ex )

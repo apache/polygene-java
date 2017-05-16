@@ -26,7 +26,6 @@ import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
@@ -36,7 +35,6 @@ import org.apache.polygene.envisage.school.domain.person.assembly.PersonEntity;
 @Mixins( SamplePersonInitialData.SamplePersonBootstrapMixin.class )
 @Activators( SamplePersonInitialData.Activator.class )
 public interface SamplePersonInitialData
-    extends ServiceComposite
 {
     String EDWARD = "edward";
     String NICLAS = "niclas";
@@ -58,7 +56,7 @@ public interface SamplePersonInitialData
 
     }
 
-    public abstract class SamplePersonBootstrapMixin
+    abstract class SamplePersonBootstrapMixin
         implements SamplePersonInitialData
     {
         private static final String[][] DATAS =

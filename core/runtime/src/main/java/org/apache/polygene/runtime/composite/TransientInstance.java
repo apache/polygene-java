@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -38,12 +37,6 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 public class TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static TransientInstance compositeInstanceOf( Composite composite )
-    {
-        InvocationHandler handler = Proxy.getInvocationHandler( composite );
-        return (TransientInstance) handler;
-    }
-
     private final Composite proxy;
     protected final Object[] mixins;
     protected StateHolder state;

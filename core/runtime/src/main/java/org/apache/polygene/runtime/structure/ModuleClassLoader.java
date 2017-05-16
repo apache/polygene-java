@@ -76,7 +76,7 @@ class ModuleClassLoader
                     if( iterator.hasNext() )
                     {
                         // Ambiguous exception
-                        new AmbiguousTypeException(
+                        throw new AmbiguousTypeException(
                             "More than one model matches the classname " + name + ":" + iterator.next()
                         );
                     }
@@ -119,7 +119,7 @@ class ModuleClassLoader
                         if( layerModelsIter.hasNext() )
                         {
                             // Ambiguous exception
-                            new AmbiguousTypeException(
+                            throw new AmbiguousTypeException(
                                 "More than one model matches the classname " + name + ":" + layerModelsIter.next()
                             );
                         }
@@ -160,7 +160,7 @@ class ModuleClassLoader
                         if( usedLayersModelsIter.hasNext() )
                         {
                             // Ambiguous exception
-                            new AmbiguousTypeException(
+                            throw new AmbiguousTypeException(
                                 "More than one model matches the classname " + name + ":" + usedLayersModelsIter.next()
                             );
                         }

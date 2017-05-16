@@ -25,7 +25,6 @@ import java.util.Locale;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
@@ -40,7 +39,7 @@ import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
 
 @Concerns( UnitOfWorkConcern.class )
 @Mixins( AlarmProxy.Mixin.class )
-public interface AlarmProxy extends AlarmPoint, TransientComposite
+public interface AlarmProxy extends AlarmPoint
 {
     @Mixins( FactoryMixin.class )
     interface Factory extends ServiceComposite

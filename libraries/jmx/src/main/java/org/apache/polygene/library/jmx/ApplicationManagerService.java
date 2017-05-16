@@ -37,7 +37,6 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ImportedServiceDescriptor;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
@@ -70,7 +69,6 @@ import static org.apache.polygene.api.service.qualifier.ServiceQualifier.withId;
 @Mixins( ApplicationManagerService.Mixin.class )
 @Activators( ApplicationManagerService.Activator.class )
 public interface ApplicationManagerService
-    extends ServiceComposite
 {
 
     void exportApplicationStructure()

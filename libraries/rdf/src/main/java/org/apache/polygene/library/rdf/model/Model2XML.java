@@ -45,7 +45,7 @@ import org.w3c.dom.Node;
 public class Model2XML
     implements Function<ApplicationDescriptor, Document>
 {
-    private static Map<String, String> simpleMappings = new HashMap<String, String>();
+    private static Map<String, String> simpleMappings = new HashMap<>();
 
     static
     {
@@ -69,7 +69,7 @@ public class Model2XML
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             final Document document = builder.newDocument();
 
-            final Stack<Node> current = new Stack<Node>();
+            final Stack<Node> current = new Stack<>();
             current.push( document );
 
             application.accept( new HierarchicalVisitor<Object, Object, DOMException>()

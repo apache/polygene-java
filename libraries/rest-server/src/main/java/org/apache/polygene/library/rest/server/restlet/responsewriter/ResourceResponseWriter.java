@@ -31,6 +31,7 @@ import java.util.Map;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.library.rest.common.Resource;
 import org.apache.polygene.library.rest.common.link.LinksUtil;
+import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -48,6 +49,9 @@ public class ResourceResponseWriter extends AbstractResponseWriter
 
     @Service
     private Configuration cfg;
+
+    @Service
+    private JsonSerializer jsonSerializer;
 
     @Override
     public boolean writeResponse( final Object result, final Response response )
@@ -72,7 +76,8 @@ public class ResourceResponseWriter extends AbstractResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                response.setEntity( new StringRepresentation( resourceValue.toString(), MediaType.APPLICATION_JSON ) );
+                String json = jsonSerializer.serialize( resourceValue );
+                response.setEntity( new StringRepresentation( json, MediaType.APPLICATION_JSON ) );
                 return true;
             }
             else if( MediaType.TEXT_HTML.equals( type ) )
@@ -83,7 +88,7 @@ public class ResourceResponseWriter extends AbstractResponseWriter
                     public void write( Writer writer )
                         throws IOException
                     {
-                        Map<String, Object> context = new HashMap<String, Object>();
+                        Map<String, Object> context = new HashMap<>();
                         context.put( "request", response.getRequest() );
                         context.put( "response", response );
                         context.put( "result", result );

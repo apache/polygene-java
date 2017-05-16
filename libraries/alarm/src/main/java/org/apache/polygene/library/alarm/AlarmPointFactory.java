@@ -24,14 +24,13 @@ import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 
 @Mixins( AlarmPointFactory.Mixin.class )
-public interface AlarmPointFactory extends ServiceComposite
+public interface AlarmPointFactory
 {
     AlarmPoint create(Identity identity, String systemName, String categoryName, AlarmClass alarmClass );
 

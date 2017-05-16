@@ -460,14 +460,7 @@ public final class ApplicationDetailDescriptorBuilder
 
         private LayerDetailDescriptor getLayerDetailDescriptor( LayerDescriptor aDescriptor )
         {
-            LayerDetailDescriptor detailDescriptor = layerDescToDetail.get( aDescriptor );
-            if( detailDescriptor == null )
-            {
-                detailDescriptor = new LayerDetailDescriptor( aDescriptor );
-                layerDescToDetail.put( aDescriptor, detailDescriptor );
-            }
-
-            return detailDescriptor;
+            return layerDescToDetail.computeIfAbsent( aDescriptor, LayerDetailDescriptor::new );
         }
 
         private void resetInjectableRelatedVariables()

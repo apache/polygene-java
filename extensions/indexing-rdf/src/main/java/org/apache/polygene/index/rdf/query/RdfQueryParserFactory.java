@@ -23,7 +23,6 @@ package org.apache.polygene.index.rdf.query;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.rdf.UnsupportedLanguageException;
 import org.apache.polygene.index.rdf.query.internal.RdfQueryParserImpl;
 import org.apache.polygene.spi.PolygeneSPI;
@@ -32,7 +31,6 @@ import org.openrdf.query.QueryLanguage;
 
 @Mixins( RdfQueryParserFactory.RdfQueryParserFactoryMixin.class )
 public interface RdfQueryParserFactory
-    extends ServiceComposite
 {
     RdfQueryParser newQueryParser( QueryLanguage language );
 

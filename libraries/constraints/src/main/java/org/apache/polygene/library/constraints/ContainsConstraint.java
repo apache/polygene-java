@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.Contains;
 public class ContainsConstraint
     implements Constraint<Contains, String>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( Contains annotation, String argument )
     {

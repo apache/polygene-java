@@ -32,7 +32,7 @@ public interface Application
     /**
      * Application modes.
      */
-    public enum Mode
+    enum Mode
     {
         /**
          * Should be used for unit test runs. Created files etc. should be cleaned up between runs.

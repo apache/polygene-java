@@ -46,7 +46,7 @@ public final class ConstructorModel
 
     public ConstructorModel( Constructor<?> constructor, InjectedParametersModel parameters )
     {
-        this.constructor = AccessibleObjects.accessible( constructor);
+        this.constructor = AccessibleObjects.accessible( constructor );
         this.parameters = parameters;
     }
 
@@ -92,16 +92,19 @@ public final class ConstructorModel
             {
                 throw (InvalidCompositeException) targetException;
             }
-            String message = "Could not instantiate \n    " + constructor.getDeclaringClass() + "\nusing constructor:\n    " + constructor
-                .toGenericString();
-            throw new ConstructionException( message, targetException );
+            throw new ConstructionException( createExceptionMessage( parametersInstance ), targetException );
         }
         catch( Throwable e )
         {
-            System.err.println( constructor.toGenericString() );
-            System.err.println( Arrays.asList( parametersInstance ) );
-            throw new ConstructionException( "Could not instantiate " + constructor.getDeclaringClass(), e );
+            throw new ConstructionException( createExceptionMessage( parametersInstance ), e );
         }
+    }
+
+    private String createExceptionMessage( Object[] parametersInstance )
+    {
+        return "Could not instantiate \n    " + constructor.getDeclaringClass()
+               + "\nusing constructor:\n    " + constructor.toGenericString()
+               + "\nparameter types:\n    " + Arrays.toString( parametersInstance );
     }
 
     @Override

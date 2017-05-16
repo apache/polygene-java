@@ -149,10 +149,12 @@ class ReportsPlugin implements Plugin<Project>
       }
       apiSources.each { Project apiProject ->
         apiProject.afterEvaluate { Project evaluatedApiProject ->
-          def mainSourceSet = evaluatedApiProject.convention.getPlugin( JavaPluginConvention )
-                                                 .sourceSets.getByName( 'main' )
-          task.source mainSourceSet.allJava
-          task.classpath += mainSourceSet.compileClasspath
+          def javaConvention = evaluatedApiProject.convention.findPlugin( JavaPluginConvention )
+          if(javaConvention) {
+              def mainSourceSet = javaConvention.sourceSets.getByName( 'main' )
+              task.source mainSourceSet.allJava
+              task.classpath += mainSourceSet.compileClasspath
+          }
         }
       }
     }

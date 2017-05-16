@@ -401,10 +401,7 @@ public class EntityResource
                 if( newStringAssociation == null )
                 {
                     // Remove "left-overs"
-                    for( EntityReference entityReference : manyAssociation )
-                    {
-                        manyAssociation.remove( entityReference );
-                    }
+                    manyAssociation.clear();
                 }
                 else
                 {
@@ -455,10 +452,7 @@ public class EntityResource
                 if( newStringAssociation == null )
                 {
                     // Remove "left-overs"
-                    for( String name : namedAssociation )
-                    {
-                        namedAssociation.remove( name );
-                    }
+                    namedAssociation.clear();
                 }
                 else
                 {

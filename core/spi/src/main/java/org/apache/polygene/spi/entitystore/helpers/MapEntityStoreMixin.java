@@ -27,13 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -48,7 +49,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.serialization.javaxjson.JavaxJson;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -58,6 +59,8 @@ import org.apache.polygene.spi.entitystore.EntityStoreSPI;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.StateCommitter;
 import org.apache.polygene.spi.serialization.JsonSerialization;
+
+import static org.apache.polygene.api.entity.EntityReference.parseEntityReference;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -81,6 +84,9 @@ public class MapEntityStoreMixin
 
     @Service
     private JsonSerialization jsonSerialization;
+
+    @Service
+    private JavaxJsonFactories jsonFactories;
 
     @Optional
     @Service
@@ -137,10 +143,9 @@ public class MapEntityStoreMixin
     @Override
     public synchronized String versionOf( EntityStoreUnitOfWork uow, EntityReference reference )
     {
-        try
+        try( JsonReader jsonReader = jsonFactories.readerFactory().createReader( mapEntityStore.get( reference ) ) )
         {
-            Reader in = mapEntityStore.get( reference );
-            return Json.createReader( in ).readObject().getString( JSONKeys.VERSION );
+            return jsonReader.readObject().getString( JSONKeys.VERSION );
         }
         catch( EntityStoreException ex )
         {
@@ -312,56 +317,53 @@ public class MapEntityStoreMixin
     {
         try
         {
-            JsonObjectBuilder json = Json.createObjectBuilder();
+            JsonObjectBuilder json = jsonFactories.builderFactory().createObjectBuilder();
             json.add( JSONKeys.IDENTITY, state.entityReference().identity().toString() );
             json.add( JSONKeys.APPLICATION_VERSION, application.version() );
             json.add( JSONKeys.TYPE, state.entityDescriptor().primaryType().getName() );
             json.add( JSONKeys.VERSION, version );
             json.add( JSONKeys.MODIFIED, lastModified.toEpochMilli() );
-            JsonObjectBuilder properties = Json.createObjectBuilder();
+            JsonObjectBuilder valueBuilder = jsonFactories.builderFactory().createObjectBuilder();
             EntityDescriptor entityType = state.entityDescriptor();
             entityType.state().properties().forEach(
                 persistentProperty ->
                 {
                     Object value = state.properties().get( persistentProperty.qualifiedName() );
                     JsonValue jsonValue = jsonSerialization.toJson( value );
-                    properties.add( persistentProperty.qualifiedName().name(), jsonValue );
+                    valueBuilder.add( persistentProperty.qualifiedName().name(), jsonValue );
                 } );
-            json.add( JSONKeys.PROPERTIES, properties.build() );
 
-            JsonObjectBuilder associations = Json.createObjectBuilder();
             for( Map.Entry<QualifiedName, EntityReference> entry : state.associations().entrySet() )
             {
                 EntityReference value = entry.getValue();
-                associations.add( entry.getKey().name(), value == null ? null : value.identity().toString() );
+                valueBuilder.add( entry.getKey().name(), value == null ? null : value.identity().toString() );
             }
-            json.add( JSONKeys.ASSOCIATIONS, associations.build() );
 
-            JsonObjectBuilder manyAssociations = Json.createObjectBuilder();
             for( Map.Entry<QualifiedName, List<EntityReference>> entry : state.manyAssociations().entrySet() )
             {
-                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                JsonArrayBuilder arrayBuilder = jsonFactories.builderFactory().createArrayBuilder();
                 for( EntityReference entityReference : entry.getValue() )
                 {
                     arrayBuilder.add( entityReference.identity().toString() );
                 }
-                manyAssociations.add( entry.getKey().name(), arrayBuilder.build() );
+                valueBuilder.add( entry.getKey().name(), arrayBuilder.build() );
             }
-            json.add( JSONKeys.MANY_ASSOCIATIONS, manyAssociations.build() );
 
-            JsonObjectBuilder namedAssociations = Json.createObjectBuilder();
             for( Map.Entry<QualifiedName, Map<String, EntityReference>> entry : state.namedAssociations().entrySet() )
             {
-                JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+                JsonObjectBuilder objectBuilder = jsonFactories.builderFactory().createObjectBuilder();
                 for( Map.Entry<String, EntityReference> namedRef : entry.getValue().entrySet() )
                 {
                     objectBuilder.add( namedRef.getKey(), namedRef.getValue().identity().toString() );
                 }
-                namedAssociations.add( entry.getKey().name(), objectBuilder.build() );
+                valueBuilder.add( entry.getKey().name(), objectBuilder.build() );
             }
-            json.add( JSONKeys.NAMED_ASSOCIATIONS, namedAssociations.build() );
+            json.add( JSONKeys.VALUE, valueBuilder.build() );
             JsonObject jsonState = json.build();
-            Json.createWriter( writer ).write( jsonState );
+            try( JsonWriter jsonWriter = jsonFactories.writerFactory().createWriter( writer ) )
+            {
+                jsonWriter.write( jsonState );
+            }
         }
         catch( Exception e )
         {
@@ -372,10 +374,10 @@ public class MapEntityStoreMixin
     protected EntityState readEntityState( ModuleDescriptor module, Reader entityState )
         throws EntityStoreException
     {
-        try
+        try( JsonReader jsonReader = jsonFactories.readerFactory().createReader( entityState ) )
         {
-            JsonObject parsedState = Json.createReader( entityState ).readObject();
-            JsonObjectBuilder jsonStateBuilder = JavaxJson.toBuilder( parsedState );
+            JsonObject parsedState = jsonReader.readObject();
+            JsonObjectBuilder jsonStateBuilder = jsonFactories.cloneBuilder( parsedState );
             final EntityStatus[] status = { EntityStatus.LOADED };
 
             String version = parsedState.getString( JSONKeys.VERSION );
@@ -414,13 +416,13 @@ public class MapEntityStoreMixin
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
-            JsonObject props = state.getJsonObject( JSONKeys.PROPERTIES );
+            JsonObject valueState = state.getJsonObject( JSONKeys.VALUE );
             entityDescriptor.state().properties().forEach(
                 property ->
                 {
                     try
                     {
-                        JsonValue jsonValue = props.get( property.qualifiedName().name() );
+                        JsonValue jsonValue = valueState.get( property.qualifiedName().name() );
                         Object value = jsonSerialization.fromJson( module, property.valueType(), jsonValue );
                         properties.put( property.qualifiedName(), value );
                     }
@@ -434,16 +436,15 @@ public class MapEntityStoreMixin
                 } );
 
             Map<QualifiedName, EntityReference> associations = new HashMap<>();
-            JsonObject assocs = state.getJsonObject( JSONKeys.ASSOCIATIONS );
             entityDescriptor.state().associations().forEach(
                 association ->
                 {
                     try
                     {
-                        String jsonValue = assocs.getString( association.qualifiedName().name(), null );
+                        String jsonValue = valueState.getString( association.qualifiedName().name(), null );
                         EntityReference value = jsonValue == null
                                                 ? null
-                                                : EntityReference.parseEntityReference( jsonValue );
+                                                : parseEntityReference( jsonValue );
                         associations.put( association.qualifiedName(), value );
                     }
                     catch( JsonException e )
@@ -454,7 +455,6 @@ public class MapEntityStoreMixin
                     }
                 } );
 
-            JsonObject manyAssocs = state.getJsonObject( JSONKeys.MANY_ASSOCIATIONS );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<>();
             entityDescriptor.state().manyAssociations().forEach(
                 association ->
@@ -462,13 +462,13 @@ public class MapEntityStoreMixin
                     List<EntityReference> references = new ArrayList<>();
                     try
                     {
-                        JsonArray jsonValues = manyAssocs.getJsonArray( association.qualifiedName().name() );
+                        JsonArray jsonValues = valueState.getJsonArray( association.qualifiedName().name() );
                         for( int i = 0; i < jsonValues.size(); i++ )
                         {
                             String jsonValue = jsonValues.getString( i, null );
                             EntityReference value = jsonValue == null
                                                     ? null
-                                                    : EntityReference.parseEntityReference( jsonValue );
+                                                    : parseEntityReference( jsonValue );
                             references.add( value );
                         }
                         manyAssociations.put( association.qualifiedName(), references );
@@ -480,7 +480,6 @@ public class MapEntityStoreMixin
                     }
                 } );
 
-            JsonObject namedAssocs = state.getJsonObject( JSONKeys.NAMED_ASSOCIATIONS );
             Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<>();
             entityDescriptor.state().namedAssociations().forEach(
                 association ->
@@ -488,13 +487,13 @@ public class MapEntityStoreMixin
                     Map<String, EntityReference> references = new LinkedHashMap<>();
                     try
                     {
-                        JsonObject jsonValues = namedAssocs.getJsonObject( association.qualifiedName().name() );
+                        JsonObject jsonValues = valueState.getJsonObject( association.qualifiedName().name() );
                         for( String name : jsonValues.keySet() )
                         {
                             String value = jsonValues.getString( name, null );
                             EntityReference ref = value == null
                                                   ? null
-                                                  : EntityReference.parseEntityReference( value );
+                                                  : parseEntityReference( value );
                             references.put( name, ref );
                         }
                         namedAssociations.put( association.qualifiedName(), references );
@@ -526,9 +525,10 @@ public class MapEntityStoreMixin
     @Override
     public JsonObject jsonStateOf( String id )
     {
-        try( Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ) )
+        try( JsonReader reader = jsonFactories.readerFactory()
+                                              .createReader( mapEntityStore.get( parseEntityReference( id ) ) ) )
         {
-            return Json.createReader( reader ).readObject();
+            return reader.readObject();
         }
         catch( EntityStoreException ex )
         {

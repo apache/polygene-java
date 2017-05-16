@@ -24,11 +24,9 @@ import org.apache.shiro.authz.Authorizer;
 import org.apache.shiro.realm.Realm;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.api.service.ServiceComposite;
 
 @Mixins( PasswordRealmMixin.class )
 public interface PasswordRealmService
-        extends Realm, Authorizer, PasswordService,
-                ServiceComposite, ServiceActivation
+    extends Realm, Authorizer, PasswordService, ServiceActivation
 {
 }

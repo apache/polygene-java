@@ -57,7 +57,7 @@ express is very explicit.
 To define a property you would have had to write a field and two accessors, and if you use interfaces then those
 accessors would have to be duplicated.
 
-The EntityComposite base interface also includes an identity property for you, as that's an intrinsic feature of
+The `HasIdentity` base interface also includes an identity property for you, as that's an intrinsic feature of
 Entities, so that's all taken care of.
 So if you speak about Entities in your domain discussions, each having Properties, then you can put that down in
 code pretty much as-is.
@@ -114,8 +114,8 @@ tag=values
 
 Normally if you want a property to be immutable, meaning, you can set an initial value but not change it later, you
 would have to mark the Property as @Immutable.
-But since NameValue extends ValueComposite, which itself is marked with @Immutable, this is implicit for all subtypes
-of ValueComposite, and there's no way to "opt out" of it.
+But since NameValue will be assembled as a ValueComposite, which itself is marked with @Immutable, this is implicit
+for all ValueComposites, and there's no way to "opt out" of it.
 
 By introducing one more level in the state model you have created an easy way to access the name as a whole and hand
 it around the system, instead of as two separate properties.

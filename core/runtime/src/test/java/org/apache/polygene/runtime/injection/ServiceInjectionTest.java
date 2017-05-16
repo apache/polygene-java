@@ -24,12 +24,11 @@ import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Predicate;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.object.ObjectFactory;
@@ -45,11 +44,12 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
 import static org.apache.polygene.api.common.Visibility.application;
 import static org.apache.polygene.api.common.Visibility.layer;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -168,17 +168,17 @@ public class ServiceInjectionTest
     }
 
     @Mixins( MyServiceMixin.class )
-    public static interface MyServiceComposite
+    public interface MyServiceComposite
         extends MyService, ServiceComposite
     {
     }
 
-    public static interface MyServiceComposite2
+    public interface MyServiceComposite2
         extends MyServiceComposite
     {
     }
 
-    public static interface MyService
+    public interface MyService
     {
         String doStuff();
     }
@@ -302,7 +302,7 @@ public class ServiceInjectionTest
     @Retention( RetentionPolicy.RUNTIME )
     public @interface Named
     {
-        public abstract String value();
+        String value();
     }
 
     public static final class NamedSelector
@@ -337,13 +337,13 @@ public class ServiceInjectionTest
         }
     }
 
-    public static interface Foo<T>
+    public interface Foo<T>
     {
         T get();
     }
 
     @Mixins( StringService.Mixin.class )
-    public static interface StringService
+    public interface StringService
         extends Foo<String>, ServiceComposite
     {
         class Mixin
@@ -358,7 +358,7 @@ public class ServiceInjectionTest
     }
 
     @Mixins( LongService.Mixin.class )
-    public static interface LongService
+    public interface LongService
         extends Foo<Long>, ServiceComposite
     {
         class Mixin

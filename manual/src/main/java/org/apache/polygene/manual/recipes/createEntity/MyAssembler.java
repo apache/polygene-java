@@ -26,7 +26,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 // START SNIPPET: assembler2
 // START SNIPPET: assembler1
 public class MyAssembler
-        implements Assembler
+    implements Assembler
 {
     public void assemble( ModuleAssembly module )
     {

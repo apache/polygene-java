@@ -26,12 +26,17 @@ import java.lang.annotation.Target;
 /**
  * Convert this type or Property with the given {@link Converter}.
  *
- * The {@link Converter} must be assembled as an object and will automatically be instantiated by the Polygene runtime.
+ * {@link Converter}s must have a no-args constructor and will be instantiated by the serialization SPI.
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )
 @Documented
 public @interface ConvertedBy
 {
+    /**
+     * The serialization converter type.
+     *
+     * @return the serialization converter type
+     */
     Class<? extends Converter> value();
 }

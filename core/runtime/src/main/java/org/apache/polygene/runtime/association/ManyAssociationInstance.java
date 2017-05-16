@@ -38,8 +38,7 @@ import org.apache.polygene.spi.entity.ManyAssociationState;
 /**
  * JAVADOC
  */
-public class ManyAssociationInstance<T>
-    extends AbstractAssociationInstance<T>
+public class ManyAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements ManyAssociation<T>
 {
     private ManyAssociationState manyAssociationState;
@@ -89,6 +88,13 @@ public class ManyAssociationInstance<T>
         checkType( entity );
 
         return manyAssociationState.remove( EntityReference.create( ((HasIdentity) entity).identity().get() ) );
+    }
+
+    @Override
+    public boolean clear()
+    {
+        checkImmutable();
+        return manyAssociationState.clear();
     }
 
     @Override
@@ -199,7 +205,7 @@ public class ManyAssociationInstance<T>
     {
         private final Iterator<EntityReference> idIterator;
 
-        public ManyAssociationIterator( Iterator<EntityReference> idIterator )
+        ManyAssociationIterator( Iterator<EntityReference> idIterator )
         {
             this.idIterator = idIterator;
         }

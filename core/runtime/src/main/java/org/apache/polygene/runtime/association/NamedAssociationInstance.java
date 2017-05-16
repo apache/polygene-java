@@ -37,17 +37,15 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 
-public class NamedAssociationInstance<T>
-    extends AbstractAssociationInstance<T>
+public class NamedAssociationInstance<T> extends AbstractAssociationInstance<T>
     implements NamedAssociation<T>
 {
-
     private final NamedAssociationState namedAssociationState;
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
                                      BiFunction<EntityReference, Type, Object> associationFunction,
                                      NamedAssociationState namedAssociationState
-    )
+                                   )
     {
         super( associationInfo, associationFunction );
         this.namedAssociationState = namedAssociationState;
@@ -78,7 +76,7 @@ public class NamedAssociationInstance<T>
         checkImmutable();
         checkType( entity );
         associationInfo.checkConstraints( entity );
-        return namedAssociationState.put( name, EntityReference.create( ((HasIdentity) entity).identity().get() ) );
+        return namedAssociationState.put( name, EntityReference.create( ( (HasIdentity) entity ).identity().get() ) );
     }
 
     @Override
@@ -86,6 +84,13 @@ public class NamedAssociationInstance<T>
     {
         checkImmutable();
         return namedAssociationState.remove( name );
+    }
+
+    @Override
+    public boolean clear()
+    {
+        checkImmutable();
+        return namedAssociationState.clear();
     }
 
     @Override
@@ -128,9 +133,8 @@ public class NamedAssociationInstance<T>
         return Collections.unmodifiableMap(
             StreamSupport.stream( namedAssociationState.spliterator(), false )
                          .collect( Collectors.toMap( Function.identity(), namedAssociationState::get ) )
-        ).entrySet();
+                                          ).entrySet();
     }
-
 
     @Override
     public boolean equals( Object o )
@@ -188,5 +192,4 @@ public class NamedAssociationInstance<T>
         }
         return hash;
     }
-
 }

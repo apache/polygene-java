@@ -44,7 +44,7 @@ public interface NamedAssociation<T>
     boolean containsName( String name );
 
     /**
-     * Adds a named assocation.
+     * Adds a named association.
      * @param name The name of the association.
      * @param entity The entity for this named association.
      * @return true if putted, false otherwise
@@ -57,6 +57,12 @@ public interface NamedAssociation<T>
      * @return true if removed, false otherwise
      */
     boolean remove( String name );
+
+    /**
+     * Clear all named associations.
+     * @return true if cleared, false otherwise
+     */
+    boolean clear();
 
     /**
      * Retrieves a named association.

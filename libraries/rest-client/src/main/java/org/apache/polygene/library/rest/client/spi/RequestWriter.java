@@ -36,6 +36,6 @@ public interface RequestWriter
     * @return true if the object was written to the Request instance, false if handler can not write the object.
     * @throws org.restlet.resource.ResourceException
     */
-   public boolean writeRequest(Object requestObject, Request request)
+   boolean writeRequest(Object requestObject, Request request)
       throws ResourceException;
 }

@@ -71,7 +71,6 @@ public final class ApplicationPassivationThread
     private static class ApplicationPassivation
         implements Runnable
     {
-
         private final Application application;
         private final PrintStream output;
         private final Logger logger;

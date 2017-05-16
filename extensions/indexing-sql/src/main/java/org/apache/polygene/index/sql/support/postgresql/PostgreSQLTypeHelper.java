@@ -52,7 +52,7 @@ public interface PostgreSQLTypeHelper
 
     Integer getSQLType( Object primitive );
 
-    public class SQLTypeHelperMixin
+    class SQLTypeHelperMixin
         implements PostgreSQLTypeHelper
     {
 

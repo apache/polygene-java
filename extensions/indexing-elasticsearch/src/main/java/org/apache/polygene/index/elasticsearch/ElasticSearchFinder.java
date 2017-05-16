@@ -316,7 +316,7 @@ public interface ElasticSearchFinder
                     processSpecification( shouldBuilder, operand, variables );
                     orBuilder.should( shouldBuilder );
                 }
-                orBuilder.minimumNumberShouldMatch( 1 );
+                orBuilder.minimumShouldMatch( 1 );
                 queryBuilder.must( orBuilder );
             }
             else

@@ -47,11 +47,8 @@ package org.apache.polygene.api.composite;
  * one is intended.
  * </p>
  */
-public class AmbiguousTypeException
-    extends RuntimeException
+public class AmbiguousTypeException extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
-
     public AmbiguousTypeException( String message )
     {
         super( message );

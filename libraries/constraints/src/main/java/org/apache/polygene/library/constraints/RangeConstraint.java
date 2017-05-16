@@ -28,9 +28,6 @@ import org.apache.polygene.library.constraints.annotation.Range;
 public class RangeConstraint
     implements Constraint<Range, Number>
 {
-
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean isValid( Range range, Number argument )
     {

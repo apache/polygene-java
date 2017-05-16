@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.spi.entitystore.helpers;
 
+import java.io.BufferedReader;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -50,7 +50,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.serialization.javaxjson.JavaxJson;
+import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
 import org.apache.polygene.spi.cache.NullCache;
@@ -63,6 +63,8 @@ import org.apache.polygene.spi.entitystore.EntityStoreSPI;
 import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.StateCommitter;
 import org.apache.polygene.spi.serialization.JsonSerialization;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -88,7 +90,10 @@ public class JSONMapEntityStoreMixin
     private JsonSerialization serialization;
 
     @Service
-    IdentityGenerator identityGenerator;
+    private JavaxJsonFactories jsonFactories;
+
+    @Service
+    private IdentityGenerator identityGenerator;
 
     @Optional
     @Service
@@ -152,19 +157,16 @@ public class JSONMapEntityStoreMixin
     {
         try
         {
-            JsonObjectBuilder builder = Json.createObjectBuilder();
+            JsonObjectBuilder builder = jsonFactories.builderFactory().createObjectBuilder();
             builder.add( JSONKeys.IDENTITY, reference.identity().toString() );
             builder.add( JSONKeys.APPLICATION_VERSION, application.version() );
             builder.add( JSONKeys.TYPE, entityDescriptor.types().findFirst().get().getName() );
             builder.add( JSONKeys.VERSION, uow.identity().toString() );
             builder.add( JSONKeys.MODIFIED, uow.currentTime().toEpochMilli() );
-            builder.add( JSONKeys.PROPERTIES, Json.createObjectBuilder().build() );
-            builder.add( JSONKeys.ASSOCIATIONS, Json.createObjectBuilder().build() );
-            builder.add( JSONKeys.MANY_ASSOCIATIONS, Json.createObjectBuilder().build() );
-            builder.add( JSONKeys.NAMED_ASSOCIATIONS, Json.createObjectBuilder().build() );
+            builder.add( JSONKeys.VALUE, jsonFactories.builderFactory().createObjectBuilder().build() );
             JsonObject state = builder.build();
-            return new JSONEntityState( entityDescriptor.module(), serialization,
-                                        "", uow.currentTime(),
+            return new JSONEntityState( entityDescriptor.module(), serialization, jsonFactories,
+                                        uow.identity().toString(), uow.currentTime(),
                                         reference,
                                         EntityStatus.NEW, entityDescriptor,
                                         state );
@@ -199,7 +201,7 @@ public class JSONMapEntityStoreMixin
                 }
                 if( doCacheOnRead( uow ) )
                 {
-                    cache.put( reference.identity().toString(), new CacheState( loadedState.state() ) );
+                    cache.put( reference.identity().toString(), new CacheState( loadedState.state().toString() ) );
                 }
                 return loadedState;
             }
@@ -220,13 +222,13 @@ public class JSONMapEntityStoreMixin
         CacheState cacheState = cache.get( reference.identity().toString() );
         if( cacheState != null )
         {
-            return cacheState.json.getString( JSONKeys.VERSION );
+            return jsonFactories.readerFactory().createReader( new StringReader( cacheState.string ) ).readObject()
+                                .getString( JSONKeys.VERSION );
         }
-        try
+        // Get state
+        try( JsonReader reader = jsonFactories.readerFactory().createReader( mapEntityStore.get( reference ) ) )
         {
-            // Get state
-            Reader entityState = mapEntityStore.get( reference );
-            return Json.createReader( entityState ).readObject().getString( JSONKeys.VERSION );
+            return reader.readObject().getString( JSONKeys.VERSION );
         }
         catch( EntityStoreException ex )
         {
@@ -239,7 +241,7 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public StateCommitter applyChanges( EntityStoreUnitOfWork uow, Iterable<EntityState> state )
+    public StateCommitter applyChanges( EntityStoreUnitOfWork uow, Iterable<EntityState> entityStates )
         throws EntityStoreException
     {
         return new StateCommitter()
@@ -249,10 +251,8 @@ public class JSONMapEntityStoreMixin
             {
                 try
                 {
-                    mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
-                    {
-                        @Override
-                        public void visitMap( MapEntityStore.MapChanger changer ) throws Exception
+                    mapEntityStore.applyChanges(
+                        changer ->
                         {
                             CacheOptions options = uow.usecase().metaInfo( CacheOptions.class );
                             if( options == null )
@@ -260,7 +260,7 @@ public class JSONMapEntityStoreMixin
                                 options = CacheOptions.ALWAYS;
                             }
 
-                            for( EntityState entityState : state )
+                            for( EntityState entityState : entityStates )
                             {
                                 JSONEntityState state = (JSONEntityState) entityState;
                                 String newVersion = uow.identity().toString();
@@ -275,7 +275,7 @@ public class JSONMapEntityStoreMixin
                                     if( options.cacheOnNew() )
                                     {
                                         cache.put( state.entityReference().identity().toString(),
-                                                   new CacheState( state.state() ) );
+                                                   new CacheState( state.state().toString() ) );
                                     }
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
@@ -291,7 +291,7 @@ public class JSONMapEntityStoreMixin
                                     if( options.cacheOnWrite() )
                                     {
                                         cache.put( state.entityReference().identity().toString(),
-                                                   new CacheState( state.state() ) );
+                                                   new CacheState( state.state().toString() ) );
                                     }
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
@@ -300,8 +300,7 @@ public class JSONMapEntityStoreMixin
                                     cache.remove( state.entityReference().identity().toString() );
                                 }
                             }
-                        }
-                    } );
+                        } );
                 }
                 catch( Exception e )
                 {
@@ -412,10 +411,10 @@ public class JSONMapEntityStoreMixin
     protected JSONEntityState readEntityState( ModuleDescriptor module, Reader entityState )
         throws EntityStoreException
     {
-        try
+        try( JsonReader reader = jsonFactories.readerFactory().createReader( entityState ) )
         {
-            JsonObject parsedState = Json.createReader( entityState ).readObject();
-            JsonObjectBuilder jsonStateBuilder = JavaxJson.toBuilder( parsedState );
+            JsonObject parsedState = reader.readObject();
+            JsonObjectBuilder jsonStateBuilder = jsonFactories.cloneBuilder( parsedState );
             EntityStatus status = EntityStatus.LOADED;
 
             String version = parsedState.getString( JSONKeys.VERSION );
@@ -453,7 +452,7 @@ public class JSONMapEntityStoreMixin
                 throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
             }
 
-            return new JSONEntityState( entityDescriptor.module(), serialization,
+            return new JSONEntityState( entityDescriptor.module(), serialization, jsonFactories,
                                         version, modified,
                                         EntityReference.create( identity ),
                                         status, entityDescriptor,
@@ -473,12 +472,10 @@ public class JSONMapEntityStoreMixin
     @Override
     public JsonObject jsonStateOf( String id )
     {
-        try( Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ) )
+        try( JsonReader jsonReader = jsonFactories
+            .readerFactory().createReader( mapEntityStore.get( EntityReference.parseEntityReference( id ) ) ) )
         {
-            try( JsonReader jsonReader = Json.createReader( reader ) )
-            {
-                return jsonReader.readObject();
-            }
+            return jsonReader.readObject();
         }
         catch( EntityStoreException ex )
         {
@@ -495,18 +492,19 @@ public class JSONMapEntityStoreMixin
         CacheState cacheState = cache.get( reference.identity().toString() );
         if( cacheState != null )
         {
-            JsonObject data = cacheState.json;
+            JsonObject state = jsonFactories.readerFactory().createReader( new StringReader( cacheState.string ) )
+                                            .readObject();
             try
             {
-                String type = data.getString( JSONKeys.TYPE );
+                String type = state.getString( JSONKeys.TYPE );
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-                String version = data.getString( JSONKeys.VERSION );
-                Instant lastModified = Instant.ofEpochMilli( data.getJsonNumber( JSONKeys.MODIFIED ).longValueExact() );
-                return new JSONEntityState( entityDescriptor.module(), serialization,
-                                            version, lastModified,
+                String version = state.getString( JSONKeys.VERSION );
+                Instant modified = Instant.ofEpochMilli( state.getJsonNumber( JSONKeys.MODIFIED ).longValueExact() );
+                return new JSONEntityState( entityDescriptor.module(), serialization, jsonFactories,
+                                            version, modified,
                                             reference,
                                             EntityStatus.LOADED, entityDescriptor,
-                                            data );
+                                            state );
             }
             catch( Exception e )
             {
@@ -526,29 +524,32 @@ public class JSONMapEntityStoreMixin
     public static class CacheState
         implements Externalizable
     {
-        public JsonObject json;
+        public String string;
 
         public CacheState()
         {
         }
 
-        private CacheState( JsonObject state )
+        private CacheState( String string )
         {
-            json = state;
+            this.string = string;
         }
 
         @Override
         public void writeExternal( ObjectOutput out )
             throws IOException
         {
-            out.writeUTF( json.toString() );
+            out.writeUTF( string );
         }
 
         @Override
         public void readExternal( ObjectInput in )
             throws IOException, ClassNotFoundException
         {
-            json = Json.createReader( new StringReader( in.readUTF() ) ).readObject();
+            try( BufferedReader reader = new BufferedReader( new StringReader( in.readUTF() ) ) )
+            {
+                string = reader.lines().collect( joining( "\n" ) );
+            }
         }
     }
 }

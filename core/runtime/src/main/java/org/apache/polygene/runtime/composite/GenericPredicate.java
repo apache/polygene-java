@@ -17,18 +17,22 @@
  *
  *
  */
-package org.apache.polygene.api.constraint;
+package org.apache.polygene.runtime.composite;
 
-import org.apache.polygene.api.common.InvalidApplicationException;
+import java.lang.reflect.InvocationHandler;
+import java.util.function.Predicate;
 
 /**
- * This exception is thrown if a Constraint implementation can not be found.
+ * Specification that checks whether a given class implements InvocationHandler or not.
  */
-public class ConstraintImplementationNotFoundException
-    extends InvalidApplicationException
+public class GenericPredicate
+    implements Predicate<Class<?>>
 {
-    public ConstraintImplementationNotFoundException( String message )
+    public static final GenericPredicate INSTANCE = new GenericPredicate();
+
+    @Override
+    public boolean test( Class<?> item )
     {
-        super( message );
+        return InvocationHandler.class.isAssignableFrom( item );
     }
 }

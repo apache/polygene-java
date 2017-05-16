@@ -31,7 +31,7 @@ public class Namespaces
     /**
      * Mapping between namespace and prefix.
      */
-    private final Map<String, String> namespaces = new HashMap<String, String>();
+    private final Map<String, String> namespaces = new HashMap<>();
 
     public Namespaces()
     {

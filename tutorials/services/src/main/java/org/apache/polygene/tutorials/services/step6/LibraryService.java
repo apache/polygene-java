@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import org.apache.polygene.api.configuration.Configuration;
-import org.apache.polygene.api.configuration.ConfigurationComposite;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.property.Property;
@@ -33,8 +32,7 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 public class LibraryService
     implements Library
 {
-    public static interface LibraryConfiguration
-        extends ConfigurationComposite
+    public interface LibraryConfiguration
     {
         Property<String> titles();
 
@@ -49,7 +47,7 @@ public class LibraryService
                          @Structure ValueBuilderFactory factory
     )
     {
-        books = new HashMap<String, ArrayList<Book>>();
+        books = new HashMap<>();
         String titles = config.get().titles().get();
         String authors = config.get().authors().get();
         int copies = config.get().copies().get();
@@ -98,7 +96,7 @@ public class LibraryService
 
     private void createBook( ValueBuilderFactory factory, String author, String title, int copies )
     {
-        ArrayList<Book> bookCopies = new ArrayList<Book>();
+        ArrayList<Book> bookCopies = new ArrayList<>();
         String key = constructKey( author, title );
         books.put( key, bookCopies );
 

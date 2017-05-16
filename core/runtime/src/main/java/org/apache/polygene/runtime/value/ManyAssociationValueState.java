@@ -64,8 +64,18 @@ public class ManyAssociationValueState
     @Override
     public boolean remove( EntityReference entity )
     {
-        boolean removed = references.remove( entity );
-        return removed;
+        return references.remove( entity );
+    }
+
+    @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            return true;
+        }
+        return false;
     }
 
     @Override

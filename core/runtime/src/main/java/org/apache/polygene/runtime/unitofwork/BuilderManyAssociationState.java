@@ -33,12 +33,7 @@ import org.apache.polygene.spi.entity.ManyAssociationState;
 public final class BuilderManyAssociationState
     implements ManyAssociationState
 {
-    private List<EntityReference> references;
-
-    public BuilderManyAssociationState()
-    {
-        references = new ArrayList<EntityReference>();
-    }
+    private List<EntityReference> references = new ArrayList<>();
 
     @Override
     public int count()
@@ -68,6 +63,17 @@ public final class BuilderManyAssociationState
     public boolean remove( EntityReference entityReference )
     {
         return references.remove( entityReference );
+    }
+
+    @Override
+    public boolean clear()
+    {
+        if( !references.isEmpty() )
+        {
+            references.clear();
+            return true;
+        }
+        return false;
     }
 
     @Override

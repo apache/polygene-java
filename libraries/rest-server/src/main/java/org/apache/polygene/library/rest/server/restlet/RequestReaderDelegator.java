@@ -43,7 +43,7 @@ public class RequestReaderDelegator
 {
     private static final Object[] NULL_PARAMS = new Object[ 0 ];
 
-    List<RequestReader> requestReaders = new ArrayList<RequestReader>();
+    List<RequestReader> requestReaders = new ArrayList<>();
 
     @Structure
     Module module;

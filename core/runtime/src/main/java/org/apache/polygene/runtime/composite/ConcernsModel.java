@@ -17,7 +17,6 @@
  *
  *
  */
-
 package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
@@ -55,18 +54,15 @@ public final class ConcernsModel
 
     // Context
     public ConcernsInstance newInstance( Method method, ModuleDescriptor module,
-                                         FragmentInvocationHandler mixinInvocationHandler
-    )
+                                         FragmentInvocationHandler mixinInvocationHandler )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         InvocationHandler nextConcern = mixinInvocationHandler;
         for( int i = concernsFor.size() - 1; i >= 0; i-- )
         {
             ConcernModel concernModel = concernsFor.get( i );
-
             nextConcern = concernModel.newInstance( module, nextConcern, proxyHandler, method );
         }
-
         return new ConcernsInstance( nextConcern, mixinInvocationHandler, proxyHandler );
     }
 

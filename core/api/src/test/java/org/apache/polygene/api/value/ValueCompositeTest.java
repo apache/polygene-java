@@ -39,7 +39,9 @@ import org.apache.polygene.library.constraints.annotation.MaxLength;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -227,7 +229,8 @@ public class ValueCompositeTest
             entityBuilder.instance().someValue().set( some );
             SomeEntity entity = entityBuilder.newInstance();
 
-            ValueBuilder<AssociationValue> associationBuilder = valueBuilderFactory.newValueBuilder( AssociationValue.class );
+            ValueBuilder<AssociationValue> associationBuilder = valueBuilderFactory.newValueBuilder(
+                AssociationValue.class );
             associationBuilder.prototype().some().set( entity );
             associationValue = associationBuilder.newInstance();
 
@@ -237,7 +240,8 @@ public class ValueCompositeTest
 
             unitOfWork = unitOfWorkFactory.newUnitOfWork();
 
-            AssociationValue newAssociationValue = valueBuilderFactory.newValueFromSerializedState( AssociationValue.class, json );
+            AssociationValue newAssociationValue = valueBuilderFactory.newValueFromSerializedState(
+                AssociationValue.class, json );
 
             Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
         }
@@ -259,9 +263,24 @@ public class ValueCompositeTest
         }
     }
 
+    @Test
+    public void givenValueWhenToStringThenNoTypeInfo()
+    {
+        ValueBuilder<AnotherValue> anotherBuilder = valueBuilderFactory.newValueBuilder( AnotherValue.class );
+        anotherBuilder.prototype().val1().set( "foo" );
+        AnotherValue another = anotherBuilder.newInstance();
+        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+        builder.prototype().another().set( another );
+        SomeValue some = builder.newInstance();
+        String toString = some.toString();
+        System.out.println( toString );
+        assertThat( toString, not( containsString( "_type" ) ) );
+    }
+
     public enum TestEnum
     {
-        somevalue, anothervalue
+        somevalue,
+        anothervalue
     }
 
     public interface SomeValue

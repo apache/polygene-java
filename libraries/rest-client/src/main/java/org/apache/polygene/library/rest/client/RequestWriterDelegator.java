@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class RequestWriterDelegator
    implements RequestWriter, Initializable
 {
-   List<RequestWriter> requestWriters = new ArrayList<RequestWriter>( );
+   List<RequestWriter> requestWriters = new ArrayList<>();
 
    @Structure
    private Module module;

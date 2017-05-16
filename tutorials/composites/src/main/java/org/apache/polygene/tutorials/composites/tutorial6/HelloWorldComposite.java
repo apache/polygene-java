@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.tutorials.composites.tutorial6;
 
-import org.apache.polygene.api.composite.TransientComposite;
-
 /**
  * This Composite interface declares transitively
  * all the Fragments of the HelloWorld composite.
@@ -32,6 +30,6 @@ import org.apache.polygene.api.composite.TransientComposite;
  * </p>
  */
 public interface HelloWorldComposite
-    extends HelloWorld, TransientComposite
+    extends HelloWorld
 {
 }

@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.library.scripting;
 
-import java.io.BufferedWriter;
 import java.io.Reader;
 import java.io.Writer;
 

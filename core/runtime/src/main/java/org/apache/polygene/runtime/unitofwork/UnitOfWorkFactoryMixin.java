@@ -22,6 +22,7 @@ package org.apache.polygene.runtime.unitofwork;
 
 import java.time.Instant;
 import java.util.Stack;
+import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.injection.scope.Structure;
@@ -94,7 +95,7 @@ public class UnitOfWorkFactoryMixin
     @Override
     public UnitOfWork getUnitOfWork( EntityComposite entity )
     {
-        EntityInstance instance = EntityInstance.entityInstanceOf( entity );
+        EntityInstance instance = (EntityInstance) CompositeInstance.compositeInstanceOf( entity );
         return instance.unitOfWork();
     }
 }

@@ -28,5 +28,5 @@ import org.apache.solr.common.SolrDocumentList;
  */
 public interface SolrSearch
 {
-   public SolrDocumentList search( String queryString ) throws SolrServerException;
+   SolrDocumentList search( String queryString ) throws SolrServerException;
 }

@@ -32,6 +32,7 @@ import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.property.StateHolder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.type.EntityCompositeType;
 import org.apache.polygene.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.polygene.api.util.Annotations;
 import org.apache.polygene.runtime.composite.CompositeMethodsModel;
@@ -51,7 +52,7 @@ import static org.apache.polygene.api.identity.HasIdentity.IDENTITY_METHOD;
 public final class EntityModel extends CompositeModel
     implements EntityDescriptor
 {
-
+    private final EntityCompositeType valueType;
     private final boolean queryable;
 
     public EntityModel( ModuleDescriptor module,
@@ -65,12 +66,19 @@ public final class EntityModel extends CompositeModel
     {
         super( module, types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
+        this.valueType = EntityCompositeType.of( this );
         this.queryable = types.stream()
             .flatMap( Annotations.ANNOTATIONS_OF )
             .filter( Annotations.isType( Queryable.class ) )
             .map( annot -> ( (Queryable) annot ).value() )
             .findFirst()
             .orElse( true );
+    }
+
+    @Override
+    public EntityCompositeType valueType()
+    {
+        return valueType;
     }
 
     @Override
@@ -131,24 +139,22 @@ public final class EntityModel extends CompositeModel
     public void initState( ModuleDescriptor module, EntityState entityState )
     {
         // Set new properties to default value
-        state().properties().forEach( propertyDescriptor -> {
-            entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.resolveInitialValue(module) );
-        } );
+        state().properties().forEach(
+            propertyDescriptor -> entityState.setPropertyValue( propertyDescriptor.qualifiedName(),
+                                                                propertyDescriptor.resolveInitialValue( module ) ) );
 
         // Set new associations to null
-        state().associations().forEach( associationDescriptor -> {
-            entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
-        } );
+        state().associations().forEach(
+            associationDescriptor -> entityState.setAssociationValue( associationDescriptor.qualifiedName(),
+                                                                      null ) );
 
         // Set new many-associations to empty
-        state().manyAssociations().forEach( associationDescriptor -> {
-            entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
-        } );
+        state().manyAssociations().forEach(
+            associationDescriptor -> entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() ) );
 
         // Set new named-associations to empty
-        state().namedAssociations().forEach( associationDescriptor -> {
-            entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
-        } );
+        state().namedAssociations().forEach(
+            associationDescriptor -> entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() ) );
     }
 
     public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )

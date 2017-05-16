@@ -25,23 +25,19 @@ import java.util.stream.StreamSupport;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
-import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
-import org.apache.polygene.api.util.Annotations;
-import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDescriptor;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.spi.serialization.AbstractBinarySerializer;
 import org.apache.polygene.spi.util.ArrayIterable;
 import org.msgpack.core.MessagePack;
@@ -65,16 +61,12 @@ public interface MessagePackSerializer extends Serializer
         @This
         private MessagePackAdapters adapters;
 
-        @Structure
-        private Module module;
-
         @Override
         public void serialize( Options options, OutputStream output, @Optional Object object )
         {
-            MessagePacker packer = MessagePack.newDefaultPacker( output );
-            Value value = doSerialize( options, object, true );
-            try
+            try( MessagePacker packer = MessagePack.newDefaultPacker( output ) )
             {
+                Value value = doSerialize( options, object, true );
                 packer.packValue( value );
                 packer.flush();
             }
@@ -93,11 +85,6 @@ public interface MessagePackSerializer extends Serializer
                     return ValueFactory.newNil();
                 }
                 Class<?> objectClass = object.getClass();
-                ConvertedBy convertedBy = Annotations.annotationOn( objectClass, ConvertedBy.class );
-                if( convertedBy != null )
-                {
-                    return doSerialize( options, module.newObject( convertedBy.value() ).toString( object ), false );
-                }
                 Converter<Object> converter = converters.converterFor( objectClass );
                 if( converter != null )
                 {
@@ -112,9 +99,9 @@ public interface MessagePackSerializer extends Serializer
                 {
                     return ValueFactory.newString( object.toString() );
                 }
-                if( ValueCompositeType.isValueComposite( objectClass ) )
+                if( StatefulAssociationValueType.isStatefulAssociationValue( objectClass ) )
                 {
-                    return serializeValueComposite( options, object, root );
+                    return serializeStatefulAssociationValue( options, object, root );
                 }
                 if( MapType.isMap( objectClass ) )
                 {
@@ -132,8 +119,7 @@ public interface MessagePackSerializer extends Serializer
                 {
                     return serializeStream( options, (Stream<?>) object );
                 }
-                // Fallback to Java Serialization
-                return ValueFactory.newBinary( serializeJava( object ) );
+                throw new SerializationException( "Don't know how to serialize " + object );
             }
             catch( IOException ex )
             {
@@ -141,22 +127,23 @@ public interface MessagePackSerializer extends Serializer
             }
         }
 
-        private MapValue serializeValueComposite( Options options, Object composite, boolean root )
+        private MapValue serializeStatefulAssociationValue( Options options, Object composite, boolean root )
         {
-            CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) composite );
-            ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
+            CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) composite );
+            StatefulAssociationCompositeDescriptor descriptor =
+                (StatefulAssociationCompositeDescriptor) instance.descriptor();
             AssociationStateHolder state = (AssociationStateHolder) instance.state();
-            ValueCompositeType valueType = descriptor.valueType();
+            StatefulAssociationValueType<?> valueType = descriptor.valueType();
 
             ValueFactory.MapBuilder builder = ValueFactory.newMapBuilder();
             valueType.properties().forEach(
                 property ->
                 {
                     Object value = state.propertyFor( property.accessor() ).get();
-                    ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                    if( convertedBy != null )
+                    Converter<Object> converter = converters.converterFor( property );
+                    if( converter != null )
                     {
-                        value = module.newObject( convertedBy.value() ).toString( value );
+                        value = converter.toString( value );
                     }
                     builder.put(
                         ValueFactory.newString( property.qualifiedName().name() ),
@@ -179,7 +166,7 @@ public interface MessagePackSerializer extends Serializer
                                  state.namedAssociationFor( association.accessor() ).references().collect( toMap() ),
                                  false ) ) );
 
-            if( !root && options.includeTypeInfo() )
+            if( ( root && options.rootTypeInfo() ) || ( !root && options.nestedTypeInfo() ) )
             {
                 builder.put( ValueFactory.newString( "_type" ),
                              ValueFactory.newString( valueType.primaryType().getName() ) );

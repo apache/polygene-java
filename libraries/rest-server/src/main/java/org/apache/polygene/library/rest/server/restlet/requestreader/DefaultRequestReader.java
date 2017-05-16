@@ -40,9 +40,6 @@ import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.property.PropertyDescriptor;
-import org.apache.polygene.api.service.qualifier.Tagged;
-import org.apache.polygene.api.serialization.Deserializer;
-import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
@@ -50,6 +47,7 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.library.rest.server.spi.RequestReader;
+import org.apache.polygene.spi.serialization.JsonDeserializer;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.CharacterSet;
@@ -86,8 +84,7 @@ public class DefaultRequestReader
     private ValueBuilderFactory vbf;
 
     @Service
-    @Tagged( Serialization.Format.JSON )
-    private Deserializer deserializer;
+    private JsonDeserializer deserializer;
 
     @Override
     @SuppressWarnings( "unchecked" )

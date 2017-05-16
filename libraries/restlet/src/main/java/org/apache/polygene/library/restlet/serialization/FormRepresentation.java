@@ -82,14 +82,7 @@ public class FormRepresentation<T> extends OutputRepresentation
         final Form form = new Form( representation );
         ValueBuilder<T> builder = this.vbf.newValueBuilderWithState(
             objectClass,
-            new Function<PropertyDescriptor, Object>()
-            {
-                @Override
-                public Object apply( PropertyDescriptor descriptor )
-                {
-                    return form.getFirstValue( descriptor.qualifiedName().name() );
-                }
-            },
+            descriptor -> form.getFirstValue( descriptor.qualifiedName().name() ),
             descriptor -> null,
             descriptor -> null,
             descriptor -> null

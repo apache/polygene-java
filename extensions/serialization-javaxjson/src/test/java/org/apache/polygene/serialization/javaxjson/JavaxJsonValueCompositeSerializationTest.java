@@ -18,10 +18,10 @@
 package org.apache.polygene.serialization.javaxjson;
 
 import java.io.StringReader;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
@@ -50,27 +50,33 @@ public class JavaxJsonValueCompositeSerializationTest extends AbstractValueCompo
     JsonSerialization jsonSerialization;
     // END SNIPPET: json-serialization
 
+    @Service
+    JavaxJsonFactories jsonFactories;
+
     @Test
     public void valueCompositeJsonEquality()
     {
         // START SNIPPET: json-serialization
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
-            Some some = buildSomeValue( moduleInstance, uow, "42" );
+            Some valueInstance = buildSomeValue( moduleInstance, uow, "42" );
 
             // Serialize using injected service
-            JsonValue jsonState = jsonSerialization.toJson( some );
-            String stateString = jsonState.toString();
-            System.out.println( jsonState.toString() );
+            JsonValue serializedJson = jsonSerialization.toJson( valueInstance );
+            System.out.println( serializedJson.toString() );
 
             // Deserialize using Module API
-            Some some2 = moduleInstance.newValueFromSerializedState( Some.class, stateString );
+            Some valueFromSerializedState = moduleInstance.newValueFromSerializedState( Some.class, serializedJson.toString() );
+            assertThat( "Deserialized Value equality", valueInstance, equalTo( valueFromSerializedState ) );
+            // END SNIPPET: json-serialization
 
-            assertThat( "Deserialized Value equality", some, equalTo( some2 ) );
-
-            JsonObject jsonState2 = Json.createReader( new StringReader( some2.toString() ) ).readObject();
-
-            assertThat( "value.toString() JSON equality", jsonState, equalTo( jsonState2 ) );
+            // value.toString()
+            JsonValue valueJsonWithoutTypeInfo = jsonSerialization.toJson( Serializer.Options.NO_TYPE_INFO, valueFromSerializedState );
+            JsonObject valueToStringJson = jsonFactories.readerFactory()
+                                                        .createReader( new StringReader( valueFromSerializedState.toString() ) )
+                                                        .readObject();
+            assertThat( "value.toString() JSON equality", valueJsonWithoutTypeInfo, equalTo( valueToStringJson ) );
+            // START SNIPPET: json-serialization
         }
         // END SNIPPET: json-serialization
     }

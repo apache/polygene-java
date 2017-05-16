@@ -23,6 +23,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
+@FunctionalInterface
 public interface ModuleAssembler
 {
     ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )

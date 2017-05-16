@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.tutorials.composites.tutorial9;
 
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 
 // START SNIPPET: solution
@@ -35,7 +34,7 @@ import org.apache.polygene.api.mixin.Mixins;
  */
 @Mixins( { HelloWorldBehaviourMixin.class, GenericPropertyMixin.class } )
 public interface HelloWorldComposite
-    extends HelloWorldBehaviour, HelloWorldState, TransientComposite
+    extends HelloWorldBehaviour, HelloWorldState
 {
 }
 // END SNIPPET: solution

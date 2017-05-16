@@ -26,8 +26,7 @@ import org.apache.polygene.api.property.StateHolder;
 /**
  * This represents the state of a entity (properties+associations).
  */
-public interface AssociationStateHolder
-    extends StateHolder
+public interface AssociationStateHolder extends StateHolder
 {
     /**
      * Get an association for a specific accessor method.

@@ -39,6 +39,8 @@ public interface ManyAssociationState
 
     boolean remove( EntityReference entityReference );
 
+    boolean clear();
+
     EntityReference get( int index );
 
     default Stream<EntityReference> stream() {

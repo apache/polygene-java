@@ -31,25 +31,21 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
+import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Initializable;
-import org.apache.polygene.api.serialization.ConvertedBy;
 import org.apache.polygene.api.serialization.Converter;
 import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.SerializationException;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.ArrayType;
 import org.apache.polygene.api.type.EnumType;
 import org.apache.polygene.api.type.MapType;
-import org.apache.polygene.api.type.ValueCompositeType;
-import org.apache.polygene.api.util.Annotations;
-import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.api.value.ValueDescriptor;
+import org.apache.polygene.api.type.StatefulAssociationValueType;
 import org.apache.polygene.spi.serialization.AbstractTextSerializer;
 import org.apache.polygene.spi.serialization.XmlSerializer;
 import org.apache.polygene.spi.util.ArrayIterable;
@@ -80,9 +76,6 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
 
     @Uses
     private ServiceDescriptor descriptor;
-
-    @Structure
-    private Module module;
 
     private JavaxXmlSettings settings;
 
@@ -146,11 +139,6 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
             return document.createElement( NULL_ELEMENT_NAME );
         }
         Class<?> objectClass = object.getClass();
-        ConvertedBy convertedBy = Annotations.annotationOn( objectClass, ConvertedBy.class );
-        if( convertedBy != null )
-        {
-            return doSerialize( document, options, module.newObject( convertedBy.value() ).toString( object ), false );
-        }
         Converter<Object> converter = converters.converterFor( objectClass );
         if( converter != null )
         {
@@ -165,9 +153,9 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
         {
             return document.createTextNode( object.toString() );
         }
-        if( ValueCompositeType.isValueComposite( objectClass ) )
+        if( StatefulAssociationValueType.isStatefulAssociationValue( objectClass ) )
         {
-            return serializeValueComposite( document, options, object, root );
+            return serializeStatefulAssociationValue( document, options, object, root );
         }
         if( MapType.isMap( objectClass ) )
         {
@@ -185,27 +173,26 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
         {
             return serializeStream( document, options, (Stream<?>) object );
         }
-        // Fallback to Java Serialization in Base 64
-        byte[] bytes = Base64.getEncoder().encode( serializeJava( object ) );
-        return document.createCDATASection( new String( bytes, UTF_8 ) );
+        throw new SerializationException( "Don't know how to serialize " + object );
     }
 
-    private <T> Node serializeValueComposite( Document document, Options options, T composite, boolean root )
+    private <T> Node serializeStatefulAssociationValue( Document document, Options options, T composite, boolean root )
     {
-        CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) composite );
-        ValueDescriptor descriptor = (ValueDescriptor) instance.descriptor();
+        CompositeInstance instance = PolygeneAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) composite );
+        StatefulAssociationCompositeDescriptor descriptor =
+            (StatefulAssociationCompositeDescriptor) instance.descriptor();
         AssociationStateHolder state = (AssociationStateHolder) instance.state();
-        ValueCompositeType valueType = descriptor.valueType();
+        StatefulAssociationValueType<?> valueType = descriptor.valueType();
 
         Element valueElement = document.createElement( settings.getValueTagName() );
         valueType.properties().forEach(
             property ->
             {
                 Object value = state.propertyFor( property.accessor() ).get();
-                ConvertedBy convertedBy = property.metaInfo( ConvertedBy.class );
-                if( convertedBy != null )
+                Converter<Object> converter = converters.converterFor( property );
+                if( converter != null )
                 {
-                    value = module.newObject( convertedBy.value() ).toString( value );
+                    value = converter.toString( value );
                 }
                 Element element = document.createElement( property.qualifiedName().name() );
                 element.appendChild( doSerialize( document, options, value, false ) );
@@ -239,7 +226,7 @@ public class JavaxXmlSerializer extends AbstractTextSerializer
                 valueElement.appendChild( element );
             }
         );
-        if( !root && options.includeTypeInfo() )
+        if( ( root && options.rootTypeInfo() ) || ( !root && options.nestedTypeInfo() ) )
         {
             valueElement.setAttribute( settings.getTypeInfoTagName(), valueType.primaryType().getName() );
         }

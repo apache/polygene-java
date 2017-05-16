@@ -70,38 +70,34 @@ public @interface HasMetaInfo
      * HasMetaInfo Annotation Qualifier.
      * See {@link HasMetaInfo}.
      */
-    public static class HasMetaInfoQualifier
+    class HasMetaInfoQualifier
         implements AnnotationQualifier<HasMetaInfo>
     {
         @Override
-        public <T> Predicate<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
+        public Predicate<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
         {
-            return new Predicate<ServiceReference<?>>()
+            return service ->
             {
-                @Override
-                @SuppressWarnings( {"raw", "unchecked"} )
-                public boolean test( ServiceReference<?> service )
+                for( Class metaInfoType : hasMetaInfo.value() )
                 {
-                    for( Class metaInfoType : hasMetaInfo.value() )
+                    @SuppressWarnings( "unchecked" )
+                    Object metaInfo = service.metaInfo( metaInfoType );
+                    if( hasMetaInfo.anded() )
                     {
-                        Object metaInfo = service.metaInfo( metaInfoType );
-                        if( hasMetaInfo.anded() )
+                        if( metaInfo == null )
                         {
-                            if( metaInfo == null )
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            if( metaInfo != null )
-                            {
-                                return true;
-                            }
+                            return false;
                         }
                     }
-                    return false;
+                    else
+                    {
+                        if( metaInfo != null )
+                        {
+                            return true;
+                        }
+                    }
                 }
+                return false;
             };
         }
     }

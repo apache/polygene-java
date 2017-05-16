@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.logging.debug.records;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import org.apache.polygene.api.property.Property;
@@ -35,5 +34,5 @@ public interface DebugRecord
 
     Property<Instant> time();
 
-    Property<List<Serializable>> parameters();
+    Property<List<Object>> parameters();
 }

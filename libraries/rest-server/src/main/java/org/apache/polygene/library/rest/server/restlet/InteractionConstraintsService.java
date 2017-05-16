@@ -53,8 +53,8 @@ public class InteractionConstraintsService
 
     Logger logger = LoggerFactory.getLogger( InteractionConstraintsService.class );
 
-    private Map<Method, InteractionConstraintsBinding> methodsConstraints = new ConcurrentHashMap<Method, InteractionConstraintsBinding>();
-    private Map<Class, InteractionConstraintsBinding> classConstraints = new ConcurrentHashMap<Class, InteractionConstraintsBinding>();
+    private Map<Method, InteractionConstraintsBinding> methodsConstraints = new ConcurrentHashMap<>();
+    private Map<Class, InteractionConstraintsBinding> classConstraints = new ConcurrentHashMap<>();
 
     @Override
     public boolean isValid( Method method, ObjectSelection objectSelection, Module module )

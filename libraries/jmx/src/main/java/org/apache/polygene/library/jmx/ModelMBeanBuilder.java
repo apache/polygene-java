@@ -33,10 +33,10 @@ import javax.management.modelmbean.*;
  */
 public class ModelMBeanBuilder
 {
-    List<ModelMBeanAttributeInfo> attributes = new ArrayList<ModelMBeanAttributeInfo>();
-    List<ModelMBeanConstructorInfo> constructors = new ArrayList<ModelMBeanConstructorInfo>();
-    List<ModelMBeanOperationInfo> operations = new ArrayList<ModelMBeanOperationInfo>();
-    List<ModelMBeanNotificationInfo> notifications = new ArrayList<ModelMBeanNotificationInfo>();
+    List<ModelMBeanAttributeInfo> attributes = new ArrayList<>();
+    List<ModelMBeanConstructorInfo> constructors = new ArrayList<>();
+    List<ModelMBeanOperationInfo> operations = new ArrayList<>();
+    List<ModelMBeanNotificationInfo> notifications = new ArrayList<>();
 
     ObjectName objectName;
     String displayName;

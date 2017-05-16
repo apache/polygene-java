@@ -20,7 +20,6 @@
 package org.apache.polygene.index.sql;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.index.sql.internal.SQLEntityFinder;
 import org.apache.polygene.index.sql.internal.SQLStateChangeListener;
 import org.apache.polygene.spi.entitystore.StateChangeListener;
@@ -40,6 +39,6 @@ import org.apache.polygene.spi.query.EntityFinder;
     SQLStateChangeListener.class
 } )
 public interface SQLIndexingEngineService
-        extends StateChangeListener, EntityFinder, ServiceComposite
+        extends StateChangeListener, EntityFinder
 {
 }

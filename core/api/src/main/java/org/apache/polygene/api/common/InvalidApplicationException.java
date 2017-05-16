@@ -25,11 +25,8 @@ package org.apache.polygene.api.common;
  * This happens primarily when client code tries to instantiate Composites
  * and objects which have not been registered in the ModuleAssembly.
  */
-public class InvalidApplicationException
-    extends RuntimeException
+public class InvalidApplicationException extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
-
     public InvalidApplicationException( String string )
     {
         super( string );

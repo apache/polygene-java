@@ -29,7 +29,7 @@ public interface RuntimeFactory
     /**
      * Standalone application Polygene runtime factory.
      */
-    public final class StandaloneApplicationRuntimeFactory
+    final class StandaloneApplicationRuntimeFactory
         implements RuntimeFactory
     {
         @Override
