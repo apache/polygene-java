@@ -326,7 +326,7 @@ class DistributionsPlugin implements Plugin<Project>
       task.doLast {
         if( workDir.exists() )
         {
-          FileUtils.deleteDirectory( workDir )
+          workDir.deleteDir()
         }
       }
     } as Action<ExecLogged> )
