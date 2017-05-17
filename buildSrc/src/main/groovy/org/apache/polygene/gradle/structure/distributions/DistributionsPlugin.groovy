@@ -52,6 +52,7 @@ import org.gradle.plugins.ide.internal.IdeDependenciesExtractor
 import org.gradle.plugins.ide.internal.resolver.model.IdeExtendedRepoFileDependency
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
+import org.gradle.process.ExecSpec
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -118,6 +119,7 @@ class DistributionsPlugin implements Plugin<Project>
   private static void applySourceDistribution( Project project )
   {
     def releaseSpec = project.extensions.getByType( ReleaseSpecExtension )
+    def dependenciesDeclaration = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
     def srcDistFilesCopySpec = project.copySpec { CopySpec spec ->
       spec.from project.rootProject.projectDir
       spec.include '*.txt'
@@ -147,7 +149,7 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.git*'                // Git files
       spec.exclude '**/build/**'             // Build output
       spec.exclude 'gradlew*'                // Gradle wrapper scripts
-      spec.exclude 'gradle/wrapper/*.jar'    // Gradle wrapper JAR
+      spec.exclude 'gradle/wrapper/**'       // Gradle wrapper
       spec.exclude '**/.gradle/**'           // Gradle caches
       spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
       spec.exclude '**/node_modules/**'      // Node's node_module dir
@@ -168,6 +170,7 @@ class DistributionsPlugin implements Plugin<Project>
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->
       spec.from project.file( 'src/src-dist' )
       spec.into '.'
+      spec.filter { String line -> line.replaceAll( '%REQUIRED_GRADLE_VERSION%', dependenciesDeclaration.gradleVersion ) }
     }
     def srcDistFilteredFilesTask = project.tasks.create 'srcDistFilteredFiles'
     srcDistFilteredFilesTask.description = 'Apply release specification to source distribution build scripts'
@@ -307,21 +310,29 @@ class DistributionsPlugin implements Plugin<Project>
     }
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
-      task.description = 'Checks the source distribution by running `gradle build` inside.'
+      task.description = 'Checks the source distribution by running `gradle check assemble` inside.'
       task.dependsOn TaskNames.STAGE_SOURCE_DIST
       task.mustRunAfter TaskNames.RAT_SOURCE_DIST
       task.mustRunAfter TaskNames.INSPECT_SOURCE_DIST
       def workDir = project.file( "$project.buildDir/tmp/${ TaskNames.BUILD_SOURCE_DIST }" )
       task.inputs.dir unpackedSrcDistDir
       task.workingDir = workDir
-      def gradlew = new File( project.rootDir, 'gradlew' ).absolutePath
+      def gradlew = new File( workDir, 'gradlew' ).absolutePath
       def settings = new File( workDir, 'settings.gradle' ).absolutePath
-      task.commandLine = [ gradlew, '-c', settings, 'build', '-u', '-s', /* '-g', workDir */ ]
+      task.commandLine = [ gradlew, '-c', settings, 'check', 'assemble', '-u', '-s', /* '-g', workDir */ ]
       task.doFirst {
         project.copy { CopySpec spec ->
           spec.from unpackedSrcDistDir
           spec.into workDir
         }
+        def logName = "${ TaskNames.BUILD_SOURCE_DIST }_installWrapper"
+        def stdout = project.file( "${ project.buildDir }/log/$logName/$logName-stdout.log" )
+        def stderr = project.file( "${ project.buildDir }/log/$logName/$logName-stderr.log" )
+        def rootGradlew = new File( project.rootDir, 'gradlew' ).absolutePath
+        ExecLogged.execLogged( project, stdout, stderr, { ExecSpec spec ->
+          spec.workingDir = workDir
+          spec.commandLine = [ rootGradlew, '-i', '-s', '-b', 'gradle/wrapper-install/build.gradle', 'install' ]
+        } as Action )
       }
       task.doLast {
         if( workDir.exists() )
