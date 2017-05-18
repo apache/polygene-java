@@ -305,7 +305,8 @@ class DistributionsPlugin implements Plugin<Project>
         assertFileAbsent 'gradlew'
         assertFileAbsent 'gradlew.bat'
         assertFileAbsent 'gradle/wrapper/gradle-wrapper.jar'
-        assertFilePresent 'gradle/wrapper/gradle-wrapper.properties'
+        assertFileAbsent 'gradle/wrapper/gradle-wrapper.properties'
+        assertFilePresent 'gradle/wrapper-install/build.gradle'
       }
     }
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
