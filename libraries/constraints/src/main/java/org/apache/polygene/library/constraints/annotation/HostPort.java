@@ -17,21 +17,21 @@
  *
  *
  */
+package org.apache.polygene.library.constraints.annotation;
 
-apply plugin: 'polygene-library'
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import org.apache.polygene.api.constraint.ConstraintDeclaration;
+import org.apache.polygene.api.constraint.Constraints;
+import org.apache.polygene.library.constraints.HostPortConstraint;
 
-description = "Apache Polygene™ Constraint Library provides common set of constraints."
-
-jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
-
-dependencies {
-  api polygene.core.bootstrap
-
-  implementation libraries.commons_validator
-
-  runtimeOnly polygene.core.runtime
-
-  testImplementation polygene.core.testsupport
-
-  testRuntimeOnly libraries.logback
+/**
+ * Marks a property as being a string, with a "host:port", where host is a valid hostname, IPv4 address or IPv6 address
+ * and port is in the range of 0 to 65535
+ */
+@ConstraintDeclaration
+@Retention( RetentionPolicy.RUNTIME )
+@Constraints( HostPortConstraint.class )
+public @interface HostPort
+{
 }

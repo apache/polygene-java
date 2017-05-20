@@ -17,21 +17,23 @@
  *
  *
  */
+package org.apache.polygene.library.constraints;
 
-apply plugin: 'polygene-library'
+import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.polygene.api.constraint.Constraint;
+import org.apache.polygene.library.constraints.annotation.HostPort;
 
-description = "Apache Polygene™ Constraint Library provides common set of constraints."
+/**
+ * Implement @HostPort constraint.
+ */
+public class HostPortConstraint
+    implements Constraint<HostPort, String>
+{
+    private static final UrlValidator VALIDATOR = new UrlValidator( new String[]{ "http" } );
 
-jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
-
-dependencies {
-  api polygene.core.bootstrap
-
-  implementation libraries.commons_validator
-
-  runtimeOnly polygene.core.runtime
-
-  testImplementation polygene.core.testsupport
-
-  testRuntimeOnly libraries.logback
+    @Override
+    public boolean isValid( HostPort annotation, String value )
+    {
+        return VALIDATOR.isValid( "http://" + value );
+    }
 }
