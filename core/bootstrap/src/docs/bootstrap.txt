@@ -232,7 +232,7 @@ it is possible to define the application structure from a JSON document, AND cal
 taking the JSON document as input on +System.in+.
 
 The format of the JSON document, directly reflects the application structure, such as
-[source,json]
+[source,javascript]
 ----
 {
     "name": "Build from JSON test.",
