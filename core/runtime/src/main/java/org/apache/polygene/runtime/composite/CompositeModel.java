@@ -286,6 +286,6 @@ public abstract class CompositeModel
     @Override
     public String toString()
     {
-        return types.toString();
+        return primaryType.getSimpleName();
     }
 }
