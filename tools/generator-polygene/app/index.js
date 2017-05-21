@@ -28,6 +28,7 @@ var polygene = {};
 module.exports = generators.Base.extend(
     {
         constructor: function () {
+            console.log("WARNING!!!  This is BETA quality and likely to change drastically over time.");
             generators.Base.apply(this, arguments);
 
             this.option('import-model', {

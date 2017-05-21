@@ -36,26 +36,27 @@ import static org.apache.polygene.library.http.Servlets.addFilters;
 import static org.apache.polygene.library.http.Servlets.filter;
 import static org.apache.polygene.library.http.Servlets.listen;
 
-public class HttpShiroAssembler
-    extends Assemblers.Config<HttpShiroAssembler>
+public class HttpShiroAssembler extends Assemblers.Config<HttpShiroAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        addContextListeners( listen().
-            with( EnvironmentLoaderService.class ) ).
-            to( module );
+        addContextListeners(
+            listen().with( EnvironmentLoaderService.class ) )
+            .to( module );
 
-        addFilters( filter( "/*" ).
-            through( ShiroFilterService.class ).
-            on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) ).
-            to( module );
+        addFilters(
+            filter( "/*" )
+                .through( ShiroFilterService.class )
+                .on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) )
+            .to( module );
 
         if( hasConfig() )
         {
-            configModule().entities( ShiroIniConfiguration.class ).
-                visibleIn( configVisibility() );
+            configModule()
+                .entities( ShiroIniConfiguration.class )
+                .visibleIn( configVisibility() );
         }
     }
 }

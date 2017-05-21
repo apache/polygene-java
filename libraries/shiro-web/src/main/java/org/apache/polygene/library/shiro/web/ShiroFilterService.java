@@ -20,11 +20,10 @@
 package org.apache.polygene.library.shiro.web;
 
 import javax.servlet.Filter;
-import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.shiro.web.servlet.ShiroFilter;
 
 @Mixins( ShiroFilter.class )
-public interface ShiroFilterService
-        extends Filter
+public interface ShiroFilterService extends Filter
 {
 }

@@ -33,8 +33,9 @@ public abstract class LayeredLayerAssembler
     {
         try
         {
-            ModuleAssembler moduleAssembler = instantiateAssembler( layer, moduleAssemblerClass );
             String moduleName = createModuleName( moduleAssemblerClass );
+            ModuleAssembly moduleAssembly = layer.module( moduleName );
+            ModuleAssembler moduleAssembler = instantiateModuleAssembler( moduleAssembly, moduleAssemblerClass );
             LayeredApplicationAssembler.setNameIfPresent( moduleAssemblerClass, moduleName );
             ModuleAssembly module = layer.module( moduleName );
             assemblers.put( moduleAssemblerClass, moduleAssembler );
@@ -61,9 +62,9 @@ public abstract class LayeredLayerAssembler
         return moduleName;
     }
 
-    protected ModuleAssembler instantiateAssembler( LayerAssembly layer,
-                                                  Class<? extends ModuleAssembler> modulerAssemblerClass
-    )
+    protected ModuleAssembler instantiateModuleAssembler( ModuleAssembly module,
+                                                          Class<? extends ModuleAssembler> modulerAssemblerClass
+                                                        )
         throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException
     {
         ModuleAssembler moduleAssembler;
@@ -71,7 +72,7 @@ public abstract class LayeredLayerAssembler
         {
             Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor( ModuleAssembly.class );
             assemblyConstructor.setAccessible( true );
-            moduleAssembler = assemblyConstructor.newInstance( layer );
+            moduleAssembler = assemblyConstructor.newInstance( module );
         }
         catch( NoSuchMethodException e )
         {

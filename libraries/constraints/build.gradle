@@ -27,7 +27,7 @@ jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
 dependencies {
   api polygene.core.bootstrap
 
-  implementation libraries.commons_validator
+  api libraries.commons_validator
 
   runtimeOnly polygene.core.runtime
 

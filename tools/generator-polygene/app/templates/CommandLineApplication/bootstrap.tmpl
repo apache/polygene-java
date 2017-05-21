@@ -17,36 +17,33 @@
  *
  *
 -%>
-package <%= polygene.packageName %>.bootstrap.infrastructure;
+package <%= polygene.packageName %>.bootstrap;
 
-import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.index.<%- polygene.indexing.toLowerCase() %>.assembly.<%- polygene.indexing %>IndexingAssembler;
+import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
 
-public class <%- polygene.indexing %>IndexingModule
-    implements ModuleAssembler
+public class <%= polygene.name %>Application extends LayeredApplicationAssembler
 {
-    public static final String NAME = "<%- polygene.indexing %> Indexing Module";
-    private final ModuleAssembly configModule;
-
-    <%- polygene.indexing %>IndexingModule( ModuleAssembly configModule )
+    public <%= polygene.name %>Application( String name, String version, Application.Mode mode )
+        throws AssemblyException
     {
-        this.configModule = configModule;
+        super( name, version, mode );
     }
 
     @Override
-    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
+    protected void assembleLayers( ApplicationAssembly assembly )
         throws AssemblyException
     {
-        new <%- polygene.indexing %>IndexingAssembler()
-            .visibleIn( Visibility.application )
-            .identifiedBy( "indexing-<%- polygene.indexing.toLowerCase() %>" )
-            .withConfig( configModule, Visibility.application )
-            .assemble( module );
-        return module;
+        LayerAssembly config = this.createLayer( ConfigurationLayer.class );
+        ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();
+        LayerAssembly infra = new InfrastructureLayer(configModule).assemble( assembly.layer( InfrastructureLayer.NAME ) );
+        LayerAssembly domain = this.createLayer( DomainLayer.class );
+        LayerAssembly ui = this.createLayer( UserInterfaceLayer.class );
+        ui.uses( domain );
+        domain.uses( infra );
+        infra.uses( config );
     }
 }
-

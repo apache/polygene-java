@@ -19,10 +19,11 @@
  */
 package org.apache.polygene.library.constraints;
 
-import java.util.Arrays;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.polygene.api.constraint.Constraint;
 import org.apache.polygene.library.constraints.annotation.HostPortList;
+
+import static java.util.Arrays.stream;
 
 /**
  * Implement @HostPortList constraint.
@@ -35,9 +36,9 @@ public class HostPortListConstraint
     @Override
     public boolean isValid( HostPortList annotation, String value )
     {
-        return Arrays.stream( value.split( "[ ,]" ) )
-                     .map( this::prefixProtocol )
-                     .allMatch( VALIDATOR::isValid );
+        return stream( value.split( "[ ,]" ) )
+            .map( this::prefixProtocol )
+            .allMatch( VALIDATOR::isValid );
     }
 
     private String prefixProtocol( String value )

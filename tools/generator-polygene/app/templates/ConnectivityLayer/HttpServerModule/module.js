@@ -1,4 +1,4 @@
-<%#
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -14,28 +14,16 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
--%>
-package <%= polygene.packageName %>.bootstrap.infrastructure;
+ */
 
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.metrics.<%- polygene.metrics.toLowerCase() %>.assembly.<%- polygene.metrics %>MetricsAssembler;
+module.exports = {
 
-public class <%- polygene.metrics %>MetricsModule
-    implements ModuleAssembler
-{
-    public static final String NAME = "<%- polygene.metrics %> Metrics Module";
-
-    @Override
-    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
-    {
-        new <%- polygene.metrics %>MetricsAssembler().assemble( module );
-        return module;
+    write: function (p) {
+        if (p.applicationtype === 'Rest API') {
+            p.copyTemplate(p.ctx,
+                'ConnectivityLayer/HttpServerModule/bootstrap.tmpl',
+                'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/connectivity/HttpServerModule.java');
+        }
     }
-}
+};
 

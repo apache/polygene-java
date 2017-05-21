@@ -72,6 +72,14 @@ public class HostPortListConstraintTest extends AbstractPolygeneTest
     }
 
     @Test
+    public void givenValidListOfOneHostPortWhenSettingPropertyExpectSuccess()
+        throws Exception
+    {
+        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+        someValue.hostPort().set( "localhost:32775" );
+    }
+
+    @Test
     public void givenValidListHostPortWhenSettingPropertyExpectSuccess()
         throws Exception
     {

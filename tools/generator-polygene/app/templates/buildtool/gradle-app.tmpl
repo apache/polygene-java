@@ -18,25 +18,25 @@
  *
 -%>
 
-plugins {
-  id 'war'
-  id "org.akhikhl.gretty" version "1.4.0"
-}
-
 dependencies {
   compile project( ":bootstrap" )
   compile project( ":model" )
 <% if( polygene.applicationtype === 'Rest API' ) {
 %>  compile project( ":rest" )<% } %>
-
-  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
+<% if( hasFeature( 'security' ) ) {
+%>  compile "org.apache.polygene.libraries:org.apache.polygene.library.shiro-web:$polygeneVersion"
+<% }
+%>  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
   compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
-  compile "org.apache.polygene.libraries:org.apache.polygene.library.servlet:$polygeneVersion"
 <% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile "javax.servlet:servlet-api:2.5"
-  compile "org.restlet.jee:org.restlet:2.3.4"<% } %>
+%>  compile "org.restlet.jee:org.restlet:2.3.4"
+  compile "javax.servlet:servlet-api:2.5"<% } %>
 
   runtime "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
   runtime "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
-
+  runtime "org.apache.johnzon:johnzon-core:1.1.0"
+  runtime "org.apache.johnzon:johnzon-mapper:1.1.0"
+  runtime "org.apache.geronimo.specs:geronimo-json_1.1_spec:1.0"
+  runtime "ch.qos.logback:logback-classic:1.2.3"
+  runtime "ch.qos.logback:logback-core:1.2.3"
 }

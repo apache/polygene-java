@@ -27,13 +27,14 @@ import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
 public class ConnectivityLayer extends LayeredLayerAssembler
     implements LayerAssembler
 {
-    public static String NAME;
+    public static String NAME = "Connectivity Layer";
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
         createModule( layer, RestApiModule.class );
+        createModule( layer, HttpServerModule.class );
         return layer;
     }
 }

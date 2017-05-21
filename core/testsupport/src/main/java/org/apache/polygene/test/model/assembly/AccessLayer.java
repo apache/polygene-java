@@ -23,6 +23,7 @@ package org.apache.polygene.test.model.assembly;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 
@@ -48,9 +49,9 @@ class AccessLayer extends LayeredLayerAssembler
     }
 
     @Override
-    protected ModuleAssembler instantiateAssembler( LayerAssembly layer,
-                                                    Class<? extends ModuleAssembler> moduleAssemblerClass
-    )
+    protected ModuleAssembler instantiateModuleAssembler( ModuleAssembly module,
+                                                          Class<? extends ModuleAssembler> moduleAssemblerClass
+                                                        )
         throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
     {
         if( moduleAssemblerClass.equals(TestExecutionModule.class))
@@ -59,7 +60,7 @@ class AccessLayer extends LayeredLayerAssembler
         }
         else
         {
-            return super.instantiateAssembler( layer, moduleAssemblerClass );
+            return super.instantiateModuleAssembler( module, moduleAssemblerClass );
         }
     }
 }

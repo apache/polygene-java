@@ -31,6 +31,7 @@ allprojects() {
   defaultTasks 'assemble'
 
   repositories {
+    mavenLocal()
     mavenCentral()
     maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
 <% if( polygene.entitystore == 'Jdbm' ) {

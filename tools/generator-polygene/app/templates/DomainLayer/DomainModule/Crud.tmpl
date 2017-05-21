@@ -19,6 +19,7 @@
 -%>
 package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
 
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 <%
@@ -31,7 +32,7 @@ for( var imp in polygene.current.imported ) {
 } %>
 
 @Mixins( { <%= polygene.current.clazz.name %>.Mixin.class } )
-public interface <%= polygene.current.clazz.name %>
+public interface <%= polygene.current.clazz.name %> extends HasIdentity
 {
     interface State
     {
@@ -40,7 +41,7 @@ public interface <%= polygene.current.clazz.name %>
 <% }
 %>    }
 
-    class Mixin
+    abstract class Mixin
         implements <%= polygene.current.clazz.name %>
     {
         @This
