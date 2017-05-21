@@ -22,17 +22,18 @@ package org.apache.polygene.bootstrap.identity;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.UuidGeneratorMixin;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 public class DefaultIdentityGeneratorAssembler
     implements Assembler
 {
+    public static final String IDENTITY = "default-identity-generator";
 
     @Override
-    public void assemble(ModuleAssembly module)
-            throws AssemblyException
+    public void assemble( ModuleAssembly module )
     {
-        module.services(IdentityGenerator.class).withMixins(UuidGeneratorMixin.class);
+        module.services( IdentityGenerator.class )
+              .withMixins( UuidGeneratorMixin.class )
+              .identifiedBy( IDENTITY );
     }
 }
