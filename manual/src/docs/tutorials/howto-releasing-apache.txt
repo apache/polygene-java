@@ -849,6 +849,13 @@ svn add * --force
 svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene as the vote failed"
 ----
 
+Drop NPM packages:
+
+[source,shell]
+----
+npm unpublish generator-polygene@<RELEASE-VERSION>
+----
+
 
 === Start over
 
