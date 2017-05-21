@@ -1,4 +1,4 @@
-/*
+<%#
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -14,27 +14,17 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+ *
+ *
+-%>
+package <%= polygene.packageName %>.bootstrap;
 
-module.exports = {
+import org.junit.Test;
 
-    write: function (p) {
-        copyLayer(p, "Configuration");
-        copyLayer(p, "Infrastructure");
-        copyLayer(p, "Domain");
-        copyLayer(p, "Connectivity");
-
-        p.copyTemplate(p.ctx,
-            'RestAPIApplication/web.xml.tmpl',
-            'app/src/main/webapp/WEB-INF/web.xml');
-
-        p.copyTemplate(p.ctx,
-            'RestAPIApplication/bootstrap-test.tmpl',
-            'app/src/test/java/'+p.javaPackageDir+'/BootstrapTest.java');
+public class BootstrapTest
+{
+    @Test
+    public void applicationBootstrapSucceeds() {
+        // TODO Assemble, activate, passivate application to make sure it starts properly
     }
-};
-
-function copyLayer(p, layerName) {
-    var layer = require(__dirname + '/../' + layerName + 'Layer/layer.js');
-    layer.write(p);
 }

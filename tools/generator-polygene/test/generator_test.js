@@ -169,5 +169,5 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);
-    assert(shell.exec(path.join(dir, 'gradlew') + ' classes --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
+    assert(shell.exec(path.join(dir, 'gradlew') + ' check --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
 }
