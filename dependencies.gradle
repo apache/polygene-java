@@ -40,11 +40,12 @@ dependencies.libraries << [
 
 // Extensions, Libraries and Tools dependencies
 def bonecpVersion = '0.8.0.RELEASE'
-def bouncyVersion = '1.56'
+def bouncyVersion = '1.57'
 def cassandraClientVersion = '3.2.0'
 def codahaleMetricsVersion = '3.2.2'
 def commonsDbcpVersion = '2.1.1'
 def commonsLangVersion = '3.5'
+def commonsValidatorVersion = '1.6'
 def derbyVersion = '10.13.1.1'
 def ehcacheVersion = '3.3.1'
 def elasticsearchVersion = '5.2.2'
@@ -78,12 +79,17 @@ def spymemcachedVersion = '2.12.2'
 def velocityVersion = '1.7'
 dependencies.libraries << [
   bonecp              : "com.jolbox:bonecp:$bonecpVersion",
-  bouncy_castle       : "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
+  bouncy_castle       : [
+          "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
+          "org.bouncycastle:bcpkix-jdk15on:$bouncyVersion",
+          "org.bouncycastle:bctls-jdk15on:$bouncyVersion"
+  ],
   cassandra_client    : "com.datastax.cassandra:cassandra-driver-core:$cassandraClientVersion",
   codahale_metrics    : [ "io.dropwizard.metrics:metrics-core:$codahaleMetricsVersion",
                           "io.dropwizard.metrics:metrics-healthchecks:$codahaleMetricsVersion" ],
   commons_dbcp        : "org.apache.commons:commons-dbcp2:$commonsDbcpVersion",
   commons_lang        : "org.apache.commons:commons-lang3:$commonsLangVersion",
+  commons_validator   : "commons-validator:commons-validator:$commonsValidatorVersion",
   ehcache             : "org.ehcache:ehcache:$ehcacheVersion",
   elasticsearch       : [ "org.elasticsearch:elasticsearch:$elasticsearchVersion",
                           "org.elasticsearch.client:transport:$elasticsearchVersion",
