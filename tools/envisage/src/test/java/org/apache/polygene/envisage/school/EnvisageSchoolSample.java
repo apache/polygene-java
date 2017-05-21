@@ -21,6 +21,7 @@
 package org.apache.polygene.envisage.school;
 
 import org.apache.polygene.api.structure.ApplicationDescriptor;
+import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.envisage.Envisage;
 
@@ -28,14 +29,11 @@ public class EnvisageSchoolSample
 {
     // START SNIPPET: envisage
     public static void main( String[] args )
-        throws Exception
     {
         Energy4Java energy4Java = new Energy4Java();
-
-        ApplicationDescriptor applicationModel
-                              = energy4Java.newApplicationModel( new SchoolAssembler() );
-
-        new Envisage().run( applicationModel );
+        ApplicationAssembler assembler = new SchoolAssembler();
+        ApplicationDescriptor descriptor = energy4Java.newApplicationModel( assembler );
+        new Envisage().run( descriptor );
     }
     // END SNIPPET: envisage
 }

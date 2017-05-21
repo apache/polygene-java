@@ -62,12 +62,12 @@ public class SchoolAssembler
     private LayerAssembly createInfrastructureLayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerInfrastructure = appAssembly.layer( "Infrastructure" );
+        LayerAssembly layerInfrastructure = appAssembly.layer( "infrastructure" );
 
-        ModuleAssembly moduleMail = layerInfrastructure.module( "Mail" );
+        ModuleAssembly moduleMail = layerInfrastructure.module( "mail" );
         new MailServiceAssembler().assemble( moduleMail );
 
-        ModuleAssembly modulePersistence = layerInfrastructure.module( "Persistence" );
+        ModuleAssembly modulePersistence = layerInfrastructure.module( "persistence" );
         new PersistenceAssembler().assemble( modulePersistence );
 
         return layerInfrastructure;
@@ -100,7 +100,7 @@ public class SchoolAssembler
     private LayerAssembly createUILayer( ApplicationAssembly appAssembly )
         throws AssemblyException
     {
-        LayerAssembly layerUI = appAssembly.layer( "UI" );
+        LayerAssembly layerUI = appAssembly.layer( "ui" );
 
         // Add admin
         ModuleAssembly moduleAdmin = layerUI.module( "admin" );
