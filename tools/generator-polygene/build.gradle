@@ -36,6 +36,28 @@ def setsCurrentVersionToPackageJson = task( 'setsCurrentVersionToPackageJson' ) 
 }
 
 /**
+ * Copy current Gradle Wrapper into generator templates.
+ *
+ * This is because we don't store the Gradle Wrapper in this project in order to
+ * - keep it in synch with the Gradle Wrapper used to build the whole Polygene SDK
+ * - don't include the Gradle Wrapper in the source distribution
+ */
+def prepareTemplateGradleWrapper = task( 'prepareTemplateGradleWrapper', type: Copy ) {
+  from( rootProject.rootDir ) {
+    include( 'gradlew' )
+    rename { 'gradlew.tmpl' }
+  }
+  from( rootProject.rootDir ) {
+    include( 'gradlew.bat' )
+    rename { 'gradlew-bat.tmpl' }
+  }
+  from( rootProject.file( 'gradle/wrapper/' ) ) {
+    rename { "${ it }_" }
+  }
+  into( 'app/templates/buildtool/wrapper' )
+}
+
+/**
  * Generate a Gradle init script that registers a maven repository with the currently built artifacts.
  * Used by the generator tests.
  */
@@ -61,7 +83,7 @@ def generateStageMavenRepositoryInitScript = task( 'generateStageMavenRepository
  * Runs the generator tests.
  */
 def npmTest = task( 'npmTest', type: NpmTask ) {
-  dependsOn 'npmInstall', setsCurrentVersionToPackageJson, generateStageMavenRepositoryInitScript
+  dependsOn 'npmInstall', setsCurrentVersionToPackageJson, generateStageMavenRepositoryInitScript, prepareTemplateGradleWrapper
   description = 'Runs Polygene generator tests'
   args = [ 'run', 'test' ]
   inputs.file file( 'package.json' )

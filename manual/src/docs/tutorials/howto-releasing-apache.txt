@@ -342,7 +342,9 @@ Publish the new version of the `generator-polygene` NPM package tagged as `beta`
 
 [source,shell]
 ----
-cd polygene-java/tools/generator-polygene
+cd polygene-java
+./gradlew tools:generator-polygene:prepareTemplateGradleWrapper
+cd tools/generator-polygene
 npm publish --tag beta
 ----
 

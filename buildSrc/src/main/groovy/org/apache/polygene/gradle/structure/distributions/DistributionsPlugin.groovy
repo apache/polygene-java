@@ -19,7 +19,6 @@ package org.apache.polygene.gradle.structure.distributions
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import org.apache.commons.io.FileUtils
 import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.TaskGroups
 import org.apache.polygene.gradle.code.PublishedCodePlugin
@@ -150,6 +149,7 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/build/**'             // Build output
       spec.exclude 'gradlew*'                // Gradle wrapper scripts
       spec.exclude 'gradle/wrapper/**'       // Gradle wrapper
+      spec.exclude 'tools/generator-polygene/app/templates/buildtool/wrapper' // Project Generator Gradle wrapper
       spec.exclude '**/.gradle/**'           // Gradle caches
       spec.exclude '**/.gradletasknamecache' // Gradle shell completion cache
       spec.exclude '**/node_modules/**'      // Node's node_module dir
@@ -307,6 +307,15 @@ class DistributionsPlugin implements Plugin<Project>
         assertFileAbsent 'gradle/wrapper/gradle-wrapper.jar'
         assertFileAbsent 'gradle/wrapper/gradle-wrapper.properties'
         assertFilePresent 'gradle/wrapper-install/build.gradle'
+
+        def wrapperFiles = []
+        unpackedSrcDistDir.traverse { File file ->
+          if(file.file &&
+             (file.name.contains( 'gradle-wrapper' ) || file.name.contains('gradlew'))) {
+            wrapperFiles << file
+          }
+        }
+        assert wrapperFiles.empty
       }
     }
     project.tasks.create( TaskNames.BUILD_SOURCE_DIST, ExecLogged, { ExecLogged task ->
