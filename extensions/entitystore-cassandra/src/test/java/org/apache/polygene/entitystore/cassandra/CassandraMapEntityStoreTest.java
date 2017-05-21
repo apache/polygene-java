@@ -28,6 +28,8 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test the CassandraEntityStoreService.
@@ -79,5 +81,13 @@ public class CassandraMapEntityStoreTest
         CanRemoveAll cleaner = serviceFinder.findService( CanRemoveAll.class ).get();
         cleaner.removeAll();
         super.tearDown();
+    }
+
+    @Ignore( "POLYGENE-256" )
+    @Test
+    @Override
+    public void givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState()
+    {
+        super.givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState();
     }
 }
