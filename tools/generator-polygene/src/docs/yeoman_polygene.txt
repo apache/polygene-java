@@ -90,7 +90,7 @@ number of implementations to choose from. Not that "memory" is not persistent, b
   SQLite
 ----
 
-=== Indexin/Query system ===
+=== Indexing/Query system ===
 Select of a pluggable Indexing and Query subsystem.
 
 In Polygene, the indexing/query system is separated from store and retrieve. This allows us to optimize direct
