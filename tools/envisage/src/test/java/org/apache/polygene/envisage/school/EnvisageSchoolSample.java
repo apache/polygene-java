@@ -30,9 +30,9 @@ public class EnvisageSchoolSample
     // START SNIPPET: envisage
     public static void main( String[] args )
     {
-        Energy4Java energy4Java = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         ApplicationAssembler assembler = new SchoolAssembler();
-        ApplicationDescriptor descriptor = energy4Java.newApplicationModel( assembler );
+        ApplicationDescriptor descriptor = polygene.newApplicationModel( assembler );
         new Envisage().run( descriptor );
     }
     // END SNIPPET: envisage

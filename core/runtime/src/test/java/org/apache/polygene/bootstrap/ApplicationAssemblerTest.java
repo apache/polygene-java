@@ -41,9 +41,9 @@ public class ApplicationAssemblerTest
     public void testApplicationAssembler()
         throws AssemblyException
     {
-        Energy4Java is = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
 
-        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
+        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
@@ -98,7 +98,7 @@ public class ApplicationAssemblerTest
                 return true;
             }
         } );
-        model.newInstance( is.spi() );
+        model.newInstance( polygene.spi() );
     }
 
     interface TestService

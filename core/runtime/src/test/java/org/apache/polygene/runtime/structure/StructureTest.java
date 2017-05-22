@@ -41,8 +41,8 @@ public class StructureTest
     public void createApplicationUsingApplicationAssembly()
         throws AssemblyException
     {
-        Energy4Java boot = new Energy4Java();
-        boot.newApplication( new ApplicationAssembler()
+        Energy4Java polygene = new Energy4Java();
+        polygene.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException
@@ -67,7 +67,7 @@ public class StructureTest
     public void createApplicationUsingArrayOfAssemblers()
         throws AssemblyException
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // User Interface layer
@@ -92,7 +92,7 @@ public class StructureTest
                 }
             };
 
-        boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
     }

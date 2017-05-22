@@ -38,11 +38,11 @@ public class Main
     public static void main( String[] args )
         throws Exception
     {
-        Energy4Java is = new Energy4Java(  );
+        Energy4Java polygene = new Energy4Java(  );
 
         Server server = new Server( Protocol.HTTP, 8888 );
 
-        Application app = is.newApplication( new ForumAssembler(), new MetadataService() );
+        Application app = polygene.newApplication( new ForumAssembler(), new MetadataService() );
 
         app.activate();
 

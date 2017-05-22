@@ -41,8 +41,8 @@ public class Model2XMLTest
     @Test
     public void testModel2XML() throws AssemblyException, TransformerException
     {
-        Energy4Java is = new Energy4Java(  );
-        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
+        Energy4Java polygene = new Energy4Java(  );
+        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException

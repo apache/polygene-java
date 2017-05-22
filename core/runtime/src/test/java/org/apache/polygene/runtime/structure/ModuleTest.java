@@ -47,8 +47,8 @@ public class ModuleTest
     public Application givenFixture1()
         throws AssemblyException
     {
-        Energy4Java boot = new Energy4Java();
-        return boot.newApplication( new ApplicationAssembler()
+        Energy4Java polygene = new Energy4Java();
+        return polygene.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException

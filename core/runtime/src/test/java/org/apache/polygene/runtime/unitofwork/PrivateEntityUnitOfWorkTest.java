@@ -62,8 +62,8 @@ public class PrivateEntityUnitOfWorkTest
     {
         System.setProperty( "polygene.compacttrace", "off" );
 
-        Energy4Java is = new Energy4Java();
-        Application app = is.newApplication(
+        Energy4Java polygene = new Energy4Java();
+        Application app = polygene.newApplication(
             applicationFactory ->
                 applicationFactory.newApplicationAssembly( new Assembler[][][]{
                     {

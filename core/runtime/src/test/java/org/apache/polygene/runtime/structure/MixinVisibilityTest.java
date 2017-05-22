@@ -49,7 +49,7 @@ public class MixinVisibilityTest
     public void testMixinInModuleIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -68,7 +68,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -81,7 +81,7 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInModuleWillFail()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -100,7 +100,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -113,7 +113,7 @@ public class MixinVisibilityTest
     public void testMixinInLayerIsNotVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -142,7 +142,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -155,7 +155,7 @@ public class MixinVisibilityTest
     public void testMixinInLayerIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -184,7 +184,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -197,7 +197,7 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInLayerWillFailSameModule()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -227,7 +227,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -240,7 +240,7 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInLayerWillFailDiffModule()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -280,7 +280,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -295,7 +295,7 @@ public class MixinVisibilityTest
         throws Exception
     {
 
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer 1
@@ -326,7 +326,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -339,7 +339,7 @@ public class MixinVisibilityTest
     public void testMixinInLowerLayerIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer 1
@@ -370,7 +370,7 @@ public class MixinVisibilityTest
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();

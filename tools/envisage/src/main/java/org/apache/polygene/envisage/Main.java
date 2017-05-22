@@ -38,9 +38,9 @@ public class Main
         Class applicationAssemblerClass = Class.forName( applicationAssemblerName );
         ApplicationAssembler assembler = (ApplicationAssembler) applicationAssemblerClass.newInstance();
 
-        Energy4Java energy4Java = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
 
-        ApplicationDescriptor application = energy4Java.newApplicationModel( assembler );
+        ApplicationDescriptor application = polygene.newApplicationModel( assembler );
 
         new Envisage().run( application );
     }

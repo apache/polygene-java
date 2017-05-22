@@ -43,7 +43,7 @@ public class PrivateCompositeVisibilityTest
     public void testPrivateCompositeVisibility()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
@@ -55,7 +55,7 @@ public class PrivateCompositeVisibilityTest
                   }
                 }
             };
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
