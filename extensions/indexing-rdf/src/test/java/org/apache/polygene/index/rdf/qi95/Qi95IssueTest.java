@@ -33,9 +33,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
@@ -183,27 +181,21 @@ public class Qi95IssueTest
         throws AssemblyException
     {
         Energy4Java polygene = new Energy4Java();
-        Application application = polygene.newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+        Application application = polygene.newApplication( factory -> {
+            ApplicationAssembly applicationAssembly = factory.newApplicationAssembly();
 
-                LayerAssembly configLayer = applicationAssembly.layer( "Config" );
-                configModule.buildModuleAssembly( configLayer, "Configuration" );
+            LayerAssembly configLayer = applicationAssembly.layer( "Config" );
+            configModule.buildModuleAssembly( configLayer, "Configuration" );
 
-                LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure" );
-                infrastructureLayer.uses( configLayer );
+            LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure" );
+            infrastructureLayer.uses( configLayer );
 
-                queryServiceModuleBuilder.buildModuleAssembly( infrastructureLayer, "Query Service" );
-                entityStoreModuleBuilder.buildModuleAssembly( infrastructureLayer, "Entity Store" );
+            queryServiceModuleBuilder.buildModuleAssembly( infrastructureLayer, "Query Service" );
+            entityStoreModuleBuilder.buildModuleAssembly( infrastructureLayer, "Entity Store" );
 
-                LayerAssembly domainLayer = domainLayerBuilder.buildLayerAssembly( applicationAssembly );
-                domainLayer.uses( infrastructureLayer );
-                return applicationAssembly;
-            }
+            LayerAssembly domainLayer = domainLayerBuilder.buildLayerAssembly( applicationAssembly );
+            domainLayer.uses( infrastructureLayer );
+            return applicationAssembly;
         } );
         return application;
     }

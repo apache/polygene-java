@@ -21,10 +21,7 @@
 package org.apache.polygene.runtime.bootstrap.docs;
 
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.runtime.bootstrap.AssemblyHelper;
 import org.apache.polygene.runtime.composite.FragmentClassLoader;
@@ -41,21 +38,15 @@ public class DocumentationSupport
     {
         // Create a Polygene Runtime
         polygene = new Energy4Java();
-        application = polygene.newApplication( new ApplicationAssembler()
-        {
-
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly assembly = appFactory.newApplicationAssembly();
-                assembly.setMetaInfo( new DalvikAssemblyHelper() );
-                // END SNIPPET: customAssemblyHelper
-                // START SNIPPET: customAssemblyHelper
-                return assembly;
-            }
+        // Create the application
+        application = polygene.newApplication( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
+            assembly.setMetaInfo( new DalvikAssemblyHelper() );
+            // END SNIPPET: customAssemblyHelper
+            // START SNIPPET: customAssemblyHelper
+            return assembly;
         } );
-        // activate the application
+        // Activate the application
         application.activate();
     }
 

@@ -289,17 +289,7 @@ public class DocumentationSupport
         private static ApplicationDescriptor newApplication( final Assembler[][][] assemblers )
                 throws AssemblyException
         {
-            return polygene.newApplicationModel( new ApplicationAssembler()
-            {
-
-                @Override
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )
-                        throws AssemblyException
-                {
-                    return appFactory.newApplicationAssembly( assemblers );
-                }
-
-            } );
+            return polygene.newApplicationModel( factory -> factory.newApplicationAssembly( assemblers ) );
         }
         // END SNIPPET: pancake
 
@@ -330,24 +320,13 @@ public class DocumentationSupport
         {
             // Create a Polygene Runtime
             polygene = new Energy4Java();
-            application = polygene.newApplication( new ApplicationAssembler()
-            {
-
-                @Override
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )
-                        throws AssemblyException
-                {
-                    ApplicationAssembly assembly = appFactory.newApplicationAssembly();
-                    buildAssembly( assembly );
-                    return assembly;
-                }
-
-            } );
-            // activate the application
+            // Create the application
+            application = polygene.newApplication( factory -> buildAssembly( factory.newApplicationAssembly() ) );
+            // Activate the application
             application.activate();
         }
 
-        static void buildAssembly( ApplicationAssembly app ) throws AssemblyException
+        static ApplicationAssembly buildAssembly( ApplicationAssembly app ) throws AssemblyException
         {
             LayerAssembly webLayer = createWebLayer( app );
             LayerAssembly domainLayer = createDomainLayer( app );
@@ -359,6 +338,8 @@ public class DocumentationSupport
             domainLayer.uses( authLayer );
             domainLayer.uses( persistenceLayer );
             domainLayer.uses( messagingLayer );
+
+            return app;
         }
 
         static LayerAssembly createWebLayer( ApplicationAssembly app ) throws AssemblyException

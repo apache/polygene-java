@@ -20,20 +20,16 @@
 
 package org.apache.polygene.runtime.structure;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
-import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
-import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -48,39 +44,19 @@ public class ModuleTest
         throws AssemblyException
     {
         Energy4Java polygene = new Energy4Java();
-        return polygene.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                return applicationFactory.newApplicationAssembly( new Assembler[][][]
-                                                                  {
-                                                                      {
-                                                                          {
-                                                                              new Assembler()
-                                                                              {
-                                                                                  public void assemble( ModuleAssembly module )
-                                                                                      throws AssemblyException
-                                                                                  {
-                                                                                      module.transients( TestComposite1.class );
-                                                                                  }
-                                                                              }
-                                                                          },
-                                                                          {
-                                                                              new Assembler()
-                                                                              {
-                                                                                  public void assemble( ModuleAssembly module )
-                                                                                      throws AssemblyException
-                                                                                  {
-                                                                                      module.transients( TestComposite2.class )
-                                                                                          .visibleIn( Visibility.layer );
-                                                                                  }
-                                                                              }
-                                                                          }
-                                                                      }
-                                                                  } );
-            }
-        } );
+        return polygene.newApplication(
+            factory -> factory.newApplicationAssembly(
+                new Assembler[][][]
+                    {
+                        {
+                            {
+                                module -> module.transients( TestComposite1.class )
+                            },
+                            {
+                                module -> module.transients( TestComposite2.class ).visibleIn( Visibility.layer )
+                            }
+                        }
+                    } ) );
     }
 
     @Test

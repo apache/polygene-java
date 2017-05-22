@@ -21,7 +21,6 @@ package org.apache.polygene.api.docsupport;
 
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
@@ -82,16 +81,7 @@ public class ApplicationDocs
                     }
                 };
             Energy4Java polygene = new Energy4Java();
-            Application app = polygene.newApplication( new ApplicationAssembler()
-            {
-
-                @Override
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                    throws AssemblyException
-                {
-                    return applicationFactory.newApplicationAssembly( assemblers );
-                }
-            } );
+            Application app = polygene.newApplication( factory -> factory.newApplicationAssembly( assemblers ) );
             app.activate();
 // END SNIPPET: application2
         }
@@ -118,15 +108,7 @@ public class ApplicationDocs
         throws Exception
     {
         polygene = new Energy4Java();
-        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                return createAssembly( applicationFactory );
-            }
-        } );
+        ApplicationDescriptor model = polygene.newApplicationModel( factory -> createAssembly( factory ) );
         Application application = model.newInstance( polygene.spi() );
     }
 
