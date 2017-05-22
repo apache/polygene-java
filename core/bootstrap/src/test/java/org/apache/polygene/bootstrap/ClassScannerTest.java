@@ -36,17 +36,13 @@ public class ClassScannerTest
     public void testClassScannerFiles()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler singleton = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler singleton = new SingletonAssembler(
+            module -> {
                 // Find all classes starting from TestValue, but include only the ones that are named *Value
                 findClasses( TestValue.class ).filter( matches( ".*Value" ) )
                                               .forEach( module::values );
             }
-        };
+        );
 
         singleton.module().newValueBuilder( TestValue.class );
         singleton.module().newValueBuilder( Test2Value.class );

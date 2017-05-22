@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 
 public class ServiceInvocationPerformanceTest
@@ -37,15 +36,12 @@ public class ServiceInvocationPerformanceTest
     public void testInjectService()
         throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-            {
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> {
                 module.services( ServiceInvocationPerformanceTest.MyServiceComposite.class );
                 module.objects( ServiceInvocationPerformanceTest.class );
             }
-        };
+        );
 
         assembly.module().injectTo( this );
 

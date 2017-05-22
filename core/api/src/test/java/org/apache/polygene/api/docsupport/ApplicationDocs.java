@@ -37,14 +37,9 @@ public class ApplicationDocs
     {
         {
 // START SNIPPET: application1
-            SingletonAssembler polygene = new SingletonAssembler()
-            {
-                public void assemble( ModuleAssembly assembly )
-                    throws AssemblyException
-                {
-                    assembly.values( MyStuffValueComposite.class );
-                }
-            };
+            SingletonAssembler polygene = new SingletonAssembler(
+                module -> module.values( MyStuffValueComposite.class )
+            );
 // END SNIPPET: application1
         }
         {

@@ -20,16 +20,10 @@
 
 package org.apache.polygene.dci.moneytransfer.test;
 
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.dci.moneytransfer.context.PayBillsContext2;
 import org.apache.polygene.dci.moneytransfer.context.TransferMoneyContext2;
@@ -38,6 +32,10 @@ import org.apache.polygene.dci.moneytransfer.domain.entity.CheckingAccountEntity
 import org.apache.polygene.dci.moneytransfer.domain.entity.CreditorEntity;
 import org.apache.polygene.dci.moneytransfer.domain.entity.SavingsAccountEntity;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -54,22 +52,19 @@ public class TransferMoneyTest2
     public static void setup()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.entities(
+        SingletonAssembler assembler = new SingletonAssembler(
+            moduleAssembly -> {
+                moduleAssembly.entities(
                     CheckingAccountEntity.class,
                     SavingsAccountEntity.class,
                     CreditorEntity.class );
 
-                new EntityTestAssembler().assemble( module );
+                new EntityTestAssembler().assemble( moduleAssembly );
 
-                module.transients( TransferMoneyContext2.class );
-                module.objects( PayBillsContext2.class );
+                moduleAssembly.transients( TransferMoneyContext2.class );
+                moduleAssembly.objects( PayBillsContext2.class );
             }
-        };
+        );
 
         module = assembler.module();
         uowf = module.unitOfWorkFactory();

@@ -33,8 +33,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Assert;
@@ -47,14 +45,10 @@ public class OperatorsTest
 {
     @Test
     public void testOperators()
-        throws UnitOfWorkCompletionException, ActivationException, AssemblyException
+        throws UnitOfWorkCompletionException, ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 new EntityTestAssembler().assemble( module );
 
                 module.entities( TestEntity.class );
@@ -62,7 +56,7 @@ public class OperatorsTest
                 module.forMixin( TestEntity.class ).declareDefaults().foo().set( "Bar" );
                 module.forMixin( TestValue.class ).declareDefaults().bar().set( "Xyz" );
             }
-        };
+        );
 
         UnitOfWorkFactory uowf = assembler.module().unitOfWorkFactory();
         UnitOfWork uow = uowf.newUnitOfWork();

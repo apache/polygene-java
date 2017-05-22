@@ -71,16 +71,9 @@ public class JMXTest extends AbstractPolygeneTest
     public static void main(String[] args )
         throws InterruptedException, ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
-                new JMXTest().assemble(module);
-            }
-
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            moduleAssembly -> new JMXTest().assemble(moduleAssembly)
+        );
         // This allows user to connect using VisualVM/JConsole
         while ( true ) {
             Thread.sleep( 10_000 );

@@ -201,19 +201,13 @@ public class DocumentationSupport
             throws ActivationException, AssemblyException
         {
             // START SNIPPET: singleton
-            SingletonAssembler assembler = new SingletonAssembler()
-            {
-
-                @Override
-                public void assemble( ModuleAssembly module )
-                        throws AssemblyException
-                {
+            SingletonAssembler assembler = new SingletonAssembler(
+                module -> {
                     module.services( MyService.class ).identifiedBy( "Foo" );
                     module.services( MyService.class ).identifiedBy( "Bar" );
                     module.objects( Stuff.class );
                 }
-
-            };
+            );
             Module module = assembler.module();
             Stuff stuff = module.newObject( Stuff.class );
             // END SNIPPET: singleton

@@ -19,19 +19,21 @@
  */
 package org.apache.polygene.tutorials.cargo.step2;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.mock.MockComposite;
 import org.apache.polygene.test.mock.MockPlayerMixin;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -52,15 +54,9 @@ public class SequencingConcernTest
     public void failingBooking()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( ShippingServiceTestComposite.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> module.transients( ShippingServiceTestComposite.class )
+        );
         ShippingService shippingService = createMock( ShippingService.class );
         Cargo cargo = createMock( Cargo.class );
         Voyage voyage = createMock( Voyage.class );
@@ -89,15 +85,9 @@ public class SequencingConcernTest
     public void successfulBooking()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( ShippingServiceTestComposite.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> module.transients( ShippingServiceTestComposite.class )
+        );
         ShippingService shippingService = createMock( ShippingService.class );
         Cargo cargo = createMock( Cargo.class );
         Voyage voyage = createMock( Voyage.class );

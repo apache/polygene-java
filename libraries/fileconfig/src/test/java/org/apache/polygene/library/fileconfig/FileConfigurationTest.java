@@ -21,12 +21,10 @@ package org.apache.polygene.library.fileconfig;
 
 import java.io.File;
 import java.io.IOException;
+import org.apache.polygene.api.activation.ActivationException;
+import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.junit.Rule;
 import org.junit.Test;
-import org.apache.polygene.api.activation.ActivationException;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertEquals;
@@ -39,19 +37,15 @@ public class FileConfigurationTest
 
     @Test
     public void testFileConfiguration()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 // START SNIPPET: simple
                 new FileConfigurationAssembler().assemble( module );
                 // END SNIPPET: simple
             }
-        };
+        );
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
         assertNotNull( config.configurationDirectory() );
@@ -69,7 +63,7 @@ public class FileConfigurationTest
 
     @Test
     public void testFileConfigurationOverride()
-        throws IOException, ActivationException, AssemblyException
+        throws IOException, ActivationException
     {
         File testFile = tmpDir.getRoot();
         final File confDir = testFile;
@@ -77,12 +71,8 @@ public class FileConfigurationTest
         final File tempDir = testFile;
         final File cacheDir = testFile;
         final File logDir = testFile;
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 // START SNIPPET: override
                 FileConfigurationOverride override = new FileConfigurationOverride()
                     .withConfiguration( confDir )
@@ -93,7 +83,7 @@ public class FileConfigurationTest
                 new FileConfigurationAssembler().withOverride( override ).assemble( module );
                 // END SNIPPET: override
             }
-        };
+        );
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
 
@@ -106,22 +96,18 @@ public class FileConfigurationTest
 
     @Test
     public void testFileConfigurationOverrideConvention()
-        throws IOException, ActivationException, AssemblyException
+        throws IOException, ActivationException
     {
         File rootDir = tmpDir.getRoot();
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 // START SNIPPET: override-convention
                 new FileConfigurationAssembler()
                     .withOverride( new FileConfigurationOverride().withConventionalRoot( rootDir ) )
                     .assemble( module );
                 // END SNIPPET: override-convention
             }
-        };
+        );
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
 
