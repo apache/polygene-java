@@ -20,7 +20,6 @@
 
 package org.apache.polygene.bootstrap;
 
-import java.util.function.Consumer;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -45,7 +44,7 @@ public class SingletonAssembler
     private final Energy4Java polygene;
     private final Application applicationInstance;
     private final Module moduleInstance;
-    private Consumer<ModuleAssembly> assemble;
+    private Assembler assemble;
 
     /**
      * Creates a Polygene Runtime instance containing one Layer with one Module.
@@ -58,7 +57,7 @@ public class SingletonAssembler
      *                             the programming model makes it impossible to create it.
      * @throws ActivationException If the automatic {@code activate()} method is throwing this Exception..
      */
-    public SingletonAssembler( Consumer<ModuleAssembly> assemble )
+    public SingletonAssembler( Assembler assemble )
         throws ActivationException
     {
         this.assemble = assemble;
@@ -177,7 +176,7 @@ public class SingletonAssembler
     {
         if( assemble != null )
         {
-            assemble.accept( module );
+            assemble.assemble( module );
         }
     }
 }

@@ -26,6 +26,7 @@ package org.apache.polygene.bootstrap;
  * all configuration and additional metainfo that is needed
  * to instantiate a Polygene application.
  */
+@FunctionalInterface
 public interface Assembler
 {
     /**
