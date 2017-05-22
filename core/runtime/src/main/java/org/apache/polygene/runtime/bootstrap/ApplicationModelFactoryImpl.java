@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.polygene.api.composite.ModelDescriptor;
-import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.api.util.HierarchicalVisitor;
@@ -53,71 +52,19 @@ public final class ApplicationModelFactoryImpl
 {
     @Override
     public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
-        throws AssemblyException
     {
         AssemblyHelper helper = createAssemblyHelper( assembly );
-
+        AssemblyMaps maps = new AssemblyMaps();
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
-        ActivatorsModel<Application> applicationActivators = new ActivatorsModel<>( applicationAssembly.activators() );
-        List<LayerModel> layerModels = new ArrayList<>();
-        final ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(),
-                                                                        applicationAssembly.version(),
-                                                                        applicationAssembly.mode(),
-                                                                        applicationAssembly.metaInfo(),
-                                                                        applicationActivators,
-                                                                        layerModels );
-        Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<>();
-        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<>();
 
-        // Build all layers
         List<LayerAssemblyImpl> layerAssemblies = new ArrayList<>( applicationAssembly.layerAssemblies() );
-        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
-        {
-            List<LayerModel> usedLayers = new ArrayList<>();
-            mapUsedLayers.put( layerAssembly, usedLayers );
+        List<LayerModel> layerModels = new ArrayList<>();
 
-            UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
-            List<ModuleModel> moduleModels = new ArrayList<>();
-            String name = layerAssembly.name();
-            if( name == null )
-            {
-                throw new AssemblyException( "Layer must have name set" );
-            }
-            ActivatorsModel<Layer> layerActivators = new ActivatorsModel<>( layerAssembly.activators() );
-            LayerModel layerModel = new LayerModel( name, layerAssembly.metaInfo(), usedLayersModel, layerActivators, moduleModels );
+        buildAllLayers( helper, maps, layerAssemblies, layerModels );
+        populateUsedLayerModels( maps, layerAssemblies );
 
-            for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
-            {
-                moduleModels.add( moduleAssembly.assembleModule( layerModel, helper ) );
-            }
-            mapAssemblyModel.put( layerAssembly, layerModel );
-            layerModels.add( layerModel );
-        }
-
-        // Populate used layer lists
-        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
-        {
-            Set<LayerAssembly> usesLayers = layerAssembly.uses();
-            List<LayerModel> usedLayers = mapUsedLayers.get( layerAssembly );
-            for( LayerAssembly usesLayer : usesLayers )
-            {
-                LayerModel layerModel = mapAssemblyModel.get( usesLayer );
-                usedLayers.add( layerModel );
-            }
-        }
-
-        // Bind model
-        // This will resolve all dependencies
-        try
-        {
-//            applicationModel.bind();
-            applicationModel.accept( new BindingVisitor( applicationModel ) );
-        }
-        catch( BindingException e )
-        {
-            throw new AssemblyException( "Unable to bind: " + applicationModel, e );
-        }
-
+        ApplicationModel applicationModel = buildApplicationModel( applicationAssembly, layerModels );
+        bindApplicationModel( applicationModel );
         return applicationModel;
     }
 
@@ -133,6 +80,105 @@ public final class ApplicationModelFactoryImpl
             }
         }
         return new AssemblyHelper();
+    }
+
+    private void buildAllLayers( AssemblyHelper helper, AssemblyMaps maps,
+                                 List<LayerAssemblyImpl> layerAssemblies, List<LayerModel> layerModels )
+    {
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        {
+            UsedLayersModel usedLayersModel = new UsedLayersModel( maps.usedLayersOf( layerAssembly ) );
+            List<ModuleModel> moduleModels = new ArrayList<>();
+            String name = layerAssembly.name();
+            if( name == null )
+            {
+                throw new AssemblyException( "Layer must have name set" );
+            }
+            ActivatorsModel<Layer> layerActivators = new ActivatorsModel<>( layerAssembly.activators() );
+            LayerModel layerModel = new LayerModel( name,
+                                                    layerAssembly.metaInfo(),
+                                                    usedLayersModel,
+                                                    layerActivators,
+                                                    moduleModels );
+
+            for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
+            {
+                moduleModels.add( moduleAssembly.assembleModule( layerModel, helper ) );
+            }
+            maps.addModel( layerAssembly, layerModel );
+            layerModels.add( layerModel );
+        }
+    }
+
+    private void populateUsedLayerModels( AssemblyMaps maps, List<LayerAssemblyImpl> layerAssemblies )
+    {
+        for( LayerAssemblyImpl layerAssembly : layerAssemblies )
+        {
+            Set<LayerAssembly> usesLayers = layerAssembly.uses();
+            List<LayerModel> usedLayers = maps.usedLayersOf( layerAssembly );
+            for( LayerAssembly usesLayer : usesLayers )
+            {
+                usedLayers.add( maps.modelOf( usesLayer ) );
+            }
+        }
+    }
+
+
+    private ApplicationModel buildApplicationModel( ApplicationAssemblyImpl applicationAssembly,
+                                                    List<LayerModel> layerModels )
+    {
+        return new ApplicationModel( applicationAssembly.name(),
+                                     applicationAssembly.version(),
+                                     applicationAssembly.mode(),
+                                     applicationAssembly.metaInfo(),
+                                     new ActivatorsModel<>( applicationAssembly.activators() ),
+                                     layerModels );
+    }
+
+    private void bindApplicationModel( ApplicationModel applicationModel )
+    {
+        // This will resolve all dependencies
+        try
+        {
+            applicationModel.accept( new BindingVisitor( applicationModel ) );
+        }
+        catch( BindingException e )
+        {
+            throw new AssemblyException( "Unable to bind: " + applicationModel, e );
+        }
+    }
+
+    private static class AssemblyMaps
+    {
+        private final Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<>();
+        private final Map<LayerModel, LayerAssembly> mapModelAssembly = new HashMap<>();
+        private final Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<>();
+
+        void addModel( LayerAssembly assembly, LayerModel model )
+        {
+            mapAssemblyModel.put( assembly, model );
+            mapModelAssembly.put( model, assembly );
+            usedLayersOf( assembly );
+        }
+
+        LayerAssembly assemblyOf( LayerModel model )
+        {
+            return mapModelAssembly.get( model );
+        }
+
+        LayerModel modelOf( LayerAssembly assembly )
+        {
+            return mapAssemblyModel.get( assembly );
+        }
+
+        List<LayerModel> usedLayersOf( LayerAssembly assembly )
+        {
+            if( !mapUsedLayers.containsKey( assembly ) )
+            {
+                mapUsedLayers.put( assembly, new ArrayList<>() );
+            }
+            return mapUsedLayers.get( assembly );
+        }
     }
 
     private static class BindingVisitor
@@ -165,12 +211,14 @@ public final class ApplicationModelFactoryImpl
             else if( visited instanceof CompositeMethodModel )
             {
                 compositeMethodModel = (CompositeMethodModel) visited;
-                resolution = new Resolution( applicationModel, layer, module, objectDescriptor, compositeMethodModel, null );
+                resolution = new Resolution( applicationModel, layer, module,
+                                             objectDescriptor, compositeMethodModel, null );
             }
             else if( visited instanceof ModelDescriptor )
             {
                 objectDescriptor = (ModelDescriptor) visited;
-                resolution = new Resolution( applicationModel, layer, module, objectDescriptor, null, null );
+                resolution = new Resolution( applicationModel, layer, module,
+                                             objectDescriptor, null, null );
             }
             else if( visited instanceof InjectedFieldModel )
             {
@@ -191,7 +239,6 @@ public final class ApplicationModelFactoryImpl
 
         @Override
         public boolean visitLeave( Object visited )
-            throws BindingException
         {
             return true;
         }
