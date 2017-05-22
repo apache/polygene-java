@@ -40,7 +40,6 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Energy4Java;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -71,7 +70,6 @@ public class PrivateEntityUnitOfWorkTest
                         {
                             module -> {
                                 module.objects( PrivateEntityUnitOfWorkTest.class );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     },
@@ -82,7 +80,6 @@ public class PrivateEntityUnitOfWorkTest
                                 module.entities( ProductCatalogEntity.class ).visibleIn( application );
                                 module.values( ProductInfo.class );
                                 new EntityTestAssembler().assemble( module );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     }

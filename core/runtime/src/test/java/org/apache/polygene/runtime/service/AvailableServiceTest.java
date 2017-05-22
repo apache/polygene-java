@@ -20,8 +20,6 @@
 
 package org.apache.polygene.runtime.service;
 
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
@@ -38,8 +36,11 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -57,7 +58,6 @@ public class AvailableServiceTest
                 throws AssemblyException
             {
                 module.services( TestServiceComposite1.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -80,7 +80,6 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -109,7 +108,6 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

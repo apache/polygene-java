@@ -31,7 +31,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
 import org.apache.polygene.migration.assembly.MigrationBuilder;
 import org.apache.polygene.migration.assembly.MigrationContext;
@@ -58,7 +57,6 @@ public class MigrationTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        new DefaultUnitOfWorkAssembler().assemble( module );
 
         module.objects( MigrationEventLogger.class );
         module.importedServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );

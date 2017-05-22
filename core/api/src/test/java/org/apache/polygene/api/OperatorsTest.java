@@ -36,7 +36,6 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +61,6 @@ public class OperatorsTest
                 module.values( TestValue.class );
                 module.forMixin( TestEntity.class ).declareDefaults().foo().set( "Bar" );
                 module.forMixin( TestValue.class ).declareDefaults().bar().set( "Xyz" );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

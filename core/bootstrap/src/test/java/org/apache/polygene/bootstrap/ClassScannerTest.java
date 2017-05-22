@@ -21,7 +21,6 @@ package org.apache.polygene.bootstrap;
 
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.bootstrap.somepackage.Test2Value;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,8 +42,6 @@ public class ClassScannerTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new DefaultUnitOfWorkAssembler().assemble( module );
-
                 // Find all classes starting from TestValue, but include only the ones that are named *Value
                 findClasses( TestValue.class ).filter( matches( ".*Value" ) )
                                               .forEach( module::values );

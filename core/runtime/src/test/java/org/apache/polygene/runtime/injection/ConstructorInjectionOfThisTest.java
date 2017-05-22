@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.runtime.injection;
 
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.UseDefaults;
@@ -53,7 +52,6 @@ public class ConstructorInjectionOfThisTest
                 throws AssemblyException
             {
                 module.values( Does.class ).withMixins( DoesMixin.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );

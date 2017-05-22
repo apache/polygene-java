@@ -40,7 +40,6 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.After;
 import org.junit.Before;
@@ -667,8 +666,6 @@ public class ValueVisibilityTest
             module.values( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( ModuleModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -686,7 +683,6 @@ public class ValueVisibilityTest
             module.values( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -702,8 +698,6 @@ public class ValueVisibilityTest
             module.values( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( AboveModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -718,8 +712,6 @@ public class ValueVisibilityTest
             module.values( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( BesideModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

@@ -23,7 +23,6 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.elasticsearch.assembly.ESClientIndexQueryAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
@@ -40,7 +39,6 @@ public class ElasticSearchQueryMultimoduleTest extends ElasticSearchQueryTest
 
         module = module.layer().module( "module2" );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
-        new DefaultUnitOfWorkAssembler().assemble( module );
 
         // Config module
         LayerAssembly configLayer = module.layer().application().layer( "config" );
