@@ -27,7 +27,7 @@ import org.apache.polygene.library.constraints.HostPortConstraint;
 
 /**
  * Marks a property as being a string, with a "host:port", where host is a valid hostname, IPv4 address or IPv6 address
- * and port is in the range of 0 to 65535
+ * and port is in the range of 0 to 65535. The port is optional.
  */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )

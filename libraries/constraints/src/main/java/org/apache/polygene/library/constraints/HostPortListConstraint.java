@@ -31,14 +31,24 @@ import static java.util.Arrays.stream;
 public class HostPortListConstraint
     implements Constraint<HostPortList, String>
 {
-    private static final UrlValidator VALIDATOR = new UrlValidator( new String[]{ "http" } );
+    private static final UrlValidator VALIDATOR = new UrlValidator( new String[]{ "http" }, UrlValidator.NO_FRAGMENTS );
 
     @Override
     public boolean isValid( HostPortList annotation, String value )
     {
-        return stream( value.split( "[ ,]" ) )
+        return stream( value.split( "[ ,]+" ) )
+            .map( this::handleLocalHost )
             .map( this::prefixProtocol )
             .allMatch( VALIDATOR::isValid );
+    }
+
+    private String handleLocalHost( String entry )
+    {
+        if( entry.startsWith( "localhost" ) )
+        {
+            return "localhost.my" + entry.substring( 9 );
+        }
+        return entry;
     }
 
     private String prefixProtocol( String value )

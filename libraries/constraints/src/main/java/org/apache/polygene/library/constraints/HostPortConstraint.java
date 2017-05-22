@@ -34,6 +34,10 @@ public class HostPortConstraint
     @Override
     public boolean isValid( HostPort annotation, String value )
     {
+        if( value.startsWith( "localhost" ) )
+        {
+            value = "localhost.my" + value.substring( 9 );
+        }
         return VALIDATOR.isValid( "http://" + value );
     }
 }

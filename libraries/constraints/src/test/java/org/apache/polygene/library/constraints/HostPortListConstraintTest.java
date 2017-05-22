@@ -32,6 +32,30 @@ public class HostPortListConstraintTest extends AbstractPolygeneTest
 {
 
     @Test
+    public void givenValidHostWithoutPortWhenSettingPropertyExpectSuccess()
+        throws Exception
+    {
+        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+        someValue.hostPort().set( "habba.zout.com" );
+    }
+
+    @Test
+    public void givenValidHostListWithoutPortWhenSettingPropertyExpectSuccess()
+        throws Exception
+    {
+        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+        someValue.hostPort().set( "habba.zout.com, localhost google.com" );
+    }
+
+    @Test
+    public void givenValidHostListWithSomePortWhenSettingPropertyExpectSuccess()
+        throws Exception
+    {
+        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+        someValue.hostPort().set( "habba.zout.com, localhost:8080, google.com" );
+    }
+
+    @Test
     public void givenValidHostPortWhenSettingPropertyExpectSuccess()
         throws Exception
     {
