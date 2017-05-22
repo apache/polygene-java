@@ -152,7 +152,7 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
                 return helpers.run(path.join(__dirname, '../app'))
                     .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
                     .withPrompts({
-                        name: 'test-project',
+                        name: 'TestProject',
                         packageName: 'org.apache.polygene.generator.test',
                         applicationtype: appType,
                         entitystore: entityStore,
