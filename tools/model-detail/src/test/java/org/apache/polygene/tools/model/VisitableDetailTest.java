@@ -85,6 +85,10 @@ public class VisitableDetailTest
                     // Leaving Structure
                     "visitLeave( ModuleName )",
                     "visitLeave( LayerName )",
+                    "visitEnter( polygene-support )",
+                    "visitEnter( spi-defaults )",
+                    "visitLeave( spi-defaults )",
+                    "visitLeave( polygene-support )",
                     "visitLeave( UnderTestApp )"
                 )
             )

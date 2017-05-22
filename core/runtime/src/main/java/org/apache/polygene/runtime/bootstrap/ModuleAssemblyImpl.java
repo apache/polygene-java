@@ -38,9 +38,7 @@ import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.service.DuplicateServiceIdentityException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.type.HasEqualOrAssignableFromType;
@@ -69,8 +67,6 @@ import org.apache.polygene.bootstrap.TransientAssembly;
 import org.apache.polygene.bootstrap.TransientDeclaration;
 import org.apache.polygene.bootstrap.ValueAssembly;
 import org.apache.polygene.bootstrap.ValueDeclaration;
-import org.apache.polygene.bootstrap.identity.DefaultIdentityGeneratorAssembler;
-import org.apache.polygene.bootstrap.serialization.DefaultSerializationAssembler;
 import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.runtime.activation.ActivatorsModel;
 import org.apache.polygene.runtime.composite.TransientModel;
@@ -121,10 +117,8 @@ final class ModuleAssemblyImpl
 
     static
     {
-        DEFAULT_ASSEMBLERS = new HashMap<>( 3 );
+        DEFAULT_ASSEMBLERS = new HashMap<>( 1 );
         DEFAULT_ASSEMBLERS.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
-        DEFAULT_ASSEMBLERS.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
-        DEFAULT_ASSEMBLERS.put( Serialization.class, new DefaultSerializationAssembler() );
     }
 
     ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)

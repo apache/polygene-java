@@ -25,15 +25,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.ModelDescriptor;
+import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationModelFactory;
+import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.BindingException;
 import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.identity.DefaultIdentityGeneratorAssembler;
+import org.apache.polygene.bootstrap.serialization.DefaultSerializationAssembler;
 import org.apache.polygene.runtime.activation.ActivatorsModel;
 import org.apache.polygene.runtime.composite.CompositeMethodModel;
 import org.apache.polygene.runtime.injection.InjectedFieldModel;
@@ -43,6 +48,11 @@ import org.apache.polygene.runtime.structure.ApplicationModel;
 import org.apache.polygene.runtime.structure.LayerModel;
 import org.apache.polygene.runtime.structure.ModuleModel;
 import org.apache.polygene.runtime.structure.UsedLayersModel;
+import org.apache.polygene.spi.serialization.JsonSerialization;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Factory for Applications.
@@ -50,6 +60,20 @@ import org.apache.polygene.runtime.structure.UsedLayersModel;
 public final class ApplicationModelFactoryImpl
     implements ApplicationModelFactory
 {
+    public static final String SUPPORT_LAYER_NAME = "polygene-support";
+    public static final String SPI_DEFAULTS_MODULE_NAME = "spi-defaults";
+
+    private static final HashMap<Class, Assembler> SPI_DEFAULTS_ASSEMBLERS;
+
+    static
+    {
+        SPI_DEFAULTS_ASSEMBLERS = new HashMap<>( 2 );
+        SPI_DEFAULTS_ASSEMBLERS.put( IdentityGenerator.class,
+                                     new DefaultIdentityGeneratorAssembler().visibleIn( Visibility.application ) );
+        SPI_DEFAULTS_ASSEMBLERS.put( JsonSerialization.class,
+                                     new DefaultSerializationAssembler().visibleIn( Visibility.application ) );
+    }
+
     @Override
     public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
     {
@@ -62,6 +86,11 @@ public final class ApplicationModelFactoryImpl
 
         buildAllLayers( helper, maps, layerAssemblies, layerModels );
         populateUsedLayerModels( maps, layerAssemblies );
+        assembleSupportLayer( helper, maps, applicationAssembly, layerModels );
+
+        assert layerModels.size() == maps.mapAssemblyModel.size();
+        assert layerModels.size() == maps.mapModelAssembly.size();
+        assert layerModels.size() == maps.mapUsedLayers.size();
 
         ApplicationModel applicationModel = buildApplicationModel( applicationAssembly, layerModels );
         bindApplicationModel( applicationModel );
@@ -123,6 +152,68 @@ public final class ApplicationModelFactoryImpl
         }
     }
 
+    private void assembleSupportLayer( AssemblyHelper helper, AssemblyMaps maps,
+                                       ApplicationAssemblyImpl applicationAssembly, List<LayerModel> layerModels )
+    {
+        Map<Class, List<LayerModel>> spiDefaultsTargetLayers = findSpiDefaultsTargetLayers( layerModels );
+        if( !spiDefaultsTargetLayers.isEmpty() )
+        {
+            // Assemble layer
+            LayerAssemblyImpl runtimeLayerAssembly = (LayerAssemblyImpl) applicationAssembly
+                .layer( SUPPORT_LAYER_NAME );
+            List<ModuleModel> runtimeModuleModels = new ArrayList<>();
+            LayerModel runtimeLayerModel = new LayerModel(
+                runtimeLayerAssembly.name(),
+                runtimeLayerAssembly.metaInfo(),
+                new UsedLayersModel( emptyList() ),
+                new ActivatorsModel<>( runtimeLayerAssembly.activators() ),
+                runtimeModuleModels );
+
+            // Assemble module
+            ModuleAssemblyImpl spiDefaultsAssembly = (ModuleAssemblyImpl) runtimeLayerAssembly
+                .module( SPI_DEFAULTS_MODULE_NAME );
+            spiDefaultsTargetLayers
+                .entrySet().stream()
+                .map( entry -> SPI_DEFAULTS_ASSEMBLERS.get( entry.getKey() ) )
+                .forEach( spiDefaultAssembler -> spiDefaultAssembler.assemble( spiDefaultsAssembly ) );
+            runtimeModuleModels.add( spiDefaultsAssembly.assembleModule( runtimeLayerModel, helper ) );
+
+            layerModels.add( runtimeLayerModel );
+            maps.addModel( runtimeLayerAssembly, runtimeLayerModel );
+
+            // Wire layer uses
+            spiDefaultsTargetLayers
+                .values().stream()
+                .flatMap( List::stream )
+                .map( maps::usedLayersOf )
+                .forEach( usedLayers -> usedLayers.add( runtimeLayerModel ) );
+        }
+    }
+
+    private Map<Class, List<LayerModel>> findSpiDefaultsTargetLayers( List<LayerModel> layerModels )
+    {
+        Map<Class, List<LayerModel>> spiTargetLayers = new HashMap<>( SPI_DEFAULTS_ASSEMBLERS.size() );
+        for( Class spiServiceClass : SPI_DEFAULTS_ASSEMBLERS.keySet() )
+        {
+            List<LayerModel> targetLayers = layerModels
+                .stream()
+                // their modules
+                .flatMap( layerModel -> stream( layerModel.modules().spliterator(), false ) )
+                // where no service of the spi service type is visible
+                .filter( moduleModel -> moduleModel.findVisibleServiceTypes()
+                                                   .noneMatch( descriptor -> descriptor.hasType( spiServiceClass ) ) )
+                // their layers
+                .map( ModuleModel::layer ).map( LayerModel.class::cast )
+                .distinct()
+                .collect( toList() );
+            if( !targetLayers.isEmpty() )
+            {
+                spiTargetLayers.put( spiServiceClass, targetLayers );
+            }
+        }
+        return spiTargetLayers;
+    }
+
 
     private ApplicationModel buildApplicationModel( ApplicationAssemblyImpl applicationAssembly,
                                                     List<LayerModel> layerModels )
@@ -178,6 +269,11 @@ public final class ApplicationModelFactoryImpl
                 mapUsedLayers.put( assembly, new ArrayList<>() );
             }
             return mapUsedLayers.get( assembly );
+        }
+
+        List<LayerModel> usedLayersOf( LayerModel model )
+        {
+            return usedLayersOf( assemblyOf( model ) );
         }
     }
 

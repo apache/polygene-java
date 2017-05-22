@@ -21,7 +21,7 @@ import org.apache.polygene.api.serialization.Converters;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.Serializer;
-import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonAdapters;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
@@ -31,7 +31,7 @@ import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.spi.serialization.JsonSerializer;
 
 public class DefaultSerializationAssembler
-    implements Assembler
+    extends Assemblers.Visibility<DefaultSerializationAssembler>
 {
     public static final String IDENTITY = "default-serialization";
 
@@ -47,6 +47,7 @@ public class DefaultSerializationAssembler
                           JavaxJsonAdapters.class,
                           JavaxJsonFactories.class )
               .identifiedBy( IDENTITY )
-              .taggedWith( Serialization.Format.JSON );
+              .taggedWith( Serialization.Format.JSON )
+              .visibleIn( visibility() );
     }
 }

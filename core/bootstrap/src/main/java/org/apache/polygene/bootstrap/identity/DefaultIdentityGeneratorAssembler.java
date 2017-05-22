@@ -21,11 +21,11 @@ package org.apache.polygene.bootstrap.identity;
 
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.UuidGeneratorMixin;
-import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 public class DefaultIdentityGeneratorAssembler
-    implements Assembler
+    extends Assemblers.Visibility<DefaultIdentityGeneratorAssembler>
 {
     public static final String IDENTITY = "default-identity-generator";
 
@@ -34,6 +34,7 @@ public class DefaultIdentityGeneratorAssembler
     {
         module.services( IdentityGenerator.class )
               .withMixins( UuidGeneratorMixin.class )
-              .identifiedBy( IDENTITY );
+              .identifiedBy( IDENTITY )
+              .visibleIn( visibility() );
     }
 }

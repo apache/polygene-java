@@ -201,6 +201,14 @@ public class PassivationExceptionTest
             {
                 return;
             }
+            // Ignore polygene-support layer events
+            if( ( event.source() instanceof Layer
+                  && ( (Layer) event.source() ).name().equals( "polygene-support" ) )
+                || ( event.source() instanceof Module
+                     && ( (Module) event.source() ).layer().name().equals( "polygene-support" ) ) )
+            {
+                return;
+            }
             switch( event.type() )
             {
                 case PASSIVATING:

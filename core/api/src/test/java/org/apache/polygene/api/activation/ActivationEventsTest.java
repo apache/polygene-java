@@ -22,6 +22,7 @@ package org.apache.polygene.api.activation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.polygene.api.structure.Layer;
 import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationEvent.EventType;
 import org.apache.polygene.api.mixin.Mixins;
@@ -259,6 +260,14 @@ public class ActivationEventsTest
         @Override
         public void onEvent( ActivationEvent event )
         {
+            // Ignore polygene-support layer events
+            if( ( event.source() instanceof Layer
+                  && ( (Layer) event.source() ).name().equals( "polygene-support" ) )
+                || ( event.source() instanceof Module
+                     && ( (Module) event.source() ).layer().name().equals( "polygene-support" ) ) )
+            {
+                return;
+            }
             events.add( event );
         }
 
