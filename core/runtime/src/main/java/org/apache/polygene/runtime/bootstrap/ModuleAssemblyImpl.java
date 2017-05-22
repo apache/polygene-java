@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime.bootstrap;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -666,28 +665,14 @@ final class ModuleAssemblyImpl
     }
 
     private void addDefaultAssemblers()
-            throws AssemblyException
     {
-        try
-        {
-            defaultAssemblers.entrySet().stream()
-                    .filter(entry -> serviceAssemblies.stream().noneMatch(serviceAssembly -> serviceAssembly.hasType(entry.getKey())))
-                    .forEach(entry ->
-                    {
-                        try
-                        {
-                            entry.getValue().assemble(this);
-                        }
-                        catch (AssemblyException e)
-                        {
-                            throw new UndeclaredThrowableException(e);
-                        }
-                    });
-        }
-        catch (UndeclaredThrowableException e)
-        {
-            throw (AssemblyException) e.getUndeclaredThrowable();
-        }
+        defaultAssemblers
+            .entrySet()
+            .stream()
+            .filter( entry ->
+                         serviceAssemblies.stream().noneMatch( serviceAssembly ->
+                                                                   serviceAssembly.hasType( entry.getKey() ) ) )
+            .forEach( entry -> entry.getValue().assemble( this ) );
     }
 
     private Identity generateId(Stream<Class<?>> serviceTypes)
