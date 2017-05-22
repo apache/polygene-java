@@ -20,17 +20,14 @@
 
 package org.apache.polygene.test.model.assembly;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
 import org.apache.polygene.test.indexing.layered.AbstractMultiLayeredIndexingTest;
 
 class IndexingLayer extends LayeredLayerAssembler
 {
-
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
-        throws AssemblyException
     {
         createModule( layer, AbstractMultiLayeredIndexingTest.indexingAssembler );
         return layer;

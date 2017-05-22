@@ -38,7 +38,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -160,7 +159,6 @@ public class QueryPerformanceTest
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
         LayerAssembly infra = createInfrastructureLayer( applicationAssembly );
@@ -277,7 +275,6 @@ public class QueryPerformanceTest
     }
 
     private LayerAssembly createDomainLayer( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
     {
         LayerAssembly domainLayer = applicationAssembly.layer( LAYER_DOMAIN );
         ModuleAssembly domainModule = domainLayer.module( MODULE_DOMAIN );
@@ -288,7 +285,6 @@ public class QueryPerformanceTest
     }
 
     private LayerAssembly createInfrastructureLayer( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
     {
         LayerAssembly infrastructureLayer = applicationAssembly.layer( LAYER_INFRASTRUCTURE );
 
@@ -305,7 +301,6 @@ public class QueryPerformanceTest
     }
 
     private LayerAssembly createConfigurationLayer( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
     {
         LayerAssembly layer = applicationAssembly.layer( LAYER_CONFIGURATION );
         ModuleAssembly configModule = layer.module( MODULE_CONFIG );

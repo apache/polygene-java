@@ -20,7 +20,6 @@
 package org.apache.polygene.library.alarm;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 
@@ -29,7 +28,6 @@ public class AlarmSystemAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration alarmSystem = module.services( AlarmSystemService.class ).visibleIn( visibility() );
         if( hasIdentity() )

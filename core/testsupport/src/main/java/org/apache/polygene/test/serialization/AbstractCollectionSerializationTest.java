@@ -42,7 +42,6 @@ import org.apache.polygene.api.type.MapType;
 import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
@@ -58,7 +57,6 @@ public class AbstractCollectionSerializationTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( SomeValue.class );
     }

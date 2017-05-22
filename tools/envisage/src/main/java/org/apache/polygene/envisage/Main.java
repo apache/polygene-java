@@ -22,7 +22,6 @@ package org.apache.polygene.envisage;
 
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 
 /**
@@ -32,7 +31,7 @@ import org.apache.polygene.bootstrap.Energy4Java;
 public class Main
 {
     public static void main( String[] args )
-        throws ClassNotFoundException, IllegalAccessException, InstantiationException, AssemblyException
+        throws ClassNotFoundException, IllegalAccessException, InstantiationException
     {
         String applicationAssemblerName = args[0];
         Class applicationAssemblerClass = Class.forName( applicationAssemblerName );

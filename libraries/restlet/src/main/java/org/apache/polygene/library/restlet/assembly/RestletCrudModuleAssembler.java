@@ -23,7 +23,6 @@ package org.apache.polygene.library.restlet.assembly;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.restlet.repository.CrudRepository;
 import org.apache.polygene.library.restlet.repository.EntityTypeDescriptor;
@@ -49,7 +48,6 @@ public class RestletCrudModuleAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module
             .addServices( repositoryType )

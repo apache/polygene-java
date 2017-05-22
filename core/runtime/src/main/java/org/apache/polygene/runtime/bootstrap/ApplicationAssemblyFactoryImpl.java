@@ -23,7 +23,6 @@ package org.apache.polygene.runtime.bootstrap;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
@@ -35,14 +34,12 @@ public final class ApplicationAssemblyFactoryImpl
 {
     @Override
     public ApplicationAssembly newApplicationAssembly( Assembler assembler )
-        throws AssemblyException
     {
         return newApplicationAssembly( new Assembler[][][]{ { { assembler } } } );
     }
 
     @Override
     public ApplicationAssembly newApplicationAssembly( Assembler[][][] assemblers )
-        throws AssemblyException
     {
         ApplicationAssembly applicationAssembly = newApplicationAssembly();
 

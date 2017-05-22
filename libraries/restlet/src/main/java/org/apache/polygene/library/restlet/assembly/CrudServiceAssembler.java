@@ -21,7 +21,6 @@ package org.apache.polygene.library.restlet.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.restlet.identity.IdentityManager;
 import org.apache.polygene.library.restlet.identity.IdentityMappingConfiguration;
@@ -32,7 +31,6 @@ public class CrudServiceAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( IdentityMappingConfiguration.class );
         module.services( IdentityManager.class ).visibleIn( Visibility.application ).instantiateOnStartup();

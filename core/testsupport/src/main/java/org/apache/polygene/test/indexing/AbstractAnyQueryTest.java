@@ -21,7 +21,6 @@ package org.apache.polygene.test.indexing;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -49,7 +48,6 @@ public class AbstractAnyQueryTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         assembleEntities( module, Visibility.module );
         assembleValues( module, Visibility.module );

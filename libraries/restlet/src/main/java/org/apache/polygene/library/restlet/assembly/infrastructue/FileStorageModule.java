@@ -21,11 +21,10 @@
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.entitystore.file.assembly.FileEntityStoreAssembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.entitystore.file.assembly.FileEntityStoreAssembler;
 
 public class FileStorageModule
     implements ModuleAssembler
@@ -41,7 +40,6 @@ public class FileStorageModule
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         new FileEntityStoreAssembler()
             .visibleIn( Visibility.application  )

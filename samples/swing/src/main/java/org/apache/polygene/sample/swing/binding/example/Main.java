@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.sample.swing.binding.StateModel;
@@ -46,9 +45,8 @@ public class Main
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
-
+            @Override
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
             {
                 module.transients( BoundPersonComposite.class );
                 module.transients( AddressTransient.class );

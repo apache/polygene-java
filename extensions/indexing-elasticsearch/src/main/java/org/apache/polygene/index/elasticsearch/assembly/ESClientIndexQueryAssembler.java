@@ -17,7 +17,6 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
 import org.apache.polygene.index.elasticsearch.client.ESClientIndexQueryService;
@@ -35,7 +34,7 @@ public class ESClientIndexQueryAssembler
     }
 
     @Override
-    public void assemble( final ModuleAssembly module ) throws AssemblyException
+    public void assemble( final ModuleAssembly module )
     {
         module.services( ESClientIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )

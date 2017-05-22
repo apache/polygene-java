@@ -116,7 +116,6 @@ public class ModuleDeclaration
     }
 
     void initialize()
-        throws AssemblyException
     {
         for( Assembler assembler : assemblers )
         {
@@ -126,7 +125,6 @@ public class ModuleDeclaration
 
     @SuppressWarnings( "unchecked" )
     private Class<? extends Assembler> loadClass( String classname )
-        throws AssemblyException
     {
         Class<?> clazz;
         try
@@ -148,7 +146,6 @@ public class ModuleDeclaration
     }
 
     private Assembler createAssemblerInstance( Class<?> assemblerClass )
-        throws AssemblyException
     {
         if( !Assembler.class.isAssignableFrom( assemblerClass ) )
         {

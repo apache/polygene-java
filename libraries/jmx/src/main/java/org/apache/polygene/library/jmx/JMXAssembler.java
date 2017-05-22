@@ -22,7 +22,6 @@ package org.apache.polygene.library.jmx;
 
 import javax.management.MBeanServer;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 /**
@@ -33,7 +32,6 @@ public class JMXAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.importedServices( MBeanServer.class ).importedBy( MBeanServerImporter.class );
         module.services( ApplicationManagerService.class ).instantiateOnStartup();

@@ -172,7 +172,6 @@ public class SingletonAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         if( assemble != null )
         {

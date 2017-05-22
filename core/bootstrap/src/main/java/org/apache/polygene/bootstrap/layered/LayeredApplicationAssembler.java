@@ -131,7 +131,6 @@ public abstract class LayeredApplicationAssembler
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         assembly = applicationFactory.newApplicationAssembly();
         assembly.setName( name );

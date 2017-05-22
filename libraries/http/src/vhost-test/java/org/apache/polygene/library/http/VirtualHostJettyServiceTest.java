@@ -22,7 +22,6 @@ package org.apache.polygene.library.http;
 import java.io.IOException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.http.dns.LocalManagedDns;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -61,7 +60,6 @@ public class VirtualHostJettyServiceTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ModuleAssembly configModule = module;
         new EntityTestAssembler().assemble( configModule );

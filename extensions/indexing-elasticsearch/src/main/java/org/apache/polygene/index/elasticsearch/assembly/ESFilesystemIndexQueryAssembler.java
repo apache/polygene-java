@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
 import org.apache.polygene.index.elasticsearch.filesystem.ESFilesystemIndexQueryService;
@@ -30,7 +29,6 @@ public class ESFilesystemIndexQueryAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( ESFilesystemIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )

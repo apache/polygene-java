@@ -336,7 +336,6 @@ final class ModuleAssemblyImpl
 
     @Override
     public ObjectDeclaration objects(Class<?>... objectTypes)
-            throws AssemblyException
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
 

@@ -62,7 +62,6 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
 
     @Override
     public final void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         try
         {

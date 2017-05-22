@@ -20,7 +20,6 @@
 package org.apache.polygene.index.rdf.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.RdfIndexingEngineService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
@@ -47,7 +46,6 @@ public class RdfNativeSesameStoreAssembler extends AbstractRdfIndexingAssembler<
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( NativeRepositoryService.class )
               .visibleIn( repositoryVisibility )

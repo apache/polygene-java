@@ -23,7 +23,6 @@ import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.junit.Test;
@@ -35,13 +34,12 @@ public class CompositeCreationPerformanceTest
 {
     @Test
     public void newInstanceForRegisteredCompositePerformance()
-        throws ActivationException, AssemblyException, InterruptedException
+        throws ActivationException, InterruptedException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
             {
                 module.transients( AnyComposite.class );
                 module.objects( AnyObject.class );

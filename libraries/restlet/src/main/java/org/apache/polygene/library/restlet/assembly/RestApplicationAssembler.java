@@ -46,7 +46,6 @@ public class RestApplicationAssembler extends LayeredApplicationAssembler
 
     @Override
     protected void assembleLayers( ApplicationAssembly assembly )
-        throws AssemblyException
     {
         for( Class<? extends LayerAssembler> layer : layers )
         {
