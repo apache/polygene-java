@@ -102,7 +102,7 @@ import static java.util.stream.Collectors.toList;
 final class ModuleAssemblyImpl
         implements ModuleAssembly
 {
-    private static HashMap<Class, Assembler> defaultAssemblers;
+    private static final HashMap<Class, Assembler> DEFAULT_ASSEMBLERS;
 
     private final LayerAssembly layerAssembly;
     private String name;
@@ -121,10 +121,10 @@ final class ModuleAssemblyImpl
 
     static
     {
-        defaultAssemblers = new HashMap<>();
-        defaultAssemblers.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
-        defaultAssemblers.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
-        defaultAssemblers.put( Serialization.class, new DefaultSerializationAssembler() );
+        DEFAULT_ASSEMBLERS = new HashMap<>( 3 );
+        DEFAULT_ASSEMBLERS.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
+        DEFAULT_ASSEMBLERS.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
+        DEFAULT_ASSEMBLERS.put( Serialization.class, new DefaultSerializationAssembler() );
     }
 
     ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)
@@ -666,7 +666,7 @@ final class ModuleAssemblyImpl
 
     private void addDefaultAssemblers()
     {
-        defaultAssemblers
+        DEFAULT_ASSEMBLERS
             .entrySet()
             .stream()
             .filter( entry ->

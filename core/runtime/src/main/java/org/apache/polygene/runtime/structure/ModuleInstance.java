@@ -481,8 +481,7 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<EntityStore> service = findService( EntityStore.class );
-                        store = service.get();
+                        store = findService( EntityStore.class ).get();
                     }
                     catch( NoSuchServiceException e )
                     {
@@ -505,8 +504,7 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
-                        uowf = service.get();
+                        uowf = findService( UnitOfWorkFactory.class ).get();
                     }
                     catch( NoSuchServiceException e )
                     {
@@ -551,8 +549,7 @@ public class ModuleInstance
             {
                 if( generator == null )
                 {
-                    ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
-                    generator = service.get();
+                    generator = findService( IdentityGenerator.class ).get();
                 }
             }
         }
@@ -568,8 +565,7 @@ public class ModuleInstance
             {
                 if( serialization == null )
                 {
-                    ServiceReference<Serialization> service = findService( Serialization.class );
-                    serialization = service.get();
+                    serialization = findService( Serialization.class ).get();
                 }
             }
         }
@@ -587,8 +583,7 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
-                        metrics = service.get();
+                        metrics = findService( MetricsProvider.class ).get();
                     }
                     catch( NoSuchServiceException e )
                     {
