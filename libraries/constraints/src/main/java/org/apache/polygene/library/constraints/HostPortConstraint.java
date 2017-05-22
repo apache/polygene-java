@@ -29,7 +29,7 @@ import org.apache.polygene.library.constraints.annotation.HostPort;
 public class HostPortConstraint
     implements Constraint<HostPort, String>
 {
-    private static final UrlValidator VALIDATOR = new UrlValidator( new String[]{ "http" } );
+    private static final UrlValidator VALIDATOR = new UrlValidator( new String[]{ "http" }, UrlValidator.NO_FRAGMENTS );
 
     @Override
     public boolean isValid( HostPort annotation, String value )
