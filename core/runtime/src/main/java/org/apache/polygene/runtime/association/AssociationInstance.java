@@ -27,6 +27,7 @@ import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.association.AssociationWrapper;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -64,7 +65,10 @@ public final class AssociationInstance<T>
         associationInfo.checkConstraints( newValue );
 
         // Change association
-        associationState.set( EntityReference.create( ((HasIdentity) newValue ).identity().get()));
+        Identity identity = newValue != null
+                            ? ( (HasIdentity) newValue ).identity().get()
+                            : null;
+        associationState.set( EntityReference.create( identity ) );
     }
 
     @Override

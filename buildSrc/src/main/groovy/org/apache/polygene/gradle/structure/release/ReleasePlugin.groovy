@@ -206,6 +206,7 @@ class ReleasePlugin implements Plugin<Project>
       // TODO SVN checkout ASF distribution directory
       task.enabled = false
     }
+    // TODO Split website and javadoc copy and use Sync task instead
     def copy = project.tasks.create( TaskNames.COPY_ASF_DIST, Copy ) { Copy task ->
       task.mustRunAfter checkout
       // TODO Consume distributions through configurations

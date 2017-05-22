@@ -42,6 +42,10 @@ module.exports = {
         }
 
         p.copyTemplate(p.ctx,
+            'RestAPIApplication/bootstrap-test.tmpl',
+            'app/src/test/java/'+p.javaPackageDir+'/BootstrapTest.java');
+
+        p.copyTemplate(p.ctx,
             'RestAPIApplication/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/' + p.name + 'ApplicationAssembler.java');
     }
@@ -51,4 +55,3 @@ function copyLayer(p, layerName) {
     var layer = require(__dirname + '/../' + layerName + 'Layer/layer.js');
     layer.write(p);
 }
-

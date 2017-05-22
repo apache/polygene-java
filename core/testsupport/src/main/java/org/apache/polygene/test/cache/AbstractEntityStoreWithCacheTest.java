@@ -122,13 +122,13 @@ public abstract class AbstractEntityStoreWithCacheTest
     public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
         throws UnitOfWorkCompletionException
     {
-        super.givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState();
+        super.givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState();
         if( cachePool != null )
         {
             MemoryCacheImpl<?> cache = cachePool.singleCache();
             assertThat( cache.size(), is( 1 ) );
-            assertThat( cache.gets(), is( 2 ) );
-            assertThat( cache.puts(), is( 2 ) );
+            assertThat( cache.gets(), is( 3 ) );
+            assertThat( cache.puts(), is( 3 ) );
             assertThat( cache.removes(), is( 0 ) );
             assertThat( cache.exists(), is( 0 ) );
         }

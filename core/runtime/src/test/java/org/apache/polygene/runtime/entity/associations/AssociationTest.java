@@ -36,6 +36,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 /**
  * Tests for associations
  */
@@ -98,6 +102,12 @@ public class AssociationTest
 
             Assert.assertEquals( niclas.friend().get(), rickard );
             Assert.assertEquals( niclas.members().get( 0 ), rickard );
+
+            // Empty associations
+            niclas.friend().set( null );
+            niclas.members().clear();
+            assertThat( niclas.friend().get(), nullValue() );
+            assertThat( niclas.employers().count(), is( 0 ) );
         }
         finally
         {

@@ -33,7 +33,7 @@ source=tools/envisage/src/test/java/org/apache/polygene/envisage/school/Envisage
 tag=envisage
 ----
 
-As you can see, Envisage operates on the ApplicationModel, this means that you
+As you can see, Envisage operates on the ApplicationDescriptor, this means that you
 can easily embed it in your own Applications too.
 
 From the sources you can run the `runEnvisageSample` or `runEnvisageSchoolSample` Gradle tasks
@@ -43,13 +43,14 @@ to run interactive examples. See <<build-system>> if you need some guidance.
 
 image:tools-envisage-structure.png[width="800px"]
 
-image:tools-envisage-type.png[width="800px"]
+image:tools-envisage-stacked-collapsed.png[width="800px"]
 
 image:tools-envisage-stacked.png[width="800px"]
 
-image:tools-envisage-stacked-collapsed.png[width="800px"]
+image:tools-envisage-type.png[width="800px"]
 
-== Embedd in your Application ==
+== Embed into your Application ==
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
+It can be handy to run Envisage in development <<def-application-mode, Mode>> while working on assemblies.

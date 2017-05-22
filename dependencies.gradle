@@ -19,6 +19,9 @@ import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 
 def dependencies = extensions.getByType( DependenciesDeclarationExtension )
 
+// Gradle version
+dependencies.gradleVersion = '3.5'
+
 // Remote repositories
 dependencies.repositoriesUrls << [
   mavenCentral: "https://repo1.maven.org/maven2/",

@@ -29,19 +29,22 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 public class DefaultUnitOfWorkAssembler
     implements Assembler
 {
+    public static final String IDENTITY = "default-uow-factory";
+
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         Class factoryMixin = loadMixinClass( "org.apache.polygene.runtime.unitofwork.UnitOfWorkFactoryMixin" );
-        module.services( UnitOfWorkFactory.class ).withMixins( factoryMixin );
+        module.services( UnitOfWorkFactory.class )
+              .withMixins( factoryMixin )
+              .identifiedBy( IDENTITY );
 
         Class uowMixin = loadMixinClass( "org.apache.polygene.runtime.unitofwork.ModuleUnitOfWork" );
-        module.transients( UnitOfWork.class ).withMixins( uowMixin );
+        module.transients( UnitOfWork.class )
+              .withMixins( uowMixin );
     }
 
     private Class<?> loadMixinClass( String name )
-        throws AssemblyException
     {
         try
         {

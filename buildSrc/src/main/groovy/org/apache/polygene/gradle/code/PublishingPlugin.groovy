@@ -18,6 +18,7 @@
 package org.apache.polygene.gradle.code
 
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import org.apache.polygene.gradle.structure.release.ReleaseSpecExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -26,7 +27,7 @@ import org.gradle.api.artifacts.maven.MavenDeployer
 import org.gradle.api.artifacts.maven.MavenDeployment
 import org.gradle.api.internal.plugins.DslObject
 import org.gradle.api.plugins.MavenRepositoryHandlerConvention
-import org.gradle.api.publication.maven.internal.deployer.BaseMavenDeployer
+import org.gradle.api.publication.maven.internal.deployer.DefaultGroovyMavenDeployer
 import org.gradle.api.publication.maven.internal.deployer.MavenRemoteRepository
 import org.gradle.api.tasks.Upload
 import org.gradle.plugins.signing.Sign
@@ -124,6 +125,7 @@ class PublishingPlugin implements Plugin<Project>
     signArchives.onlyIf { !project.findProperty( 'skipSigning' ) }
   }
 
+  @CompileStatic( TypeCheckingMode.SKIP )
   private static void configureUploadArchives( Project project, Config config )
   {
     project.plugins.apply 'maven'
@@ -149,21 +151,20 @@ class PublishingPlugin implements Plugin<Project>
       }
     }
     mavenDeployer.configuration = project.configurations.getByName( 'deployersJars' )
-    def repository = new MavenRemoteRepository()
-    repository.id = config.repositoryName
-    repository.url = config.repositoryUrl
+    def repoCoordinates = [ id: config.repositoryName, url: config.repositoryUrl ] as Map
+    def repoCredentials = [ userName: config.username, password: config.password ] as Map
+    def repo = mavenDeployer.createRepository(repoCoordinates)
     if( config.username )
     {
-      repository.authentication.userName = config.username
-      repository.authentication.password = config.password
+      ( repo as MavenRemoteRepository ).authentication( repoCredentials )
     }
     if( config.releases )
     {
-      mavenDeployer.repository = repository
+      mavenDeployer.repository = repo
     }
     else
     {
-      mavenDeployer.snapshotRepository = repository
+      mavenDeployer.snapshotRepository = repo
     }
   }
 
@@ -200,14 +201,14 @@ class PublishingPlugin implements Plugin<Project>
     project.plugins.apply 'maven-publish-auth'
   }
 
-  private static BaseMavenDeployer getMavenDeployer( Upload uploadTask )
+  private static DefaultGroovyMavenDeployer getMavenDeployer( Upload uploadTask )
   {
     // TODO Remove use of Gradle internals
     // DslObject to get the Upload task convention
-    // MavenRepositoryHandlerConvention & BaseMavenDeployer to configure Wagon, Authentication and Signing
+    // MavenRepositoryHandlerConvention & DefaultGroovyMavenDeployer to configure Wagon, Authentication and Signing
     def repositoriesConvention = new DslObject( uploadTask.repositories )
       .getConvention()
       .getPlugin( MavenRepositoryHandlerConvention )
-    return repositoriesConvention.mavenDeployer() as BaseMavenDeployer
+    return repositoriesConvention.mavenDeployer() as DefaultGroovyMavenDeployer
   }
 }

@@ -19,8 +19,11 @@ package org.apache.polygene.gradle.structure
 
 import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.BasePlugin
+import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.wrapper.Wrapper
+import org.gradle.util.GradleVersion
 
 @CompileStatic
 class RootPlugin implements Plugin<Project>
@@ -34,6 +37,7 @@ class RootPlugin implements Plugin<Project>
   {
     project.plugins.apply BasePlugin
     applyProjectMetadata( project )
+    applyGradleWrapper( project )
   }
 
   private static void applyProjectMetadata( Project project )
@@ -41,5 +45,24 @@ class RootPlugin implements Plugin<Project>
     def extraProperties = project.extensions.extraProperties
     extraProperties.set 'title', PROJECT_TITLE
     extraProperties.set 'description', PROJECT_DESCRIPTION
+  }
+
+  private static void applyGradleWrapper( Project project )
+  {
+    def dependencies = project.extensions.getByType( DependenciesDeclarationExtension )
+    def requiredGradleVersion = GradleVersion.version( dependencies.gradleVersion )
+    def currentGradleVersion = GradleVersion.current()
+    if( currentGradleVersion != requiredGradleVersion ) {
+      def warning = "The Apache Polygene™ build is not supported with $currentGradleVersion. " +
+                    "The only supported version is $requiredGradleVersion."
+      project.logger.error( warning )
+      project.gradle.buildFinished {
+        project.logger.error( warning )
+      }
+    }
+    project.tasks.create( 'wrapper', Wrapper) { Wrapper wrapper ->
+      wrapper.gradleVersion = dependencies.gradleVersion
+      wrapper.distributionType = Wrapper.DistributionType.ALL
+    }
   }
 }

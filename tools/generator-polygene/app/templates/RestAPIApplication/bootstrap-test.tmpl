@@ -17,8 +17,14 @@
  *
  *
 -%>
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-3.5-all.zip
+package <%= polygene.packageName %>.bootstrap;
+
+import org.junit.Test;
+
+public class BootstrapTest
+{
+    @Test
+    public void applicationBootstrapSucceeds() {
+        // TODO Assemble, activate, passivate application to make sure it starts properly
+    }
+}

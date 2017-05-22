@@ -62,6 +62,7 @@ import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -387,7 +388,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
+    public void givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState()
         throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
@@ -402,7 +403,9 @@ public abstract class AbstractEntityStoreTest
         {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
+            testEntity.association().set( testEntity );
             testEntity.manyAssociation().add( 0, testEntity );
+            testEntity.namedAssociation().put( "test", testEntity );
             version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
@@ -411,6 +414,23 @@ public abstract class AbstractEntityStoreTest
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
+            assertThat( "association persisted", testEntity.association().get(), equalTo( testEntity ) );
+            assertThat( "many association persisted", testEntity.manyAssociation().get( 0 ), equalTo( testEntity ) );
+            assertThat( "named association persisted", testEntity.namedAssociation().get( "test" ), equalTo( testEntity ) );
+            assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
+
+            testEntity.association().set( null );
+            testEntity.manyAssociation().clear();
+            testEntity.namedAssociation().clear();
+            unitOfWork.complete();
+        }
+        {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            testEntity = unitOfWork.get( testEntity );
+            String newVersion = spi.entityStateOf( testEntity ).version();
+            assertThat( "association cleared", testEntity.association().get(), nullValue() );
+            assertThat( "many association cleared", testEntity.manyAssociation().count(), is( 0 ) );
+            assertThat( "named association cleared", testEntity.namedAssociation().count(), is( 0 ) );
             assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();

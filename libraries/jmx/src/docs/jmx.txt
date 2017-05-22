@@ -35,7 +35,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 Services configuration is editable through their corresponding JMX beans.
 You can also restart your services so the new configuration is picked up.
 
-image:library-jmx.png[]
+image:library-jmx.png[width="800px"]
 
 
 
