@@ -24,7 +24,6 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.SQLMapEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
@@ -49,34 +48,28 @@ public class DerbySQLEntityStorePerformanceTest
 
     private static Assembler createAssembler()
     {
-        return new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                ModuleAssembly config = module.layer().module( "config" );
-                new EntityTestAssembler().assemble( config );
+        return module -> {
+            ModuleAssembly config = module.layer().module( "config" );
+            new EntityTestAssembler().assemble( config );
 
-                // DataSourceService
-                new DBCPDataSourceServiceAssembler().
-                    identifiedBy( "derby-datasource-service" ).
-                    visibleIn( Visibility.module ).
-                    withConfig( config, Visibility.layer ).
-                    assemble( module );
+            // DataSourceService
+            new DBCPDataSourceServiceAssembler()
+                .identifiedBy( "derby-datasource-service" )
+                .visibleIn( Visibility.module )
+                .withConfig( config, Visibility.layer )
+                .assemble( module );
 
-                // DataSource
-                new DataSourceAssembler().
-                    withDataSourceServiceIdentity( "derby-datasource-service" ).
-                    identifiedBy( "derby-datasource" ).
-                    withCircuitBreaker().
-                    assemble( module );
+            // DataSource
+            new DataSourceAssembler()
+                .withDataSourceServiceIdentity( "derby-datasource-service" )
+                .identifiedBy( "derby-datasource" )
+                .withCircuitBreaker()
+                .assemble( module );
 
-                // SQL EntityStore
-                new DerbySQLEntityStoreAssembler().
-                    withConfig( config, Visibility.layer ).
-                    assemble( module );
-            }
+            // SQL EntityStore
+            new DerbySQLEntityStoreAssembler()
+                .withConfig( config, Visibility.layer )
+                .assemble( module );
         };
     }
 

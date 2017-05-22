@@ -28,7 +28,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
@@ -62,35 +61,28 @@ public class PostgreSQLEntityStorePerformanceTest
 
     private static Assembler createAssembler()
     {
-        return new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                ModuleAssembly config = module.layer().module( "config" );
-                config.services( MemoryEntityStoreService.class );
+        return module -> {
+            ModuleAssembly config = module.layer().module( "config" );
+            config.services( MemoryEntityStoreService.class );
 
-                // DataSourceService
-                new DBCPDataSourceServiceAssembler().
-                    identifiedBy( "postgresql-datasource-service" ).
-                    visibleIn( Visibility.module ).
-                    withConfig( config, Visibility.layer ).
-                    assemble( module );
+            // DataSourceService
+            new DBCPDataSourceServiceAssembler()
+                .identifiedBy( "postgresql-datasource-service" )
+                .visibleIn( Visibility.module )
+                .withConfig( config, Visibility.layer )
+                .assemble( module );
 
-                // DataSource
-                new DataSourceAssembler().
-                    withDataSourceServiceIdentity( "postgresql-datasource-service" ).
-                    identifiedBy( "postgresql-datasource" ).
-                    withCircuitBreaker().
-                    assemble( module );
+            // DataSource
+            new DataSourceAssembler()
+                .withDataSourceServiceIdentity( "postgresql-datasource-service" )
+                .identifiedBy( "postgresql-datasource" )
+                .withCircuitBreaker()
+                .assemble( module );
 
-                // SQL EntityStore
-                new PostgreSQLEntityStoreAssembler().
-                    withConfig( config, Visibility.layer ).
-                    assemble( module );
-            }
-
+            // SQL EntityStore
+            new PostgreSQLEntityStoreAssembler()
+                .withConfig( config, Visibility.layer )
+                .assemble( module );
         };
     }
 
@@ -107,13 +99,13 @@ public class PostgreSQLEntityStorePerformanceTest
 
             Energy4Java polygene = new Energy4Java();
             Assembler[][][] assemblers = new Assembler[][][]
-            {
                 {
                     {
-                        createAssembler()
+                        {
+                            createAssembler()
+                        }
                     }
-                }
-            };
+                };
             Application application = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
             {
             } );
@@ -142,5 +134,4 @@ public class PostgreSQLEntityStorePerformanceTest
             }
         }
     }
-
 }

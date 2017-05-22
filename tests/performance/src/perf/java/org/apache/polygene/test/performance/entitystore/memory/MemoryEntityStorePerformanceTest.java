@@ -19,8 +19,6 @@ package org.apache.polygene.test.performance.entitystore.memory;
 
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreMixin;
@@ -37,15 +35,7 @@ public class MemoryEntityStorePerformanceTest
 
     private static Assembler createAssembler()
     {
-        return new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                new MemoryEntityStoreAssembler().assemble( module );
-            }
-        };
+        return module -> new MemoryEntityStoreAssembler().assemble( module );
     }
 
     // Alternate variant that uses the standard MapEntityStore
