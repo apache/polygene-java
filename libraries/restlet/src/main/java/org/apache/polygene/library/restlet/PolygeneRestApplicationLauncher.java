@@ -23,7 +23,7 @@ public abstract class PolygeneRestApplicationLauncher
     protected ValueBuilderFactory valueBuilderFactory;
     protected Module entryModule;
 
-    protected void initialize()
+    public void initialize()
         throws ActivationException
     {
         polygeneApplication = createApplication();
