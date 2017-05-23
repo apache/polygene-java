@@ -35,7 +35,7 @@ import org.junit.Test;
  * Test the CassandraEntityStoreService.
  * <p>Installing Cassandra and starting it should suffice as the test use Cassandra defaults: 127.0.0.1:3000</p>
  */
-public class CassandraMapEntityStoreTest
+public class CassandraEntityStoreTest
     extends AbstractEntityStoreTest
 {
     @ClassRule
