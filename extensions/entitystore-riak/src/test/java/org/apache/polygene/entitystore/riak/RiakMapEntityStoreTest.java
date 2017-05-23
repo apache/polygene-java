@@ -22,8 +22,8 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
 public class RiakMapEntityStoreTest extends AbstractEntityStoreTest

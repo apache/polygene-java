@@ -135,7 +135,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.include 'distributions/**'
       spec.include 'reports/**'
       spec.include 'release/**'
-      spec.include 'internals/**'
       spec.include 'manual/**'
       spec.include 'samples/**'
       spec.include 'tests/**'

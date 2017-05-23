@@ -51,7 +51,7 @@ public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLaunche
             DevelopmentKeyManagement.initializeKeyStore();
         }
 <% }
-%>        return new <%= polygene.name %>ApplicationAssembler( name, version, mode );
+%>        return new <%= polygene.name %>ApplicationAssembler( name, version, mode, none -> {} );
     }
 
     protected String entryLayer()

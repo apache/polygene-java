@@ -43,7 +43,7 @@ module.exports = {
 
         p.copyTemplate(p.ctx,
             'RestAPIApplication/bootstrap-test.tmpl',
-            'app/src/test/java/'+p.javaPackageDir+'/BootstrapTest.java');
+            'app/src/test/java/' + p.javaPackageDir + '/app/BootstrapTest.java');
 
         p.copyTemplate(p.ctx,
             'RestAPIApplication/bootstrap.tmpl',

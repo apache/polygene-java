@@ -37,7 +37,7 @@ import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 public class MongoMapEntityStoreTest extends AbstractEntityStoreTest
 {
     @BeforeClass
-    public static void beforeRedisMapEntityStoreTests()
+    public static void beforeMongoMapEntityStoreTests()
     {
         assumeConnectivity( "localhost", 27017 );
     }
@@ -57,8 +57,8 @@ public class MongoMapEntityStoreTest extends AbstractEntityStoreTest
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
 
-        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
+        MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class ).declareDefaults();
+        mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
         // START SNIPPET: assembly

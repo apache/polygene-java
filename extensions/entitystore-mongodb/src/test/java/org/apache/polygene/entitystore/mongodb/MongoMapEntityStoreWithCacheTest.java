@@ -54,8 +54,8 @@ public class MongoMapEntityStoreWithCacheTest
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 
-        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
+        MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class ).declareDefaults();
+        mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
     }

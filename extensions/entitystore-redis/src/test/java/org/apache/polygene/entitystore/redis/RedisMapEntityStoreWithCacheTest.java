@@ -25,7 +25,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.test.internal.DockerRule;
+import org.apache.polygene.test.docker.DockerRule;
 import org.junit.ClassRule;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

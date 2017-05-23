@@ -19,6 +19,7 @@
  */
 
 apply plugin: 'polygene-core'
+apply plugin: 'polygene-docker'
 
 jar { manifest { name = "Apache Polygene™ Core Test Support" } }
 
@@ -26,6 +27,8 @@ dependencies {
   api polygene.core.bootstrap
   api libraries.junit
   api libraries.hamcrest
+
+  implementation libraries.docker_junit
 
   testRuntimeOnly polygene.core.runtime
 }

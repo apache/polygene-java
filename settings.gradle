@@ -99,6 +99,4 @@ include 'core:api',
         'samples:sql-support',
         'samples:swing'
 
-include 'internals:testsupport-internal'
-
 include 'manual', 'reports', 'distributions', 'release'

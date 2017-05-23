@@ -36,7 +36,7 @@ import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.test.internal.DockerRule;
+import org.apache.polygene.test.docker.DockerRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;

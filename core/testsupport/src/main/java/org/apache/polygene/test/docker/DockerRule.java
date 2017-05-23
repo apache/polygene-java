@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.test.internal;
+package org.apache.polygene.test.docker;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,7 +86,7 @@ public class DockerRule
                 .builder()
                 .imageName( "org.apache.polygene:org.apache.polygene.internal.docker-" + image )
                 .publishAllPorts( true )
-                .waitForTimeout( 60000 )
+                .waitForTimeout( 120 )
                 .waitFor( rule -> new AndChecker( rule, waitFor ) );
             environment.forEach( builder::env );
             dockerRule = builder.build();

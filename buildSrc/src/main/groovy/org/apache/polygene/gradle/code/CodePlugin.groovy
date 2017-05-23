@@ -22,11 +22,7 @@ import org.apache.polygene.gradle.BasePlugin
 import org.apache.polygene.gradle.TaskGroups
 import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.polygene.gradle.dependencies.DependenciesPlugin
-import org.gradle.api.Action
-import org.gradle.api.JavaVersion
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.*
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.osgi.OsgiManifest
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -131,7 +127,7 @@ class CodePlugin implements Plugin<Project>
     // Configuration task to honor disabling Docker when unavailable
     project.tasks.create( 'configureDockerForTest', { Task task ->
       // TODO Untangle docker connectivity check & test task configuration
-      task.dependsOn ':internals:testsupport-internal:checkDockerConnectivity'
+        task.dependsOn ':core:testsupport:checkDockerConnectivity'
       testTasks.each { it.dependsOn task }
       task.inputs.property 'polygeneTestSupportDockerDisabled',
                            { project.findProperty( DOCKER_DISABLED_EXTRA_PROPERTY ) }

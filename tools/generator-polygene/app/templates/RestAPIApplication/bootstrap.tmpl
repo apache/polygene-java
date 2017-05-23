@@ -19,6 +19,7 @@
 -%>
 package <%= polygene.packageName %>.bootstrap;
 
+import java.util.function.Consumer;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
@@ -33,10 +34,13 @@ import <%= polygene.packageName %>.bootstrap.infrastructure.InfrastructureLayer;
 
 public class <%= polygene.name %>ApplicationAssembler extends LayeredApplicationAssembler
 {
-    public <%= polygene.name %>ApplicationAssembler( String name, String version, Application.Mode mode )
+    private Consumer<ApplicationAssembly> customize;
+
+    public <%= polygene.name %>ApplicationAssembler( String name, String version, Application.Mode mode, Consumer<ApplicationAssembly> customize )
         throws AssemblyException
     {
         super( name, version, mode );
+        this.customize = customize;
     }
 
     @Override
@@ -52,5 +56,6 @@ public class <%= polygene.name %>ApplicationAssembler extends LayeredApplication
         connect.uses( infra );
         domain.uses( infra );
         infra.uses( config );
+        customize.accept( assembly );
     }
 }

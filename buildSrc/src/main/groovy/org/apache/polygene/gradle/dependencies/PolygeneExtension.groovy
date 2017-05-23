@@ -26,13 +26,11 @@ class PolygeneExtension
 {
   private final Project project
   final Core core
-  final Internals internals
 
   PolygeneExtension( Project project )
   {
     this.project = project
     this.core = new Core()
-    this.internals = new Internals()
   }
 
   class Core
@@ -42,11 +40,6 @@ class PolygeneExtension
     Dependency runtime = core( 'runtime' )
     Dependency bootstrap = core( 'bootstrap' )
     Dependency testsupport = core( 'testsupport' )
-  }
-
-  class Internals
-  {
-    Dependency testsupport = internal( 'testsupport-internal' )
   }
 
   private Dependency core( String name )
@@ -67,11 +60,6 @@ class PolygeneExtension
   Dependency tool( String name )
   {
     return dependency( 'tools', name )
-  }
-
-  Dependency internal( String name )
-  {
-    return dependency( 'internals', name )
   }
 
   private Dependency dependency( String group, String name )

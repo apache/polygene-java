@@ -134,11 +134,16 @@ public abstract class LayeredApplicationAssembler
         throws AssemblyException
     {
         assembly = applicationFactory.newApplicationAssembly();
+        assembleApplication();
+        return assembly;
+    }
+
+    protected void assembleApplication()
+    {
         assembly.setName( name );
         assembly.setVersion( version );
         assembly.setMode( mode );
         assembleLayers( assembly );
-        return assembly;
     }
 
     protected LayerAssembly createLayer( Class<? extends LayerAssembler> layerAssemblerClass )

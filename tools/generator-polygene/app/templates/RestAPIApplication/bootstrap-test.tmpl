@@ -17,14 +17,184 @@
  *
  *
 -%>
-package <%= polygene.packageName %>.bootstrap;
+package <%= polygene.packageName %>.app;
 
+import <%= polygene.packageName %>.bootstrap.<%= polygene.name %>ApplicationAssembler;
+
+import <%= polygene.packageName %>.bootstrap.config.ConfigModule;
+import <%= polygene.packageName %>.bootstrap.config.ConfigurationLayer;
+import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
+import org.apache.polygene.entitystore..<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
+import org.apache.polygene.test.docker.DockerRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 public class BootstrapTest
 {
     @Test
-    public void applicationBootstrapSucceeds() {
-        // TODO Assemble, activate, passivate application to make sure it starts properly
+    public void applicationBootstrapSucceeds()
+        throws Exception
+    {
+        <%= polygene.name %>Launcher launcher = new <%= polygene.name %>Launcher()
+        {
+            @Override
+            protected LayeredApplicationAssembler createApplicationAssembler()
+                throws AssemblyException
+            {
+<% if( polygene.hasFeature( 'security' ) {
+%>                DevelopmentKeyManagement.initializeKeyStore();
+<% }
+%>                return new <%= polygene.name %>ApplicationAssembler( "LaunchTest", "0", Application.Mode.development, BootstrapTest.this::setupTest );
+            }
+        };
+        launcher.initialize();
+        System.out.println("Application Launched...");
     }
+
+    private void setupTest( ApplicationAssembly assembly )
+    {
+        entityStoreSetup( assembly );
+    }
+<%
+if(  polygene.entitystore === 'Cassandra' ) {
+%>
+    private void entityStoreSetup( ApplicationAssembly assembly )
+    {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+        CassandraEntityStoreConfiguration defaults = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "9042/tcp" );
+        System.out.println("Cassandra: " + host + ":" + port);
+        defaults.hostnames().set( host + ':' + port );
+        defaults.createIfMissing().set( true );
+    }
+
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "cassandra", "Starting listening for CQL clients" );
+<% }
+if(  polygene.entitystore === 'DerbySQL' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'File' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'Geode' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'H2SQL' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'Hazelcast' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'JClouds' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'Jdbm' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'LevelDB' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'Memory' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'MongoDB' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'MySQL' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule(
+        "mysql",
+        new HashMap<String, String>()
+        {{
+            put( "MYSQL_ROOT_PASSWORD", "" );
+            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
+            put( "MYSQL_DATABASE", "jdbc_test_db" );
+            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
+        }},
+        30000L
+//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
+    );
+<% }
+if(  polygene.entitystore === 'PostgreSQL' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+
+    @ClassRule
+    public static final DockerRule DOCKER =
+        new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
+<% }
+if(  polygene.entitystore === 'Preferences' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
+if(  polygene.entitystore === 'Redis' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "redis", 6379 );
+<% }
+if(  polygene.entitystore === 'Riak' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
+<% }
+if(  polygene.entitystore === 'SQLite' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<%
+} %>
 }

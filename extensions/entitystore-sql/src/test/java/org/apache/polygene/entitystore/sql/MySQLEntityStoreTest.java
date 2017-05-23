@@ -33,8 +33,8 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
 import static org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
