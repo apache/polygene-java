@@ -45,7 +45,7 @@ public class BootstrapTest
             protected LayeredApplicationAssembler createApplicationAssembler()
                 throws AssemblyException
             {
-<% if( polygene.hasFeature( 'security' ) {
+<% if( polygene.hasFeature( 'security' ) ) {
 %>                DevelopmentKeyManagement.initializeKeyStore();
 <% }
 %>                return new <%= polygene.name %>ApplicationAssembler( "LaunchTest", "0", Application.Mode.development, BootstrapTest.this::setupTest );
