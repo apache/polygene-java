@@ -171,7 +171,7 @@ public class CassandraEntityStoreMixin
                     try
                     {
                         storedValue = storedProperties.get( propertyDescriptor.qualifiedName().name() );
-                        if( storedValue == null || storedValue.isEmpty() )
+                        if( storedValue == null )
                         {
                             properties.remove( propertyDescriptor.qualifiedName() );
                         }
