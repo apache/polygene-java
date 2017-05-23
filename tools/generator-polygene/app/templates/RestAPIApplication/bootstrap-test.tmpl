@@ -28,8 +28,10 @@ import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
-import org.apache.polygene.entitystore..<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
-import org.apache.polygene.test.docker.DockerRule;
+<% if( polygene.entitystore !== 'Memory' ) {
+%>import org.apache.polygene.entitystore.<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
+<% }
+%>import org.apache.polygene.test.docker.DockerRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 

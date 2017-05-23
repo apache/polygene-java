@@ -61,6 +61,7 @@ public class HttpServerModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.services( Servlet.class ).withMixins( ServerServlet.class );
 <% if( hasFeature('security') ) {
 %>        new HttpShiroAssembler()
             .withConfig( module, Visibility.module );
@@ -69,9 +70,6 @@ public class HttpServerModule
             .withConfig( module, Visibility.layer )
             .visibleIn( Visibility.layer )
             .assemble( module );
-
-        module.services( Servlet.class ).withMixins( ServerServlet.class );
-
         SecureJettyConfiguration defaults = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         defaults.keystorePath().set( new File( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
         defaults.keystoreType().set( "JCEKS" );
@@ -81,7 +79,10 @@ public class HttpServerModule
         defaults.truststorePassword().set( KS_PASSWORD );
         defaults.wantClientAuth().set( Boolean.FALSE );
 <% } else {
-%>        new JettyServiceAssembler().assemble( module );
+%>        new JettyServiceAssembler()
+            .withConfig( module, Visibility.layer )
+            .visibleIn( Visibility.layer )
+            .assemble( module );
         JettyConfiguration defaults = module.forMixin( JettyConfiguration.class ).declareDefaults();
 <% } %>
         defaults.hostName().set( System.getProperty( "<%= polygene.name.toLowerCase() %>.http.servername", "127.0.0.1" ));
