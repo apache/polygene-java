@@ -14,13 +14,16 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.entitystore.sql;
+package org.apache.polygene.entitystore.redis;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
+import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -29,15 +32,18 @@ import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
 /**
- * SQL EntityStore service.
+ * Redis EntityStore service.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, SQLMapEntityStoreMixin.class } )
-public interface SQLMapEntityStoreService
-    extends ServiceActivation,
-    JSONMapEntityStoreActivation,
-    EntityStore,
-    EntityStateVersions,
-    Configuration
+@Mixins( { JSONMapEntityStoreMixin.class, RedisEntityStoreMixin.class } )
+public interface RedisEntityStoreService
+        extends EntityStore,
+                EntityStateVersions,
+                ServiceActivation,
+                JSONMapEntityStoreActivation,
+                LockingAbstractComposite,
+                Configuration,
+                RedisAccessors
 {
 }

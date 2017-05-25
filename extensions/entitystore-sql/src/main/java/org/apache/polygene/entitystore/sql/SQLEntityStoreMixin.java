@@ -55,7 +55,7 @@ import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
-public class SQLMapEntityStoreMixin
+public class SQLEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {
     private static final String TABLE_NAME_LIQUIBASE_PARAMETER = "es-sql.table";
@@ -76,7 +76,7 @@ public class SQLMapEntityStoreMixin
     private ServiceDescriptor descriptor;
 
     @This
-    private Configuration<SQLMapEntityStoreConfiguration> configuration;
+    private Configuration<SQLEntityStoreConfiguration> configuration;
 
     private Schema schema;
     private Table<Record> table;
@@ -89,7 +89,7 @@ public class SQLMapEntityStoreMixin
     public void activateService() throws Exception
     {
         configuration.refresh();
-        SQLMapEntityStoreConfiguration config = configuration.get();
+        SQLEntityStoreConfiguration config = configuration.get();
 
         // Prepare jooq DSL
         SQLDialect dialect = descriptor.metaInfo( SQLDialect.class );

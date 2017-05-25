@@ -20,7 +20,7 @@
 package org.apache.polygene.index.sql.support.postgresql;
 
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.index.sql.SQLIndexingEngineService;
+import org.apache.polygene.index.sql.SQLIndexingService;
 import org.apache.polygene.index.sql.internal.SQLEntityFinder;
 import org.apache.polygene.index.sql.internal.SQLStateChangeListener;
 import org.apache.polygene.index.sql.support.api.SQLAppStartup;
@@ -47,7 +47,7 @@ import org.apache.polygene.spi.query.IndexExporter;
     PostgreSQLIndexExporter.class
 })
 public interface PostgreSQLService
-    extends SQLAppStartup, SQLIndexing, SQLQuerying, IndexExporter, SQLIndexingEngineService
+    extends SQLAppStartup, SQLIndexing, SQLQuerying, IndexExporter, SQLIndexingService
 {
 
 }

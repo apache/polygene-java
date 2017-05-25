@@ -38,7 +38,7 @@ import org.apache.polygene.spi.query.EntityFinder;
     SQLEntityFinder.class,
     SQLStateChangeListener.class
 } )
-public interface SQLIndexingEngineService
+public interface SQLIndexingService
         extends StateChangeListener, EntityFinder
 {
 }

@@ -21,14 +21,14 @@ import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
+import org.apache.polygene.index.elasticsearch.ElasticSearchIndexingConfiguration;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.elasticsearch.client.Client;
 
 public class ESClientSupport extends AbstractElasticSearchSupport
 {
     @This
-    private Configuration<ElasticSearchConfiguration> configuration;
+    private Configuration<ElasticSearchIndexingConfiguration> configuration;
 
     @Uses
     private ServiceDescriptor descriptor;
@@ -37,7 +37,7 @@ public class ESClientSupport extends AbstractElasticSearchSupport
     protected void activateElasticSearch() throws Exception
     {
         configuration.refresh();
-        ElasticSearchConfiguration config = configuration.get();
+        ElasticSearchIndexingConfiguration config = configuration.get();
 
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();

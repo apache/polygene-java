@@ -42,7 +42,7 @@ import redis.clients.jedis.Protocol;
 /**
  * Redis implementation of MapEntityStore.
  */
-public class RedisMapEntityStoreMixin
+public class RedisEntityStoreMixin
     implements ServiceActivation, RedisAccessors, MapEntityStore
 {
     private static final String DEFAULT_HOST = "127.0.0.1";

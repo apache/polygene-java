@@ -14,16 +14,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.polygene.entitystore.mongodb;
+package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
-import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -32,18 +29,15 @@ import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
 /**
- * MongoDB EntityStore service.
- * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
+ * SQL EntityStore service.
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, MongoDBMapEntityStoreMixin.class } )
-public interface MongoDBMapEntityStoreService
-    extends EntityStore,
-            EntityStateVersions,
-            ServiceActivation,
-            JSONMapEntityStoreActivation,
-            LockingAbstractComposite,
-            Configuration,
-            MongoDBAccessors
+@Mixins( { JSONMapEntityStoreMixin.class, SQLEntityStoreMixin.class } )
+public interface SQLEntityStoreService
+    extends ServiceActivation,
+    JSONMapEntityStoreActivation,
+    EntityStore,
+    EntityStateVersions,
+    Configuration
 {
 }

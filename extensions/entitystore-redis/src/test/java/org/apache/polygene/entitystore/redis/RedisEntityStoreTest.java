@@ -24,31 +24,37 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
+import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-public class RedisMapEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class RedisEntityStoreTest
+    extends AbstractEntityStoreTest
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "redis", 6379 );
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
+        // START SNIPPET: assembly
         new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
         RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
                                                           .declareDefaults();
         redisConfig.host().set( DOCKER.getDockerHost() );
         redisConfig.port().set( DOCKER.getExposedContainerPort( "6379/tcp" ) );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 
     private JedisPool jedisPool;
 
@@ -57,7 +63,7 @@ public class RedisMapEntityStoreWithCacheTest
         throws Exception
     {
         super.setUp();
-        RedisMapEntityStoreService es = serviceFinder.findService( RedisMapEntityStoreService.class ).get();
+        RedisEntityStoreService es = serviceFinder.findService( RedisEntityStoreService.class ).get();
         jedisPool = es.jedisPool();
     }
 

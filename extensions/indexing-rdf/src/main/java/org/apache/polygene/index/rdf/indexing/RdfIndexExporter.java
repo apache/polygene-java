@@ -23,22 +23,21 @@ package org.apache.polygene.index.rdf.indexing;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.spi.query.IndexExporter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
-import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.spi.query.IndexExporter;
 
 /**
  * JAVADOC
  */
-@Mixins( RdfExporter.RdfExporterMixin.class )
-public interface RdfExporter
-    extends IndexExporter
+@Mixins( RdfIndexExporter.RdfExporterMixin.class )
+public interface RdfIndexExporter extends IndexExporter
 {
     /**
      * JAVADOC
@@ -54,26 +53,7 @@ public interface RdfExporter
             throws IOException
         {
             RDFWriter rdfWriter = Rio.createWriter( RDFFormat.TRIG, out );
-            try
-            {
-                final RepositoryConnection connection = repository.getConnection();
-                try
-                {
-                    connection.export( rdfWriter );
-                }
-                catch( Exception e )
-                {
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    connection.close();
-                }
-            }
-            catch( RepositoryException e )
-            {
-                throw new IOException( e );
-            }
+            exportToWriter( rdfWriter );
         }
 
         @Override
@@ -81,6 +61,12 @@ public interface RdfExporter
             throws IOException
         {
             RDFWriter rdfWriter = Rio.createWriter( RDFFormat.RDFXML, out );
+            exportToWriter( rdfWriter );
+        }
+
+        private void exportToWriter( RDFWriter rdfWriter )
+            throws IOException
+        {
             try
             {
                 final RepositoryConnection connection = repository.getConnection();

@@ -59,7 +59,7 @@ import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
 /**
  * Riak Protobuf implementation of MapEntityStore.
  */
-public class RiakMapEntityStoreMixin implements ServiceActivation, MapEntityStore, RiakAccessors
+public class RiakEntityStoreMixin implements ServiceActivation, MapEntityStore, RiakAccessors
 {
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final int DEFAULT_PORT = 8087;

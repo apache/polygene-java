@@ -14,34 +14,41 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.entitystore.sql;
 
+package org.apache.polygene.entitystore.jclouds;
+
+import java.util.Map;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 
-// START SNIPPET: config
-public interface SQLMapEntityStoreConfiguration extends SQLConfiguration
+/**
+ * Configuration of JCloudsMapEntityStore service.
+ */
+public interface JCloudsEntityStoreConfiguration
 {
+    // START SNIPPET: config
     /**
-     * Name of the database schema to use.
-     * Ignored on SQL databases that don't support schemas.
+     * Name of the JClouds provider to use. Defaults to 'transient'.
      */
-    @UseDefaults( "POLYGENE_ES" )
-    @Override
-    Property<String> schemaName();
+    @Optional Property<String> provider();
+    @UseDefaults Property<String> identifier();
+    @UseDefaults Property<String> credential();
+    /**
+     * Use this to fine tune your provider implementation according to JClouds documentation.
+     */
+    @UseDefaults Property<Map<String, String>> properties();
+    /**
+     * Name of the JClouds container to use. Defaults to 'polygene-entities'.
+     */
+    @Optional Property<String> container();
+    /**
+     * Endpoint for the BlobStore provider.
+     */
+    @Optional Property<String> endpoint();
+    // END SNIPPET: config
 
-    /**
-     * Name of the entities table.
-     */
-    @UseDefaults( "POLYGENE_ENTITIES" )
-    Property<String> entityTableName();
-
-    /**
-     * Defines whether the database schema and table should be created if not already present.
-     */
-    @UseDefaults( "true" )
-    Property<Boolean> createIfMissing();
 }
-// END SNIPPET: config

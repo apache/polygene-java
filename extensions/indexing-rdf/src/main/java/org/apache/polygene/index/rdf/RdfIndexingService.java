@@ -17,23 +17,14 @@
  *
  *
  */
-package org.apache.polygene.entitystore.hazelcast;
 
-import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.property.Property;
+package org.apache.polygene.index.rdf;
 
-/**
- * Configuration of HazelcastEntityStoreService.
- */
-// START SNIPPET: config
-public interface HazelcastConfiguration
+import org.apache.polygene.index.rdf.indexing.RdfIndexExporter;
+import org.apache.polygene.index.rdf.indexing.RdfIndexerService;
+import org.apache.polygene.index.rdf.query.RdfQueryService;
+
+public interface RdfIndexingService
+    extends RdfQueryService, RdfIndexerService, RdfIndexExporter
 {
-
-    @UseDefaults
-    Property<String> configXmlLocation();
-
-    @UseDefaults
-    Property<String> mapName();
-
 }
-// END SNIPPET: config

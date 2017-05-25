@@ -43,8 +43,8 @@ public class JCloudsFilesystemTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-        JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class )
-                                                            .declareDefaults();
+        JCloudsEntityStoreConfiguration defaults = config.forMixin( JCloudsEntityStoreConfiguration.class )
+                                                         .declareDefaults();
         defaults.provider().set( "filesystem" );
         defaults.properties().set( Collections.singletonMap( FilesystemConstants.PROPERTY_BASEDIR,
                                                              tmpDir.getRoot().getAbsolutePath() ) );

@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.riak;
+package org.apache.polygene.entitystore.mongodb;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
@@ -30,24 +30,20 @@ import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.StateChangeNotificationConcern;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
-import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreActivation;
-import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreMixin;
 
 /**
- * Riak EntityStore service.
- * <p>Can be used with Riak implementations of MapEntityStore.</p>
- * <p>Based on {@link JSONMapEntityStoreMixin}</p>
+ * MongoDB EntityStore service.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, MapEntityStoreMixin.class } )
-public interface RiakMapEntityStoreService
+@Mixins( { JSONMapEntityStoreMixin.class, MongoDBEntityStoreMixin.class } )
+public interface MongoDBEntityStoreService
     extends EntityStore,
             EntityStateVersions,
-            MapEntityStoreActivation,
-            JSONMapEntityStoreActivation,
             ServiceActivation,
+            JSONMapEntityStoreActivation,
             LockingAbstractComposite,
             Configuration,
-            RiakAccessors
+            MongoDBAccessors
 {
 }

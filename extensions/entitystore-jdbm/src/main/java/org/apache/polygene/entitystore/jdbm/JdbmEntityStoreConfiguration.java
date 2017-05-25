@@ -17,20 +17,36 @@
  *
  *
  */
-package org.apache.polygene.index.elasticsearch;
+package org.apache.polygene.entitystore.jdbm;
 
-public class ElasticSearchIndexException
-        extends RuntimeException
+import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.property.Property;
+
+/**
+ * Configuration for the JdbmEntityStoreService.
+ */
+// START SNIPPET: config
+public interface JdbmEntityStoreConfiguration
 {
+    // END SNIPPET: config
+   /**
+    * The file where the JDBM data will be stored
+    * <p>
+    * Default: System.getProperty( "user.dir" ) + "/polygene/jdbmstore.data";
+    * </p>
+    * @return path to data file relative to current path
+    */
+    // START SNIPPET: config
+   @Optional
+   Property<String> file();
 
-    public ElasticSearchIndexException( String string )
-    {
-        super( string );
-    }
+   // JDBM RecordManager options
 
-    public ElasticSearchIndexException( String string, Throwable thrwbl )
-    {
-        super( string, thrwbl );
-    }
+   @UseDefaults
+   Property<Boolean> autoCommit();
 
+   @UseDefaults
+   Property<Boolean> disableTransactions();
 }
+// END SNIPPET: config

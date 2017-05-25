@@ -19,32 +19,17 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
-import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.property.Property;
-
-// START SNIPPET: config
-public interface ElasticSearchConfiguration
+public class ElasticSearchIndexingException extends RuntimeException
 {
 
-    /**
-     * Cluster name.
-     * Defaults to 'polygene_cluster'.
-     */
-    @Optional Property<String> clusterName();
+    public ElasticSearchIndexingException( String string )
+    {
+        super( string );
+    }
 
-    /**
-     * Index name.
-     * Defaults to 'polygene_index'.
-     */
-    @Optional Property<String> index();
-
-    /**
-     * Set to true to index non aggregated associations as if they were aggregated.
-     * WARN: Don't use this if your domain model contains circular dependencies.
-     * Defaults to 'FALSE'.
-     */
-    @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
+    public ElasticSearchIndexingException( String string, Throwable thrwbl )
+    {
+        super( string, thrwbl );
+    }
 
 }
-// END SNIPPET: config

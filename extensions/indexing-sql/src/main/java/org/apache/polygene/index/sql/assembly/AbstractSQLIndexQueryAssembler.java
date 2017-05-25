@@ -28,13 +28,12 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.reindexer.ReindexerConfiguration;
 import org.apache.polygene.index.reindexer.ReindexerService;
-import org.apache.polygene.index.sql.SQLIndexingEngineConfiguration;
+import org.apache.polygene.index.sql.SQLIndexingConfiguration;
 import org.apache.polygene.index.sql.support.common.ReindexingStrategy;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
-public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
-    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
+public abstract class AbstractSQLIndexQueryAssembler<AssemblerType> extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
     public static final Identity DEFAULT_IDENTITY = new StringIdentity( "indexing-sql" );
 
@@ -91,7 +90,7 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
 
         if( hasConfig() )
         {
-            configModule().entities( SQLIndexingEngineConfiguration.class,
+            configModule().entities( SQLIndexingConfiguration.class,
                                      ReindexerConfiguration.class ).
                               visibleIn( configVisibility() );
         }

@@ -26,7 +26,7 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
-public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
+public class RiakEntityStoreTest extends AbstractEntityStoreTest
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
@@ -37,7 +37,7 @@ public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
     public void setUp() throws Exception
     {
         super.setUp();
-        RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
+        RiakEntityStoreService es = serviceFinder.findService( RiakEntityStoreService.class ).get();
         riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
         riakFixture.waitUntilReady();
     }

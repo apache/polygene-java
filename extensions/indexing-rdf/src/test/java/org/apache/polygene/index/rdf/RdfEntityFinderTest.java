@@ -34,7 +34,7 @@ public class RdfEntityFinderTest extends AbstractEntityFinderTest
     {
         super.assemble( module );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
-        module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( RdfIndexingService.class ).instantiateOnStartup();
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
         // module.services( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
         // module.addComposites( NativeRdfConfiguration.class );

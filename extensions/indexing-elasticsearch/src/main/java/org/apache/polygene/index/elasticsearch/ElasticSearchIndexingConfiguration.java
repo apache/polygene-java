@@ -17,14 +17,33 @@
  *
  *
  */
+package org.apache.polygene.index.elasticsearch;
 
-package org.apache.polygene.index.rdf;
+import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.property.Property;
 
-import org.apache.polygene.index.rdf.indexing.RdfExporter;
-import org.apache.polygene.index.rdf.indexing.RdfIndexingService;
-import org.apache.polygene.index.rdf.query.RdfQueryService;
-
-public interface RdfIndexingEngineService
-    extends RdfQueryService, RdfIndexingService, RdfExporter
+// START SNIPPET: config
+public interface ElasticSearchIndexingConfiguration
 {
+    /**
+     * Cluster name.
+     * Defaults to 'polygene_cluster'.
+     */
+    @Optional Property<String> clusterName();
+
+    /**
+     * Index name.
+     * Defaults to 'polygene_index'.
+     */
+    @Optional Property<String> index();
+
+    /**
+     * Set to true to index non aggregated associations as if they were aggregated.
+     * WARN: Don't use this if your domain model contains circular dependencies.
+     * Defaults to 'FALSE'.
+     */
+    @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
+
 }
+// END SNIPPET: config

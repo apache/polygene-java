@@ -49,20 +49,19 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
-@Mixins( RdfIndexingService.RdfEntityIndexerMixin.class )
-@Activators( RdfIndexingService.Activator.class )
-public interface RdfIndexingService
-    extends StateChangeListener
+@Mixins( RdfIndexerService.RdfEntityIndexerMixin.class )
+@Activators( RdfIndexerService.Activator.class )
+public interface RdfIndexerService extends StateChangeListener
 {
     void initialize();
 
     File dataDir();
 
-    class Activator extends ActivatorAdapter<ServiceReference<RdfIndexingService>>
+    class Activator extends ActivatorAdapter<ServiceReference<RdfIndexerService>>
     {
 
         @Override
-        public void afterActivation( ServiceReference<RdfIndexingService> activated )
+        public void afterActivation( ServiceReference<RdfIndexerService> activated )
             throws Exception
         {
             activated.get().initialize();
@@ -73,7 +72,7 @@ public interface RdfIndexingService
      * JAVADOC Add JavaDoc
      */
     abstract class RdfEntityIndexerMixin
-        implements RdfIndexingService
+        implements RdfIndexerService
     {
         @Service
         private ServiceReference<Repository> repository;

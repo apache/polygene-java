@@ -74,7 +74,7 @@ public class JdbmEntityStoreMixin
     FileConfiguration fileConfiguration;
 
     @This
-    private Configuration<JdbmConfiguration> config;
+    private Configuration<JdbmEntityStoreConfiguration> config;
 
     @Uses
     private ServiceDescriptor descriptor;
@@ -438,7 +438,7 @@ public class JdbmEntityStoreMixin
 
     private Properties getProperties()
     {
-        JdbmConfiguration config = this.config.get();
+        JdbmEntityStoreConfiguration config = this.config.get();
 
         Properties properties = new Properties();
 

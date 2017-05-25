@@ -17,38 +17,15 @@
  *
  *
  */
+package org.apache.polygene.index.sql;
 
-package org.apache.polygene.entitystore.jclouds;
-
-import java.util.Map;
-import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.sql.common.SQLConfiguration;
 
-/**
- * Configuration of JCloudsMapEntityStore service.
- */
-public interface JCloudsMapEntityStoreConfiguration
+public interface SQLIndexingConfiguration extends SQLConfiguration
 {
-    // START SNIPPET: config
-    /**
-     * Name of the JClouds provider to use. Defaults to 'transient'.
-     */
-    @Optional Property<String> provider();
-    @UseDefaults Property<String> identifier();
-    @UseDefaults Property<String> credential();
-    /**
-     * Use this to fine tune your provider implementation according to JClouds documentation.
-     */
-    @UseDefaults Property<Map<String, String>> properties();
-    /**
-     * Name of the JClouds container to use. Defaults to 'polygene-entities'.
-     */
-    @Optional Property<String> container();
-    /**
-     * Endpoint for the BlobStore provider.
-     */
-    @Optional Property<String> endpoint();
-    // END SNIPPET: config
-
+    @UseDefaults( "POLYGENE_INDEX" )
+    @Override
+    Property<String> schemaName();
 }

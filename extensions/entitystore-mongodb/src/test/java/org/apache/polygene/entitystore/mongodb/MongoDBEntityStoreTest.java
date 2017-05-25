@@ -25,17 +25,16 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
+import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeConnectivity;
 
 /**
- * Test the MongoDBMapEntityStoreService usage with a CachePool.
+ * Test the MongoDBEntityStoreService.
  * <p>Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017</p>
  */
-public class MongoDBMapEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
 {
     @BeforeClass
     public static void beforeRedisMapEntityStoreTests()
@@ -44,22 +43,28 @@ public class MongoDBMapEntityStoreWithCacheTest
     }
 
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        // END SNIPPET: assembly
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
 
+        // START SNIPPET: assembly
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        // END SNIPPET: assembly
 
         MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class ).declareDefaults();
         mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
+        // START SNIPPET: assembly
     }
 
+    // END SNIPPET: assembly
     private Mongo mongo;
     private String dbName;
 
@@ -68,10 +73,9 @@ public class MongoDBMapEntityStoreWithCacheTest
         throws Exception
     {
         super.setUp();
-        MongoDBMapEntityStoreService es = serviceFinder.findService( MongoDBMapEntityStoreService.class ).get();
+        MongoDBEntityStoreService es = serviceFinder.findService( MongoDBEntityStoreService.class ).get();
         mongo = es.mongoInstanceUsed();
         dbName = es.dbInstanceUsed().getName();
-
     }
 
     @Override

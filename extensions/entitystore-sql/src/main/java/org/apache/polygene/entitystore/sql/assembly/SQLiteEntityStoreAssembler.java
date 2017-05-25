@@ -25,7 +25,7 @@ import org.jooq.SQLDialect;
  * SQLite EntityStore assembly.
  */
 public class SQLiteEntityStoreAssembler
-    extends AbstractSQLMapEntityStoreAssembler<SQLiteEntityStoreAssembler>
+    extends AbstractSQLEntityStoreAssembler<SQLiteEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()

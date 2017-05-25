@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.jclouds;
+package org.apache.polygene.entitystore.riak;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
@@ -30,19 +30,24 @@ import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.spi.entitystore.StateChangeNotificationConcern;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
+import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreActivation;
+import org.apache.polygene.spi.entitystore.helpers.MapEntityStoreMixin;
 
 /**
- * JClouds EntityStore service.
- * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
+ * Riak EntityStore service.
+ * <p>Can be used with Riak implementations of MapEntityStore.</p>
+ * <p>Based on {@link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, JCloudsMapEntityStoreMixin.class } )
-public interface JCloudsMapEntityStoreService
-    extends ServiceActivation,
-            JSONMapEntityStoreActivation,
-            EntityStore,
+@Mixins( { JSONMapEntityStoreMixin.class, MapEntityStoreMixin.class } )
+public interface RiakEntityStoreService
+    extends EntityStore,
             EntityStateVersions,
+            MapEntityStoreActivation,
+            JSONMapEntityStoreActivation,
+            ServiceActivation,
             LockingAbstractComposite,
-            Configuration
+            Configuration,
+            RiakAccessors
 {
 }

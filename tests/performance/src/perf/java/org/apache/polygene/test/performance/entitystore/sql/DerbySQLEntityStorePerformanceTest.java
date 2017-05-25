@@ -26,7 +26,7 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.SQLMapEntityStoreConfiguration;
+import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
@@ -93,8 +93,8 @@ public class DerbySQLEntityStorePerformanceTest
         );
         try
         {
-            SQLMapEntityStoreConfiguration config = uow.get( SQLMapEntityStoreConfiguration.class,
-                                                             DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
+                                                          DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )

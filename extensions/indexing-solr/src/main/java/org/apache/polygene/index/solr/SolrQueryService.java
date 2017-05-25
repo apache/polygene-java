@@ -33,8 +33,7 @@ import org.apache.polygene.spi.query.EntityFinder;
  */
 @Mixins( { SolrEntityIndexerMixin.class, SolrEntityQueryMixin.class } )
 @Activators( SolrQueryService.Activator.class )
-public interface SolrQueryService
-        extends EntityFinder, StateChangeListener, SolrSearch
+public interface SolrQueryService extends EntityFinder, StateChangeListener, SolrSearch
 {
 
     void inflateSolrSchema();

@@ -50,7 +50,7 @@ public class HazelcastEntityStoreMixin
     private static final String DEFAULT_MAPNAME = "polygene:entitystore:data";
 
     @This
-    private Configuration<HazelcastConfiguration> config;
+    private Configuration<HazelcastEntityStoreConfiguration> config;
 
     private IMap<String, String> stringMap;
     private HazelcastInstance hazelcastInstance;
@@ -59,7 +59,7 @@ public class HazelcastEntityStoreMixin
     public void activateService()
         throws Exception
     {
-        HazelcastConfiguration configuration = config.get();
+        HazelcastEntityStoreConfiguration configuration = config.get();
         Config conf = createConfig( configuration );
         hazelcastInstance = Hazelcast.newHazelcastInstance( conf );
         String mapName = DEFAULT_MAPNAME;
@@ -148,7 +148,7 @@ public class HazelcastEntityStoreMixin
         return stringMap.values().stream().map( StringReader::new );
     }
 
-    private Config createConfig( HazelcastConfiguration configuration )
+    private Config createConfig( HazelcastEntityStoreConfiguration configuration )
         throws IOException
     {
         String hzConfLocation = configuration.configXmlLocation().get();

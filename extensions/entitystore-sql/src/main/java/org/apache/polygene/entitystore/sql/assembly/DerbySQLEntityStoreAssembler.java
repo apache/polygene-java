@@ -25,7 +25,7 @@ import org.jooq.SQLDialect;
  * Derby EntityStore assembly.
  */
 public class DerbySQLEntityStoreAssembler
-    extends AbstractSQLMapEntityStoreAssembler<DerbySQLEntityStoreAssembler>
+    extends AbstractSQLEntityStoreAssembler<DerbySQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()
