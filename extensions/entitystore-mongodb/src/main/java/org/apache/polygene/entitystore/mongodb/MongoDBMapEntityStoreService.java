@@ -36,14 +36,14 @@ import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
  * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, MongoMapEntityStoreMixin.class } )
-public interface MongoMapEntityStoreService
+@Mixins( { JSONMapEntityStoreMixin.class, MongoDBMapEntityStoreMixin.class } )
+public interface MongoDBMapEntityStoreService
     extends EntityStore,
             EntityStateVersions,
             ServiceActivation,
             JSONMapEntityStoreActivation,
             LockingAbstractComposite,
             Configuration,
-            MongoAccessors
+            MongoDBAccessors
 {
 }

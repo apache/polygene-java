@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
+public class EmbedMongoDBMapEntityStoreTest extends AbstractEntityStoreTest
 {
     private static final MongodStarter MONGO_STARTER = MongodStarter.getDefaultInstance();
 
@@ -78,9 +78,9 @@ public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
 
         new MongoDBEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
 
-        MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class )
-                                                          .declareDefaults();
-        mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.MAJORITY );
+        MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class )
+                                                            .declareDefaults();
+        mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene-test" );
         mongoConfig.collection().set( testName.getMethodName() );
         mongoConfig.nodes().set( Collections.singletonList( "localhost:" + port ) );

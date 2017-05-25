@@ -25,7 +25,7 @@ import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 
 // START SNIPPET: config
-public interface MongoEntityStoreConfiguration
+public interface MongoDBEntityStoreConfiguration
 {
 
     @Optional

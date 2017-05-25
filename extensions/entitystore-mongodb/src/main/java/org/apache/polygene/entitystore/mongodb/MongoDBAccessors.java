@@ -22,7 +22,7 @@ package org.apache.polygene.entitystore.mongodb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
-public interface MongoAccessors
+public interface MongoDBAccessors
 {
     MongoClient mongoInstanceUsed();
 

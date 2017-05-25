@@ -58,15 +58,15 @@ import static java.util.stream.Collectors.toList;
 /**
  * MongoDB implementation of MapEntityStore.
  */
-public class MongoMapEntityStoreMixin
-    implements ServiceActivation, MapEntityStore, MongoAccessors
+public class MongoDBMapEntityStoreMixin
+    implements ServiceActivation, MapEntityStore, MongoDBAccessors
 {
     private static final String DEFAULT_DATABASE_NAME = "polygene:entitystore";
     private static final String DEFAULT_COLLECTION_NAME = "polygene:entitystore:entities";
     public static final String IDENTITY_COLUMN = "_id";
     public static final String STATE_COLUMN = "state";
     @This
-    private Configuration<MongoEntityStoreConfiguration> configuration;
+    private Configuration<MongoDBEntityStoreConfiguration> configuration;
     private List<ServerAddress> serverAddresses;
     private String databaseName;
     private String collectionName;
@@ -107,7 +107,7 @@ public class MongoMapEntityStoreMixin
         throws UnknownHostException
     {
         configuration.refresh();
-        MongoEntityStoreConfiguration config = configuration.get();
+        MongoDBEntityStoreConfiguration config = configuration.get();
 
         // Combine hostname, port and nodes configuration properties
         // If no configuration, use 127.0.0.1:27017
