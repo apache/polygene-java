@@ -14,58 +14,67 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.entitystore.riak;
+package org.apache.polygene.entitystore.redis;
 
-import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
+import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-public class RiakMapEntityStoreTest extends AbstractEntityStoreTest
+public class RedisEntityStoreTest
+    extends AbstractEntityStoreTest
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
-
-    private RiakFixture riakFixture;
-
-    @Override
-    public void setUp() throws Exception
-    {
-        super.setUp();
-        RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
-        riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
-        riakFixture.waitUntilReady();
-    }
-
-    @Override
-    public void tearDown() throws Exception
-    {
-        riakFixture.deleteTestData();
-        super.tearDown();
-    }
+    public static final DockerRule DOCKER = new DockerRule( "redis", 6379 );
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         // START SNIPPET: assembly
-        new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
-        RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
-                                                        .declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
-        riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
+        RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
+                                                          .declareDefaults();
+        redisConfig.host().set( DOCKER.getDockerHost() );
+        redisConfig.port().set( DOCKER.getExposedContainerPort( "6379/tcp" ) );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
+
+    private JedisPool jedisPool;
+
+    @Override
+    public void setUp()
+        throws Exception
+    {
+        super.setUp();
+        RedisEntityStoreService es = serviceFinder.findService( RedisEntityStoreService.class ).get();
+        jedisPool = es.jedisPool();
+    }
+
+    @Override
+    public void tearDown()
+        throws Exception
+    {
+        try( Jedis jedis = jedisPool.getResource() )
+        {
+            jedis.flushDB();
+        }
+        super.tearDown();
+    }
 }

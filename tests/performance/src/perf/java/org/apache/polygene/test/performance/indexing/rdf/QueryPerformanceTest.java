@@ -44,7 +44,7 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
-import org.apache.polygene.index.rdf.indexing.RdfIndexingService;
+import org.apache.polygene.index.rdf.indexing.RdfIndexerService;
 import org.apache.polygene.index.rdf.query.SesameExpressions;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -136,7 +136,7 @@ public class QueryPerformanceTest
         application = polygene.newApplication( this );
         module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
         application.activate();
-        indexingDataDir = module.findService( RdfIndexingService.class ).get().dataDir();
+        indexingDataDir = module.findService( RdfIndexerService.class ).get().dataDir();
         uowf = module.unitOfWorkFactory();
     }
 

@@ -27,7 +27,7 @@ import org.apache.polygene.api.property.Property;
  * Geode Configuration.
  */
 // START SNIPPET: config
-public interface GeodeConfiguration
+public interface GeodeEntityStoreConfiguration
 {
     /**
      * Geode Topology.

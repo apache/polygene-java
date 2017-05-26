@@ -25,7 +25,7 @@ import org.jooq.SQLDialect;
  * MySQL EntityStore assembly.
  */
 public class MySQLEntityStoreAssembler
-    extends AbstractSQLMapEntityStoreAssembler<MySQLEntityStoreAssembler>
+    extends AbstractSQLEntityStoreAssembler<MySQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()

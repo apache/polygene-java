@@ -41,7 +41,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
+import org.apache.polygene.entitystore.jdbm.JdbmEntityStoreConfiguration;
 import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
@@ -307,8 +307,8 @@ public class Qi95IssueTest
                     .dataDirectory()
                     .set( rdfDirectory().getAbsolutePath() );
 
-                module.entities( JdbmConfiguration.class ).visibleIn( Visibility.application );
-                module.forMixin( JdbmConfiguration.class )
+                module.entities( JdbmEntityStoreConfiguration.class ).visibleIn( Visibility.application );
+                module.forMixin( JdbmEntityStoreConfiguration.class )
                     .declareDefaults()
                     .file()
                     .set( jdbmDirectory().getAbsolutePath() );

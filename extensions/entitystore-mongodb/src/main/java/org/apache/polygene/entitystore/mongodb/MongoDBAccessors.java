@@ -17,34 +17,16 @@
  *
  *
  */
-package org.apache.polygene.index.elasticsearch;
+package org.apache.polygene.entitystore.mongodb;
 
-import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.property.Property;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
-// START SNIPPET: config
-public interface ElasticSearchConfiguration
+public interface MongoDBAccessors
 {
+    MongoClient mongoInstanceUsed();
 
-    /**
-     * Cluster name.
-     * Defaults to 'polygene_cluster'.
-     */
-    @Optional Property<String> clusterName();
+    MongoDatabase dbInstanceUsed();
 
-    /**
-     * Index name.
-     * Defaults to 'polygene_index'.
-     */
-    @Optional Property<String> index();
-
-    /**
-     * Set to true to index non aggregated associations as if they were aggregated.
-     * WARN: Don't use this if your domain model contains circular dependencies.
-     * Defaults to 'FALSE'.
-     */
-    @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
-
+    String collectionUsed();
 }
-// END SNIPPET: config

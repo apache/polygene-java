@@ -30,7 +30,7 @@ import org.junit.ClassRule;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-public class RedisMapEntityStoreWithCacheTest
+public class RedisEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
 {
     @ClassRule
@@ -57,7 +57,7 @@ public class RedisMapEntityStoreWithCacheTest
         throws Exception
     {
         super.setUp();
-        RedisMapEntityStoreService es = serviceFinder.findService( RedisMapEntityStoreService.class ).get();
+        RedisEntityStoreService es = serviceFinder.findService( RedisEntityStoreService.class ).get();
         jedisPool = es.jedisPool();
     }
 

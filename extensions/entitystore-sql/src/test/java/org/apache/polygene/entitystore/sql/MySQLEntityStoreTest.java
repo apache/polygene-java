@@ -107,8 +107,8 @@ public class MySQLEntityStoreTest
         try
         {
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            SQLMapEntityStoreConfiguration configuration = uow.get( SQLMapEntityStoreConfiguration.class,
-                                                                    DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLEntityStoreConfiguration configuration = uow.get( SQLEntityStoreConfiguration.class,
+                                                                 DEFAULT_ENTITYSTORE_IDENTITY );
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {

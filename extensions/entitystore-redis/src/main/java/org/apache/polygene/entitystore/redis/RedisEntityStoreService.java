@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.jclouds;
+package org.apache.polygene.entitystore.redis;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
@@ -32,17 +32,18 @@ import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
 /**
- * JClouds EntityStore service.
+ * Redis EntityStore service.
  * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, JCloudsMapEntityStoreMixin.class } )
-public interface JCloudsMapEntityStoreService
-    extends ServiceActivation,
-            JSONMapEntityStoreActivation,
-            EntityStore,
-            EntityStateVersions,
-            LockingAbstractComposite,
-            Configuration
+@Mixins( { JSONMapEntityStoreMixin.class, RedisEntityStoreMixin.class } )
+public interface RedisEntityStoreService
+        extends EntityStore,
+                EntityStateVersions,
+                ServiceActivation,
+                JSONMapEntityStoreActivation,
+                LockingAbstractComposite,
+                Configuration,
+                RedisAccessors
 {
 }

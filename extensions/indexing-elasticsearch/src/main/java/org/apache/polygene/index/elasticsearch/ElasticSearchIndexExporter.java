@@ -26,10 +26,8 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.spi.query.IndexExporter;
 
 @Mixins( ElasticSearchIndexExporter.Mixin.class )
-public interface ElasticSearchIndexExporter
-        extends IndexExporter
+public interface ElasticSearchIndexExporter extends IndexExporter
 {
-
     class Mixin
             implements ElasticSearchIndexExporter
     {
@@ -49,5 +47,4 @@ public interface ElasticSearchIndexExporter
         }
 
     }
-
 }

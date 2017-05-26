@@ -23,7 +23,7 @@ import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
+import org.apache.polygene.entitystore.jdbm.JdbmEntityStoreConfiguration;
 import org.apache.polygene.entitystore.jdbm.JdbmEntityStoreService;
 
 public class JdbmEntityStoreAssembler
@@ -40,7 +40,7 @@ public class JdbmEntityStoreAssembler
         }
         if( hasConfig() )
         {
-            configModule().entities( JdbmConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( JdbmEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

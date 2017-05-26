@@ -22,8 +22,8 @@ import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.SQLMapEntityStoreConfiguration;
-import org.apache.polygene.entitystore.sql.SQLMapEntityStoreService;
+import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
+import org.apache.polygene.entitystore.sql.SQLEntityStoreService;
 import org.apache.polygene.library.sql.liquibase.LiquibaseAssembler;
 import org.apache.polygene.library.sql.liquibase.LiquibaseConfiguration;
 import org.jooq.SQLDialect;
@@ -33,7 +33,7 @@ import org.jooq.conf.Settings;
 /**
  * Base SQL EntityStore assembly.
  */
-public abstract class AbstractSQLMapEntityStoreAssembler<AssemblerType>
+public abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
     public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = new StringIdentity( "entitystore-sql" );
@@ -67,7 +67,7 @@ public abstract class AbstractSQLMapEntityStoreAssembler<AssemblerType>
         }
         liquibase.assemble( module );
 
-        module.services( SQLMapEntityStoreService.class )
+        module.services( SQLEntityStoreService.class )
               .identifiedBy( identity )
               .visibleIn( visibility() )
               .setMetaInfo( dialect )
@@ -75,7 +75,7 @@ public abstract class AbstractSQLMapEntityStoreAssembler<AssemblerType>
 
         if( hasConfig() )
         {
-            configModule().entities( SQLMapEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( SQLEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 

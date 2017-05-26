@@ -32,8 +32,8 @@ import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
  * SQL EntityStore service.
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, SQLMapEntityStoreMixin.class } )
-public interface SQLMapEntityStoreService
+@Mixins( { JSONMapEntityStoreMixin.class, SQLEntityStoreMixin.class } )
+public interface SQLEntityStoreService
     extends ServiceActivation,
     JSONMapEntityStoreActivation,
     EntityStore,

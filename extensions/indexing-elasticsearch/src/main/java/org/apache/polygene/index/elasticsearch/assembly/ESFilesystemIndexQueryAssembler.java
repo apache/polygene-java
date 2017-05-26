@@ -21,7 +21,7 @@ package org.apache.polygene.index.elasticsearch.assembly;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
+import org.apache.polygene.index.elasticsearch.ElasticSearchIndexingConfiguration;
 import org.apache.polygene.index.elasticsearch.filesystem.ESFilesystemIndexQueryService;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchAssembler;
 
@@ -40,7 +40,7 @@ public class ESFilesystemIndexQueryAssembler
 
         if( hasConfig() )
         {
-            configModule().entities( ElasticSearchConfiguration.class ).
+            configModule().entities( ElasticSearchIndexingConfiguration.class ).
                 visibleIn( configVisibility() );
         }
     }

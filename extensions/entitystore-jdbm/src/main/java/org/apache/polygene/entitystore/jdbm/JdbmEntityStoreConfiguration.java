@@ -17,38 +17,36 @@
  *
  *
  */
+package org.apache.polygene.entitystore.jdbm;
 
-package org.apache.polygene.entitystore.jclouds;
-
-import java.util.Map;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 
 /**
- * Configuration of JCloudsMapEntityStore service.
+ * Configuration for the JdbmEntityStoreService.
  */
-public interface JCloudsMapEntityStoreConfiguration
+// START SNIPPET: config
+public interface JdbmEntityStoreConfiguration
 {
-    // START SNIPPET: config
-    /**
-     * Name of the JClouds provider to use. Defaults to 'transient'.
-     */
-    @Optional Property<String> provider();
-    @UseDefaults Property<String> identifier();
-    @UseDefaults Property<String> credential();
-    /**
-     * Use this to fine tune your provider implementation according to JClouds documentation.
-     */
-    @UseDefaults Property<Map<String, String>> properties();
-    /**
-     * Name of the JClouds container to use. Defaults to 'polygene-entities'.
-     */
-    @Optional Property<String> container();
-    /**
-     * Endpoint for the BlobStore provider.
-     */
-    @Optional Property<String> endpoint();
     // END SNIPPET: config
+   /**
+    * The file where the JDBM data will be stored
+    * <p>
+    * Default: System.getProperty( "user.dir" ) + "/polygene/jdbmstore.data";
+    * </p>
+    * @return path to data file relative to current path
+    */
+    // START SNIPPET: config
+   @Optional
+   Property<String> file();
 
+   // JDBM RecordManager options
+
+   @UseDefaults
+   Property<Boolean> autoCommit();
+
+   @UseDefaults
+   Property<Boolean> disableTransactions();
 }
+// END SNIPPET: config

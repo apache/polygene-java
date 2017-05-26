@@ -25,7 +25,11 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.library.locking.ReadLockConcern;
 import org.apache.polygene.library.locking.WriteLockConcern;
-import org.apache.polygene.spi.entitystore.*;
+import org.apache.polygene.spi.entitystore.BackupRestore;
+import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
+import org.apache.polygene.spi.entitystore.EntityStateVersions;
+import org.apache.polygene.spi.entitystore.EntityStore;
+import org.apache.polygene.spi.entitystore.StateChangeNotificationConcern;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.apache.polygene.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.apache.polygene.spi.entitystore.helpers.StateStore;
@@ -44,6 +48,6 @@ public interface JdbmEntityStoreService
             StateStore,
             BackupRestore,
             LockingAbstractComposite,
-            Configuration<JdbmConfiguration>
+            Configuration<JdbmEntityStoreConfiguration>
 {
 }

@@ -17,36 +17,23 @@
  *
  *
  */
-package org.apache.polygene.entitystore.jdbm;
+package org.apache.polygene.entitystore.hazelcast;
 
-import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 
 /**
- * Configuration for the JdbmEntityStoreService.
+ * Configuration of HazelcastEntityStoreService.
  */
 // START SNIPPET: config
-public interface JdbmConfiguration
+public interface HazelcastEntityStoreConfiguration
 {
-    // END SNIPPET: config
-   /**
-    * The file where the JDBM data will be stored
-    * <p>
-    * Default: System.getProperty( "user.dir" ) + "/polygene/jdbmstore.data";
-    * </p>
-    * @return path to data file relative to current path
-    */
-    // START SNIPPET: config
-   @Optional
-   Property<String> file();
 
-   // JDBM RecordManager options
+    @UseDefaults
+    Property<String> configXmlLocation();
 
-   @UseDefaults
-   Property<Boolean> autoCommit();
+    @UseDefaults
+    Property<String> mapName();
 
-   @UseDefaults
-   Property<Boolean> disableTransactions();
 }
 // END SNIPPET: config

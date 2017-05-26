@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-public class EmbedMongoMapEntityStoreTest extends AbstractEntityStoreTest
+public class EmbedMongoDBMapEntityStoreTest extends AbstractEntityStoreTest
 {
     private static final MongodStarter MONGO_STARTER = MongodStarter.getDefaultInstance();
 

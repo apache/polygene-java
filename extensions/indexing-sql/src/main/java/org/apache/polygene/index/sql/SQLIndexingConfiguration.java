@@ -17,16 +17,15 @@
  *
  *
  */
-package org.apache.polygene.entitystore.mongodb;
+package org.apache.polygene.index.sql;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.sql.common.SQLConfiguration;
 
-public interface MongoAccessors
+public interface SQLIndexingConfiguration extends SQLConfiguration
 {
-    MongoClient mongoInstanceUsed();
-
-    MongoDatabase dbInstanceUsed();
-
-    String collectionUsed();
+    @UseDefaults( "POLYGENE_INDEX" )
+    @Override
+    Property<String> schemaName();
 }

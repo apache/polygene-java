@@ -22,8 +22,8 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.riak.RiakEntityStoreConfiguration;
-import org.apache.polygene.entitystore.riak.RiakMapEntityStoreMixin;
-import org.apache.polygene.entitystore.riak.RiakMapEntityStoreService;
+import org.apache.polygene.entitystore.riak.RiakEntityStoreMixin;
+import org.apache.polygene.entitystore.riak.RiakEntityStoreService;
 
 /**
  * Riak EntityStore assembly.
@@ -34,8 +34,8 @@ public class RiakEntityStoreAssembler
     @Override
     public void assemble(ModuleAssembly module) throws AssemblyException
     {
-        ServiceDeclaration service = module.services( RiakMapEntityStoreService.class ).
-                withMixins( RiakMapEntityStoreMixin.class ).
+        ServiceDeclaration service = module.services( RiakEntityStoreService.class ).
+            withMixins( RiakEntityStoreMixin.class ).
                 visibleIn( visibility() );
         if( hasIdentity() )
         {

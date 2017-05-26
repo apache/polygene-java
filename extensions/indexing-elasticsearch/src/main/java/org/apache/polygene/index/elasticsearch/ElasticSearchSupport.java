@@ -19,11 +19,10 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
-import org.elasticsearch.client.Client;
 import org.apache.polygene.api.service.ServiceActivation;
+import org.elasticsearch.client.Client;
 
-public interface ElasticSearchSupport
-        extends ServiceActivation
+public interface ElasticSearchSupport extends ServiceActivation
 {
 
     Client client();

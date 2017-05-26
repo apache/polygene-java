@@ -69,7 +69,7 @@ import static com.google.common.collect.Iterables.contains;
 //      It defines where your entities are allowed to be stored.
 //      @UseDefaults Property<List<String>> geopoliticalBoundaries(); ???
 //      SEE  http://www.jclouds.org/documentation/reference/location-metadata-design
-public class JCloudsMapEntityStoreMixin
+public class JCloudsEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {
 
@@ -90,7 +90,7 @@ public class JCloudsMapEntityStoreMixin
     );
 
     @This
-    private Configuration<JCloudsMapEntityStoreConfiguration> configuration;
+    private Configuration<JCloudsEntityStoreConfiguration> configuration;
 
     private BlobStoreContext storeContext;
 

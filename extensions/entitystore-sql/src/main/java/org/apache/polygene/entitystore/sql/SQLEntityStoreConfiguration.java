@@ -14,18 +14,34 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.polygene.index.sql;
+package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 
-public interface SQLIndexingEngineConfiguration extends SQLConfiguration
+// START SNIPPET: config
+public interface SQLEntityStoreConfiguration extends SQLConfiguration
 {
-    @UseDefaults( "POLYGENE_INDEX" )
+    /**
+     * Name of the database schema to use.
+     * Ignored on SQL databases that don't support schemas.
+     */
+    @UseDefaults( "POLYGENE_ES" )
     @Override
     Property<String> schemaName();
+
+    /**
+     * Name of the entities table.
+     */
+    @UseDefaults( "POLYGENE_ENTITIES" )
+    Property<String> entityTableName();
+
+    /**
+     * Defines whether the database schema and table should be created if not already present.
+     */
+    @UseDefaults( "true" )
+    Property<Boolean> createIfMissing();
 }
+// END SNIPPET: config

@@ -58,8 +58,8 @@ import static java.util.stream.Collectors.toList;
 /**
  * MongoDB implementation of MapEntityStore.
  */
-public class MongoMapEntityStoreMixin
-    implements ServiceActivation, MapEntityStore, MongoAccessors
+public class MongoDBEntityStoreMixin
+    implements ServiceActivation, MapEntityStore, MongoDBAccessors
 {
     private static final String DEFAULT_DATABASE_NAME = "polygene:entitystore";
     private static final String DEFAULT_COLLECTION_NAME = "polygene:entitystore:entities";

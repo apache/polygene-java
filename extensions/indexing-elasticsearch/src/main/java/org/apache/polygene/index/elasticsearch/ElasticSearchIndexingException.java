@@ -17,23 +17,19 @@
  *
  *
  */
-package org.apache.polygene.entitystore.hazelcast;
+package org.apache.polygene.index.elasticsearch;
 
-import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.property.Property;
-
-/**
- * Configuration of HazelcastEntityStoreService.
- */
-// START SNIPPET: config
-public interface HazelcastConfiguration
+public class ElasticSearchIndexingException extends RuntimeException
 {
 
-    @UseDefaults
-    Property<String> configXmlLocation();
+    public ElasticSearchIndexingException( String string )
+    {
+        super( string );
+    }
 
-    @UseDefaults
-    Property<String> mapName();
+    public ElasticSearchIndexingException( String string, Throwable thrwbl )
+    {
+        super( string, thrwbl );
+    }
 
 }
-// END SNIPPET: config

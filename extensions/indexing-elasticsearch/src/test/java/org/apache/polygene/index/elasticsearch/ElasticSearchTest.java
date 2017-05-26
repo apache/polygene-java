@@ -137,7 +137,7 @@ public class ElasticSearchTest
         new ESClientIndexQueryAssembler( ELASTIC_SEARCH.client() )
             .withConfig( config, Visibility.layer )
             .assemble( module );
-        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        ElasticSearchIndexingConfiguration esConfig = config.forMixin( ElasticSearchIndexingConfiguration.class ).declareDefaults();
         esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
                                                         testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );

@@ -25,7 +25,7 @@ import org.jooq.SQLDialect;
  * PostgreSQL EntityStore assembly.
  */
 public class PostgreSQLEntityStoreAssembler
-    extends AbstractSQLMapEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
+    extends AbstractSQLEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()

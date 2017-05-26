@@ -17,20 +17,14 @@
  *
  *
  */
-package org.apache.polygene.index.elasticsearch;
 
-public class ElasticSearchIndexException
-        extends RuntimeException
+package org.apache.polygene.index.rdf;
+
+import org.apache.polygene.index.rdf.indexing.RdfIndexExporter;
+import org.apache.polygene.index.rdf.indexing.RdfIndexerService;
+import org.apache.polygene.index.rdf.query.RdfQueryService;
+
+public interface RdfIndexingService
+    extends RdfQueryService, RdfIndexerService, RdfIndexExporter
 {
-
-    public ElasticSearchIndexException( String string )
-    {
-        super( string );
-    }
-
-    public ElasticSearchIndexException( String string, Throwable thrwbl )
-    {
-        super( string, thrwbl );
-    }
-
 }
