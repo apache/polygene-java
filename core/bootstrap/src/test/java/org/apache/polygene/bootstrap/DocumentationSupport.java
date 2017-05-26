@@ -282,7 +282,7 @@ public class DocumentationSupport
 
         static class CountryEntity {}
 
-        static class AddressValue {}
+        public static class AddressValue {}
 
         public static class LdapAuthenticationAssembler implements Assembler
         {
