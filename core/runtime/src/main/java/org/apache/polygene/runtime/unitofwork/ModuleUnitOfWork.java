@@ -55,7 +55,6 @@ import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryExecutionException;
 import org.apache.polygene.api.query.grammar.OrderBy;
-import org.apache.polygene.api.service.NoSuchServiceException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
@@ -192,11 +191,6 @@ public class ModuleUnitOfWork
         if( identity == null )
         {
             IdentityGenerator idGen = ( (ModuleSpi) modelModule.instance() ).identityGenerator();
-            if( idGen == null )
-            {
-                throw new NoSuchServiceException( IdentityGenerator.class.getName(), modelModule
-                    .name(), modelModule.typeLookup() );
-            }
             identity = idGen.generate( model.types().findFirst().orElse( null ) );
         }
         EntityBuilder<T> builder;
@@ -266,11 +260,6 @@ public class ModuleUnitOfWork
             {
                 // Generate reference
                 IdentityGenerator idGen = moduleSpi.identityGenerator();
-                if( idGen == null )
-                {
-                    String typeName = IdentityGenerator.class.getName();
-                    throw new NoSuchServiceException( typeName, modelModule.name(), modelModule.typeLookup() );
-                }
                 identity = idGen.generate( model.types().findFirst().orElse( null ) );
             }
             else
