@@ -62,7 +62,7 @@ public class MongoDBEntityStoreMixin
     implements ServiceActivation, MapEntityStore, MongoDBAccessors
 {
     private static final String DEFAULT_DATABASE_NAME = "polygene:entitystore";
-    private static final String DEFAULT_COLLECTION_NAME = "polygene:entitystore:entities";
+    private static final String DEFAULT_COLLECTION_NAME = "entities";
     public static final String IDENTITY_COLUMN = "_id";
     public static final String STATE_COLUMN = "state";
     @This

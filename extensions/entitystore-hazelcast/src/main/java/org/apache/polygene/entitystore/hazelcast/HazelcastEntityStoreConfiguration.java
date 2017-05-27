@@ -19,7 +19,7 @@
  */
 package org.apache.polygene.entitystore.hazelcast;
 
-import org.apache.polygene.api.common.UseDefaults;
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.property.Property;
 
 /**
@@ -29,10 +29,21 @@ import org.apache.polygene.api.property.Property;
 public interface HazelcastEntityStoreConfiguration
 {
 
-    @UseDefaults
+    /**
+     * The location of the Hazelcast configuration XML file.
+     * If the property is not a URL, it will be tried as a path name on the classpath.
+     *
+     * @return The location of the Hazelcast configuration XML file. Defaults to hazelcast-default.xml
+     */
+    @Optional
     Property<String> configXmlLocation();
 
-    @UseDefaults
+    /**
+     * The name of the Hazelcast map that is the key-value entity store.
+     *
+     * @return the name of Hazelcast map containing the entities. Defaults to "polygene:entitystore:data"
+     */
+    @Optional
     Property<String> mapName();
 
 }

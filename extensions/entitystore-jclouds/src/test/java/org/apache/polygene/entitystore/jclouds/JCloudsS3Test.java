@@ -39,8 +39,8 @@ public class JCloudsS3Test extends AbstractEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-        JCloudsMapEntityStoreConfiguration defaults =
-            config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
+        JCloudsEntityStoreConfiguration defaults =
+            config.forMixin( JCloudsEntityStoreConfiguration.class ).declareDefaults();
 
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "8000/tcp" );

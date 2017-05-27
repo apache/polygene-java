@@ -52,7 +52,9 @@ public class CassandraEntityStoreTest
         module.services( CassandraEntityStoreService.class ).withTypes( CanRemoveAll.class ).withMixins( EmptyCassandraTableMixin.class );
 
         // START SNIPPET: assembly
-        new CassandraEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        new CassandraEntityStoreAssembler()
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
         // END SNIPPET: assembly
 
         CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();

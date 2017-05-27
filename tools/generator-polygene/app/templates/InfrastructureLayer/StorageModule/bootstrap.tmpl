@@ -41,10 +41,26 @@ public class <%- polygene.entitystore %>StorageModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.entitystore %>EntityStoreAssembler()
+<% if( polygene.entitystore.contains( 'SQL' ) ) {
+%>        // DataSourceService
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
+
+        // DataSource
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
+            .identifiedBy( "ds-<%= polygene.entitystore.toLowerCase() %>" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
+<% }
+%>        new <%- polygene.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )
-            .identifiedBy( "entitystore-<%- polygene.entitystore.toLowerCase() %>" )
+            .identifiedBy( "es-<%- polygene.entitystore.toLowerCase() %>" )
             .assemble( module );
         return module;
     }

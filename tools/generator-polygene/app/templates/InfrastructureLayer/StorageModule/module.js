@@ -22,5 +22,24 @@ module.exports = {
         p.copyTemplate(p.ctx,
             'InfrastructureLayer/StorageModule/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/infrastructure/' + p.entitystore + 'StorageModule.java');
+
+        var configurationFile = 'InfrastructureLayer/StorageModule/storage/es-' + p.entitystore.toLowerCase() + '.properties';
+        var confFile = require(configurationFile);
+        if (confFile.existsSync(path)) {
+            p.copyTemplate(p.ctx,
+                configurationFile,
+                'app/src/main/resources/config/');
+        }
+
+        var datasourceFile = 'InfrastructureLayer/StorageModule/storage/ds-' + p.entitystore.toLowerCase() + '.properties';
+        var dsFile = require(datasourceFile);
+        if (dsFile.existsSync(path)) {
+            p.copyTemplate(p.ctx,
+                'InfrastructureLayer/StorageModule/storage/es-sql.properties',
+                'app/src/main/resources/config/es-' + p.entitystore.toLowerCase());
+            p.copyTemplate(p.ctx,
+                configurationFile,
+                'app/src/main/resources/config/');
+        }
     }
 };
