@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.TransientDescriptor;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
@@ -40,5 +41,11 @@ public class TransientDetailDescriptor
         throws ThrowableType
     {
         return visitor.visit( this );
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = super.toJson();
+        return builder;
     }
 }

@@ -22,6 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.activation.ActivatorDescriptor;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
@@ -173,5 +176,31 @@ public class ActivatorDetailDescriptor
     public String toString()
     {
         return descriptor.toString();
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        if( service() != null )
+        {
+            builder.add( "service", service().toString() );
+        }
+        if( importedService() != null )
+        {
+            builder.add( "importedService", importedService().toString() );
+        }
+        if( module() != null )
+        {
+            builder.add( "module", module().toString() );
+        }
+        if( layer() != null )
+        {
+            builder.add( "layer", layer().toString() );
+        }
+        if( application() != null )
+        {
+            builder.add( "application", application().toString() );
+        }
+        return builder.build();
     }
 }

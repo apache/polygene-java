@@ -22,6 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.mixin.MixinDescriptor;
 
 public final class MixinDetailDescriptor
@@ -132,5 +135,30 @@ public final class MixinDetailDescriptor
     public String toString()
     {
         return descriptor.mixinClass().getSimpleName();
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "mixin", descriptor().mixinClass().getName() );
+        JsonObjectBuilder injectionBuilder = Json.createObjectBuilder();
+        {
+            JsonArrayBuilder constructorsBuilder = Json.createArrayBuilder();
+            constructors().forEach( constructor -> constructorsBuilder.add( constructor.toJson() ) );
+            builder.add( "constructors", constructorsBuilder );
+        }
+        builder.add( "injection", injectionBuilder );
+        {
+            JsonArrayBuilder injectedFieldsBuilder = Json.createArrayBuilder();
+            injectedFields().forEach( field -> injectedFieldsBuilder.add( field.toJson() ) );
+            injectionBuilder.add( "fields", injectedFieldsBuilder );
+        }
+        {
+            JsonArrayBuilder injectedMethodsBuilder = Json.createArrayBuilder();
+            injectedMethods().forEach( method -> injectedMethodsBuilder.add( method.toJson() ) );
+            injectionBuilder.add( "methods", injectedMethodsBuilder );
+        }
+
+        return builder;
     }
 }

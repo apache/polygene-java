@@ -20,6 +20,8 @@
 package org.apache.polygene.tools.model.descriptor;
 
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.InjectedParametersDescriptor;
 
 public class InjectedParametersDetailDescriptor
@@ -69,17 +71,32 @@ public class InjectedParametersDetailDescriptor
         return method;
     }
 
-    final void setConstructor( ConstructorDetailDescriptor aDescriptor )
+    final void setConstructor( ConstructorDetailDescriptor constructorDescriptor )
         throws IllegalArgumentException
     {
-        Objects.requireNonNull( aDescriptor, "aDescriptor" );
-        constructor = aDescriptor;
+        Objects.requireNonNull( constructorDescriptor, "constructorDescriptor" );
+        constructor = constructorDescriptor;
     }
 
-    final void setMethod( InjectedMethodDetailDescriptor aDescriptor )
+    final void setMethod( InjectedMethodDetailDescriptor methodDescriptor )
         throws IllegalArgumentException
     {
-        Objects.requireNonNull( aDescriptor, "aDescriptor" );
-        method = aDescriptor;
+        Objects.requireNonNull( methodDescriptor, "methodDescriptor" );
+        method = methodDescriptor;
     }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        if( method != null )
+        {
+            builder.add( "method", method().toJson() );
+        }
+        if( constructor != null )
+        {
+            builder.add( "constructor", constructor().toJson() );
+        }
+        return builder;
+    }
+
 }

@@ -83,7 +83,6 @@ public class EntitiesResource
     protected Representation get( Variant variant )
         throws ResourceException
     {
-        System.out.println( "VARIANT: " + variant.getMediaType() );
         // Generate the right representation according to its media type.
         if( MediaType.APPLICATION_JSON.equals( variant.getMediaType() ) )
         {

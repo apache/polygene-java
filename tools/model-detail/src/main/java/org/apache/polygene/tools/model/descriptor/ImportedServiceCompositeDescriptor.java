@@ -22,6 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.service.ImportedServiceDescriptor;
@@ -99,5 +102,19 @@ public class ImportedServiceCompositeDescriptor
     public String toURI()
     {
         return Classes.toURI( primaryType() );
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", importedService().type().getName() );
+        builder.add( "visibility", importedService().visibility().name() );
+        builder.add( "importer", importedService().serviceImporter().getName() );
+        {
+            JsonArrayBuilder typesBuilder = Json.createArrayBuilder();
+            importedService().types().forEach( type -> typesBuilder.add( type.getName() ) );
+            builder.add( "types", typesBuilder );
+        }
+        return builder;
     }
 }

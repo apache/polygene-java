@@ -22,6 +22,10 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
@@ -240,5 +244,22 @@ public final class ModuleDetailDescriptor
     public final String toString()
     {
         return descriptor.name();
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", descriptor.name() );
+        {
+            JsonArrayBuilder servicesBuilder = Json.createArrayBuilder();
+            services().forEach( service -> servicesBuilder.add( service.toJson() ) );
+            builder.add( "services", servicesBuilder.build() );
+        }
+        {
+            JsonArrayBuilder activatorsBuilder = Json.createArrayBuilder();
+            activators().forEach( activator -> activatorsBuilder.add( activator.toJson() ) );
+            builder.add( "activators", activatorsBuilder.build() );
+        }
+        return builder.build();
     }
 }

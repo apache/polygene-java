@@ -34,7 +34,7 @@ class APIFinder
 
     public List<ServiceDetailDescriptor> findModuleAPI( ModuleDetailDescriptor descriptor )
     {
-        ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
+        ArrayList<ServiceDetailDescriptor> list = new ArrayList<>();
 
         for( ServiceDetailDescriptor serviceDetailDescriptor : descriptor.services() )
         {
@@ -46,7 +46,7 @@ class APIFinder
 
     public List<ServiceDetailDescriptor> findLayerAPI( LayerDetailDescriptor descriptor )
     {
-        ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
+        ArrayList<ServiceDetailDescriptor> list = new ArrayList<>();
 
         for( ModuleDetailDescriptor moduleDetailDescriptor : descriptor.modules() )
         {

@@ -22,6 +22,8 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import org.apache.polygene.api.sideeffect.SideEffectsDescriptor;
 
 public final class MethodSideEffectsDetailDescriptor
@@ -83,5 +85,12 @@ public final class MethodSideEffectsDetailDescriptor
 
         aDescriptor.setSideEffects( aDescriptor );
         sideEffects.add( aDescriptor );
+    }
+
+    public JsonArrayBuilder toJson()
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        sideEffects().forEach( sideeffect -> sideeffect.toJson() );
+        return builder;
     }
 }
