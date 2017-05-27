@@ -15,22 +15,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.gradle.structure.samples
+package org.apache.polygene.gradle.structure
 
 import groovy.transform.CompileStatic
-import org.apache.polygene.gradle.code.CodePlugin
-import org.gradle.api.Plugin
+import org.apache.polygene.gradle.TaskGroups
 import org.gradle.api.Project
-
-import static org.apache.polygene.gradle.structure.ProjectGroupTasks.configureProjectGroupTasks
+import org.gradle.api.Task
 
 @CompileStatic
-class SamplePlugin implements Plugin<Project>
+class ProjectGroupTasks
 {
-  @Override
-  void apply( Project project )
+  static void configureProjectGroupTasks( String projectGroup, Project project )
   {
-    project.plugins.apply CodePlugin
-    configureProjectGroupTasks( "samples", project )
+    project.tasks.create( "check${ projectGroup.capitalize() }" ) { Task task ->
+      task.group = TaskGroups.VERIFICATION
+      task.description = "Runs the $projectGroup checks"
+      task.dependsOn( project.tasks.getByName( "check" ) )
+    }
   }
 }
