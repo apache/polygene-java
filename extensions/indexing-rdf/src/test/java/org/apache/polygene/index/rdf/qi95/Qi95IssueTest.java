@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
-import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
@@ -33,9 +32,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
@@ -145,7 +142,7 @@ public class Qi95IssueTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<ItemType> qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
-        Iterable<ItemType> initialList = copyOf( uow.newQuery( qb ));
+        Iterable<ItemType> initialList = copyOf( uow.newQuery( qb ) );
 
         assertTrue( "Band is not in the initial list", hasItemTypeNamed( "Band", initialList ) );
         assertTrue( "Bracelet is not in the initial list", hasItemTypeNamed( "Bracelet", initialList ) );
@@ -158,10 +155,14 @@ public class Qi95IssueTest
         qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
         Iterable<ItemType> listAfterFirstQueryAndAdd = copyOf( uow.newQuery( qb ) );
 
-        assertTrue( "Band is not in the list after the first query and add", hasItemTypeNamed( "Band", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Bracelet is not in the list after the first query and add", hasItemTypeNamed( "Bracelet", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Necklace is not in the list after the first query and add", hasItemTypeNamed( "Necklace", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Watch is not in the list after the first query and add", hasItemTypeNamed( "Watch", listAfterFirstQueryAndAdd ) );
+        assertTrue( "Band is not in the list after the first query and add",
+                    hasItemTypeNamed( "Band", listAfterFirstQueryAndAdd ) );
+        assertTrue( "Bracelet is not in the list after the first query and add",
+                    hasItemTypeNamed( "Bracelet", listAfterFirstQueryAndAdd ) );
+        assertTrue( "Necklace is not in the list after the first query and add",
+                    hasItemTypeNamed( "Necklace", listAfterFirstQueryAndAdd ) );
+        assertTrue( "Watch is not in the list after the first query and add",
+                    hasItemTypeNamed( "Watch", listAfterFirstQueryAndAdd ) );
 
         newItemType( uow, "Ear ring" );
         uow.complete();
@@ -177,33 +178,27 @@ public class Qi95IssueTest
     }
 
     private Application createApplication( final ModuleAssemblyBuilder queryServiceModuleBuilder,
-                                              final ModuleAssemblyBuilder entityStoreModuleBuilder,
-                                              final LayerAssemblyBuilder domainLayerBuilder
+                                           final ModuleAssemblyBuilder entityStoreModuleBuilder,
+                                           final LayerAssemblyBuilder domainLayerBuilder
     )
         throws AssemblyException
     {
         Energy4Java polygene = new Energy4Java();
-        Application application = polygene.newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
+        Application application = polygene.newApplication( factory -> {
+            ApplicationAssembly applicationAssembly = factory.newApplicationAssembly();
 
-                LayerAssembly configLayer = applicationAssembly.layer( "Config" );
-                configModule.buildModuleAssembly( configLayer, "Configuration" );
+            LayerAssembly configLayer = applicationAssembly.layer( "Config" );
+            configModule.buildModuleAssembly( configLayer, "Configuration" );
 
-                LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure" );
-                infrastructureLayer.uses( configLayer );
+            LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure" );
+            infrastructureLayer.uses( configLayer );
 
-                queryServiceModuleBuilder.buildModuleAssembly( infrastructureLayer, "Query Service" );
-                entityStoreModuleBuilder.buildModuleAssembly( infrastructureLayer, "Entity Store" );
+            queryServiceModuleBuilder.buildModuleAssembly( infrastructureLayer, "Query Service" );
+            entityStoreModuleBuilder.buildModuleAssembly( infrastructureLayer, "Entity Store" );
 
-                LayerAssembly domainLayer = domainLayerBuilder.buildLayerAssembly( applicationAssembly );
-                domainLayer.uses( infrastructureLayer );
-                return applicationAssembly;
-            }
+            LayerAssembly domainLayer = domainLayerBuilder.buildLayerAssembly( applicationAssembly );
+            domainLayer.uses( infrastructureLayer );
+            return applicationAssembly;
         } );
         return application;
     }
@@ -220,118 +215,51 @@ public class Qi95IssueTest
             throws AssemblyException;
     }
 
-    final ModuleAssemblyBuilder nativeRdf = new ModuleAssemblyBuilder()
-    {
-        @Override
-        public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
-            throws AssemblyException
-        {
-            return addModule( layer, name, new RdfNativeSesameStoreAssembler() );
-        }
-    };
+    final ModuleAssemblyBuilder nativeRdf =
+        ( layer, name ) -> addModule( layer, name, new RdfNativeSesameStoreAssembler() );
 
-    final ModuleAssemblyBuilder inMemoryStore = new ModuleAssemblyBuilder()
-    {
-        @Override
-        public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
-            throws AssemblyException
-        {
-            return addModule( layer, name, new EntityTestAssembler().visibleIn( Visibility.application ) );
-        }
-    };
+    final ModuleAssemblyBuilder inMemoryStore =
+        ( layer, name ) -> addModule( layer, name, new EntityTestAssembler().visibleIn( Visibility.application ) );
 
-    final ModuleAssemblyBuilder inMemoryRdf = new ModuleAssemblyBuilder()
-    {
-        @Override
-        public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
-            throws AssemblyException
-        {
-            return addModule( layer, name, new RdfMemoryStoreAssembler() );
-        }
-    };
+    final ModuleAssemblyBuilder inMemoryRdf =
+        ( layer, name ) -> addModule( layer, name, new RdfMemoryStoreAssembler() );
 
-    final ModuleAssemblyBuilder jdbmStore = new ModuleAssemblyBuilder()
-    {
-        @Override
-        public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
-            throws AssemblyException
-        {
-            return addModule( layer, name, jdbmEntityStoreAssembler() );
-        }
-    };
+    final ModuleAssemblyBuilder jdbmStore =
+        ( layer, name ) -> addModule( layer, name, module -> {
+            new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
+            module.defaultServices().visibleIn( Visibility.application );
+        } );
 
-    final ModuleAssemblyBuilder configModule = new ModuleAssemblyBuilder()
-    {
-        @Override
-        public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
-            throws AssemblyException
-        {
-            return addModule( layer, name, entityStoreConfigAssembler() );
-        }
-    };
+    final ModuleAssemblyBuilder configModule =
+        ( layer, name ) -> addModule( layer, name, entityStoreConfigAssembler() );
 
-    final LayerAssemblyBuilder domain = new LayerAssemblyBuilder()
-    {
-        @Override
-        public LayerAssembly buildLayerAssembly( ApplicationAssembly appAssembly )
-            throws AssemblyException
-        {
-            LayerAssembly domainLayer = appAssembly.layer( "Domain" );
-            addModule( domainLayer, "Domain", new Assembler()
-            {
-                @Override
-                @SuppressWarnings( "unchecked" )
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( ItemTypeEntity.class );
-                }
-            } );
+    final LayerAssemblyBuilder domain =
+        application -> {
+            LayerAssembly domainLayer = application.layer( "Domain" );
+            addModule( domainLayer, "Domain", module -> module.entities( ItemTypeEntity.class ) );
             return domainLayer;
-        }
-    };
+        };
 
     private Assembler entityStoreConfigAssembler()
     {
-        return new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                new EntityTestAssembler().assemble( module );
+        return module -> {
+            new EntityTestAssembler().assemble( module );
 
-                module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
-                module.forMixin( NativeConfiguration.class )
-                    .declareDefaults()
-                    .dataDirectory()
-                    .set( rdfDirectory().getAbsolutePath() );
+            module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
+            module.forMixin( NativeConfiguration.class )
+                  .declareDefaults()
+                  .dataDirectory()
+                  .set( rdfDirectory().getAbsolutePath() );
 
-                module.entities( JdbmEntityStoreConfiguration.class ).visibleIn( Visibility.application );
-                module.forMixin( JdbmEntityStoreConfiguration.class )
-                    .declareDefaults()
-                    .file()
-                    .set( jdbmDirectory().getAbsolutePath() );
-            }
-        };
-    }
-
-    private Assembler jdbmEntityStoreAssembler()
-    {
-        return new Assembler()
-        {
-            @Override
-            @SuppressWarnings( "unchecked" )
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
-            }
+            module.entities( JdbmEntityStoreConfiguration.class ).visibleIn( Visibility.application );
+            module.forMixin( JdbmEntityStoreConfiguration.class )
+                  .declareDefaults()
+                  .file()
+                  .set( jdbmDirectory().getAbsolutePath() );
         };
     }
 
     private ModuleAssembly addModule( LayerAssembly layerAssembly, String name, Assembler assembler )
-        throws AssemblyException
     {
         ModuleAssembly moduleAssembly = layerAssembly.module( name );
         assembler.assemble( moduleAssembly );
@@ -371,7 +299,7 @@ public class Qi95IssueTest
 
     private Iterable<ItemType> copyOf( Iterable<ItemType> iterable )
     {
-        Collection<ItemType> copy = new ArrayList<ItemType>();
+        Collection<ItemType> copy = new ArrayList<>();
         for( ItemType i : iterable )
         {
             copy.add( i );
@@ -391,8 +319,7 @@ public class Qi95IssueTest
         Property<String> name();
     }
 
-    interface ItemTypeEntity
-        extends ItemType, EntityComposite
+    interface ItemTypeEntity extends ItemType
     {
     }
 }

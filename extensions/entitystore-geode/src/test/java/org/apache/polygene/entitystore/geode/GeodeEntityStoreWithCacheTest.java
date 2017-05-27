@@ -35,7 +35,7 @@ public class GeodeEntityStoreWithCacheTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         new GeodeEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 }

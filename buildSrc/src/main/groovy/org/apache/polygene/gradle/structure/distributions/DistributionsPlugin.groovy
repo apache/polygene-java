@@ -379,16 +379,8 @@ class DistributionsPlugin implements Plugin<Project>
       }
       spec.into '.'
     }
-    def extraDistBinCopySpec = project.copySpec { CopySpec spec ->
-      releaseSpec.publishedProjects.collect { p ->
-        spec.from "$p.projectDir/src/dist/"
-        spec.include '**/*.jar'
-        spec.include '**/*.jar_'
-      }
-      spec.into '.'
-    }
     def binDistNoticesCopySpec = project.copySpec { CopySpec spec ->
-      spec.from "$project.projectDir/LICENSE.txt"
+      spec.from "$project.rootProject.projectDir/LICENSE.txt"
       spec.from "$project.projectDir/src/bin-dist"
       spec.into '.'
     }
@@ -397,7 +389,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.with binDistNoticesCopySpec
       spec.with docsCopySpec
       spec.with extraDistTextCopySpec
-      spec.with extraDistBinCopySpec
       spec.with libsCopySpec
     }
 

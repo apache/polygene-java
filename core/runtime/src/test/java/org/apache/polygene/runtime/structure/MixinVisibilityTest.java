@@ -20,23 +20,21 @@
 
 package org.apache.polygene.runtime.structure;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.AmbiguousTypeException;
 import org.apache.polygene.api.composite.NoSuchTransientException;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
-import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -49,26 +47,21 @@ public class MixinVisibilityTest
     public void testMixinInModuleIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {  // Module 1
-                     new Assembler()
-                     {
-                         public void assemble( ModuleAssembly module )
-                             throws AssemblyException
-                         {
-                             module.setName( "Module A" );
-                             module.transients( B1Composite.class );
-                             module.objects( ObjectA.class );
-                         }
+                     module -> {
+                         module.setName( "Module A" );
+                         module.transients( B1Composite.class );
+                         module.objects( ObjectA.class );
                      }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -81,26 +74,21 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInModuleWillFail()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {  // Module 1
-                     new Assembler()
-                     {
-                         public void assemble( ModuleAssembly module )
-                             throws AssemblyException
-                         {
-                             module.setName( "Module A" );
-                             module.transients( B1Composite.class, B2Composite.class );
-                             module.objects( ObjectA.class );
-                         }
+                     module -> {
+                         module.setName( "Module A" );
+                         module.transients( B1Composite.class, B2Composite.class );
+                         module.objects( ObjectA.class );
                      }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -113,36 +101,26 @@ public class MixinVisibilityTest
     public void testMixinInLayerIsNotVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module A" );
-                              module.objects( ObjectA.class );
-                          }
+                      module -> {
+                          module.setName( "Module A" );
+                          module.objects( ObjectA.class );
                       }
                   },
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module B" );
-                              module.transients( B1Composite.class );
-                          }
+                      module -> {
+                          module.setName( "Module B" );
+                          module.transients( B1Composite.class );
                       }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -155,36 +133,26 @@ public class MixinVisibilityTest
     public void testMixinInLayerIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module A" );
-                              module.objects( ObjectA.class );
-                          }
+                      module -> {
+                          module.setName( "Module A" );
+                          module.objects( ObjectA.class );
                       }
                   },
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module B" );
-                              module.transients( B1Composite.class ).visibleIn( Visibility.layer );
-                          }
+                      module -> {
+                          module.setName( "Module B" );
+                          module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                       }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -197,37 +165,27 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInLayerWillFailSameModule()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module A" );
-                              module.objects( ObjectA.class );
-                          }
+                      module -> {
+                          module.setName( "Module A" );
+                          module.objects( ObjectA.class );
                       }
                   },
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module B" );
-                              module.transients( B1Composite.class, B2Composite.class )
-                                  .visibleIn( Visibility.layer );
-                          }
+                      module -> {
+                          module.setName( "Module B" );
+                          module.transients( B1Composite.class, B2Composite.class )
+                                .visibleIn( Visibility.layer );
                       }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -240,47 +198,32 @@ public class MixinVisibilityTest
     public void testMultipleMixinsInLayerWillFailDiffModule()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer
                   { // Module 1
-                    new Assembler()
-                    {
-                        public void assemble( ModuleAssembly module )
-                            throws AssemblyException
-                        {
-                            module.setName( "Module A" );
-                            module.objects( ObjectA.class );
-                        }
+                    module -> {
+                        module.setName( "Module A" );
+                        module.objects( ObjectA.class );
                     }
                   },
                   { // Module 2
-                    new Assembler()
-                    {
-                        public void assemble( ModuleAssembly module )
-                            throws AssemblyException
-                        {
-                            module.setName( "Module B" );
-                            module.transients( B1Composite.class ).visibleIn( Visibility.layer );
-                        }
+                    module -> {
+                        module.setName( "Module B" );
+                        module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                     }
                   },
                   { // Module 3
-                    new Assembler()
-                    {
-                        public void assemble( ModuleAssembly module )
-                            throws AssemblyException
-                        {
-                            module.setName( "Module C" );
-                            module.transients( B2Composite.class ).visibleIn( Visibility.layer );
-                        }
+                    module -> {
+                        module.setName( "Module C" );
+                        module.transients( B2Composite.class ).visibleIn( Visibility.layer );
                     }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -295,38 +238,28 @@ public class MixinVisibilityTest
         throws Exception
     {
 
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer 1
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module A" );
-                              module.objects( ObjectA.class );
-                          }
+                      module -> {
+                          module.setName( "Module A" );
+                          module.objects( ObjectA.class );
                       }
                   }
                 },
                 { // Layer 2
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module B" );
-                              module.transients( B1Composite.class ).visibleIn( Visibility.layer );
-                          }
+                      module -> {
+                          module.setName( "Module B" );
+                          module.transients( B1Composite.class ).visibleIn( Visibility.layer );
                       }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -339,38 +272,28 @@ public class MixinVisibilityTest
     public void testMixinInLowerLayerIsVisible()
         throws Exception
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // Layer 1
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module A" );
-                              module.objects( ObjectA.class );
-                          }
+                      module -> {
+                          module.setName( "Module A" );
+                          module.objects( ObjectA.class );
                       }
                   }
                 },
                 { // Layer 2
                   {
-                      new Assembler()
-                      {
-                          public void assemble( ModuleAssembly module )
-                              throws AssemblyException
-                          {
-                              module.setName( "Module B" );
-                              module.transients( B1Composite.class ).visibleIn( Visibility.application );
-                          }
+                      module -> {
+                          module.setName( "Module B" );
+                          module.transients( B1Composite.class ).visibleIn( Visibility.application );
                       }
                   }
                 }
             };
 
-        Application app = boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();
@@ -382,8 +305,8 @@ public class MixinVisibilityTest
     class AssemblerB
         implements Assembler
     {
+        @Override
         public void assemble( ModuleAssembly module )
-            throws AssemblyException
         {
             module.setName( "Module B" );
             module.transients( B1Composite.class ).visibleIn( Visibility.module );
@@ -412,12 +335,12 @@ public class MixinVisibilityTest
 
     @Mixins( { MixinB.class } )
     public interface B1Composite
-        extends TransientComposite, B1
+        extends B1
     {
     }
 
     public interface B2Composite
-        extends TransientComposite, B2
+        extends B2
     {
     }
 

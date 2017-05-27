@@ -22,6 +22,7 @@ package org.apache.polygene.runtime.unitofwork;
 
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
@@ -40,7 +41,6 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Energy4Java;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -63,15 +63,14 @@ public class PrivateEntityUnitOfWorkTest
     {
         System.setProperty( "polygene.compacttrace", "off" );
 
-        Energy4Java is = new Energy4Java();
-        Application app = is.newApplication(
+        Energy4Java polygene = new Energy4Java();
+        Application app = polygene.newApplication(
             applicationFactory ->
                 applicationFactory.newApplicationAssembly( new Assembler[][][]{
                     {
                         {
                             module -> {
                                 module.objects( PrivateEntityUnitOfWorkTest.class );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     },
@@ -81,8 +80,10 @@ public class PrivateEntityUnitOfWorkTest
                                 module.entities( ProductEntity.class );
                                 module.entities( ProductCatalogEntity.class ).visibleIn( application );
                                 module.values( ProductInfo.class );
-                                new EntityTestAssembler().assemble( module );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
+
+                                new EntityTestAssembler().visibleIn( Visibility.module )
+                                                         .defaultServicesVisibleIn( Visibility.application )
+                                                         .assemble( module );
                             }
                         }
                     }

@@ -33,6 +33,7 @@ public class MemoryEntityStoreTest
         new MemoryEntityStoreAssembler().assemble( module );
         // END SNIPPET: assembly
         super.assemble( module );
+        module.defaultServices();
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

@@ -97,11 +97,8 @@ public class ESEmbeddedRule implements TestRule
     {
         try
         {
-            return new SingletonAssembler()
-            {
-                @Override
-                public void assemble( final ModuleAssembly module ) throws AssemblyException
-                {
+            return new SingletonAssembler(
+                module -> {
                     module.layer().application().setName( name );
                     ModuleAssembly config = module.layer().module( "config" );
                     new EntityTestAssembler().assemble( config );
@@ -114,7 +111,7 @@ public class ESEmbeddedRule implements TestRule
                         .withConfig( config, Visibility.layer )
                         .assemble( module );
                 }
-            };
+            );
         }
         catch( ActivationException | AssemblyException ex )
         {

@@ -21,13 +21,12 @@
 package org.apache.polygene.runtime.objects;
 
 import java.lang.reflect.Method;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
 /**
  * JAVADOC
@@ -39,14 +38,9 @@ public class ObjectConcernTest
     public void testConcernOnObject()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( TestObject.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> module.objects( TestObject.class )
+        );
 
         TestObject object = assembler.module().newObject( TestObject.class );
 

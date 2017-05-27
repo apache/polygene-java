@@ -44,6 +44,7 @@ public class JSONManyAssociationStateTest extends AbstractPolygeneTest
     @Override
     public void assemble( ModuleAssembly module )
     {
+        module.defaultServices();
     }
 
     @Service

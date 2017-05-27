@@ -76,6 +76,8 @@ public class RssReaderTest
         // General setup of client
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
+
+        module.defaultServices();
     }
 
     @Test

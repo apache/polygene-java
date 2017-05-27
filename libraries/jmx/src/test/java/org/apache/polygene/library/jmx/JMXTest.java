@@ -34,7 +34,6 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.JmxFixture;
@@ -50,7 +49,6 @@ public class JMXTest extends AbstractPolygeneTest
     public void assemble(ModuleAssembly module) throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        new DefaultUnitOfWorkAssembler().assemble( module );
 
         module.services( TestService.class, TestService2.class, TestService3.class ).instantiateOnStartup();
         module.entities( TestConfiguration.class );
@@ -73,16 +71,9 @@ public class JMXTest extends AbstractPolygeneTest
     public static void main(String[] args )
         throws InterruptedException, ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
-                new JMXTest().assemble(module);
-            }
-
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            moduleAssembly -> new JMXTest().assemble(moduleAssembly)
+        );
         // This allows user to connect using VisualVM/JConsole
         while ( true ) {
             Thread.sleep( 10_000 );

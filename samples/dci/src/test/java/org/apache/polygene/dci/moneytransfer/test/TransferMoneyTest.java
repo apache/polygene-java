@@ -20,15 +20,9 @@
 
 package org.apache.polygene.dci.moneytransfer.test;
 
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.dci.moneytransfer.context.PayBillsContext;
 import org.apache.polygene.dci.moneytransfer.context.TransferMoneyContext;
@@ -39,6 +33,10 @@ import org.apache.polygene.dci.moneytransfer.rolemap.CheckingAccountRolemap;
 import org.apache.polygene.dci.moneytransfer.rolemap.CreditorRolemap;
 import org.apache.polygene.dci.moneytransfer.rolemap.SavingsAccountRolemap;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -55,11 +53,8 @@ public class TransferMoneyTest
     public static void setup()
         throws Exception
     {
-        assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        assembler = new SingletonAssembler(
+            module -> {
                 module.entities(
                     CheckingAccountRolemap.class,
                     SavingsAccountRolemap.class,
@@ -67,7 +62,7 @@ public class TransferMoneyTest
 
                 new EntityTestAssembler().assemble( module );
             }
-        };
+        );
         uowf = assembler.module().unitOfWorkFactory();
         bootstrapData( assembler );
     }

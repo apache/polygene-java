@@ -39,6 +39,7 @@ public class NonQueryableTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.defaultServices();
     }
 
     @Test

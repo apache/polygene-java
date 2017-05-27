@@ -20,7 +20,6 @@
 package org.apache.polygene.library.shiro.web.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.polygene.library.shiro.web.EnvironmentLoaderService;
@@ -40,7 +39,6 @@ public class HttpShiroAssembler extends Assemblers.Config<HttpShiroAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         addContextListeners(
             listen().with( EnvironmentLoaderService.class ) )

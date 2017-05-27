@@ -18,7 +18,6 @@
 package org.apache.polygene.entitystore.riak.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.riak.RiakEntityStoreConfiguration;
@@ -32,7 +31,7 @@ public class RiakEntityStoreAssembler
         extends Assemblers.VisibilityIdentityConfig<RiakEntityStoreAssembler>
 {
     @Override
-    public void assemble(ModuleAssembly module) throws AssemblyException
+    public void assemble(ModuleAssembly module)
     {
         ServiceDeclaration service = module.services( RiakEntityStoreService.class ).
             withMixins( RiakEntityStoreMixin.class ).

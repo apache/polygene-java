@@ -53,6 +53,8 @@ public class AppliesToOrConditionQI241Test
         module.services( SomeServiceCompositeWithTwoAnnotations.class );
         module.services( SomeServiceCompositeWithFirstAnnotation.class );
         module.services( SomeServiceCompositeWithSecondAnnotation.class );
+
+        module.defaultServices();
     }
 
     @Test

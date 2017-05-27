@@ -31,7 +31,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.migration.assembly.EntityMigrationOperation;
 import org.apache.polygene.migration.assembly.MigrationBuilder;
 import org.apache.polygene.migration.assembly.MigrationContext;
@@ -58,7 +57,6 @@ public class MigrationTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        new DefaultUnitOfWorkAssembler().assemble( module );
 
         module.objects( MigrationEventLogger.class );
         module.importedServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
@@ -105,16 +103,12 @@ public class MigrationTest
         // Set up version 1
         List<String> data_v1;
         {
-            SingletonAssembler v1 = new SingletonAssembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    MigrationTest.this.assemble( module );
-                    module.layer().application().setVersion( "1.0" );
+            SingletonAssembler v1 = new SingletonAssembler(
+                moduleAssembly -> {
+                    MigrationTest.this.assemble( moduleAssembly );
+                    moduleAssembly.layer().application().setVersion( "1.0" );
                 }
-            };
+            );
 
             UnitOfWork uow = v1.module().unitOfWorkFactory().newUnitOfWork();
             TestEntity1_0 entity = uow.newEntity( TestEntity1_0.class );
@@ -134,16 +128,12 @@ public class MigrationTest
         // Set up version 1.1
         List<String> data_v1_1;
         {
-            SingletonAssembler v1_1 = new SingletonAssembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    MigrationTest.this.assemble( module );
-                    module.layer().application().setVersion( "1.1" );
+            SingletonAssembler v1_1 = new SingletonAssembler(
+                moduleAssembly -> {
+                    MigrationTest.this.assemble( moduleAssembly );
+                    moduleAssembly.layer().application().setVersion( "1.1" );
                 }
-            };
+            );
 
             BackupRestore testData = v1_1.module().findService( BackupRestore.class ).get();
             testData.restore( data_v1.stream() );
@@ -163,16 +153,12 @@ public class MigrationTest
 
         // Set up version 2.0
         {
-            SingletonAssembler v2_0 = new SingletonAssembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    MigrationTest.this.assemble( module );
-                    module.layer().application().setVersion( "2.0" );
+            SingletonAssembler v2_0 = new SingletonAssembler(
+                moduleAssembly -> {
+                    MigrationTest.this.assemble( moduleAssembly );
+                    moduleAssembly.layer().application().setVersion( "2.0" );
                 }
-            };
+            );
 
             BackupRestore testData = v2_0.module().findService( BackupRestore.class ).get();
 
@@ -191,16 +177,12 @@ public class MigrationTest
 
         // Set up version 3.0
         {
-            SingletonAssembler v3_0 = new SingletonAssembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    MigrationTest.this.assemble( module );
-                    module.layer().application().setVersion( "3.0" );
+            SingletonAssembler v3_0 = new SingletonAssembler(
+                moduleAssembly -> {
+                    MigrationTest.this.assemble( moduleAssembly );
+                    moduleAssembly.layer().application().setVersion( "3.0" );
                 }
-            };
+            );
 
             BackupRestore testData = v3_0.module().findService( BackupRestore.class ).get();
             testData.restore( data_v1_1.stream() );

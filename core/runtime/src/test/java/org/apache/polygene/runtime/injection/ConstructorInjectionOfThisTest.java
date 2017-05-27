@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.runtime.injection;
 
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.concern.ConcernOf;
@@ -29,9 +27,8 @@ import org.apache.polygene.api.mixin.NoopMixin;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.sideeffect.SideEffectOf;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
@@ -43,19 +40,11 @@ public class ConstructorInjectionOfThisTest
 
     @Test
     public void givenMixinWithThisInConstructorWhenCreatingModelExpectNoException()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( Does.class ).withMixins( DoesMixin.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.values( Does.class ).withMixins( DoesMixin.class )
+        );
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );
         Does does = module.newValue( Does.class );
         does.doSomething();
@@ -63,18 +52,11 @@ public class ConstructorInjectionOfThisTest
 
     @Test
     public void givenConcernWithThisInConstructorWhenCreatingModelExpectNoException()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( Does.class ).withMixins( NoopMixin.class ).withConcerns( DoesConcern.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.values( Does.class ).withMixins( NoopMixin.class ).withConcerns( DoesConcern.class )
+        );
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );
         Does does = module.newValue( Does.class );
         does.doSomething();
@@ -82,18 +64,11 @@ public class ConstructorInjectionOfThisTest
 
     @Test
     public void givenSideEffectWithThisInConstructorWhenCreatingModelExpectNoException()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( Does.class ).withMixins( NoopMixin.class ).withSideEffects( DoesSideEffect.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.values( Does.class ).withMixins( NoopMixin.class ).withSideEffects( DoesSideEffect.class )
+        );
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );
         Does does = module.newValue( Does.class );
         does.doSomething();

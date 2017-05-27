@@ -24,7 +24,6 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 
 public class RentalApplicationAssembler
@@ -39,7 +38,6 @@ public class RentalApplicationAssembler
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
         assembly.setMode( mode );

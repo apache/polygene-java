@@ -22,21 +22,20 @@ package org.apache.polygene.api.activation;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Collections;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.builder.ApplicationBuilder;
+import org.junit.Test;
 
-import static org.hamcrest.core.StringContains.containsString;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -52,14 +51,14 @@ public class PassivationExceptionTest
     @Test
     public void testEmptyPassivationException()
     {
-        PassivationException empty = new PassivationException( Collections.emptyList() );
+        PassivationException empty = new PassivationException( emptyList() );
         assertThat( empty.getMessage(), containsString( "has 0 cause" ) );
     }
 
     @Test
     public void testSinglePassivationException()
     {
-        PassivationException single = new PassivationException( Collections.singletonList( new Exception( "single" ) ) );
+        PassivationException single = new PassivationException( singletonList( new Exception( "single" ) ) );
         String stack = stack( single );
         assertThat( single.getMessage(), containsString( "has 1 cause" ) );
         assertThat( stack, containsString( "Suppressed: java.lang.Exception: single" ) );
@@ -83,30 +82,16 @@ public class PassivationExceptionTest
         throws AssemblyException, ActivationException
     {
         ApplicationBuilder appBuilder = new ApplicationBuilder( "TestApplication" );
-        appBuilder.withLayer( "Layer 1" ).withModule( "Module A" ).withAssembler( new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.services( TestService.class ).
-                    identifiedBy( "TestService_Module.A" ).
-                    withActivators( FailBeforePassivationServiceActivator.class ).
-                    instantiateOnStartup();
-            }
-        } );
-        appBuilder.withLayer( "Layer 2" ).withModule( "Module B" ).withAssembler( new Assembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.services( TestService.class ).
-                    identifiedBy( "TestService_Module.B" ).
-                    withActivators( FailAfterPassivationServiceActivator.class ).
-                    instantiateOnStartup();
-            }
-        } );
+        appBuilder.withLayer( "Layer 1" ).withModule( "Module A" ).withAssembler(
+            module -> module.services( TestService.class )
+                            .identifiedBy( "TestService_Module.A" )
+                            .withActivators( FailBeforePassivationServiceActivator.class )
+                            .instantiateOnStartup() );
+        appBuilder.withLayer( "Layer 2" ).withModule( "Module B" ).withAssembler(
+            module -> module.services( TestService.class )
+                            .identifiedBy( "TestService_Module.B" )
+                            .withActivators( FailAfterPassivationServiceActivator.class )
+                            .instantiateOnStartup() );
         appBuilder.registerActivationEventListener( new TestActivationEventListener() );
 
         Application app = appBuilder.newApplication();
@@ -132,12 +117,18 @@ public class PassivationExceptionTest
                 assertThat( stack, containsString( "EVENT: FAIL BEFORE PASSIVATION for TestApplication" ) );
                 assertThat( stack, containsString( "EVENT: FAIL BEFORE PASSIVATION for Layer 2" ) );
                 assertThat( stack, containsString( "EVENT: FAIL BEFORE PASSIVATION for Module B" ) );
-                assertThat( stack, containsString( "ACTIVATOR: FAIL AFTER PASSIVATION for TestService_Module.B(active=false,module='Module B')" ) );
+                assertThat(
+                    stack,
+                    containsString(
+                        "ACTIVATOR: FAIL AFTER PASSIVATION for TestService_Module.B(active=false,module='Module B')" ) );
                 assertThat( stack, containsString( "EVENT: FAIL AFTER PASSIVATION for Module B" ) );
                 assertThat( stack, containsString( "EVENT: FAIL AFTER PASSIVATION for Layer 2" ) );
                 assertThat( stack, containsString( "EVENT: FAIL BEFORE PASSIVATION for Layer 1" ) );
                 assertThat( stack, containsString( "EVENT: FAIL BEFORE PASSIVATION for Module A" ) );
-                assertThat( stack, containsString( "ACTIVATOR: FAIL BEFORE PASSIVATION for TestService_Module.A(active=true,module='Module A')" ) );
+                assertThat(
+                    stack,
+                    containsString(
+                        "ACTIVATOR: FAIL BEFORE PASSIVATION for TestService_Module.A(active=true,module='Module A')" ) );
                 assertThat( stack, containsString( "EVENT: FAIL AFTER PASSIVATION for Module A" ) );
                 assertThat( stack, containsString( "EVENT: FAIL AFTER PASSIVATION for Layer 1" ) );
                 assertThat( stack, containsString( "EVENT: FAIL AFTER PASSIVATION for TestApplication" ) );
@@ -150,7 +141,7 @@ public class PassivationExceptionTest
     {
         String hello();
 
-        static class Mixin
+        class Mixin
             implements TestService
         {
             @Structure
@@ -163,7 +154,6 @@ public class PassivationExceptionTest
                 return "Hello Polygene!";
             }
         }
-
     }
 
     public static class FailBeforePassivationServiceActivator
@@ -210,5 +200,4 @@ public class PassivationExceptionTest
             }
         }
     }
-
 }

@@ -23,6 +23,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 
+import static org.apache.polygene.gradle.structure.ProjectGroupTasks.configureProjectGroupTasks
+
 @CompileStatic
 class CorePlugin implements Plugin<Project>
 {
@@ -31,6 +33,7 @@ class CorePlugin implements Plugin<Project>
   {
     project.plugins.apply PublishedCodePlugin
     configureJava( project )
+    configureProjectGroupTasks( "core", project )
   }
 
   private static void configureJava( Project project )

@@ -21,7 +21,6 @@
 package org.apache.polygene.index.rdf.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.RdfIndexingService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
@@ -46,7 +45,6 @@ public class RdfMemoryStoreAssembler extends AbstractRdfIndexingAssembler<RdfNat
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( MemoryRepositoryService.class )
               .visibleIn( repositoryVisibility )

@@ -51,7 +51,6 @@ import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -80,8 +79,7 @@ public class RestTest extends AbstractPolygeneTest
                         {
                             RestTest.this,
                             new RestAssembler(),
-                            new RdfMemoryStoreAssembler(),
-                            new DefaultUnitOfWorkAssembler()
+                            new RdfMemoryStoreAssembler()
                         }
                     }
                 } )

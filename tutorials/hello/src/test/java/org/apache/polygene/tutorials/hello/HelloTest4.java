@@ -43,6 +43,7 @@ public class HelloTest4 extends AbstractPolygeneTest
     {
         module.entities( Hello.class );
         module.services( MemoryEntityStoreService.class );
+        module.defaultServices();
     }
 
     @Test

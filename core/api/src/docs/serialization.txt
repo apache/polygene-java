@@ -71,6 +71,7 @@ Reading this first example step by step we ;
 
     . declare a ValueComposite,
     . assemble it,
+    . assemble default services including default `Serialization`,
     . create a new Value instance,
     . use the +ValueComposite#toString()+ method to get a JSON representation of the Value,
     . and finally, use the +Module#newValueFromSerializedState()+ method to create a new Value instance from the JSON

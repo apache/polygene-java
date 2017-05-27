@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
@@ -32,7 +31,6 @@ public class SerializationModule
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         return module;
     }

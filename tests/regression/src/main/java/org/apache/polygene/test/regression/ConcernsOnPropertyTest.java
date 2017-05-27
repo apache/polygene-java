@@ -21,8 +21,6 @@ package org.apache.polygene.test.regression;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.ConcernOf;
@@ -30,16 +28,16 @@ import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.sideeffect.SideEffectOf;
 import org.apache.polygene.api.sideeffect.SideEffects;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class ConcernsOnPropertyTest
     extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( CarComposite.class );
     }

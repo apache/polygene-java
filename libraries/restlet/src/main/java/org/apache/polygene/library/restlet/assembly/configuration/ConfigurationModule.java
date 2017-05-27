@@ -21,7 +21,6 @@
 package org.apache.polygene.library.restlet.assembly.configuration;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
@@ -33,7 +32,6 @@ public class ConfigurationModule
     public static final String NAME = "Configuration Module";
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         return module;

@@ -147,14 +147,12 @@ public final class LayerModel
         return modules.stream().flatMap( module -> module.visibleEntities( visibility ) );
     }
 
-    /* package */
     @Override
     public Stream<? extends ValueDescriptor> visibleValues( final Visibility visibility )
     {
         return modules.stream().flatMap( module -> module.visibleValues( visibility ) );
     }
 
-    /* package */
     @Override
     public Stream<? extends ModelDescriptor> visibleServices( final Visibility visibility )
     {

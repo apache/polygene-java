@@ -19,10 +19,8 @@
  */
 package org.apache.polygene.runtime.activation;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.activation.Activator;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ImportedServiceDescriptor;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -30,12 +28,15 @@ import org.apache.polygene.api.service.ServiceImporter;
 import org.apache.polygene.api.service.ServiceImporterException;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ImportedServiceDeclaration;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ImportedServiceActivationTest
 {
@@ -139,19 +140,12 @@ public class ImportedServiceActivationTest
     public void testNewInstanceImportedServiceActivators()
             throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
-                module.importedServices( TestedService.class ).
-                        withActivators( TestedActivator.class ).
-                        setMetaInfo( new TestedServiceInstance() ).
-                        importOnStartup();
-            }
-
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> module.importedServices( TestedService.class )
+                            .withActivators( TestedActivator.class )
+                            .setMetaInfo( new TestedServiceInstance() )
+                            .importOnStartup()
+        );
         Application application = assembler.application();
         assertEquals( "Activation Level", 2, activationLevel );
         application.passivate();
@@ -162,20 +156,15 @@ public class ImportedServiceActivationTest
     public void testNewObjectImportedServiceActivators()
             throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 module.importedServices( TestedService.class ).
-                        importedBy( ImportedServiceDeclaration.NEW_OBJECT ).
-                        withActivators( TestedActivator.class ).
-                        importOnStartup();
+                    importedBy( ImportedServiceDeclaration.NEW_OBJECT ).
+                          withActivators( TestedActivator.class ).
+                          importOnStartup();
                 module.objects( TestedServiceInstance.class );
             }
-
-        };
+        );
         Application application = assembler.application();
         assertEquals( "Activation Level", 2, activationLevel );
         application.passivate();
@@ -186,21 +175,16 @@ public class ImportedServiceActivationTest
     public void testServiceImporterImportedServiceActivators()
             throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
+        SingletonAssembler assembler = new SingletonAssembler(
+            module -> {
                 module.importedServices( TestedService.class ).
-                        importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER ).
-                        setMetaInfo( new StringIdentity( "testimporter" ) ).
-                        withActivators( TestedActivator.class ).
-                        importOnStartup();
+                    importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER ).
+                          setMetaInfo( new StringIdentity( "testimporter" ) ).
+                          withActivators( TestedActivator.class ).
+                          importOnStartup();
                 module.services( TestedServiceImporterService.class ).identifiedBy( "testimporter" );
             }
-
-        };
+        );
         Application application = assembler.application();
         assertEquals( "Activation Level", 2, activationLevel );
         application.passivate();

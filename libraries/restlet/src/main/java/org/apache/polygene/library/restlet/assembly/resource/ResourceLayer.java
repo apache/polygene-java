@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.restlet.assembly.resource;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.layered.LayerAssembler;
 import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
@@ -32,7 +31,6 @@ public class ResourceLayer extends LayeredLayerAssembler
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
-        throws AssemblyException
     {
         return layer;
     }

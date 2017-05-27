@@ -40,15 +40,11 @@ public class HelloSpeakerTest extends AbstractPolygeneTest
         throws Exception
     {
         // START SNIPPET: script
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( HelloSpeaker.class ).setMetaInfo( Scripting.GROOVY ).withMixins( ScriptMixin.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            assembly -> assembly.values( HelloSpeaker.class )
+                                .setMetaInfo( Scripting.GROOVY )
+                                .withMixins( ScriptMixin.class )
+        );
         HelloSpeaker speaker = assembler.module().newValue( HelloSpeaker.class );
         assertThat( speaker.sayHello(), equalTo("Hello, Groovy") );
         // END SNIPPET: script
@@ -59,15 +55,10 @@ public class HelloSpeakerTest extends AbstractPolygeneTest
         throws Exception
     {
         // START SNIPPET: direct
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( HelloSpeaker.class ).withMixins( HelloSpeakerMixin.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler(
+            assembly -> assembly.transients( HelloSpeaker.class )
+                                .withMixins( HelloSpeakerMixin.class )
+        );
         HelloSpeaker speaker = assembler.module().newTransient( HelloSpeaker.class );
         assertThat( speaker.sayHello(), equalTo("Hello there, Groovy") );
         // END SNIPPET: direct

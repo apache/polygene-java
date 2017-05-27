@@ -50,7 +50,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -82,7 +81,6 @@ public abstract class AbstractEntityStoreTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( TestEntity.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );

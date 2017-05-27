@@ -23,7 +23,6 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
@@ -45,7 +44,6 @@ public class AppAssembler
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         ApplicationAssembly appAss = applicationFactory.newApplicationAssembly();
         appAss.setName( "SQL Support Sample" );

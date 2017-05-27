@@ -20,16 +20,11 @@
 
 package org.apache.polygene.runtime.objects;
 
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.object.NoSuchObjectException;
@@ -37,6 +32,7 @@ import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
@@ -44,6 +40,9 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ObjectVisibilityTest
 {
@@ -667,8 +666,6 @@ public class ObjectVisibilityTest
             module.objects( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( ModuleModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -686,7 +683,6 @@ public class ObjectVisibilityTest
             module.objects( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -702,8 +698,6 @@ public class ObjectVisibilityTest
             module.objects( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( AboveModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -718,8 +712,6 @@ public class ObjectVisibilityTest
             module.objects( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( BesideModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

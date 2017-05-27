@@ -21,7 +21,6 @@ package org.apache.polygene.library.uid.sequence.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.uid.sequence.PersistingSequencingService;
 import org.apache.polygene.library.uid.sequence.SequenceEntity;
@@ -31,7 +30,6 @@ public class PersistingSequencingAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( PersistingSequencingService.class ).visibleIn( visibility() );
         module.entities( SequenceEntity.class ).visibleIn( Visibility.module );

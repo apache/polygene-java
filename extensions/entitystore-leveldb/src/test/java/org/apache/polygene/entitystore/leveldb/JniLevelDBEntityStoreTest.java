@@ -43,7 +43,7 @@ public class JniLevelDBEntityStoreTest
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().visibleIn( Visibility.module ).assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )

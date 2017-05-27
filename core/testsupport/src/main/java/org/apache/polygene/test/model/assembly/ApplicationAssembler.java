@@ -43,7 +43,6 @@ public class ApplicationAssembler extends LayeredApplicationAssembler
 
     @Override
     protected void assembleLayers( ApplicationAssembly assembly )
-        throws AssemblyException
     {
         LayerAssembly accessLayer = createLayer( AccessLayer.class );
         LayerAssembly domainLayer = createLayer( DomainLayer.class );

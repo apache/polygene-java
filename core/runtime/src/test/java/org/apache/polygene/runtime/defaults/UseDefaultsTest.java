@@ -47,6 +47,8 @@ public class UseDefaultsTest extends AbstractPolygeneTest
     {
         module.transients( TestComposite.class );
         module.forMixin( TestComposite.class ).declareDefaults().assemblyString().set( "habba" );
+
+        module.defaultServices();
     }
 
     @Test

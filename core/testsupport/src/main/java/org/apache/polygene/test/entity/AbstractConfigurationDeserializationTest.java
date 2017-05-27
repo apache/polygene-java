@@ -27,10 +27,9 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceReference;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -41,13 +40,12 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractP
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ModuleAssembly storageModule = module.layer().module( "storage" );
         module.configurations( ConfigSerializationConfig.class );
         module.values( Host.class );
         module.services( MyService.class ).identifiedBy( "configtest" );
-        storageModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+        new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( storageModule );
     }
 
     @Test

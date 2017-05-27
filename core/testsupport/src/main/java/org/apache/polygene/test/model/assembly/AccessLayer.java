@@ -21,7 +21,6 @@
 package org.apache.polygene.test.model.assembly;
 
 import java.lang.reflect.InvocationTargetException;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredLayerAssembler;
@@ -39,7 +38,6 @@ class AccessLayer extends LayeredLayerAssembler
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
-        throws AssemblyException
     {
         createModule( layer, TestExecutionModule.class );
         createModule( layer, TestSuite1Module.class );

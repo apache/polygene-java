@@ -21,7 +21,6 @@
 package org.apache.polygene.test.model.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
@@ -35,7 +34,6 @@ class TestSuite1Module
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         declareTestCase( module, Suite1Case1.class );
         declareTestCase( module, Suite1Case2.class );

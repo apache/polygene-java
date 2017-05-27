@@ -21,7 +21,6 @@
 package org.apache.polygene.library.logging.log.assemblies;
 
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.logging.log.service.LoggingServiceComposite;
 
@@ -30,7 +29,6 @@ public class LoggingAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( LoggingServiceComposite.class );
     }

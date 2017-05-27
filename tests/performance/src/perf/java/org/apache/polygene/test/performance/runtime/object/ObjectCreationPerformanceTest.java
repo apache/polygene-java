@@ -18,12 +18,10 @@
 
 package org.apache.polygene.test.performance.runtime.object;
 
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Test;
 
 /**
  * Tests performance of new object creation.
@@ -33,17 +31,9 @@ public class ObjectCreationPerformanceTest
 
     @Test
     public void newInstanceForRegisteredObjectPerformance()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( AnyObject.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( AnyObject.class ) );
         ObjectFactory objectFactory = assembler.module();
         for( int i = 0; i < 10; i++ )
         {

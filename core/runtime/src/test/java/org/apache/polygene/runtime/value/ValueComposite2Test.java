@@ -20,9 +20,6 @@
 package org.apache.polygene.runtime.value;
 
 import java.security.Guard;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
@@ -36,6 +33,8 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ValueComposite2Test
 {
@@ -50,7 +49,6 @@ public class ValueComposite2Test
             {
                 module.values( SomeValue.class );
                 module.services( DummyService.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         ValueBuilder<Some> builder = app.module().newValueBuilder( Some.class );

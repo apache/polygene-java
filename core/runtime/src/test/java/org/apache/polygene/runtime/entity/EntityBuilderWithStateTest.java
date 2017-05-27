@@ -34,7 +34,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
@@ -54,7 +53,6 @@ public class EntityBuilderWithStateTest
     {
         new EntityTestAssembler().assemble( module );
         module.entities( SomeEntity.class );
-        new DefaultUnitOfWorkAssembler().assemble( module );
     }
 
     @Test

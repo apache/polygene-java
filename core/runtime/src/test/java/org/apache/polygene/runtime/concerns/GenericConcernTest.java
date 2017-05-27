@@ -43,6 +43,8 @@ public class GenericConcernTest
         throws AssemblyException
     {
         module.transients( SomeComposite.class );
+
+        module.defaultServices();
     }
 
     @Test

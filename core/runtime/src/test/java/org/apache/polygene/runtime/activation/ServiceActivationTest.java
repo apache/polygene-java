@@ -19,17 +19,14 @@
  */
 package org.apache.polygene.runtime.activation;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import org.apache.polygene.api.activation.Activator;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ServiceActivationTest
 {
@@ -114,21 +111,16 @@ public class ServiceActivationTest
     public void testServicesActivators()
             throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> {
                 module.addServices( TestedServiceComposite.class ).
-                        withActivators( TestedActivator.class ).
-                        instantiateOnStartup();
+                    withActivators( TestedActivator.class ).
+                          instantiateOnStartup();
                 module.addServices( TestedServiceComposite2.class ).
-                        withActivators( TestedActivator.class ).
-                        instantiateOnStartup();
+                    withActivators( TestedActivator.class ).
+                          instantiateOnStartup();
             }
-
-        };
+        );
         // Activate
         Application application = assembly.application();
 

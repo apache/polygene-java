@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.leveldb.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.leveldb.LevelDBEntityStoreConfiguration;
@@ -34,7 +33,6 @@ public class LevelDBEntityStoreAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.services( LevelDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )

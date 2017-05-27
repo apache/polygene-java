@@ -41,32 +41,26 @@ public class ApplicationAssemblerTest
     public void testApplicationAssembler()
         throws AssemblyException
     {
-        Energy4Java is = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
 
-        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
+        ApplicationDescriptor model = polygene.newApplicationModel( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
 
-                LayerAssembly layer1 = assembly.layer( "Layer1" );
+            LayerAssembly layer1 = assembly.layer( "Layer1" );
 
-                ModuleAssembly module = layer1.module( "Module1" );
+            ModuleAssembly module = layer1.module( "Module1" );
 
-                module.services( TestService.class );
+            module.services( TestService.class );
 
-                module.entities( TestEntity.class );
+            module.entities( TestEntity.class );
 
-                layer1.services( AssemblySpecifications.ofAnyType( TestService.class ) ).instantiateOnStartup();
+            layer1.services( AssemblySpecifications.ofAnyType( TestService.class ) ).instantiateOnStartup();
 
-                layer1.services( s -> true ).visibleIn( Visibility.layer );
+            layer1.services( s -> true ).visibleIn( Visibility.layer );
 
-                layer1.entities( s -> true ).visibleIn( Visibility.application );
+            layer1.entities( s -> true ).visibleIn( Visibility.application );
 
-                return assembly;
-            }
+            return assembly;
         } );
 
         model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
@@ -98,7 +92,7 @@ public class ApplicationAssemblerTest
                 return true;
             }
         } );
-        model.newInstance( is.spi() );
+        model.newInstance( polygene.spi() );
     }
 
     interface TestService

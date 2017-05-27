@@ -27,7 +27,6 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ClassScanner;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -64,7 +63,6 @@ public class ForumAssembler
 {
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
 

@@ -84,10 +84,10 @@ public final class PolygeneApplicationFactoryBean
 
     private Application createApplication()
     {
-        Energy4Java energy4Java = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         try
         {
-            return energy4Java.newApplication(
+            return polygene.newApplication(
                 factory ->
                 {
                     ApplicationAssembly applicationAssembly = factory.newApplicationAssembly();

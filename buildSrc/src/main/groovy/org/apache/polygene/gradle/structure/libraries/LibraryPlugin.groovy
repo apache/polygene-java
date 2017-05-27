@@ -17,15 +17,20 @@
  */
 package org.apache.polygene.gradle.structure.libraries
 
+import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.code.PublishedCodePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static org.apache.polygene.gradle.structure.ProjectGroupTasks.configureProjectGroupTasks
+
+@CompileStatic
 class LibraryPlugin implements Plugin<Project>
 {
   @Override
   void apply( Project project )
   {
     project.plugins.apply PublishedCodePlugin
+    configureProjectGroupTasks( "libraries", project )
   }
 }

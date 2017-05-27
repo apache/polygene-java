@@ -26,7 +26,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
-import org.apache.velocity.app.VelocityEngine;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.service.importer.NewObjectImporter;
 import org.apache.polygene.bootstrap.Assembler;
@@ -41,6 +40,7 @@ import org.apache.polygene.library.rest.server.restlet.requestreader.DefaultRequ
 import org.apache.polygene.library.rest.server.restlet.responsewriter.AbstractResponseWriter;
 import org.apache.polygene.library.rest.server.restlet.responsewriter.DefaultResponseWriter;
 import org.apache.polygene.library.rest.server.spi.ResponseWriter;
+import org.apache.velocity.app.VelocityEngine;
 import org.restlet.service.MetadataService;
 
 import static java.util.stream.Collectors.toList;
@@ -57,7 +57,6 @@ public class RestServerAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         Properties props = new Properties();
         try

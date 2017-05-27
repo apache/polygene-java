@@ -14,26 +14,23 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.polygene.bootstrap.identity;
+package org.apache.polygene.gradle.structure
 
-import org.apache.polygene.api.identity.IdentityGenerator;
-import org.apache.polygene.api.identity.UuidGeneratorMixin;
-import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.ModuleAssembly;
+import groovy.transform.CompileStatic
+import org.apache.polygene.gradle.TaskGroups
+import org.gradle.api.Project
+import org.gradle.api.Task
 
-public class DefaultIdentityGeneratorAssembler
-    implements Assembler
+@CompileStatic
+class ProjectGroupTasks
 {
-    public static final String IDENTITY = "default-identity-generator";
-
-    @Override
-    public void assemble( ModuleAssembly module )
-    {
-        module.services( IdentityGenerator.class )
-              .withMixins( UuidGeneratorMixin.class )
-              .identifiedBy( IDENTITY );
+  static void configureProjectGroupTasks( String projectGroup, Project project )
+  {
+    project.tasks.create( "check${ projectGroup.capitalize() }" ) { Task task ->
+      task.group = TaskGroups.VERIFICATION
+      task.description = "Runs the $projectGroup checks"
+      task.dependsOn( project.tasks.getByName( "check" ) )
     }
+  }
 }

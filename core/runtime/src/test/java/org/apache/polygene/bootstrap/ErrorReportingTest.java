@@ -33,7 +33,6 @@ public class ErrorReportingTest extends AbstractPolygeneTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( Person.class );
         module.values( Pet.class );
@@ -41,7 +40,6 @@ public class ErrorReportingTest extends AbstractPolygeneTest
 
     @Override
     protected void assemblyException( AssemblyException exception )
-        throws AssemblyException
     {
         assertThat( exception.getMessage(), containsString( "Composition Problems Report:\n" ) );
         assertThat( exception.getMessage(), containsString( "    message: No implementation found for method \n"

@@ -41,31 +41,26 @@ public class Model2XMLTest
     @Test
     public void testModel2XML() throws AssemblyException, TransformerException
     {
-        Energy4Java is = new Energy4Java(  );
-        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
-            {
-                ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
+        Energy4Java polygene = new Energy4Java(  );
+        ApplicationDescriptor model = polygene.newApplicationModel( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
 
-                assembly.setName( "Test application" );
+            assembly.setName( "Test application" );
 
-                LayerAssembly webLayer = assembly.layer( "Web" );
-                LayerAssembly domainLayer = assembly.layer( "Domain" );
-                LayerAssembly infrastructureLayer = assembly.layer( "Infrastructure" );
+            LayerAssembly webLayer = assembly.layer( "Web" );
+            LayerAssembly domainLayer = assembly.layer( "Domain" );
+            LayerAssembly infrastructureLayer = assembly.layer( "Infrastructure" );
 
-                webLayer.uses( domainLayer, infrastructureLayer );
-                domainLayer.uses( infrastructureLayer );
+            webLayer.uses( domainLayer, infrastructureLayer );
+            domainLayer.uses( infrastructureLayer );
 
-                ModuleAssembly rest = webLayer.module( "REST" );
-                rest.transients( TestTransient.class ).visibleIn( Visibility.layer );
-                
-                domainLayer.module( "Domain" );
-                infrastructureLayer.module( "Database" );
+            ModuleAssembly rest = webLayer.module( "REST" );
+            rest.transients( TestTransient.class ).visibleIn( Visibility.layer );
 
-                return assembly;
-            }
+            domainLayer.module( "Domain" );
+            infrastructureLayer.module( "Database" );
+
+            return assembly;
         } );
 
         Document document = new Model2XML().apply( model );

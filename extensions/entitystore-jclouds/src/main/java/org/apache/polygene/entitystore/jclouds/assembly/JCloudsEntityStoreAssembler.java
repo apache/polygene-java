@@ -21,7 +21,6 @@
 package org.apache.polygene.entitystore.jclouds.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.jclouds.JCloudsEntityStoreConfiguration;
@@ -32,7 +31,6 @@ public class JCloudsEntityStoreAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.services( JCloudsEntityStoreService.class ).
             visibleIn( visibility() ).

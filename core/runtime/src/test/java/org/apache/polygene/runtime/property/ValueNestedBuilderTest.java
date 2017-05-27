@@ -74,6 +74,8 @@ public class ValueNestedBuilderTest
         throws AssemblyException
     {
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
+
+        module.defaultServices();
     }
 
     @Test
