@@ -102,6 +102,8 @@ public class ContinuousIntegrationTest
         module.values( BuildSpec.class, BuildResult.class, ServerStatus.class, TagBuildCommand.class, RunBuildCommand.class );
 
         module.objects( RootRestlet.class, RootResource.class, RootContext.class );
+
+        module.defaultServices();
     }
 
     @Override

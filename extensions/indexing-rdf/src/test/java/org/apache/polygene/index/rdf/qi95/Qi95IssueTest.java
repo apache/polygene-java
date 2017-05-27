@@ -225,7 +225,10 @@ public class Qi95IssueTest
         ( layer, name ) -> addModule( layer, name, new RdfMemoryStoreAssembler() );
 
     final ModuleAssemblyBuilder jdbmStore =
-        ( layer, name ) -> addModule( layer, name, new JdbmEntityStoreAssembler().visibleIn( Visibility.application ) );
+        ( layer, name ) -> addModule( layer, name, module -> {
+            new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
+            module.defaultServices().visibleIn( Visibility.application );
+        } );
 
     final ModuleAssemblyBuilder configModule =
         ( layer, name ) -> addModule( layer, name, entityStoreConfigAssembler() );

@@ -30,11 +30,11 @@ import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
 import org.junit.Ignore;
 
@@ -63,7 +63,7 @@ public class PostgreSQLEntityStorePerformanceTest
     {
         return module -> {
             ModuleAssembly config = module.layer().module( "config" );
-            config.services( MemoryEntityStoreService.class );
+            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
             // DataSourceService
             new DBCPDataSourceServiceAssembler()

@@ -36,8 +36,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -53,7 +53,8 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
         module.entities( DualFaced.class );
         module.values( SimpleName.class );
         module.values( DualFaced.class );
-        module.services( MemoryEntityStoreService.class );
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

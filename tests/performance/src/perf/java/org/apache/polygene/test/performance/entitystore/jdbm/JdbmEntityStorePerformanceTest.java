@@ -47,7 +47,7 @@ public class JdbmEntityStorePerformanceTest
             new JdbmEntityStoreAssembler().assemble( module );
             ModuleAssembly configModule = module.layer().module( "Config" );
             configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-            new EntityTestAssembler().assemble( configModule );
+            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( configModule );
 
             module.services( EhCachePoolService.class );
             configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );

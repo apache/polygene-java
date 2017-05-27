@@ -74,7 +74,7 @@ public class ReindexerTest
 
         // Configuration
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class )
               .visibleIn( Visibility.layer );
         config.forMixin( JdbmConfiguration.class ).declareDefaults()

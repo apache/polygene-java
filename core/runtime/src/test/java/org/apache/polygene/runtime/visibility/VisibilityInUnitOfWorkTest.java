@@ -35,7 +35,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 public class VisibilityInUnitOfWorkTest
@@ -149,7 +149,7 @@ public class VisibilityInUnitOfWorkTest
             myModule.entities( MyEntity.class );
             yourModule.entities( YourEntity.class );
             yourModule.services( YourService.class ).visibleIn( Visibility.layer );
-            infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+            new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( infraModule );
             return appAssembly;
         } );
     }

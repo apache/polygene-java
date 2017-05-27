@@ -33,5 +33,6 @@ public class MemoryEntityStoreWithCacheTest
     {
         super.assemble( module );
         new MemoryEntityStoreAssembler().assemble( module );
+        module.defaultServices();
     }
 }

@@ -41,7 +41,7 @@ public class HazelcastEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly configModule = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( configModule );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( configModule );
         // START SNIPPET: assembly
         new HazelcastEntityStoreAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
     }

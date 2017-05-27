@@ -22,6 +22,7 @@ package org.apache.polygene.runtime.unitofwork;
 
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.identity.HasIdentity;
@@ -79,7 +80,10 @@ public class PrivateEntityUnitOfWorkTest
                                 module.entities( ProductEntity.class );
                                 module.entities( ProductCatalogEntity.class ).visibleIn( application );
                                 module.values( ProductInfo.class );
-                                new EntityTestAssembler().assemble( module );
+
+                                new EntityTestAssembler().visibleIn( Visibility.module )
+                                                         .defaultServicesVisibleIn( Visibility.application )
+                                                         .assemble( module );
                             }
                         }
                     }

@@ -39,6 +39,8 @@ public class ValueCompositeBasicsTest
         throws AssemblyException
     {
         module.values( SomeValue.class );
+
+        module.defaultServices();
     }
 
     @Test

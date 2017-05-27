@@ -58,7 +58,7 @@ public class RiakMapEntityStoreWithCacheTest extends AbstractEntityStoreWithCach
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         new RiakEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
                                                         .declareDefaults();

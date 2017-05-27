@@ -35,7 +35,10 @@ public class MemoryEntityStorePerformanceTest
 
     private static Assembler createAssembler()
     {
-        return module -> new MemoryEntityStoreAssembler().assemble( module );
+        return module -> {
+            new MemoryEntityStoreAssembler().assemble( module );
+            module.defaultServices();
+        };
     }
 
     // Alternate variant that uses the standard MapEntityStore

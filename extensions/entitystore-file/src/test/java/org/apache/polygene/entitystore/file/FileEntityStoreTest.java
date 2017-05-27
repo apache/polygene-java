@@ -47,7 +47,7 @@ public class FileEntityStoreTest
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         // START SNIPPET: assembly
         new FileEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }

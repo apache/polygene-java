@@ -50,7 +50,7 @@ public class DerbySQLEntityStorePerformanceTest
     {
         return module -> {
             ModuleAssembly config = module.layer().module( "config" );
-            new EntityTestAssembler().assemble( config );
+            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
             // DataSourceService
             new DBCPDataSourceServiceAssembler()

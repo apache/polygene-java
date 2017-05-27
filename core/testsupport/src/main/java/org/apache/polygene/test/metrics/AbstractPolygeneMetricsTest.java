@@ -213,7 +213,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
 
     protected Assemblers.Visible<? extends Assembler> entityStoreAssembler( ModuleAssembly configModule, Visibility configVisibility ) throws AssemblyException
     {
-        return new EntityTestAssembler();
+        return new EntityTestAssembler().defaultServicesVisibleIn( Visibility.module );
     }
 
     protected abstract Assemblers.Visible<? extends Assembler> metricsAssembler();
