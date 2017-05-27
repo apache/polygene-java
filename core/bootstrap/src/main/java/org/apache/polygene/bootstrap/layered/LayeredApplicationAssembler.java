@@ -250,7 +250,6 @@ public abstract class LayeredApplicationAssembler
                 if( constructor != null )
                 {
                     constructor.setAccessible( true );
-                    System.out.println(constructor);
                     return constructor.newInstance();
                 }
             }
