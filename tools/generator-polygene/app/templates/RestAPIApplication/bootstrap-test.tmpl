@@ -23,14 +23,31 @@ import <%= polygene.packageName %>.bootstrap.<%= polygene.name %>ApplicationAsse
 
 import <%= polygene.packageName %>.bootstrap.config.ConfigModule;
 import <%= polygene.packageName %>.bootstrap.config.ConfigurationLayer;
+import javax.json.Json;
+import javax.json.JsonWriter;
+
 import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
-<% if( polygene.entitystore !== 'Memory' ) {
+import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
+<%
+if(  polygene.entitystore === 'MySQL' ) {
+%>import java.util.HashMap;
+<%
+}
+if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' ) {
+    if( polygene.entitystore.indexOf('SQL') < 0 ) {
 %>import org.apache.polygene.entitystore.<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
-<% }
+<% } else {
+%>import org.apache.polygene.entitystore.sql.<%= polygene.entitystore %>EntityStoreConfiguration;
+}
+<%
+    }
+}
 %>import org.apache.polygene.test.docker.DockerRule;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -50,7 +67,17 @@ public class BootstrapTest
 <% if( polygene.hasFeature( 'security' ) ) {
 %>                DevelopmentKeyManagement.initializeKeyStore();
 <% }
-%>                return new <%= polygene.name %>ApplicationAssembler( "LaunchTest", "0", Application.Mode.development, BootstrapTest.this::setupTest );
+%>                return new <%= polygene.name %>ApplicationAssembler( "LaunchTest", "0", Application.Mode.development, BootstrapTest.this::setupTest )
+                {
+                    @Override
+                    protected void onModelCreated( ApplicationDescriptor model )
+                    {
+                        ApplicationDetailDescriptor modelDescription = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( model );
+                        JsonWriter writer = Json.createWriter( System.out );
+                        writer.writeObject( modelDescription.toJson() );
+                        super.onModelCreated( model );
+                    }
+                };
             }
         };
         launcher.initialize();

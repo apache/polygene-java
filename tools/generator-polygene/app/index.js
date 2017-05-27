@@ -126,6 +126,21 @@ module.exports = generators.Base.extend(
                         },
                         {
                             type: 'list',
+                            name: 'dbpool',
+                            choices: [
+                                'None',
+                                'BoneCP',
+                                'DBCP'
+                                // 'HikariCP'
+                            ],
+                            message: 'Which entity store do you want to use?',
+                            default: polygene.dbpool ? polygene.dbpool : "None",
+                            when: function (answers) {
+                                return answers.entitystore.indexOf('SQL') > -1;
+                            }
+                        },
+                        {
+                            type: 'list',
                             name: 'indexing',
                             choices: [
                                 'Rdf',
@@ -174,6 +189,7 @@ module.exports = generators.Base.extend(
                             choices: [
                                 // 'alarms'
                                 // 'circuit breakers'
+                                'envisage',
                                 // 'file transactions'
                                 // 'logging'
                                 'jmx',
@@ -201,32 +217,37 @@ module.exports = generators.Base.extend(
         },
 
         writing: function () {
-            polygene.version = polygeneVersion;
-            polygene.entitystoremodule = polygene.entitystore.toLowerCase();
-            if (polygene.entitystore === "DerbySQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "H2SQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "MySQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "PostgreSQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "SQLite") {
-                polygene.entitystoremodule = "sql";
-            }
-            assignFunctions(polygene);
-            polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
-            polygene.ctx = this;
-            var app = require(__dirname + '/templates/' + polygene.applicationtype.replace(/ /g, '') + 'Application/app.js');
-            app.write(polygene);
-            var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
-            buildToolChain.write(polygene);
-            if (this.options.export) {
-                exportModel(this.options.export);
+            try {
+                polygene.version = polygeneVersion;
+                polygene.entitystoremodule = polygene.entitystore.toLowerCase();
+                if (polygene.entitystore === "DerbySQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "H2SQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "MySQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "PostgreSQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "SQLite") {
+                    polygene.entitystoremodule = "sql";
+                }
+                assignFunctions(polygene);
+                polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
+                polygene.ctx = this;
+                var app = require(__dirname + '/templates/' + polygene.applicationtype.replace(/ /g, '') + 'Application/app.js');
+                app.write(polygene);
+                var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
+                buildToolChain.write(polygene);
+                if (this.options.export) {
+                    exportModel(this.options.export);
+                }
+            } catch( exception ) {
+                console.log(exception);
+                throw exception;
             }
         }
     }

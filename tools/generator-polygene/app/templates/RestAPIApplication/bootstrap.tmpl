@@ -26,7 +26,9 @@ import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
-
+<% if( polygene.hasFeature('envisage' ) ) {
+%>import org.apache.polygene.envisage.Envisage;
+<% } %>
 import <%= polygene.packageName %>.bootstrap.connectivity.ConnectivityLayer;
 import <%= polygene.packageName %>.bootstrap.config.ConfigurationLayer;
 import <%= polygene.packageName %>.bootstrap.domain.DomainLayer;
@@ -58,4 +60,12 @@ public class <%= polygene.name %>ApplicationAssembler extends LayeredApplication
         infra.uses( config );
         customize.accept( assembly );
     }
-}
+<% if( polygene.hasFeature('envisage' ) ) {
+%>
+    @Override
+    protected void onModelCreated( ApplicationDescriptor model )
+    {
+        new Envisage().run( model );
+    }
+<% }
+%>}

@@ -25,6 +25,13 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.assembly.<%- polygene.entitystore %>EntityStoreAssembler;
+<% if( polygene.entitystore.indexOf('SQL') >= 0 ) {
+%>import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+<%     if( polygene.dbpool !== null && polygene.dbpool !== 'None' ) {
+%>import org.apache.polygene.library.sql.<%= polygene.dbpool.toLowerCase() %>.<%= polygene.dbpool %>DataSourceAssembler;
+<%
+    }
+} %>
 
 public class <%- polygene.entitystore %>StorageModule
     implements ModuleAssembler
@@ -41,14 +48,18 @@ public class <%- polygene.entitystore %>StorageModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-<% if( polygene.entitystore.contains( 'SQL' ) ) {
+<%
+if( polygene.entitystore.indexOf( 'SQL' ) >= 0 ) {
+    if( polygene.dbpool !== null && polygene.dbpool !== 'None' ) {
 %>        // DataSourceService
-        new DBCPDataSourceServiceAssembler()
+        new <%= polygene.dbpool %>DataSourceServiceAssembler()
             .identifiedBy( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
             .visibleIn( Visibility.module )
             .withConfig( config, Visibility.layer )
             .assemble( module );
-
+<%
+    }
+%>
         // DataSource
         new DataSourceAssembler()
             .withDataSourceServiceIdentity( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
@@ -56,7 +67,8 @@ public class <%- polygene.entitystore %>StorageModule
             .visibleIn( Visibility.module )
             .withCircuitBreaker()
             .assemble( module );
-<% }
+<%
+}
 %>        new <%- polygene.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )

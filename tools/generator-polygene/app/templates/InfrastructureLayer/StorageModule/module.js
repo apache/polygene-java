@@ -15,6 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+var fs = require('fs');
 
 module.exports = {
 
@@ -23,23 +24,28 @@ module.exports = {
             'InfrastructureLayer/StorageModule/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/infrastructure/' + p.entitystore + 'StorageModule.java');
 
-        var configurationFile = 'InfrastructureLayer/StorageModule/storage/es-' + p.entitystore.toLowerCase() + '.properties';
-        var confFile = require(configurationFile);
-        if (confFile.existsSync(path)) {
-            p.copyTemplate(p.ctx,
-                configurationFile,
-                'app/src/main/resources/config/');
-        }
+        var esFileName = 'es-' + p.entitystore.toLowerCase() + '.properties';
+        var configurationPath = 'InfrastructureLayer/StorageModule/storage/' + esFileName;
 
-        var datasourceFile = 'InfrastructureLayer/StorageModule/storage/ds-' + p.entitystore.toLowerCase() + '.properties';
-        var dsFile = require(datasourceFile);
-        if (dsFile.existsSync(path)) {
-            p.copyTemplate(p.ctx,
-                'InfrastructureLayer/StorageModule/storage/es-sql.properties',
-                'app/src/main/resources/config/es-' + p.entitystore.toLowerCase());
-            p.copyTemplate(p.ctx,
-                configurationFile,
-                'app/src/main/resources/config/');
-        }
+        fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
+            if (err === null) {
+                p.copyTemplate(p.ctx,
+                    configurationPath,
+                    'app/src/main/resources/config/' + esFileName);
+            }
+        });
+
+        var dsFileName = 'ds-' + p.entitystore.toLowerCase() + '.properties';
+        var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
+        fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
+            if (err === null) {
+                p.copyTemplate(p.ctx,
+                    'InfrastructureLayer/StorageModule/storage/es-sql.properties',
+                    'app/src/main/resources/config/' + esFileName);
+                p.copyTemplate(p.ctx,
+                    datasourceFile,
+                    'app/src/main/resources/config/' + dsFileName);
+            }
+        });
     }
 };
