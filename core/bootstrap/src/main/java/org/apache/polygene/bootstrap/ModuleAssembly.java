@@ -87,7 +87,7 @@ public interface ModuleAssembly
      *
      * @param transientTypes The types that specifies the Transient types.
      *
-     * @return An TransientDeclaration for the specified Transient types.
+     * @return A TransientDeclaration for the specified Transient types.
      */
     TransientDeclaration transients( Class<?>... transientTypes );
 
@@ -97,7 +97,7 @@ public interface ModuleAssembly
      *
      * @param specification The Specification that specifies the TransientComposite types of interest.
      *
-     * @return An TransientDeclaration for the specified TransientComposite types.
+     * @return A TransientDeclaration for the specified TransientComposite types.
      */
     TransientDeclaration transients( Predicate<? super TransientAssembly> specification );
 
@@ -107,7 +107,7 @@ public interface ModuleAssembly
      *
      * @param valueTypes The types that specifies the Value types.
      *
-     * @return An ValueDeclaration for the specified Value types.
+     * @return A ValueDeclaration for the specified Value types.
      */
     ValueDeclaration values( Class<?>... valueTypes );
 
@@ -117,7 +117,7 @@ public interface ModuleAssembly
      *
      * @param specification The Specification that specifies the ValueComposite types of interest.
      *
-     * @return An ValueDeclaration for the specified ValueComposite types.
+     * @return A ValueDeclaration for the specified ValueComposite types.
      */
     ValueDeclaration values( Predicate<? super ValueAssembly> specification );
 
@@ -147,7 +147,7 @@ public interface ModuleAssembly
      *
      * @param configurationTypes The types that specifies the Configuration types.
      *
-     * @return An ConfigurationDeclaration for the specified Configuration types.
+     * @return A ConfigurationDeclaration for the specified Configuration types.
      */
     ConfigurationDeclaration configurations( Class<?>... configurationTypes );
 
@@ -157,7 +157,7 @@ public interface ModuleAssembly
      *
      * @param specification The Specification that specifies the ConfigurationComposite types of interest.
      *
-     * @return An ConfigurationDeclaration for the specified EntityComposite types.
+     * @return A ConfigurationDeclaration for the specified EntityComposite types.
      */
     ConfigurationDeclaration configurations( Predicate<HasTypes> specification );
 
@@ -191,7 +191,7 @@ public interface ModuleAssembly
      *
      * @param serviceTypes The types that specifies the Service types.
      *
-     * @return An ServiceDeclaration for the specified Service types.
+     * @return A ServiceDeclaration for the specified Service types.
      */
     ServiceDeclaration addServices( Class<?>... serviceTypes );
 
@@ -201,7 +201,7 @@ public interface ModuleAssembly
      *
      * @param serviceTypes The types that specifies the Service types.
      *
-     * @return An ServiceDeclaration for the specified Service types.
+     * @return A ServiceDeclaration for the specified Service types.
      */
     ServiceDeclaration services( Class<?>... serviceTypes );
 
@@ -211,7 +211,7 @@ public interface ModuleAssembly
      *
      * @param specification The Specification that specifies the ServiceComposite types of interest.
      *
-     * @return An ServiceDeclaration for the specified ServiceComposite types.
+     * @return A ServiceDeclaration for the specified ServiceComposite types.
      */
     ServiceDeclaration services( Predicate<? super ServiceAssembly> specification );
 
