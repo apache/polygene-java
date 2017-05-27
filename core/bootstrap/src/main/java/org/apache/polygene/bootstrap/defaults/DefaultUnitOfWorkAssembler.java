@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.polygene.bootstrap.unitofwork;
+package org.apache.polygene.bootstrap.defaults;
 
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;

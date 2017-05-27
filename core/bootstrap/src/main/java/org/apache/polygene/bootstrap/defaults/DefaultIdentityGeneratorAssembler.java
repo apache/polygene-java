@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.bootstrap.identity;
+package org.apache.polygene.bootstrap.defaults;
 
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.UuidGeneratorMixin;

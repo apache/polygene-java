@@ -88,7 +88,6 @@ import org.apache.polygene.runtime.value.ValueBuilderWithPrototype;
 import org.apache.polygene.runtime.value.ValueBuilderWithState;
 import org.apache.polygene.runtime.value.ValueInstance;
 import org.apache.polygene.spi.entitystore.EntityStore;
-import org.apache.polygene.spi.metrics.MetricsProviderAdapter;
 import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.Arrays.asList;
@@ -581,14 +580,7 @@ public class ModuleInstance
             {
                 if( metrics == null )
                 {
-                    try
-                    {
-                        metrics = findService( MetricsProvider.class ).get();
-                    }
-                    catch( NoSuchServiceException e )
-                    {
-                        metrics = new MetricsProviderAdapter();
-                    }
+                    metrics = findService( MetricsProvider.class ).get();
                 }
             }
         }

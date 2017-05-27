@@ -71,6 +71,18 @@ public interface ModuleAssembly
     ModuleAssembly setMetaInfo( Object info );
 
     /**
+     * Assemble default services for {@link org.apache.polygene.api.identity.IdentityGenerator},
+     * {@link org.apache.polygene.api.serialization.Serialization} and
+     * {@link org.apache.polygene.api.metrics.MetricsProvider}.
+     *
+     * If one of this default services is already assembled on this module it is not added.
+     * The returned {@link ServiceDeclaration} only apply to effectively defaulted services.
+     *
+     * @return the declaration for assembled services
+     */
+    ServiceDeclaration defaultServices();
+
+    /**
      * Set the module activators. Activators are executed in order around the
      * Module activation and passivation.
      *
