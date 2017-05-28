@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.test.cache;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

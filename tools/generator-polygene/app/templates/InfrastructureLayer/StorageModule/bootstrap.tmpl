@@ -20,6 +20,8 @@
 package <%= polygene.packageName %>.bootstrap.infrastructure;
 
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.identity.IdentityGenerator;
+import org.apache.polygene.api.identity.UuidGeneratorMixin;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -74,6 +76,9 @@ if( polygene.entitystore.indexOf( 'SQL' ) >= 0 ) {
             .withConfig( configModule, Visibility.application )
             .identifiedBy( "es-<%- polygene.entitystore.toLowerCase() %>" )
             .assemble( module );
+        module.services( IdentityGenerator.class )
+              .visibleIn( Visibility.application )
+              .withMixins( UuidGeneratorMixin.class );
         return module;
     }
 }

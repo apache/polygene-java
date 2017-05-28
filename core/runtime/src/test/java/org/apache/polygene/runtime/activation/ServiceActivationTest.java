@@ -78,18 +78,18 @@ public class ServiceActivationTest
     }
 
     @Mixins( TestedServiceMixin.class )
-    public static interface TestedServiceComposite
+    public interface TestedServiceComposite
             extends TestedService, ServiceComposite
     {
     }
 
     @Mixins( TestedServiceMixin.class )
-    public static interface TestedServiceComposite2
+    public interface TestedServiceComposite2
             extends TestedService, ServiceComposite
     {
     }
 
-    public static interface TestedService
+    public interface TestedService
     {
 
         String foo();

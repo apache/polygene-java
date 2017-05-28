@@ -35,6 +35,7 @@ public class ConfigModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.defaultServices();
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         return module;
     }

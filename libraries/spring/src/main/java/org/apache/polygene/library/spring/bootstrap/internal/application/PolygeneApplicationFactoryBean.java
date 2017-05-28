@@ -20,7 +20,9 @@
 package org.apache.polygene.library.spring.bootstrap.internal.application;
 
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.bootstrap.*;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.library.spring.bootstrap.PolygeneApplicationBootstrap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;

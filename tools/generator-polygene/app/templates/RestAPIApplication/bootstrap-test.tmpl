@@ -43,8 +43,7 @@ if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' 
     if( polygene.entitystore.indexOf('SQL') < 0 ) {
 %>import org.apache.polygene.entitystore.<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
 <% } else {
-%>import org.apache.polygene.entitystore.sql.<%= polygene.entitystore %>EntityStoreConfiguration;
-}
+%>import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
 <%
     }
 }

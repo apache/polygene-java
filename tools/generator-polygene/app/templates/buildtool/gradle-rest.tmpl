@@ -19,11 +19,11 @@
 -%>
 
 dependencies {
-  compile project( ":model" )
+  implementation project( ":model" )
 
-  compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
+  implementation "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
 <% if( polygene.applicationtype === 'Rest API' ) {
-%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
 
 }

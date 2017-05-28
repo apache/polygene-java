@@ -283,15 +283,20 @@ function assignFunctions(polygene) {
     };
 
     polygene.copyTemplate = function (ctx, from, to) {
-        ctx.fs.copyTpl(
-            ctx.templatePath(from),
-            ctx.destinationPath(to),
-            {
-                hasFeature: hasFeature,
-                firstUpper: firstUpper,
-                polygene: polygene
-            }
-        );
+        try {
+
+            ctx.fs.copyTpl(
+                ctx.templatePath(from),
+                ctx.destinationPath(to),
+                {
+                    hasFeature: hasFeature,
+                    firstUpper: firstUpper,
+                    polygene: polygene
+                }
+            );
+        } catch (exception) {
+            console.log("Unable to copy template: " + from + "\n", exception);
+        }
     };
 
     polygene.copyPolygeneBootstrap = function (ctx, layer, moduleName, condition) {

@@ -107,7 +107,7 @@ public class SequencingConcernTest
 
     @Mixins( MockPlayerMixin.class )
     @Concerns( SequencingConcern.class )
-    public static interface ShippingServiceTestComposite
+    public interface ShippingServiceTestComposite
         extends ShippingService, HasSequence, MockComposite
     {
     }

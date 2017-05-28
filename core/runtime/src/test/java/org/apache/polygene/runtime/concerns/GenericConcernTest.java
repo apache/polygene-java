@@ -24,13 +24,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 /**
  * Tests for GenericConcern
@@ -65,7 +65,7 @@ public class GenericConcernTest
     public interface Some
     {
         @NestedUnitOfWork
-        public String doStuff();
+        String doStuff();
     }
 
     public static abstract class SomeMixin

@@ -27,25 +27,27 @@ module.exports = {
         var esFileName = 'es-' + p.entitystore.toLowerCase() + '.properties';
         var configurationPath = 'InfrastructureLayer/StorageModule/storage/' + esFileName;
 
-        fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
-            if (err === null) {
-                p.copyTemplate(p.ctx,
-                    configurationPath,
-                    'app/src/main/resources/config/' + esFileName);
-            }
-        });
-
-        var dsFileName = 'ds-' + p.entitystore.toLowerCase() + '.properties';
-        var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
-        fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
-            if (err === null) {
-                p.copyTemplate(p.ctx,
-                    'InfrastructureLayer/StorageModule/storage/es-sql.properties',
-                    'app/src/main/resources/config/' + esFileName);
-                p.copyTemplate(p.ctx,
-                    datasourceFile,
-                    'app/src/main/resources/config/' + dsFileName);
-            }
-        });
+        if( p.entitystore.indexOf( 'SQL') < 0 ) {
+            fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
+                if (err === null) {
+                    p.copyTemplate(p.ctx,
+                        configurationPath,
+                        'app/src/main/resources/' + esFileName);
+                }
+            });
+        } else {
+            var dsFileName = 'ds-' + p.entitystore.toLowerCase() + '.properties';
+            var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
+            fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
+                if (err === null) {
+                    p.copyTemplate(p.ctx,
+                        'InfrastructureLayer/StorageModule/storage/es-sql.properties',
+                        'app/src/main/resources/' + esFileName);
+                    p.copyTemplate(p.ctx,
+                        datasourceFile,
+                        'app/src/main/resources/' + dsFileName);
+                }
+            });
+        }
     }
 };

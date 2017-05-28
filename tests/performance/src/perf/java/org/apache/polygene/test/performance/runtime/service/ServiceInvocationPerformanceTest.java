@@ -74,12 +74,12 @@ public class ServiceInvocationPerformanceTest
     }
 
     @Mixins( NoopMixin.class )
-    public static interface MyServiceComposite
+    public interface MyServiceComposite
         extends ServiceInvocationPerformanceTest.MyService, ServiceComposite
     {
     }
 
-    public static interface MyService
+    public interface MyService
     {
         void test();
     }

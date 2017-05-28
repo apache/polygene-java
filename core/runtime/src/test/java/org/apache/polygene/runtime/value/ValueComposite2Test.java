@@ -130,7 +130,7 @@ public class ValueComposite2Test
         }
     }
 
-    public static interface DummyService
+    public interface DummyService
         extends ServiceComposite
     {
     }

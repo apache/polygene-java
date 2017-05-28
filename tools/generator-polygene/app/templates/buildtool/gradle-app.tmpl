@@ -19,27 +19,56 @@
 -%>
 
 dependencies {
-  compile project( ":bootstrap" )
-  compile project( ":model" )
-<% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile project( ":rest" )<% } %>
-<% if( hasFeature( 'security' ) ) {
-%>  compile "org.apache.polygene.libraries:org.apache.polygene.library.shiro-web:$polygeneVersion"
-<% }
-%>  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
-  compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
-<% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile "org.restlet.jee:org.restlet:2.3.4"
-  compile "javax.servlet:servlet-api:2.5"<% } %>
-
-  runtime "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
-  runtime "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
-  runtime "org.apache.johnzon:johnzon-core:1.1.0"
-  runtime "org.apache.johnzon:johnzon-mapper:1.1.0"
-  runtime "org.apache.geronimo.specs:geronimo-json_1.1_spec:1.0"
-  runtime "ch.qos.logback:logback-classic:1.2.3"
-  runtime "ch.qos.logback:logback-core:1.2.3"
-
-  testCompile "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
-  testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
+  implementation project( ":bootstrap" )
+  implementation project( ":model" )
+<%
+if( polygene.applicationtype === 'Rest API' ) {
+%>  implementation project( ":rest" )
+  implementation "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+<%
 }
+
+if( hasFeature( 'security' ) ) {
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.shiro-web:$polygeneVersion"
+<%
+}
+%>  implementation "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
+  implementation "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
+<%
+if( hasFeature( 'envisage' ) ) {
+%>  implementation "org.apache.polygene.tools:org.apache.polygene.tool.envisage:$polygeneVersion"
+<%
+}
+%>
+
+  runtimeOnly "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
+  runtimeOnly "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
+  runtimeOnly "org.apache.johnzon:johnzon-core:1.1.0"
+  runtimeOnly "org.apache.johnzon:johnzon-mapper:1.1.0"
+  runtimeOnly "org.apache.geronimo.specs:geronimo-json_1.1_spec:1.0"
+  implementation "ch.qos.logback:logback-classic:1.2.3"
+  implementation "ch.qos.logback:logback-core:1.2.3"
+
+  testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
+  testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
+<%
+if( polygene.entitystore.indexOf('SQL') >= 0 ) {
+    if( polygene.dbpool !== 'None' ) {
+%>  testImplementation "org.apache.polygene.libraries:org.apache.polygene.library.sql-<%= polygene.dbpool.toLowerCase() %>:$polygeneVersion"
+<%
+    }
+}
+%>
+  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
+  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
+  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
+<%
+if( polygene.caching !== "None" ) {
+%>  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
+<%
+}
+    if( polygene.metrics !== "None" ) {
+%>  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
+<%
+    }
+%>}

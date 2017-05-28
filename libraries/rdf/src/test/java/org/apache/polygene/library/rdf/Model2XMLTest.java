@@ -19,19 +19,22 @@
  */
 package org.apache.polygene.library.rdf;
 
-import org.junit.Test;
-import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.composite.TransientComposite;
-import org.apache.polygene.api.structure.ApplicationDescriptor;
-import org.apache.polygene.bootstrap.*;
-import org.apache.polygene.library.rdf.model.Model2XML;
-import org.w3c.dom.Document;
-
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.composite.TransientComposite;
+import org.apache.polygene.api.structure.ApplicationDescriptor;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.Energy4Java;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.library.rdf.model.Model2XML;
+import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * TODO

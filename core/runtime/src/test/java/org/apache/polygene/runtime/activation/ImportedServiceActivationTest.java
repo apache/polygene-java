@@ -87,7 +87,7 @@ public class ImportedServiceActivationTest
 
     }
 
-    public static interface TestedService
+    public interface TestedService
     {
 
         String foo();

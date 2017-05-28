@@ -19,11 +19,11 @@
  */
 package org.apache.polygene.library.scripting;
 
-import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

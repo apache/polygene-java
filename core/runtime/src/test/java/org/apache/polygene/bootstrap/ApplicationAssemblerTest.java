@@ -19,18 +19,18 @@
  */
 package org.apache.polygene.bootstrap;
 
-import org.apache.polygene.api.identity.IdentityGenerator;
-import org.apache.polygene.api.serialization.Serialization;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.EntityDescriptor;
+import org.apache.polygene.api.identity.IdentityGenerator;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.util.HierarchicalVisitorAdapter;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TODO

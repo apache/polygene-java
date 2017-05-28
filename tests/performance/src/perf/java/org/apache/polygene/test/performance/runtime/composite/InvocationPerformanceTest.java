@@ -161,7 +161,7 @@ public class InvocationPerformanceTest
 
     public interface Simple
     {
-        public void test();
+        void test();
     }
 
     public static class SimpleMixin

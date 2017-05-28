@@ -79,7 +79,7 @@ public class Qi382Test extends AbstractPolygeneTest
     public interface Car extends EntityComposite, Lifecycle
     {
 
-        static class CarMixin implements Lifecycle
+        class CarMixin implements Lifecycle
         {
             @This
             private Car me;

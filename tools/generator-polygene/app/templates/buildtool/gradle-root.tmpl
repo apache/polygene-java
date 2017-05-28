@@ -18,14 +18,17 @@
  *
 -%>
 
-version = 1.0
+if( project.version == 'unspecified' )
+{
+  project.version = System.properties.version ?: '0'
+}
 
 rootProject.ext {
-  polygeneVersion = "<%=polygene.version %>"
+  polygeneVersion = "<%= polygene.version %>"
 }
 
 allprojects() {
-  apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin: 'maven'
 
   defaultTasks 'assemble'
@@ -39,7 +42,7 @@ allprojects() {
   }
 
   dependencies {
-    compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
-    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
+    implementation "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
+    testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   }
 }

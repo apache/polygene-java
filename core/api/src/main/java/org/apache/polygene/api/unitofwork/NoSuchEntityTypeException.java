@@ -19,9 +19,10 @@
  */
 package org.apache.polygene.api.unitofwork;
 
-import java.util.stream.Collectors;
 import org.apache.polygene.api.composite.NoSuchCompositeException;
 import org.apache.polygene.api.structure.TypeLookup;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Polygene exception to be thrown in case that an entity composite
@@ -38,7 +39,9 @@ public class NoSuchEntityTypeException
     private static String formatVisibleTypes( TypeLookup typeLookup )
     {
         return typeLookup.allEntities()
-            .map( descriptor -> descriptor.primaryType().getName() )
-            .collect( Collectors.joining( "\n", "Visible entity types are:\n", "" ) );
+                         .map( descriptor -> descriptor.primaryType().getName() )
+                         .sorted()
+                         .distinct()
+                         .collect( joining( "\n", "Visible entity types are:\n", "" ) );
     }
 }

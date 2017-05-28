@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime.structure;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.NoSuchTransientException;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -33,6 +32,7 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.junit.Test;
 
 /**
  * JAVADOC

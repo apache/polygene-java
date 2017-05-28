@@ -63,7 +63,7 @@ public class HazelcastEntityStoreMixin
         Config conf = createConfig( configuration );
         hazelcastInstance = Hazelcast.newHazelcastInstance( conf );
         String mapName = DEFAULT_MAPNAME;
-        if( configuration != null && configuration.mapName() != null )
+        if( configuration != null && configuration.mapName() != null && configuration.mapName().get() != null )
         {
             mapName = configuration.mapName().get();
         }
