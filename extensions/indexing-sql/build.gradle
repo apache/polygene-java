@@ -33,7 +33,7 @@ dependencies {
 
   runtimeOnly polygene.core.runtime
 
-  testImplementation polygene.core.testsupport
+  testImplementation polygene.internals.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
 
   testRuntimeOnly libraries.logback

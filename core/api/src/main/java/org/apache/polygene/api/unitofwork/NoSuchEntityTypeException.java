@@ -39,7 +39,11 @@ public class NoSuchEntityTypeException
     private static String formatVisibleTypes( TypeLookup typeLookup )
     {
         return typeLookup.allEntities()
-                         .map( descriptor -> descriptor.primaryType().getName() )
+                         .map( descriptor -> {
+                             String moduleName = descriptor.module().name();
+                             String entityClassName = descriptor.primaryType().getName();
+                             return entityClassName + " in " + moduleName;
+                         } )
                          .sorted()
                          .distinct()
                          .collect( joining( "\n", "Visible entity types are:\n", "" ) );

@@ -128,13 +128,12 @@ module.exports = generators.Base.extend(
                             type: 'list',
                             name: 'dbpool',
                             choices: [
-                                'None',
                                 'BoneCP',
                                 'DBCP'
                                 // 'HikariCP'
                             ],
                             message: 'Which entity store do you want to use?',
-                            default: polygene.dbpool ? polygene.dbpool : "None",
+                            default: polygene.dbpool ? polygene.dbpool : "DBCP",
                             when: function (answers) {
                                 return answers.entitystore.indexOf('SQL') > -1;
                             }
@@ -210,6 +209,7 @@ module.exports = generators.Base.extend(
                         this.log('Caching:', answers.caching);
                         this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
+                        answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene = answers;
                     }.bind(this)
                 );

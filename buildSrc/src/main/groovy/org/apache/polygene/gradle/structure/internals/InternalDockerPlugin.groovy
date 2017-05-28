@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.gradle.structure.docker
+package org.apache.polygene.gradle.structure.internals
 
 import com.bmuschko.gradle.docker.DockerExtension
 import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
@@ -36,7 +36,7 @@ import org.gradle.api.file.CopySpec
 import org.gradle.api.logging.LogLevel
 
 @CompileStatic
-class DockerPlugin implements Plugin<Project>
+class InternalDockerPlugin implements Plugin<Project>
 {
   static class TaskNames
   {
@@ -76,7 +76,7 @@ class DockerPlugin implements Plugin<Project>
         project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
         if( project.hasProperty( 'skipDocker' ) )
         {
-            project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
+          project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
         }
         else if( project.logger.isEnabled( LogLevel.INFO ) )
         {
@@ -101,7 +101,7 @@ class DockerPlugin implements Plugin<Project>
   private void applyDockerBuildImage( Project project )
   {
     def classesTask = project.tasks.getByName 'classes'
-      def dockers = project.file('src/main/resources/docker')
+    def dockers = project.file( 'src/main/docker' )
     def dependencies = project.rootProject.extensions.getByType( DependenciesDeclarationExtension )
     dockers.eachDir { File dockerDir ->
       def dockerName = dockerDir.name
@@ -132,7 +132,7 @@ class DockerPlugin implements Plugin<Project>
         task.description = "Build $dockerName Docker image"
         task.inputDir = tmpDir
         task.dockerFile = new File( tmpDir, 'Dockerfile' )
-          task.tag = "org.apache.polygene:${PublishNaming.publishedNameFor ":testsupport:docker-$dockerName"}"
+        task.tag = "org.apache.polygene:${ PublishNaming.publishedNameFor ":internals:docker-$dockerName" }"
       } as Action<DockerBuildImage> )
       [ buildDockerfileTask, buildImageTask ].each { Task task ->
         task.group = 'docker'

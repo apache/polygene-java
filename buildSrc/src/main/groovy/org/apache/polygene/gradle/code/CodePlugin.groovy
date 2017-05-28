@@ -127,7 +127,7 @@ class CodePlugin implements Plugin<Project>
     // Configuration task to honor disabling Docker when unavailable
     project.tasks.create( 'configureDockerForTest', { Task task ->
       // TODO Untangle docker connectivity check & test task configuration
-        task.dependsOn ':core:testsupport:checkDockerConnectivity'
+      task.dependsOn ':internals:testsupport-internal:checkDockerConnectivity'
       testTasks.each { it.dependsOn task }
       task.inputs.property 'polygeneTestSupportDockerDisabled',
                            { project.findProperty( DOCKER_DISABLED_EXTRA_PROPERTY ) }

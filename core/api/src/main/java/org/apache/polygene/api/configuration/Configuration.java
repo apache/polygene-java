@@ -23,23 +23,23 @@ package org.apache.polygene.api.configuration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.PropertyMapper;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityBuilder;
+import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.ServiceComposite;
-import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.api.service.ServiceReference;
-import org.apache.polygene.api.service.qualifier.ServiceTags;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.service.ServiceComposite;
+import org.apache.polygene.api.service.ServiceDescriptor;
+import org.apache.polygene.api.service.qualifier.ServiceTags;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
@@ -178,8 +178,8 @@ public interface Configuration<T>
         @Structure
         private UnitOfWorkFactory uowf;
 
-        @Service
-        private Iterable<ServiceReference<Deserializer>> stateDeserializers;
+        @Structure
+        private Module module;
 
         public ConfigurationMixin()
         {
@@ -194,7 +194,9 @@ public interface Configuration<T>
                 uow = uowf.newUnitOfWork( usecase );
                 try
                 {
-                    configuration = this.findConfigurationInstanceFor( me, uow );
+                    ServiceDescriptor serviceModel = api.serviceDescriptorFor( me );
+                    Identity identity = me.identity().get();
+                    configuration = this.findConfigurationInstanceFor( serviceModel, identity, uow );
                 }
                 catch( InstantiationException e )
                 {
@@ -237,51 +239,46 @@ public interface Configuration<T>
         }
 
         @SuppressWarnings( "unchecked" )
-        public <V> V findConfigurationInstanceFor( ServiceComposite serviceComposite, UnitOfWork uow )
+        public <V> V findConfigurationInstanceFor( ServiceDescriptor serviceModel, Identity serviceIdentity, UnitOfWork uow )
             throws InstantiationException
         {
-            ServiceDescriptor serviceModel = api.serviceDescriptorFor( serviceComposite );
-
+            Class<V> configurationType = serviceModel.configurationType();
             V configuration;
             try
             {
-                configuration = uow.get( serviceModel.<V>configurationType(), serviceComposite.identity().get() );
+                configuration = uow.get( configurationType, serviceIdentity );
                 uow.pause();
             }
             catch( NoSuchEntityException | NoSuchEntityTypeException e )
             {
-                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel,
-                                                            serviceComposite.identity().get() );
+                EntityDescriptor entityDescriptor = module.typeLookup().lookupEntityModel( configurationType );
+                return (V) initializeConfigurationInstance( entityDescriptor, uow, serviceModel, serviceIdentity );
             }
             return configuration;
         }
 
         @SuppressWarnings( "unchecked" )
-        private <V extends HasIdentity> V initializeConfigurationInstance( ServiceComposite serviceComposite,
+        private <V extends HasIdentity> V initializeConfigurationInstance( EntityDescriptor entityDescriptor,
                                                                            UnitOfWork uow,
                                                                            ServiceDescriptor serviceModel,
                                                                            Identity identity
-        )
+                                                                         )
             throws InstantiationException
         {
-            Module module = api.moduleOf( serviceComposite ).instance();
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
-            UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork( usecase );
-
-            Class<?> type = api.serviceDescriptorFor( serviceComposite ).types().findFirst().orElse( null );
+            UnitOfWork buildUow = entityDescriptor.module().instance().unitOfWorkFactory().newUnitOfWork( usecase );
             Class<V> configType = serviceModel.configurationType();
-
             // Check for defaults
-            V config = tryLoadPropertiesFile( buildUow, type, configType, identity );
+            V config = tryLoadPropertiesFile( buildUow, entityDescriptor, identity );
             if( config == null )
             {
-                config = tryLoadJsonFile( buildUow, type, configType, identity );
+                config = tryLoadJsonFile( buildUow, entityDescriptor, identity );
                 if( config == null )
                 {
-                    config = tryLoadYamlFile( buildUow, type, configType, identity );
+                    config = tryLoadYamlFile( buildUow, entityDescriptor, identity );
                     if( config == null )
                     {
-                        config = tryLoadXmlFile( buildUow, type, configType, identity );
+                        config = tryLoadXmlFile( buildUow, entityDescriptor, identity );
                         if( config == null )
                         {
                             try
@@ -304,7 +301,7 @@ public interface Configuration<T>
                 buildUow.complete();
 
                 // Try again
-                return (V) findConfigurationInstanceFor( serviceComposite, uow );
+                return (V) findConfigurationInstanceFor( serviceModel, identity, uow );
             }
             catch( Exception e1 )
             {
@@ -316,16 +313,17 @@ public interface Configuration<T>
             }
         }
 
-        private <C, V> V tryLoadPropertiesFile( UnitOfWork buildUow,
-                                                Class<C> compositeType,
-                                                Class<V> configType,
-                                                Identity identity
-        )
+        private <V> V tryLoadPropertiesFile( UnitOfWork buildUow,
+                                             EntityDescriptor configType,
+                                             Identity identity
+                                           )
             throws InstantiationException
         {
-            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( configType, identity );
+            @SuppressWarnings( "unchecked" )
+            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( (Class<V>) configType.primaryType(), identity );
+
             String resourceName = identity + ".properties";
-            try( InputStream asStream = getResource( compositeType, resourceName ) )
+            try( InputStream asStream = getResource( configType.primaryType(), resourceName ) )
             {
                 if( asStream != null )
                 {
@@ -360,61 +358,67 @@ public interface Configuration<T>
             return type.getResourceAsStream( resourceName );
         }
 
-        private <C, V extends HasIdentity> V tryLoadJsonFile( UnitOfWork uow,
-                                                              Class<C> compositeType,
-                                                              Class<V> configType,
-                                                              Identity identity
-        )
+        private <V extends HasIdentity> V tryLoadJsonFile( UnitOfWork uow,
+                                                           EntityDescriptor configType,
+                                                           Identity identity
+                                                         )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Format.JSON, ".json" );
+            return readConfig( uow, configType, identity, Serialization.Format.JSON, ".json" );
         }
 
-        private <C, V extends HasIdentity> V tryLoadYamlFile( UnitOfWork uow,
-                                                              Class<C> compositeType,
-                                                              Class<V> configType,
-                                                              Identity identity
-        )
+        private <V extends HasIdentity> V tryLoadYamlFile( UnitOfWork uow,
+                                                           EntityDescriptor configType,
+                                                           Identity identity
+                                                         )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Format.YAML, ".yaml" );
+            return readConfig( uow, configType, identity, Serialization.Format.YAML, ".yaml" );
         }
 
-        private <C, V extends HasIdentity> V tryLoadXmlFile( UnitOfWork uow,
-                                                             Class<C> compositeType,
-                                                             Class<V> configType,
-                                                             Identity identity
-        )
+        private <V extends HasIdentity> V tryLoadXmlFile( UnitOfWork uow,
+                                                          EntityDescriptor configType,
+                                                          Identity identity
+                                                        )
         {
-            return readConfig( uow, compositeType, configType, identity, Serialization.Format.XML, ".xml" );
+            return readConfig( uow, configType, identity, Serialization.Format.XML, ".xml" );
         }
 
-        private <C, V extends HasIdentity> V readConfig( UnitOfWork uow,
-                                                         Class<C> compositeType,
-                                                         Class<V> configType,
-                                                         Identity identity,
-                                                         String format,
-                                                         String extension
-        )
+        private <V extends HasIdentity> V readConfig( UnitOfWork uow,
+                                                      EntityDescriptor configType,
+                                                      Identity identity,
+                                                      String format,
+                                                      String extension
+                                                    )
         {
-            for( ServiceReference<Deserializer> serializerRef : stateDeserializers )
-            {
-                ServiceTags serviceTags = serializerRef.metaInfo( ServiceTags.class );
-                if( serviceTags.hasTag( format ) )
-                {
-                    String resourceName = identity + extension;
-                    try( InputStream asStream = getResource( compositeType, resourceName ) )
-                    {
-                        if( asStream != null )
-                        {
-                            Deserializer deserializer = serializerRef.get();
-                            V configObject = deserializer.deserialize( uow.module(), configType,
-                                                                       new InputStreamReader( asStream, UTF_8 ) );
-                            return uow.toEntity( configType, configObject );
-                        }
-                    }
-                    catch( IOException ignored ) {}
-                }
-            }
-            return null;
+            Module module = configType.module().instance();
+            return module.findServices( Deserializer.class )
+                         .filter( ref ->
+                                  {
+                                      ServiceTags serviceTags = ref.metaInfo( ServiceTags.class );
+                                      return serviceTags.hasTag( format );
+                                  } )
+                         .map( ref ->
+                               {
+                                   String resourceName = identity + extension;
+                                   try( InputStream asStream = getResource( configType.primaryType(), resourceName ) )
+                                   {
+                                       if( asStream != null )
+                                       {
+                                           Deserializer deserializer = ref.get();
+                                           V configObject = deserializer.deserialize( module.descriptor(), configType.valueType(),
+                                                                                      new InputStreamReader( asStream, UTF_8 ) );
+
+                                           @SuppressWarnings( "unchecked" )
+                                           Class<V> primaryType = (Class<V>) configType.primaryType();
+                                           return uow.toEntity( primaryType, configObject );
+                                       }
+                                   }
+                                   catch( IOException ignored )
+                                   {
+                                   }
+                                   return null;
+                               } )
+                         .filter( Objects::nonNull )
+                         .findFirst().orElse( null );
         }
     }
 }

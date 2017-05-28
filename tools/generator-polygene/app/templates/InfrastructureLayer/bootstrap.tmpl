@@ -44,10 +44,10 @@ public class InfrastructureLayer extends LayeredLayerAssembler
         createModule( layer, <%= polygene.serialization %>SerializationModule.class );
         createModule( layer, <%= polygene.metrics %>MetricsModule.class );
 <% if( polygene.caching !== "None" ) {
-%>        createModule( layer, <%= polygene.caching %>CachingModule.class );
+%>        createModule( layer, <%= polygene.caching %>CachingModule.class, configModule );
 <% }
-%>        new <%= polygene.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= polygene.entitystore %>StorageModule.NAME ) );
-        new <%= polygene.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= polygene.indexing %>IndexingModule.NAME ) );
+%>        createModule( layer, <%= polygene.entitystore %>StorageModule.class, configModule );
+        createModule( layer, <%= polygene.indexing %>IndexingModule.class, configModule );
         return layer;
     }
 }

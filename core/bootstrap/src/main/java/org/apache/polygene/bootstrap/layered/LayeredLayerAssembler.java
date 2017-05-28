@@ -31,11 +31,16 @@ public abstract class LayeredLayerAssembler
 
     protected ModuleAssembly createModule( LayerAssembly layer, Class<? extends ModuleAssembler> moduleAssemblerClass )
     {
+        return createModule( layer, moduleAssemblerClass, null );
+    }
+
+    protected ModuleAssembly createModule( LayerAssembly layer, Class<? extends ModuleAssembler> moduleAssemblerClass, ModuleAssembly constructorArgumentModule )
+    {
         try
         {
             String moduleName = createModuleName( moduleAssemblerClass );
             ModuleAssembly moduleAssembly = layer.module( moduleName );
-            ModuleAssembler moduleAssembler = instantiateModuleAssembler( moduleAssembly, moduleAssemblerClass );
+            ModuleAssembler moduleAssembler = instantiateModuleAssembler( moduleAssemblerClass, constructorArgumentModule );
             LayeredApplicationAssembler.setNameIfPresent( moduleAssemblerClass, moduleName );
             ModuleAssembly module = layer.module( moduleName );
             assemblers.put( moduleAssemblerClass, moduleAssembler );
@@ -62,8 +67,8 @@ public abstract class LayeredLayerAssembler
         return moduleName;
     }
 
-    protected ModuleAssembler instantiateModuleAssembler( ModuleAssembly module,
-                                                          Class<? extends ModuleAssembler> modulerAssemblerClass
+    protected ModuleAssembler instantiateModuleAssembler( Class<? extends ModuleAssembler> modulerAssemblerClass,
+                                                          ModuleAssembly constructorArgument
                                                         )
         throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException
     {
@@ -72,7 +77,7 @@ public abstract class LayeredLayerAssembler
         {
             Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor( ModuleAssembly.class );
             assemblyConstructor.setAccessible( true );
-            moduleAssembler = assemblyConstructor.newInstance( module );
+            moduleAssembler = assemblyConstructor.newInstance( constructorArgument );
         }
         catch( NoSuchMethodException e )
         {

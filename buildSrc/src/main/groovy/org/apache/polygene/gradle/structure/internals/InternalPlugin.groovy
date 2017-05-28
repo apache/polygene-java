@@ -14,36 +14,20 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.polygene.runtime.composite;
+package org.apache.polygene.gradle.structure.internals
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import groovy.transform.CompileStatic
+import org.apache.polygene.gradle.code.CodePlugin
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-/**
- * JAVADOC
- */
-public final class GenericFragmentInvocationHandler
-    extends FragmentInvocationHandler
+@CompileStatic
+class InternalPlugin implements Plugin<Project>
 {
     @Override
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+    void apply( Project project )
     {
-        try
-        {
-            return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
-        }
-        catch( InvocationTargetException throwable )
-        {
-            throw cleanStackTrace( throwable.getTargetException(), proxy, method );
-        }
-        catch( Throwable throwable )
-        {
-            throw cleanStackTrace( throwable, proxy, method );
-        }
+        project.plugins.apply CodePlugin
     }
 }

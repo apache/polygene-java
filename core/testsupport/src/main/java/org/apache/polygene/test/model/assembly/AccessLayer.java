@@ -47,8 +47,7 @@ class AccessLayer extends LayeredLayerAssembler
     }
 
     @Override
-    protected ModuleAssembler instantiateModuleAssembler( ModuleAssembly module,
-                                                          Class<? extends ModuleAssembler> moduleAssemblerClass
+    protected ModuleAssembler instantiateModuleAssembler( Class<? extends ModuleAssembler> moduleAssemblerClass, ModuleAssembly constructorArgument
                                                         )
         throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
     {
@@ -58,7 +57,7 @@ class AccessLayer extends LayeredLayerAssembler
         }
         else
         {
-            return super.instantiateModuleAssembler( module, moduleAssemblerClass );
+            return super.instantiateModuleAssembler( moduleAssemblerClass, constructorArgument );
         }
     }
 }

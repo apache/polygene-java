@@ -34,9 +34,45 @@ if( hasFeature( 'security' ) ) {
 }
 %>  implementation "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
   implementation "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
+
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
 <%
+if( polygene.caching !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
+<%
+}
+if( polygene.metrics !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
+<%
+}
 if( hasFeature( 'envisage' ) ) {
 %>  implementation "org.apache.polygene.tools:org.apache.polygene.tool.envisage:$polygeneVersion"
+<%
+}
+if( polygene.entitystore == 'LevelDB'  ) {
+%>  implementation "org.fusesource.leveldbjni:leveldbjni-all:1.8"
+<%
+}
+if( polygene.entitystore == 'DerbySQL'  ) {
+%>  implementation "org.apache.derby:derby:10.13.1.1"
+<%
+}
+if( polygene.entitystore == 'H2SQL'  ) {
+%>  implementation "com.h2database:h2:1.4.194"
+<%
+}
+if( polygene.entitystore == 'MySQL'  ) {
+%>  implementation "mysql:mysql-connector-java:6.0.6"
+<%
+}
+if( polygene.entitystore == 'PostgreSQL'  ) {
+%>  implementation "org.postgresql:postgresql:42.0.0"
+<%
+}
+if( polygene.entitystore == 'SQLite'  ) {
+%>  implementation "org.xerial:sqlite-jdbc:3.16.1"
 <%
 }
 %>
@@ -51,24 +87,5 @@ if( hasFeature( 'envisage' ) ) {
 
   testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
   testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
-<%
-if( polygene.entitystore.indexOf('SQL') >= 0 ) {
-    if( polygene.dbpool !== 'None' ) {
-%>  testImplementation "org.apache.polygene.libraries:org.apache.polygene.library.sql-<%= polygene.dbpool.toLowerCase() %>:$polygeneVersion"
-<%
-    }
+  testImplementation "com.github.tdomzal:junit-docker-rule:0.3"
 }
-%>
-  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
-  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
-  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
-<%
-if( polygene.caching !== "None" ) {
-%>  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
-<%
-}
-    if( polygene.metrics !== "None" ) {
-%>  testImplementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
-<%
-    }
-%>}

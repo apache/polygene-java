@@ -14,36 +14,18 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *
  */
-package org.apache.polygene.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+apply plugin: 'polygene-internal'
+apply plugin: 'polygene-internal-docker'
 
-/**
- * JAVADOC
- */
-public final class GenericFragmentInvocationHandler
-    extends FragmentInvocationHandler
-{
-    @Override
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
-    {
-        try
-        {
-            return ( (InvocationHandler) fragment ).invoke( proxy, method, args );
-        }
-        catch( InvocationTargetException throwable )
-        {
-            throw cleanStackTrace( throwable.getTargetException(), proxy, method );
-        }
-        catch( Throwable throwable )
-        {
-            throw cleanStackTrace( throwable, proxy, method );
-        }
-    }
+description = "Apache Polygene™ Internal Test Support"
+
+jar { manifest { name = "Apache Polygene™ Internals - Test Support" } }
+
+dependencies {
+    api polygene.core.testsupport
+
+    implementation libraries.docker_junit
+    runtimeOnly polygene.core.runtime
 }

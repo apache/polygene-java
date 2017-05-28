@@ -38,11 +38,9 @@ if( polygene.applicationtype === 'Rest API' ) {
 <%
 }
 
-if( polygene.entitystore.indexOf('SQL') >= 0 ) {
-    if( polygene.dbpool !== 'None' ) {
+if( polygene.entitystore.indexOf('SQL') >= 0 || polygene.indexing === 'SQL' ) {
 %>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.sql-<%= polygene.dbpool.toLowerCase() %>:$polygeneVersion"
 <%
-    }
 }
 %>
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"

@@ -25,29 +25,27 @@ module.exports = {
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/infrastructure/' + p.entitystore + 'StorageModule.java');
 
         var esFileName = 'es-' + p.entitystore.toLowerCase() + '.properties';
-        var configurationPath = 'InfrastructureLayer/StorageModule/storage/' + esFileName;
+        var configurationPath = 'InfrastructureLayer/StorageModule/storage/';
+        var configurationFile = configurationPath + esFileName;
 
-        if( p.entitystore.indexOf( 'SQL') < 0 ) {
-            fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
+        if (p.entitystore.indexOf('SQL') < 0) {
+            fs.stat(__dirname + "/../../" + configurationFile, function (err, stat) {
                 if (err === null) {
                     p.copyTemplate(p.ctx,
-                        configurationPath,
+                        configurationFile,
                         'app/src/main/resources/' + esFileName);
                 }
             });
         } else {
-            var dsFileName = 'ds-' + p.entitystore.toLowerCase() + '.properties';
+            p.copyTemplate(p.ctx,
+                'InfrastructureLayer/StorageModule/storage/es-sql.properties',
+                'app/src/main/resources/' + esFileName);
+
+            var dsFileName = 'ds-es-' + p.entitystore.toLowerCase() + '.properties';
             var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
-            fs.stat(__dirname + "/../../" + configurationPath, function (err, stat) {
-                if (err === null) {
-                    p.copyTemplate(p.ctx,
-                        'InfrastructureLayer/StorageModule/storage/es-sql.properties',
-                        'app/src/main/resources/' + esFileName);
-                    p.copyTemplate(p.ctx,
-                        datasourceFile,
-                        'app/src/main/resources/' + dsFileName);
-                }
-            });
+            p.copyTemplate(p.ctx,
+                datasourceFile,
+                'app/src/main/resources/' + dsFileName);
         }
     }
 };
