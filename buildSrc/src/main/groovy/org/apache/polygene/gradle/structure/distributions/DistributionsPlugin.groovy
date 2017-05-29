@@ -444,6 +444,7 @@ class DistributionsPlugin implements Plugin<Project>
         '.gradle/**',
         'docs/**',
         'etc/templates/**',
+        'etc/codestyle-idea.jar',
         'libs/**'
       ]
     } as Action<RatTask> )
