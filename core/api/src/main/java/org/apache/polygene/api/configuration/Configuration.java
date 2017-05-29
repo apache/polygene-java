@@ -252,6 +252,10 @@ public interface Configuration<T>
             catch( NoSuchEntityException | NoSuchEntityTypeException e )
             {
                 EntityDescriptor entityDescriptor = module.typeLookup().lookupEntityModel( configurationType );
+                if( entityDescriptor == null )
+                {
+                    throw new NoSuchConfigurationTypeException( configurationType, module.descriptor() );
+                }
                 return (V) initializeConfigurationInstance( entityDescriptor, uow, serviceModel, serviceIdentity );
             }
             return configuration;
