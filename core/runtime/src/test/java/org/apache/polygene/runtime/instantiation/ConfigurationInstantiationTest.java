@@ -44,20 +44,29 @@ public class ConfigurationInstantiationTest extends AbstractPolygeneTest
         module.services( MemoryEntityStoreService.class );
         module.services( MyService.class ).instantiateOnStartup();
         module.configurations( MyConfig.class );
+        System.setProperty( "path", "fakepath" );
     }
 
     @Test
     public void givenSpecialInitializableWhenStartingExpectOsNameToBeSet()
     {
         MyService myService = serviceFinder.findService( MyService.class ).get();
-        assertThat( myService.osName(), equalTo(System.getProperty( "os.name" )));
+        assertThat( myService.osName(), equalTo( System.getProperty( "os.name" ) ) );
+        if( myService.osName().equalsIgnoreCase( "Linux" ) )
+        {
+            assertThat( myService.home(), equalTo( System.getProperty( "user.home" ) ) );
+        }
+        assertThat( myService.path(), equalTo( System.getProperty( "path" ) ) );
     }
 
-
-    @Mixins( MyMixin.class)
+    @Mixins( MyMixin.class )
     public interface MyService
     {
         String osName();
+
+        String home();
+
+        String path();
     }
 
     public class MyMixin
@@ -70,6 +79,18 @@ public class ConfigurationInstantiationTest extends AbstractPolygeneTest
         public String osName()
         {
             return config.get().osName().get();
+        }
+
+        @Override
+        public String home()
+        {
+            return config.get().home().get();
+        }
+
+        @Override
+        public String path()
+        {
+            return config.get().path().get();
         }
 
         @Override
@@ -90,5 +111,9 @@ public class ConfigurationInstantiationTest extends AbstractPolygeneTest
     public interface MyConfig
     {
         Property<String> osName();
+
+        Property<String> home();
+
+        Property<String> path();
     }
 }

@@ -23,7 +23,10 @@ package org.apache.polygene.api.configuration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
+import java.util.stream.Stream;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.PropertyMapper;
@@ -285,15 +288,19 @@ public interface Configuration<T>
                         config = tryLoadXmlFile( buildUow, entityDescriptor, identity );
                         if( config == null )
                         {
-                            try
+                            config = tryLoadSystemProperties( buildUow, entityDescriptor, identity );
+                            if( config == null )
                             {
-                                EntityBuilder<V> configBuilder = buildUow.newEntityBuilder(
-                                    serviceModel.<V>configurationType(), identity );
-                                configBuilder.newInstance();
-                            }
-                            catch( ConstraintViolationException e )
-                            {
-                                throw new NoSuchConfigurationException( configType, identity, e );
+                                try
+                                {
+                                    EntityBuilder<V> configBuilder =
+                                        buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+                                    configBuilder.newInstance();
+                                }
+                                catch( ConstraintViolationException e )
+                                {
+                                    throw new NoSuchConfigurationException( configType, identity, e );
+                                }
                             }
                         }
                     }
@@ -317,10 +324,47 @@ public interface Configuration<T>
             }
         }
 
-        private <V> V tryLoadPropertiesFile( UnitOfWork buildUow,
-                                             EntityDescriptor configType,
-                                             Identity identity
-                                           )
+        private <V> V tryLoadSystemProperties( UnitOfWork buildUow, EntityDescriptor configType, Identity identity )
+            throws InstantiationException
+        {
+            @SuppressWarnings( "unchecked" )
+            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( (Class<V>) configType.primaryType(), identity );
+            PropertyMapper.map( systemProperties(), (Composite) configBuilder.instance() );
+            return configBuilder.newInstance();
+        }
+
+        private Properties systemProperties()
+        {
+            Stream<Map.Entry<?, ?>> allProps =
+                Stream.concat( System.getenv().entrySet().stream(), System.getProperties().entrySet().stream() );
+            Properties props = new Properties();
+            allProps.forEach( entry -> props.put( transform( (String) entry.getKey() ), entry.getValue() ) );
+            return props;
+        }
+
+        private String transform( String text )
+        {
+            boolean upper = false;
+            StringBuilder builder = new StringBuilder();
+            for( int i = 0; i < text.length(); i++ )
+            {
+                char ch = Character.toLowerCase( text.charAt( i ) );
+                if( ch == '.' )
+                {
+                    upper = true;
+                    continue;
+                }
+                if( upper )
+                {
+                    ch = Character.toUpperCase( ch );
+                    upper = false;
+                }
+                builder.append( ch );
+            }
+            return builder.toString();
+        }
+
+        private <V> V tryLoadPropertiesFile( UnitOfWork buildUow, EntityDescriptor configType, Identity identity )
             throws InstantiationException
         {
             @SuppressWarnings( "unchecked" )

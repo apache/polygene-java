@@ -114,7 +114,7 @@ public final class PropertyMapper
             }
             catch( NoSuchMethodException e )
             {
-                throw new IllegalArgumentException( "Could not find any property named " + objectObjectEntry.getKey() );
+//                throw new IllegalArgumentException( "Could not find any property named " + objectObjectEntry.getKey() );
             }
             catch( IllegalAccessException e )
             {
