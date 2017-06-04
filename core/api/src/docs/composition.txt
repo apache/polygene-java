@@ -23,15 +23,7 @@ In Polygene, we use the term Assembly for the second case of composition. See se
 Composition will allow library authors a new level of flexibility in how functionality is provided to client code. More
 on that later.
 
-== Fragments ==
-
-There are 4 types of Fragments in Polygene;
-
-    * <<core-api-mixin>> - The state carrying part of a Composite.
-    * <<core-api-constraint>> - Rules for in and out arguments, typically used for validation.
-    * <<core-api-concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
-    * <<core-api-sideeffect>> - Executed after the method call has been completed, and unable to influence the
-    outcome of the method call.
+include::fragment.txt[]
 
 == Composites ==
 

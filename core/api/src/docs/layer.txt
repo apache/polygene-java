@@ -1,0 +1,24 @@
+//////////////////////
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-layer,Layer]]
+= Layer =
+A Polygene™ Application must consist of at least one layer. More layers are common, often dividing the application along the
+common architectural diagrams used on whiteboards, perhaps with a UI layer at the top, followed by a service or application
+layer, then with a domain layer and finally some persistence layer at the bottom.
+
+Polygene™ enforces this layering by requiring the <<core-bootstrap-assembly>> to declare which layer uses which other layer. And
+<<core-api-visibility>> rules define that layers below can not locate composites in layers above. Also, defining that
+"Layer1 uses Layer2" and "Layer2 uses Layer3" does NOT imply that Layer1 has <<core-api-visibility>> to Layer3. If that
+is wanted, then it must be declared explicitly.
+

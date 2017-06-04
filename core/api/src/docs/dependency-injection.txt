@@ -16,3 +16,139 @@
  * specific language governing permissions and limitations
  * under the License.
 ///////////////////////////////////////////////////////////////
+
+[[core-api-dependency-injection,Dependency Injection]]
+= Dependency Injection =
+
+Polygene has a rather sophisticated dependency injection system, which is based around the <<core-api-modules>>
+and <<core-api-visibility>> concepts. The dependency injection system also need help to keep the injection scopes
+separated. The following injection scopes exists, some more common than others;
+
+    * ++@This++ - injection of fragment from the same Composite instance.
+    * ++@Structure++ - injection of <<core-api-structure>> organized types.
+    * ++@Service++ - injection of services.
+    * ++@Uses++ - injection of construction injected objects
+    * ++@Invocation++ - injection of parts related to the current method invocation.
+    * ++@State++ - injection of state of the composite instance
+    * Custom injection scopes - managed through ++@AppliesTo++ and ++AppliesToFilter++ declarations.
+
+[[core-api-this,@This]]
+== @This ==
+++@This++ is equivalent to the ++this++ pointer in the Java language, but refers to any part of the current
+<<core-api-composite>>. This can either be a declared mixin type, or if not declared will be a <<def-private-mixin>>.
+
+=== Example ===
+
+We can simply request the injection of any type of the composite that we belong to, such as;
+
+[source,java]
+--------------
+@Mixins( { OrderMixin.class, ShippingMixin.class } )
+public interface Order extends HasShippingInformation
+{
+   :
+}
+
+public abstract class OrderMixin
+    implements Order
+{
+    @This
+    private HasShippingInformation shipping;
+}
+--------------
+
+But we can have <<def-private-mixin>> instead, where the injected mixin type will be automatically added to the
+composite.
+
+[source,java]
+--------------
+@MIxins( OrderMixin.class )
+public interface Order
+{
+   :
+}
+
+public class OrderMixin
+    implements Order
+{
+    @This
+    private DiscountRate discount;
+--------------
+
+[[core-api-structure-injection,@Structure]]
+== @Structure ==
+The ++@Structure++ injection scope is all about the types involved in the Application <<core-api-structure>> system.
+The possible types are;
+
+    * Application
+    * ApplicationDescriptor
+    * Layer
+    * LayerDescriptor
+    * Module
+    * ModuleDescriptor
+    * ModuleSPI
+    * UnitOfWorkFactory
+    * EntityBuilderFactory
+    * ValueBuilderFactory
+    * TransientBuilderFactory
+    * ObjectFactory
+    * QueryBuilderFactory
+    * ServiceFinder
+    * PolygeneAPI
+    * PolygeneSPI
+
+[[core-api-service,@Service]]
+== @Service ==
+Services are injected either in a number of ways, either direct, via List or via ServiceReference types. The following
+combinations are allowed;
+
+[source,java]
+--------------
+    @Service
+    private MyService service;
+
+    @Service
+    private Iterable<MyService> services;
+
+    @Service
+    private ServiceReference<MyService> service;
+
+    @Service
+    private Iterable<ServiceReference<MyService>> services;
+--------------
+
+If service is not declared ++instantiateOnStartup++ during assembly, then the service will be activated on first
+method invocation, and not on injection. This means that any reflection on the injected instance, may result in
+unexpected behavior.
+
+[[core-api-uses,@Uses]]
+== @Uses ==
+<<def-object>> and <<def-valuecomposite>> can be created with ++uses()++ declarations. This allows injection of
+arbitrary types to these meta types. Only type matching will occur, so for instance only one String can be injected
+this way.
+
+If a ++@Uses++ declaration can not be satisfied from the injected objects via ++uses()++ builder method, then
+if the ++@Uses++ injection is not ++@Optional++ the Polygene runtime will attempt to (in this order)
+
+    * Instantiate a visible <<def-transientcomposite>>
+    * Instantiate a visible <<def-object>>
+    * Instantiate a plain object with this Composite instance as a single constructor argument.
+
+If the ++@Uses++ is ++@Optional++ then no implict object creation will take place.
+
+[[core-api-invocation,@Invocation]]
+== @Invocation ==
+++@Invocation++ injection scope is all about the current method call. It is possible to inject the following types;
+
+    * The ++Method++ being executed.
+    * Any annotation type that the method is annotated with.
+    * An ++Iterable++ of either of the above
+
+[[core-api-state,@State]]
+== @State ==
+This injection scope can inject either a ++StateHolder++ which allows inspection of current state of the Composite,
+or it can inject any declared <<def-property>>, <<def-assocation>>, <<def-manyassociation>> or
+<<def-namedassociation>>.
+
+[[core-api-custom-injection,Custom Injection Scopes]]
+== Custom Injection Scopes ==
