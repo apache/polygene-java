@@ -57,12 +57,12 @@ public class CassandraEntityStoreTest
             .assemble( module );
         // END SNIPPET: assembly
 
-        CassandraEntityStoreConfiguration cassandraConfig = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
+        CassandraEntityStoreConfiguration cassandraDefaults = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "9042/tcp" );
         System.out.println("Cassandra: " + host + ":" + port);
-        cassandraConfig.hostnames().set( host + ':' + port );
-        cassandraConfig.createIfMissing().set( true );
+        cassandraDefaults.hostnames().set( host + ':' + port );
+        cassandraDefaults.createIfMissing().set( true );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
