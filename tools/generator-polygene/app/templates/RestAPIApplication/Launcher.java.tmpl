@@ -54,6 +54,12 @@ public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLaunche
 %>        return new <%= polygene.name %>ApplicationAssembler( name, version, mode, none -> {} );
     }
 
+    @Override
+    public void shutdown()
+    {
+        super.shutdown();
+    }
+
     protected String entryLayer()
     {
         return ConnectivityLayer.NAME;

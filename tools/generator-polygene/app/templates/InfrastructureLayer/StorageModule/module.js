@@ -31,21 +31,14 @@ module.exports = {
         if (p.entitystore.indexOf('SQL') < 0) {
             fs.stat(__dirname + "/../../" + configurationFile, function (err, stat) {
                 if (err === null) {
-                    p.copyTemplate(p.ctx,
-                        configurationFile,
-                        'app/src/main/resources/' + esFileName);
+                    p.copyToConfig(p.ctx, configurationFile, esFileName);
                 }
             });
         } else {
-            p.copyTemplate(p.ctx,
-                'InfrastructureLayer/StorageModule/storage/es-sql.properties',
-                'app/src/main/resources/' + esFileName);
-
+            p.copyToConfig(p.ctx, 'InfrastructureLayer/StorageModule/storage/es-sql.properties', esFileName);
             var dsFileName = 'ds-es-' + p.entitystore.toLowerCase() + '.properties';
             var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
-            p.copyTemplate(p.ctx,
-                datasourceFile,
-                'app/src/main/resources/' + dsFileName);
+            p.copyToConfig(p.ctx, datasourceFile, dsFileName);
         }
     }
 };

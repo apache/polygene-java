@@ -36,7 +36,7 @@ public class JmxModule
     {
         new JMXAssembler().assemble( module );
         module.services( JMXConnectorService.class ).instantiateOnStartup();
-        module.entities( JMXConnectorConfiguration.class );
+        module.configurations( JMXConnectorConfiguration.class );
         module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
         return module;
     }

@@ -19,8 +19,8 @@
 
 [[tools-shell,Command Line Shell]]
 = Polygene Generator =
-Apache Polygene comes with a Yeoman code generator, to quickly set up a development
-environment for Polygene applications.
+Apache Polygene comes with a Yeoman code generator, to quickly set up a
+project for Polygene applications.
 
 [source,shell]
 ----
@@ -88,6 +88,15 @@ number of implementations to choose from. Not that "memory" is not persistent, b
   Riak
   PostgreSQL
   SQLite
+----
+
+If one of the SQL options are given, then a question of connection pool will pop up.
+
+[source,shell]
+----
+? Which connection pool do you want to use?
+  BoneCP
+> DBCP
 ----
 
 === Indexing/Query system ===
@@ -272,7 +281,11 @@ where the content of the +../model.json+ is as follows,
           "visibility": "application",
           "configuration" : [
             { "name": "backend", "type": "java.lang.String" },
-            { "name": "connectString", "type": "java.lang.String" }
+            { "name": "connectString", "type": "java.lang.String",
+              "description": [
+                  "The connection string to the authentication and authorization backend system."
+              ]
+            }
           ]
         }
       ]
@@ -325,11 +338,19 @@ we will create a complete project, like this
 
 [source,shell]
 ----
-  create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigurationLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigurationLayer.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/InfrastructureLayer.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/DomainLayer.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/ConnectivityLayer.java
-   create app/src/main/webapp/WEB-INF/web.xml
+   create rest/src/main/java/com/sensetif/sink/rest/FloodRestApplication.java
+   create app/src/main/java/com/sensetif/sink/app/FloodLauncher.java
+   create app/src/main/java/com/sensetif/sink/app/DevelopmentKeyManagement.java
+   create app/src/main/config/development/web-shiro.ini
+   create app/src/main/config/qa/web-shiro.ini
+   create app/src/main/config/staging/web-shiro.ini
+   create app/src/main/config/production/web-shiro.ini
+   create app/src/test/java/com/sensetif/sink/app/BootstrapTest.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/FloodApplicationAssembler.java
    create app/build.gradle
    create bootstrap/build.gradle
    create model/build.gradle
@@ -343,34 +364,53 @@ we will create a complete project, like this
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/MemcacheCachingModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/FileConfigurationModule.java
-   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/SQLIndexingModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/RdfIndexingModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CodahaleMetricsModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/JavaxJsonSerializationModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CassandraStorageModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/CrudModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/UserModule.java
-   create model/src/main/java/com/sensetif/sink/model/user/Users.java
-   create model/src/main/java/com/sensetif/sink/model/user/Roles.java
    create model/src/main/java/com/sensetif/sink/model/user/User.java
+   create model/src/main/java/com/sensetif/sink/model/user/Users.java
    create model/src/main/java/com/sensetif/sink/model/user/Role.java
+   create model/src/main/java/com/sensetif/sink/model/user/Roles.java
    create model/src/main/java/com/sensetif/sink/model/user/Permission.java
+   create model/src/main/java/com/sensetif/sink/model/user/Permissions.java
    create model/src/main/java/com/sensetif/sink/model/user/Group.java
    create model/src/main/java/com/sensetif/sink/model/user/Groups.java
    create model/src/main/java/com/sensetif/sink/model/user/AuthService.java
+   create model/src/main/java/com/sensetif/sink/model/user/AuthBackend.java
    create model/src/main/java/com/sensetif/sink/model/user/AuthConfiguration.java
-   create model/src/main/resources/com/sensetif/sink/model/user/AuthConfiguration.yaml
+   create app/src/main/config/development/AuthService.properties
+   create app/src/main/config/qa/AuthService.properties
+   create app/src/main/config/staging/AuthService.properties
+   create app/src/main/config/production/AuthService.properties
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/OrganizationModule.java
-   create model/src/main/java/com/sensetif/sink/model/organization/Organizations.java
    create model/src/main/java/com/sensetif/sink/model/organization/Organization.java
    create model/src/main/java/com/sensetif/sink/model/organization/Project.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Contract.java
+   create model/src/main/java/com/sensetif/sink/model/organization/ContractPart.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Order.java
+   create model/src/main/java/com/sensetif/sink/model/organization/OrderConfirmation.java
    create model/src/main/java/com/sensetif/sink/model/organization/Invoice.java
    create model/src/main/java/com/sensetif/sink/model/organization/CreditLimit.java
-   create model/src/main/java/com/sensetif/sink/model/organization/OrderConfirmation.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Label.java
    create model/src/main/java/com/sensetif/sink/model/organization/PaypalNotification.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/SensorModule.java
-   create model/src/main/java/com/sensetif/sink/model/sensor/SensorData.java
-   create model/src/main/java/com/sensetif/sink/model/sensor/Sensor.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/SensorDetails.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/SensorPoll.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Access.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/JsonDocumentAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/XmlDocumentAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/ModbusDeviceAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/JsonPathSelector.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/XPathSelector.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/ModbusSelector.java
    create model/src/main/java/com/sensetif/sink/model/sensor/PollSchedule.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/AccessType.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Address.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Selector.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/JmxModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/SecurityModule.java
    create model/src/main/java/com/sensetif/sink/model/security/CryptoConfiguration.java
    create model/src/main/java/com/sensetif/sink/model/security/CryptoException.java
@@ -381,8 +421,18 @@ we will create a complete project, like this
    create model/src/main/java/com/sensetif/sink/model/security/SecurityRepository.java
    create model/src/main/java/com/sensetif/sink/model/security/User.java
    create model/src/main/java/com/sensetif/sink/model/security/UserFactory.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/HttpServerModule.java
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/RestApiModule.java
    create rest/src/main/java/com/sensetif/sink/rest/security/DefaultEnroler.java
    create rest/src/main/java/com/sensetif/sink/rest/security/DefaultVerifier.java
+   create app/src/main/config/development/es-cassandra.properties
+   create app/src/main/config/qa/es-cassandra.properties
+   create app/src/main/config/staging/es-cassandra.properties
+   create app/src/main/config/production/es-cassandra.properties
 ----
+
+Notice that there is a ++app/src/main/config++ directory with 4 sub-directories. Each of those subdirectories
+represents one of the modes in ++Application.Mode++. The start script will look for the environment variable
+SYS_ENVIRONMENT and select the ++Application.Mode++ accordingly and set the configuration directory
+(i.e. make it part of the CLASSPATH) to such.
 

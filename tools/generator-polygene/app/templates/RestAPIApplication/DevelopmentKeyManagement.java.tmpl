@@ -71,16 +71,17 @@ class DevelopmentKeyManagement
         @SuppressWarnings( "unused" )
         KeyStore trustStore = loadKeyStore( new File(TRUSTSTORE_FILENAME), TRUSTSTORE_TYPE, KS_PASSWORD );
 
-        KeyStore keyStore = loadKeyStore( new File(SERVER_KEYSTORE_FILENAME), SERVER_KEYSTORE_TYPE, KS_PASSWORD );
+        File keyFile = new File( SERVER_KEYSTORE_FILENAME );
+        KeyStore keyStore = loadKeyStore( keyFile, SERVER_KEYSTORE_TYPE, KS_PASSWORD );
         initializeKeyManager( keyStore, KS_PASSWORD );
-        createKeyStoreData( keyStore );
+        createKeyStoreData( keyStore, keyFile, SERVER_KEYSTORE_TYPE, KS_PASSWORD );
     }
 
     private static KeyStore loadKeyStore( File keyFile, String type, String password )
     {
         if( !keyFile.exists() )
         {
-            return createKeyStore(keyFile, type, password);
+            createKeyStore(keyFile, type, password);
         }
         try( FileInputStream fis = new FileInputStream( keyFile ) )
         {
@@ -96,7 +97,7 @@ class DevelopmentKeyManagement
     }
 
     @SuppressWarnings( "ResultOfMethodCallIgnored" )
-    private static KeyStore createKeyStore( File keyFile, String type, String password )
+    private static void createKeyStore( File keyFile, String type, String password )
         throws AssemblyException
     {
         if( !keyFile.getParentFile().exists() )
@@ -109,7 +110,6 @@ class DevelopmentKeyManagement
             char[] pwd = password.toCharArray();
             ks.load( null, pwd );
             ks.store( fos, pwd );
-            return ks;
         }
         catch( Exception e )
         {
@@ -130,7 +130,7 @@ class DevelopmentKeyManagement
         }
     }
 
-    private static void createKeyStoreData( KeyStore keyStore )
+    private static void createKeyStoreData( KeyStore keyStore, File keyFile, String type, String password )
     {
         try
         {
@@ -141,6 +141,7 @@ class DevelopmentKeyManagement
             KeyPair keyPair = generateKeyPair();
             X509Certificate certificate = selfSignedCertificate( keyPair, COMMON_NAME, 30 );
             keyStore.setCertificateEntry( COMMON_NAME, certificate );
+            storeKeyStore(keyStore, keyFile, password, type);
 
             System.out.println("Created Self-signed certificated:");
             System.out.println(convertCertificateToPEM( certificate ));
@@ -148,6 +149,21 @@ class DevelopmentKeyManagement
         catch( KeyStoreException e )
         {
             throw new AssemblyException( "Unable to store certificate in keystore.", e );
+        }
+    }
+
+    private static void storeKeyStore( KeyStore keyStore, File keyFile, String password, String type )
+    {
+        try( FileOutputStream fos = new FileOutputStream( keyFile ) )
+        {
+            KeyStore ks = KeyStore.getInstance( type );
+            char[] pwd = password.toCharArray();
+            ks.load( null, pwd );
+            ks.store( fos, pwd );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to create keystore.", e );
         }
     }
 

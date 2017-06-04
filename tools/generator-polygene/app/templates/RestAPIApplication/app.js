@@ -36,9 +36,7 @@ module.exports = {
             p.copyTemplate(p.ctx,
                 'RestAPIApplication/DevelopmentKeyManagement.java.tmpl',
                 'app/src/main/java/' + p.javaPackageDir + '/app/DevelopmentKeyManagement.java');
-            p.copyTemplate(p.ctx,
-                'RestAPIApplication/web-shiro.ini.tmpl',
-                'app/src/main/resources/web-shiro.ini');
+            p.copyToConfig(p.ctx, 'RestAPIApplication/web-shiro.ini.tmpl', 'web-shiro.ini');
         }
 
         p.copyTemplate(p.ctx,

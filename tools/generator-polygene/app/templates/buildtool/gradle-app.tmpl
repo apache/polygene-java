@@ -18,6 +18,24 @@
  *
 -%>
 
+
+apply plugin: 'application'
+
+mainClassName="<%= polygene.packageName %>.app.<%= polygene.name %>Launcher"
+
+applicationDefaultJvmArgs=[]
+// GC Tuning strategies, see https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/
+// Strict memory bound
+// applicationDefaultJvmArgs << "-Xmx512M -Xms512M"
+//
+// Goal oriented, "throughput" and "max pause"
+// applicationDefaultJvmArgs << "-XX:MaxGCPauseMillis=300 -XX:GCTimeRatio=19"
+//
+// Garbage Collector
+// OneOf; -XX:+UseG1GC, -XX:+UseConcMarkSweepGC, -XX:-UseParallelOldGC, -XX:+UseSerialGC
+applicationDefaultJvmArgs << "-XX:+UseG1GC"
+
+
 dependencies {
   implementation project( ":bootstrap" )
   implementation project( ":model" )
@@ -88,4 +106,23 @@ if( polygene.entitystore == 'SQLite'  ) {
   testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
   testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   testImplementation "com.github.tdomzal:junit-docker-rule:0.3"
+}
+
+
+task createConfigs {
+  def config = file("src/main/config")
+  outputs.dir config
+  doLast {
+    config.mkdirs()
+  }
+}
+
+distributions {
+  main {
+    contents {
+      from(createConfigs) {
+        into "config"
+      }
+    }
+  }
 }

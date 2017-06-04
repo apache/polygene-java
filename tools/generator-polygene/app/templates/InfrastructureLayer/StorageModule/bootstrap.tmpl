@@ -26,6 +26,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.<%- polygene.entitystore %>EntityStoreConfiguration;
 import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.assembly.<%- polygene.entitystore %>EntityStoreAssembler;
 <%
 if( polygene.entitystore.indexOf('SQL') >= 0 ) {
@@ -73,9 +74,17 @@ if( polygene.entitystore.indexOf( 'SQL' ) >= 0 ) {
             .withConfig( configModule, Visibility.application )
             .identifiedBy( "es-<%- polygene.entitystore.toLowerCase() %>" )
             .assemble( module );
+<%
+if( polygene.entitystore === 'Cassandra' ) {
+%>        configModule.forMixin( CassandraEntityStoreConfiguration.class )
+            .declareDefaults()
+            .createIfMissing().set( true );
+<%
+}
+%>
         module.services( IdentityGenerator.class )
-              .visibleIn( Visibility.application )
-              .withMixins( UuidGeneratorMixin.class );
+            .visibleIn( Visibility.application )
+            .withMixins( UuidGeneratorMixin.class );
         return module;
     }
 }

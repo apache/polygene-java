@@ -25,7 +25,11 @@ if( project.version == 'unspecified' )
 
 rootProject.ext {
   polygeneVersion = "<%= polygene.version %>"
+<% if( polygene.applicationtype === "Rest API" ) {
+%>  jettyVersion = "9.2.17.v20160517"
+<%
 }
+%>}
 
 allprojects() {
   apply plugin: 'java-library'

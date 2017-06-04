@@ -35,6 +35,8 @@ import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 <%
+polygene.needsDelayChecker = false;
+
 if(  polygene.entitystore === 'MySQL' ) {
 %>import java.util.HashMap;
 <%
@@ -89,6 +91,8 @@ public class BootstrapTest
         };
         launcher.initialize();
         System.out.println("Application Launched...");
+        // Thread.sleep( 3600000L );
+        launcher.shutdown();
     }
 
     private void setupTest( ApplicationAssembly assembly )
@@ -186,6 +190,7 @@ if(  polygene.entitystore === 'MongoDB' ) {
     }
 <% }
 if(  polygene.entitystore === 'MySQL' ) {
+    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
@@ -205,6 +210,7 @@ if(  polygene.entitystore === 'MySQL' ) {
                                                          .build();
 <% }
 if(  polygene.entitystore === 'PostgreSQL' ) {
+    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
@@ -264,6 +270,7 @@ if(  polygene.caching === 'Memcache' ) {
                                                             .imageName( "memcached:latest"  )
                                                             .expose( "11211", "11211" )
                                                             .waitForTimeout( 120 )
+                                                            .waitFor( WaitFor.tcpPort(11211) )
                                                             .build();
 
 <% }
@@ -272,8 +279,9 @@ if(  polygene.caching === 'EhCache' ) {
     @ClassRule
     public static final DockerRule CACHE_DOCKER = DockerRule.builder()
                                                             .imageName( "terracotta/terracotta-server-oss:latest"  )
-                                                            .publishAllPorts( true )
+                                                            .expose( "9510", "9510" )
                                                             .waitForTimeout( 120 )
+                                                            .waitFor( WaitFor.tcpPort(9510) )
                                                             .build();
 <% }
 if(  polygene.indexing === 'ElasticSearch' ) {
@@ -286,7 +294,8 @@ if(  polygene.indexing === 'ElasticSearch' ) {
                                                                .build();
 <%
 } %>
-
+<% if( polygene.needsDelayChecker ) {
+%>
     private static class DelayChecker
         implements StartCondition
     {
@@ -304,7 +313,6 @@ if(  polygene.indexing === 'ElasticSearch' ) {
         {
             return new StartConditionCheck()
             {
-
                 @Override
                 public boolean check()
                 {
@@ -324,4 +332,5 @@ if(  polygene.indexing === 'ElasticSearch' ) {
             };
         }
     }
-}
+<% }
+%>}
