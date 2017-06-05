@@ -205,9 +205,20 @@ if(  polygene.entitystore === 'Memory' ) {
 <% }
 if(  polygene.entitystore === 'MongoDB' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+        MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class ).declareDefaults();
+        mongoConfig.hostname().set( ES_DOCKER.getDockerHost() );
+        mongoConfig.port().set( Integer.valueOf( ES_DOCKER.getExposedContainerPort( "27017/tcp" ) ) );
     }
+
+    @ClassRule
+    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                            .imageName( "mongo:3.5.8" )
+                                                            .expose( "27017" )
+                                                            .waitForTimeout( 120 )
+                                                            .waitFor( WaitFor.tcpPort(27017) ) );
 <% }
 if(  polygene.entitystore === 'MySQL' ) {
     polygene.needsDelayChecker = true;
