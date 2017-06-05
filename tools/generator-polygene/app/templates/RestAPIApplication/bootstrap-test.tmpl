@@ -36,7 +36,7 @@ import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 <%
 polygene.needsDelayChecker = false;
-polygene.needsDocker = ['Cassandra', 'JClouds', 'MySQL', 'PostgreSQL', 'Redis', 'Riak'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
+polygene.needsDocker = ['Cassandra', 'MySQL', 'PostgreSQL', 'Redis', 'Riak', 'MongoDB'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
 
 if( polygene.entitystore === 'MySQL' ) {
 %>import java.util.HashMap;
@@ -174,16 +174,10 @@ if(  polygene.entitystore === 'Hazelcast' ) {
 <% }
 if(  polygene.entitystore === 'JClouds' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        // Assembly use a transient JClouds provider
     }
-
-    @ClassRule
-    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "scality/s3server:mem-6a8e1cd"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "server started" ) ) );
 <% }
 if(  polygene.entitystore === 'Jdbm' ) {
 %>
@@ -320,7 +314,7 @@ if( polygene.needsDocker ) {
     /**
      * This JUnit Rule will skip tests if no Docker service is available.
      */
-    private static class OptionalDockerRule implements TestRule
+    public static class OptionalDockerRule implements TestRule
     {
         private final DockerRuleBuilder dockerRuleBuilder;
         private DockerRule dockerRule;
