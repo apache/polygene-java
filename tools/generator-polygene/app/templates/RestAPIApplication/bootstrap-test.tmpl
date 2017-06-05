@@ -35,8 +35,9 @@ import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 <%
-polygene.needsDelayChecker = false;
+polygene.ignoredTest = ['MySQL', 'PostgreSQL'].indexOf(polygene.entitystore) != -1 || ['SQL'].indexOf(polygene.indexing) != -1;
 polygene.needsDocker = ['Cassandra', 'Redis', 'Riak', 'MongoDB'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
+polygene.needsDelayChecker = false;
 
 if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' ) {
     if( polygene.entitystore.indexOf('SQL') < 0 ) {
@@ -67,12 +68,20 @@ import org.junit.ClassRule;
 <%
 }
 %>
-import org.junit.Ignore;
 import org.junit.Test;
 
+<%
+if( polygene.ignoredTest ) {
+%>
+// This combination of EntityStore and Index/Query extensions requires some manual setup
+// This the respective extensions documentation for details
+@org.junit.Ignore
+<%
+}
+%>
 public class BootstrapTest
 {
-    @Test @Ignore( "TODO: Testcase doesn't work for all combinations yet. Docker issues?" )
+    @Test
     public void applicationBootstrapSucceeds()
         throws Exception
     {
@@ -111,12 +120,14 @@ public class BootstrapTest
         entityStoreSetup( assembly );
 <%
 if( polygene.caching === 'Memcache' ) {
-%>
-        cacheSetup( assembly );
+%>        cacheSetup( assembly );
 <%
 }
-%>
-    }
+if( polygene.indexing === 'SQL' ) {
+%>        indexingSetup( assembly );
+<%
+}
+%>    }
 <%
 if(  polygene.entitystore === 'Cassandra' ) {
 %>
@@ -214,18 +225,16 @@ if(  polygene.entitystore === 'MySQL' ) {
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
-        // A special docker image is needed, skipping this test for now
-        // See the SQL EntityStore documentation for details
-        org.junit.Assume.assumeTrue( false );
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
     }
 <% }
 if(  polygene.entitystore === 'PostgreSQL' ) {
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
-        // A special docker image is needed, skipping this test for now
-        // See the SQL EntityStore documentation for details
-        org.junit.Assume.assumeTrue( false );
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
     }
 <% }
 if(  polygene.entitystore === 'Preferences' ) {
@@ -298,6 +307,15 @@ if( polygene.caching === 'Memcache' ) {
                                                               .waitForTimeout( 120 )
                                                               .waitFor( WaitFor.tcpPort( 11211 ) ) );
 
+<%
+}
+if( polygene.indexing === 'SQL' ) {
+%>
+    private void indexingSetup( ApplicationAssembly assembly )
+    {
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
+    }
 <%
 }
 %>
