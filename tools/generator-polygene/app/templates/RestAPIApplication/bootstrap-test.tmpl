@@ -256,16 +256,22 @@ if(  polygene.entitystore === 'Preferences' ) {
 <% }
 if(  polygene.entitystore === 'Redis' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
+                                                          .declareDefaults();
+        redisConfig.host().set( ES_DOCKER.getDockerHost() );
+        redisConfig.port().set( Integer.valueOf( ES_DOCKER.getExposedContainerPort( "6379/tcp" ) ) );
     }
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
                                                          .imageName( "redis:3.2.8-alpine"  )
-                                                         .publishAllPorts( true )
+                                                         .expose( "6379" )
                                                          .waitForTimeout( 120 )
-                                                         .waitFor( pl.domzal.junit.docker.rule.WaitFor.tcpPort( 6379 ) ) );
+                                                         .waitFor( WaitFor.tcpPort( 6379 ) ) );
 <% }
 if(  polygene.entitystore === 'Riak' ) {
 %>
