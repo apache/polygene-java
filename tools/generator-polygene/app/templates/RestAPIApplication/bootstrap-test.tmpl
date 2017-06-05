@@ -274,17 +274,25 @@ if(  polygene.entitystore === 'Redis' ) {
                                                          .waitFor( WaitFor.tcpPort( 6379 ) ) );
 <% }
 if(  polygene.entitystore === 'Riak' ) {
+    polygene.needsDelayChecker = true;
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class ).declareDefaults();
+        String host = ES_DOCKER.getDockerHost();
+        String port = ES_DOCKER.getExposedContainerPort( "8087/tcp" );
+        riakConfig.hosts().set( java.util.Collections.singletonList( host + ':' + port ) );
     }
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
                                                          .imageName( "basho/riak-kv:ubuntu-2.2.3"  )
-                                                         .publishAllPorts( true )
+                                                         .expose( "8087" )
                                                          .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "riak_auth_mods started on node" ) ) );
+                                                         .waitFor( WaitFor.logMessageSequence( "riak_auth_mods started on node" ) )
+                                                         .waitFor( new DelayChecker( 3000L ) ) );
 <% }
 if(  polygene.entitystore === 'SQLite' ) {
 %>
