@@ -135,22 +135,21 @@ if(process.env.TEST_ALL == 'yes') {
 
 function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
     describe('polygene-generator', function () {
-        var testName = 'generates a Gradle buildable Apache Polygene project with '
-            + entityStore + 'EntityStore, '
-            + indexing + 'Indexing, '
-            + serialization + 'Serialization, '
-            + caching + 'Caching, '
-            + metrics + 'Metrics';
-        if(features) {
-            testName += ', and ' + features;
+        var testName = appType + ' with '
+            + entityStore + ' EntityStore - '
+            + indexing + ' Indexing - '
+            + serialization + ' Serialization - '
+            + caching + ' Caching - '
+            + metrics + ' Metrics';
+        if(features && features.length > 0) {
+            testName += ' - ' + features.toString().replace(new RegExp(',', 'g'), ' - ');
         }
-        testName += '.';
-        var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
+        var testDirName = testName.replace(new RegExp(' - ', 'g'), '_').replace(new RegExp(' ', 'g'), '_');
         it(testName,
             function () {
                 this.timeout(30000);
                 return helpers.run(path.join(__dirname, '../app'))
-                    .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
+                    .inDir(path.join(__dirname, '../build/npm-test/' + testDirName))
                     .withPrompts({
                         name: 'TestProject',
                         packageName: 'org.apache.polygene.generator.test',
