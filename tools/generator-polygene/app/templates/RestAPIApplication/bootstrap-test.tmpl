@@ -50,8 +50,10 @@ if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' 
 <%
     }
 }
-%>
+if( polygene.caching === 'Memcache' ) {
+%>import org.apache.polygene.cache.memcache.MemcacheConfiguration;
 <%
+}
 if( polygene.needsDocker ) {
 %>
 import com.spotify.docker.client.DefaultDockerClient;
@@ -111,6 +113,13 @@ public class BootstrapTest
     private void setupTest( ApplicationAssembly assembly )
     {
         entityStoreSetup( assembly );
+<%
+if( polygene.caching === 'Memcache' ) {
+%>
+        cacheSetup( assembly );
+<%
+}
+%>
     }
 <%
 if(  polygene.entitystore === 'Cassandra' ) {
@@ -272,14 +281,23 @@ if(  polygene.entitystore === 'SQLite' ) {
     {
     }
 <% }
-if(  polygene.caching === 'Memcache' ) {
+if( polygene.caching === 'Memcache' ) {
 %>
+
+    private void cacheSetup( ApplicationAssembly assembly )
+    {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        MemcacheConfiguration memcacheConfig = config.forMixin( MemcacheConfiguration.class ).declareDefaults();
+        memcacheConfig.addresses().set( CACHE_DOCKER.getDockerHost() + ":" + CACHE_DOCKER.getExposedContainerPort( "11211/tcp" ) );
+    }
+
     @ClassRule
     public static final OptionalDockerRule CACHE_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                              .imageName( "memcached:latest"  )
-                                                              .expose( "11211", "11211" )
+                                                              .imageName( "memcached:1.4.36-alpine"  )
+                                                              .expose( "11211" )
                                                               .waitForTimeout( 120 )
-                                                              .waitFor( WaitFor.tcpPort(11211) ) );
+                                                              .waitFor( WaitFor.tcpPort( 11211 ) ) );
 
 <%
 }
