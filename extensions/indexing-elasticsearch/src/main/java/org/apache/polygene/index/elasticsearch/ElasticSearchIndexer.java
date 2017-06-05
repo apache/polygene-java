@@ -149,7 +149,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                 // Handle errors
                 if( bulkResponse.hasFailures() )
                 {
-                    throw new ElasticSearchIndexException( bulkResponse.buildFailureMessage() );
+                    throw new ElasticSearchIndexingException( bulkResponse.buildFailureMessage() );
                 }
 
                 LOGGER.debug( "Indexing changed Entity states took {}ms", bulkResponse.getTookInMillis() );

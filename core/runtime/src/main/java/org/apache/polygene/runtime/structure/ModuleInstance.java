@@ -88,7 +88,6 @@ import org.apache.polygene.runtime.value.ValueBuilderWithPrototype;
 import org.apache.polygene.runtime.value.ValueBuilderWithState;
 import org.apache.polygene.runtime.value.ValueInstance;
 import org.apache.polygene.spi.entitystore.EntityStore;
-import org.apache.polygene.spi.metrics.MetricsProviderAdapter;
 import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.Arrays.asList;
@@ -481,8 +480,7 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<EntityStore> service = findService( EntityStore.class );
-                        store = service.get();
+                        store = findService( EntityStore.class ).get();
                     }
                     catch( NoSuchServiceException e )
                     {
@@ -505,8 +503,7 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
-                        uowf = service.get();
+                        uowf = findService( UnitOfWorkFactory.class ).get();
                     }
                     catch( NoSuchServiceException e )
                     {
@@ -551,8 +548,7 @@ public class ModuleInstance
             {
                 if( generator == null )
                 {
-                    ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
-                    generator = service.get();
+                    generator = findService( IdentityGenerator.class ).get();
                 }
             }
         }
@@ -568,8 +564,7 @@ public class ModuleInstance
             {
                 if( serialization == null )
                 {
-                    ServiceReference<Serialization> service = findService( Serialization.class );
-                    serialization = service.get();
+                    serialization = findService( Serialization.class ).get();
                 }
             }
         }
@@ -585,15 +580,7 @@ public class ModuleInstance
             {
                 if( metrics == null )
                 {
-                    try
-                    {
-                        ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
-                        metrics = service.get();
-                    }
-                    catch( NoSuchServiceException e )
-                    {
-                        metrics = new MetricsProviderAdapter();
-                    }
+                    metrics = findService( MetricsProvider.class ).get();
                 }
             }
         }

@@ -68,4 +68,10 @@ public final class UsedLayersModel
     {
         return new UsedLayersInstance( usedLayerInstances );
     }
+
+    @Override
+    public String toString()
+    {
+        return usedLayers.toString();
+    }
 }

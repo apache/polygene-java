@@ -28,7 +28,6 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
@@ -41,7 +40,6 @@ public abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.layer().application().setName( "SomeApplication" );
         module.transients( Country1.class );

@@ -25,8 +25,27 @@ module.exports = {
         copyLayer(p, "Connectivity");
 
         p.copyTemplate(p.ctx,
-            'RestAPIApplication/web.xml.tmpl',
-            'app/src/main/webapp/WEB-INF/web.xml');
+            'RestAPIApplication/application.java.tmpl',
+            'rest/src/main/java/' + p.javaPackageDir + '/rest/' + p.name + 'RestApplication.java');
+
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/Launcher.java.tmpl',
+            'app/src/main/java/' + p.javaPackageDir + '/app/' + p.name + 'Launcher.java');
+
+        if (p.hasFeature('security')) {
+            p.copyTemplate(p.ctx,
+                'RestAPIApplication/DevelopmentKeyManagement.java.tmpl',
+                'app/src/main/java/' + p.javaPackageDir + '/app/DevelopmentKeyManagement.java');
+            p.copyToConfig(p.ctx, 'RestAPIApplication/web-shiro.ini.tmpl', 'web-shiro.ini');
+        }
+
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/bootstrap-test.tmpl',
+            'app/src/test/java/' + p.javaPackageDir + '/app/BootstrapTest.java');
+
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/bootstrap.tmpl',
+            'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/' + p.name + 'ApplicationAssembler.java');
     }
 };
 

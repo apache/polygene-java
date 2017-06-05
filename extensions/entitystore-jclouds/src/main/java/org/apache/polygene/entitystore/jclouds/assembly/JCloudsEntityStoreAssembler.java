@@ -21,20 +21,18 @@
 package org.apache.polygene.entitystore.jclouds.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.jclouds.JCloudsMapEntityStoreConfiguration;
-import org.apache.polygene.entitystore.jclouds.JCloudsMapEntityStoreService;
+import org.apache.polygene.entitystore.jclouds.JCloudsEntityStoreConfiguration;
+import org.apache.polygene.entitystore.jclouds.JCloudsEntityStoreService;
 
 public class JCloudsEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<JCloudsEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
-        ServiceDeclaration service = module.services( JCloudsMapEntityStoreService.class ).
+        ServiceDeclaration service = module.services( JCloudsEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();
         if( hasIdentity() )
@@ -43,7 +41,7 @@ public class JCloudsEntityStoreAssembler
         }
         if( hasConfig() )
         {
-            configModule().entities( JCloudsMapEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( JCloudsEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

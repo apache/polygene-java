@@ -24,7 +24,7 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.index.rdf.RdfIndexingEngineService;
+import org.apache.polygene.index.rdf.RdfIndexingService;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 
 import static org.apache.polygene.api.common.Visibility.application;
@@ -41,7 +41,7 @@ public class DomainAssembler
     {
         module.services(
             MemoryEntityStoreService.class,
-            RdfIndexingEngineService.class
+            RdfIndexingService.class
         ).visibleIn( application );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).visibleIn( layer );
 

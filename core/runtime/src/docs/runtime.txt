@@ -46,7 +46,7 @@ team at +dev@polygene.apache.org+ to ensure we can make this a better supported,
 
 Fictitious example of using a hypothetical Dalvik capable classloader;
 
-[source,java]
+[snippet,java]
 --------------
 source=core/runtime/src/test/java/org/apache/polygene/runtime/bootstrap/docs/DocumentationSupport.java
 tag=customAssemblyHelper

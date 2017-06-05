@@ -24,7 +24,7 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.index.rdf.RdfIndexingEngineService;
+import org.apache.polygene.index.rdf.RdfIndexingService;
 import org.apache.polygene.index.rdf.query.RdfQueryParserFactory;
 import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
@@ -44,7 +44,7 @@ public class PersistenceAssembler
         module.services(
             MemoryEntityStoreService.class,
             // Query
-            RdfQueryParserFactory.class, RdfIndexingEngineService.class,
+            RdfQueryParserFactory.class, RdfIndexingService.class,
             MemoryRepositoryService.class
         ).visibleIn( application ).instantiateOnStartup();
     }

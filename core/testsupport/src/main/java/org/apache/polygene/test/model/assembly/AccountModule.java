@@ -21,7 +21,6 @@
 package org.apache.polygene.test.model.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
@@ -40,7 +39,6 @@ class AccountModule
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( Account.class, Domain.class ).visibleIn( Visibility.layer );
         module.values( File.class, Host.class, Port.class, Protocol.class, QueryParam.class, URL.class )

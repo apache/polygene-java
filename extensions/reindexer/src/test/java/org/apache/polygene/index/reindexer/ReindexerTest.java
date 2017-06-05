@@ -34,7 +34,7 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
+import org.apache.polygene.entitystore.jdbm.JdbmEntityStoreConfiguration;
 import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
@@ -74,10 +74,10 @@ public class ReindexerTest
 
         // Configuration
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
-        config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class )
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+        config.entities( JdbmEntityStoreConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class )
               .visibleIn( Visibility.layer );
-        config.forMixin( JdbmConfiguration.class ).declareDefaults()
+        config.forMixin( JdbmEntityStoreConfiguration.class ).declareDefaults()
               .file().set( new File( tmpDir.getRoot(), ENTITIES_DIR ).getAbsolutePath() );
         config.forMixin( NativeConfiguration.class ).declareDefaults()
               .dataDirectory().set( new File( tmpDir.getRoot(), INDEX_DIR ).getAbsolutePath() );

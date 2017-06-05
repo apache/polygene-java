@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.entitystore.cassandra;
 
-import com.datastax.driver.core.querybuilder.Delete;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.test.entity.CanRemoveAll;
 

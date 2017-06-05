@@ -15,6 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+var fs = require('fs');
 
 module.exports = {
 
@@ -22,5 +23,22 @@ module.exports = {
         p.copyTemplate(p.ctx,
             'InfrastructureLayer/StorageModule/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/infrastructure/' + p.entitystore + 'StorageModule.java');
+
+        var esFileName = 'es-' + p.entitystore.toLowerCase() + '.properties';
+        var configurationPath = 'InfrastructureLayer/StorageModule/storage/';
+        var configurationFile = configurationPath + esFileName;
+
+        if (p.entitystore.indexOf('SQL') < 0) {
+            fs.stat(__dirname + "/../../" + configurationFile, function (err, stat) {
+                if (err === null) {
+                    p.copyToConfig(p.ctx, configurationFile, esFileName);
+                }
+            });
+        } else {
+            p.copyToConfig(p.ctx, 'InfrastructureLayer/StorageModule/storage/es-sql.properties', esFileName);
+            var dsFileName = 'ds-es-' + p.entitystore.toLowerCase() + '.properties';
+            var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
+            p.copyToConfig(p.ctx, datasourceFile, dsFileName);
+        }
     }
 };

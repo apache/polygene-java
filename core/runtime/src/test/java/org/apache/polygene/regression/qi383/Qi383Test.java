@@ -26,8 +26,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 public class Qi383Test extends AbstractPolygeneTest
@@ -36,8 +36,9 @@ public class Qi383Test extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
         module.entities( Car.class );
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test( expected = EntityCompositeAlreadyExistsException.class )

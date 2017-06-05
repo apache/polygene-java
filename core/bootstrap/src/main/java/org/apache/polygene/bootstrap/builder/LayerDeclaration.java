@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
@@ -96,7 +95,6 @@ public class LayerDeclaration
     }
 
     void initialize( HashMap<String, LayerAssembly> createdLayers )
-        throws AssemblyException
     {
         for( String uses : using )
         {

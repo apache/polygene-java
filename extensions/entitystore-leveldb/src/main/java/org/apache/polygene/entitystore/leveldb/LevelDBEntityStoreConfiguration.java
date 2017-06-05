@@ -58,5 +58,8 @@ public interface LevelDBEntityStoreConfiguration
 
     @Optional
     Property<Integer> writeBufferSize();
+
+    @Optional
+    Property<Boolean> errorIfExists();
 }
 // END SNIPPET: config

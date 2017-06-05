@@ -20,16 +20,15 @@ package org.apache.polygene.test.performance.runtime.composite;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.State;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 /**
  * PropertyMixin invocation performance test.
@@ -42,7 +41,6 @@ public class PropertyMixinInvocationPerformanceTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( SimpleComposite.class );
         module.transients( SimpleComposite2.class );

@@ -23,17 +23,15 @@ package org.apache.polygene.runtime.injection;
 import java.lang.annotation.Retention;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.injection.scope.Invocation;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -46,14 +44,7 @@ public class InvocationInjectionTest
     public void whenInvocationInjectionWithMethodWhenInjectedThenInjectMethod()
         throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( MyComposite.class );
-            }
-        };
+        SingletonAssembler assembly = new SingletonAssembler( module -> module.transients( MyComposite.class ) );
 
         MyComposite composite = assembly.module().newTransient( MyComposite.class );
 

@@ -21,7 +21,6 @@ package org.apache.polygene.library.sql.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 
@@ -32,7 +31,6 @@ public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
 
     @Override
     public final void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( DataSourceConfiguration.class ).visibleIn( Visibility.module );
         if( hasConfig() )

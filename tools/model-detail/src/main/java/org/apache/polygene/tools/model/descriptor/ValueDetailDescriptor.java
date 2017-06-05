@@ -19,9 +19,10 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
-import org.apache.polygene.api.value.ValueDescriptor;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
+import org.apache.polygene.api.value.ValueDescriptor;
 
 /**
  * Value Detail Descriptor.
@@ -41,4 +42,11 @@ public class ValueDetailDescriptor
     {
         return visitor.visit( this );
     }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = super.toJson();
+        return builder;
+    }
+
 }

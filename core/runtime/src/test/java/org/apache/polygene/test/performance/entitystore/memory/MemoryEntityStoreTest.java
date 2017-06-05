@@ -44,6 +44,8 @@ public class MemoryEntityStoreTest
         module.services( MemoryEntityStoreService.class );
         module.importedServices( StatePrinter.class ).importedBy( NEW_OBJECT );
         module.objects( StatePrinter.class );
+
+        module.defaultServices();
     }
 
     private static class StatePrinter

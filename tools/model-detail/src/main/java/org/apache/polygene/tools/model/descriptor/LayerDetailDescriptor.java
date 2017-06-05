@@ -22,6 +22,10 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.structure.LayerDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
@@ -159,5 +163,30 @@ public final class LayerDetailDescriptor
     public final String toString()
     {
         return descriptor.name();
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", descriptor().name() );
+        {
+            JsonArrayBuilder modulesBuilder = Json.createArrayBuilder();
+            modules().forEach( module -> modulesBuilder.add( module.toJson() ) );
+            builder.add( "modules", modulesBuilder.build() );
+        }
+
+        {
+            JsonArrayBuilder usedLayersBuilder = Json.createArrayBuilder();
+            usedLayers().forEach( layer -> usedLayersBuilder.add( layer.descriptor().name() ) );
+            builder.add( "usedLayers", usedLayersBuilder.build() );
+        }
+
+        {
+            JsonArrayBuilder activatorsBuilder = Json.createArrayBuilder();
+            activators().forEach( activator -> activatorsBuilder.add( activator.toJson() ) );
+            builder.add( "activators", activatorsBuilder.build() );
+        }
+
+        return builder.build();
     }
 }

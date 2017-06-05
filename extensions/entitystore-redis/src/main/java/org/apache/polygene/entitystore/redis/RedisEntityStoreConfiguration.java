@@ -23,7 +23,7 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.property.Property;
 
 /**
- * Configuration for RedisMapEntityStoreService.
+ * Configuration for RedisEntityStoreService.
  */
 // START SNIPPET: config
 public interface RedisEntityStoreConfiguration

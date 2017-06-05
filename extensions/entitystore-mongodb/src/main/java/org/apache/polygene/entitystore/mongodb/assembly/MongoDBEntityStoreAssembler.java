@@ -20,27 +20,25 @@
 package org.apache.polygene.entitystore.mongodb.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.mongodb.MongoEntityStoreConfiguration;
-import org.apache.polygene.entitystore.mongodb.MongoMapEntityStoreService;
+import org.apache.polygene.entitystore.mongodb.MongoDBEntityStoreConfiguration;
+import org.apache.polygene.entitystore.mongodb.MongoDBEntityStoreService;
 
 public class MongoDBEntityStoreAssembler
     extends Assemblers.VisibilityIdentityConfig<MongoDBEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
-        ServiceDeclaration service = module.services( MongoMapEntityStoreService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( MongoDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {
-            configModule().entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( MongoDBEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

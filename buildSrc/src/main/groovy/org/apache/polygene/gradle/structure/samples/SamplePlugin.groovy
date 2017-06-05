@@ -22,6 +22,8 @@ import org.apache.polygene.gradle.code.CodePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static org.apache.polygene.gradle.structure.ProjectGroupTasks.configureProjectGroupTasks
+
 @CompileStatic
 class SamplePlugin implements Plugin<Project>
 {
@@ -29,5 +31,6 @@ class SamplePlugin implements Plugin<Project>
   void apply( Project project )
   {
     project.plugins.apply CodePlugin
+    configureProjectGroupTasks( "samples", project )
   }
 }

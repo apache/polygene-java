@@ -19,14 +19,13 @@
  */
 package org.apache.polygene.library.http;
 
-import org.eclipse.jetty.server.Server;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.service.importer.InstanceImporter;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ImportedServiceDeclaration;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
+import org.eclipse.jetty.server.Server;
 
 public class JettyServiceAssembler
     extends Assemblers.VisibilityIdentityConfig<JettyServiceAssembler>
@@ -54,7 +53,6 @@ public class JettyServiceAssembler
 
     @Override
     public final void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.services( httpService() ).
             visibleIn( visibility() ).

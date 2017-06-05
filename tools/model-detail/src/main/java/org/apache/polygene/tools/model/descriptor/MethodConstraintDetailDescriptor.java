@@ -20,6 +20,8 @@
 package org.apache.polygene.tools.model.descriptor;
 
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.constraint.ConstraintDescriptor;
 
 public final class MethodConstraintDetailDescriptor
@@ -66,5 +68,12 @@ public final class MethodConstraintDetailDescriptor
     {
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
         constraints = aDescriptor;
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        return builder;
     }
 }

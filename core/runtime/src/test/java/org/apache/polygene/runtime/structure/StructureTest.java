@@ -20,16 +20,14 @@
 
 package org.apache.polygene.runtime.structure;
 
-import org.junit.Test;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.junit.Test;
 
 /**
  * JAVADOC
@@ -41,25 +39,20 @@ public class StructureTest
     public void createApplicationUsingApplicationAssembly()
         throws AssemblyException
     {
-        Energy4Java boot = new Energy4Java();
-        boot.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
-                // Application Layer
-                LayerAssembly applicationLayer = applicationAssembly.layer( "Application" );
-                ModuleAssembly applicationModule = applicationLayer.module( "Application" );
-                new DomainApplicationAssembler().assemble( applicationModule );
+        Energy4Java polygene = new Energy4Java();
+        polygene.newApplication( factory -> {
+            ApplicationAssembly applicationAssembly = factory.newApplicationAssembly();
+            // Application Layer
+            LayerAssembly applicationLayer = applicationAssembly.layer( "Application" );
+            ModuleAssembly applicationModule = applicationLayer.module( "Application" );
+            new DomainApplicationAssembler().assemble( applicationModule );
 
-                // View Layer
-                LayerAssembly viewLayer = applicationAssembly.layer( "View" );
-                ModuleAssembly viewModule = viewLayer.module( "View" );
-                new ViewAssembler().assemble( viewModule );
-                viewLayer.uses( applicationLayer );
-                return applicationAssembly;
-            }
+            // View Layer
+            LayerAssembly viewLayer = applicationAssembly.layer( "View" );
+            ModuleAssembly viewModule = viewLayer.module( "View" );
+            new ViewAssembler().assemble( viewModule );
+            viewLayer.uses( applicationLayer );
+            return applicationAssembly;
         } );
     }
 
@@ -67,7 +60,7 @@ public class StructureTest
     public void createApplicationUsingArrayOfAssemblers()
         throws AssemblyException
     {
-        Energy4Java boot = new Energy4Java();
+        Energy4Java polygene = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
             {
                 { // User Interface layer
@@ -92,7 +85,7 @@ public class StructureTest
                 }
             };
 
-        boot.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
     }

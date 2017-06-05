@@ -31,7 +31,7 @@ public interface ClusterBuilder
 {
     String DEFAULT_HOST_PORT = "localhost:9042";
 
-    Cluster build(CassandraEntityStoreConfiguration config);
+    Cluster build( CassandraEntityStoreConfiguration config );
 
     class DefaultBuilder
         implements ClusterBuilder
@@ -48,9 +48,9 @@ public interface ClusterBuilder
             Cluster.Builder builder =
                 Cluster.builder()
                        .withClusterName( clusterName )
-                       .addContactPointsWithPorts(connectionPoints)
+                       .addContactPointsWithPorts( connectionPoints )
                        .withCredentials( username(), password() );
-            builder = customConfiguration(builder);
+            builder = customConfiguration( builder );
             return builder.build();
         }
 
@@ -77,13 +77,13 @@ public interface ClusterBuilder
         protected Collection<InetSocketAddress> cassandraConnectionPoints()
         {
             String hostnames = hostnames();
-            return Arrays.stream( hostnames.split( "(,| )" ) )
+            return Arrays.stream( hostnames.split( "[ ,]" ) )
                          .map( text ->
-                        {
-                            String[] strings = text.split( ":" );
-                            return new InetSocketAddress( strings[ 0 ], Integer.parseInt( strings[ 1 ] ) );
-                        }
-                      )
+                               {
+                                   String[] strings = text.split( ":" );
+                                   return new InetSocketAddress( strings[ 0 ], Integer.parseInt( strings[ 1 ] ) );
+                               }
+                             )
                          .collect( Collectors.toList() );
         }
 

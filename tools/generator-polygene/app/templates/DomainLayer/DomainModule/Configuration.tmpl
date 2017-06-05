@@ -18,6 +18,7 @@
  *
 -%>
 package <%= polygene.packageName %>.model.<%= polygene.current.name %>;
+
 <%
 for( var imp in polygene.current.imported ) {
     if( !imp.startsWith( "java.lang" )
@@ -26,10 +27,11 @@ for( var imp in polygene.current.imported ) {
 <%
     }
 } %>
-
 public interface <%= polygene.current.clazz.name %>
 {
-<% for( var idx in polygene.current.state ) {
-%>    <%- polygene.current.state[idx]; %>
-<% } %>
+<%
+for( var idx in polygene.current.state ) {
+%>
+    <%- polygene.current.state[idx]; %><%
 }
+%>}

@@ -49,6 +49,10 @@ public class NoSuchServiceException extends NoSuchCompositeException
         {
             return ( (CompositeDescriptor) descriptor ).primaryType().getName();
         }
-        return descriptor.types().map( Class::getName ).collect( Collectors.joining( ",", "[", "]") );
+        return descriptor.types()
+                         .map( Class::getName )
+                         .sorted()
+                         .distinct()
+                         .collect( Collectors.joining( ",", "[", "]") );
     }
 }

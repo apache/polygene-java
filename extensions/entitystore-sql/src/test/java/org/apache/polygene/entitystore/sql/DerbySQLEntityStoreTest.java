@@ -46,7 +46,7 @@ public class DerbySQLEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
         // START SNIPPET: assembly
         // DataSourceService
@@ -80,8 +80,8 @@ public class DerbySQLEntityStoreTest
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
-            SQLMapEntityStoreConfiguration config = uow.get( SQLMapEntityStoreConfiguration.class,
-                                                             DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
+                                                          DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )

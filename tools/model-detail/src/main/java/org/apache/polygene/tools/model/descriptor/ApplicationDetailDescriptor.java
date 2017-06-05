@@ -22,6 +22,11 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
@@ -109,5 +114,26 @@ public final class ApplicationDetailDescriptor
             }
         }
         return visitor.visitLeave( this );
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObjectBuilder appBuilder = Json.createObjectBuilder();
+        String appName = descriptor().name();
+        String version = descriptor().version();
+        Application.Mode mode = descriptor().mode();
+        appBuilder.add( "name", appName );
+        appBuilder.add( "version", version );
+        appBuilder.add( "mode", mode.toString() );
+
+        JsonArrayBuilder layersBuilder = Json.createArrayBuilder();
+        layers().forEach( layer -> layersBuilder.add( layer.toJson() ) );
+        appBuilder.add( "layers", layersBuilder.build() );
+
+        JsonArrayBuilder activatorsBuilder = Json.createArrayBuilder();
+        activators().forEach( activator -> activatorsBuilder.add( activator.toJson() ) );
+        appBuilder.add( "activators", activatorsBuilder.build() );
+
+        return appBuilder.build();
     }
 }

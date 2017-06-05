@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.MethodDescriptor;
 
@@ -49,7 +52,6 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     /**
      * @return Descriptor of this {@code CompositeDetailDescriptor}. Never return {@code null}.
-     *
      * @since 0.5
      */
     public final T descriptor()
@@ -59,7 +61,6 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     /**
      * @return Methods of this {@code CompositeDetailDescriptor}. Never return {@code null}.
-     *
      * @since 0.5
      */
     public final Iterable<CompositeMethodDetailDescriptor> methods()
@@ -69,7 +70,6 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     /**
      * @return Mixins of this {@code CompositeDetailDescriptor}. Never return {@code null}.
-     *
      * @since 0.5
      */
     public final Iterable<MixinDetailDescriptor> mixins()
@@ -81,9 +81,7 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
      * Return method detail descriptor of the requested method. Returns {@code null} if not found.
      *
      * @param aMethod Method to look up. This argument must not be {@code null}.
-     *
      * @return method detail descriptor of the requested method.
-     *
      * @since 0.5
      */
     public final CompositeMethodDetailDescriptor getMethodDescriptor( Method aMethod )
@@ -103,7 +101,6 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 
     /**
      * @return Module that own this {@code CompositeDetailDescriptor}.
-     *
      * @since 0.5
      */
     public final ModuleDetailDescriptor module()
@@ -140,5 +137,23 @@ public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
     public String toString()
     {
         return descriptor.toString();
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "type", descriptor().primaryType().getName() );
+        builder.add( "visibility", descriptor().visibility().name() );
+        {
+            JsonArrayBuilder typesBuilder = Json.createArrayBuilder();
+            descriptor().types().forEach( type -> typesBuilder.add( type.getName() ) );
+            builder.add( "types", typesBuilder );
+        }
+        {
+            JsonArrayBuilder mixinsBuilder = Json.createArrayBuilder();
+            mixins().forEach( mixin -> mixinsBuilder.add( mixin.toJson() ) );
+            builder.add( "mixins", mixinsBuilder );
+        }
+        return builder;
     }
 }

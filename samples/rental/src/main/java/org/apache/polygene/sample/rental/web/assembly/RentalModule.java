@@ -22,7 +22,6 @@ package org.apache.polygene.sample.rental.web.assembly;
 
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.sample.rental.domain.Address;
 import org.apache.polygene.sample.rental.domain.Booking;
@@ -39,7 +38,6 @@ public class RentalModule
     implements Assembler
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( Booking.class, Car.class, Customer.class, CarCategory.class ).visibleIn( application );
         module.values( Address.class, Period.class );

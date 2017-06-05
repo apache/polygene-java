@@ -42,14 +42,12 @@ public class InfrastructureLayer extends LayeredLayerAssembler
     {
         createModule( layer, FileConfigurationModule.class );
         createModule( layer, <%= polygene.serialization %>SerializationModule.class );
-<% if( polygene.metrics !== "None" ) { %>
         createModule( layer, <%= polygene.metrics %>MetricsModule.class );
-<% } %>
-<% if( polygene.caching !== "None" ) { %>
-        createModule( layer, <%= polygene.caching %>CachingModule.class );
-<% } %>
-        new <%= polygene.entitystore %>StorageModule( configModule ).assemble( layer, layer.module( <%= polygene.entitystore %>StorageModule.NAME ) );
-        new <%= polygene.indexing %>IndexingModule( configModule ).assemble( layer, layer.module( <%= polygene.indexing %>IndexingModule.NAME ) );
+<% if( polygene.caching !== "None" ) {
+%>        createModule( layer, <%= polygene.caching %>CachingModule.class, configModule );
+<% }
+%>        createModule( layer, <%= polygene.entitystore %>StorageModule.class, configModule );
+        createModule( layer, <%= polygene.indexing %>IndexingModule.class, configModule );
         return layer;
     }
 }

@@ -26,8 +26,7 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
 
 @Mixins( CodahaleMetricsMixin.class )
-public interface CodahaleMetricsProvider
-        extends MetricsProvider, ServiceActivation
+public interface CodahaleMetricsProvider extends MetricsProvider, ServiceActivation
 {
     MetricRegistry metricRegistry();
 

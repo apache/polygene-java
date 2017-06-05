@@ -1,0 +1,259 @@
+<%#
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+-%>
+package <%= polygene.packageName %>.app;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
+import javax.net.ssl.KeyManagerFactory;
+import javax.security.auth.x500.X500Principal;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.X509KeyUsage;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
+
+import static <%= polygene.packageName %>.bootstrap.connectivity.HttpServerModule.*;
+
+/**
+ * This class creates self-signed SSL certificate into the security/ directory.
+ * <p>
+ * NOTE: This is for use in development only. For production setup, please use better tooling.
+ * </p>
+ */
+class DevelopmentKeyManagement
+{
+    private static final String COMMON_NAME = "<%= polygene.packageName %>";
+    private static final int RSA_KEY_LEN = 4096;
+
+    static void initializeKeyStore()
+    {
+        @SuppressWarnings( "unused" )
+        KeyStore trustStore = loadKeyStore( new File(TRUSTSTORE_FILENAME), TRUSTSTORE_TYPE, KS_PASSWORD );
+
+        File keyFile = new File( SERVER_KEYSTORE_FILENAME );
+        KeyStore keyStore = loadKeyStore( keyFile, SERVER_KEYSTORE_TYPE, KS_PASSWORD );
+        initializeKeyManager( keyStore, KS_PASSWORD );
+        createKeyStoreData( keyStore, keyFile, SERVER_KEYSTORE_TYPE, KS_PASSWORD );
+    }
+
+    private static KeyStore loadKeyStore( File keyFile, String type, String password )
+    {
+        if( !keyFile.exists() )
+        {
+            createKeyStore(keyFile, type, password);
+        }
+        try( FileInputStream fis = new FileInputStream( keyFile ) )
+        {
+            KeyStore ks = KeyStore.getInstance( type );
+            char[] pwd = password.toCharArray();
+            ks.load( fis, pwd );
+            return ks;
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to create keystore.", e );
+        }
+    }
+
+    @SuppressWarnings( "ResultOfMethodCallIgnored" )
+    private static void createKeyStore( File keyFile, String type, String password )
+        throws AssemblyException
+    {
+        if( !keyFile.getParentFile().exists() )
+        {
+            keyFile.getParentFile().mkdirs();
+        }
+        try( FileOutputStream fos = new FileOutputStream( keyFile ) )
+        {
+            KeyStore ks = KeyStore.getInstance( type );
+            char[] pwd = password.toCharArray();
+            ks.load( null, pwd );
+            ks.store( fos, pwd );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to create keystore.", e );
+        }
+    }
+
+    private static void initializeKeyManager( KeyStore keyStore, String password )
+    {
+        try
+        {
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance( KeyManagerFactory.getDefaultAlgorithm() );
+            kmf.init( keyStore, password.toCharArray() );
+        }
+        catch( NoSuchAlgorithmException | KeyStoreException | UnrecoverableKeyException e )
+        {
+            throw new AssemblyException( "Unable to initialize KeyManager.", e );
+        }
+    }
+
+    private static void createKeyStoreData( KeyStore keyStore, File keyFile, String type, String password )
+    {
+        try
+        {
+            if( keyStore.getCertificate( COMMON_NAME ) != null )
+            {
+                return;
+            }
+            KeyPair keyPair = generateKeyPair();
+            X509Certificate certificate = selfSignedCertificate( keyPair, COMMON_NAME, 30 );
+            keyStore.setCertificateEntry( COMMON_NAME, certificate );
+            storeKeyStore(keyStore, keyFile, password, type);
+
+            System.out.println("Created Self-signed certificated:");
+            System.out.println(convertCertificateToPEM( certificate ));
+        }
+        catch( KeyStoreException e )
+        {
+            throw new AssemblyException( "Unable to store certificate in keystore.", e );
+        }
+    }
+
+    private static void storeKeyStore( KeyStore keyStore, File keyFile, String password, String type )
+    {
+        try( FileOutputStream fos = new FileOutputStream( keyFile ) )
+        {
+            KeyStore ks = KeyStore.getInstance( type );
+            char[] pwd = password.toCharArray();
+            ks.load( null, pwd );
+            ks.store( fos, pwd );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to create keystore.", e );
+        }
+    }
+
+    private static KeyPair generateKeyPair()
+    {
+        try
+        {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance( "RSA" );
+            keyGen.initialize( RSA_KEY_LEN );
+            return keyGen.generateKeyPair();
+        }
+        catch( NoSuchAlgorithmException e )
+        {
+            throw new AssemblyException( "RSA encryption is not available on this system.", e );
+        }
+    }
+
+    @SuppressWarnings( "unused" )
+    private static PKCS10CertificationRequest generateCSR( KeyPair pair, String subjectDN )
+    {
+        try
+        {
+            X500Principal subject = new X500Principal( "CN=" + subjectDN );
+            PublicKey publicKey = pair.getPublic();
+            PKCS10CertificationRequestBuilder p10Builder = new JcaPKCS10CertificationRequestBuilder( subject, publicKey );
+            JcaContentSignerBuilder csBuilder = new JcaContentSignerBuilder( "SHA256withRSA" );
+            ContentSigner signer = csBuilder.build( pair.getPrivate() );
+            return p10Builder.build( signer );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to generate Certificate Signing Request", e );
+        }
+    }
+
+    private static String convertCertificateToPEM( X509Certificate signedCertificate )
+    {
+        try( StringWriter signedCertificatePEMDataStringWriter = new StringWriter() )
+        {
+            JcaPEMWriter pemWriter = new JcaPEMWriter( signedCertificatePEMDataStringWriter );
+            pemWriter.writeObject( signedCertificate );
+            pemWriter.close();
+            return signedCertificatePEMDataStringWriter.toString();
+        }
+        catch( IOException e )
+        {
+            throw new AssemblyException( "Unable to convert certificate to PEM string.", e );
+        }
+    }
+
+    private static X509Certificate selfSignedCertificate( KeyPair keyPair, String subjectDN, @SuppressWarnings( "SameParameterValue" ) int days )
+    {
+        try
+        {
+            Provider bcProvider = new BouncyCastleProvider();
+            Security.addProvider( bcProvider );
+
+            long now = System.currentTimeMillis();
+            Date startDate = new Date( now );
+            Date endDate = new Date( now + days * 25 * 3_600_000L );
+
+            X500Name dnName = new X500Name( "CN=" + subjectDN );
+            BigInteger certSerialNumber = new BigInteger( Long.toString( now ) );
+            String signatureAlgorithm = "SHA256WithRSA"; // <-- Use appropriate signature algorithm based on your keyPair algorithm.
+            ContentSigner contentSigner = new JcaContentSignerBuilder( signatureAlgorithm ).build( keyPair.getPrivate() );
+            JcaX509v3CertificateBuilder certBuilder =
+                new JcaX509v3CertificateBuilder( dnName, certSerialNumber, startDate, endDate, dnName, keyPair.getPublic() );
+
+            // Basic Constraints
+            certBuilder.addExtension(
+                new ASN1ObjectIdentifier( "2.5.29.19" ),
+                true,
+                new BasicConstraints( true ) ); // Basic Constraints is usually marked as critical.
+
+            // Key Usage constraints
+            certBuilder.addExtension(
+                new ASN1ObjectIdentifier( "2.5.29.15" ),
+                true,
+                new X509KeyUsage(
+                    X509KeyUsage.digitalSignature |
+                    X509KeyUsage.keyCertSign |
+                    X509KeyUsage.nonRepudiation |
+                    X509KeyUsage.keyEncipherment |
+                    X509KeyUsage.dataEncipherment ) );
+
+            return new JcaX509CertificateConverter().setProvider( bcProvider ).getCertificate( certBuilder.build( contentSigner ) );
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to self-sign certificate.", e );
+        }
+    }
+}

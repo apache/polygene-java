@@ -28,8 +28,7 @@ import org.apache.polygene.api.property.Property;
  * Describe DataSourceConfiguration properties.
  */
 // START SNIPPET: config
-public interface DataSourceConfigurationState
-        extends Enabled
+public interface DataSourceConfigurationState extends Enabled
 {
     Property<String> driver();
     Property<String> url();

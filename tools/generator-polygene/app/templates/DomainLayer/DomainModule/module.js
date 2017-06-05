@@ -49,7 +49,7 @@ function copyPolygeneDomainModule(p, moduleName, moduleDef) {
     copyComposites(p, moduleDef.plainTypes, "Plain");
     copyComposites(p, moduleDef.services, "Configuration");
 
-    copyConfigurationYaml(p, moduleDef.services )
+    copyConfigurationPropertiesFile(p, moduleDef.services )
 }
 
 function copyComposites(p, composites, type) {
@@ -57,7 +57,9 @@ function copyComposites(p, composites, type) {
         if (composites.hasOwnProperty(idx)) {
             if( type === "Configuration"){
                 p.current.clazz.name = p.configurationClassName(composites[idx].name);
-                p.prepareConfigClazz(p.current);
+                delete p.current.type;
+                delete p.current.value;
+                p.prepareConfigClazz(p.current, composites[idx]);
             } else {
                 p.current.clazz = composites[idx];
                 p.prepareClazz(p.current);
@@ -69,14 +71,12 @@ function copyComposites(p, composites, type) {
     }
 }
 
-function copyConfigurationYaml(p, composites) {
+function copyConfigurationPropertiesFile(p, composites) {
     for (var idx in composites) {
         if (composites.hasOwnProperty(idx)) {
             p.current.clazz = composites[idx];
             p.prepareClazz(p.current);
-            p.copyTemplate(p.ctx,
-                'DomainLayer/DomainModule/config.yaml.tmpl',
-                'model/src/main/resources/' + p.javaPackageDir + '/model/' + p.current.name + '/' + p.current.clazz.name + '.yaml');
+            p.copyToConfig(p.ctx,'DomainLayer/DomainModule/config.properties.tmpl', p.current.clazz.name + '.properties');
         }
     }
 }

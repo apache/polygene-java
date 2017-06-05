@@ -131,14 +131,18 @@ public abstract class LayeredApplicationAssembler
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         assembly = applicationFactory.newApplicationAssembly();
+        assembleApplication();
+        return assembly;
+    }
+
+    protected void assembleApplication()
+    {
         assembly.setName( name );
         assembly.setVersion( version );
         assembly.setMode( mode );
         assembleLayers( assembly );
-        return assembly;
     }
 
     protected LayerAssembly createLayer( Class<? extends LayerAssembler> layerAssemblerClass )
@@ -245,7 +249,6 @@ public abstract class LayeredApplicationAssembler
                 if( constructor != null )
                 {
                     constructor.setAccessible( true );
-                    System.out.println(constructor);
                     return constructor.newInstance();
                 }
             }

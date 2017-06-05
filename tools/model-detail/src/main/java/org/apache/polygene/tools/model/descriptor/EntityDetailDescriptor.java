@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.util.Visitable;
 import org.apache.polygene.api.util.Visitor;
@@ -26,8 +27,7 @@ import org.apache.polygene.api.util.Visitor;
 /**
  * Entity Detail Descriptor.
  */
-public final class EntityDetailDescriptor
-    extends CompositeDetailDescriptor<EntityDescriptor>
+public final class EntityDetailDescriptor extends CompositeDetailDescriptor<EntityDescriptor>
     implements Visitable<EntityDetailDescriptor>
 {
     EntityDetailDescriptor( EntityDescriptor aDescriptor )
@@ -40,5 +40,11 @@ public final class EntityDetailDescriptor
         throws ThrowableType
     {
         return visitor.visit( this );
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = super.toJson();
+        return builder;
     }
 }

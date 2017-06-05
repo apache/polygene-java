@@ -24,13 +24,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -78,13 +78,14 @@ public class CleanStackTraceTest extends AbstractPolygeneTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:123)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat method \"doStuff\" of TestComposite in module [Module 1] of layer [Layer 1].(:0)\n" +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:124)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:136)" + separator +
                                    "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:75)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:119)" + separator +
-                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:120)" + separator +
+                                   "\tat org.apache.polygene.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:136)" + separator +
                                    "\tat org.apache.polygene.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:75)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );

@@ -28,6 +28,7 @@ var polygene = {};
 module.exports = generators.Base.extend(
     {
         constructor: function () {
+            console.log("WARNING!!!  This is BETA quality and likely to change drastically over time. "); // + JSON.stringify(arguments));
             generators.Base.apply(this, arguments);
 
             this.option('import-model', {
@@ -125,6 +126,19 @@ module.exports = generators.Base.extend(
                         },
                         {
                             type: 'list',
+                            name: 'dbpool',
+                            choices: [
+                                'BoneCP',
+                                'DBCP'
+                            ],
+                            message: 'Which connection pool do you want to use?',
+                            default: polygene.dbpool ? polygene.dbpool : "DBCP",
+                            when: function (answers) {
+                                return answers.entitystore.indexOf('SQL') > -1;
+                            }
+                        },
+                        {
+                            type: 'list',
                             name: 'indexing',
                             choices: [
                                 'Rdf',
@@ -173,6 +187,7 @@ module.exports = generators.Base.extend(
                             choices: [
                                 // 'alarms'
                                 // 'circuit breakers'
+                                'envisage',
                                 // 'file transactions'
                                 // 'logging'
                                 'jmx',
@@ -193,6 +208,7 @@ module.exports = generators.Base.extend(
                         this.log('Caching:', answers.caching);
                         this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
+                        answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene = answers;
                     }.bind(this)
                 );
@@ -200,32 +216,37 @@ module.exports = generators.Base.extend(
         },
 
         writing: function () {
-            polygene.version = polygeneVersion;
-            polygene.entitystoremodule = polygene.entitystore.toLowerCase();
-            if (polygene.entitystore === "DerbySQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "H2SQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "MySQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "PostgreSQL") {
-                polygene.entitystoremodule = "sql";
-            }
-            if (polygene.entitystore === "SQLite") {
-                polygene.entitystoremodule = "sql";
-            }
-            assignFunctions(polygene);
-            polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
-            polygene.ctx = this;
-            var app = require(__dirname + '/templates/' + polygene.applicationtype.replace(/ /g, '') + 'Application/app.js');
-            app.write(polygene);
-            var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
-            buildToolChain.write(polygene);
-            if (this.options.export) {
-                exportModel(this.options.export);
+            try {
+                polygene.version = polygeneVersion;
+                polygene.entitystoremodule = polygene.entitystore.toLowerCase();
+                if (polygene.entitystore === "DerbySQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "H2SQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "MySQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "PostgreSQL") {
+                    polygene.entitystoremodule = "sql";
+                }
+                if (polygene.entitystore === "SQLite") {
+                    polygene.entitystoremodule = "sql";
+                }
+                assignFunctions(polygene);
+                polygene.javaPackageDir = polygene.packageName.replace(/[.]/g, '/');
+                polygene.ctx = this;
+                var app = require(__dirname + '/templates/' + polygene.applicationtype.replace(/ /g, '') + 'Application/app.js');
+                app.write(polygene);
+                var buildToolChain = require(__dirname + '/templates/buildtool/build.js');
+                buildToolChain.write(polygene);
+                if (this.options.export) {
+                    exportModel(this.options.export);
+                }
+            } catch (exception) {
+                console.log(exception);
+                throw exception;
             }
         }
     }
@@ -260,16 +281,36 @@ function assignFunctions(polygene) {
         return polygene.features.indexOf(feature) >= 0;
     };
 
+    polygene.copyToConfig = function (ctx, from, toName) {
+        polygene.copyTemplate(ctx,
+            from,
+            'app/src/main/config/development/' + toName);
+        polygene.copyTemplate(ctx,
+            from,
+            'app/src/main/config/qa/' + toName);
+        polygene.copyTemplate(ctx,
+            from,
+            'app/src/main/config/staging/' + toName);
+        polygene.copyTemplate(ctx,
+            from,
+            'app/src/main/config/production/' + toName);
+    };
+
     polygene.copyTemplate = function (ctx, from, to) {
-        ctx.fs.copyTpl(
-            ctx.templatePath(from),
-            ctx.destinationPath(to),
-            {
-                hasFeature: hasFeature,
-                firstUpper: firstUpper,
-                polygene: polygene
-            }
-        );
+        try {
+
+            ctx.fs.copyTpl(
+                ctx.templatePath(from),
+                ctx.destinationPath(to),
+                {
+                    hasFeature: hasFeature,
+                    firstUpper: firstUpper,
+                    polygene: polygene
+                }
+            );
+        } catch (exception) {
+            console.log("Unable to copy template: " + from + "\n", exception);
+        }
     };
 
     polygene.copyPolygeneBootstrap = function (ctx, layer, moduleName, condition) {
@@ -320,12 +361,16 @@ function assignFunctions(polygene) {
         var state = [];
         var imported = {};
         var props = current.clazz.properties;
+        var idx;
+        var assoc;
         if (props) {
             imported["org.apache.polygene.api.property.Property"] = true;
-            for (var idx in props) {
-                var prop = props[idx];
-                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
-                imported[prop.type] = true;
+            for (idx in props) {
+                if( props.hasOwnProperty(idx)) {
+                    var prop = props[idx];
+                    state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
+                    imported[prop.type] = true;
+                }
             }
         } else {
             imported["org.apache.polygene.api.property.Property"] = true;
@@ -334,76 +379,101 @@ function assignFunctions(polygene) {
         var assocs = current.clazz.associations;
         if (assocs) {
             imported["org.apache.polygene.api.association.Association"] = true;
-            for (var idx in assocs) {
-                var assoc = assocs[idx];
-                state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
-                imported[assoc.type] = true;
+            for (idx in assocs) {
+                if( assocs.hasOwnProperty(idx)) {
+                    assoc = assocs[idx];
+                    state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                    imported[assoc.type] = true;
+                }
             }
         }
         assocs = current.clazz.manyassociations;
         if (assocs) {
             imported["org.apache.polygene.api.association.ManyAssociation"] = true;
-            for (var idx in assocs) {
-                var assoc = assocs[idx];
-                state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
-                imported[assoc.type] = true;
+            for (idx in assocs) {
+                if( assocs.hasOwnProperty(idx)) {
+                    assoc = assocs[idx];
+                    state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                    imported[assoc.type] = true;
+                }
             }
         }
         assocs = current.clazz.namedassociations;
         if (assocs) {
             imported["org.apache.polygene.api.association.NamedAssociation"] = true;
-            for (var idx in assocs) {
-                var assoc = assocs[idx];
-                state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
-                imported[assoc.type] = true;
+            for (idx in assocs) {
+                if( assocs.hasOwnProperty(idx)){
+                    assoc = assocs[idx];
+                    state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
+                    imported[assoc.type] = true;
+                }
             }
         }
         current.state = state;
         current.imported = imported;
     };
 
-    polygene.prepareConfigClazz = function (current) {
+    polygene.prepareConfigClazz = function (currentModule, composite) {
         var state = [];
-        var yaml = [];
+        var propertyFile = [];
         var imported = {};
-        var props = current.clazz.configuration;
+        var props = composite.configuration;
         if (props) {
             imported["org.apache.polygene.api.property.Property"] = true;
             for (var idx in props) {
-                var prop = props[idx];
-                state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
-                imported[prop.type] = true;
-                var yamlDefault;
-                if (prop.type === "java.lang.String") {
-                    yamlDefault = '""';
+                if (props.hasOwnProperty(idx)) {
+                    var prop = props[idx];
+                    imported[prop.type] = true;
+                    var propertyDefault;
+                    if (prop.default !== undefined) {
+                        propertyDefault = prop.default;
+                    } else {
+                        if (prop.type === "java.lang.String") {
+                            propertyDefault = '';
+                        }
+                        else if (prop.type === "java.lang.Boolean") {
+                            propertyDefault = 'false';
+                        }
+                        else if (prop.type === "java.lang.Long") {
+                            propertyDefault = '0';
+                        }
+                        else if (prop.type === "java.lang.Integer") {
+                            propertyDefault = '0';
+                        }
+                        else if (prop.type === "java.lang.Double") {
+                            propertyDefault = '0.0';
+                        }
+                        else if (prop.type === "java.lang.Float") {
+                            propertyDefault = '0.0';
+                        }
+                        else {
+                            propertyDefault = '\n    # TODO: complex configuration type. ';
+                        }
+                    }
+                    state.push("/**");
+                    for( var idxDesc in prop.description ){
+                        if( prop.description.hasOwnProperty(idxDesc)){
+                            var desc = prop.description[idxDesc];
+                            propertyFile.push("# " + desc);
+                            state.push(" * " + desc )
+                        }
+                    }
+                    state.push(" */");
+                    propertyFile.push(prop.name + "=" + propertyDefault +"\n");
+                    state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();\n");
                 }
-                else if (prop.type === "java.lang.Boolean") {
-                    yamlDefault = 'false';
-                }
-                else if (prop.type === "java.lang.Long") {
-                    yamlDefault = '0';
-                }
-                else if (prop.type === "java.lang.Integer") {
-                    yamlDefault = '0';
-                }
-                else if (prop.type === "java.lang.Double") {
-                    yamlDefault = '0.0';
-                }
-                else if (prop.type === "java.lang.Float") {
-                    yamlDefault = '0.0';
-                }
-                else {
-                    yamlDefault = '\n    # TODO: complex configuration type. ';
-                }
-                yaml.push(prop.name + " : " + yamlDefault);
             }
         } else {
             imported["org.apache.polygene.api.property.Property"] = true;
-            state.push('Property<String> name();    // TODO: remove sample property');
-            yaml.push('name : "sample config value"');
+            state.push('/** TODO: remove sample property');
+            state.push(' */');
+            state.push('Property<String> name();');
+            propertyFile.push("# This is just the sample configuration value. " );
+            propertyFile.push("# TODO: Remove this config value " );
+            propertyFile.push('name=sample config value');
         }
-        current.state = state;
-        current.yaml = yaml;
-        current.imported = imported;
+        currentModule.state = state;
+        currentModule.propertyLines = propertyFile;
+        currentModule.imported = imported;
     };
 }

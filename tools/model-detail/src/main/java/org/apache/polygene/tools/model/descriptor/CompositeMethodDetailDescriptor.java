@@ -19,7 +19,12 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.MethodDescriptor;
 
 public final class CompositeMethodDetailDescriptor
@@ -44,7 +49,6 @@ public final class CompositeMethodDetailDescriptor
 
     /**
      * @return Descriptor of this {@code CompositeMethodDetailDescriptor}. Never return {@code null}.
-     *
      * @since 0.5
      */
     public final MethodDescriptor descriptor()
@@ -54,8 +58,7 @@ public final class CompositeMethodDetailDescriptor
 
     /**
      * @return Constraints of this {@code CompositeMethodDetailDescriptor}.
-     *         Returns {@code null} if this method does not have any constraints.
-     *
+     * Returns {@code null} if this method does not have any constraints.
      * @since 0.5
      */
     public final MethodConstraintsDetailDescriptor constraints()
@@ -65,8 +68,7 @@ public final class CompositeMethodDetailDescriptor
 
     /**
      * @return Concerns of this {@code CompositeMethodDetailDescriptor}. Returns {@code null} if this method does not
-     *         have any concerns.
-     *
+     * have any concerns.
      * @since 0.5
      */
     public final MethodConcernsDetailDescriptor concerns()
@@ -76,8 +78,7 @@ public final class CompositeMethodDetailDescriptor
 
     /**
      * @return Side-effects of this {@code CompositeMethodDetailDescriptor}. Returns {@code null}
-     *         if this method does not have any side effects.
-     *
+     * if this method does not have any side effects.
      * @since 0.5
      */
     public final MethodSideEffectsDetailDescriptor sideEffects()
@@ -87,7 +88,6 @@ public final class CompositeMethodDetailDescriptor
 
     /**
      * @return Composite that owns this {@code CompositeMethodDetailDescriptor}.
-     *
      * @since 0.5
      */
     public final CompositeDetailDescriptor composite()
@@ -131,5 +131,25 @@ public final class CompositeMethodDetailDescriptor
     public final String toString()
     {
         return descriptor.method().getName();
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", descriptor().method().getName() );
+        builder.add( "type", descriptor().method().getReturnType().getName() );
+        {
+            JsonArrayBuilder paramsBuilder = Json.createArrayBuilder();
+            Arrays.stream( descriptor().method().getParameters() )
+                  .map( Parameter::toString )
+                  .forEach( paramsBuilder::add );
+//                  .forEach( param -> paramsBuilder.add( param.getName() + " : " + param.getType() ) );
+            builder.add( "parameters", paramsBuilder );
+        }
+        builder.add( "constraints", constraints().toJson() );
+        builder.add( "concerns", concerns().toJson() );
+        builder.add( "sideeffects", sideEffects().toJson() );
+
+        return builder;
     }
 }

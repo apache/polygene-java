@@ -21,7 +21,6 @@ package org.apache.polygene.sample.rental.web.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 
@@ -30,7 +29,6 @@ public class StorageModule
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
     }

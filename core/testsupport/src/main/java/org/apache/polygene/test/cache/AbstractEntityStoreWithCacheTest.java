@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.test.cache;
 
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -42,7 +42,6 @@ public abstract class AbstractEntityStoreWithCacheTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         super.assemble( module );
         assembleCachePool( module );
@@ -122,13 +121,13 @@ public abstract class AbstractEntityStoreWithCacheTest
     public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
         throws UnitOfWorkCompletionException
     {
-        super.givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState();
+        super.givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState();
         if( cachePool != null )
         {
             MemoryCacheImpl<?> cache = cachePool.singleCache();
             assertThat( cache.size(), is( 1 ) );
-            assertThat( cache.gets(), is( 2 ) );
-            assertThat( cache.puts(), is( 2 ) );
+            assertThat( cache.gets(), is( 3 ) );
+            assertThat( cache.puts(), is( 3 ) );
             assertThat( cache.removes(), is( 0 ) );
             assertThat( cache.exists(), is( 0 ) );
         }

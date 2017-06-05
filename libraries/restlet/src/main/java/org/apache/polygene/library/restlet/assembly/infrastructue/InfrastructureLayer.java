@@ -20,7 +20,6 @@
 
 package org.apache.polygene.library.restlet.assembly.infrastructue;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.LayerAssembler;
@@ -47,7 +46,6 @@ public class InfrastructureLayer extends LayeredLayerAssembler
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
-        throws AssemblyException
     {
         new IndexingModule( configModule ).assemble( layer, layer.module( IndexingModule.NAME ) );
         new SerializationModule().assemble( layer, layer.module( SerializationModule.NAME ) );

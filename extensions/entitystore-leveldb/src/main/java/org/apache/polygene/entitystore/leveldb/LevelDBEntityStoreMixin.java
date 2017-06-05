@@ -127,6 +127,10 @@ public class LevelDBEntityStoreMixin
         {
             options.writeBufferSize( config.writeBufferSize().get() );
         }
+        if( config.errorIfExists().get() != null )
+        {
+            options.errorIfExists( config.errorIfExists().get() );
+        }
 
         // Open/Create the database
         File dbFile = new File( fileConfig.dataDirectory(), descriptor.identity().toString() );
@@ -236,8 +240,7 @@ public class LevelDBEntityStoreMixin
     public void applyChanges( MapChanges changes )
         throws Exception
     {
-        final WriteBatch writeBatch = db.createWriteBatch();
-        try
+        try( WriteBatch writeBatch = db.createWriteBatch() )
         {
             changes.visitMap( new MapChanger()
             {
@@ -257,7 +260,6 @@ public class LevelDBEntityStoreMixin
                             String jsonState = toString();
                             writeBatch.put( ref.identity().toString().getBytes( charset ), jsonState.getBytes( charset ) );
                         }
-
                     };
                 }
 
@@ -277,7 +279,6 @@ public class LevelDBEntityStoreMixin
                             writeBatch.put( mapChange.reference().identity().toString().getBytes( charset ),
                                             jsonState.getBytes( charset ) );
                         }
-
                     };
                 }
 
@@ -287,14 +288,8 @@ public class LevelDBEntityStoreMixin
                 {
                     writeBatch.delete( ref.identity().toString().getBytes( charset ) );
                 }
-
             } );
             db.write( writeBatch );
         }
-        finally
-        {
-            writeBatch.close();
-        }
     }
-
 }

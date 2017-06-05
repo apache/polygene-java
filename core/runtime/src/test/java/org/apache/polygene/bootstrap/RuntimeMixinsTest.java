@@ -35,10 +35,7 @@ public class RuntimeMixinsTest
         throws ActivationException
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler(
-            module ->
-            {
-                module.values( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
-            }
+            module -> module.values( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class )
         );
 
         SayWhat value = singletonAssembler.valueBuilderFactory().newValue( SayWhat.class );
@@ -50,15 +47,9 @@ public class RuntimeMixinsTest
     public void givenValueWithRuntimeMixinOverrideWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.values( SayWhere.class ).withMixins( SayHereMixin.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.values( SayWhere.class ).withMixins( SayHereMixin.class )
+        );
         SayWhere value = singletonAssembler.valueBuilderFactory().newValue( SayWhere.class );
         assertThat( value.sayHere(), equalTo( "here" ) );
         assertThat( value.sayThere(), nullValue() );
@@ -68,16 +59,9 @@ public class RuntimeMixinsTest
     public void givenTransientWithRuntimeMixinsWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.transients( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class )
+        );
         SayWhat value = singletonAssembler.transientBuilderFactory().newTransient( SayWhat.class );
         assertThat( value.sayThis(), equalTo( "this" ) );
         assertThat( value.sayThat(), equalTo( "that" ) );
@@ -87,16 +71,9 @@ public class RuntimeMixinsTest
     public void givenTransientWithRuntimeMixinOverrideWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( SayWhere.class ).withMixins( SayHereMixin.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.transients( SayWhere.class ).withMixins( SayHereMixin.class )
+        );
         SayWhere value = singletonAssembler.transientBuilderFactory().newTransient( SayWhere.class );
         assertThat( value.sayHere(), equalTo( "here" ) );
         assertThat( value.sayThere(), nullValue() );
@@ -106,16 +83,9 @@ public class RuntimeMixinsTest
     public void givenServiceWithRuntimeMixinsWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.services( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.services( SayWhat.class ).withMixins( SayThisMixin.class, SayThatMixin.class )
+        );
         SayWhat value = singletonAssembler.serviceFinder().findService( SayWhat.class ).get();
         assertThat( value.sayThis(), equalTo( "this" ) );
         assertThat( value.sayThat(), equalTo( "that" ) );
@@ -125,16 +95,9 @@ public class RuntimeMixinsTest
     public void givenServiceWithRuntimeMixinOverrideWhenAssembledExpectCorrectComposition()
         throws ActivationException
     {
-        SingletonAssembler singletonAssembler = new SingletonAssembler()
-        {
-
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.services( SayWhere.class ).withMixins( SayHereMixin.class );
-            }
-        };
+        SingletonAssembler singletonAssembler = new SingletonAssembler(
+            module -> module.services( SayWhere.class ).withMixins( SayHereMixin.class )
+        );
         SayWhere value = singletonAssembler.serviceFinder().findService( SayWhere.class ).get();
         assertThat( value.sayHere(), equalTo( "here" ) );
         assertThat( value.sayThere(), nullValue() );

@@ -41,18 +41,17 @@ public class ServiceInstanceImporter<T>
     implements ServiceImporter<T>
 {
     @Structure
-    ServiceFinder finder;
+    private ServiceFinder finder;
 
-    ServiceImporter<T> service;
+    private ServiceImporter<T> service;
 
-    Identity serviceId;
+    private Identity serviceId;
 
     @Override
     public T importService( ImportedServiceDescriptor importedServiceDescriptor )
         throws ServiceImporterException
     {
         serviceId = importedServiceDescriptor.metaInfo( Identity.class );
-
         return serviceImporter().importService( importedServiceDescriptor );
     }
 

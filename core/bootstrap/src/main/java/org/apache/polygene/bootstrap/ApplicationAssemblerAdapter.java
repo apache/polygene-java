@@ -42,7 +42,6 @@ public class ApplicationAssemblerAdapter
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-        throws AssemblyException
     {
         return applicationFactory.newApplicationAssembly( assemblers );
     }

@@ -21,7 +21,6 @@
 package org.apache.polygene.sample.rental.web.assembly;
 
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.sample.rental.web.BookingPage;
 import org.apache.polygene.sample.rental.web.MainPage;
@@ -32,7 +31,6 @@ public class PagesModule
     implements Assembler
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         PageMetaInfo mainpageMeta = new PageMetaInfo( "main" );
         module.services( MainPage.class ).setMetaInfo( mainpageMeta );

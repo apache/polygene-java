@@ -24,9 +24,8 @@ description = "Apache Polygene™ Internal Test Support"
 jar { manifest { name = "Apache Polygene™ Internals - Test Support" } }
 
 dependencies {
-  api polygene.core.testsupport
+    api polygene.core.testsupport
 
-  implementation libraries.docker_junit
-
-  runtimeOnly polygene.core.runtime
+    implementation libraries.docker_junit
+    runtimeOnly polygene.core.runtime
 }

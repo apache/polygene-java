@@ -40,7 +40,6 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.After;
 import org.junit.Before;
@@ -666,8 +665,6 @@ public class TransientVisibilityTest
             module.transients( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( ModuleModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -685,8 +682,6 @@ public class TransientVisibilityTest
             module.transients( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -702,8 +697,6 @@ public class TransientVisibilityTest
             module.transients( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( AboveModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -718,8 +711,6 @@ public class TransientVisibilityTest
             module.transients( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( BesideModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

@@ -25,7 +25,7 @@ import org.apache.polygene.api.property.Property;
 
 // START SNIPPET: config
 public interface ElasticSearchClusterConfiguration
-        extends ElasticSearchConfiguration
+    extends ElasticSearchIndexingConfiguration
 {
 
     /**

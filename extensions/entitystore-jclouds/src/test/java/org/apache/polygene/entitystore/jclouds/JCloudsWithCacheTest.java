@@ -35,7 +35,7 @@ public class JCloudsWithCacheTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 }

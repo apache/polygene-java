@@ -19,8 +19,8 @@
 %>
 package <%= polygene.packageName %>.rest.security;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.restlet.Application;
@@ -45,8 +45,9 @@ public class DefaultEnroler
         org.restlet.security.User user = clientInfo.getUser();
         String name = user.getName();
         List<String> roleList = repository.findRoleNamesOfUser( name );
-        List<Role> restletRoles = new ArrayList<>();
-        roleList.stream().map( roleName -> Role.get( application, roleName ) );
+        List<Role> restletRoles = roleList.stream()
+                                          .map( roleName -> Role.get( application, roleName ) )
+                                          .collect( Collectors.toList() );
         clientInfo.setRoles( restletRoles );
     }
 }

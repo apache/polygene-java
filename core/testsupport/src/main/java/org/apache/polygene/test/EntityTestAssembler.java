@@ -19,26 +19,41 @@
  */
 package org.apache.polygene.test;
 
+import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 
 /**
- * Helper assembler that adds an in-memory EntityStore to the module
+ * Helper assembler that adds an in-memory EntityStore and default services to the module.
  */
 public class EntityTestAssembler
     extends Assemblers.VisibilityIdentity<EntityTestAssembler>
 {
+    private Visibility defaultServicesVisibility;
+
+    public EntityTestAssembler defaultServicesVisibleIn( Visibility visibility )
+    {
+        defaultServicesVisibility = visibility;
+        return this;
+    }
+
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
+        module.defaultServices().visibleIn( defaultServicesVisibility() );
+    }
+
+    private Visibility defaultServicesVisibility()
+    {
+        return defaultServicesVisibility != null
+               ? defaultServicesVisibility
+               : visibility();
     }
 }

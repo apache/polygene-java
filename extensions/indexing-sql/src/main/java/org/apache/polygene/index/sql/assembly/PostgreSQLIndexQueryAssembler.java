@@ -25,10 +25,8 @@ import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
-public class PostgreSQLIndexQueryAssembler
-    extends AbstractSQLIndexQueryAssembler<PostgreSQLIndexQueryAssembler>
+public class PostgreSQLIndexQueryAssembler extends AbstractSQLIndexQueryAssembler<PostgreSQLIndexQueryAssembler>
 {
-
     @Override
     protected SQLVendor getSQLVendor()
         throws IOException

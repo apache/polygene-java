@@ -20,15 +20,14 @@ package org.apache.polygene.test.performance.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 /**
  * Invocation performance test.
@@ -45,7 +44,6 @@ public class InvocationPerformanceTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( SimpleComposite.class );
         module.transients( SimpleWithTypedConcernComposite.class );
@@ -163,7 +161,7 @@ public class InvocationPerformanceTest
 
     public interface Simple
     {
-        public void test();
+        void test();
     }
 
     public static class SimpleMixin

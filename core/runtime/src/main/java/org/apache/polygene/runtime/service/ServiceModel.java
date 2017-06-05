@@ -70,7 +70,7 @@ public final class ServiceModel extends CompositeModel
                          CompositeMethodsModel compositeMethodsModel,
                          Identity identity,
                          boolean instantiateOnStartup
-    )
+                       )
     {
         super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
@@ -133,16 +133,17 @@ public final class ServiceModel extends CompositeModel
         Object[] mixins = mixinsModel.newMixinHolder();
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
-        stateModel.properties().forEach( propertyModel -> {
-            Object initialValue = propertyModel.resolveInitialValue(module);
-            if( propertyModel.accessor().equals( HasIdentity.IDENTITY_METHOD ) )
-            {
-                initialValue = identity;
-            }
+        stateModel.properties().forEach( propertyModel ->
+                                         {
+                                             Object initialValue = propertyModel.resolveInitialValue( module );
+                                             if( propertyModel.accessor().equals( HasIdentity.IDENTITY_METHOD ) )
+                                             {
+                                                 initialValue = identity;
+                                             }
 
-            Property<?> property = new PropertyInstance<>( propertyModel, initialValue );
-            properties.put( propertyModel.accessor(), property );
-        } );
+                                             Property<?> property = new PropertyInstance<>( propertyModel, initialValue );
+                                             properties.put( propertyModel.accessor(), property );
+                                         } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
         ServiceInstance compositeInstance = new ServiceInstance( this, mixins, state );
@@ -170,11 +171,13 @@ public final class ServiceModel extends CompositeModel
     {
         DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
         Predicate<DependencyModel> configurationCheck = item -> item.rawInjectionType().equals( Configuration.class );
-        return dependencies().filter( thisSpec.and( configurationCheck ) )
+        return dependencies()
+            .filter( thisSpec.and( configurationCheck ) )
             .filter( dependencyModel -> dependencyModel.rawInjectionType().equals( Configuration.class ) )
             .filter( dependencyModel -> dependencyModel.injectionType() instanceof ParameterizedType )
             .map( dependencyModel -> Classes.RAW_CLASS.apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] ) )
-            .reduce( null, ( injectionClass, type ) -> {
+            .reduce( null, ( injectionClass, type ) ->
+            {
                 if( injectionClass == null )
                 {
                     injectionClass = type;

@@ -23,7 +23,6 @@ package org.apache.polygene.library.rest.common;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 import static org.apache.polygene.api.util.Classes.isAssignableFrom;
@@ -37,7 +36,6 @@ public class ValueAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         findClasses( Resource.class ).filter( isAssignableFrom( ValueComposite.class ) )
                                      .forEach( resourceType -> module.values( resourceType )

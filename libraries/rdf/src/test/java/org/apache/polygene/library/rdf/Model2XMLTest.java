@@ -19,19 +19,22 @@
  */
 package org.apache.polygene.library.rdf;
 
-import org.junit.Test;
-import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.composite.TransientComposite;
-import org.apache.polygene.api.structure.ApplicationDescriptor;
-import org.apache.polygene.bootstrap.*;
-import org.apache.polygene.library.rdf.model.Model2XML;
-import org.w3c.dom.Document;
-
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.composite.TransientComposite;
+import org.apache.polygene.api.structure.ApplicationDescriptor;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.Energy4Java;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.library.rdf.model.Model2XML;
+import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * TODO
@@ -41,31 +44,26 @@ public class Model2XMLTest
     @Test
     public void testModel2XML() throws AssemblyException, TransformerException
     {
-        Energy4Java is = new Energy4Java(  );
-        ApplicationDescriptor model = is.newApplicationModel( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory ) throws AssemblyException
-            {
-                ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
+        Energy4Java polygene = new Energy4Java(  );
+        ApplicationDescriptor model = polygene.newApplicationModel( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
 
-                assembly.setName( "Test application" );
+            assembly.setName( "Test application" );
 
-                LayerAssembly webLayer = assembly.layer( "Web" );
-                LayerAssembly domainLayer = assembly.layer( "Domain" );
-                LayerAssembly infrastructureLayer = assembly.layer( "Infrastructure" );
+            LayerAssembly webLayer = assembly.layer( "Web" );
+            LayerAssembly domainLayer = assembly.layer( "Domain" );
+            LayerAssembly infrastructureLayer = assembly.layer( "Infrastructure" );
 
-                webLayer.uses( domainLayer, infrastructureLayer );
-                domainLayer.uses( infrastructureLayer );
+            webLayer.uses( domainLayer, infrastructureLayer );
+            domainLayer.uses( infrastructureLayer );
 
-                ModuleAssembly rest = webLayer.module( "REST" );
-                rest.transients( TestTransient.class ).visibleIn( Visibility.layer );
-                
-                domainLayer.module( "Domain" );
-                infrastructureLayer.module( "Database" );
+            ModuleAssembly rest = webLayer.module( "REST" );
+            rest.transients( TestTransient.class ).visibleIn( Visibility.layer );
 
-                return assembly;
-            }
+            domainLayer.module( "Domain" );
+            infrastructureLayer.module( "Database" );
+
+            return assembly;
         } );
 
         Document document = new Model2XML().apply( model );

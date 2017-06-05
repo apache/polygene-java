@@ -38,7 +38,7 @@ public class NestedValueBuilderTest
     extends AbstractPolygeneTest
 {
 
-    static interface InnerValue
+    interface InnerValue
         extends ValueComposite
     {
 
@@ -47,7 +47,7 @@ public class NestedValueBuilderTest
         Property<Map<String, String>> mapProp();
     }
 
-    static interface InnerDefaultedValue
+    interface InnerDefaultedValue
         extends ValueComposite
     {
 
@@ -58,14 +58,14 @@ public class NestedValueBuilderTest
         Property<Map<String, String>> mapPropDefault();
     }
 
-    static interface OuterValue
+    interface OuterValue
         extends ValueComposite
     {
 
         Property<List<InnerValue>> innerListProp();
     }
 
-    static interface OuterDefaultedValue
+    interface OuterDefaultedValue
         extends ValueComposite
     {
 
@@ -78,6 +78,8 @@ public class NestedValueBuilderTest
         throws AssemblyException
     {
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
+
+        module.defaultServices();
     }
 
     @Test

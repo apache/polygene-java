@@ -19,13 +19,11 @@
  */
 package org.apache.polygene.tutorials.composites.tutorial8;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -39,15 +37,9 @@ public class HelloWorldTest
     public void setUp()
         throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( HelloWorldComposite.class );
-            }
-        };
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> module.transients( HelloWorldComposite.class )
+        );
         TransientBuilderFactory builderFactory = assembly.module();
         TransientBuilder<HelloWorldComposite> builder = builderFactory.newTransientBuilder( HelloWorldComposite.class );
         builder.prototype().name().set( "Hello" );

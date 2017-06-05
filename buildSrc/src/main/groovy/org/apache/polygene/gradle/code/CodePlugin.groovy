@@ -19,14 +19,9 @@ package org.apache.polygene.gradle.code
 
 import groovy.transform.CompileStatic
 import org.apache.polygene.gradle.BasePlugin
-import org.apache.polygene.gradle.TaskGroups
 import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 import org.apache.polygene.gradle.dependencies.DependenciesPlugin
-import org.gradle.api.Action
-import org.gradle.api.JavaVersion
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.api.*
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.osgi.OsgiManifest
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -35,6 +30,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 
 @CompileStatic
@@ -175,9 +171,11 @@ class CodePlugin implements Plugin<Project>
     project.plugins.apply 'jacoco'
     def jacoco = project.extensions.getByType JacocoPluginExtension
     jacoco.toolVersion = dependencies.buildToolsVersions.jacoco
-    project.tasks.withType( JacocoReport ) { JacocoReport task ->
-      task.group = TaskGroups.VERIFICATION
-      task.description = 'Generates test coverage report.'
+    project.tasks.withType( JacocoReport ) { Task task ->
+      task.group = null
+    }
+    project.tasks.withType( JacocoCoverageVerification ) { Task task ->
+      task.group = null
     }
   }
 

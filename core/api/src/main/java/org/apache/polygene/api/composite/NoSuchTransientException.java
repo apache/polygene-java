@@ -20,8 +20,9 @@
 
 package org.apache.polygene.api.composite;
 
-import java.util.stream.Collectors;
 import org.apache.polygene.api.structure.TypeLookup;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * This exception is thrown if client code tries to create a non-existing TransientComposite type.
@@ -36,7 +37,9 @@ public class NoSuchTransientException extends NoSuchCompositeException
     private static String formatVisibleTypes( TypeLookup typeLookup )
     {
         return typeLookup.allTransients()
-            .map(descriptor -> descriptor.primaryType().getName())
-            .collect( Collectors.joining( "\n", "Visible transient types are:\n", "" ) );
+                         .map( descriptor -> descriptor.primaryType().getName() )
+                         .sorted()
+                         .distinct()
+                         .collect( joining( "\n", "Visible transient types are:\n", "" ) );
     }
 }

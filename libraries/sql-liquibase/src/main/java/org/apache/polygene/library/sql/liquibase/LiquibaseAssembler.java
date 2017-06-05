@@ -20,7 +20,6 @@
 package org.apache.polygene.library.sql.liquibase;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 
@@ -31,7 +30,6 @@ public class LiquibaseAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.services( LiquibaseService.class ).visibleIn( visibility() );
         if( applyChangelogOnStartup )

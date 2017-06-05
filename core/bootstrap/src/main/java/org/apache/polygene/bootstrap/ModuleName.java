@@ -35,7 +35,6 @@ public final class ModuleName
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.setName( name );
     }

@@ -27,8 +27,8 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -42,9 +42,10 @@ public class AssociationAssignmentTest extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
         module.entities( TheAssociatedType.class );
         module.entities( TheMainType.class );
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

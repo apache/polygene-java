@@ -24,7 +24,6 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 
@@ -40,12 +39,10 @@ public class RdfNamedQueryMultimoduleTest
         assembleValues( module, Visibility.module );
 
         ModuleAssembly storeModule = layer.module( "store" );
-        new DefaultUnitOfWorkAssembler().assemble( storeModule );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( storeModule );
         assembleValues( storeModule, Visibility.module );
 
         ModuleAssembly indexModule = layer.module( "index" );
-        new DefaultUnitOfWorkAssembler().assemble( indexModule );
         new RdfMemoryStoreAssembler( Visibility.layer, Visibility.module ).assemble( indexModule );
     }
 

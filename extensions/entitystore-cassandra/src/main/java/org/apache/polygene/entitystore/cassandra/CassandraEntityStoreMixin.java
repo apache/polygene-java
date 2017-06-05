@@ -200,7 +200,7 @@ public class CassandraEntityStoreMixin
                     try
                     {
                         String storedValue = storedAssociations.get( associationType.qualifiedName().name() );
-                        EntityReference value = storedValue == null
+                        EntityReference value = storedValue == null || storedValue.isEmpty()
                                                 ? null
                                                 : EntityReference.parseEntityReference( storedValue );
                         associations.put( associationType.qualifiedName(), value );
@@ -224,7 +224,7 @@ public class CassandraEntityStoreMixin
                     try
                     {
                         String storedValue = storedManyassociation.get( manyAssociationType.qualifiedName().name() );
-                        if( storedValue != null )
+                        if( storedValue != null && !storedValue.isEmpty() )
                         {
                             String[] refs = storedValue.split( "," );
                             for( String value : refs )
@@ -253,7 +253,7 @@ public class CassandraEntityStoreMixin
                     try
                     {
                         String storedValues = storedNamedassociation.get( namedAssociationType.qualifiedName().name() );
-                        if( storedValues != null )
+                        if( storedValues != null && !storedValues.isEmpty() )
                         {
                             @SuppressWarnings( "unchecked" )
                             Map<String, String> namedRefs = new ObjectMapper().readValue( storedValues, Map.class );
@@ -345,7 +345,6 @@ public class CassandraEntityStoreMixin
                                 many,
                                 named );
                             ResultSet result = cluster.cassandraClientSession().execute( statement );
-                            System.out.println( result );
                         } );
                 String ids = stream( state.spliterator(), false )
                     .filter( entity -> entity.status() == EntityStatus.REMOVED )

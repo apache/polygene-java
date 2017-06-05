@@ -33,8 +33,8 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
 import static org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
@@ -64,7 +64,7 @@ public class MySQLEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
         // START SNIPPET: assembly
         // DataSourceService
@@ -107,8 +107,8 @@ public class MySQLEntityStoreTest
         try
         {
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            SQLMapEntityStoreConfiguration configuration = uow.get( SQLMapEntityStoreConfiguration.class,
-                                                                    DEFAULT_ENTITYSTORE_IDENTITY );
+            SQLEntityStoreConfiguration configuration = uow.get( SQLEntityStoreConfiguration.class,
+                                                                 DEFAULT_ENTITYSTORE_IDENTITY );
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {

@@ -18,27 +18,41 @@
  *
 -%>
 dependencies {
-  compile project( ":model" )
-<% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile project( ":rest" )<% } %>
-
-  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
-  compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
-
-  compile "org.apache.polygene.libraries:org.apache.polygene.library.fileconfig:$polygeneVersion"
-<% if( polygene.applicationtype === 'Rest API' ) { %>
-  compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
-<% } %>
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
-
-<% if( polygene.caching !== "None" ) { %>
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
-<% } %>
-
-<% if( polygene.metrics !== "None" ) { %>
-  compile "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
-<% } %>
-
+  implementation project( ":model" )
+<%
+if( polygene.applicationtype === 'Rest API' ) {
+%>  implementation project( ":rest" )
+<%
 }
+%>  implementation "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
+  implementation "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
+  implementation "org.apache.polygene.libraries:org.apache.polygene.library.fileconfig:$polygeneVersion"
+<%
+if( polygene.applicationtype === 'Rest API' ) {
+    if( polygene.hasFeature('security') ) {
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.shiro-web:$polygeneVersion"
+<%
+    }
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+  implementation "org.apache.polygene.libraries:org.apache.polygene.library.http:$polygeneVersion"
+<%
+}
+
+if( polygene.entitystore.indexOf('SQL') >= 0 || polygene.indexing === 'SQL' ) {
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.sql-<%= polygene.dbpool.toLowerCase() %>:$polygeneVersion"
+<%
+}
+%>
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
+<%
+if( polygene.caching !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
+<%
+}
+    if( polygene.metrics !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
+<%
+    }
+%>}

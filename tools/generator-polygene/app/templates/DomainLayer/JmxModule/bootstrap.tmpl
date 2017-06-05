@@ -17,14 +17,12 @@
  *
  *
 -%>
-package <%= polygene.packageName %>.bootstrap.config;
+package <%= polygene.packageName %>.bootstrap.domain;
 
-import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.library.jmx.JMXAssembler;
 import org.apache.polygene.library.jmx.JMXConnectorService;
 import org.apache.polygene.library.jmx.JMXConnectorConfiguration;
@@ -38,7 +36,7 @@ public class JmxModule
     {
         new JMXAssembler().assemble( module );
         module.services( JMXConnectorService.class ).instantiateOnStartup();
-        module.entities( JMXConnectorConfiguration.class );
+        module.configurations( JMXConnectorConfiguration.class );
         module.forMixin( JMXConnectorConfiguration.class ).declareDefaults().port().set( 1099 );
         return module;
     }

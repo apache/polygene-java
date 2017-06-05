@@ -20,6 +20,8 @@
 package org.apache.polygene.tools.model.descriptor;
 
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.ConstructorDescriptor;
 
 /**
@@ -142,4 +144,10 @@ public final class ConstructorDetailDescriptor
         return descriptor.constructor().getDeclaringClass().getSimpleName();
     }
 
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", descriptor().constructor().getName() );
+        return builder;
+    }
 }

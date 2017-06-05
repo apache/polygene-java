@@ -18,25 +18,111 @@
  *
 -%>
 
-plugins {
-  id 'war'
-  id "org.akhikhl.gretty" version "1.4.0"
-}
+
+apply plugin: 'application'
+
+mainClassName="<%= polygene.packageName %>.app.<%= polygene.name %>Launcher"
+
+applicationDefaultJvmArgs=[]
+// GC Tuning strategies, see https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/
+// Strict memory bound
+// applicationDefaultJvmArgs << "-Xmx512M -Xms512M"
+//
+// Goal oriented, "throughput" and "max pause"
+// applicationDefaultJvmArgs << "-XX:MaxGCPauseMillis=300 -XX:GCTimeRatio=19"
+//
+// Garbage Collector
+// OneOf; -XX:+UseG1GC, -XX:+UseConcMarkSweepGC, -XX:-UseParallelOldGC, -XX:+UseSerialGC
+applicationDefaultJvmArgs << "-XX:+UseG1GC"
+
 
 dependencies {
-  compile project( ":bootstrap" )
-  compile project( ":model" )
-<% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile project( ":rest" )<% } %>
+  implementation project( ":bootstrap" )
+  implementation project( ":model" )
+<%
+if( polygene.applicationtype === 'Rest API' ) {
+%>  implementation project( ":rest" )
+  implementation "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+<%
+}
 
-  compile "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
-  compile "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
-  compile "org.apache.polygene.libraries:org.apache.polygene.library.servlet:$polygeneVersion"
-<% if( polygene.applicationtype === 'Rest API' ) {
-%>  compile "javax.servlet:servlet-api:2.5"
-  compile "org.restlet.jee:org.restlet:2.3.4"<% } %>
+if( hasFeature( 'security' ) ) {
+%>  implementation "org.apache.polygene.libraries:org.apache.polygene.library.shiro-web:$polygeneVersion"
+<%
+}
+%>  implementation "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
+  implementation "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
 
-  runtime "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
-  runtime "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
+<%
+if( polygene.caching !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"
+<%
+}
+if( polygene.metrics !== "None" ) {
+%>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
+<%
+}
+if( hasFeature( 'envisage' ) ) {
+%>  implementation "org.apache.polygene.tools:org.apache.polygene.tool.envisage:$polygeneVersion"
+<%
+}
+if( polygene.entitystore == 'LevelDB'  ) {
+%>  implementation "org.fusesource.leveldbjni:leveldbjni-all:1.8"
+<%
+}
+if( polygene.entitystore == 'DerbySQL'  ) {
+%>  implementation "org.apache.derby:derby:10.13.1.1"
+<%
+}
+if( polygene.entitystore == 'H2SQL'  ) {
+%>  implementation "com.h2database:h2:1.4.194"
+<%
+}
+if( polygene.entitystore == 'MySQL'  ) {
+%>  implementation "mysql:mysql-connector-java:6.0.6"
+<%
+}
+if( polygene.entitystore == 'PostgreSQL'  ) {
+%>  implementation "org.postgresql:postgresql:42.0.0"
+<%
+}
+if( polygene.entitystore == 'SQLite'  ) {
+%>  implementation "org.xerial:sqlite-jdbc:3.16.1"
+<%
+}
+%>
 
+  runtimeOnly "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
+  runtimeOnly "org.restlet.jee:org.restlet.ext.servlet:2.3.4"
+  runtimeOnly "org.apache.johnzon:johnzon-core:1.1.0"
+  runtimeOnly "org.apache.johnzon:johnzon-mapper:1.1.0"
+  runtimeOnly "org.apache.geronimo.specs:geronimo-json_1.1_spec:1.0"
+  implementation "ch.qos.logback:logback-classic:1.2.3"
+  implementation "ch.qos.logback:logback-core:1.2.3"
+
+  testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
+  testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
+  testImplementation "com.github.tdomzal:junit-docker-rule:0.3"
+}
+
+
+task createConfigs {
+  def config = file("src/main/config")
+  outputs.dir config
+  doLast {
+    config.mkdirs()
+  }
+}
+
+distributions {
+  main {
+    contents {
+      from(createConfigs) {
+        into "config"
+      }
+    }
+  }
 }

@@ -33,7 +33,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -104,7 +103,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -126,7 +124,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class, BasicFooImpl.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -156,7 +153,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -178,7 +174,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -208,7 +203,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -230,7 +224,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -261,7 +254,6 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module().unitOfWorkFactory();
@@ -304,7 +296,6 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module().unitOfWorkFactory();

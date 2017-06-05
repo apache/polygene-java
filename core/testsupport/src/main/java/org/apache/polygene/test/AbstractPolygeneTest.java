@@ -32,10 +32,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 
@@ -82,11 +80,9 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
 
     @Override
     protected void defineApplication( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
     {
         LayerAssembly layer = applicationAssembly.layer( "Layer 1" );
         ModuleAssembly module = layer.module( "Module 1" );
-        new DefaultUnitOfWorkAssembler().assemble( module );
         module.objects( AbstractPolygeneTest.this.getClass() );
         assemble( module );
     }

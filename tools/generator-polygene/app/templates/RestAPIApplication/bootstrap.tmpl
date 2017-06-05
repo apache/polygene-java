@@ -1,0 +1,71 @@
+<%#
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+-%>
+package <%= polygene.packageName %>.bootstrap;
+
+import java.util.function.Consumer;
+import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ApplicationAssembly;
+import org.apache.polygene.bootstrap.LayerAssembly;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
+<% if( polygene.hasFeature('envisage' ) ) {
+%>import org.apache.polygene.envisage.Envisage;
+<% } %>
+import <%= polygene.packageName %>.bootstrap.connectivity.ConnectivityLayer;
+import <%= polygene.packageName %>.bootstrap.config.ConfigurationLayer;
+import <%= polygene.packageName %>.bootstrap.domain.DomainLayer;
+import <%= polygene.packageName %>.bootstrap.infrastructure.InfrastructureLayer;
+
+public class <%= polygene.name %>ApplicationAssembler extends LayeredApplicationAssembler
+{
+    private Consumer<ApplicationAssembly> customize;
+
+    public <%= polygene.name %>ApplicationAssembler( String name, String version, Application.Mode mode, Consumer<ApplicationAssembly> customize )
+        throws AssemblyException
+    {
+        super( name, version, mode );
+        this.customize = customize;
+    }
+
+    @Override
+    protected void assembleLayers( ApplicationAssembly assembly )
+        throws AssemblyException
+    {
+        LayerAssembly config = this.createLayer( ConfigurationLayer.class );
+        ModuleAssembly configModule = assemblerOf( ConfigurationLayer.class ).configModule();
+        LayerAssembly infra = new InfrastructureLayer(configModule).assemble( assembly.layer( InfrastructureLayer.NAME ) );
+        LayerAssembly domain = this.createLayer( DomainLayer.class );
+        LayerAssembly connect = this.createLayer( ConnectivityLayer.class );
+        connect.uses( domain );
+        connect.uses( infra );
+        domain.uses( infra );
+        infra.uses( config );
+        customize.accept( assembly );
+    }
+<% if( polygene.hasFeature('envisage' ) ) {
+%>
+    @Override
+    protected void onModelCreated( ApplicationDescriptor model )
+    {
+        new Envisage().run( model );
+    }
+<% }
+%>}

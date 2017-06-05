@@ -148,11 +148,11 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
         var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
         it(testName,
             function () {
-                this.timeout(10000);
+                this.timeout(15000);
                 return helpers.run(path.join(__dirname, '../app'))
                     .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
                     .withPrompts({
-                        name: 'test-project',
+                        name: 'TestProject',
                         packageName: 'org.apache.polygene.generator.test',
                         applicationtype: appType,
                         entitystore: entityStore,
@@ -169,5 +169,5 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);
-    assert(shell.exec(path.join(dir, 'gradlew') + ' classes --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
+    assert(shell.exec(path.join(dir, 'gradlew') + ' check --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
 }

@@ -25,14 +25,20 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.index.<%- polygene.indexing.toLowerCase() %>.assembly.<%- polygene.indexing %>IndexingAssembler;
-
+<%
+if( polygene.indexing === 'SQL' ) {
+%>import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+<%
+}
+%>
 public class <%- polygene.indexing %>IndexingModule
     implements ModuleAssembler
 {
     public static final String NAME = "<%- polygene.indexing %> Indexing Module";
     private final ModuleAssembly configModule;
 
-    public <%- polygene.indexing %>IndexingModule( ModuleAssembly configModule )
+    <%- polygene.indexing %>IndexingModule( ModuleAssembly configModule )
     {
         this.configModule = configModule;
     }
@@ -41,7 +47,24 @@ public class <%- polygene.indexing %>IndexingModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.indexing %>IndexingAssembler()
+<% if( polygene.indexing === 'SQL' ) {
+%>        // DataSourceService
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "postgres-index-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
+
+        // DataSource (Only Postgresql was supported at the time of generation code was written.)
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "postgres-index-datasource-service" )
+            .identifiedBy( "ds-index-postgresql" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
+<%
+}
+%>        new <%- polygene.indexing %>IndexingAssembler()
             .visibleIn( Visibility.application )
             .identifiedBy( "indexing-<%- polygene.indexing.toLowerCase() %>" )
             .withConfig( configModule, Visibility.application )
