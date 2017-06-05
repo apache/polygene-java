@@ -35,6 +35,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 @Concerns( PageUowManagement.class )
 @Mixins( { Page.MountPointMixin.class, Page.DefaultPageRenderMixin.class } )
 public interface Page
@@ -160,9 +162,7 @@ public interface Page
             throws NoSuchMethodException
         {
             // TODO: Add caching since locating the methods and the throwing of exceptions are expensive.
-            Method method = compositeType.getMethod( methodName, QuikitContext.class );
-            method.setAccessible( true );
-            return method;
+            return accessible( compositeType.getMethod( methodName, QuikitContext.class ) );
         }
     }
 

@@ -35,6 +35,8 @@ import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 @Mixins( EmbeddedSolrService.Mixin.class )
 @Activators( EmbeddedSolrService.Activator.class )
 public interface EmbeddedSolrService
@@ -112,8 +114,7 @@ public interface EmbeddedSolrService
 
          // Clear instance fields for GC purposes
          Field instanceField = SolrCore.class.getDeclaredField( "instance" );
-         instanceField.setAccessible( true );
-         instanceField.set( null, null );
+         accessible( instanceField ).set( null, null );
 
          SolrConfig.config = null;
       }

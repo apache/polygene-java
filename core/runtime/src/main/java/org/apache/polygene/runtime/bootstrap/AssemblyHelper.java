@@ -38,6 +38,8 @@ import org.apache.polygene.runtime.composite.FragmentClassLoader;
 import org.apache.polygene.runtime.composite.MixinModel;
 import org.apache.polygene.runtime.composite.SideEffectModel;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 /**
  * This helper is used when building the application model. It keeps track
  * of already created classloaders and various models
@@ -147,8 +149,7 @@ public class AssemblyHelper
                     {
                         @SuppressWarnings("unchecked")
                         Constructor<AppliesToFilter> cons = (Constructor<AppliesToFilter>) appliesToClass.getDeclaredConstructor();
-                        cons.setAccessible(true);
-                        filter = cons.newInstance();
+                        filter = accessible( cons ).newInstance();
                     }
                     catch( Exception e )
                     {

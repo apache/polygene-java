@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -41,8 +42,7 @@ public class PropertyMapperTest
     {
         try
         {
-            MAP_TO_TYPE = PropertyMapper.class.getDeclaredMethod( "mapToType", Composite.class, Type.class, Object.class );
-            MAP_TO_TYPE.setAccessible( true );
+            MAP_TO_TYPE = accessible( PropertyMapper.class.getDeclaredMethod( "mapToType", Composite.class, Type.class, Object.class ) );
         }
         catch( NoSuchMethodException e )
         {

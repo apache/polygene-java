@@ -24,6 +24,8 @@ import java.util.HashMap;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 public abstract class LayeredLayerAssembler
     implements LayerAssembler
 {
@@ -76,14 +78,12 @@ public abstract class LayeredLayerAssembler
         try
         {
             Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor( ModuleAssembly.class );
-            assemblyConstructor.setAccessible( true );
-            moduleAssembler = assemblyConstructor.newInstance( constructorArgument );
+            moduleAssembler = accessible( assemblyConstructor ).newInstance( constructorArgument );
         }
         catch( NoSuchMethodException e )
         {
             Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor();
-            assemblyConstructor.setAccessible( true );
-            moduleAssembler = assemblyConstructor.newInstance();
+            moduleAssembler = accessible( assemblyConstructor ).newInstance();
         }
         return moduleAssembler;
     }

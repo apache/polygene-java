@@ -36,6 +36,8 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 public abstract class LayeredApplicationAssembler
     implements ApplicationAssembler
 {
@@ -200,8 +202,7 @@ public abstract class LayeredApplicationAssembler
     {
         try
         {
-            Method factoryMethod = layerAssemblerClass.getDeclaredMethod( "create", LayerAssembly.class );
-            factoryMethod.setAccessible( true );
+            Method factoryMethod = accessible( layerAssemblerClass.getDeclaredMethod( "create", LayerAssembly.class ) );
             int modifiers = factoryMethod.getModifiers();
             if( Modifier.isStatic( modifiers ) && LayerAssembler.class.isAssignableFrom( factoryMethod.getReturnType() ) )
             {
@@ -212,8 +213,7 @@ public abstract class LayeredApplicationAssembler
         {
             try
             {
-                Method factoryMethod = layerAssemblerClass.getDeclaredMethod( "create" );
-                factoryMethod.setAccessible( true );
+                Method factoryMethod = accessible( layerAssemblerClass.getDeclaredMethod( "create" ) );
                 int modifiers = factoryMethod.getModifiers();
                 if( Modifier.isStatic( modifiers ) && LayerAssembler.class.isAssignableFrom( factoryMethod.getReturnType() ) )
                 {
@@ -237,8 +237,7 @@ public abstract class LayeredApplicationAssembler
             Constructor<? extends LayerAssembler> constructor = layerAssemblerClass.getConstructor( LayerAssembly.class );
             if( constructor != null )
             {
-                constructor.setAccessible( true );
-                return constructor.newInstance( assembly );
+                return accessible( constructor ).newInstance( assembly );
             }
         }
         catch( NoSuchMethodException e )
@@ -248,8 +247,7 @@ public abstract class LayeredApplicationAssembler
                 Constructor<? extends LayerAssembler> constructor = layerAssemblerClass.getDeclaredConstructor();
                 if( constructor != null )
                 {
-                    constructor.setAccessible( true );
-                    return constructor.newInstance();
+                    return accessible( constructor ).newInstance();
                 }
             }
             catch( NoSuchMethodException e1 )
@@ -268,8 +266,7 @@ public abstract class LayeredApplicationAssembler
             Field field = clazz.getDeclaredField( "NAME" );
             if( Modifier.isStatic( field.getModifiers() ) )
             {
-                field.setAccessible( true );
-                field.set( null, classname );
+                accessible( field ).set( null, classname );
             }
         }
         catch( Exception e )
