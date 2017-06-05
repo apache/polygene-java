@@ -36,12 +36,8 @@ import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 <%
 polygene.needsDelayChecker = false;
-polygene.needsDocker = ['Cassandra', 'MySQL', 'PostgreSQL', 'Redis', 'Riak', 'MongoDB'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
+polygene.needsDocker = ['Cassandra', 'Redis', 'Riak', 'MongoDB'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
 
-if( polygene.entitystore === 'MySQL' ) {
-%>import java.util.HashMap;
-<%
-}
 if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' ) {
     if( polygene.entitystore.indexOf('SQL') < 0 ) {
 %>import org.apache.polygene.entitystore.<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
@@ -215,38 +211,22 @@ if(  polygene.entitystore === 'MongoDB' ) {
                                                             .waitFor( WaitFor.tcpPort(27017) ) );
 <% }
 if(  polygene.entitystore === 'MySQL' ) {
-    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
+        // A special docker image is needed, skipping this test for now
+        // See the SQL EntityStore documentation for details
+        org.junit.Assume.assumeTrue( false );
     }
-
-    @ClassRule
-    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "mariadb:10.1.21"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .env("MYSQL_ROOT_PASSWORD", "")
-                                                         .env("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
-                                                         .env("MYSQL_DATABASE", "jdbc_test_db")
-                                                         .env("MYSQL_ROOT_HOST", "172.17.0.1")
-//                                                       .waitFor( WaitFor.logMessageSequence( "mysqld: ready for connections" ) )   TODO: add this after next release of tdomzal/junit-docker-rule
-                                                         .waitFor( new DelayChecker( 30000L ) ) );
 <% }
 if(  polygene.entitystore === 'PostgreSQL' ) {
-    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
+        // A special docker image is needed, skipping this test for now
+        // See the SQL EntityStore documentation for details
+        org.junit.Assume.assumeTrue( false );
     }
-
-    @ClassRule
-    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "<%= polygene.packagename %>-postgresql"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "PostgreSQL init process complete; ready for start up." ) )
-                                                         .waitFor( new DelayChecker( 3000L ) ) );
 <% }
 if(  polygene.entitystore === 'Preferences' ) {
 %>
