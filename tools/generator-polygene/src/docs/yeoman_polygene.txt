@@ -19,14 +19,29 @@
 
 [[tools-shell,Command Line Shell]]
 = Polygene Generator =
-Apache Polygene comes with a Yeoman code generator, to quickly set up a
-project for Polygene applications.
+Apache Polygene comes with a http://yeoman.io/[Yeoman] code generator, to
+quickly set up a project for Polygene applications.
+
+== Usage ==
+
+You will need `node` installed in your machine. In case you don't have it
+(you can check this typing `node --version` in your terminal) please visit
+this https://nodejs.org/en/download/[link].
+
+Then run the following command to install Yeoman and the Polygene generator:
 
 [source,shell]
 ----
-mkdir projectdirname
-cd projectdirname
-yo polygene
+$ npm install -g yo generator-polygene
+----
+
+Then run the following commands to get started:
+
+[source,shell]
+----
+$ mkdir projectdirname
+$ cd projectdirname
+$ yo polygene
 ----
 
 It will ask a lot of questions. For choice questions, you operate up and down, and with multi-choice, you
