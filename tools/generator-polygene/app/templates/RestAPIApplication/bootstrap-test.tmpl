@@ -137,7 +137,7 @@ if(  polygene.entitystore === 'Cassandra' ) {
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "cassandra:latest"  )
+                                                         .imageName( "cassandra:3.10"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
                                                          .waitFor( WaitFor.logMessageSequence( "Starting listening for CQL clients" ) ) );
@@ -180,7 +180,7 @@ if(  polygene.entitystore === 'JClouds' ) {
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "scality/s3server:latest"  )
+                                                         .imageName( "scality/s3server:mem-6a8e1cd"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
                                                          .waitFor( WaitFor.logMessageSequence( "server started" ) ) );
@@ -229,7 +229,7 @@ if(  polygene.entitystore === 'MySQL' ) {
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "mariadb:latest"  )
+                                                         .imageName( "mariadb:10.1.21"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
                                                          .env("MYSQL_ROOT_PASSWORD", "")
@@ -268,7 +268,7 @@ if(  polygene.entitystore === 'Redis' ) {
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "redis:latest"  )
+                                                         .imageName( "redis:3.2.8-alpine"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
                                                          .waitFor( pl.domzal.junit.docker.rule.WaitFor.tcpPort( 6379 ) ) );
@@ -281,7 +281,7 @@ if(  polygene.entitystore === 'Riak' ) {
 
     @ClassRule
     public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
-                                                         .imageName( "basho/riak-kv:latest"  )
+                                                         .imageName( "basho/riak-kv:ubuntu-2.2.3"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
                                                          .waitFor( WaitFor.logMessageSequence( "riak_auth_mods started on node" ) ) );
