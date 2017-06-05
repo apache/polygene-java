@@ -41,7 +41,7 @@ public class MemcacheAssembler
         }
         if( hasConfig() )
         {
-            configModule().entities( MemcacheConfiguration.class ).visibleIn( configVisibility() );
+            configModule().configurations( MemcacheConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }
