@@ -65,7 +65,6 @@ module.exports = generators.Base.extend(
                 polygene.indexing = polygene.indexing ? polygene.indexing : null;
                 polygene.entitystore = polygene.entitystore ? polygene.entitystore : null;
                 polygene.caching = polygene.caching ? polygene.caching : null;
-                polygene.serialization = polygene.serialization ? polygene.serialization : null;
             }
         },
 
@@ -162,17 +161,6 @@ module.exports = generators.Base.extend(
                         },
                         {
                             type: 'list',
-                            name: 'serialization',
-                            choices: [
-                                'JavaxJson',
-                                'JavaxXml',
-                                'MessagePack'
-                            ],
-                            message: 'Which serialization system do you want to use?',
-                            default: polygene.serialization ? polygene.serialization : "JavaxJson"
-                        },
-                        {
-                            type: 'list',
                             name: 'metrics',
                             choices: [
                                 'None',
@@ -206,7 +194,6 @@ module.exports = generators.Base.extend(
                         this.log('Entity Stores:', answers.entitystore);
                         this.log('Indexing:', answers.indexing);
                         this.log('Caching:', answers.caching);
-                        this.log('Serialization:', answers.serialization);
                         this.log('Features:', answers.features);
                         answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene = answers;

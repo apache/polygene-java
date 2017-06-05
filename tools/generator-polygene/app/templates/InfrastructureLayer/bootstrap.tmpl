@@ -41,7 +41,7 @@ public class InfrastructureLayer extends LayeredLayerAssembler
         throws AssemblyException
     {
         createModule( layer, FileConfigurationModule.class );
-        createModule( layer, <%= polygene.serialization %>SerializationModule.class );
+        createModule( layer, SerializationModule.class );
         createModule( layer, <%= polygene.metrics %>MetricsModule.class );
 <% if( polygene.caching !== "None" ) {
 %>        createModule( layer, <%= polygene.caching %>CachingModule.class, configModule );
