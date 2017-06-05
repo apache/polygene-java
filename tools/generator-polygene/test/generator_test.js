@@ -23,9 +23,6 @@ var shell = require('shelljs');
 
 //See http://yeoman.io/authoring/testing.html
 
-// test with all defaults first.
-test();
-
 var appTypes = [
     "Rest API",
     'Command Line'
@@ -80,32 +77,11 @@ var featuresset = [
     ['jmx', 'mixin scripting', 'scripting']
 ];
 
-appTypes.forEach(function (appType) {
-    test(appType, "Memory", "Rdf", "Memcache", "Codahale", "[]");
-});
+// test with all defaults first.
+test();
 
-entityStores.forEach(function (entityStore) {
-    test("Rest API", entityStore, "Rdf", "Memcache", "Codahale", "[]");
-});
-
-indexings.forEach(function (indexing) {
-    test("Rest API", "Memory", indexing, "Memcache", "Codahale", "[]");
-});
-
-cachings.forEach(function (caching) {
-    test("Rest API", "Memory", "Rdf", caching, "Codahale", "[]");
-});
-
-metricses.forEach(function (metrics) {
-    test("Rest API", "Memory", "Rdf", "Memcache", metrics, "[]");
-});
-
-featuresset.forEach(function (feature) {
-    test("Rest API", "Memory", "Rdf", "Memcache", "Codahale", feature);
-});
-
-// All Tests !!!!
 if(process.env.TEST_ALL === 'yes') {
+    // All Tests !!!!
     appTypes.forEach(function (appType) {
         entityStores.forEach(function (entitystore) {
             indexings.forEach(function (indexing) {
@@ -118,6 +94,31 @@ if(process.env.TEST_ALL === 'yes') {
                 });
             });
         });
+    });
+} else {
+    // Subset
+    appTypes.forEach(function (appType) {
+        test(appType, "Memory", "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    entityStores.forEach(function (entityStore) {
+        test("Rest API", entityStore, "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    indexings.forEach(function (indexing) {
+        test("Rest API", "Memory", indexing, "Memcache", "Codahale", "[]");
+    });
+
+    cachings.forEach(function (caching) {
+        test("Rest API", "Memory", "Rdf", caching, "Codahale", "[]");
+    });
+
+    metricses.forEach(function (metrics) {
+        test("Rest API", "Memory", "Rdf", "Memcache", metrics, "[]");
+    });
+
+    featuresset.forEach(function (feature) {
+        test("Rest API", "Memory", "Rdf", "Memcache", "Codahale", feature);
     });
 }
 
