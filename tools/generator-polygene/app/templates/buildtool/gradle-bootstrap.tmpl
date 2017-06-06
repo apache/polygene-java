@@ -45,7 +45,7 @@ if( polygene.entitystore.indexOf('SQL') >= 0 || polygene.indexing === 'SQL' ) {
 %>
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
-  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-<%= polygene.serialization.toLowerCase() %>:$polygeneVersion"
+  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-javaxjson:$polygeneVersion"
 <%
 if( polygene.caching !== "None" ) {
 %>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.cache-<%= polygene.caching.toLowerCase() %>:$polygeneVersion"

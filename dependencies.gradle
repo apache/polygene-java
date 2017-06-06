@@ -280,6 +280,7 @@ dependencies.dockerImagesVersions << [
   cassandra: 'cassandra:3.10',
   memcached: 'memcached:1.4.36-alpine',
   mariadb  : 'mariadb:10.1.21',
+  mongo    : 'mongo:3.5.8',
   postgres : 'postgres:9.6.2-alpine',
   redis    : 'redis:3.2.8-alpine',
   riak     : 'basho/riak-kv:ubuntu-2.2.3',

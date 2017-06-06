@@ -35,12 +35,10 @@ import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 <%
+polygene.ignoredTest = ['MySQL', 'PostgreSQL'].indexOf(polygene.entitystore) != -1 || ['SQL'].indexOf(polygene.indexing) != -1;
+polygene.needsDocker = ['Cassandra', 'Redis', 'Riak', 'MongoDB'].indexOf(polygene.entitystore) != -1 || ['Memcache'].indexOf(polygene.caching) != -1;
 polygene.needsDelayChecker = false;
 
-if(  polygene.entitystore === 'MySQL' ) {
-%>import java.util.HashMap;
-<%
-}
 if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' ) {
     if( polygene.entitystore.indexOf('SQL') < 0 ) {
 %>import org.apache.polygene.entitystore.<%= polygene.entitystore.toLowerCase() %>.<%= polygene.entitystore %>EntityStoreConfiguration;
@@ -49,19 +47,41 @@ if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' 
 <%
     }
 }
+if( polygene.caching === 'Memcache' ) {
+%>import org.apache.polygene.cache.memcache.MemcacheConfiguration;
+<%
+}
+if( polygene.needsDocker ) {
 %>
+import com.spotify.docker.client.DefaultDockerClient;
 import pl.domzal.junit.docker.rule.DockerRule;
+import pl.domzal.junit.docker.rule.DockerRuleBuilder;
 import pl.domzal.junit.docker.rule.WaitFor;
 import pl.domzal.junit.docker.rule.wait.StartCondition;
 import pl.domzal.junit.docker.rule.wait.StartConditionCheck;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+import org.junit.Assume;
 import org.junit.ClassRule;
-import org.junit.Ignore;
+<%
+}
+%>
 import org.junit.Test;
 
+<%
+if( polygene.ignoredTest ) {
+%>
+// This combination of EntityStore and Index/Query extensions requires some manual setup
+// This the respective extensions documentation for details
+@org.junit.Ignore
+<%
+}
+%>
 public class BootstrapTest
 {
-    @Test @Ignore( "TODO: Testcase doesn't work for all combinations yet. Docker issues?" )
+    @Test
     public void applicationBootstrapSucceeds()
         throws Exception
     {
@@ -98,7 +118,16 @@ public class BootstrapTest
     private void setupTest( ApplicationAssembly assembly )
     {
         entityStoreSetup( assembly );
-    }
+<%
+if( polygene.caching === 'Memcache' ) {
+%>        cacheSetup( assembly );
+<%
+}
+if( polygene.indexing === 'SQL' ) {
+%>        indexingSetup( assembly );
+<%
+}
+%>    }
 <%
 if(  polygene.entitystore === 'Cassandra' ) {
 %>
@@ -114,12 +143,11 @@ if(  polygene.entitystore === 'Cassandra' ) {
     }
 
     @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "cassandra:latest"  )
+    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                         .imageName( "cassandra:3.10"  )
                                                          .publishAllPorts( true )
                                                          .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "Starting listening for CQL clients" ) )
-                                                         .build();
+                                                         .waitFor( WaitFor.logMessageSequence( "Starting listening for CQL clients" ) ) );
 <% }
 if(  polygene.entitystore === 'DerbySQL' ) {
 %>
@@ -153,17 +181,10 @@ if(  polygene.entitystore === 'Hazelcast' ) {
 <% }
 if(  polygene.entitystore === 'JClouds' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        // Assembly use a transient JClouds provider
     }
-
-    @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "scality/s3server:latest"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "server started" ) )
-                                                         .build();
 <% }
 if(  polygene.entitystore === 'Jdbm' ) {
 %>
@@ -185,45 +206,36 @@ if(  polygene.entitystore === 'Memory' ) {
 <% }
 if(  polygene.entitystore === 'MongoDB' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+        MongoDBEntityStoreConfiguration mongoConfig = config.forMixin( MongoDBEntityStoreConfiguration.class ).declareDefaults();
+        mongoConfig.hostname().set( ES_DOCKER.getDockerHost() );
+        mongoConfig.port().set( Integer.valueOf( ES_DOCKER.getExposedContainerPort( "27017/tcp" ) ) );
     }
+
+    @ClassRule
+    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                            .imageName( "mongo:3.5.8" )
+                                                            .expose( "27017" )
+                                                            .waitForTimeout( 120 )
+                                                            .waitFor( WaitFor.tcpPort(27017) ) );
 <% }
 if(  polygene.entitystore === 'MySQL' ) {
-    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
     }
-
-    @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "mariadb:latest"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .env("MYSQL_ROOT_PASSWORD", "")
-                                                         .env("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
-                                                         .env("MYSQL_DATABASE", "jdbc_test_db")
-                                                         .env("MYSQL_ROOT_HOST", "172.17.0.1")
-//                                                       .waitFor( WaitFor.logMessageSequence( "mysqld: ready for connections" ) )   TODO: add this after next release of tdomzal/junit-docker-rule
-                                                         .waitFor( new DelayChecker( 30000L ) )
-                                                         .build();
 <% }
 if(  polygene.entitystore === 'PostgreSQL' ) {
-    polygene.needsDelayChecker = true;
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )
     {
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
     }
-
-    @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "<%= polygene.packagename %>-postgresql"  )
-                                                         .publishAllPorts( true )
-                                                         .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "PostgreSQL init process complete; ready for start up." ) )
-                                                         .waitFor( new DelayChecker( 3000L ) )
-                                                         .build();
 <% }
 if(  polygene.entitystore === 'Preferences' ) {
 %>
@@ -233,29 +245,43 @@ if(  polygene.entitystore === 'Preferences' ) {
 <% }
 if(  polygene.entitystore === 'Redis' ) {
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
+                                                          .declareDefaults();
+        redisConfig.host().set( ES_DOCKER.getDockerHost() );
+        redisConfig.port().set( Integer.valueOf( ES_DOCKER.getExposedContainerPort( "6379/tcp" ) ) );
     }
 
     @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "redis:latest"  )
-                                                         .publishAllPorts( true )
+    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                         .imageName( "redis:3.2.8-alpine"  )
+                                                         .expose( "6379" )
                                                          .waitForTimeout( 120 )
-                                                         .waitFor( pl.domzal.junit.docker.rule.WaitFor.tcpPort( 6379 ) ).build();
+                                                         .waitFor( WaitFor.tcpPort( 6379 ) ) );
 <% }
 if(  polygene.entitystore === 'Riak' ) {
+    polygene.needsDelayChecker = true;
 %>
-    private void entityStoreSetup(ApplicationAssembly assembly )
+    private void entityStoreSetup( ApplicationAssembly assembly )
     {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class ).declareDefaults();
+        String host = ES_DOCKER.getDockerHost();
+        String port = ES_DOCKER.getExposedContainerPort( "8087/tcp" );
+        riakConfig.hosts().set( java.util.Collections.singletonList( host + ':' + port ) );
     }
 
     @ClassRule
-    public static final DockerRule ES_DOCKER = DockerRule.builder()
-                                                         .imageName( "basho/riak-kv:latest"  )
-                                                         .publishAllPorts( true )
+    public static final OptionalDockerRule ES_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                         .imageName( "basho/riak-kv:ubuntu-2.2.3"  )
+                                                         .expose( "8087" )
                                                          .waitForTimeout( 120 )
-                                                         .waitFor( WaitFor.logMessageSequence( "riak_auth_mods started on node" ) ).build();
+                                                         .waitFor( WaitFor.logMessageSequence( "riak_auth_mods started on node" ) )
+                                                         .waitFor( new DelayChecker( 3000L ) ) );
 <% }
 if(  polygene.entitystore === 'SQLite' ) {
 %>
@@ -263,38 +289,85 @@ if(  polygene.entitystore === 'SQLite' ) {
     {
     }
 <% }
-if(  polygene.caching === 'Memcache' ) {
+if( polygene.caching === 'Memcache' ) {
 %>
-    @ClassRule
-    public static final DockerRule CACHE_DOCKER = DockerRule.builder()
-                                                            .imageName( "memcached:latest"  )
-                                                            .expose( "11211", "11211" )
-                                                            .waitForTimeout( 120 )
-                                                            .waitFor( WaitFor.tcpPort(11211) )
-                                                            .build();
 
-<% }
-if(  polygene.caching === 'EhCache' ) {
-%>
+    private void cacheSetup( ApplicationAssembly assembly )
+    {
+        ModuleAssembly config = assembly.layer( ConfigurationLayer.NAME ).module( ConfigModule.NAME );
+
+        MemcacheConfiguration memcacheConfig = config.forMixin( MemcacheConfiguration.class ).declareDefaults();
+        memcacheConfig.addresses().set( CACHE_DOCKER.getDockerHost() + ":" + CACHE_DOCKER.getExposedContainerPort( "11211/tcp" ) );
+    }
+
     @ClassRule
-    public static final DockerRule CACHE_DOCKER = DockerRule.builder()
-                                                            .imageName( "terracotta/terracotta-server-oss:latest"  )
-                                                            .expose( "9510", "9510" )
-                                                            .waitForTimeout( 120 )
-                                                            .waitFor( WaitFor.tcpPort(9510) )
-                                                            .build();
-<% }
-if(  polygene.indexing === 'ElasticSearch' ) {
-%>
-    @ClassRule
-    public static final DockerRule INDEXING_DOCKER = DockerRule.builder()
-                                                               .imageName( "docker.elastic.co/elasticsearch/elasticsearch:latest"  )
-                                                               .publishAllPorts( true )
-                                                               .waitForTimeout( 120 )
-                                                               .build();
+    public static final OptionalDockerRule CACHE_DOCKER = new OptionalDockerRule( DockerRule.builder()
+                                                              .imageName( "memcached:1.4.36-alpine"  )
+                                                              .expose( "11211" )
+                                                              .waitForTimeout( 120 )
+                                                              .waitFor( WaitFor.tcpPort( 11211 ) ) );
+
 <%
-} %>
-<% if( polygene.needsDelayChecker ) {
+}
+if( polygene.indexing === 'SQL' ) {
+%>
+    private void indexingSetup( ApplicationAssembly assembly )
+    {
+        // See the @Ignore annotation above
+        throw new UnsupportedOperationException();
+    }
+<%
+}
+%>
+
+<%
+if( polygene.needsDocker ) {
+%>
+    /**
+     * This JUnit Rule will skip tests if no Docker service is available.
+     */
+    public static class OptionalDockerRule implements TestRule
+    {
+        private final DockerRuleBuilder dockerRuleBuilder;
+        private DockerRule dockerRule;
+
+        private OptionalDockerRule( DockerRuleBuilder dockerRuleBuilder )
+        {
+            this.dockerRuleBuilder = dockerRuleBuilder;
+        }
+
+        @Override
+        public Statement apply( Statement base, Description description )
+        {
+            try
+            {
+                DefaultDockerClient.fromEnv().build().listImages();
+            }
+            catch( Throwable ex )
+            {
+                Assume.assumeNoException( ex );
+            }
+
+            dockerRule = dockerRuleBuilder.build();
+            return dockerRule.apply( base, description );
+        }
+
+        public String getDockerHost()
+        {
+            return dockerRule.getDockerHost();
+        }
+
+        public String getExposedContainerPort( String containerPort )
+        {
+            return dockerRule.getExposedContainerPort( containerPort );
+        }
+    }
+<%
+}
+%>
+
+<%
+if( polygene.needsDelayChecker ) {
 %>
     private static class DelayChecker
         implements StartCondition

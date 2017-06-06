@@ -26,7 +26,18 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+<%
+if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' && polygene.entitystore.indexOf('SQL') == -1 ) {
+%>
 import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.<%- polygene.entitystore %>EntityStoreConfiguration;
+<%
+}
+if( polygene.entitystore.indexOf('SQL') >= 0 ) {
+%>
+import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
+<%
+}
+%>
 import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.assembly.<%- polygene.entitystore %>EntityStoreAssembler;
 <%
 if( polygene.entitystore.indexOf('SQL') >= 0 ) {

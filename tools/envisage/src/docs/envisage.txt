@@ -23,6 +23,10 @@
 Envisage is a Swing based visualization tool for the Polygene™ Application model.
 Visualizations can be printed to PDFs.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
+It can be handy to run Envisage in development <<def-application-mode, Mode>> while working on assemblies.
+
 == Usage ==
 
 Envisage can be easily used directly and prior your Application activation:
@@ -48,9 +52,3 @@ image:tools-envisage-stacked-collapsed.png[width="800px"]
 image:tools-envisage-stacked.png[width="800px"]
 
 image:tools-envisage-type.png[width="800px"]
-
-== Embed into your Application ==
-
-include::../../build/docs/buildinfo/artifact.txt[]
-
-It can be handy to run Envisage in development <<def-application-mode, Mode>> while working on assemblies.

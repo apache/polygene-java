@@ -26,22 +26,17 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.junit.BeforeClass;
-
-import static org.apache.polygene.test.util.Assume.assumeConnectivity;
+import org.apache.polygene.test.docker.DockerRule;
+import org.junit.ClassRule;
 
 /**
  * Test the MongoDBEntityStoreService usage with a CachePool.
- * <p>Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017</p>
  */
 public class MongoDBEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
 {
-    @BeforeClass
-    public static void beforeRedisMapEntityStoreTests()
-    {
-        assumeConnectivity( "localhost", 27017 );
-    }
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule( "mongo", 27017 );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -58,6 +53,8 @@ public class MongoDBEntityStoreWithCacheTest
         mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
+        mongoConfig.hostname().set( DOCKER.getDockerHost() );
+        mongoConfig.port().set( DOCKER.getExposedContainerPort( "27017/tcp" ) );
     }
 
     private Mongo mongo;

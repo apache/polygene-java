@@ -35,7 +35,6 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
     def task = project.tasks.create( TASK_NAME )
     task.group = TaskGroups.DOCUMENTATION
     task.description = 'Generates asciidoc artifact snippet'
-    task.inputs.properties.put 'artifactId', PublishNaming.publishedNameFor( project.path )
     task.doLast {
       buildInfoDir.mkdirs()
 
@@ -53,10 +52,9 @@ class AsciidocBuildInfoPlugin implements Plugin<Project>
     }
 
     // Declare inputs/outputs
-    if( project.getBuildFile() != null && project.getBuildFile().exists() )
-    {
-      task.getInputs().file( project.getBuildFile() )
-    }
-    task.getOutputs().file( buildInfoDir )
+    task.inputs.property( 'groupId', project.group )
+    task.inputs.property( 'artifactId', PublishNaming.publishedNameFor( project.path ) )
+    task.inputs.property( 'version', project.version )
+    task.outputs.file( buildInfoDir )
   }
 }

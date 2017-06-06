@@ -23,9 +23,6 @@ var shell = require('shelljs');
 
 //See http://yeoman.io/authoring/testing.html
 
-// test with all defaults first.
-test();
-
 var appTypes = [
     "Rest API",
     'Command Line'
@@ -64,12 +61,6 @@ var cachings = [
     'EhCache'
 ];
 
-var serializations = [
-    'JavaxJson',
-    'JavaxXml',
-    'MessagePack'
-];
-
 var metricses = [
     'None',
     'Codahale'
@@ -86,77 +77,72 @@ var featuresset = [
     ['jmx', 'mixin scripting', 'scripting']
 ];
 
-appTypes.forEach(function (appType) {
-    test(appType, "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
-});
+// test with all defaults first.
+test();
 
-entityStores.forEach(function (entityStore) {
-    test("Rest API", entityStore, "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
-});
-
-indexings.forEach(function (indexing) {
-    test("Rest API", "Memory", indexing, "JavaxJson", "Memcache", "Codahale", "[]");
-});
-
-serializations.forEach(function (serialization) {
-    test("Rest API", "Memory", "Rdf", serialization, "Memcache", "Codahale", "[]");
-});
-
-cachings.forEach(function (caching) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", caching, "Codahale", "[]");
-});
-
-metricses.forEach(function (metrics) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", metrics, "[]");
-});
-
-featuresset.forEach(function (feature) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", feature);
-});
-
-// All Tests !!!!
-if(process.env.TEST_ALL == 'yes') {
+if(process.env.TEST_ALL === 'yes') {
+    // All Tests !!!!
     appTypes.forEach(function (appType) {
         entityStores.forEach(function (entitystore) {
             indexings.forEach(function (indexing) {
-                serializations.forEach(function (serialization) {
-                    cachings.forEach(function (caching) {
-                        metricses.forEach(function (metrics) {
-                            featuresset.forEach(function (features) {
-                                test(appType, entitystore, indexing, serialization, caching, metrics, features)
-                            });
+                cachings.forEach(function (caching) {
+                    metricses.forEach(function (metrics) {
+                        featuresset.forEach(function (features) {
+                            test(appType, entitystore, indexing, caching, metrics, features)
                         });
                     });
                 });
             });
         });
     });
+} else {
+    // Subset
+    appTypes.forEach(function (appType) {
+        test(appType, "Memory", "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    entityStores.forEach(function (entityStore) {
+        test("Rest API", entityStore, "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    indexings.forEach(function (indexing) {
+        test("Rest API", "Memory", indexing, "Memcache", "Codahale", "[]");
+    });
+
+    cachings.forEach(function (caching) {
+        test("Rest API", "Memory", "Rdf", caching, "Codahale", "[]");
+    });
+
+    metricses.forEach(function (metrics) {
+        test("Rest API", "Memory", "Rdf", "Memcache", metrics, "[]");
+    });
+
+    featuresset.forEach(function (feature) {
+        test("Rest API", "Memory", "Rdf", "Memcache", "Codahale", feature);
+    });
 }
 
-function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
+function test(appType, entityStore, indexing, caching, metrics, features) {
     describe('polygene-generator', function () {
-        var testName = 'generates a Gradle buildable Apache Polygene project with '
-            + entityStore + 'EntityStore, '
-            + indexing + 'Indexing, '
-            + serialization + 'Serialization, '
-            + caching + 'Caching, '
-            + metrics + 'Metrics';
-        if(features) {
-            testName += ', and ' + features;
+        var testName = appType + ' with '
+            + entityStore + ' EntityStore - '
+            + indexing + ' Indexing - '
+            + caching + ' Caching - '
+            + metrics + ' Metrics';
+        if(features && features.length > 0) {
+            testName += ' - ' + features.toString().replace(new RegExp(',', 'g'), ' - ');
         }
-        testName += '.';
-        var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
+        var testDirName = testName.replace(new RegExp(' - ', 'g'), '_').replace(new RegExp(' ', 'g'), '_');
         it(testName,
             function () {
-                this.timeout(15000);
+                this.timeout(30000);
                 return helpers.run(path.join(__dirname, '../app'))
-                    .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
+                    .inDir(path.join(__dirname, '../build/npm-test/' + testDirName))
                     .withPrompts({
                         name: 'TestProject',
                         packageName: 'org.apache.polygene.generator.test',
                         applicationtype: appType,
                         entitystore: entityStore,
-                        serialization: serialization,
                         indexing: indexing,
                         caching: caching,
                         metrics: metrics,
