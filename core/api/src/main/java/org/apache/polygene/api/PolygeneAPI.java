@@ -20,7 +20,6 @@
 package org.apache.polygene.api;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.function.Function;
 import org.apache.polygene.api.association.AbstractAssociation;
@@ -28,7 +27,6 @@ import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.CompositeInstance;
-import org.apache.polygene.api.composite.InvalidCompositeException;
 import org.apache.polygene.api.composite.ModelDescriptor;
 import org.apache.polygene.api.composite.TransientDescriptor;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -139,6 +137,12 @@ public interface PolygeneAPI
      */
     AssociationDescriptor associationDescriptorFor( AbstractAssociation association );
 
+    /** Tests if the given object is a Composite
+     *
+     * @param object The Java object to be checked
+     * @return true if the given object is a Composite type.
+     */
+    boolean isComposite( Object object );
     /**
      * Function that returns the CompositeInstance of a Composite.
      */

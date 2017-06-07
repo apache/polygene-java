@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.polygene.api.common.ConstructionException;
+import org.apache.polygene.runtime.PolygeneRuntimeImpl;
 
 /**
  * JAVADOC
@@ -45,6 +47,15 @@ public final class UsesInstance
 
     public UsesInstance use( Object... objects )
     {
+        // Validate that there are no Composites in the list, since they are possibly not fully initialized yet.
+        // TODO: The reason for that is that Composites may not be fully initialized when reaching here, and the hashCode() call later will cause an NPE.
+        for( Object obj : objects )
+        {
+            if( PolygeneRuntimeImpl.isCompositeType( obj ) )
+            {
+                throw new ConstructionException( "Composites are not allowed as @Uses arguments: " + obj.toString() );
+            }
+        }
         HashSet<Object> useObjects = new HashSet<>();
         if( !uses.isEmpty() )
         {
