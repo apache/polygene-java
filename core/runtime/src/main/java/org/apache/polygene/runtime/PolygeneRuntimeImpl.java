@@ -20,6 +20,7 @@
 package org.apache.polygene.runtime;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -310,6 +311,18 @@ public final class PolygeneRuntimeImpl
         }
 
         return (AssociationDescriptor) ( (AbstractAssociationInstance) association ).associationInfo();
+    }
+
+    @Override
+    public boolean isComposite( Object object )
+    {
+        return isCompositeType( object );
+    }
+
+    public static boolean isCompositeType( Object object )
+    {
+        return Proxy.isProxyClass( object.getClass() )
+               && Proxy.getInvocationHandler( object ) instanceof CompositeInstance;
     }
 
     // SPI
