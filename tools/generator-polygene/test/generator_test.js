@@ -135,7 +135,8 @@ function test(appType, entityStore, indexing, caching, metrics, features) {
         var testDirName = testName.replace(new RegExp(' - ', 'g'), '_').replace(new RegExp(' ', 'g'), '_');
         it(testName,
             function () {
-                this.timeout(30000);
+                console.log( "\n\nTest: " + testName );
+                this.timeout(60000);
                 return helpers.run(path.join(__dirname, '../app'))
                     .inDir(path.join(__dirname, '../build/npm-test/' + testDirName))
                     .withPrompts({
