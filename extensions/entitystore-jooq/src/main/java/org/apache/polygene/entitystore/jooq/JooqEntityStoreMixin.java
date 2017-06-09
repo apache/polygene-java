@@ -30,11 +30,9 @@ import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -53,18 +51,8 @@ import static org.apache.polygene.api.entity.EntityReference.parseEntityReferenc
 public class JooqEntityStoreMixin
     implements EntityStore, EntityStoreSPI
 {
-
-    @Structure
-    private PolygeneSPI spi;
-
-    @This
-    private SqlType sqlType;
-
     @This
     private SqlTable sqlTable;
-
-    @This
-    private JooqDslContext jooqDslContext;
 
     @Service
     private IdentityGenerator identityGenerator;
@@ -103,7 +91,6 @@ public class JooqEntityStoreMixin
         Map<QualifiedName, List<EntityReference>> manyAssocs = new HashMap<>();
         Map<QualifiedName, Map<String, EntityReference>> namedAssocs = new HashMap<>();
         result.forEach( record ->
-                        {
                             sqlTable.fetchAssociations( record, associationValue ->
                             {
                                 // TODO: Perhaps introduce "preserveManyAssociationOrder" option which would have an additional column, separating 'ordinal position' and 'name position'
@@ -115,8 +102,7 @@ public class JooqEntityStoreMixin
                                 {
                                     addNamedAssociation( stateDescriptor, namedAssocs, associationValue );
                                 }
-                            } );
-                        } );
+                            } ) );
 
         return new DefaultEntityState( baseEntity.version,
                                        baseEntity.modifedAt,
@@ -155,7 +141,7 @@ public class JooqEntityStoreMixin
     @Override
     public StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state )
     {
-        return new JooqStateCommitter( unitOfWork, state );
+        return new JooqStateCommitter( unitOfWork, state, sqlTable.jooqDslContext() );
     }
 
     @Override
@@ -175,24 +161,65 @@ public class JooqEntityStoreMixin
         return null;
     }
 
-    private static class JooqStateCommitter
+    private class JooqStateCommitter
         implements StateCommitter
     {
-        public JooqStateCommitter( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state )
-        {
+        private final EntityStoreUnitOfWork unitOfWork;
+        private final Iterable<EntityState> states;
+        private final JooqDslContext dslContext;
 
+        JooqStateCommitter( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> states, JooqDslContext dslContext )
+        {
+            this.unitOfWork = unitOfWork;
+            this.states = states;
+            this.dslContext = dslContext;
         }
 
         @Override
         public void commit()
         {
+            dslContext.transaction( configuration ->
+                                    {
+                                        for( EntityState es : this.states )
+                                        {
+                                            DefaultEntityState state = (DefaultEntityState) es;
+                                            if( state.status() == EntityStatus.NEW )
+                                            {
+                                                newState( state );
+                                            }
+                                            if( state.status() == EntityStatus.UPDATED )
+                                            {
+                                                updateState( state );
+                                            }
+                                            if( state.status() == EntityStatus.REMOVED )
+                                            {
+                                                removeState( state );
+                                            }
+                                        }
+                                    } );
+        }
 
+        private void newState( DefaultEntityState state )
+        {
+            EntityReference ref = state.entityReference();
+            EntityDescriptor descriptor = state.entityDescriptor();
+            sqlTable.createNewBaseEntity( ref, descriptor, unitOfWork );
+            sqlTable.insertEntity( state );
+        }
+
+        private void updateState( DefaultEntityState state )
+        {
+
+        }
+
+        private void removeState( DefaultEntityState state )
+        {
+            EntityReference reference = state.entityReference();
         }
 
         @Override
         public void cancel()
         {
-
         }
     }
 }

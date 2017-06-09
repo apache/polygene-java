@@ -25,6 +25,7 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.jooq.JooqDslContext;
 import org.apache.polygene.entitystore.jooq.JooqEntityStoreConfiguration;
 import org.apache.polygene.entitystore.jooq.JooqEntityStoreService;
 import org.jooq.SQLDialect;
@@ -32,8 +33,9 @@ import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 
 /**
- * MySQL EntityStore assembly.
+ * JOOQ EntityStore assembly.
  */
+@SuppressWarnings( "WeakerAccess" )
 public class JooqEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig<JooqEntityStoreAssembler>
     implements Assembler
 {
@@ -49,11 +51,12 @@ public class JooqEntityStoreAssembler extends Assemblers.VisibilityIdentityConfi
         }
 
         String identity = ( hasIdentity() ? identity() : DEFAULT_ENTITYSTORE_IDENTITY ).toString();
+        module.transients( JooqDslContext.class );
 
         module.services( JooqEntityStoreService.class )
               .identifiedBy( identity )
               .visibleIn( visibility() )
-              .setMetaInfo( getSQLDialect() )
+              .instantiateOnStartup()
               .setMetaInfo( settings );
 
         if( hasConfig() )

@@ -143,6 +143,7 @@ public interface PolygeneAPI
      * @return true if the given object is a Composite type.
      */
     boolean isComposite( Object object );
+
     /**
      * Function that returns the CompositeInstance of a Composite.
      */

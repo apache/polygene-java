@@ -31,6 +31,6 @@ import org.apache.polygene.spi.entitystore.StateChangeNotificationConcern;
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JooqEntityStoreMixin.class } )
 public interface JooqEntityStoreService
-    extends EntityStore, EntityStateVersions, Configuration
+    extends EntityStore, EntityStateVersions, Configuration, SqlTable
 {
 }

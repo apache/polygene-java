@@ -58,5 +58,16 @@ public interface JooqEntityStoreConfiguration extends SQLConfiguration
      */
     @UseDefaults( "true" )
     Property<Boolean> createIfMissing();
+
+    /**
+     * The SQL dialect that is being used.
+     * <p>
+     * Typically that is matching a supporting dialect in JOOQ.
+     * See {@link org.jooq.SQLDialect} for supported values.
+     * </p>
+     * @return The property with the dialect value.
+     */
+    @UseDefaults( "" )
+    Property<String> dialect();
 }
 // END SNIPPET: config

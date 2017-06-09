@@ -19,33 +19,32 @@
  */
 package org.apache.polygene.entitystore.jooq;
 
-import java.util.HashMap;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jooq.assembly.JooqEntityStoreAssembler;
+import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
+import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.jooq.SQLDialect;
-import org.junit.ClassRule;
 
-public class JooqEntityStoreTest
-    extends AbstractEntityStoreTest
+public class JooqEntityStoreTest extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule(
-        "mysql",
-        new HashMap<String, String>()
-        {{
-            put( "MYSQL_ROOT_PASSWORD", "" );
-            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
-            put( "MYSQL_DATABASE", "jdbc_test_db" );
-            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
-        }},
-        30000L
-//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
-    );
+//    @ClassRule
+//    public static final DockerRule DOCKER = new DockerRule(
+//        "mysql",
+//        new HashMap<String, String>()
+//        {{
+//            put( "MYSQL_ROOT_PASSWORD", "" );
+//            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
+//            put( "MYSQL_DATABASE", "jdbc_test_db" );
+//            put( "MYSQL_ROOT_HOST", "127.0.0.1" );
+//        }},
+//        30000L
+////        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
+//    );
 
     @Override
     // START SNIPPET: assembly
@@ -54,17 +53,46 @@ public class JooqEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
+        module.defaultServices();
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().visibleIn( Visibility.module ).assemble( config );
 
         // START SNIPPET: assembly
+        // Assemble a DataSource
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "datasource" )
+            .identifiedBy( "ds-mysql" )
+            .visibleIn( Visibility.module )
+            .assemble( module );
+
+        // Assemble the Apache DBCP based Service Importer
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "datasource" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
+
         new JooqEntityStoreAssembler()
             .withConfig( config, Visibility.layer )
             .identifiedBy( "jooq-entitystore" )
             .assemble( module );
         // END SNIPPET: assembly
 
-        config.forMixin( JooqEntityStoreConfiguration.class ).setMetaInfo( SQLDialect.MARIADB );
+        JooqEntityStoreConfiguration jooqDefaults = config.forMixin( JooqEntityStoreConfiguration.class )
+                                                          .setMetaInfo( SQLDialect.H2 )
+                                                          .declareDefaults();
+        jooqDefaults.entitiesTableName().set( "ENTITIES" );
+
+        String path = System.getProperty( "user.dir" ) + "/testdb";
+        System.out.println("Niclas: " + path);
+        DataSourceConfiguration dsDefaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
+        dsDefaults.driver().set( org.h2.Driver.class.getName() );
+        dsDefaults.enabled().set( true );
+        dsDefaults.maxPoolSize().set( 3 );
+        dsDefaults.minPoolSize().set( 1 );
+        dsDefaults.username().set( "" );
+        dsDefaults.password().set( "" );
+        dsDefaults.url().set( "jdbc:h2:"+path+";create=true" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
