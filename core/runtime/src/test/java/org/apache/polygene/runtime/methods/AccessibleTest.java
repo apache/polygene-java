@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.runtime.methods;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -26,8 +27,9 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class AccessibleTest extends AbstractPolygeneTest
 {
@@ -40,10 +42,18 @@ public class AccessibleTest extends AbstractPolygeneTest
     }
 
     @Test
-    public void givenPrivateMixinWhenCallingFromWithinExpectSuccess()
+    public void givenPackageReturnTypeWhenCallingFromWithinExpectSuccess()
     {
         MyComposite myComposite = transientBuilderFactory.newTransient( MyComposite.class );
-        assertThat(myComposite.doSomething(), equalTo("Hello"));
+        try
+        {
+            myComposite.doSomething();
+            fail("Should have gotten an IllegalAccessException");
+        } catch( UndeclaredThrowableException e )
+        {
+            Throwable thrown = e.getUndeclaredThrowable();
+            assertThat( thrown, instanceOf(IllegalAccessException.class));
+        }
     }
 
     @Mixins( MyCompositeMixin.class)
@@ -55,9 +65,8 @@ public class AccessibleTest extends AbstractPolygeneTest
     @Mixins( MyFunctionMixin.class )
     public interface MyFunction
     {
-        String doSomething();
+        MyString doSomething();
     }
-
 
     public class MyCompositeMixin
         implements MyComposite
@@ -70,19 +79,20 @@ public class AccessibleTest extends AbstractPolygeneTest
         {
             return new MyObject( function ).doSomething() + " ---- " + getClass().getClassLoader();
         }
+
     }
 
-    public class MyFunctionMixin
+    public static class MyFunctionMixin
         implements MyFunction
     {
         @Override
-        public String doSomething()
+        public MyString doSomething()
         {
-            return "Hello " + getClass().getClassLoader();
+            return new MyString( "Hello " );
         }
     }
 
-    public class MyObject
+    public static class MyObject
     {
         private MyFunction fn;
 
@@ -93,7 +103,18 @@ public class AccessibleTest extends AbstractPolygeneTest
 
         String doSomething()
         {
-            return fn.doSomething();
+            return fn.doSomething().mine;
         }
     }
+
+    static class MyString
+    {
+        String mine;
+
+        public MyString( String mine )
+        {
+            this.mine = mine;
+        }
+    }
+
 }

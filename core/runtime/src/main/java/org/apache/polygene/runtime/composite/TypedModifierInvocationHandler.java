@@ -21,6 +21,7 @@ package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * JAVADOC
@@ -38,7 +39,21 @@ public final class TypedModifierInvocationHandler
         }
         catch( InvocationTargetException e )
         {
-            throw cleanStackTrace( e.getTargetException(), proxy, method );
+            Throwable targetException = e.getTargetException();
+            if( targetException instanceof IllegalAccessError )
+            {
+                // We get here if any of the return types or parameters are not public. This is probably due to
+                // the _Stub class ends up in a different classpace than the original mixin. We intend to fix this in
+                // 3.1 or 3.2
+                if( !Modifier.isPublic( method.getReturnType().getModifiers() ) )
+                {
+                    String message = "Return types must be public: " + method.getReturnType().getName();
+                    IllegalAccessException illegalAccessException = new IllegalAccessException( message );
+                    illegalAccessException.initCause( e.getTargetException() );
+                    throw cleanStackTrace( illegalAccessException, proxy, method );
+                }
+            }
+            throw cleanStackTrace( targetException, proxy, method );
         }
         catch( Throwable e )
         {
