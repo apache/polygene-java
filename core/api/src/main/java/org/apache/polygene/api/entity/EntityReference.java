@@ -21,6 +21,7 @@
 package org.apache.polygene.api.entity;
 
 import java.util.Objects;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
 
@@ -39,6 +40,7 @@ public final class EntityReference
      */
     public static EntityReference parseEntityReference(String identityString)
     {
+        Objects.requireNonNull( identityString, "identityString must not be null" );
         return new EntityReference( new StringIdentity( identityString ) );
     }
 
@@ -48,7 +50,16 @@ public final class EntityReference
      */
     public static EntityReference entityReferenceFor(Object object)
     {
-        return new EntityReference(((EntityComposite) object).identity().get());
+        Objects.requireNonNull( object );
+        if( object instanceof Identity )
+        {
+            return new EntityReference( ((Identity) object) );
+        }
+        if( object instanceof HasIdentity )
+        {
+            return new EntityReference( ((HasIdentity) object).identity().get() );
+        }
+        throw new IllegalArgumentException( "Can not get an entity reference for " + object.getClass() );
     }
 
     public static EntityReference create(Identity identity)

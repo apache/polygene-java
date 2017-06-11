@@ -35,5 +35,7 @@ public interface StateDescriptor
     PropertyDescriptor findPropertyModelByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
+    boolean hasProperty( QualifiedName name );
+
     Stream<? extends PropertyDescriptor> properties();
 }

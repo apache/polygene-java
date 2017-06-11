@@ -34,7 +34,8 @@ import org.apache.polygene.api.util.VisitableHierarchy;
 public class PropertiesModel
     implements VisitableHierarchy<Object, Object>
 {
-    protected final Map<AccessibleObject, PropertyModel> mapAccessiblePropertyModel = new LinkedHashMap<>();
+    private final Map<AccessibleObject, PropertyModel> mapAccessiblePropertyModel = new LinkedHashMap<>();
+    private final Map<QualifiedName, PropertyModel> mapNamePropertyModel = new LinkedHashMap<>();
 
     public PropertiesModel()
     {
@@ -43,6 +44,7 @@ public class PropertiesModel
     public void addProperty( PropertyModel property )
     {
         mapAccessiblePropertyModel.put( property.accessor(), property );
+        mapNamePropertyModel.put( property.qualifiedName(), property );
     }
 
     @Override
@@ -75,7 +77,6 @@ public class PropertiesModel
         {
             throw new IllegalArgumentException( "No property found with name: " + ( (Member) accessor ).getName() );
         }
-
         return propertyModel;
     }
 
@@ -95,13 +96,16 @@ public class PropertiesModel
     public PropertyModel getPropertyByQualifiedName( QualifiedName name )
         throws IllegalArgumentException
     {
-        for( PropertyModel propertyModel : mapAccessiblePropertyModel.values() )
+        PropertyModel propertyModel = mapNamePropertyModel.get( name );
+        if( propertyModel != null )
         {
-            if( propertyModel.qualifiedName().equals( name ) )
-            {
-                return propertyModel;
-            }
+            return propertyModel;
         }
         throw new IllegalArgumentException( "No property found with qualified name: " + name );
+    }
+
+    public boolean hasProperty( QualifiedName name )
+    {
+        return mapNamePropertyModel.containsKey( name );
     }
 }

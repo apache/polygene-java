@@ -34,7 +34,6 @@ import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EntityCompositeType;
-import org.apache.polygene.api.type.ValueCompositeType;
 import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.spi.entity.EntityState;
@@ -307,6 +306,12 @@ class SQLCompatEntityStateWrapper
         }
 
         @Override
+        public boolean hasAssociation( QualifiedName name )
+        {
+            return wrappedAssociationStateDescriptor.hasAssociation( name );
+        }
+
+        @Override
         public AssociationDescriptor getManyAssociationByName( String name )
             throws IllegalArgumentException
         {
@@ -321,6 +326,12 @@ class SQLCompatEntityStateWrapper
         }
 
         @Override
+        public boolean hasManyAssociation( QualifiedName name )
+        {
+            return false;
+        }
+
+        @Override
         public AssociationDescriptor getNamedAssociationByName( String name )
             throws IllegalArgumentException
         {
@@ -332,6 +343,12 @@ class SQLCompatEntityStateWrapper
             throws IllegalArgumentException
         {
             return wrappedAssociationStateDescriptor.getNamedAssociationByQualifiedName( name );
+        }
+
+        @Override
+        public boolean hasNamedAssociation( QualifiedName name )
+        {
+            return false;
         }
 
         @Override
@@ -364,6 +381,12 @@ class SQLCompatEntityStateWrapper
             throws IllegalArgumentException
         {
             return wrappedAssociationStateDescriptor.findPropertyModelByQualifiedName( name );
+        }
+
+        @Override
+        public boolean hasProperty( QualifiedName name )
+        {
+            return wrappedAssociationStateDescriptor.hasProperty( name );
         }
 
         @Override

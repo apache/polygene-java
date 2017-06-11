@@ -38,6 +38,7 @@ public final class AssociationsModel
     implements VisitableHierarchy<AssociationsModel, AssociationModel>
 {
     private final Map<AccessibleObject, AssociationModel> mapAccessorAssociationModel = new LinkedHashMap<>();
+    private final Map<QualifiedName, AssociationModel> mapNameAssociationModel = new LinkedHashMap<>();
 
     public AssociationsModel()
     {
@@ -51,6 +52,7 @@ public final class AssociationsModel
     public void addAssociation( AssociationModel associationModel )
     {
         mapAccessorAssociationModel.put( associationModel.accessor(), associationModel );
+        mapNameAssociationModel.put( associationModel.qualifiedName(), associationModel );
     }
 
     @Override
@@ -97,14 +99,17 @@ public final class AssociationsModel
     public AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException
     {
-        for( AssociationModel associationModel : mapAccessorAssociationModel.values() )
+        AssociationModel associationModel = mapNameAssociationModel.get( name );
+        if( associationModel != null )
         {
-            if( associationModel.qualifiedName().equals( name ) )
-            {
-                return associationModel;
-            }
+            return associationModel;
         }
         throw new IllegalArgumentException( "No association found with qualified name:" + name );
+    }
+
+    public boolean hasAssociation( QualifiedName name )
+    {
+        return mapNameAssociationModel.containsKey( name );
     }
 
     public void checkConstraints( AssociationStateHolder state )
@@ -116,5 +121,4 @@ public final class AssociationsModel
             associationModel.checkConstraints( association.get() );
         }
     }
-
 }

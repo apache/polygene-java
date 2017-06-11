@@ -34,17 +34,23 @@ public interface AssociationStateDescriptor extends StateDescriptor
     AssociationDescriptor getAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
+    boolean hasAssociation( QualifiedName name );
+
     AssociationDescriptor getManyAssociationByName( String name )
         throws IllegalArgumentException;
 
     AssociationDescriptor getManyAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
+    boolean hasManyAssociation( QualifiedName name );
+
     AssociationDescriptor getNamedAssociationByName( String name )
         throws IllegalArgumentException;
 
     AssociationDescriptor getNamedAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
+
+    boolean hasNamedAssociation( QualifiedName name );
 
     Stream<? extends AssociationDescriptor> associations();
 

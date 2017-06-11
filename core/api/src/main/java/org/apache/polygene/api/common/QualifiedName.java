@@ -238,9 +238,7 @@ public final class QualifiedName
         {
             return false;
         }
-
         QualifiedName that = (QualifiedName) o;
-
         return name.equals( that.name ) && typeName.equals( that.typeName );
     }
 

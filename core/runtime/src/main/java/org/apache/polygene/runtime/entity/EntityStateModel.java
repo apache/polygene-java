@@ -38,8 +38,7 @@ import org.apache.polygene.runtime.property.PropertiesModel;
 /**
  * Model for EntityComposite state.
  */
-public final class EntityStateModel
-    extends StateModel
+public final class EntityStateModel extends StateModel
     implements AssociationStateDescriptor
 {
     private final AssociationsModel associationsModel;
@@ -77,6 +76,12 @@ public final class EntityStateModel
         return associationsModel.getAssociationByQualifiedName( name );
     }
 
+    @Override
+    public boolean hasAssociation( QualifiedName name )
+    {
+        return associationsModel.hasAssociation( name );
+    }
+
     public ManyAssociationModel getManyAssociation( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -97,6 +102,12 @@ public final class EntityStateModel
         return manyAssociationsModel.getManyAssociationByQualifiedName( name );
     }
 
+    @Override
+    public boolean hasManyAssociation( QualifiedName name )
+    {
+        return manyAssociationsModel.hasAssociation( name );
+    }
+
     public NamedAssociationModel getNamedAssociation( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -115,6 +126,12 @@ public final class EntityStateModel
         throws IllegalArgumentException
     {
         return namedAssociationsModel.getNamedAssociationByQualifiedName( name );
+    }
+
+    @Override
+    public boolean hasNamedAssociation( QualifiedName name )
+    {
+        return namedAssociationsModel.hasAssociation( name );
     }
 
     @Override
