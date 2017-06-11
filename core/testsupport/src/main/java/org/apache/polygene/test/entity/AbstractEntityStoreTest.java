@@ -359,7 +359,6 @@ public abstract class AbstractEntityStoreTest
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
@@ -368,7 +367,6 @@ public abstract class AbstractEntityStoreTest
             testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
             version = spi.entityStateOf( testEntity ).version();
-
             unitOfWork.complete();
         }
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
@@ -376,7 +374,6 @@ public abstract class AbstractEntityStoreTest
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
-
             unitOfWork.complete();
         }
     }

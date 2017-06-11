@@ -26,12 +26,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.QualifiedName;
+import org.apache.polygene.api.composite.Composite;
+import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.EntityCompositeType;
@@ -48,10 +54,14 @@ import org.jooq.Schema;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
+import org.jooq.impl.DSL;
 
+@SuppressWarnings( "WeakerAccess" )
 public class EntitiesTable
     implements TableFields
 {
+    private static final Predicate<? super Class<?>> NOT_COMPOSITE = type -> !( type.equals( Composite.class ) || type.equals( EntityComposite.class ) );
+    private static final Predicate<? super Class<?>> NOT_HASIDENTITY = type -> !( type.equals( HasIdentity.class ) );
     private Map<EntityCompositeType, Set<Class<?>>> mixinTypeCache = new ConcurrentHashMap<>();
     private Map<Class<?>, MixinTable> mixinTablesCache = new ConcurrentHashMap<>();
 
@@ -60,6 +70,7 @@ public class EntitiesTable
     private final TypesTable types;
     private final Schema schema;
     private String applicationVersion;
+    private boolean replacementStrategy = false;  // Figure out later if we should support both and if so, how.
 
     EntitiesTable( JooqDslContext dsl, Schema schema, TypesTable types, String applicationVersion, String entitiesTableName )
     {
@@ -72,7 +83,6 @@ public class EntitiesTable
 
     public BaseEntity fetchEntity( EntityReference reference, ModuleDescriptor module )
     {
-        BaseEntity result = new BaseEntity();
 
         Result<Record> baseEntityResult = dsl
             .selectFrom( entitiesTable )
@@ -83,16 +93,30 @@ public class EntitiesTable
         {
             throw new EntityNotFoundException( reference );
         }
-        Record baseEntity = baseEntityResult.get( 0 );
-        String typeName = baseEntity.field( typeNameColumn ).get( baseEntity );
+        Record row = baseEntityResult.get( 0 );
+        return toBaseEntity( row, module );
+    }
+
+    protected BaseEntity toBaseEntity( Record row, ModuleDescriptor module )
+    {
+        BaseEntity result = new BaseEntity();
+        String typeName = row.field( typeNameColumn ).get( row );
         result.type = findEntityDescriptor( typeName, module );
-        result.version = baseEntity.field( versionColumn ).get( baseEntity );
-        result.applicationVersion = baseEntity.field( applicationVersionColumn ).get( baseEntity );
-        result.identity = EntityReference.parseEntityReference( baseEntity.field( identityColumn ).get( baseEntity ) ).identity();
-        result.currentValueIdentity = EntityReference.parseEntityReference( baseEntity.field( valueIdentityColumn ).get( baseEntity ) ).identity();
-        result.modifedAt = Instant.ofEpochMilli( baseEntity.field( modifiedColumn ).get( baseEntity ).getTime() );
-        result.createdAt = Instant.ofEpochMilli( baseEntity.field( createdColumn ).get( baseEntity ).getTime() );
+        result.version = row.field( versionColumn ).get( row );
+        result.applicationVersion = row.field( applicationVersionColumn ).get( row );
+        result.identity = new StringIdentity( row.field( identityColumn ).get( row ) );
+        result.currentValueIdentity = EntityReference.parseEntityReference( row.field( valueIdentityColumn ).get( row ) ).identity();
+        result.modifedAt = Instant.ofEpochMilli( row.field( modifiedColumn ).get( row ).getTime() );
+        result.createdAt = Instant.ofEpochMilli( row.field( createdColumn ).get( row ).getTime() );
         return result;
+    }
+
+    public Stream<BaseEntity> fetchAll( EntityDescriptor type, ModuleDescriptor module )
+    {
+        Result<Record> baseEntityResult = dsl
+            .selectFrom( entitiesTable )
+            .fetch();
+        return baseEntityResult.stream().map( record -> toBaseEntity( record, module ) );
     }
 
     private EntityDescriptor findEntityDescriptor( String typeName, ModuleDescriptor module )
@@ -108,32 +132,34 @@ public class EntitiesTable
         }
     }
 
-    void insertEntity( DefaultEntityState state )
+    void insertEntity( DefaultEntityState state, BaseEntity baseEntity )
     {
         EntityCompositeType compositeType = state.entityDescriptor().valueType();
-        Set<Class<?>> mixinTypes = mixinTypeCache.computeIfAbsent( compositeType, type ->
-        {
-            Set<Class<?>> mixins = compositeType
-                .properties()
-                .map( PropertyDescriptor::accessor )
-                .filter( Classes.instanceOf( Method.class ) )
-                .map( accessor -> (Method) accessor )
-                .map( Method::getDeclaringClass )
-                .collect( Collectors.toSet() );
-            Set<Class<?>> mixinsWithAssociations = mixinsOf( compositeType.associations() );
-            Set<Class<?>> mixinsWithManyAssociations = mixinsOf( compositeType.manyAssociations() );
-            Set<Class<?>> mixinsWithNamedAssociations = mixinsOf( compositeType.namedAssociations() );
-            mixins.addAll( mixinsWithAssociations );
-            mixins.addAll( mixinsWithManyAssociations );
-            mixins.addAll( mixinsWithNamedAssociations );
-            return mixins;
-        } );
-        String valueIdentity = UUID.randomUUID().toString();
+        Set<Class<?>> mixinTypes = mixinTypeCache.computeIfAbsent( compositeType, createMixinTypesSet( compositeType ) );
         mixinTypes.forEach( type ->
                             {
                                 MixinTable table = findMixinTable( type, state.entityDescriptor() );
-                                table.insertMixinState( state, valueIdentity );
+                                table.insertMixinState( state, baseEntity.currentValueIdentity.toString() );
                             } );
+    }
+
+    void modifyEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork uow )
+    {
+        updateBaseEntity( baseEntity, uow );
+        if( replacementStrategy )
+        {
+            insertEntity( state, baseEntity );      // replacement strategy (more safe)
+        }
+        else
+        {
+            EntityCompositeType compositeType = state.entityDescriptor().valueType();
+            Set<Class<?>> mixinTypes = mixinTypeCache.computeIfAbsent( compositeType, createMixinTypesSet( compositeType ) );
+            mixinTypes.forEach( type ->
+                                {
+                                    MixinTable table = findMixinTable( type, state.entityDescriptor() );
+                                    table.modifyMixinState( state, baseEntity.currentValueIdentity.toString() );
+                                } );
+        }
     }
 
     private MixinTable findMixinTable( Class<?> type, EntityDescriptor entityDescriptor )
@@ -148,17 +174,32 @@ public class EntitiesTable
             .filter( Classes.instanceOf( Method.class ) )
             .map( accessor -> (Method) accessor )
             .map( Method::getDeclaringClass )
+            .filter( NOT_HASIDENTITY )
+            .filter( NOT_COMPOSITE )
             .collect( Collectors.toSet() );
     }
 
-    private String columnNameOf( QualifiedName propertyName )
+    private Function<EntityCompositeType, Set<Class<?>>> createMixinTypesSet( EntityCompositeType compositeType )
     {
-        return null;
-    }
-
-    void modifyEntity( Class<?> mixinType, DefaultEntityState state )
-    {
-
+        return type ->
+        {
+            Set<Class<?>> mixins = compositeType
+                .properties()
+                .map( PropertyDescriptor::accessor )
+                .filter( Classes.instanceOf( Method.class ) )
+                .map( accessor -> (Method) accessor )
+                .map( Method::getDeclaringClass )
+                .filter( NOT_HASIDENTITY )
+                .filter( NOT_COMPOSITE )
+                .collect( Collectors.toSet() );
+            Set<Class<?>> mixinsWithAssociations = mixinsOf( compositeType.associations() );
+            Set<Class<?>> mixinsWithManyAssociations = mixinsOf( compositeType.manyAssociations() );
+            Set<Class<?>> mixinsWithNamedAssociations = mixinsOf( compositeType.namedAssociations() );
+            mixins.addAll( mixinsWithAssociations );
+            mixins.addAll( mixinsWithManyAssociations );
+            mixins.addAll( mixinsWithNamedAssociations );
+            return mixins;
+        };
     }
 
     void createNewBaseEntity( EntityReference reference, EntityDescriptor descriptor, EntityStoreUnitOfWork uow )
@@ -173,6 +214,27 @@ public class EntitiesTable
            .set( versionColumn, "1" )
            .set( applicationVersionColumn, applicationVersion )
            .execute();
+    }
+
+    private void updateBaseEntity( BaseEntity entity, EntityStoreUnitOfWork uow )
+    {
+        entity.version = increment( entity.version );
+        if( replacementStrategy )
+        {
+            entity.currentValueIdentity = new StringIdentity( UUID.randomUUID().toString() );
+        }
+        dsl.update( entitiesTable )
+           .set( modifiedColumn, new Timestamp( uow.currentTime().toEpochMilli() ) )
+           .set( valueIdentityColumn, entity.currentValueIdentity.toString() )
+           .set( versionColumn, entity.version )
+           .set( applicationVersionColumn, applicationVersion )
+           .execute();
+    }
+
+    private String increment( String version )
+    {
+        long ver = Long.parseLong( version );
+        return Long.toString( ver + 1 );
     }
 
     /**
@@ -217,31 +279,85 @@ public class EntitiesTable
      */
     public SelectQuery<Record> createGetEntityQuery( EntityDescriptor entityDescriptor, EntityReference reference )
     {
+        List<Table<Record>> joins = getMixinTables( entityDescriptor );
         SelectJoinStep<Record> from = dsl.select().from( entitiesTable );
-        List<Table<Record>> joins = getTableJoins( entityDescriptor );
         for( Table<Record> joinedTable : joins )
         {
-            Field<String> joinedField = joinedTable.field( identityColumn );
-            Condition joinCondition = joinedField.eq( entitiesTable.field( valueIdentityColumn ) );
+            Condition joinCondition = valueIdentityColumn.eq( identityColumnOf( joinedTable ) );
+            from = from.leftJoin( joinedTable ).on( joinCondition );
+        }
+        return from.where( identityColumnOf( entitiesTable ).eq( reference.identity().toString() ) ).getQuery();
+    }
+
+    public void fetchAssociations( BaseEntity entity, EntityDescriptor entityDescriptor, Consumer<AssociationValue> consume )
+    {
+        List<Table<Record>> joins = getAssocationsTables( entityDescriptor );
+        SelectJoinStep<Record> from = dsl.select().from( entitiesTable );
+        for( Table<Record> joinedTable : joins )
+        {
+            Condition joinCondition = valueIdentityColumn.eq( identityColumnOf( joinedTable ) );
             from = from.join( joinedTable ).on( joinCondition );
         }
-        return from.where( identityColumn.eq( reference.identity().toString() ) ).getQuery();
+        String reference = entity.identity.toString();
+        SelectQuery<Record> query = from.where( identityColumnOf( entitiesTable ).eq( reference ) ).getQuery();
+        Result<Record> result = query.fetch();
+        result.forEach( record ->
+                        {
+                            AssociationValue value = new AssociationValue();
+                            value.name = QualifiedName.fromClass( entityDescriptor.primaryType(), record.getValue( nameColumn ) );
+                            value.position = record.getValue( indexColumn );
+                            value.reference = record.getValue( referenceColumn );
+                            consume.accept( value );
+                        } );
     }
 
-    public void fetchAssociations( Record record, Consumer<AssociationValue> consume )
+    private Field<String> identityColumnOf( Table<Record> joinedTable )
     {
-        AssociationValue value = new AssociationValue();
-        value.name = record.getValue( nameColumn );
-        value.position = record.getValue( indexColumn );
-        value.reference = record.getValue( referenceColumn );
-        consume.accept( value );
+        return DSL.field( DSL.name( joinedTable.getName(), identityColumn.getName() ), String.class );
     }
 
-    public List<Table<Record>> getTableJoins( EntityDescriptor entityDescriptor )
+    public List<Table<Record>> getMixinTables( EntityDescriptor entityDescriptor )
     {
         return entityDescriptor
             .mixinTypes()
+            .filter( NOT_COMPOSITE )
+            .filter( NOT_HASIDENTITY )
             .map( ( Class<?> type ) -> types.tableFor( type, entityDescriptor ) )
             .collect( Collectors.toList() );
+    }
+
+    public List<Table<Record>> getAssocationsTables( EntityDescriptor entityDescriptor )
+    {
+        return entityDescriptor
+            .mixinTypes()
+            .filter( NOT_COMPOSITE )
+            .filter( NOT_HASIDENTITY )
+            .map( type -> findMixinTable( type, entityDescriptor ) )
+            .map( MixinTable::associationsTable )
+            .collect( Collectors.toList() );
+    }
+
+    public void removeEntity( EntityReference entityReference, EntityDescriptor descriptor )
+    {
+        ModuleDescriptor module = descriptor.module();
+        BaseEntity baseEntity = fetchEntity( entityReference, module );
+        if( replacementStrategy )
+        {
+            // TODO;  Mark deleted, I guess... not implemented
+        }
+        else
+        {
+            dsl.delete( entitiesTable )
+               .where(
+                   identityColumnOf( entitiesTable ).eq( entityReference.identity().toString() )
+                     )
+               .execute()
+            ;
+            String valueId = baseEntity.currentValueIdentity.toString();
+            List<Table<Record>> mixinTables = getMixinTables( descriptor );
+            List<Table<Record>> assocTables = getAssocationsTables( descriptor );
+            mixinTables.forEach( table -> dsl.delete( table ).where( identityColumnOf( table ).eq( valueId ) ).execute() );
+            assocTables.forEach( table -> dsl.delete( table ).where( identityColumnOf( table ).eq( valueId ) ).execute() );
+        }
     }
 }

@@ -29,22 +29,13 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class JooqEntityStoreTest extends AbstractEntityStoreTest
 {
-//    @ClassRule
-//    public static final DockerRule DOCKER = new DockerRule(
-//        "mysql",
-//        new HashMap<String, String>()
-//        {{
-//            put( "MYSQL_ROOT_PASSWORD", "" );
-//            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
-//            put( "MYSQL_DATABASE", "jdbc_test_db" );
-//            put( "MYSQL_ROOT_HOST", "127.0.0.1" );
-//        }},
-//        30000L
-////        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
-//    );
+    @Rule
+    public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
     // START SNIPPET: assembly
@@ -83,8 +74,6 @@ public class JooqEntityStoreTest extends AbstractEntityStoreTest
                                                           .declareDefaults();
         jooqDefaults.entitiesTableName().set( "ENTITIES" );
 
-        String path = System.getProperty( "user.dir" ) + "/testdb";
-        System.out.println("Niclas: " + path);
         DataSourceConfiguration dsDefaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
         dsDefaults.driver().set( org.h2.Driver.class.getName() );
         dsDefaults.enabled().set( true );
@@ -92,7 +81,7 @@ public class JooqEntityStoreTest extends AbstractEntityStoreTest
         dsDefaults.minPoolSize().set( 1 );
         dsDefaults.username().set( "" );
         dsDefaults.password().set( "" );
-        dsDefaults.url().set( "jdbc:h2:"+path+";create=true" );
+        dsDefaults.url().set( "jdbc:h2:" + tmpDir.getRoot().getAbsolutePath() + "/testdb;create=true" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

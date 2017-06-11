@@ -18,6 +18,7 @@
 package org.apache.polygene.entitystore.jooq;
 
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -99,13 +100,19 @@ public interface SqlTable extends ServiceActivation
 
     SelectQuery<Record> createGetEntityQuery( EntityDescriptor descriptor, EntityReference reference );
 
-    void fetchAssociations( Record record, Consumer<AssociationValue> consume );
+    void fetchAssociations( BaseEntity entity, EntityDescriptor descriptor, Consumer<AssociationValue> consume );
 
     void createNewBaseEntity( EntityReference ref, EntityDescriptor descriptor, EntityStoreUnitOfWork unitOfWork );
 
-    void insertEntity( DefaultEntityState state );
+    void insertEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork unitOfWork );
+
+    void updateEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork unitOfWork );
 
     JooqDslContext jooqDslContext();
+
+    void removeEntity( EntityReference entityReference, EntityDescriptor descriptor );
+
+    Stream<BaseEntity> fetchAll( EntityDescriptor type, ModuleDescriptor module );
 
     class Mixin
         implements SqlTable, TableFields, ServiceActivation
@@ -143,15 +150,21 @@ public interface SqlTable extends ServiceActivation
         }
 
         @Override
+        public Stream<BaseEntity> fetchAll( EntityDescriptor type, ModuleDescriptor module )
+        {
+            return entitiesTable.fetchAll( type, module );
+        }
+
+        @Override
         public SelectQuery<Record> createGetEntityQuery( EntityDescriptor descriptor, EntityReference reference )
         {
             return entitiesTable.createGetEntityQuery( descriptor, reference );
         }
 
         @Override
-        public void fetchAssociations( Record record, Consumer<AssociationValue> consume )
+        public void fetchAssociations( BaseEntity entity, EntityDescriptor descriptor, Consumer<AssociationValue> consume )
         {
-            entitiesTable.fetchAssociations( record, consume );
+            entitiesTable.fetchAssociations( entity, descriptor, consume );
         }
 
         @Override
@@ -161,15 +174,27 @@ public interface SqlTable extends ServiceActivation
         }
 
         @Override
-        public void insertEntity( DefaultEntityState state )
+        public void insertEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork unitOfWork )
         {
-            entitiesTable.insertEntity( state );
+            entitiesTable.insertEntity( state, baseEntity );
+        }
+
+        @Override
+        public void updateEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork unitOfWork )
+        {
+            entitiesTable.modifyEntity( state, baseEntity, unitOfWork );
         }
 
         @Override
         public JooqDslContext jooqDslContext()
         {
             return dsl;
+        }
+
+        @Override
+        public void removeEntity( EntityReference reference, EntityDescriptor descriptor )
+        {
+            entitiesTable.removeEntity( reference, descriptor );
         }
 
         @Override

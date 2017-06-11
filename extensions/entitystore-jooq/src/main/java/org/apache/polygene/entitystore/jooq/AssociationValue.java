@@ -17,9 +17,12 @@
  */
 package org.apache.polygene.entitystore.jooq;
 
-class AssociationValue
+import org.apache.polygene.api.common.QualifiedName;
+
+@SuppressWarnings( "WeakerAccess" )
+public class AssociationValue
 {
-    String name;
+    QualifiedName name;
     String position;
     String reference;
 }

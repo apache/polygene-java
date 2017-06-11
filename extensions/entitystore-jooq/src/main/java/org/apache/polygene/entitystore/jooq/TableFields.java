@@ -25,23 +25,23 @@ import static org.apache.polygene.entitystore.jooq.TypesTable.makeField;
 public interface TableFields
 {
     // Common in all tables
-    String IDENTITY_COLUMN_NAME = "identity";
-    String CREATED_COLUMN_NAME = "created_at";
-    String LASTMODIFIED_COLUMN_NAME = "modified_at";
+    String IDENTITY_COLUMN_NAME = "_identity";
+    String CREATED_COLUMN_NAME = "_created_at";
+    String LASTMODIFIED_COLUMN_NAME = "_modified_at";
 
     // Types Table
-    String TABLENAME_COLUMN_NAME = "table_name";
+    String TABLENAME_COLUMN_NAME = "_table_name";
 
     // Entities Table
-    String VALUEID_COLUMN_NAME = "value_id";
-    String TYPE_COLUMN_NAME = "type";
-    String VERSION_COLUMN_NAME = "version";
-    String APPLICATIONVERSION_COLUMN_NAME = "app_version";
+    String VALUEID_COLUMN_NAME = "_value_id";
+    String TYPE_COLUMN_NAME = "_type";
+    String VERSION_COLUMN_NAME = "_version";
+    String APPLICATIONVERSION_COLUMN_NAME = "_app_version";
 
     // Mixin Tables
-    String NAME_COLUMN_NAME = "name";
-    String INDEX_COLUMN_NAME = "index";    // either index in ManyAssociation or name in NamedAssociation
-    String REFERENCE_COLUMN_NAME = "reference";
+    String NAME_COLUMN_NAME = "_name";
+    String INDEX_COLUMN_NAME = "_index";    // either index in ManyAssociation or name in NamedAssociation
+    String REFERENCE_COLUMN_NAME = "_reference";
     String ASSOCS_TABLE_POSTFIX = "_ASSOCS";
 
 

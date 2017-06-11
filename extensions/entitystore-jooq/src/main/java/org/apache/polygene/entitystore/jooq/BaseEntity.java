@@ -21,7 +21,8 @@ import java.time.Instant;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.identity.Identity;
 
-class BaseEntity
+@SuppressWarnings( "WeakerAccess" )
+public class BaseEntity
 {
     EntityDescriptor type;
     Identity identity;

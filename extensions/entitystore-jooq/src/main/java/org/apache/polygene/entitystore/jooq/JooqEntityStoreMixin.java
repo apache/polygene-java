@@ -28,9 +28,11 @@ import org.apache.polygene.api.association.AssociationStateDescriptor;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.usecase.Usecase;
 import org.apache.polygene.spi.entity.EntityState;
@@ -57,6 +59,9 @@ public class JooqEntityStoreMixin
     @Service
     private IdentityGenerator identityGenerator;
 
+    @Service
+    private Serialization serialization;
+
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference reference, EntityDescriptor entityDescriptor )
     {
@@ -73,36 +78,45 @@ public class JooqEntityStoreMixin
         {
             throw new EntityNotFoundException( reference );
         }
+        return toEntityState( result, baseEntity, reference );
+    }
+
+    protected EntityState toEntityState( Result<Record> result, BaseEntity baseEntity, EntityReference reference )
+    {
         AssociationStateDescriptor stateDescriptor = baseEntity.type.state();
         Map<QualifiedName, Object> properties = new HashMap<>();
-        stateDescriptor.properties().forEach( prop ->
-                                              {
-                                                  QualifiedName qualifiedName = prop.qualifiedName();
-                                                  Object value = result.getValue( 0, qualifiedName.name() );
-                                                  properties.put( qualifiedName, value );
-                                              } );
+        stateDescriptor.properties()
+                       .filter( prop -> !HasIdentity.IDENTITY_STATE_NAME.equals( prop.qualifiedName() ) )
+                       .forEach( prop ->
+                                 {
+                                     QualifiedName qualifiedName = prop.qualifiedName();
+                                     Object value = result.getValue( 0, qualifiedName.name() );
+                                     properties.put( qualifiedName, value );
+                                 } );
         Map<QualifiedName, EntityReference> assocations = new HashMap<>();
-        stateDescriptor.associations().forEach( assoc ->
-                                                {
-                                                    QualifiedName qualifiedName = assoc.qualifiedName();
-                                                    String value = (String) result.getValue( 0, qualifiedName.name() );
-                                                    assocations.put( qualifiedName, parseEntityReference( value ) );
-                                                } );
+        stateDescriptor.associations()
+                       .forEach( assoc ->
+                                 {
+                                     QualifiedName qualifiedName = assoc.qualifiedName();
+                                     String value = (String) result.getValue( 0, qualifiedName.name() );
+                                     if( value != null )
+                                     {
+                                         assocations.put( qualifiedName, parseEntityReference( value ) );
+                                     }
+                                 } );
         Map<QualifiedName, List<EntityReference>> manyAssocs = new HashMap<>();
         Map<QualifiedName, Map<String, EntityReference>> namedAssocs = new HashMap<>();
-        result.forEach( record ->
-                            sqlTable.fetchAssociations( record, associationValue ->
-                            {
-                                // TODO: Perhaps introduce "preserveManyAssociationOrder" option which would have an additional column, separating 'ordinal position' and 'name position'
-                                if( associationValue.position == null )
-                                {
-                                    addManyAssociation( stateDescriptor, manyAssocs, associationValue );
-                                }
-                                else
-                                {
-                                    addNamedAssociation( stateDescriptor, namedAssocs, associationValue );
-                                }
-                            } ) );
+        sqlTable.fetchAssociations( baseEntity, baseEntity.type, associationValue ->
+        {
+            if( stateDescriptor.hasManyAssociation( associationValue.name ) )
+            {
+                addManyAssociation( stateDescriptor, manyAssocs, associationValue );
+            }
+            else if( stateDescriptor.hasNamedAssociation( associationValue.name ) )
+            {
+                addNamedAssociation( stateDescriptor, namedAssocs, associationValue );
+            }
+        } );
 
         return new DefaultEntityState( baseEntity.version,
                                        baseEntity.modifedAt,
@@ -117,7 +131,7 @@ public class JooqEntityStoreMixin
 
     private void addNamedAssociation( AssociationStateDescriptor stateDescriptor, Map<QualifiedName, Map<String, EntityReference>> namedAssocs, AssociationValue associationValue )
     {
-        AssociationDescriptor descriptor = stateDescriptor.getNamedAssociationByName( associationValue.name );
+        AssociationDescriptor descriptor = stateDescriptor.getNamedAssociationByName( associationValue.name.name() );
         QualifiedName qualifiedName = descriptor.qualifiedName();
         Map<String, EntityReference> map = namedAssocs.computeIfAbsent( qualifiedName, k -> new HashMap<>() );
         map.put( associationValue.position, parseEntityReference( associationValue.reference ) );
@@ -125,10 +139,11 @@ public class JooqEntityStoreMixin
 
     private void addManyAssociation( AssociationStateDescriptor stateDescriptor, Map<QualifiedName, List<EntityReference>> manyAssocs, AssociationValue associationValue )
     {
-        AssociationDescriptor descriptor = stateDescriptor.getManyAssociationByName( associationValue.name );
+        AssociationDescriptor descriptor = stateDescriptor.getManyAssociationByName( associationValue.name.name() );
         QualifiedName qualifiedName = descriptor.qualifiedName();
         List<EntityReference> list = manyAssocs.computeIfAbsent( qualifiedName, k -> new ArrayList<>() );
-        list.add( parseEntityReference( associationValue.reference ) );
+        String reference = associationValue.reference;
+        list.add( reference == null ? null : parseEntityReference( reference ) );
     }
 
     @Override
@@ -158,7 +173,16 @@ public class JooqEntityStoreMixin
     @Override
     public Stream<EntityState> entityStates( ModuleDescriptor module )
     {
-        return null;
+        Stream<? extends EntityDescriptor> entityTypes = module.entityComposites();
+        return entityTypes
+            .flatMap( type -> sqlTable.fetchAll( type, module ) )
+            .map( baseEntity ->
+                  {
+                      EntityReference reference = EntityReference.entityReferenceFor( baseEntity.identity );
+                      SelectQuery<Record> selectQuery = sqlTable.createGetEntityQuery( baseEntity.type, reference );
+                      Result<Record> result = selectQuery.fetch();
+                      return toEntityState( result, baseEntity, reference );
+                  } );
     }
 
     private class JooqStateCommitter
@@ -167,12 +191,36 @@ public class JooqEntityStoreMixin
         private final EntityStoreUnitOfWork unitOfWork;
         private final Iterable<EntityState> states;
         private final JooqDslContext dslContext;
+        private final ModuleDescriptor module;
 
         JooqStateCommitter( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> states, JooqDslContext dslContext )
         {
             this.unitOfWork = unitOfWork;
             this.states = states;
             this.dslContext = dslContext;
+            this.module = unitOfWork.module();
+        }
+
+        private void newState( DefaultEntityState state, EntityStoreUnitOfWork unitOfWork )
+        {
+            EntityReference ref = state.entityReference();
+            EntityDescriptor descriptor = state.entityDescriptor();
+            sqlTable.createNewBaseEntity( ref, descriptor, this.unitOfWork );
+            sqlTable.insertEntity( state, sqlTable.fetchBaseEntity( ref, module ), unitOfWork );
+        }
+
+        private void updateState( DefaultEntityState state, EntityStoreUnitOfWork unitOfWork )
+        {
+            EntityDescriptor descriptor = state.entityDescriptor();
+            BaseEntity baseEntity = sqlTable.fetchBaseEntity( state.entityReference(), descriptor.module() );
+            sqlTable.updateEntity( state, baseEntity, unitOfWork );
+        }
+
+        private void removeState( DefaultEntityState state )
+        {
+            EntityReference reference = state.entityReference();
+            EntityDescriptor descriptor = state.entityDescriptor();
+            sqlTable.removeEntity( reference, descriptor );
         }
 
         @Override
@@ -185,11 +233,11 @@ public class JooqEntityStoreMixin
                                             DefaultEntityState state = (DefaultEntityState) es;
                                             if( state.status() == EntityStatus.NEW )
                                             {
-                                                newState( state );
+                                                newState( state, unitOfWork );
                                             }
                                             if( state.status() == EntityStatus.UPDATED )
                                             {
-                                                updateState( state );
+                                                updateState( state, unitOfWork );
                                             }
                                             if( state.status() == EntityStatus.REMOVED )
                                             {
@@ -197,24 +245,6 @@ public class JooqEntityStoreMixin
                                             }
                                         }
                                     } );
-        }
-
-        private void newState( DefaultEntityState state )
-        {
-            EntityReference ref = state.entityReference();
-            EntityDescriptor descriptor = state.entityDescriptor();
-            sqlTable.createNewBaseEntity( ref, descriptor, unitOfWork );
-            sqlTable.insertEntity( state );
-        }
-
-        private void updateState( DefaultEntityState state )
-        {
-
-        }
-
-        private void removeState( DefaultEntityState state )
-        {
-            EntityReference reference = state.entityReference();
         }
 
         @Override

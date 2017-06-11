@@ -110,12 +110,14 @@ public class TypesTable
     {
         String mixinTypeName = mixinType.getName();
         String tableName = createNewTableName( mixinType );
-        CreateTableColumnStep primaryTable = dsl.createTable( tableName ).column( identityColumn );
+        CreateTableColumnStep primaryTable = dsl.createTable( DSL.name( schema.getName(), tableName ) )
+                                                .column( identityColumn )
+                                                .column( createdColumn );
         descriptor.state().properties().forEach(
             property ->
             {
                 QualifiedName qualifiedName = property.qualifiedName();
-                if( qualifiedName.toNamespace().equals( mixinTypeName ) )
+                if( qualifiedName.type().replace( '-', '$' ).equals( mixinTypeName ) )
                 {
                     primaryTable.column( fieldOf( property ) );
                 }
@@ -124,12 +126,12 @@ public class TypesTable
             assoc ->
             {
                 QualifiedName qualifiedName = assoc.qualifiedName();
-                if( qualifiedName.toNamespace().equals( mixinTypeName ) )
+                if( qualifiedName.type().replace( '-', '$' ).equals( mixinTypeName ) )
                 {
                     primaryTable.column( fieldOf( assoc ) );
                 }
             } );
-
+        int result1 = primaryTable.execute();
         int result3 = dsl.insertInto( typesTable )
                          .set( identityColumn, mixinTypeName )
                          .set( tableNameColumn, tableName )
