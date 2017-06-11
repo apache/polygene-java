@@ -70,6 +70,12 @@ public final class ValueStateModel
     }
 
     @Override
+    public boolean hasAssociation( QualifiedName name )
+    {
+        return associationsModel.hasAssociation( name );
+    }
+
+    @Override
     public AssociationDescriptor getManyAssociationByName( String name )
     {
         return manyAssociationsModel.getManyAssociationByName( name );
@@ -82,6 +88,12 @@ public final class ValueStateModel
     }
 
     @Override
+    public boolean hasManyAssociation( QualifiedName name )
+    {
+        return manyAssociationsModel.hasAssociation( name );
+    }
+
+    @Override
     public AssociationDescriptor getNamedAssociationByName( String name )
     {
         return namedAssociationsModel.getNamedAssociationByName( name );
@@ -91,6 +103,12 @@ public final class ValueStateModel
     public AssociationDescriptor getNamedAssociationByQualifiedName( QualifiedName name )
     {
         return namedAssociationsModel.getNamedAssociationByQualifiedName( name );
+    }
+
+    @Override
+    public boolean hasNamedAssociation( QualifiedName name )
+    {
+        return namedAssociationsModel.hasAssociation( name );
     }
 
     @Override

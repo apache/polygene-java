@@ -40,6 +40,7 @@ public final class NamedAssociationsModel
     implements VisitableHierarchy<NamedAssociationsModel, NamedAssociationModel>
 {
     private final Map<AccessibleObject, NamedAssociationModel> mapAccessorAssociationModel = new LinkedHashMap<>();
+    private final Map<QualifiedName, NamedAssociationModel> mapNameAssociationModel = new LinkedHashMap<>();
 
     public NamedAssociationsModel()
     {
@@ -53,6 +54,7 @@ public final class NamedAssociationsModel
     public void addNamedAssociation( NamedAssociationModel model )
     {
         mapAccessorAssociationModel.put( model.accessor(), model );
+        mapNameAssociationModel.put( model.qualifiedName(), model );
     }
 
     @Override
@@ -83,11 +85,11 @@ public final class NamedAssociationsModel
         throws IllegalArgumentException
     {
         NamedAssociationModel namedAssociationModel = mapAccessorAssociationModel.get( accessor );
-        if( namedAssociationModel == null )
+        if( namedAssociationModel != null )
         {
-            throw new IllegalArgumentException( "No named-association found with name:" + ( (Member) accessor ).getName() );
+            return namedAssociationModel;
         }
-        return namedAssociationModel;
+        throw new IllegalArgumentException( "No named-association found with name:" + ( (Member) accessor ).getName() );
     }
 
     public AssociationDescriptor getNamedAssociationByName( String name )
@@ -106,14 +108,17 @@ public final class NamedAssociationsModel
     public AssociationDescriptor getNamedAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException
     {
-        for( NamedAssociationModel associationModel : mapAccessorAssociationModel.values() )
+        NamedAssociationModel associationModel = mapNameAssociationModel.get( name );
+        if( associationModel != null )
         {
-            if( associationModel.qualifiedName().equals( name ) )
-            {
-                return associationModel;
-            }
+            return associationModel;
         }
         throw new IllegalArgumentException( "No named-association found with qualified name:" + name );
+    }
+
+    public boolean hasAssociation( QualifiedName name )
+    {
+        return mapNameAssociationModel.containsKey( name );
     }
 
     public void checkConstraints( ValueStateInstance state )
