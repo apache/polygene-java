@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -95,7 +94,7 @@ class MixinTable
 
         descriptor.valueType().namedAssociations()
                   .filter( this::isThisMixin )
-                  .forEach( assocDescriptor -> manyAssociations.add( assocDescriptor.qualifiedName() ) );
+                  .forEach( assocDescriptor -> namedAssociations.add( assocDescriptor.qualifiedName() ) );
     }
 
     void insertMixinState( DefaultEntityState state, String valueIdentity )
@@ -127,76 +126,52 @@ class MixinTable
 
     private void insertManyAndNamedAssociations( DefaultEntityState state, String valueIdentity )
     {
-        InsertSetStep<Record> assocsTable = dsl.insertInto( mixinAssocsTable );
         manyAssociations.forEach( assocName ->
                                   {
+                                      InsertSetStep<Record> assocsTable = dsl.insertInto( mixinAssocsTable );
                                       ManyAssociationState entityReferences = state.manyAssociationValueOf( assocName );
-                                      entityReferences.stream().forEach( setManyAssociation( assocName, valueIdentity, assocsTable ) );
+                                      int endCount = entityReferences.count();
+                                      int counter = 0;
+                                      for( EntityReference ref : entityReferences )
+                                      {
+                                          InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
+                                                                                     .set( nameColumn, assocName.name() )
+                                                                                     .set( indexColumn, "" + counter++ )
+                                                                                     .set( referenceColumn, ref == null ? null : ref.identity().toString() );
+                                          if( ++counter < endCount )
+                                          {
+                                              set.newRecord();
+                                          }
+                                      }
+                                      InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
+                                      assocs.execute();
                                   } );
 
         namedAssociations.forEach( assocName ->
                                    {
+                                       InsertSetStep<Record> assocsTable = dsl.insertInto( mixinAssocsTable );
                                        NamedAssociationState entityReferences = state.namedAssociationValueOf( assocName );
-                                       entityReferences.stream().forEach( setNamedAssociation( assocName, valueIdentity, assocsTable ) );
+                                       int count = entityReferences.count();
+                                       for( String name : entityReferences )
+                                       {
+                                           EntityReference ref = entityReferences.get( name );
+                                           InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
+                                                                                      .set( nameColumn, assocName.name() )
+                                                                                      .set( indexColumn, name )
+                                                                                      .set( referenceColumn, ref.identity().toString() );
+                                           if( --count > 0 )
+                                           {
+                                               set.newRecord();
+                                           }
+                                       }
+                                       InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
+                                       assocs.execute();
                                    } );
-
-        InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
-        assocs.execute();
     }
 
     Table<Record> associationsTable()
     {
         return mixinAssocsTable;
-    }
-
-    /**
-     * Writes one ManyAssoc Reference to the _ASSOCS table.
-     * <ul>
-     * <li>identityColumn - valueIdentity of primaryTable row</li>
-     * <li>nameColumn - index in the of association in state holder</li>
-     * <li>indexColumn - the position within the many association, starting at 0</li>
-     * <li>referenceColumn - referenced entity's identity</li>
-     * </ul>
-     */
-    private Consumer<? super EntityReference> setManyAssociation( QualifiedName assocName,
-                                                                  String valueIdentity,
-                                                                  InsertSetStep<Record> assocsTable )
-    {
-        return new Consumer<EntityReference>()
-        {
-            private int counter = 0;
-
-            @Override
-            public void accept( EntityReference ref )
-            {
-                InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
-                                                           .set( nameColumn, assocName.name() )
-                                                           .set( indexColumn, "" + counter++ )
-                                                           .set( referenceColumn, ref == null ? null : ref.identity().toString() );
-            }
-        };
-    }
-
-    /**
-     * Writes one Named Reference to the _ASSOCS table.
-     * <ul>
-     * <li>identityColumn - valueIdentity of primaryTable row</li>
-     * <li>nameColumn - name of association in state holder</li>
-     * <li>indexColumn - the key/lookup name of the reference</li>
-     * <li>referenceColumn - referenced entity's identity</li>
-     * </ul>
-     */
-    private Consumer<? super Map.Entry<String, EntityReference>> setNamedAssociation( QualifiedName assocName,
-                                                                                      String valueIdentity,
-                                                                                      InsertSetStep<Record> assocsTable )
-    {
-        return ref ->
-        {
-            InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
-                                                       .set( nameColumn, assocName.name() )
-                                                       .set( indexColumn, ref.getKey() )
-                                                       .set( referenceColumn, ref.getValue().identity().toString() );
-        };
     }
 
     private boolean isThisMixin( PropertyDescriptor descriptor )

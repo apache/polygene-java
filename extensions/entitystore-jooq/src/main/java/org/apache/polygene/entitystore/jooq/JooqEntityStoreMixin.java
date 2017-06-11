@@ -85,6 +85,7 @@ public class JooqEntityStoreMixin
     {
         AssociationStateDescriptor stateDescriptor = baseEntity.type.state();
         Map<QualifiedName, Object> properties = new HashMap<>();
+        properties.put( HasIdentity.IDENTITY_STATE_NAME, baseEntity.identity );
         stateDescriptor.properties()
                        .filter( prop -> !HasIdentity.IDENTITY_STATE_NAME.equals( prop.qualifiedName() ) )
                        .forEach( prop ->
