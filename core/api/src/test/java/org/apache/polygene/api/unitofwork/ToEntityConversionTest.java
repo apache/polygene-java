@@ -65,7 +65,7 @@ public class ToEntityConversionTest
     public void testPropertyConversionToEntity()
         throws Exception
     {
-        Identity identity = new StringIdentity( "Niclas" );
+        Identity identity = StringIdentity.fromString( "Niclas" );
         ValueBuilder<SomeType> vb = valueBuilderFactory.newValueBuilder( SomeType.class );
         SomeType prototype = vb.prototype();
         prototype.identity().set( identity );

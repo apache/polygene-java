@@ -22,12 +22,11 @@ package org.apache.polygene.regression.qi377;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.sideeffect.GenericSideEffect;
@@ -38,6 +37,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -61,8 +61,8 @@ public class SetAssociationInSideEffectTest
     {
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Purchase Steinway" ) ) )
         {
-            Pianist chris = uow.newEntity( Pianist.class, new StringIdentity( "Chris" ) );
-            Steinway modelD = uow.newEntity( Steinway.class, new StringIdentity( "ModelD-274" ) );
+            Pianist chris = uow.newEntity( Pianist.class, StringIdentity.fromString( "Chris" ) );
+            Steinway modelD = uow.newEntity( Steinway.class, StringIdentity.fromString( "ModelD-274" ) );
 
             assertThat( modelD.owner().get(), is( nullValue() ) );
 

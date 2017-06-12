@@ -113,7 +113,7 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( new StringIdentity( "1234" ) );
+        builder.prototype().identity().set( StringIdentity.fromString( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
 
@@ -125,8 +125,8 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
 
         try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
-            DualFaced entity = uow.get( DualFaced.class, new StringIdentity( "1234" ) );
-            assertThat( entity.identity().get(), equalTo( new StringIdentity( "1234" ) ) );
+            DualFaced entity = uow.get( DualFaced.class, StringIdentity.fromString( "1234" ) );
+            assertThat( entity.identity().get(), equalTo( StringIdentity.fromString( "1234" ) ) );
             assertThat( entity.name().get(), equalTo( "Hedhman" ) );
             uow.complete();
         }

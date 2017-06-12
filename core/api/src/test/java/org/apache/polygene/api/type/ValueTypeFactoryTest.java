@@ -125,7 +125,7 @@ public class ValueTypeFactoryTest extends AbstractPolygeneTest
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
         {
             assertThat(
-                valueTypeFactory.valueTypeOf( module, uow.newEntity( SomeState.class, new StringIdentity( "abc" ) ) ),
+                valueTypeFactory.valueTypeOf( module, uow.newEntity( SomeState.class, StringIdentity.fromString( "abc" ) ) ),
                 instanceOf( EntityCompositeType.class ) );
         }
     }

@@ -48,7 +48,7 @@ public class ResponseWriterDelegator
     public void init( @Service Iterable<ServiceReference<ResponseWriter>> resultWriters )
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
-        Identity responsewriterdelegator = new StringIdentity( "responsewriterdelegator" );
+        Identity responsewriterdelegator = StringIdentity.fromString( "responsewriterdelegator" );
 
         // Add custom writers first
         for( ServiceReference<ResponseWriter> resultWriter : resultWriters )

@@ -37,7 +37,7 @@ public class ForumResource
     public void resource( String segment )
         throws ResourceException
     {
-        selectFromManyAssociation( ObjectSelection.current().get( Forum.class ).boards(), new StringIdentity( segment ) );
+        selectFromManyAssociation( ObjectSelection.current().get( Forum.class ).boards(), StringIdentity.fromString( segment ) );
         subResource( BoardResource.class );
     }
 }

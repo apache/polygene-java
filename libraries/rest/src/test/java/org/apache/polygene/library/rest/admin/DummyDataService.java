@@ -43,7 +43,7 @@ public interface DummyDataService
     void insertInitialData()
             throws Exception;
 
-    static class Activator
+    class Activator
             extends ActivatorAdapter<ServiceReference<DummyDataService>>
     {
 
@@ -77,13 +77,13 @@ public interface DummyDataService
                     valueBuilder.prototype().string().set( "Foo bar value" );
                     valueBuilder.prototype().map().set( new HashMap() );
 
-                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test1" ) );
+                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.fromString( "test1" ) );
                     builder.instance().name().set( "Foo bar" );
                     builder.instance().age().set( 42 );
                     builder.instance().value().set( valueBuilder.newInstance() );
                     TestEntity testEntity = builder.newInstance();
 
-                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, new StringIdentity( "test2" ) );
+                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.fromString( "test2" ) );
                     builder2.instance().name().set( "Xyzzy" );
                     builder2.instance().age().set( 12 );
                     builder2.instance().association().set( testEntity );
@@ -98,7 +98,7 @@ public interface DummyDataService
                 }
 
                 {
-                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, new StringIdentity( "test3" ) );
+                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, StringIdentity.fromString( "test3" ) );
                     builder.instance().name().set( "Test3" );
                     builder.newInstance();
                 }

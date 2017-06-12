@@ -47,7 +47,7 @@ import org.junit.Test;
 public class ObjectVisibilityTest
 {
 
-    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+    public static final Identity TEST_IDENTITY = StringIdentity.fromString( "123" );
 
     private Energy4Java polygene;
     private Module module;

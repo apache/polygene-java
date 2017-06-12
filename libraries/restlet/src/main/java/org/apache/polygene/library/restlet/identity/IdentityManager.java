@@ -80,10 +80,10 @@ public interface IdentityManager
             if( isIdentity( canonicalName ) )
             {
                 // This is already an ID, and we simply return it.
-                return new StringIdentity( canonicalName );
+                return StringIdentity.fromString( canonicalName );
             }
             String prefix = findPrefix( type );
-            return new StringIdentity( prefix + SEPARATOR + canonicalName );
+            return StringIdentity.fromString( prefix + SEPARATOR + canonicalName );
         }
 
         @Override

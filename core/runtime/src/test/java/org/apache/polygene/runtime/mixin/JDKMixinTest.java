@@ -98,8 +98,8 @@ public class JDKMixinTest extends AbstractPolygeneTest
         }
     }
 
-    private static final Identity EXTENDS_IDENTITY = new StringIdentity( ExtendsJDKMixin.class.getName() );
-    private static final Identity COMPOSE_IDENTITY = new StringIdentity( ComposeWithJDKMixin.class.getName() );
+    private static final Identity EXTENDS_IDENTITY = StringIdentity.fromString( ExtendsJDKMixin.class.getName() );
+    private static final Identity COMPOSE_IDENTITY = StringIdentity.fromString( ComposeWithJDKMixin.class.getName() );
     private static final Predicate<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec(
         EXTENDS_IDENTITY );
     private static final Predicate<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec(

@@ -214,7 +214,7 @@ public interface AlarmSystem
         public AlarmPoint createAlarm( String name, AlarmCategory category )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class, new StringIdentity( name ) );
+            EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class, StringIdentity.fromString( name ) );
             builder.instance().category().set( category );
             AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
             state.systemName().set( name );

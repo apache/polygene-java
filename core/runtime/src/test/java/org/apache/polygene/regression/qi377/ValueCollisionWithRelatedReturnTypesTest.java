@@ -19,24 +19,24 @@
  */
 package org.apache.polygene.regression.qi377;
 
-import org.apache.polygene.api.identity.HasIdentity;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 public class ValueCollisionWithRelatedReturnTypesTest
     extends AbstractPolygeneTest
 {
 
-    public static final Identity NICLAS = new StringIdentity( "niclas" );
+    public static final Identity NICLAS = StringIdentity.fromString( "niclas" );
 
     @Override
     public void assemble( ModuleAssembly module )

@@ -179,7 +179,7 @@ public class ImportedServiceActivationTest
             module -> {
                 module.importedServices( TestedService.class ).
                     importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER ).
-                          setMetaInfo( new StringIdentity( "testimporter" ) ).
+                          setMetaInfo( StringIdentity.fromString( "testimporter" ) ).
                           withActivators( TestedActivator.class ).
                           importOnStartup();
                 module.services( TestedServiceImporterService.class ).identifiedBy( "testimporter" );

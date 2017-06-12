@@ -20,10 +20,9 @@
 
 package org.apache.polygene.runtime.mixin;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
@@ -31,6 +30,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -71,11 +71,11 @@ public class AssemblyRoleTest
         throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        uow.newEntity( FooEntity.class, new StringIdentity( "123" ) );
+        uow.newEntity( FooEntity.class, StringIdentity.fromString( "123" ) );
         uow.complete();
 
         uow = unitOfWorkFactory.newUnitOfWork();
-        Foo foo = uow.get( Foo.class, new StringIdentity( "123" ) );
+        Foo foo = uow.get( Foo.class, StringIdentity.fromString( "123" ) );
 
         try
         {

@@ -21,10 +21,6 @@
 package org.apache.polygene.spi.service.importer;
 
 import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ImportedServiceDescriptor;
@@ -34,6 +30,10 @@ import org.apache.polygene.api.service.ServiceImporterException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ImportedServiceDeclaration;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * JAVADOC
@@ -46,7 +46,7 @@ public class ServiceInstanceImporterTest
     {
         module.importedServices( TestService.class ).
             identifiedBy( "test" ).
-            setMetaInfo( new StringIdentity( "testimporter" ) ).
+            setMetaInfo( StringIdentity.fromString( "testimporter" ) ).
             importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
         module.services( TestImporterService.class ).identifiedBy( "testimporter" );
 

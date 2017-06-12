@@ -20,15 +20,15 @@
 
 package org.apache.polygene.runtime.entity;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 public class EntityTypeTest
     extends AbstractPolygeneTest
@@ -40,9 +40,9 @@ public class EntityTypeTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, new StringIdentity( "123" ) );
-            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, new StringIdentity( "456" ) );
-            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, new StringIdentity( "789" ) );
+            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, StringIdentity.fromString( "123" ) );
+            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, StringIdentity.fromString( "456" ) );
+            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, StringIdentity.fromString( "789" ) );
         }
         finally
         {

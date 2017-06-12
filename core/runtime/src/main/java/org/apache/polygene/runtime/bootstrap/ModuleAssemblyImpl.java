@@ -708,7 +708,7 @@ final class ModuleAssemblyImpl
         Class<?> serviceType = serviceTypes.findFirst()
                 .orElse(null); // Use the first, which *SHOULD* be the main serviceType
         int idx = 0;
-        Identity id = new StringIdentity(serviceType.getSimpleName());
+        Identity id = StringIdentity.fromString(serviceType.getSimpleName());
         boolean invalid;
         do
         {
@@ -718,7 +718,7 @@ final class ModuleAssemblyImpl
                 if (serviceAssembly.identity() != null && serviceAssembly.identity().equals(id))
                 {
                     idx++;
-                    id = new StringIdentity(serviceType.getSimpleName() + "_" + idx);
+                    id = StringIdentity.fromString(serviceType.getSimpleName() + "_" + idx);
                     invalid = true;
                     break;
                 }

@@ -21,13 +21,13 @@
 package org.apache.polygene.library.alarm;
 
 import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -60,7 +60,7 @@ public class AlarmProxyTest extends AbstractPolygeneTest
         try
         {
 // START SNIPPET: documentation
-            myAlarmPoint = factory.create( new StringIdentity( "This Alarm Identity" ), "ProActiveCRM", "Sales", AlarmClass.B );
+            myAlarmPoint = factory.create( StringIdentity.fromString( "This Alarm Identity" ), "ProActiveCRM", "Sales", AlarmClass.B );
             myAlarmPoint.history().maxSize().set( 20 );
 // END SNIPPET: documentation
 
@@ -71,7 +71,7 @@ public class AlarmProxyTest extends AbstractPolygeneTest
             assertThat( myAlarmPoint.history().activateCounter(), equalTo( 1 ) );
             AlarmEvent event = myAlarmPoint.history().firstEvent();
             assertThat( event, notNullValue() );
-            assertThat( event.identity().get(), equalTo( new StringIdentity( "This Alarm Identity" ) ) );
+            assertThat( event.identity().get(), equalTo( StringIdentity.fromString( "This Alarm Identity" ) ) );
             assertThat( event.newStatus().get().name( null ), equalTo( "Activated" ) );
             assertThat( event.oldStatus().get().name( null ), equalTo( "Normal" ) );
         }

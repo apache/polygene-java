@@ -20,9 +20,8 @@
 
 package org.apache.polygene.runtime.injection;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.State;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -32,6 +31,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,7 +53,7 @@ public class UnitOfWorkInjectionTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
         try
         {
-            Trial trial = uow.newEntity( Trial.class, new StringIdentity( "123" ) );
+            Trial trial = uow.newEntity( Trial.class, StringIdentity.fromString( "123" ) );
             trial.doSomething();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork( usecase );

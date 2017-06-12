@@ -198,7 +198,7 @@ public interface InitialData
         private RentalShop createShop( UnitOfWork uow )
             throws UnitOfWorkCompletionException
         {
-            return uow.newEntity( RentalShop.class, new StringIdentity( "SHOP" ) );
+            return uow.newEntity( RentalShop.class, StringIdentity.fromString( "SHOP" ) );
         }
 
         private void createCustomers( RentalShop shop )

@@ -175,7 +175,7 @@ public interface DataSourceConfigurationManagerService
             EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 this.info = info;
-                this.identity = new StringIdentity( identity );
+                this.identity = StringIdentity.fromString( identity );
                 this.propertyNames = propertyNames;
             }
 

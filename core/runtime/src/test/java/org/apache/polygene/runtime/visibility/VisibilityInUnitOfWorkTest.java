@@ -41,8 +41,8 @@ import org.junit.Test;
 public class VisibilityInUnitOfWorkTest
 {
 
-    public static final Identity TEST_IDENTITY1 = new StringIdentity( "123" );
-    public static final Identity TEST_IDENTITY2 = new StringIdentity( "345" );
+    public static final Identity TEST_IDENTITY1 = StringIdentity.fromString( "123" );
+    public static final Identity TEST_IDENTITY2 = StringIdentity.fromString( "345" );
 
     @Test
     public void givenTwoModulesWithServiceAndEntityInOneAndEntityInOtherWhenOtherEntityAccessServiceWhichUsesItsEntityExpectServiceToHaveVisibility()

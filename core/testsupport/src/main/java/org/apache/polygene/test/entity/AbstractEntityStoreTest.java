@@ -426,7 +426,6 @@ public abstract class AbstractEntityStoreTest
             assertThat( "many association cleared", testEntity.manyAssociation().count(), is( 0 ) );
             assertThat( "named association cleared", testEntity.namedAssociation().count(), is( 0 ) );
             assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
-
             unitOfWork.complete();
         }
     }

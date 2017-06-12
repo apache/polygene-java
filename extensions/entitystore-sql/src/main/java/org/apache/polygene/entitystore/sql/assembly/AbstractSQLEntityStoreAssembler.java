@@ -36,7 +36,7 @@ import org.jooq.conf.Settings;
 public abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-    public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = new StringIdentity( "entitystore-sql" );
+    public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = StringIdentity.fromString( "entitystore-sql" );
     private static final String DEFAULT_CHANGELOG_PATH = "org/apache/polygene/entitystore/sql/changelog.xml";
 
     private String changelogPath = DEFAULT_CHANGELOG_PATH;

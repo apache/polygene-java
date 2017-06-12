@@ -20,11 +20,10 @@
 
 package org.apache.polygene.runtime.unitofwork;
 
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -32,6 +31,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -40,7 +40,7 @@ public class RemovalTest
     extends AbstractPolygeneTest
 {
 
-    private static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+    private static final Identity TEST_IDENTITY = StringIdentity.fromString( "123" );
 
     public void assemble(ModuleAssembly module )
         throws AssemblyException

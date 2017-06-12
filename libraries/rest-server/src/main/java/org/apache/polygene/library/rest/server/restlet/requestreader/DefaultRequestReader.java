@@ -251,7 +251,7 @@ public class DefaultRequestReader
                         entityAsForm = new Form();
                     }
 
-                    Identity entityIdentity = new StringIdentity( getValue( "entity", queryAsForm, entityAsForm ) );
+                    Identity entityIdentity = StringIdentity.fromString( getValue( "entity", queryAsForm, entityAsForm ) );
                     args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0], entityIdentity );
 
                     return args;
@@ -480,7 +480,7 @@ public class DefaultRequestReader
             }
             else if( parameterType.isInterface() )
             {
-                arg = uowf.currentUnitOfWork().get( parameterType, new StringIdentity( argString ) );
+                arg = uowf.currentUnitOfWork().get( parameterType, StringIdentity.fromString( argString ) );
             }
             else
             {

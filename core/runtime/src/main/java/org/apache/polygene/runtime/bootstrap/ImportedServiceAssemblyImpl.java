@@ -78,7 +78,7 @@ public final class ImportedServiceAssemblyImpl
             }
             else
             {
-                id = new StringIdentity( identity );
+                id = StringIdentity.fromString( identity );
             }
 
             ImportedServiceModel serviceModel = new ImportedServiceModel( module,
@@ -103,7 +103,7 @@ public final class ImportedServiceAssemblyImpl
     {
         // Find reference that is not yet used
         int idx = 0;
-        Identity id = new StringIdentity( serviceType.getSimpleName() );
+        Identity id = StringIdentity.fromString( serviceType.getSimpleName() );
         boolean invalid;
         do
         {
@@ -113,7 +113,7 @@ public final class ImportedServiceAssemblyImpl
                 if( serviceModel.identity().equals( id ) )
                 {
                     idx++;
-                    id = new StringIdentity( serviceType.getSimpleName() + "_" + idx );
+                    id = StringIdentity.fromString( serviceType.getSimpleName() + "_" + idx );
                     invalid = true;
                     break;
                 }

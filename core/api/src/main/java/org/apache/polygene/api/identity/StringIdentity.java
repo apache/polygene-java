@@ -27,7 +27,7 @@ public class StringIdentity
 {
     private final String value;
 
-    public StringIdentity(String value)
+    private StringIdentity(String value)
     {
         Objects.requireNonNull( value, "Identity can not be null." );
         this.value = value;
