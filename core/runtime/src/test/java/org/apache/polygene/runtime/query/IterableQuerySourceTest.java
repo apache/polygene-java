@@ -214,7 +214,7 @@ public class IterableQuerySourceTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        City kl = uow.get( City.class, StringIdentity.identity( "kualalumpur" ) );
+        City kl = uow.get( City.class, StringIdentity.identityOf( "kualalumpur" ) );
         Query<Person> query = qb.where(
             eq( person.mother().get().placeOfBirth(), kl )
         ).newQuery( Network.persons() );

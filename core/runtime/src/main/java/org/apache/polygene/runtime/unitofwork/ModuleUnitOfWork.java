@@ -264,7 +264,7 @@ public class ModuleUnitOfWork
             }
             else
             {
-                identity = StringIdentity.identity( propertyState );
+                identity = StringIdentity.identityOf( propertyState );
             }
         }
 

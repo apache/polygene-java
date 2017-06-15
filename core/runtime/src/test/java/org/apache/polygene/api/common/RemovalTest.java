@@ -48,7 +48,7 @@ public class RemovalTest
         throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, StringIdentity.identity( "123" ) );
+        EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, StringIdentity.identityOf( "123" ) );
         builder.instance().test().set( "habba" );
         TestEntity test = builder.newInstance();
         uow.remove( test );

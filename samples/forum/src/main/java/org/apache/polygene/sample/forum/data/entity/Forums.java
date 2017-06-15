@@ -38,7 +38,7 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 public interface Forums
     extends Administrators, EntityComposite
 {
-    Identity FORUMS_ID = StringIdentity.identity( "forums" );
+    Identity FORUMS_ID = StringIdentity.identityOf( "forums" );
 
     Query<Forum> forums();
 

@@ -51,7 +51,7 @@ public class RequestReaderDelegator
     public void init( @Service Iterable<ServiceReference<RequestReader>> requestReaderReferences )
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
-        Identity requestreaderdelegator = StringIdentity.identity( "requestreaderdelegator" );
+        Identity requestreaderdelegator = StringIdentity.identityOf( "requestreaderdelegator" );
 
         // Add custom readers first
         for( ServiceReference<RequestReader> requestReader : requestReaderReferences )

@@ -73,11 +73,11 @@ public class ToValueConversionTest
         SomeType value;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(usecase) )
         {
-            SomeType entity1 = createEntity( uow, StringIdentity.identity( "Niclas" ) );
-            SomeType entity2 = createEntity( uow, StringIdentity.identity( "Paul" ) );
-            SomeType entity3 = createEntity( uow, StringIdentity.identity( "Jiri" ) );
-            SomeType entity4 = createEntity( uow, StringIdentity.identity( "Kent" ) );
-            SomeType entity5 = createEntity( uow, StringIdentity.identity( "Stan" ) );
+            SomeType entity1 = createEntity( uow, StringIdentity.identityOf( "Niclas" ) );
+            SomeType entity2 = createEntity( uow, StringIdentity.identityOf( "Paul" ) );
+            SomeType entity3 = createEntity( uow, StringIdentity.identityOf( "Jiri" ) );
+            SomeType entity4 = createEntity( uow, StringIdentity.identityOf( "Kent" ) );
+            SomeType entity5 = createEntity( uow, StringIdentity.identityOf( "Stan" ) );
             entity1.assoc().set( entity2 );
             entity1.many().add( entity3 );
             entity1.named().put( "kent", entity4 );
@@ -89,7 +89,7 @@ public class ToValueConversionTest
         }
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(usecase) )
         {
-            assertThat( value.identity().get(), equalTo( StringIdentity.identity( "Niclas" ) ) );
+            assertThat( value.identity().get(), equalTo( StringIdentity.identityOf( "Niclas" ) ) );
             assertThat( value.name().get(), equalTo( "[Niclas]" ) );
 
             assertThat( uow.toValue( SomeType.class, value.assoc().get()).name().get(), equalTo( "[Paul]" ));

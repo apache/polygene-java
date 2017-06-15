@@ -62,11 +62,11 @@ public class AssemblyMixinTest
         throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        FooEntity entity = uow.newEntity( FooEntity.class, StringIdentity.identity( "123" ) );
+        FooEntity entity = uow.newEntity( FooEntity.class, StringIdentity.identityOf( "123" ) );
         uow.complete();
 
         uow = unitOfWorkFactory.newUnitOfWork();
-        Foo foo = uow.get( Foo.class, StringIdentity.identity( "123" ) );
+        Foo foo = uow.get( Foo.class, StringIdentity.identityOf( "123" ) );
 
         try
         {

@@ -32,7 +32,6 @@ public class JdbmEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @Rule
     public final TemporaryFolder tmpDir = new TemporaryFolder();
-    private ModuleAssembly configModule;
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
@@ -44,12 +43,5 @@ public class JdbmEntityStoreTestSuite extends EntityStoreTestSuite
         new JdbmEntityStoreAssembler().visibleIn( Visibility.application )
                                       .withConfig( configModule, Visibility.application )
                                       .assemble( module );
-    }
-
-    @Override
-    protected void defineConfigModule( ModuleAssembly module )
-    {
-        configModule = module;
-        super.defineConfigModule( module );
     }
 }

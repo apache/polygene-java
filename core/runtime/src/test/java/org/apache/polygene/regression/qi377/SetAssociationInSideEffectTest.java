@@ -61,8 +61,8 @@ public class SetAssociationInSideEffectTest
     {
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Purchase Steinway" ) ) )
         {
-            Pianist chris = uow.newEntity( Pianist.class, StringIdentity.identity( "Chris" ) );
-            Steinway modelD = uow.newEntity( Steinway.class, StringIdentity.identity( "ModelD-274" ) );
+            Pianist chris = uow.newEntity( Pianist.class, StringIdentity.identityOf( "Chris" ) );
+            Steinway modelD = uow.newEntity( Steinway.class, StringIdentity.identityOf( "ModelD-274" ) );
 
             assertThat( modelD.owner().get(), is( nullValue() ) );
 

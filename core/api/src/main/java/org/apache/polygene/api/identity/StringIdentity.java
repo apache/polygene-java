@@ -55,7 +55,7 @@ public class StringIdentity
         return value;
     }
 
-    public static Identity identity( String serializedState )
+    public static Identity identityOf( String serializedState )
     {
         return new StringIdentity( serializedState );
     }

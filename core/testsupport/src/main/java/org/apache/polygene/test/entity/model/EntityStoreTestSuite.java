@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.test.entity.model;
 
-import java.util.Iterator;
 import org.apache.polygene.api.association.NamedAssociation;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
@@ -56,7 +55,7 @@ import org.apache.polygene.test.entity.model.people.Rent;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -64,6 +63,8 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
 {
     private static final String FRIEND = "Friend";
     private static final String COLLEAGUE = "Colleague";
+
+    protected ModuleAssembly configModule;
 
     @Structure
     private ObjectFactory obf;
@@ -80,14 +81,14 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     private Identity montpellierId;
     private Identity hannoverId;
     private Identity malmoId;
-    private Identity cherasId;
 
+    private Identity cherasId;
     private Identity unknown3Id;
     private Identity unknown2Id;
     private Identity unknown1Id;
     private Identity varnhemId;
-    private Identity canaryId;
 
+    private Identity canaryId;
     private Identity switzerlandId;
     private Identity franceId;
     private Identity denmarkId;
@@ -240,15 +241,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
-            Iterator<String> numbers = niclas.phoneNumbers().iterator();
-            assertThat( numbers.hasNext(), is( true ) );
-            assertThat( numbers.next(), equalTo( "Home" ) );
-            assertThat( numbers.hasNext(), is( true ) );
-            assertThat( numbers.next(), equalTo( "Chinese" ) );
-            assertThat( numbers.hasNext(), is( true ) );
-            assertThat( numbers.next(), equalTo( "Swedish" ) );
-            assertThat( numbers.hasNext(), is( true ) );
-            assertThat( numbers.next(), equalTo( "German" ) );
+            assertThat( niclas.phoneNumbers(), containsInAnyOrder("Home", "Chinese", "Swedish", "German"));
         }
     }
 
@@ -542,5 +535,6 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     {
         module.defaultServices();
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
+        configModule = module;
     }
 }

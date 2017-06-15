@@ -36,7 +36,7 @@ public class ForumsResource
     public void resource( String segment )
         throws ResourceException
     {
-        select( Forum.class, StringIdentity.identity( segment ) );
+        select( Forum.class, StringIdentity.identityOf( segment ) );
         subResource( ForumResource.class );
     }
 }

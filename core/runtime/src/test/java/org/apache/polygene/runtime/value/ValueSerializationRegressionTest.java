@@ -50,7 +50,7 @@ public class ValueSerializationRegressionTest extends AbstractPolygeneTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( StringIdentity.identity( "1234" ) );
+        builder.prototype().identity().set( StringIdentity.identityOf( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
     }

@@ -126,8 +126,8 @@ public class PayBillsContext2
         {
             // Creditor retrieval could be a use case in itself...
             List<BalanceData> creditors = new ArrayList<>();
-            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, StringIdentity.identity( "BakerAccount" ) ) );
-            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, StringIdentity.identity( "ButcherAccount" ) ) );
+            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, StringIdentity.identityOf( "BakerAccount" ) ) );
+            creditors.add( uowf.currentUnitOfWork().get( BalanceData.class, StringIdentity.identityOf( "ButcherAccount" ) ) );
             return creditors;
         }
 

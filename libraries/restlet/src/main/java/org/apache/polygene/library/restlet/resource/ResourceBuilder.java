@@ -143,7 +143,7 @@ public interface ResourceBuilder
         public RestForm createNameForm( Reference base )
         {
             ValueBuilder<RestForm> builder = vbf.newValueBuilder( RestForm.class );
-            builder.prototype().link().set( createRestLink( StringIdentity.identity( "form" ), base, Method.POST ) );
+            builder.prototype().link().set( createRestLink( StringIdentity.identityOf( "form" ), base, Method.POST ) );
             builder.prototype().fields().set( Collections.singletonList( createFormField( "name", FormField.TEXT ) ) );
             return builder.newInstance();
         }

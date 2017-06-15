@@ -63,7 +63,7 @@ public class OperatorsTest
 
         try
         {
-            EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, StringIdentity.identity( "123" ) );
+            EntityBuilder<TestEntity> entityBuilder = uow.newEntityBuilder( TestEntity.class, StringIdentity.identityOf( "123" ) );
             entityBuilder.instance().value().set( assembler.module().newValue( TestValue.class ) );
             TestEntity testEntity = entityBuilder.newInstance();
 

@@ -108,7 +108,7 @@ public interface BuiltInConverters
             @Override
             public Identity fromString( String string )
             {
-                return StringIdentity.identity( string );
+                return StringIdentity.identityOf( string );
             }
         }
 

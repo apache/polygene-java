@@ -77,13 +77,13 @@ public interface DummyDataService
                     valueBuilder.prototype().string().set( "Foo bar value" );
                     valueBuilder.prototype().map().set( new HashMap() );
 
-                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.identity( "test1" ) );
+                    EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.identityOf( "test1" ) );
                     builder.instance().name().set( "Foo bar" );
                     builder.instance().age().set( 42 );
                     builder.instance().value().set( valueBuilder.newInstance() );
                     TestEntity testEntity = builder.newInstance();
 
-                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.identity( "test2" ) );
+                    EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder( TestEntity.class, StringIdentity.identityOf( "test2" ) );
                     builder2.instance().name().set( "Xyzzy" );
                     builder2.instance().age().set( 12 );
                     builder2.instance().association().set( testEntity );
@@ -98,7 +98,7 @@ public interface DummyDataService
                 }
 
                 {
-                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, StringIdentity.identity( "test3" ) );
+                    EntityBuilder<TestEntity2> builder = unitOfWork.newEntityBuilder( TestEntity2.class, StringIdentity.identityOf( "test3" ) );
                     builder.instance().name().set( "Test3" );
                     builder.newInstance();
                 }

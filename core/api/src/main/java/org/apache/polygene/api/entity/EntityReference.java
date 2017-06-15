@@ -41,7 +41,7 @@ public final class EntityReference
     public static EntityReference parseEntityReference(String identityString)
     {
         Objects.requireNonNull( identityString, "identityString must not be null" );
-        return new EntityReference( StringIdentity.identity( identityString ) );
+        return new EntityReference( StringIdentity.identityOf( identityString ) );
     }
 
     /**

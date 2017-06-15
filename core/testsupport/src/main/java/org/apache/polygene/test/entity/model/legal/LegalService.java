@@ -52,7 +52,7 @@ public interface LegalService
         public Identity createWill( Person principal, Map<Person, BigDecimal> amounts, Map<Person, Float> percentages, Map<Person, String> specificItems )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Identity identity = StringIdentity.identity( "will-" + principal.name().get() );
+            Identity identity = StringIdentity.identityOf( "will-" + principal.name().get() );
             EntityBuilder<Will> builder = uow.newEntityBuilder( Will.class, identity );
             Will instance = builder.instance();
             for( Map.Entry<Person, BigDecimal> entry : amounts.entrySet() )

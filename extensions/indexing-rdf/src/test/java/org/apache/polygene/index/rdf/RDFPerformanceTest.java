@@ -102,7 +102,7 @@ public class RDFPerformanceTest extends AbstractPolygeneTest
         List<ExampleEntity> entities = new ArrayList<ExampleEntity>();
         for (Integer x = 0; x < howMany; ++x)
         {
-            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, StringIdentity.identity( "entity" + x ) );
+            ExampleEntity exampleEntity = this.unitOfWorkFactory.currentUnitOfWork().newEntity( ExampleEntity.class, StringIdentity.identityOf( "entity" + x ) );
 
             for (ExampleEntity entity : entities)
             {
@@ -188,7 +188,7 @@ public class RDFPerformanceTest extends AbstractPolygeneTest
         UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
-            ExampleEntity entity50 = uow.get(ExampleEntity.class, StringIdentity.identity( "entity50" ) );
+            ExampleEntity entity50 = uow.get(ExampleEntity.class, StringIdentity.identityOf( "entity50" ) );
             Query<ExampleEntity> query = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
                     where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), entity50) ));
             System.out.println(query.count());

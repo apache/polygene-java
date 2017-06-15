@@ -80,18 +80,18 @@ public interface EntryPointResource extends ServerResource<EntryPoint>
                         RestLink link;
                         if( route.getDescription() == null )
                         {
-                            link = resourceBuilder.createRestLink( StringIdentity.identity( template.getPattern() ), hostRef, Method.GET );
+                            link = resourceBuilder.createRestLink( StringIdentity.identityOf( template.getPattern() ), hostRef, Method.GET );
                         }
                         else
                         {
-                            link = resourceBuilder.createRestLink( StringIdentity.identity( template.getPattern() ), hostRef, Method.GET, route.getDescription() );
+                            link = resourceBuilder.createRestLink( StringIdentity.identityOf( template.getPattern() ), hostRef, Method.GET, route.getDescription() );
                         }
                         entryPoints.put( route.getName(), link );
                     }
                 }
             }
             ValueBuilder<EntryPoint> builder = vbf.newValueBuilder( EntryPoint.class );
-            builder.prototype().identity().set( StringIdentity.identity( "/" ) );
+            builder.prototype().identity().set( StringIdentity.identityOf( "/" ) );
             builder.prototype().api().set( entryPoints );
             return builder.newInstance();
         }

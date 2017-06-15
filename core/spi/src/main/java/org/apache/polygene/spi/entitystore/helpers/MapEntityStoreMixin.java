@@ -382,7 +382,7 @@ public class MapEntityStoreMixin
 
             String version = parsedState.getString( JSONKeys.VERSION );
             Instant modified = Instant.ofEpochMilli( parsedState.getJsonNumber( JSONKeys.MODIFIED ).longValueExact() );
-            Identity identity = StringIdentity.identity( parsedState.getString( JSONKeys.IDENTITY ) );
+            Identity identity = StringIdentity.identityOf( parsedState.getString( JSONKeys.IDENTITY ) );
 
             // Check if version is correct
             JsonObject state;

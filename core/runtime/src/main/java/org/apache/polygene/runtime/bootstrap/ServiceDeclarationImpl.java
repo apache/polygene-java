@@ -59,7 +59,7 @@ public final class ServiceDeclarationImpl
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
             if( identity != null ) {
-                serviceAssembly.identity = StringIdentity.identity( identity );
+                serviceAssembly.identity = StringIdentity.identityOf( identity );
             }
         }
         return this;

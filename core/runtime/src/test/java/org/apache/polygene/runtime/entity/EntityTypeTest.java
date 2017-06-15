@@ -40,9 +40,9 @@ public class EntityTypeTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, StringIdentity.identity( "123" ) );
-            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, StringIdentity.identity( "456" ) );
-            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, StringIdentity.identity( "789" ) );
+            EntityBuilder<Rst> builder3 = uow.newEntityBuilder( Rst.class, StringIdentity.identityOf( "123" ) );
+            EntityBuilder<Def> builder2 = uow.newEntityBuilder( Def.class, StringIdentity.identityOf( "456" ) );
+            EntityBuilder<Abc> builder1 = uow.newEntityBuilder( Abc.class, StringIdentity.identityOf( "789" ) );
         }
         finally
         {

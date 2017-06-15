@@ -52,7 +52,7 @@ public interface BookingPage
             Element result = dom.createElementNS( Page.XHTML, "div" );
             String bookingId = context.path();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Booking booking = uow.get( Booking.class, StringIdentity.identity( bookingId ) );
+            Booking booking = uow.get( Booking.class, StringIdentity.identityOf( bookingId ) );
             Car car = booking.car().get();
             createChildNode( dom, result, car.model().get() );
             createChildNode( dom, result, car.licensePlate().get() );
@@ -73,7 +73,7 @@ public interface BookingPage
             Element result = dom.createElementNS( Page.XHTML, "div" );
             String bookingId = context.path();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Booking booking = uow.get( Booking.class, StringIdentity.identity( bookingId ) );
+            Booking booking = uow.get( Booking.class, StringIdentity.identityOf( bookingId ) );
             Customer customer = booking.customer().get();
             createChildNode( dom, result, customer.name().get() );
             createChildNode( dom, result, customer.address().get().line1().get() );

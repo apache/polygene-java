@@ -27,7 +27,7 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 
-import static org.apache.polygene.api.identity.StringIdentity.identity;
+import static org.apache.polygene.api.identity.StringIdentity.identityOf;
 
 @Mixins( PeopleRepository.Mixin.class )
 public interface PeopleRepository
@@ -66,7 +66,7 @@ public interface PeopleRepository
         public Person createPerson( String name, Country nationality, Address address, Person spouse, PhoneNumber homeNumber )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<Person> builder = uow.newEntityBuilder( Person.class, identity( "person-" + name ) );
+            EntityBuilder<Person> builder = uow.newEntityBuilder( Person.class, identityOf( "person-" + name ) );
             Person instance = builder.instance();
             instance.name().set( name );
             instance.nationality().set( nationality );
@@ -89,14 +89,14 @@ public interface PeopleRepository
         public Person findPersonByName( String name )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return uow.get( Person.class, identity( "person-" + name ) );
+            return uow.get( Person.class, identityOf( "person-" + name ) );
         }
 
         @Override
         public Country createCountry( String countryCode, String countryName )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            EntityBuilder<Country> builder = uow.newEntityBuilder( Country.class, identity( "country-" + countryCode ) );
+            EntityBuilder<Country> builder = uow.newEntityBuilder( Country.class, identityOf( "country-" + countryCode ) );
             builder.instance().name().set( countryName );
             return builder.newInstance();
         }
@@ -105,7 +105,7 @@ public interface PeopleRepository
         public Country findCountryByCountryCode( String countryCode )
         {
 
-            return findCountryByIdentity( identity( "country-" + countryCode ) );
+            return findCountryByIdentity( identityOf( "country-" + countryCode ) );
         }
 
         @Override

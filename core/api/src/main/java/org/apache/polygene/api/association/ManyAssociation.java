@@ -28,6 +28,11 @@ import org.apache.polygene.api.identity.Identity;
 
 /**
  * Association to a collection of entities.
+ *
+ * <p>
+ * Duplication of entities (defined as Identity equality) is allowed and for each add, there will be
+ * an additional item in the collection/iterator. If de-duplication is requested, see {@link #toSet()} method.
+ * </p>
  */
 public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {

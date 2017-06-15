@@ -151,7 +151,7 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         public Person findPersonByName( String name )
         {
             UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
-            return uow.toValue( Person.class, uow.get( Person.class, StringIdentity.identity( name ) ) );
+            return uow.toValue( Person.class, uow.get( Person.class, StringIdentity.identityOf( name ) ) );
         }
     }
 
@@ -206,7 +206,7 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         private Person createPerson( String name )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return uow.newEntity( Person.class, StringIdentity.identity( name ) );
+            return uow.newEntity( Person.class, StringIdentity.identityOf( name ) );
         }
     }
 }
