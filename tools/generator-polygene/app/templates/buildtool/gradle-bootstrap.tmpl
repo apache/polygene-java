@@ -55,4 +55,7 @@ if( polygene.caching !== "None" ) {
 %>  implementation "org.apache.polygene.extensions:org.apache.polygene.extension.metrics-<%= polygene.metrics.toLowerCase() %>:$polygeneVersion"
 <%
     }
+if( polygene.hasFeature('envisage' ) ) {
+%>  implementation "org.apache.polygene.tools:org.apache.polygene.tool.envisage:$polygeneVersion"
+<% }
 %>}
