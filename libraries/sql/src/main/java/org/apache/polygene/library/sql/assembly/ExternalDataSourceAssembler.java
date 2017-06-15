@@ -65,7 +65,7 @@ public class ExternalDataSourceAssembler
     {
         if( circuitBreaker != null )
         {
-            externalDataSource = DataSources.wrapWithCircuitBreaker( StringIdentity.fromString(identity()), externalDataSource, circuitBreaker );
+            externalDataSource = DataSources.wrapWithCircuitBreaker( StringIdentity.identity( identity() ), externalDataSource, circuitBreaker );
         }
         module.importedServices( DataSource.class ).
             identifiedBy( identity() ).

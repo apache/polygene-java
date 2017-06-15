@@ -253,7 +253,7 @@ public abstract class AbstractValueCompositeSerializationTest
     // JSONEntityState does not allow for polymorphic serialization
     public void valueAndEntityTypeEquality()
     {
-        Identity identity = StringIdentity.fromString( "42" );
+        Identity identity = StringIdentity.identity( "42" );
         Some createdValue, loadedValue;
 
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( newUsecase( "create" ) ) )
@@ -301,7 +301,7 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         EntityBuilder<Some> builder = uow.newEntityBuilder( Some.class );
         Some proto = builder.instance();
-        proto.identity().set( StringIdentity.fromString( identity ) );
+        proto.identity().set( StringIdentity.identity( identity ) );
         setSomeValueState( module, uow, proto );
         return builder.newInstance();
     }
@@ -313,7 +313,7 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         ValueBuilder<Some> builder = module.newValueBuilder( Some.class );
         Some proto = builder.prototype();
-        proto.identity().set( StringIdentity.fromString( identity ) );
+        proto.identity().set( StringIdentity.identity( identity ) );
         setSomeValueState( module, uow, proto );
         return builder.newInstance();
     }
@@ -322,7 +322,7 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         ValueBuilder<SomeExtended> builder = module.newValueBuilder( SomeExtended.class );
         SomeExtended proto = builder.prototype();
-        proto.identity().set( StringIdentity.fromString( identity ) );
+        proto.identity().set( StringIdentity.identity( identity ) );
         setSomeValueState( module, uow, proto );
         proto.extraProperty().set( "extra property" );
         proto.extraAssociation().set( buildBarEntity( module, uow, "extra association" ) );

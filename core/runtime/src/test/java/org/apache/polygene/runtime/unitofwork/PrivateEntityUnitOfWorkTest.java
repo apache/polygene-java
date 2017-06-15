@@ -52,7 +52,7 @@ import static org.junit.Assert.fail;
  */
 public class PrivateEntityUnitOfWorkTest
 {
-    private static final Identity TEST_IDENTITY = StringIdentity.fromString( "1" );
+    private static final Identity TEST_IDENTITY = StringIdentity.identity( "1" );
 
     @Structure
     private UnitOfWorkFactory uowf;

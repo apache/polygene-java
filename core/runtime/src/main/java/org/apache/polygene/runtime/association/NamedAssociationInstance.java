@@ -74,7 +74,14 @@ public class NamedAssociationInstance<T> extends AbstractAssociationInstance<T>
     {
         Objects.requireNonNull( entity, "entity" );
         checkImmutable();
-        checkType( entity );
+        try
+        {
+            checkType( entity );
+        }
+        catch( IllegalArgumentException e )
+        {
+            throw new IllegalArgumentException( "Named association [" + name +"] must have Identity: " + entity );
+        }
         associationInfo.checkConstraints( entity );
         return namedAssociationState.put( name, EntityReference.create( ( (HasIdentity) entity ).identity().get() ) );
     }

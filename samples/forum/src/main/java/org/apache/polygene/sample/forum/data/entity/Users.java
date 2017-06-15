@@ -41,7 +41,7 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 public interface Users
     extends EntityComposite, Events
 {
-    Identity USERS_ID = StringIdentity.fromString( "users" );
+    Identity USERS_ID = StringIdentity.identity( "users" );
 
     Query<User> users();
 

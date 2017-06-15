@@ -61,7 +61,7 @@ public class Polygene142Test extends AbstractPolygeneTest
             value = serialization.deserialize( module, Regression142Type.class, serialized ); // ok
         }
         {
-            Identity valueId = StringIdentity.fromString( "abcdefg" );
+            Identity valueId = StringIdentity.identity( "abcdefg" );
             {
                 try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ) )
                 {

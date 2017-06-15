@@ -40,7 +40,7 @@ public class RemovalTest
     extends AbstractPolygeneTest
 {
 
-    private static final Identity TEST_IDENTITY = StringIdentity.fromString( "123" );
+    private static final Identity TEST_IDENTITY = StringIdentity.identity( "123" );
 
     public void assemble(ModuleAssembly module )
         throws AssemblyException

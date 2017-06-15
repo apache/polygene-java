@@ -36,7 +36,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     extends AbstractPolygeneTest
 {
 
-    public static final Identity NICLAS = StringIdentity.fromString( "niclas" );
+    public static final Identity NICLAS = StringIdentity.identity( "niclas" );
 
     @Override
     public void assemble( ModuleAssembly module )

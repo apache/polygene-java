@@ -106,7 +106,7 @@ public class EntityResource
     {
         // /entity/{reference}
         Map<String, Object> attributes = getRequest().getAttributes();
-        identity = StringIdentity.fromString( (String) attributes.get( "reference" ) );
+        identity = StringIdentity.identity( (String) attributes.get( "reference" ) );
     }
 
     @Override

@@ -243,7 +243,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
                 for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    ComplexProduct product = uow.newEntity( ComplexProduct.class, StringIdentity.fromString( "product" + i ) );
+                    ComplexProduct product = uow.newEntity( ComplexProduct.class, StringIdentity.identity( "product" + i ) );
                     product.name().set( "Product " + i );
 
                     if( i % 1000 == 0 )
@@ -265,7 +265,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 String id = rnd.nextInt( ITERATIONS ) + "";
                 for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    ComplexProduct product = uow.get( ComplexProduct.class, StringIdentity.fromString( "product" + id ) );
+                    ComplexProduct product = uow.get( ComplexProduct.class, StringIdentity.identity( "product" + id ) );
                     product.name().get();
                     if( i % 100 == 0 )
                     {

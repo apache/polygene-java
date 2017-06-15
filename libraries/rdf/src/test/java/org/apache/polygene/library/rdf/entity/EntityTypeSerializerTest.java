@@ -95,14 +95,14 @@ public class EntityTypeSerializerTest
             valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.fromString( "test1") );
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.identity( "test1" ) );
             TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.fromString( "test2") );
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.identity( "test2" ) );
             TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );

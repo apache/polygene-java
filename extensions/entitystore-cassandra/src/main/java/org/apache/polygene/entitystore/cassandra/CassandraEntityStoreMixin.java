@@ -427,7 +427,7 @@ public class CassandraEntityStoreMixin
         Identity newIdentity;
         if( idGenerator == null )
         {
-            newIdentity = StringIdentity.fromString( UUID.randomUUID().toString() );
+            newIdentity = StringIdentity.identity( UUID.randomUUID().toString() );
         }
         else
         {

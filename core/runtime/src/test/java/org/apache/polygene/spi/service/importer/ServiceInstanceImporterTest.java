@@ -46,7 +46,7 @@ public class ServiceInstanceImporterTest
     {
         module.importedServices( TestService.class ).
             identifiedBy( "test" ).
-            setMetaInfo( StringIdentity.fromString( "testimporter" ) ).
+            setMetaInfo( StringIdentity.identity( "testimporter" ) ).
             importedBy( ImportedServiceDeclaration.SERVICE_IMPORTER );
         module.services( TestImporterService.class ).identifiedBy( "testimporter" );
 

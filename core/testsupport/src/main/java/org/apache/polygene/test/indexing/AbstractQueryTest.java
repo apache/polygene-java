@@ -465,7 +465,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Domain gaming = unitOfWork.get( Domain.class, StringIdentity.fromString( "Gaming" ) );
+        Domain gaming = unitOfWork.get( Domain.class, StringIdentity.identity( "Gaming" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.interests(), gaming ) ) );
         System.out.println( "*** script33: " + query );
 
@@ -477,7 +477,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Female annDoe = unitOfWork.get( Female.class, StringIdentity.fromString( "anndoe" ) );
+        Female annDoe = unitOfWork.get( Female.class, StringIdentity.identity( "anndoe" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ) );
         System.out.println( "*** script34: " + query );
 
@@ -500,7 +500,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Account anns = unitOfWork.get( Account.class, StringIdentity.fromString( "accountOfAnnDoe" ) );
+        Account anns = unitOfWork.get( Account.class, StringIdentity.identity( "accountOfAnnDoe" ) );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.accounts(), anns ) ) );
         System.out.println( "*** script36: " + query );
 

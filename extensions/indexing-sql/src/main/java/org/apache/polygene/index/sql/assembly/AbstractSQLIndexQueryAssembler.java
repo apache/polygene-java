@@ -35,7 +35,7 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
 public abstract class AbstractSQLIndexQueryAssembler<AssemblerType> extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-    public static final Identity DEFAULT_IDENTITY = StringIdentity.fromString( "indexing-sql" );
+    public static final Identity DEFAULT_IDENTITY = StringIdentity.identity( "indexing-sql" );
 
     private Class<? extends ReindexingStrategy> reindexingStrategy = ReindexingStrategy.NeverNeed.class;
 

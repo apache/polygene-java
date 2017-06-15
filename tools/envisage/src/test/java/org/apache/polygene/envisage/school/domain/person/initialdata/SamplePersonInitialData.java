@@ -94,7 +94,7 @@ public interface SamplePersonInitialData
 
         private void createPerson( UnitOfWork uow, String personId, String firstName, String lastName )
         {
-            EntityBuilder<Person> person = uow.newEntityBuilder( Person.class, StringIdentity.fromString( personId ) );
+            EntityBuilder<Person> person = uow.newEntityBuilder( Person.class, StringIdentity.identity( personId ) );
 
             PersonEntity.PersonState state = person.instanceFor( PersonEntity.PersonState.class );
             state.firstName().set( firstName );

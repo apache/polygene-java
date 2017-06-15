@@ -53,7 +53,7 @@ public class UnitOfWorkInjectionTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( usecase );
         try
         {
-            Trial trial = uow.newEntity( Trial.class, StringIdentity.fromString( "123" ) );
+            Trial trial = uow.newEntity( Trial.class, StringIdentity.identity( "123" ) );
             trial.doSomething();
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork( usecase );

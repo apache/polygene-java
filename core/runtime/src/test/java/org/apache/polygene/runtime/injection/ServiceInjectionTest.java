@@ -82,7 +82,7 @@ public class ServiceInjectionTest
         ServiceUser user = factory.newObject( ServiceUser.class );
 
         assertEquals( "X", user.testSingle() );
-        assertThat( user.testIdentity(), equalTo( StringIdentity.fromString( "Foo" ) ) );
+        assertThat( user.testIdentity(), equalTo( StringIdentity.identity( "Foo" ) ) );
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "Bar", user.testQualifier() );
         assertEquals( "A", user.testStringIterable() );

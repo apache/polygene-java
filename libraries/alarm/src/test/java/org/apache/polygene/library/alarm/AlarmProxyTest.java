@@ -60,7 +60,7 @@ public class AlarmProxyTest extends AbstractPolygeneTest
         try
         {
 // START SNIPPET: documentation
-            myAlarmPoint = factory.create( StringIdentity.fromString( "This Alarm Identity" ), "ProActiveCRM", "Sales", AlarmClass.B );
+            myAlarmPoint = factory.create( StringIdentity.identity( "This Alarm Identity" ), "ProActiveCRM", "Sales", AlarmClass.B );
             myAlarmPoint.history().maxSize().set( 20 );
 // END SNIPPET: documentation
 
@@ -71,7 +71,7 @@ public class AlarmProxyTest extends AbstractPolygeneTest
             assertThat( myAlarmPoint.history().activateCounter(), equalTo( 1 ) );
             AlarmEvent event = myAlarmPoint.history().firstEvent();
             assertThat( event, notNullValue() );
-            assertThat( event.identity().get(), equalTo( StringIdentity.fromString( "This Alarm Identity" ) ) );
+            assertThat( event.identity().get(), equalTo( StringIdentity.identity( "This Alarm Identity" ) ) );
             assertThat( event.newStatus().get().name( null ), equalTo( "Activated" ) );
             assertThat( event.oldStatus().get().name( null ), equalTo( "Normal" ) );
         }

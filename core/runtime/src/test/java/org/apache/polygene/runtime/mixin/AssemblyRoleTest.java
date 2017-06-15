@@ -71,11 +71,11 @@ public class AssemblyRoleTest
         throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        uow.newEntity( FooEntity.class, StringIdentity.fromString( "123" ) );
+        uow.newEntity( FooEntity.class, StringIdentity.identity( "123" ) );
         uow.complete();
 
         uow = unitOfWorkFactory.newUnitOfWork();
-        Foo foo = uow.get( Foo.class, StringIdentity.fromString( "123" ) );
+        Foo foo = uow.get( Foo.class, StringIdentity.identity( "123" ) );
 
         try
         {
