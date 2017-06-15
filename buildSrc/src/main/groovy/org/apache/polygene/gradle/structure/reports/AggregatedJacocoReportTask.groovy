@@ -66,7 +66,7 @@ class AggregatedJacocoReportTask extends DefaultTask
       sourceDirs.findAll { it.directory }.collect { it.absolutePath }
     }
     def classesDirsOf = { List<SourceSet> sourceSets ->
-      def classesDirs = sourceSets.collect { it.output.classesDir } as List<File>
+      def classesDirs = sourceSets.collect { it.output.classesDirs.files }.flatten() as List<File>
       classesDirs.findAll { it.directory }.collect { it.absolutePath }
     }
 

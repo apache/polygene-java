@@ -76,7 +76,7 @@ if( JavaVersion.current() < JavaVersion.VERSION_1_9 )
     {
       enabled = false
     }
-    testClassesDir = sourceSets.vhostTest.output.classesDir
+    testClassesDirs = sourceSets.vhostTest.output.classesDirs
     classpath = sourceSets.vhostTest.runtimeClasspath
     systemProperties 'networkaddress.cache.ttl': '0'
     systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
