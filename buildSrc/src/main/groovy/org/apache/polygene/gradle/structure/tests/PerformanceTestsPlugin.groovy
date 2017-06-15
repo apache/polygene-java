@@ -54,7 +54,7 @@ class PerformanceTestsPlugin implements Plugin<Project>
       task.description = 'Runs performance tests.'
       task.maxParallelForks = 1
       task.forkEvery = 1L
-      task.testClassesDir = sourceSets.getByName( 'perf' ).output.classesDir
+      task.testClassesDirs = sourceSets.getByName( 'perf' ).output.classesDirs
       task.classpath = sourceSets.getByName( 'perf' ).runtimeClasspath
       task.systemProperty 'jar.path', ( project.tasks.getByName( 'jar' ) as Jar ).archivePath
     } as Action<Test> )
