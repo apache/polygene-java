@@ -22,10 +22,13 @@ var assert = require('yeoman-assert');
 var shell = require('shelljs');
 
 //See http://yeoman.io/authoring/testing.html
+var restApiAppType = "Rest API";
+var commandLineAppType = "Command Line";
+var defaultAppType = restApiAppType;
 
 var appTypes = [
-    "Rest API",
-    'Command Line'
+    restApiAppType,
+    commandLineAppType
 ];
 
 var entityStores = [
@@ -70,17 +73,25 @@ var featuresset = [
     [],
     ['jmx'],
     ['mixin scripting'],
-    ['security'],
     ['jmx', 'mixin scripting'],
-    ['jmx', 'scripting'],
-    ['mixin scripting', 'scripting'],
-    ['jmx', 'mixin scripting', 'scripting']
+    ['security'],
+    ['jmx', 'security'],
+    ['mixin scripting', 'security'],
+    ['jmx', 'mixin scripting', 'security'],
+    ['envisage'],
+    ['jmx', 'envisage'],
+    ['mixin scripting', 'envisage'],
+    ['jmx', 'mixin scripting', 'envisage'],
+    ['security', 'envisage'],
+    ['jmx', 'security', 'envisage'],
+    ['mixin scripting', 'security', 'envisage'],
+    ['jmx', 'mixin scripting', 'security', 'envisage']
 ];
 
 // test with all defaults first.
 test();
 
-if(process.env.TEST_ALL === 'yes') {
+if (process.env.TEST_ALL === 'yes') {
     // All Tests !!!!
     appTypes.forEach(function (appType) {
         entityStores.forEach(function (entitystore) {
@@ -102,23 +113,23 @@ if(process.env.TEST_ALL === 'yes') {
     });
 
     entityStores.forEach(function (entityStore) {
-        test("Rest API", entityStore, "Rdf", "Memcache", "Codahale", "[]");
+        test(defaultAppType, entityStore, "Rdf", "Memcache", "Codahale", "[]");
     });
 
     indexings.forEach(function (indexing) {
-        test("Rest API", "Memory", indexing, "Memcache", "Codahale", "[]");
+        test(defaultAppType, "Memory", indexing, "Memcache", "Codahale", "[]");
     });
 
     cachings.forEach(function (caching) {
-        test("Rest API", "Memory", "Rdf", caching, "Codahale", "[]");
+        test(defaultAppType, "Memory", "Rdf", caching, "Codahale", "[]");
     });
 
     metricses.forEach(function (metrics) {
-        test("Rest API", "Memory", "Rdf", "Memcache", metrics, "[]");
+        test(defaultAppType, "Memory", "Rdf", "Memcache", metrics, "[]");
     });
 
     featuresset.forEach(function (feature) {
-        test("Rest API", "Memory", "Rdf", "Memcache", "Codahale", feature);
+        test(defaultAppType, "Memory", "Rdf", "Memcache", "Codahale", feature);
     });
 }
 
@@ -129,13 +140,13 @@ function test(appType, entityStore, indexing, caching, metrics, features) {
             + indexing + ' Indexing - '
             + caching + ' Caching - '
             + metrics + ' Metrics';
-        if(features && features.length > 0) {
+        if (features && features.length > 0) {
             testName += ' - ' + features.toString().replace(new RegExp(',', 'g'), ' - ');
         }
         var testDirName = testName.replace(new RegExp(' - ', 'g'), '_').replace(new RegExp(' ', 'g'), '_');
         it(testName,
             function () {
-                console.log( "\n\nTest: " + testName );
+                console.log("\n\nTest: " + testName);
                 this.timeout(60000);
                 return helpers.run(path.join(__dirname, '../app'))
                     .inDir(path.join(__dirname, '../build/npm-test/' + testDirName))
