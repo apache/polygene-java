@@ -26,7 +26,7 @@ import org.apache.polygene.api.common.InvalidApplicationException;
 /**
  * This exception is thrown if no visible Object of the requested type can be found.
  */
-public class NoSuchObjectException
+public class NoSuchObjectTypeException
     extends InvalidApplicationException
 {
     private static final long serialVersionUID = -1121690536365682511L;
@@ -34,7 +34,7 @@ public class NoSuchObjectException
     private final String objectType;
     private final String moduleName;
 
-    public NoSuchObjectException( String type, String moduleName, Stream<Class<?>> visible )
+    public NoSuchObjectTypeException( String type, String moduleName, Stream<Class<?>> visible )
     {
         super( "Could not find any visible Object of type [" + type + "] in module ["
                + moduleName

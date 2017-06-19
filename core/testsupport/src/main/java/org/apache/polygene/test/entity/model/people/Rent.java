@@ -19,29 +19,33 @@
  */
 package org.apache.polygene.test.entity.model.people;
 
-import java.math.BigDecimal;
 import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
+import org.apache.polygene.test.entity.model.monetary.Currency;
 
 public interface Rent
 {
-    Property<BigDecimal> amount();
-
-    Property<String> currency();
+    Property<Currency> amount();
 
     class Builder
     {
+        private final Currency.Builder currencyBuilder;
+
         @Structure
         private ValueBuilderFactory vbf;
 
-        public Rent create( Integer amount, String currency )
+        public Builder( @Structure ObjectFactory objectFactory)
+        {
+            currencyBuilder = objectFactory.newObject( Currency.Builder.class );
+        }
+
+        public Rent create( int amount, String currency )
         {
             ValueBuilder<Rent> builder = vbf.newValueBuilder( Rent.class );
-            Rent prototype = builder.prototype();
-            prototype.amount().set( new BigDecimal( amount ) );
-            prototype.currency().set( currency );
+            builder.prototype().amount().set( currencyBuilder.create( amount, currency ) );
             return builder.newInstance();
         }
     }

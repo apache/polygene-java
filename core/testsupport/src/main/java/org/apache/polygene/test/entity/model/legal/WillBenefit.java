@@ -21,6 +21,7 @@ package org.apache.polygene.test.entity.model.legal;
 
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.test.entity.model.people.Person;
 

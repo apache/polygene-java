@@ -50,10 +50,10 @@ public interface ServiceFinder
      *
      * @return a ServiceReference if one is found
      *
-     * @throws NoSuchServiceException if no service of serviceType is found
+     * @throws NoSuchServiceTypeException if no service of serviceType is found
      */
     <T> ServiceReference<T> findService( Class<T> serviceType )
-        throws NoSuchServiceException;
+        throws NoSuchServiceTypeException;
 
     /**
      * Find a ServiceReference that implements the given type.
@@ -63,10 +63,10 @@ public interface ServiceFinder
      *
      * @return a ServiceReference if one is found
      *
-     * @throws NoSuchServiceException if no service of serviceType is found
+     * @throws NoSuchServiceTypeException if no service of serviceType is found
      */
     <T> ServiceReference<T> findService( Type serviceType )
-        throws NoSuchServiceException;
+        throws NoSuchServiceTypeException;
 
     /**
      * Find ServiceReferences that implements the given type.

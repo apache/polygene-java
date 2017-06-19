@@ -17,30 +17,26 @@
  *
  *
  */
-package org.apache.polygene.api.value;
 
-import org.apache.polygene.api.composite.NoSuchCompositeException;
+package org.apache.polygene.api.composite;
+
+import java.util.stream.Stream;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
 
 /**
- * Thrown when no visible value of the requested type is found.
+ * This exception is thrown if client code tries to create a non-existing TransientComposite type.
  */
-public class NoSuchValueException
-    extends NoSuchCompositeException
+public class NoSuchTransientTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchValueException( String valueType, String moduleName, TypeLookup typeLookup )
+    public NoSuchTransientTypeException( String typeName, String moduleName, TypeLookup typeLookup )
     {
-        super( "ValueComposite", valueType, moduleName, formatVisibleTypes( typeLookup ) );
+        super( "TransientComposite", typeName, moduleName, typeLookup );
     }
 
-    private static String formatVisibleTypes( TypeLookup typeLookup )
+    protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )
     {
-        return typeLookup.allValues()
-                         .map( descriptor -> descriptor.primaryType().getName() )
-                         .sorted()
-                         .distinct()
-                         .collect( joining( "\n", "Visible value types are:\n", "" ) );
+        return typeLookup.allTransients();
     }
 }

@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.test.entity.model;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.polygene.api.association.NamedAssociation;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
@@ -33,6 +36,8 @@ import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
+import org.apache.polygene.api.value.ValueBuilder;
+import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -45,6 +50,7 @@ import org.apache.polygene.test.entity.model.legal.Will;
 import org.apache.polygene.test.entity.model.legal.WillAmount;
 import org.apache.polygene.test.entity.model.legal.WillItem;
 import org.apache.polygene.test.entity.model.legal.WillPercentage;
+import org.apache.polygene.test.entity.model.monetary.Currency;
 import org.apache.polygene.test.entity.model.people.Address;
 import org.apache.polygene.test.entity.model.people.City;
 import org.apache.polygene.test.entity.model.people.Country;
@@ -69,6 +75,9 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Structure
     private ObjectFactory obf;
 
+    @Structure
+    private ValueBuilderFactory vbf;
+
     @Service
     private LegalService legalService;
 
@@ -77,18 +86,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
 
     @Structure
     private UnitOfWorkFactory uowf;
-    private Identity baselId;
-    private Identity montpellierId;
-    private Identity hannoverId;
-    private Identity malmoId;
 
-    private Identity cherasId;
-    private Identity unknown3Id;
-    private Identity unknown2Id;
-    private Identity unknown1Id;
-    private Identity varnhemId;
-
-    private Identity canaryId;
     private Identity switzerlandId;
     private Identity franceId;
     private Identity denmarkId;
@@ -96,6 +94,20 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     private Identity swedenId;
     private Identity usId;
     private Identity malaysiaId;
+
+    private Identity kualaLumpurId;
+    private Identity cherasId;
+    private Identity zurichId;
+    private Identity malmoId;
+    private Identity montpellierId;
+
+    private Identity hannoverId;
+    private Identity canaryId;
+    private Identity angkasaImpian4Id;
+    private Identity varnhemId;
+    private Identity unknown1Id;
+    private Identity unknown2Id;
+    private Identity unknown3Id;
 
     @Before
     public void setupTestData()
@@ -127,17 +139,24 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     {
         try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllCitiesPresent" ) ) )
         {
-            assertThat( peopleRepository.findCity( baselId ).name().get(), equalTo( "Basel" ) );
+            assertThat( peopleRepository.findCity( zurichId ).name().get(), equalTo( "Zurich" ) );
             assertThat( peopleRepository.findCity( malmoId ).name().get(), equalTo( "Malmo" ) );
             assertThat( peopleRepository.findCity( cherasId ).name().get(), equalTo( "Cheras" ) );
             assertThat( peopleRepository.findCity( hannoverId ).name().get(), equalTo( "Hannover" ) );
             assertThat( peopleRepository.findCity( montpellierId ).name().get(), equalTo( "Montpellier" ) );
+            assertThat( peopleRepository.findCity( kualaLumpurId ).name().get(), equalTo( "Kuala Lumpur" ) );
         }
     }
 
     @Test
     public void validateAllAddressesPresent()
     {
+        Currency.Builder currencyBuilder = obf.newObject( Currency.Builder.class );
+        Currency eur1000 = currencyBuilder.create( 1000, "EUR" );
+        Currency eur1500 = currencyBuilder.create( 1500, "EUR" );
+        Currency chf2000 = currencyBuilder.create( 2000, "CHF" );
+        Currency myr3000 = currencyBuilder.create( 3000, "MYR" );
+        Currency sek9000 = currencyBuilder.create( 9000, "SEK" );
         try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllAddressesPresent" ) ) )
         {
             Address canary = peopleRepository.findAddress( canaryId );
@@ -145,30 +164,42 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             assertThat( canary.country().get().identity().get(), equalTo( malaysiaId ) );
             assertThat( canary.city().get().identity().get(), equalTo( cherasId ) );
             assertThat( canary.zipCode().get(), equalTo( "43200" ) );
+            assertThat( canary.rent().get().amount().get(), equalTo( myr3000 ) );
 
             Address varnhem = peopleRepository.findAddress( varnhemId );
             assertThat( varnhem.street().get(), equalTo( "Varnhemsgatan 25" ) );
             assertThat( varnhem.city().get().identity().get(), equalTo( malmoId ) );
             assertThat( varnhem.country().get().identity().get(), equalTo( swedenId ) );
             assertThat( varnhem.zipCode().get(), equalTo( "215 00" ) );
+            assertThat( varnhem.rent().get().amount().get(), equalTo( sek9000 ) );
+
+            Address angkasaImpian = peopleRepository.findAddress( angkasaImpian4Id );
+            assertThat( angkasaImpian.street().get(), equalTo( "B-19-4, Jalan Sehabat" ) );
+            assertThat( angkasaImpian.country().get().identity().get(), equalTo( malaysiaId ) );
+            assertThat( angkasaImpian.city().get().identity().get(), equalTo( kualaLumpurId ) );
+            assertThat( angkasaImpian.zipCode().get(), equalTo( "50200" ) );
+            assertThat( angkasaImpian.rent().get().amount().get(), equalTo( myr3000 ) );
 
             Address unknown = peopleRepository.findAddress( unknown1Id );
             assertThat( unknown.street().get(), equalTo( "" ) );
             assertThat( unknown.city().get().identity().get(), equalTo( montpellierId ) );
             assertThat( unknown.country().get().identity().get(), equalTo( franceId ) );
             assertThat( unknown.zipCode().get(), equalTo( "" ) );
+            assertThat( unknown.rent().get().amount().get(), equalTo( eur1000 ) );
 
             unknown = peopleRepository.findAddress( unknown2Id );
             assertThat( unknown.street().get(), equalTo( "" ) );
             assertThat( unknown.city().get().identity().get(), equalTo( hannoverId ) );
             assertThat( unknown.country().get().identity().get(), equalTo( germanyId ) );
             assertThat( unknown.zipCode().get(), equalTo( "" ) );
+            assertThat( unknown.rent().get().amount().get(), equalTo( eur1500 ) );
 
             unknown = peopleRepository.findAddress( unknown3Id );
             assertThat( unknown.street().get(), equalTo( "" ) );
-            assertThat( unknown.city().get().identity().get(), equalTo( baselId ) );
+            assertThat( unknown.city().get().identity().get(), equalTo( zurichId ) );
             assertThat( unknown.country().get().identity().get(), equalTo( switzerlandId ) );
             assertThat( unknown.zipCode().get(), equalTo( "" ) );
+            assertThat( unknown.rent().get().amount().get(), equalTo( chf2000 ) );
         }
     }
 
@@ -195,6 +226,10 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             assertThat( kalle.name().get(), equalTo( "Kalle" ) );
             Person andreas = peopleRepository.findPersonByName( "Andreas" );
             assertThat( andreas.name().get(), equalTo( "Andreas" ) );
+            Person lars = peopleRepository.findPersonByName( "Lars" );
+            assertThat( lars.name().get(), equalTo( "Lars" ) );
+            Person mia = peopleRepository.findPersonByName( "Mia" );
+            assertThat( mia.name().get(), equalTo( "Mia" ) );
         }
     }
 
@@ -241,7 +276,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
-            assertThat( niclas.phoneNumbers(), containsInAnyOrder("Home", "Chinese", "Swedish", "German"));
+            assertThat( niclas.phoneNumbers(), containsInAnyOrder( "Home", "Chinese", "Swedish", "German" ) );
         }
     }
 
@@ -314,9 +349,9 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             chinesePhoneId = niclas.phoneNumbers().get( "Chinese" ).identity().get();
             germanPhoneId = niclas.phoneNumbers().get( "German" ).identity().get();
 
-            City basel = peopleRepository.findCity( baselId );
+            City zurich = peopleRepository.findCity( zurichId );
             Country switzerland = peopleRepository.findCountryByCountryCode( "ch" );
-            niclas.movedToNewAddress( "DespairStreet 12A", "43HQ21", basel, switzerland, obf.newObject( Rent.Builder.class ).create( 1000, "EUR" ) );
+            niclas.movedToNewAddress( "DespairStreet 12A", "43HQ21", zurich, switzerland, obf.newObject( Rent.Builder.class ).create( 1000, "EUR" ) );
             uow.complete();
         }
         try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
@@ -410,6 +445,58 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         peopleRepository.findCountryByIdentity( switzerlandId );
     }
 
+    @Test
+    public void givenEntityInheritanceWhenStoreRetrieveExpectSuccess()
+    {
+        Currency.Builder currencyBuilder = obf.newObject( Currency.Builder.class );
+        Identity willId;
+        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
+        {
+            Person peter = peopleRepository.findPersonByName( "Peter" );
+            Person kalle = peopleRepository.findPersonByName( "Kalle" );
+            Person oscar = peopleRepository.findPersonByName( "Oscar" );
+            Person niclas = peopleRepository.findPersonByName( "Niclas" );
+            Person andreas = peopleRepository.findPersonByName( "Andreas" );
+            Map<Person, Currency> amountsMap = new HashMap<>();
+            Map<Person, Float> percentagesMap = new HashMap<>();
+            Map<Person, String> specificItemsMap = new HashMap<>();
+            amountsMap.put( niclas, currencyBuilder.create( 10, "USD" ) );
+            percentagesMap.put( kalle, 50f );
+            percentagesMap.put( oscar, 50f );
+            specificItemsMap.put( niclas, "Toothpick Collection\n" );
+            specificItemsMap.put( andreas, "Black/Yellow Lederhosen\n" );
+            Will will = legalService.createWill( peter, amountsMap, percentagesMap, specificItemsMap );
+            willId = will.identity().get();
+            uow.complete();
+        }
+        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
+        {
+            Person kalle = peopleRepository.findPersonByName( "Kalle" );
+            Person oscar = peopleRepository.findPersonByName( "Oscar" );
+            Person niclas = peopleRepository.findPersonByName( "Niclas" );
+            Person andreas = peopleRepository.findPersonByName( "Andreas" );
+
+            Will will = legalService.findWillById(willId);
+            List<WillAmount> amounts = will.amounts().get();
+            List<WillPercentage> percentages = will.percentages().get();
+            List<WillItem> items = will.items().get();
+            assertThat( amounts.size(), equalTo( 1 ) );
+            assertThat( percentages.size(), equalTo( 2 ) );
+            assertThat( items.size(), equalTo( 2 ) );
+
+            WillAmount willAmount = amounts.get( 0 );
+            assertThat( willAmount.amount().get(), equalTo( currencyBuilder.create( 10, "USD" ) ) );
+
+            WillPercentage kallePercentage = legalService.createPercentage( kalle, 50 );
+            WillPercentage oscarPercentage = legalService.createPercentage( oscar, 50 );
+            assertThat( percentages, containsInAnyOrder( kallePercentage, oscarPercentage ) );
+
+            WillItem niclasItem = legalService.createItem( niclas, "Toothpick Collection\n" );
+            WillItem andreasItem = legalService.createItem( andreas, "Black/Yellow Lederhosen\n" );
+            assertThat( items, containsInAnyOrder( niclasItem, andreasItem ) );
+        }
+    }
+
     private void testData()
     {
         Country malaysia = peopleRepository.createCountry( "my", "Malaysia" );
@@ -434,14 +521,16 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         hannoverId = hannover.identity().get();
         City montpellier = peopleRepository.createCity( "Montpellier" );
         montpellierId = montpellier.identity().get();
-        City basel = peopleRepository.createCity( "Basel" );
-        baselId = basel.identity().get();
+        City kualalumpur = peopleRepository.createCity( "Kuala Lumpur" );
+        kualaLumpurId = kualalumpur.identity().get();
+        City zurich = peopleRepository.createCity( "Zurich" );
+        zurichId = zurich.identity().get();
         Rent.Builder rentBuilder = obf.newObject( Rent.Builder.class );
         Rent rentCanary = rentBuilder.create( 3000, "MYR" );
         Rent rentVarnhem = rentBuilder.create( 9000, "SEK" );
-        Rent rentUnknown1 = rentBuilder.create( 1200, "EUR" );
-        Rent rentUnknown2 = rentBuilder.create( 900, "EUR" );
-        Rent rentUnknown3 = rentBuilder.create( 2200, "EUR" );
+        Rent rentUnknown1 = rentBuilder.create( 1000, "EUR" );
+        Rent rentUnknown2 = rentBuilder.create( 1500, "EUR" );
+        Rent rentUnknown3 = rentBuilder.create( 2000, "CHF" );
         Address canaryResidence = peopleRepository.createAddress( "10, CH5A, Jalan Cheras Hartamas", "43200", cheras, malaysia, rentCanary );
         canaryId = canaryResidence.identity().get();
         Address varnhem = peopleRepository.createAddress( "Varnhemsgatan 25", "215 00", malmo, sweden, rentVarnhem );
@@ -450,8 +539,10 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         unknown1Id = unknown1.identity().get();
         Address unknown2 = peopleRepository.createAddress( "", "", hannover, germany, rentUnknown2 );
         unknown2Id = unknown2.identity().get();
-        Address unknown3 = peopleRepository.createAddress( "", "", basel, switzerland, rentUnknown3 );
+        Address unknown3 = peopleRepository.createAddress( "", "", zurich, switzerland, rentUnknown3 );
         unknown3Id = unknown3.identity().get();
+        Address angkasaImpian = peopleRepository.createAddress( "B-19-4, Jalan Sehabat", "50200", kualalumpur, malaysia, rentCanary );
+        angkasaImpian4Id = angkasaImpian.identity().get();
         Person eric = peopleRepository.createPerson( "Eric", malaysia, canaryResidence, null, null );
         Person niclas = peopleRepository.createPerson( "Niclas", sweden, canaryResidence, null, peopleRepository.createPhoneNumber( "+60-16-7636344" ) );
         niclas.children().add( eric );
@@ -465,6 +556,9 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         Person toni = peopleRepository.createPerson( "Toni", france, unknown2, janna, peopleRepository.createPhoneNumber( "+49-12-99887766" ) );
         janna.spouse().set( toni );
         Person andreas = peopleRepository.createPerson( "Andreas", germany, unknown3, null, peopleRepository.createPhoneNumber( "+41-98-1234567" ) );
+        Person mia = peopleRepository.createPerson( "Mia", malaysia, angkasaImpian, null, null );
+        Person lars = peopleRepository.createPerson( "Lars", denmark, angkasaImpian, mia, null );
+        mia.spouse().set( lars );
         NamedAssociation<Person> niclasRels = niclas.relationships();
         niclasRels.put( FRIEND, peter );
         niclasRels.put( FRIEND, toni );
@@ -486,6 +580,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         defineConfigModule( configLayer.module( "Configuration Module" ) );
         defineSerializationModule( configLayer.module( "Serialization Module" ) );
         defineStorageModule( infrastructureLayer.module( "Storage Module" ) );
+        defineMonetaryModule( domainLayer.module( "Monetary Module" ) );
         definePeopleModule( domainLayer.module( "People Module" ) );
         defineLegalModule( domainLayer.module( "Legal Module" ) );
         defineTestModule( accessLayer.module( "TestCase Module" ) );
@@ -509,8 +604,8 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     protected void definePeopleModule( ModuleAssembly module )
     {
         module.defaultServices();
-        module.entities( Address.class, City.class, PhoneNumber.class );
-        module.entities( Country.class, Person.class );
+        module.entities( Address.class, Country.class, City.class, PhoneNumber.class );
+        module.entities( Person.class ).visibleIn( Visibility.layer );
         module.services( PeopleRepository.class ).visibleIn( Visibility.application );
         module.values( Rent.class );
         module.objects( Rent.Builder.class ).visibleIn( Visibility.application );
@@ -520,7 +615,15 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     {
         module.defaultServices();
         module.services( LegalService.class ).visibleIn( Visibility.application );
-        module.entities( Will.class, WillItem.class, WillPercentage.class, WillAmount.class );
+        module.entities( Will.class );
+        module.values( WillAmount.class, WillItem.class, WillPercentage.class );
+    }
+
+    protected void defineMonetaryModule( ModuleAssembly module )
+    {
+        module.defaultServices();
+        module.values( Currency.class ).visibleIn( Visibility.layer );
+        module.objects( Currency.Builder.class ).visibleIn( Visibility.application );
     }
 
     protected void defineSerializationModule( ModuleAssembly module )

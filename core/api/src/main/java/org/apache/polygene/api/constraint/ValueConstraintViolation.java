@@ -21,18 +21,21 @@
 package org.apache.polygene.api.constraint;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * When a constraint violation has occurred (ie Constraint.isValid has returned false) it
  * is put in a collection of all violations that have occurred for this value check.
  */
-public final class ConstraintViolation
+public final class ValueConstraintViolation
 {
-    private String name;
+    private final String name;
     private final Annotation constraint;
     private final Object value;
+    private Class<?> mixinType;
+    private String methodName;
 
-    public ConstraintViolation( String name, Annotation constraint, Object value )
+    public ValueConstraintViolation( String name, Annotation constraint, Object value )
     {
         this.name = name;
         this.constraint = constraint;
@@ -52,5 +55,25 @@ public final class ConstraintViolation
     public Object value()
     {
         return value;
+    }
+
+    public void setMixinType( Class<?> mixinType )
+    {
+        this.mixinType = mixinType;
+    }
+
+    public void setMethodName( String methodName )
+    {
+        this.methodName = methodName;
+    }
+
+    public Class<?> mixinType()
+    {
+        return mixinType;
+    }
+
+    public String methodName()
+    {
+        return methodName;
     }
 }

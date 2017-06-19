@@ -17,13 +17,35 @@
  *
  *
  */
-package org.apache.polygene.test.entity.model.legal;
+package org.apache.polygene.test.entity.model.monetary;
 
 import java.math.BigDecimal;
+import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.test.entity.model.monetary.Currency;
+import org.apache.polygene.api.value.ValueBuilder;
+import org.apache.polygene.api.value.ValueBuilderFactory;
 
-public interface WillAmount extends WillBenefit
+public interface Currency
 {
-    Property<Currency> amount();
+    Property<BigDecimal> amount();
+    Property<String> name();
+
+    class Builder
+    {
+        @Structure
+        private ValueBuilderFactory vbf;
+
+        public Currency create( int amount, String currencyName )
+        {
+            return create( new BigDecimal( amount ), currencyName );
+        }
+
+        public Currency create( BigDecimal amount, String currencyName )
+        {
+            ValueBuilder<Currency> builder = vbf.newValueBuilder( Currency.class );
+            builder.prototype().name().set( currencyName );
+            builder.prototype().amount().set( amount );
+            return builder.newInstance();
+        }
+    }
 }

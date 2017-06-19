@@ -27,7 +27,7 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.service.NoSuchServiceException;
+import org.apache.polygene.api.service.NoSuchServiceTypeException;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
@@ -130,7 +130,7 @@ public class ServiceVisibilityTest
         service.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingBesideModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -144,35 +144,35 @@ public class ServiceVisibilityTest
         service.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingBelowLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingBelowModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingAboveLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromServiceWhenAccessingAboveModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -269,7 +269,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -305,7 +305,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -323,7 +323,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -341,7 +341,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -359,7 +359,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -377,7 +377,7 @@ public class ServiceVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -430,7 +430,7 @@ public class ServiceVisibilityTest
         value.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingBesideModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -444,35 +444,35 @@ public class ServiceVisibilityTest
         value.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingBelowLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingBelowModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingAboveLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromValueWhenAccessingAboveModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -514,7 +514,7 @@ public class ServiceVisibilityTest
         transientt.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingBesideModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -528,35 +528,35 @@ public class ServiceVisibilityTest
         transientt.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingBelowLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingBelowModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingAboveLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromTransientWhenAccessingAboveModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -598,7 +598,7 @@ public class ServiceVisibilityTest
         object.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingBesideModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
@@ -612,35 +612,35 @@ public class ServiceVisibilityTest
         object.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingBelowLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingBelowModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingAboveLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchServiceException.class )
+    @Test( expected = NoSuchServiceTypeException.class )
     public void givenFromObjectWhenAccessingAboveModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );

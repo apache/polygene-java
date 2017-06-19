@@ -20,15 +20,20 @@
 
 package org.apache.polygene.runtime.value;
 
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.entity.EntityDescriptor;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.structure.TypeLookup;
 import org.apache.polygene.api.type.ValueCompositeType;
+import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
 import org.apache.polygene.api.util.Classes;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.runtime.composite.CompositeMethodsModel;
@@ -37,6 +42,7 @@ import org.apache.polygene.runtime.composite.MixinModel;
 import org.apache.polygene.runtime.composite.MixinsModel;
 import org.apache.polygene.runtime.composite.UsesInstance;
 import org.apache.polygene.runtime.injection.InjectionContext;
+import org.apache.polygene.runtime.property.PropertyInstance;
 import org.apache.polygene.runtime.unitofwork.UnitOfWorkInstance;
 
 /**
@@ -54,10 +60,11 @@ public final class ValueModel extends CompositeModel
                        final MixinsModel mixinsModel,
                        final ValueStateModel stateModel,
                        final CompositeMethodsModel compositeMethodsModel
-    )
+                     )
     {
         super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
-
+// TODO: When TypeLookup's lazy loading can be disabled during Model building, then uncomment the following line.
+//        checkAssociationVisibility();
         valueType = ValueCompositeType.of( this );
     }
 
@@ -77,6 +84,8 @@ public final class ValueModel extends CompositeModel
     void checkConstraints( ValueStateInstance state )
         throws ConstraintViolationException
     {
+        List<ValueConstraintViolation> violations = new ArrayList<>();
+
         stateModel.properties().forEach(
             propertyModel ->
             {
@@ -86,11 +95,10 @@ public final class ValueModel extends CompositeModel
                 }
                 catch( ConstraintViolationException e )
                 {
-                    throw new ConstraintViolationException( "<builder>", propertyModel.valueType()
-                        .types(), (Member) propertyModel.accessor(), e.constraintViolations() );
+                    violations.addAll( e.constraintViolations() );
                 }
             }
-        );
+                                       );
 
         // IF no UnitOfWork is active, then the Association checks shouldn't be done.
         if( UnitOfWorkInstance.getCurrent().empty() )
@@ -106,21 +114,73 @@ public final class ValueModel extends CompositeModel
                 }
                 catch( ConstraintViolationException e )
                 {
-                    Stream<? extends Type> types = Classes.interfacesOf( associationModel.type() );
-                    throw new ConstraintViolationException( "<builder>", types,
-                                                            (Member) associationModel.accessor(),
-                                                            e.constraintViolations() );
+                    try
+                    {
+                        PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
+                        e.setIdentity( identityProperty.get() );
+                    }
+                    catch( IllegalArgumentException e1 )
+                    {
+                        // ignore. Is not a HasIdentity instance
+                    }
+                    throw e;
                 }
             }
-        );
+                                                               );
 
         ( (ValueStateModel) stateModel ).manyAssociations().forEach(
-            model -> model.checkAssociationConstraints( state.manyAssociationFor( model.accessor() ) )
-        );
+            model ->
+            {
+                try
+                {
+                    model.checkAssociationConstraints( state.manyAssociationFor( model.accessor() ) );
+                }
+                catch( ConstraintViolationException e )
+                {
+                    try
+                    {
+                        PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
+                        e.setIdentity( identityProperty.get() );
+                    }
+                    catch( IllegalArgumentException e1 )
+                    {
+                        // ignore. is not a HasIdentity value
+                    }
+                    throw e;
+
+                }
+            }
+                                                                   );
 
         ( (ValueStateModel) stateModel ).namedAssociations().forEach(
-            model -> model.checkAssociationConstraints( state.namedAssociationFor( model.accessor() ) )
-        );
+            model ->
+            {
+                try
+                {
+                    model.checkAssociationConstraints( state.namedAssociationFor( model.accessor() ) );
+                }
+                catch( ConstraintViolationException e )
+                {
+                    PropertyInstance<Identity> propertyInstance = state.propertyFor( HasIdentity.IDENTITY_METHOD );
+                    throw e;
+
+                }
+            }
+                                                                    );
+        if( ! violations.isEmpty() )
+        {
+            ConstraintViolationException exception = new ConstraintViolationException( violations );
+            try
+            {
+                PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
+                exception.setIdentity(identityProperty.get());
+            }
+            catch( IllegalArgumentException e )
+            {
+                // ignore, there is no Identity.
+            }
+            throw exception;
+        }
     }
 
     public ValueInstance newValueInstance( ValueStateInstance state )
@@ -139,5 +199,25 @@ public final class ValueModel extends CompositeModel
 
         // Return
         return instance;
+    }
+
+    private void checkAssociationVisibility()
+    {
+        // All referenced entity types in any Associations must be visible from the module of this ValueModel.
+        TypeLookup lookup = module.typeLookup();
+        ValueStateModel stateModel = (ValueStateModel) this.stateModel;
+        stateModel.associations().forEach( model -> checkModel( lookup, model ) );
+        stateModel.manyAssociations().forEach( model -> checkModel( lookup, model ) );
+        stateModel.namedAssociations().forEach( model -> checkModel( lookup, model ) );
+    }
+
+    private void checkModel( TypeLookup lookup, AssociationDescriptor model )
+    {
+        Class<?> rawClass = Classes.RAW_CLASS.apply( model.type() );
+        List<EntityDescriptor> descriptors = lookup.lookupEntityModels( rawClass );
+        if( descriptors.size() == 0 )
+        {
+            throw new NoSuchEntityTypeException( rawClass.getName(), module.name(), lookup );
+        }
     }
 }

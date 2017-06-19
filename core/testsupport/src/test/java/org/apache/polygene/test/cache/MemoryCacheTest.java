@@ -22,8 +22,7 @@ package org.apache.polygene.test.cache;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
-public class MemoryCacheTest
-    extends AbstractCachePoolTest
+public class MemoryCacheTest extends AbstractCachePoolTest
 {
     @Override
     public void assemble( ModuleAssembly module )

@@ -32,7 +32,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.NoSuchValueException;
+import org.apache.polygene.api.value.NoSuchValueTypeException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
@@ -131,7 +131,7 @@ public class ValueVisibilityTest
         service.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingBesideModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -145,35 +145,35 @@ public class ValueVisibilityTest
         service.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingBelowLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingBelowModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingAboveLayerVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
         service.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromServiceWhenAccessingAboveModuleVisibleExpectException()
     {
         FromService service = module.findService( FromService.class ).get();
@@ -270,7 +270,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -306,7 +306,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -324,7 +324,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -342,7 +342,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -360,7 +360,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -378,7 +378,7 @@ public class ValueVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
@@ -431,7 +431,7 @@ public class ValueVisibilityTest
         value.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingBesideModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -445,35 +445,35 @@ public class ValueVisibilityTest
         value.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingBelowLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingBelowModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingAboveLayerVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
         value.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromValueWhenAccessingAboveModuleVisibleExpectException()
     {
         FromValue value = module.newValue( FromValue.class );
@@ -515,7 +515,7 @@ public class ValueVisibilityTest
         transientt.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingBesideModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -529,35 +529,35 @@ public class ValueVisibilityTest
         transientt.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingBelowLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingBelowModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingAboveLayerVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
         transientt.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromTransientWhenAccessingAboveModuleVisibleExpectException()
     {
         FromTransient transientt = module.newTransient( FromTransient.class );
@@ -599,7 +599,7 @@ public class ValueVisibilityTest
         object.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingBesideModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
@@ -613,35 +613,35 @@ public class ValueVisibilityTest
         object.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingBelowLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingBelowModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.belowModuleVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingAboveApplicationVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveApplicationVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingAboveLayerVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );
         object.aboveLayerVisible();
     }
 
-    @Test( expected = NoSuchValueException.class )
+    @Test( expected = NoSuchValueTypeException.class )
     public void givenFromObjectWhenAccessingAboveModuleVisibleExpectException()
     {
         FromObject object = module.newObject( FromObject.class );

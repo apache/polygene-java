@@ -31,7 +31,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.QualifiedName;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.DefaultValues;
@@ -286,12 +286,7 @@ public class PropertyModel
         {
             if( constraints != null )
             {
-                List<ConstraintViolation> violations = constraints.checkConstraints( value );
-                if( !violations.isEmpty() )
-                {
-                    Stream<Class<?>> empty = Stream.empty();
-                    throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-                }
+                constraints.checkConstraints( value, accessor );
             }
         }
     }

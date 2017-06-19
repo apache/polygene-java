@@ -19,7 +19,8 @@
  */
 package org.apache.polygene.test.entity.model.legal;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.Identity;
@@ -31,13 +32,21 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
+import org.apache.polygene.test.entity.model.monetary.Currency;
 import org.apache.polygene.test.entity.model.people.Person;
 
 @Mixins( LegalService.Mixin.class )
 public interface LegalService
 {
     @UnitOfWorkPropagation
-    Identity createWill( Person principal, Map<Person, BigDecimal> amounts, Map<Person, Float> percentages, Map<Person, String> specificItems );
+    Will findWillById( Identity willId );
+
+    @UnitOfWorkPropagation
+    Will createWill( Person principal, Map<Person, Currency> amounts, Map<Person, Float> percentages, Map<Person, String> specificItems );
+
+    WillPercentage createPercentage( Person beneficiary, float percentage );
+
+    WillItem createItem( Person beneficiary, String item );
 
     class Mixin
         implements LegalService
@@ -49,36 +58,46 @@ public interface LegalService
         private UnitOfWorkFactory uowf;
 
         @Override
-        public Identity createWill( Person principal, Map<Person, BigDecimal> amounts, Map<Person, Float> percentages, Map<Person, String> specificItems )
+        public Will findWillById( Identity willId )
+        {
+            UnitOfWork uow = uowf.currentUnitOfWork();
+            return uow.get( Will.class, willId );
+        }
+
+        @Override
+        public Will createWill( Person principal, Map<Person, Currency> amounts, Map<Person, Float> percentages, Map<Person, String> specificItems )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
             Identity identity = StringIdentity.identityOf( "will-" + principal.name().get() );
             EntityBuilder<Will> builder = uow.newEntityBuilder( Will.class, identity );
-            Will instance = builder.instance();
-            for( Map.Entry<Person, BigDecimal> entry : amounts.entrySet() )
+            List<WillAmount> amountsList = new ArrayList<>();
+            for( Map.Entry<Person, Currency> entry : amounts.entrySet() )
             {
                 WillAmount amount = createAmount( entry.getKey(), entry.getValue() );
-                instance.amounts().add( amount );
+                amountsList.add( amount );
             }
+            List<WillPercentage> percentagesList = new ArrayList<>();
             for( Map.Entry<Person, Float> entry : percentages.entrySet() )
             {
                 WillPercentage amount = createPercentage( entry.getKey(), entry.getValue() );
-                instance.percentages().add( amount );
+                percentagesList.add( amount );
             }
+            List<WillItem> itemsList = new ArrayList<>();
             for( Map.Entry<Person, String> entry : specificItems.entrySet() )
             {
                 String value = entry.getValue();
-                int pos = value.indexOf( '\n' );
-                String item = value.substring( 0, pos );
-                String description = value.substring( pos + 1 );
-                WillItem amount = createItem( entry.getKey(), item, description );
-                instance.items().add( amount );
+                WillItem amount = createItem( entry.getKey(), value );
+                itemsList.add( amount );
             }
-            builder.newInstance();
-            return identity;
+            Will instance = builder.instance();
+            instance.principal().set(principal);
+            instance.percentages().set( percentagesList );
+            instance.amounts().set( amountsList );
+            instance.items().set( itemsList );
+            return builder.newInstance();
         }
 
-        private WillAmount createAmount( Person beneficiary, BigDecimal amount )
+        private WillAmount createAmount( Person beneficiary, Currency amount )
         {
             ValueBuilder<WillAmount> builder = vbf.newValueBuilder( WillAmount.class );
             builder.prototype().amount().set( amount );
@@ -98,9 +117,26 @@ public interface LegalService
         {
             ValueBuilder<WillItem> builder = vbf.newValueBuilder( WillItem.class );
             builder.prototype().item().set( item );
-            builder.prototype().item().set( description );
+            builder.prototype().description().set( description );
             builder.prototype().beneficiary().set( beneficiary );
             return builder.newInstance();
         }
+
+        public WillItem createItem( Person beneficiary, String value )
+        {
+            int pos = value.indexOf( '\n' );
+            String item = value.substring( 0, pos );
+            String description = value.substring( pos + 1 );
+            return createItem( beneficiary, item, description );
+        }
+
+        public WillPercentage createPercentage( Person beneficiary, float percentage )
+        {
+            ValueBuilder<WillPercentage> builder = vbf.newValueBuilder( WillPercentage.class );
+            builder.prototype().beneficiary().set( beneficiary );
+            builder.prototype().percentage().set( percentage );
+            return builder.newInstance();
+        }
+
     }
 }

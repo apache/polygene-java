@@ -525,7 +525,7 @@ final class ModuleAssemblyImpl
             throws AssemblyException
     {
         addRequiredAssemblers();
-        List<Throwable> exceptions = new ArrayList<>();
+        Set<Throwable> exceptions = new HashSet<>();
         List<TransientModel> transientModels = new ArrayList<>();
         List<ObjectModel> objectModels = new ArrayList<>();
         List<ValueModel> valueModels = new ArrayList<>();

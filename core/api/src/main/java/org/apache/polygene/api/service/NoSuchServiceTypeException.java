@@ -21,38 +21,27 @@
 package org.apache.polygene.api.service;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.ModelDescriptor;
-import org.apache.polygene.api.composite.NoSuchCompositeException;
+import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
 import org.apache.polygene.api.structure.TypeLookup;
 
 /**
  * Thrown when no visible service of the requested type is found.
  */
-public class NoSuchServiceException extends NoSuchCompositeException
+public class NoSuchServiceTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchServiceException( String typeName, String moduleName, TypeLookup typeLookup )
+    public NoSuchServiceTypeException( String typeName, String moduleName, TypeLookup typeLookup )
     {
-        super( "ServiceComposite", typeName, moduleName, formatVisibleTypes( typeLookup ) );
+        super( "ServiceComposite", typeName, moduleName, typeLookup );
     }
 
-    private static String formatVisibleTypes( TypeLookup typeLookup )
+    @Override
+    protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )
     {
         return typeLookup.allServices()
-            .map( NoSuchServiceException::typeOf )
-            .collect( Collectors.joining( "\n", "Visible service types are:\n", "" ) );
-    }
-
-    private static String typeOf( ModelDescriptor descriptor )
-    {
-        if( descriptor instanceof CompositeDescriptor )
-        {
-            return ( (CompositeDescriptor) descriptor ).primaryType().getName();
-        }
-        return descriptor.types()
-                         .map( Class::getName )
-                         .sorted()
-                         .distinct()
-                         .collect( Collectors.joining( ",", "[", "]") );
+                         .filter( descriptor -> descriptor instanceof ServiceDescriptor )
+                         .map( descriptor -> (ServiceDescriptor) descriptor );
     }
 }

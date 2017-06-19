@@ -41,11 +41,11 @@ public interface ValueBuilderFactory
      *
      * @return a new Value instance
      *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     * @throws NoSuchValueTypeException if no value extending the mixinType has been registered
      * @throws ConstructionException if the value could not be instantiated
      */
     <T> T newValue( Class<T> valueType )
-        throws NoSuchValueException, ConstructionException;
+        throws NoSuchValueTypeException, ConstructionException;
 
     /**
      * Create a builder for creating new Values that implements the given Value type.
@@ -56,10 +56,10 @@ public interface ValueBuilderFactory
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface
      *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     * @throws NoSuchValueTypeException if no value extending the mixinType has been registered
      */
     <T> ValueBuilder<T> newValueBuilder( Class<T> valueType )
-        throws NoSuchValueException;
+        throws NoSuchValueTypeException;
 
     /**
      * Create a builder for creating a new Value starting with the given prototype.
@@ -70,7 +70,7 @@ public interface ValueBuilderFactory
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface of the prototype
      *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     * @throws NoSuchValueTypeException if no value extending the mixinType has been registered
      */
     <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype );
 
@@ -87,7 +87,7 @@ public interface ValueBuilderFactory
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface
      *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     * @throws NoSuchValueTypeException if no value extending the mixinType has been registered
      */
     <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                   Function<PropertyDescriptor, Object> propertyFunction,
@@ -104,7 +104,7 @@ public interface ValueBuilderFactory
      *
      * @return a new Value instance
      *
-     * @throws NoSuchValueException if no value extending the mixinType has been registered
+     * @throws NoSuchValueTypeException if no value extending the mixinType has been registered
      * @throws ConstructionException if the value could not be instantiated
      */
     <T> T newValueFromSerializedState( Class<T> valueType, String serializedState );

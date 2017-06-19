@@ -46,7 +46,10 @@ import static org.junit.Assert.assertThat;
 public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
     @BeforeClass
-    public static void assumeJavaVersionIs8() { assumeJavaVersion( 8 ); }
+    public static void assumeJavaVersionIs8()
+    {
+        assumeJavaVersion( 8 );
+    }
 
     public interface DefaultMethods
     {
@@ -236,6 +239,8 @@ public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
         catch( ConstraintViolationException ex )
         {
             assertThat( ex.getMessage(), containsString( "sayHello" ) );
+            assertThat( ex.getMessage(), containsString( "DefaultMethodsConstraints" ) );
+            assertThat( ex.getMessage(), containsString( "NotEmpty" ) );
         }
     }
 

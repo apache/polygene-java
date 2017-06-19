@@ -26,7 +26,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.common.AppliesToFilter;
-import org.apache.polygene.api.composite.NoSuchTransientException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
@@ -46,7 +46,7 @@ public class CompositeFactoryImplTest
     }
 
     @SuppressWarnings( "unchecked" )
-    @Test( expected = NoSuchTransientException.class )
+    @Test( expected = NoSuchTransientTypeException.class )
     public void testNewInstanceNotExtendingComposite()
         throws Exception
     {

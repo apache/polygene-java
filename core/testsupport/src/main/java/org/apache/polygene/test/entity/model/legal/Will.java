@@ -19,18 +19,22 @@
  */
 package org.apache.polygene.test.entity.model.legal;
 
+import java.util.List;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.property.Property;
 import org.apache.polygene.test.entity.model.people.Person;
 
-public interface Will
+public interface Will extends HasIdentity
 {
-
     Association<Person> principal();
 
-    ManyAssociation<WillItem> items();
+    ManyAssociation<Person> witnesses();
 
-    ManyAssociation<WillPercentage> percentages();
+    Property<List<WillItem>> items();
 
-    ManyAssociation<WillAmount> amounts();
+    Property<List<WillPercentage>> percentages();
+
+    Property<List<WillAmount>> amounts();
 }

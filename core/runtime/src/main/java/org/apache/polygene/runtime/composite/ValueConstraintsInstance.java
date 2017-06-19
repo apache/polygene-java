@@ -26,14 +26,10 @@ import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 
-/**
- * JAVADOC
- */
 public final class ValueConstraintsInstance
 {
     private static final Optional OPTIONAL;
@@ -43,7 +39,6 @@ public final class ValueConstraintsInstance
         OPTIONAL = new OptionalDummy();
     }
 
-    @SuppressWarnings( "raw" )
     private final List<ConstraintInstance> constraints;
     private String name;
     private boolean optional;
@@ -60,9 +55,9 @@ public final class ValueConstraintsInstance
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    public List<ConstraintViolation> checkConstraints( Object value )
+    public List<ValueConstraintViolation> checkConstraints( Object value )
     {
-        List<ConstraintViolation> violations = null;
+        List<ValueConstraintViolation> violations = null;
 
         // Check optional first - this avoids NPE's in constraints
         if( optional )
@@ -77,11 +72,11 @@ public final class ValueConstraintsInstance
             if( value == null )
             {
                 violations = new ArrayList<>();
-                violations.add( new ConstraintViolation( name, OPTIONAL, null ) );
+                violations.add( new ValueConstraintViolation( name, OPTIONAL, null ) );
             }
         }
 
-        if( violations == null && value != null )
+        if( violations == null )
         {
             for( ConstraintInstance constraint : constraints )
             {
@@ -102,7 +97,7 @@ public final class ValueConstraintsInstance
                     {
                         violations = new ArrayList<>();
                     }
-                    ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
+                    ValueConstraintViolation violation = new ValueConstraintViolation( name, constraint.annotation(), value );
                     violations.add( violation );
                 }
             }
@@ -116,11 +111,21 @@ public final class ValueConstraintsInstance
 
     public void checkConstraints( Object value, AccessibleObject accessor )
     {
-        List<ConstraintViolation> violations = checkConstraints( value );
+        List<ValueConstraintViolation> violations = checkConstraints( value );
         if( !violations.isEmpty() )
         {
-            Stream<Class<?>> empty = Stream.empty();
-            throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
+            for( ValueConstraintViolation violation : violations )
+            {
+                if( accessor instanceof Member )
+                {
+                    Member member = (Member) accessor;
+                    String methodName =  member.getName();
+                    violation.setMixinType( member.getDeclaringClass() );
+                    violation.setMethodName( methodName );
+                }
+
+            }
+            throw new ConstraintViolationException( violations );
         }
     }
 

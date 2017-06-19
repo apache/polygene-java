@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -210,7 +211,7 @@ public abstract class CompositeAssemblyImpl
                                      List<Class<?>> mixinClasses
                                    )
     {
-        List<Throwable> exceptions = new ArrayList<>();
+        Set<Throwable> exceptions = new HashSet<>();
         Set<Class<?>> thisDependencies = new HashSet<>();
         types.stream()
              .peek( mixinType -> mixinsModel.addMixinType( mixinType ) )
@@ -259,7 +260,7 @@ public abstract class CompositeAssemblyImpl
                                        List<Class<?>> constraintClasses,
                                        List<Class<?>> concernClasses,
                                        List<Class<?>> sideEffectClasses,
-                                       List<Throwable> exceptions,
+                                       Set<Throwable> exceptions,
                                        Set<Class<?>> thisDependencies )
     {
         try
@@ -476,11 +477,7 @@ public abstract class CompositeAssemblyImpl
             optional,
             constraintClasses,
             accessor );
-        ValueConstraintsInstance valueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
-        {
-            valueConstraintsInstance = valueConstraintsModel.newInstance();
-        }
+        ValueConstraintsInstance valueConstraintsInstance = valueConstraintsModel.newInstance();
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
         UseDefaults useDefaultsDeclaration = metaInfo.get( UseDefaults.class );
         Object initialValue = stateDeclarations.initialValueOf( accessor );
@@ -506,17 +503,19 @@ public abstract class CompositeAssemblyImpl
                                            )
     {
         List<ValueConstraintsModel> parameterConstraintModels = Collections.emptyList();
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+
+        Parameter[] parameters = method.getParameters();
         Type[] parameterTypes = method.getGenericParameterTypes();
         boolean constrained = false;
-        for( int i = 0; i < parameterAnnotations.length; i++ )
+        for( int i = 0; i < parameters.length; i++ )
         {
-            Annotation[] parameterAnnotation = parameterAnnotations[ i ];
+            Parameter param = parameters[i];
+
+            Annotation[] parameterAnnotation = param.getAnnotations();
 
             Name nameAnnotation = (Name) of( parameterAnnotation ).filter( isType( Name.class ) )
                                                                   .findFirst().orElse( null );
-            String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
-
+            String name = nameAnnotation == null ? param.getName() : nameAnnotation.value();
             boolean optional = of( parameterAnnotation )
                 .anyMatch( isType( Optional.class ) );
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
@@ -865,29 +864,23 @@ public abstract class CompositeAssemblyImpl
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for Association references
-        ValueConstraintsModel constraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
-            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance valueConstraintsInstance;
-        if( constraintsModel.isConstrained() )
-        {
-            valueConstraintsInstance = constraintsModel.newInstance();
-        }
-        else
-        {
-            valueConstraintsInstance = new ValueConstraintsInstance( Collections.emptyList(), ( (Member) accessor ).getName(), true );
-        }
+        ValueConstraintsModel constraintsModel =
+            constraintsFor( annotations.stream(),
+                            GenericAssociationInfo.associationTypeOf( accessor ),
+                            ( (Member) accessor ).getName(),
+                            optional,
+                            constraintClasses,
+                            accessor );
+        ValueConstraintsInstance valueConstraintsInstance = constraintsModel.newInstance();
 
         // Constraints for the Association itself
-        constraintsModel = constraintsFor( annotations.stream(), Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance associationValueConstraintsInstance;
-        if( constraintsModel.isConstrained() )
-        {
-            associationValueConstraintsInstance = constraintsModel.newInstance();
-        }
-        else
-        {
-            associationValueConstraintsInstance = new ValueConstraintsInstance( Collections.emptyList(), ( (Member) accessor ).getName(), true );
-        }
+        constraintsModel = constraintsFor( annotations.stream(),
+                                           Association.class,
+                                           ( (Member) accessor ).getName(),
+                                           optional,
+                                           constraintClasses,
+                                           accessor );
+        ValueConstraintsInstance associationValueConstraintsInstance = constraintsModel.newInstance();
 
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
         return new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
@@ -901,21 +894,24 @@ public abstract class CompositeAssemblyImpl
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in ManyAssociation
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
-            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance valueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
-        {
-            valueConstraintsInstance = valueConstraintsModel.newInstance();
-        }
+        ValueConstraintsModel valueConstraintsModel =
+            constraintsFor( annotations.stream(),
+                            GenericAssociationInfo.associationTypeOf( accessor ),
+                            ( (Member) accessor ).getName(),
+                            optional,
+                            constraintClasses,
+                            accessor );
+        ValueConstraintsInstance valueConstraintsInstance = valueConstraintsModel.newInstance();
 
         // Constraints for the ManyAssociation itself
-        valueConstraintsModel = constraintsFor( annotations.stream(), ManyAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance manyValueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
-        {
-            manyValueConstraintsInstance = valueConstraintsModel.newInstance();
-        }
+        valueConstraintsModel = constraintsFor( annotations.stream(),
+                                                ManyAssociation.class,
+                                                ( (Member) accessor ).getName(),
+                                                optional,
+                                                constraintClasses,
+                                                accessor );
+        ValueConstraintsInstance manyValueConstraintsInstance = valueConstraintsModel.newInstance();
+
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
         return new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
     }
@@ -928,21 +924,24 @@ public abstract class CompositeAssemblyImpl
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in NamedAssociation
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
-            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance valueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
-        {
-            valueConstraintsInstance = valueConstraintsModel.newInstance();
-        }
+        ValueConstraintsModel valueConstraintsModel =
+            constraintsFor( annotations.stream(),
+                            GenericAssociationInfo.associationTypeOf( accessor ),
+                            ( (Member) accessor ).getName(),
+                            optional,
+                            constraintClasses,
+                            accessor );
+        ValueConstraintsInstance valueConstraintsInstance = valueConstraintsModel.newInstance();
 
         // Constraints for the NamedAssociation itself
-        valueConstraintsModel = constraintsFor( annotations.stream(), NamedAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
-        ValueConstraintsInstance namedValueConstraintsInstance = null;
-        if( valueConstraintsModel.isConstrained() )
-        {
-            namedValueConstraintsInstance = valueConstraintsModel.newInstance();
-        }
+        valueConstraintsModel = constraintsFor( annotations.stream(),
+                                                NamedAssociation.class,
+                                                ( (Member) accessor ).getName(),
+                                                optional,
+                                                constraintClasses,
+                                                accessor );
+        ValueConstraintsInstance namedValueConstraintsInstance = valueConstraintsModel.newInstance();
+
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
         return new NamedAssociationModel( accessor, valueConstraintsInstance, namedValueConstraintsInstance, metaInfo );
     }
