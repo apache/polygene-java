@@ -78,10 +78,12 @@ public class ConstraintViolationException extends IllegalArgumentException
      * Each ConstraintViolationException concerns one Composite instance, but may have many violations on that
      * instance. For the composite instance related message following entries in the ResourceBundle will be searched
      * for a pattern in the following order;
+     * </p>
      * <ol>
      * <li><code>polygene.constraint.<i><strong>CompositeType</strong></i></code></li>
      * <li><code>polygene.constraint.composite</code></li>
      * </ol>
+     * <p>
      * where <strong><code><i>CompositeType</i></code></strong> is the
      * class name of the Composite instance. If such key does not exist, or if the resourceBundle argument is null,
      * then the default patterns will be used;
