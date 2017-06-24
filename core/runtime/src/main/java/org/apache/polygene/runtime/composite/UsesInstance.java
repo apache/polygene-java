@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.polygene.api.common.ConstructionException;
-import org.apache.polygene.runtime.PolygeneRuntimeImpl;
 
 /**
  * JAVADOC
