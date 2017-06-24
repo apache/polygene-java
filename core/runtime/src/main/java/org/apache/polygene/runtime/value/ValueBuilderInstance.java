@@ -86,7 +86,7 @@ public final class ValueBuilderInstance<T>
 
         if( valueModel == null )
         {
-            throw new NoSuchValueTypeException( valueType.getName(), currentModule.name(), currentModule.typeLookup() );
+            throw new NoSuchValueTypeException( valueType.getName(), currentModule.descriptor() );
         }
         return new ValueBuilderWithPrototype<>( valueModel, currentModule, prototype() ).newInstance();
     }

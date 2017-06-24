@@ -153,7 +153,7 @@ public class CassandraEntityStoreMixin
         EntityDescriptor entityDescriptor = module.entityDescriptor( type );
         if( entityDescriptor == null )
         {
-            throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
+            throw new NoSuchEntityTypeException( type, module );
         }
         Map<String, String> storedProperties = row.getMap( PROPERTIES_COLUMN, String.class, String.class );
         Map<String, String> storedAssociations = row.getMap( ASSOCIATIONS_COLUMN, String.class, String.class );

@@ -118,8 +118,8 @@ public class ModuleInstance
 
     @SuppressWarnings( "LeakingThisInConstructor" )
     ModuleInstance( ModuleModel moduleModel, LayerDescriptor layer, TypeLookup typeLookup,
-                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel
-    )
+                    ServicesModel servicesModel, ImportedServicesModel importedServicesModel
+                  )
     {
         // Constructor parameters
         model = moduleModel;
@@ -208,7 +208,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchTransientTypeException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchTransientTypeException( mixinType.getName(), descriptor() );
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
@@ -250,7 +250,7 @@ public class ModuleInstance
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueTypeException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
@@ -263,7 +263,7 @@ public class ModuleInstance
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
                                                          Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
                                                          Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                       )
     {
         Objects.requireNonNull( propertyFunction, "propertyFunction" );
         Objects.requireNonNull( associationFunction, "associationFunction" );
@@ -274,7 +274,7 @@ public class ModuleInstance
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueTypeException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         StateResolver stateResolver = new FunctionStateResolver(
@@ -332,7 +332,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchValueTypeException( valueType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( valueType.getName(), descriptor() );
         }
 
         return new ValueBuilderWithPrototype<>( model, this, prototype );
@@ -347,7 +347,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchValueTypeException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         try
@@ -380,7 +380,7 @@ public class ModuleInstance
         ModelDescriptor serviceModel = typeLookup.lookupServiceModel( serviceType );
         if( serviceModel == null )
         {
-            throw new NoSuchServiceTypeException( serviceType.getTypeName(), name(), typeLookup );
+            throw new NoSuchServiceTypeException( serviceType.getTypeName(), descriptor() );
         }
         return findServiceReferenceInstance( serviceModel );
     }

@@ -17,29 +17,42 @@
  *
  *
  */
-package org.apache.polygene.api.value;
+package org.apache.polygene.test.entity.model.monetary;
 
-import java.util.stream.Stream;
-import org.apache.polygene.api.composite.CompositeDescriptor;
-import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
-import org.apache.polygene.api.structure.ModuleDescriptor;
-import org.apache.polygene.api.structure.TypeLookup;
+import org.apache.polygene.api.injection.scope.This;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
 
-import static java.util.stream.Collectors.joining;
-
-/**
- * Thrown when no visible value of the requested type is found.
- */
-public class NoSuchValueTypeException extends NoSuchCompositeTypeException
+@Mixins( CheckBookSlip.CheckBookSlipMixin.class )
+public interface CheckBookSlip
 {
-    public NoSuchValueTypeException( String valueType, ModuleDescriptor module )
+    String name();
+
+    Currency amount();
+
+    interface State
     {
-        super( "ValueComposite", valueType, module );
+        Property<String> name();
+
+        Property<Currency> amount();
     }
 
-    @Override
-    protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )
+    class CheckBookSlipMixin
+        implements CheckBookSlip
     {
-        return typeLookup.allValues();
+        @This
+        private State state;
+
+        @Override
+        public String name()
+        {
+            return state.name().get();
+        }
+
+        @Override
+        public Currency amount()
+        {
+            return state.amount().get();
+        }
     }
 }

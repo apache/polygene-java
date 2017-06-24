@@ -21,6 +21,8 @@ package org.apache.polygene.api.composite;
 
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.InvalidApplicationException;
+import org.apache.polygene.api.structure.LayerDescriptor;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
@@ -36,14 +38,14 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
     private final String metaType;
     private final String candidateTypes;
 
-    protected NoSuchCompositeTypeException( String metaType, String compositeType, String moduleName, TypeLookup typeLookup )
+    protected NoSuchCompositeTypeException( String metaType, String compositeType, ModuleDescriptor module )
     {
-        super( "\n\tCould not find any visible " + metaType + " of type [" + compositeType + "] in module [" + moduleName + "]." );
+        super( "\n\tCould not find any visible " + metaType + " of type [" + compositeType + "] in module [" + module.name() + "]." );
         this.metaType = metaType;
         this.compositeType = compositeType;
-        this.moduleName = moduleName;
-        visibleTypes = formatVisibleTypes( typeLookup );
-        candidateTypes = findCandidateTypes( typeLookup );
+        this.moduleName = module.name();
+        visibleTypes = formatVisibleTypes( module.typeLookup() );
+        candidateTypes = findCandidateTypes( module );
     }
 
     public String compositeType()
@@ -86,18 +88,21 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
             .collect( joining( "\n", "\tVisible " + metaType + " types are:\n", "" ) );
     }
 
-    private String findCandidateTypes( TypeLookup typeLookup )
+    private String findCandidateTypes( ModuleDescriptor module )
     {
-        return "";
-//        return descriptors( typeLookup )
-//            .filter( type -> compositeType.equals( type.primaryType().getName() ) )
-//            .map( descriptor ->
-//                  {
-//                      Class<?> primarytype = descriptor.primaryType();
-//                      String typeName = primarytype.getName();
-//                      return "\t\t[ " + typeName + "] in [" + descriptor.module().name() + "] with visibility " + descriptor.visibility();
-//                  } )
-//            .collect( joining( "\n", "\tInvisible " + metaType + " types are:\n", "" ) );
+        return Stream.concat( Stream.of( module.layer() ), module.layer().usedLayers().layers() )
+                     .flatMap( LayerDescriptor::modules )
+                     .map( ModuleDescriptor::typeLookup )
+                     .flatMap( this::descriptors )
+                     .filter( type -> compositeType.equals( type.primaryType().getName() ) )
+                     .map( descriptor ->
+                           {
+                               Class<?> primarytype = descriptor.primaryType();
+                               String typeName = primarytype.getName();
+                               return "\t\t[ " + typeName + "] in [" + descriptor.module().name() + "] with visibility " + descriptor.visibility();
+                           } )
+                     .distinct()
+                     .collect( joining( "\n", "\tInvisible " + metaType + " types are:\n", "" ) );
     }
 
     protected abstract Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup );

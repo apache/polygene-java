@@ -21,6 +21,7 @@
 package org.apache.polygene.api.composite;
 
 import java.util.stream.Stream;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
@@ -30,9 +31,9 @@ import static java.util.stream.Collectors.joining;
  */
 public class NoSuchTransientTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchTransientTypeException( String typeName, String moduleName, TypeLookup typeLookup )
+    public NoSuchTransientTypeException( String typeName, ModuleDescriptor module )
     {
-        super( "TransientComposite", typeName, moduleName, typeLookup );
+        super( "TransientComposite", typeName, module );
     }
 
     protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )

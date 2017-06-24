@@ -22,6 +22,7 @@ package org.apache.polygene.api.unitofwork;
 import java.util.stream.Stream;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
@@ -30,12 +31,11 @@ import static java.util.stream.Collectors.joining;
  * Polygene exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
-public class NoSuchEntityTypeException
-    extends NoSuchCompositeTypeException
+public class NoSuchEntityTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchEntityTypeException( String typeName, String moduleName, TypeLookup typeLookup )
+    public NoSuchEntityTypeException( String typeName, ModuleDescriptor module )
     {
-        super( "EntityComposite", typeName, moduleName, typeLookup  );
+        super( "EntityComposite", typeName, module );
     }
 
     @Override

@@ -203,7 +203,7 @@ public final class ValueModel extends CompositeModel
         List<EntityDescriptor> descriptors = lookup.lookupEntityModels( rawClass );
         if( descriptors.size() == 0 )
         {
-            throw new NoSuchEntityTypeException( rawClass.getName(), module.name(), lookup );
+            throw new NoSuchEntityTypeException( rawClass.getName(), module );
         }
     }
 }

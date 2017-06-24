@@ -22,6 +22,7 @@ package org.apache.polygene.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Properties;
+import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;

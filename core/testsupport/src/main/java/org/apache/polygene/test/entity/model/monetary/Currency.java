@@ -21,6 +21,7 @@ package org.apache.polygene.test.entity.model.monetary;
 
 import java.math.BigDecimal;
 import org.apache.polygene.api.injection.scope.Structure;
+import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
@@ -30,7 +31,15 @@ public interface Currency
     Property<BigDecimal> amount();
     Property<String> name();
 
-    class Builder
+    @Mixins( Currency.BuilderImpl.class)
+    interface Builder
+    {
+        Currency create( int amount, String currencyName );
+        Currency create( BigDecimal amount, String currencyName );
+    }
+
+    class BuilderImpl
+        implements Builder
     {
         @Structure
         private ValueBuilderFactory vbf;

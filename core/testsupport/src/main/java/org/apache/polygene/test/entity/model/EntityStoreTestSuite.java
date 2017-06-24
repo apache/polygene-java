@@ -23,28 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.polygene.api.association.NamedAssociation;
-import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.ApplicationDescriptor;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.NoSuchEntityException;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.api.value.ValueBuilderFactory;
-import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.LayerAssembly;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.spi.serialization.JsonSerialization;
-import org.apache.polygene.test.AbstractPolygeneBaseTest;
 import org.apache.polygene.test.entity.model.legal.LegalService;
 import org.apache.polygene.test.entity.model.legal.Will;
 import org.apache.polygene.test.entity.model.legal.WillAmount;
@@ -65,27 +49,16 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
+public abstract class EntityStoreTestSuite extends AbstractPolygeneMultiLayeredTestWithModel
 {
     private static final String FRIEND = "Friend";
     private static final String COLLEAGUE = "Colleague";
-
-    protected ModuleAssembly configModule;
-
-    @Structure
-    private ObjectFactory obf;
-
-    @Structure
-    private ValueBuilderFactory vbf;
 
     @Service
     private LegalService legalService;
 
     @Service
     private PeopleRepository peopleRepository;
-
-    @Structure
-    private UnitOfWorkFactory uowf;
 
     private Identity switzerlandId;
     private Identity franceId;
@@ -112,7 +85,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Before
     public void setupTestData()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "TestData Generation" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "TestData Generation" ) ) )
         {
             testData();
             uow.complete();
@@ -122,7 +95,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void validateAllCountriesPresent()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllCountriesPresent" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllCountriesPresent" ) ) )
         {
             assertThat( peopleRepository.findCountryByCountryCode( "my" ).name().get(), equalTo( "Malaysia" ) );
             assertThat( peopleRepository.findCountryByCountryCode( "us" ).name().get(), equalTo( "United States" ) );
@@ -137,7 +110,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void validateAllCitiesPresent()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllCitiesPresent" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllCitiesPresent" ) ) )
         {
             assertThat( peopleRepository.findCity( zurichId ).name().get(), equalTo( "Zurich" ) );
             assertThat( peopleRepository.findCity( malmoId ).name().get(), equalTo( "Malmo" ) );
@@ -151,13 +124,13 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void validateAllAddressesPresent()
     {
-        Currency.Builder currencyBuilder = obf.newObject( Currency.Builder.class );
+        Currency.Builder currencyBuilder = transientBuilderFactory.newTransient( Currency.Builder.class );
         Currency eur1000 = currencyBuilder.create( 1000, "EUR" );
         Currency eur1500 = currencyBuilder.create( 1500, "EUR" );
         Currency chf2000 = currencyBuilder.create( 2000, "CHF" );
         Currency myr3000 = currencyBuilder.create( 3000, "MYR" );
         Currency sek9000 = currencyBuilder.create( 9000, "SEK" );
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllAddressesPresent" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllAddressesPresent" ) ) )
         {
             Address canary = peopleRepository.findAddress( canaryId );
             assertThat( canary.street().get(), equalTo( "10, CH5A, Jalan Cheras Hartamas" ) );
@@ -206,7 +179,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void validateAllPersonsPresent()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllPersonsPresent" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - validateAllPersonsPresent" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             assertThat( niclas.name().get(), equalTo( "Niclas" ) );
@@ -236,14 +209,14 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void givenTestDataWhenAddingNewNamedAssociationExpectAssociationAdded()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingNewNamedAssociationExpectAssociationAdded" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingNewNamedAssociationExpectAssociationAdded" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             PhoneNumber newNumber = peopleRepository.createPhoneNumber( "+86-185-21320803" );
             niclas.phoneNumbers().put( "Mobile", newNumber );
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingNewNamedAssociationExpectAssociationAdded" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingNewNamedAssociationExpectAssociationAdded" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             NamedAssociation<PhoneNumber> numbers = niclas.phoneNumbers();
@@ -262,7 +235,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void whenIteratingNamedAssociationExpectIterationInOrder()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             PhoneNumber newNumber1 = peopleRepository.createPhoneNumber( "+86-185-21320803" );
@@ -273,7 +246,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             niclas.phoneNumbers().put( "German", newNumber3 );
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenIteratingNamedAssociationExpectIterationToSucceed" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             assertThat( niclas.phoneNumbers(), containsInAnyOrder( "Home", "Chinese", "Swedish", "German" ) );
@@ -283,14 +256,14 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void givenTestDataWhenAddingSameNamedAssociationExpectAssociationModified()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingSameNamedAssociationExpectAssociationModified" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingSameNamedAssociationExpectAssociationModified" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             PhoneNumber newNumber = peopleRepository.createPhoneNumber( "+86-185-21320803" );
             niclas.phoneNumbers().put( "Home", newNumber );
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingSameNamedAssociationExpectAssociationModified" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenTestDataWhenAddingSameNamedAssociationExpectAssociationModified" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             NamedAssociation<PhoneNumber> numbers = niclas.phoneNumbers();
@@ -305,7 +278,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void whenNullingOptionalAssociationExpectSuccess()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenNullingOptionalAssociationExpectSuccess" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenNullingOptionalAssociationExpectSuccess" ) ) )
         {
             Person toni = peopleRepository.findPersonByName( "Toni" );
             toni.spouse().set( null );
@@ -316,7 +289,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test( expected = ConstraintViolationException.class )
     public void whenNullingNonOptionalAssociationExpectFailure()
     {
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenNullingOptionalAssociationExpectSuccess" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenNullingOptionalAssociationExpectSuccess" ) ) )
         {
             Person toni = peopleRepository.findPersonByName( "Toni" );
             toni.nationality().set( null );
@@ -335,7 +308,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         Identity malaysiaId;
         Identity canaryId;
         Identity despairStId;
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             PhoneNumber newNumber1 = peopleRepository.createPhoneNumber( "+86-185-21320803" );
@@ -351,10 +324,10 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
 
             City zurich = peopleRepository.findCity( zurichId );
             Country switzerland = peopleRepository.findCountryByCountryCode( "ch" );
-            niclas.movedToNewAddress( "DespairStreet 12A", "43HQ21", zurich, switzerland, obf.newObject( Rent.Builder.class ).create( 1000, "EUR" ) );
+            niclas.movedToNewAddress( "DespairStreet 12A", "43HQ21", zurich, switzerland, objectFactory.newObject( Rent.Builder.class ).create( 1000, "EUR" ) );
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             assertThat( niclas.nationality().get().name().get(), equalTo( "Sweden" ) );
@@ -365,13 +338,13 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             malaysiaId = niclas.oldAddresses().get( 0 ).country().get().identity().get();
             switzerlandId = niclas.address().get().country().get().identity().get();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
             uow.remove( niclas );
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             Person niclas = peopleRepository.findPersonByName( "Niclas" );
         }
@@ -379,7 +352,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findPhoneNumberById( homePhoneId );
         }
@@ -387,7 +360,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findPhoneNumberById( chinesePhoneId );
         }
@@ -395,7 +368,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findPhoneNumberById( swedishPhoneId );
         }
@@ -403,7 +376,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findPhoneNumberById( germanPhoneId );
         }
@@ -411,7 +384,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findAddress( canaryId );
         }
@@ -419,7 +392,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findAddress( despairStId );
         }
@@ -427,7 +400,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         {
             // expected
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - whenRemovingEntityExpectAggregatedEntitiesToBeRemoved" ) ) )
         {
             peopleRepository.findCountryByIdentity( switzerlandId );
             peopleRepository.findCountryByIdentity( malaysiaId );
@@ -448,9 +421,9 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
     @Test
     public void givenEntityInheritanceWhenStoreRetrieveExpectSuccess()
     {
-        Currency.Builder currencyBuilder = obf.newObject( Currency.Builder.class );
+        Currency.Builder currencyBuilder = objectFactory.newObject( Currency.Builder.class );
         Identity willId;
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
         {
             Person peter = peopleRepository.findPersonByName( "Peter" );
             Person kalle = peopleRepository.findPersonByName( "Kalle" );
@@ -469,7 +442,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
             willId = will.identity().get();
             uow.complete();
         }
-        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
+        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
         {
             Person kalle = peopleRepository.findPersonByName( "Kalle" );
             Person oscar = peopleRepository.findPersonByName( "Oscar" );
@@ -525,7 +498,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         kualaLumpurId = kualalumpur.identity().get();
         City zurich = peopleRepository.createCity( "Zurich" );
         zurichId = zurich.identity().get();
-        Rent.Builder rentBuilder = obf.newObject( Rent.Builder.class );
+        Rent.Builder rentBuilder = objectFactory.newObject( Rent.Builder.class );
         Rent rentCanary = rentBuilder.create( 3000, "MYR" );
         Rent rentVarnhem = rentBuilder.create( 9000, "SEK" );
         Rent rentUnknown1 = rentBuilder.create( 1000, "EUR" );
@@ -566,78 +539,5 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneBaseTest
         niclasRels.put( FRIEND, paul );
         niclasRels.put( COLLEAGUE, toni );
         niclasRels.put( COLLEAGUE, andreas );
-    }
-
-    @Override
-    protected void defineApplication( ApplicationAssembly applicationAssembly )
-        throws AssemblyException
-    {
-        LayerAssembly accessLayer = applicationAssembly.layer( "Access Layer" );
-        LayerAssembly domainLayer = applicationAssembly.layer( "Domain Layer" );
-        LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure Layer" );
-        LayerAssembly configLayer = applicationAssembly.layer( "Configuration Layer" );
-        accessLayer.uses( domainLayer.uses( infrastructureLayer.uses( configLayer ) ) );
-        defineConfigModule( configLayer.module( "Configuration Module" ) );
-        defineSerializationModule( configLayer.module( "Serialization Module" ) );
-        defineStorageModule( infrastructureLayer.module( "Storage Module" ) );
-        defineMonetaryModule( domainLayer.module( "Monetary Module" ) );
-        definePeopleModule( domainLayer.module( "People Module" ) );
-        defineLegalModule( domainLayer.module( "Legal Module" ) );
-        defineTestModule( accessLayer.module( "TestCase Module" ) );
-    }
-
-    @Override
-    protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
-    {
-        Application application = super.newApplicationInstance( applicationModel );
-        Module module = application.findModule( "Access Layer", "TestCase Module" );
-        module.injectTo( this );
-        return application;
-    }
-
-    protected void defineTestModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.objects( this.getClass() );
-    }
-
-    protected void definePeopleModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.entities( Address.class, Country.class, City.class, PhoneNumber.class );
-        module.entities( Person.class ).visibleIn( Visibility.layer );
-        module.services( PeopleRepository.class ).visibleIn( Visibility.application );
-        module.values( Rent.class );
-        module.objects( Rent.Builder.class ).visibleIn( Visibility.application );
-    }
-
-    protected void defineLegalModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.services( LegalService.class ).visibleIn( Visibility.application );
-        module.entities( Will.class );
-        module.values( WillAmount.class, WillItem.class, WillPercentage.class );
-    }
-
-    protected void defineMonetaryModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.values( Currency.class ).visibleIn( Visibility.layer );
-        module.objects( Currency.Builder.class ).visibleIn( Visibility.application );
-    }
-
-    protected void defineSerializationModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.services( JsonSerialization.class ).visibleIn( Visibility.application );
-    }
-
-    protected abstract void defineStorageModule( ModuleAssembly module );
-
-    protected void defineConfigModule( ModuleAssembly module )
-    {
-        module.defaultServices();
-        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
-        configModule = module;
     }
 }

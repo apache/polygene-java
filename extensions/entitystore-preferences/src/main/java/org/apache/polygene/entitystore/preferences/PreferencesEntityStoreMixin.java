@@ -213,7 +213,7 @@ public class PreferencesEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
+                throw new NoSuchEntityTypeException( type, module );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.ModelDescriptor;
 import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 /**
@@ -32,9 +33,9 @@ import org.apache.polygene.api.structure.TypeLookup;
  */
 public class NoSuchServiceTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchServiceTypeException( String typeName, String moduleName, TypeLookup typeLookup )
+    public NoSuchServiceTypeException( String typeName, ModuleDescriptor module )
     {
-        super( "ServiceComposite", typeName, moduleName, typeLookup );
+        super( "ServiceComposite", typeName, module );
     }
 
     @Override
