@@ -25,8 +25,8 @@ import java.util.List;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
@@ -114,16 +114,7 @@ public final class ValueModel extends CompositeModel
                 }
                 catch( ConstraintViolationException e )
                 {
-                    try
-                    {
-                        PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
-                        e.setIdentity( identityProperty.get() );
-                    }
-                    catch( IllegalArgumentException e1 )
-                    {
-                        // ignore. Is not a HasIdentity instance
-                    }
-                    throw e;
+                    violations.addAll( e.constraintViolations() );
                 }
             }
                                                                );
@@ -137,17 +128,7 @@ public final class ValueModel extends CompositeModel
                 }
                 catch( ConstraintViolationException e )
                 {
-                    try
-                    {
-                        PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
-                        e.setIdentity( identityProperty.get() );
-                    }
-                    catch( IllegalArgumentException e1 )
-                    {
-                        // ignore. is not a HasIdentity value
-                    }
-                    throw e;
-
+                    violations.addAll( e.constraintViolations() );
                 }
             }
                                                                    );
@@ -161,26 +142,31 @@ public final class ValueModel extends CompositeModel
                 }
                 catch( ConstraintViolationException e )
                 {
-                    PropertyInstance<Identity> propertyInstance = state.propertyFor( HasIdentity.IDENTITY_METHOD );
-                    throw e;
-
+                    violations.addAll( e.constraintViolations() );
                 }
             }
                                                                     );
-        if( ! violations.isEmpty() )
+        if( !violations.isEmpty() )
         {
             ConstraintViolationException exception = new ConstraintViolationException( violations );
-            try
-            {
-                PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
-                exception.setIdentity(identityProperty.get());
-            }
-            catch( IllegalArgumentException e )
-            {
-                // ignore, there is no Identity.
-            }
+            exception.setCompositeDescriptor( this );
+            exception.setIdentity( extractIdentity( state, exception ) );
             throw exception;
         }
+    }
+
+    private Identity extractIdentity( ValueStateInstance state, ConstraintViolationException e )
+    {
+        try
+        {
+            PropertyInstance<Identity> identityProperty = state.propertyFor( HasIdentity.IDENTITY_METHOD );
+            return identityProperty.get();
+        }
+        catch( IllegalArgumentException e1 )
+        {
+            // ignore. is not a HasIdentity value
+        }
+        return null;
     }
 
     public ValueInstance newValueInstance( ValueStateInstance state )

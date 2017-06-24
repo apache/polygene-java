@@ -47,15 +47,7 @@ public final class UsesInstance
 
     public UsesInstance use( Object... objects )
     {
-        // Validate that there are no Composites in the list, since they are possibly not fully initialized yet.
-        // TODO: The reason for that is that Composites may not be fully initialized when reaching here, and the hashCode() call later will cause an NPE.
-        for( Object obj : objects )
-        {
-            if( PolygeneRuntimeImpl.isCompositeType( obj ) )
-            {
-                throw new ConstructionException( "Composites are not allowed as @Uses arguments: " + obj.toString() );
-            }
-        }
+        // There is some case where we get here with only partially initialized composite as "objects". That fails with NPE in useObjects.addAll() below. Should be figured out when this happens and prevent it.
         HashSet<Object> useObjects = new HashSet<>();
         if( !uses.isEmpty() )
         {

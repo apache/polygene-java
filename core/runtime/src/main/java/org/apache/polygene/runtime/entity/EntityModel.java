@@ -134,6 +134,12 @@ public final class EntityModel extends CompositeModel
         {
             throw new ConstructionException( "Could not create new entity in store", e );
         }
+        catch( ConstraintViolationException e )
+        {
+            e.setCompositeDescriptor( this );
+            e.setIdentity( reference.identity() );
+            throw e;
+        }
     }
 
     public void initState( ModuleDescriptor module, EntityState entityState )
