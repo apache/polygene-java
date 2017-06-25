@@ -449,7 +449,7 @@ public class JSONMapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
+                throw new NoSuchEntityTypeException( type, module );
             }
 
             return new JSONEntityState( entityDescriptor.module(), serialization, jsonFactories,

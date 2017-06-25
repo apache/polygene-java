@@ -421,7 +421,7 @@ public abstract class EntityStoreTestSuite extends AbstractPolygeneMultiLayeredT
     @Test
     public void givenEntityInheritanceWhenStoreRetrieveExpectSuccess()
     {
-        Currency.Builder currencyBuilder = objectFactory.newObject( Currency.Builder.class );
+        Currency.Builder currencyBuilder = transientBuilderFactory.newTransient( Currency.Builder.class );
         Identity willId;
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "Test - givenEntityInheritanceWhenStoreRetrieveExpectSuccess" ) ) )
         {

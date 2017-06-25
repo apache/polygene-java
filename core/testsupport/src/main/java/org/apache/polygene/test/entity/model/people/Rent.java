@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.test.entity.model.people;
 
+import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.property.Property;
@@ -37,9 +38,9 @@ public interface Rent
         @Structure
         private ValueBuilderFactory vbf;
 
-        public Builder( @Structure ObjectFactory objectFactory)
+        public Builder( @Structure TransientBuilderFactory tbf )
         {
-            currencyBuilder = objectFactory.newObject( Currency.Builder.class );
+            currencyBuilder = tbf.newTransient( Currency.Builder.class );
         }
 
         public Rent create( int amount, String currency )
