@@ -26,8 +26,7 @@ import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreInfo;
 import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreService;
 
-public class PreferencesEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<PreferencesEntityStoreAssembler>
+public class PreferencesEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig<PreferencesEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
@@ -38,9 +37,9 @@ public class PreferencesEntityStoreAssembler
         Preferences node = root.node( applicationName );
         PreferencesEntityStoreInfo info = new PreferencesEntityStoreInfo( node );
         ServiceDeclaration service = module.services( PreferencesEntityStoreService.class )
-            .setMetaInfo( info )
-            .visibleIn( visibility() )
-            .instantiateOnStartup();
+                                           .setMetaInfo( info )
+                                           .visibleIn( visibility() )
+                                           .instantiateOnStartup();
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );

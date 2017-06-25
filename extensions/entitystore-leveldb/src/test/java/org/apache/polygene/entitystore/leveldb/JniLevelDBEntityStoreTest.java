@@ -20,40 +20,33 @@
 package org.apache.polygene.entitystore.leveldb;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.leveldb.assembly.LevelDBEntityStoreAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
-import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-public class JniLevelDBEntityStoreTest
-    extends AbstractEntityStoreTest
+public class JniLevelDBEntityStoreTest extends EntityStoreTestSuite
 {
     @Rule
     public final TemporaryFolder tmpDir = new TemporaryFolder();
 
     @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    protected void defineStorageModule( ModuleAssembly module )
     {
-        super.assemble( module );
-
-        ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
-
+        module.defaultServices();
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
 
         new LevelDBEntityStoreAssembler()
-            .withConfig( config, Visibility.layer )
+            .visibleIn( Visibility.application )
+            .withConfig( configModule, Visibility.application )
             .identifiedBy( "jni-leveldb-entitystore" )
             .assemble( module );
 
-        config.forMixin( LevelDBEntityStoreConfiguration.class ).declareDefaults().flavour().set( "jni" );
+        configModule.forMixin( LevelDBEntityStoreConfiguration.class ).declareDefaults().flavour().set( "jni" );
     }
 }

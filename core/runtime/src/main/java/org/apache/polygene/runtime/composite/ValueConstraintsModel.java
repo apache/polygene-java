@@ -20,13 +20,11 @@
 
 package org.apache.polygene.runtime.composite;
 
+import java.util.Collections;
 import java.util.List;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 
-/**
- * JAVADOC
- */
 public final class ValueConstraintsModel
     implements VisitableHierarchy<Object, Object>
 {
@@ -43,17 +41,13 @@ public final class ValueConstraintsModel
 
     public ValueConstraintsInstance newInstance()
     {
-        return new ValueConstraintsInstance( constraintModels, name, optional );
+        List<AbstractConstraintModel> models = isConstrained() ? this.constraintModels : Collections.emptyList();
+        return new ValueConstraintsInstance( models, name, optional );
     }
 
     public boolean isConstrained()
     {
-        if( !constraintModels.isEmpty() )
-        {
-            return true;
-        }
-
-        return !optional;
+        return !constraintModels.isEmpty() || !optional;
     }
 
     @Override

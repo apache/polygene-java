@@ -24,8 +24,15 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.entity.EntityReference;
 
 /**
- * Association to named Entities.
- * The Iterable&lt;String&gt; returns the names in the association set.
+ * Named Association to Entities.
+ * <p>
+ *     This works similar to a Map with a String key.
+ * </p>
+ * <p>
+ * The Iterable&lt;String&gt; returns the names in the association set. The order during iteration is random by
+ * definition, even if other behaviors can possibly be observed. The depends on the underlying entity store
+ * implementation.
+ * </p>
  * @param <T> Parameterized associatee type
  */
 public interface NamedAssociation<T>
@@ -47,7 +54,7 @@ public interface NamedAssociation<T>
      * Adds a named association.
      * @param name The name of the association.
      * @param entity The entity for this named association.
-     * @return true if putted, false otherwise
+     * @return true if value has been updated to a new value.
      */
     boolean put( String name, T entity );
 

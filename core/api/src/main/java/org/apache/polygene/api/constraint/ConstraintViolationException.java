@@ -20,22 +20,21 @@
 package org.apache.polygene.api.constraint;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.polygene.api.composite.Composite;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.identity.Identity;
+import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.util.Classes;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -48,65 +47,51 @@ import static java.util.stream.Collectors.joining;
  */
 public class ConstraintViolationException extends IllegalArgumentException
 {
-    private final Collection<ConstraintViolation> constraintViolations;
-    private String methodName;
-    private String mixinTypeName;
-    private String instanceToString;
-    private List<? extends Type> instanceTypes;
+    private static final boolean longNames = Boolean.getBoolean( "polygene.constraints.longNames" );
+    private static final String DEFAULT_PATTERN = "\n\tConstraint Violation(s) in {0} of types [{3}].\n";
+    private static final String ENTITY_DEFAULT_PATTERN = "\n\tConstraint Violation(s) in entity {0} with id=[{2}].\n";
+    private static final String SERVICE_DEFAULT_PATTERN = "\n\tConstraint Violation(s) in service {0} with id=[{2}].\n";
+    private static final String MIXIN_DEFAULT_PATTERN = "\t\t@{2}({3}) on {0}.{1}(). Parameter [{4}] does not allow value [{5}].\n";
 
-    public ConstraintViolationException( Composite instance, Member method,
-                                         Collection<ConstraintViolation> constraintViolations
-    )
+    private String instanceToString;                              // arg {0}
+    private Class<?> primaryType;                                 // arg {1}
+    private List<? extends Type> instanceTypes;                   // arg {2}
+    private Collection<ValueConstraintViolation> constraintViolations; // arg {4} and {5}
+    private String identity;                                      // arg {6}
+    private boolean isService;
+    private boolean isEntity;
+
+    public ConstraintViolationException( Collection<ValueConstraintViolation> violations )
     {
-        this( instance.toString(), Classes.interfacesOf( instance.getClass() ), method, constraintViolations );
+        this.constraintViolations = new ArrayList<>();
+        this.constraintViolations.addAll( violations );
     }
 
-    public ConstraintViolationException( String instanceToString,
-                                         Stream<? extends Type> instanceTypes,
-                                         Member method,
-                                         Collection<ConstraintViolation> violations
-    )
-    {
-        this.instanceToString = instanceToString;
-        this.instanceTypes = instanceTypes.collect( Collectors.toList() );
-        mixinTypeName = method.getDeclaringClass().getName();
-        methodName = method.getName();
-        this.constraintViolations = violations;
-    }
-
-    public ConstraintViolationException( Identity identity,
-                                         List<? extends Type> instanceTypes,
-                                         String mixinTypeName,
-                                         String methodName,
-                                         Collection<ConstraintViolation> violations
-    )
-    {
-        this.instanceToString = identity.toString();
-        this.instanceTypes = instanceTypes;
-        this.mixinTypeName = mixinTypeName;
-        this.methodName = methodName;
-        this.constraintViolations = violations;
-    }
-
-    public Collection<ConstraintViolation> constraintViolations()
+    public Collection<ValueConstraintViolation> constraintViolations()
     {
         return constraintViolations;
     }
 
     /**
-     * Creates localized messages of all the constraint violations that has occured.
+     * Creates localized message of all the constraint violations that has occured.
      * <p>
-     * The key "<code>polygene.constraint.<i><strong>CompositeType</strong></i>.<i><strong>methodName</strong></i></code>"
-     * will be used to lookup the text formatting
-     * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the
-     * class name of the Composite where the constraint was violated. If such key does not exist, then the
-     * key &nbsp;"<code>polygene.constraint</code>" will be used, and if that one also doesn't exist, or
-     * the resourceBundle argument is null, then the default patterns will be used;
+     * Each ConstraintViolationException concerns one Composite instance, but may have many violations on that
+     * instance. For the composite instance related message following entries in the ResourceBundle will be searched
+     * for a pattern in the following order;
      * </p>
-     * <table summary="Localization of constraint vioations.">
+     * <ol>
+     * <li><code>polygene.constraint.<i><strong>CompositeType</strong></i></code></li>
+     * <li><code>polygene.constraint.composite</code></li>
+     * </ol>
+     * <p>
+     * where <strong><code><i>CompositeType</i></code></strong> is the
+     * class name of the Composite instance. If such key does not exist, or if the resourceBundle argument is null,
+     * then the default patterns will be used;
+     * </p>
+     * <table summary="Default localization of constraint violations for composite.">
      * <tr><th>Type of Composite</th><th>Pattern used</th></tr>
      * <tr><td>Composite</td>
-     * <td><code>Constraint Violation in {2}.{3} with constraint {4}, in composite \n{0} of type {1}</code></td>
+     * <td><code>\tConstraint Violation(s) in {0} with types {3}\n</code></td>
      * </tr>
      * <tr><td>EntityComposite</td>
      * <td><code>Constraint Violation in {2}.{3} with constraint {4}, in entity {1}[id={0}]</code></td>
@@ -115,144 +100,213 @@ public class ConstraintViolationException extends IllegalArgumentException
      * <td><code>Constraint Violation in {2}.{3} with constraint {4}, in service {0}</code></td>
      * </tr>
      * </table>
+     * The ResourceBundle arguments are defined as;
+     * <p>
+     * <p>
      * Then format each ConstraintViolation according to such pattern, where the following argument are passed;
      * <table summary="List of arguments available."><tr><th>Arg</th><th>Value</th></tr>
      * <tr>
      * <td>{0}</td>
-     * <td>Composite instance toString()</td>
+     * <td>Primary Type of Composite</td>
      * </tr>
      * <tr>
      * <td>{1}</td>
-     * <td>CompositeType class name</td>
+     * <td>Composite instance toString()</td>
      * </tr>
      * <tr>
      * <td>{2}</td>
-     * <td>MixinType class name</td>
+     * <td>Identity if composite implements HasIdentity</td>
      * </tr>
      * <tr>
      * <td>{3}</td>
-     * <td>MixinType method name</td>
-     * </tr>
-     * <tr>
-     * <td>{4}</td>
-     * <td>Annotation toString()</td>
-     * </tr>
-     * <tr>
-     * <td>{5}</td>
-     * <td>toString() of value passed as the argument, or "null" text if argument was null.</td>
+     * <td>Comma-separeated list of types implemented by Composite</td>
      * </tr>
      * </table>
      * <p>
-     * <b>NOTE!!!</b> This class is still under construction and will be modified further.
-     * </p>
+     * Once the message at the composite type level has been established, the message will contain each of the found
+     * violations. For each such violation, the resource bundle will be searched in the following order;
+     * <ol>
+     * <li><code>polygene.constraint.<i><strong>MixinType</strong></i>.<i><strong>member</strong></i></code></li>
+     * <li><code>polygene.constraint.<i><strong>MixinType</strong></i></code></li>
+     * <li><code>polygene.constraint.mixin</code></li>
+     * </ol>
+     * where <code><i><strong>MixinType</strong></i></code> refers to the mixin type of the member (method, field or
+     * constructor) and the <code><i><strong>member</strong></i></code> is the name of such Member.
+     * <table summary="Default localization of constraint violations for mixin.">
+     * <tr><th>Type of Composite</th><th>Pattern used</th></tr>
+     * <tr><td>Mixin</td>
+     * <td><code>\t\t@{2} {0}.{1} does not allow value [{4}]</code></td>
+     * </tr>
+     * </table>
+     * For these the ResourceBundle arguments are;
+     * <table summary="List of arguments available."><tr><th>Arg</th><th>Value</th></tr>
+     * <tr>
+     * <td>{0}</td>
+     * <td>Mixin Type Name</td>
+     * </tr>
+     * <tr>
+     * <td>{1}</td>
+     * <td>Mixin Member Name</td>
+     * </tr>
+     * <tr>
+     * <td>{2}</td>
+     * <td>Annotation type</td>
+     * </tr>
+     * <tr>
+     * <td>{3}</td>
+     * <td>Annotation toString</td>
+     * </tr>
+     * <tr>
+     * <td>{4}</td>
+     * <td>Name of the Member, see {@link Name}</td>
+     * </tr>
+     * <tr>
+     * <td>{5}</td>
+     * <td>Value attempted</td>
+     * </tr>
+     * </table>
      *
      * @param bundle The ResourceBundle for Localization, or null if default formatting and locale to be used.
-     *
      * @return An array of localized messages of the violations incurred.
      */
-    public String[] localizedMessagesFrom( ResourceBundle bundle )
+    public String localizedMessageFrom( ResourceBundle bundle )
     {
-        String pattern = "Constraint violation in {0}.{1} for method ''{3}'' with constraint \"{4}({6})\", for value ''{5}''";
-
-        ArrayList<String> list = new ArrayList<>();
-        for( ConstraintViolation violation : constraintViolations )
+        Locale locale;
+        if( bundle != null )
         {
-            Locale locale;
-            if( bundle != null )
+            locale = bundle.getLocale();
+        }
+        else
+        {
+            locale = Locale.getDefault();
+        }
+        StringBuffer message = new StringBuffer();
+        {
+            String[] searchKeys = new String[]{ "polygene.constraint." + primaryType, "polygene.constraint.composite" };
+            String compositePattern = findPattern( bundle, searchKeys, defaultPattern() );
+            String types = instanceTypes == null
+                           ? null
+                           : instanceTypes.stream()
+                                          .map( this::nameOf )
+                                          .collect( Collectors.joining( "," ) );
+            String name;
+            if( longNames )
             {
-                try
-                {
-                    pattern = bundle.getString( "polygene.constraint." + mixinTypeName + "." + methodName );
-                }
-                catch( MissingResourceException e1 )
-                {
-                    try
-                    {
-                        pattern = bundle.getString( "polygene.constraint" );
-                    }
-                    catch( MissingResourceException e2 )
-                    {
-                        // ignore. The default pattern will be used.
-                    }
-                }
-                locale = bundle.getLocale();
+                name = primaryType.getName();
             }
             else
             {
-                locale = Locale.getDefault();
+                name = primaryType.getSimpleName();
             }
-            MessageFormat format = new MessageFormat( pattern, locale );
+            Object[] args = new Object[]{ name, instanceToString, identity, types };
+            MessageFormat formatter = new MessageFormat( compositePattern, locale );
+            formatter.format( args, message, null );
+        }
+        for( ValueConstraintViolation violation : constraintViolations )
+        {
+            String[] searchKeys = new String[]{ "polygene.constraint." + primaryType, "polygene.constraint.composite" };
+            String mixinPattern = findPattern( bundle, searchKeys, MIXIN_DEFAULT_PATTERN );
 
             Annotation annotation = violation.constraint();
-            String name = violation.name();
-            Object value = violation.value();
-            String classes;
-            if( instanceTypes.size() == 1 )
-            {
-                Type type = instanceTypes.stream().findFirst().get();
-                classes = Classes.RAW_CLASS.apply( type ).getSimpleName();
-            }
-            else
-            {
-                classes = "[" + instanceTypes.stream()
-                    .map( Classes.RAW_CLASS )
-                    .map( Class::getSimpleName ).collect( joining( "," ) ) + "]";
-            }
+            Class<? extends Annotation> annotatioType = annotation.annotationType();
+            Class<?> mixinType = violation.mixinType();
             Object[] args = new Object[]
                 {
-                    instanceToString,
-                    classes,
-                    mixinTypeName,
-                    methodName,
+                    longNames ? mixinType.getName() : mixinType.getSimpleName(),
+                    violation.methodName(),
+                    longNames ? annotatioType.getName() : annotatioType.getSimpleName(),
                     annotation.toString(),
-                    "" + value,
-                    name
+                    violation.name(),
+                    violation.value()
                 };
-            StringBuffer text = new StringBuffer();
-            format.format( args, text, null );
-            list.add( text.toString() );
+            MessageFormat formatter = new MessageFormat( mixinPattern, locale );
+            formatter.format( args, message, null );
         }
-        String[] result = new String[ list.size() ];
-        list.toArray( result );
+        String result = message.toString();
+        message.setLength( 0 ); // TODO: is this still needed to avoid JVM memory leak??
         return result;
     }
 
-    public String localizedMessage()
+    private String nameOf( Type type )
     {
-        String[] messages = localizedMessagesFrom( null );
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for( String message : messages )
+        Class<?> clazz = Classes.RAW_CLASS.apply( type );
+        if( longNames )
         {
-            if( !first )
-            {
-                result.append( ',' );
-            }
-            first = false;
-            result.append( message );
+            return clazz.getName();
         }
-        return result.toString();
-    }
-
-    @Override
-    public String getLocalizedMessage()
-    {
-        return localizedMessage();
+        else
+        {
+            return clazz.getSimpleName();
+        }
     }
 
     @Override
     public String getMessage()
     {
-        return localizedMessage();
+        return localizedMessageFrom( null );
     }
 
-    public String methodName()
+    private String findPattern( ResourceBundle bundle, String[] searchKeys, String defaultPattern )
     {
-        return methodName;
+        String compositePattern;
+        if( bundle != null )
+        {
+            compositePattern = Stream.of( searchKeys )
+                                     .map( name -> findPattern( bundle, name ) )
+                                     .filter( Objects::nonNull )
+                                     .findFirst().orElse( defaultPattern );
+        }
+        else
+        {
+            compositePattern = defaultPattern;
+        }
+        return compositePattern;
     }
 
-    public String mixinTypeName()
+    private String findPattern( ResourceBundle bundle, String name )
     {
-        return mixinTypeName;
+        try
+        {
+            return bundle.getString( name );
+        }
+        catch( Exception e )
+        {
+            return null;
+        }
+    }
+
+    private String defaultPattern()
+    {
+        if( isEntity )
+        {
+            return ENTITY_DEFAULT_PATTERN;
+        }
+        if( isService )
+        {
+            return SERVICE_DEFAULT_PATTERN;
+        }
+        return DEFAULT_PATTERN;
+    }
+
+    public void setCompositeDescriptor( CompositeDescriptor descriptor )
+    {
+        this.primaryType = descriptor.primaryType();
+        this.instanceTypes = descriptor.mixinTypes().collect( Collectors.toList() );
+        this.isEntity = descriptor instanceof EntityDescriptor;
+        this.isService = descriptor instanceof ServiceDescriptor;
+    }
+
+    public void setIdentity( Identity identity )
+    {
+        if( identity == null )
+        {
+            return;
+        }
+        this.identity = identity.toString();
+    }
+
+    public void setInstanceString( String instanceString )
+    {
+        instanceToString = instanceString;
     }
 }

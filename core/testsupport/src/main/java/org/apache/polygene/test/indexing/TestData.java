@@ -59,7 +59,7 @@ public class TestData
             NameableAssert.clear();
             Domain gaming;
             {
-                EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class, new StringIdentity( "Gaming" ) );
+                EntityBuilder<Domain> domainBuilder = unitOfWork.newEntityBuilder( Domain.class, StringIdentity.identityOf( "Gaming" ) );
                 gaming = domainBuilder.instance();
                 gaming.name().set( "Gaming" );
                 gaming.description().set( "Gaming domain" );
@@ -121,7 +121,7 @@ public class TestData
 
             Account annsAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, new StringIdentity( "accountOfAnnDoe" ) );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, StringIdentity.identityOf( "accountOfAnnDoe" ) );
                 annsAccount = accountBuilder.instance();
                 annsAccount.number().set( "accountOfAnnDoe" );
                 annsAccount = accountBuilder.newInstance();
@@ -129,7 +129,7 @@ public class TestData
 
             Account jacksAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, new StringIdentity( "accountOfJackDoe" ) );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, StringIdentity.identityOf( "accountOfJackDoe" ) );
                 jacksAccount = accountBuilder.instance();
                 jacksAccount.number().set( "accountOfJackDoe" );
                 jacksAccount = accountBuilder.newInstance();
@@ -143,7 +143,7 @@ public class TestData
 
             Female annDoe;
             {
-                EntityBuilder<Female> femaleBuilder = unitOfWork.newEntityBuilder( Female.class, new StringIdentity( "anndoe" ) );
+                EntityBuilder<Female> femaleBuilder = unitOfWork.newEntityBuilder( Female.class, StringIdentity.identityOf( "anndoe" ) );
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe" );
                 annDoe.title().set( Person.Title.MRS );

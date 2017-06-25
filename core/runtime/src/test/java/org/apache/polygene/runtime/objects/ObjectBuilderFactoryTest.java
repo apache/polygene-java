@@ -23,7 +23,7 @@ package org.apache.polygene.runtime.objects;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
-import org.apache.polygene.api.object.NoSuchObjectException;
+import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchObjectException.class )
+    @Test( expected = NoSuchObjectTypeException.class )
     public void newBuilderForUnregisteredObject()
         throws Exception
     {

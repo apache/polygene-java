@@ -32,7 +32,6 @@ import org.apache.polygene.api.value.ValueDescriptor;
  */
 public interface LayerDescriptor
 {
-
     /**
      * @return the Layer's name
      */
@@ -44,6 +43,8 @@ public interface LayerDescriptor
      * @return Layers used by this Layer
      */
     UsedLayersDescriptor usedLayers();
+
+    Stream<? extends ModuleDescriptor> modules();
 
     Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility );
 

@@ -44,8 +44,8 @@ import static org.junit.Assert.assertThat;
 public class Qi382Test extends AbstractPolygeneTest
 {
 
-    public static final Identity FERRARI = new StringIdentity( "Ferrari" );
-    public static final Identity NICLAS = new StringIdentity( "Niclas" );
+    public static final Identity FERRARI = StringIdentity.identityOf( "Ferrari" );
+    public static final Identity NICLAS = StringIdentity.identityOf( "Niclas" );
 
     @Override
     public void assemble( ModuleAssembly module )

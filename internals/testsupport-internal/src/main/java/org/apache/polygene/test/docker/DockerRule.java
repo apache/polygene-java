@@ -86,7 +86,7 @@ public class DockerRule
                 .builder()
                 .imageName( "org.apache.polygene:org.apache.polygene.internal.docker-" + image )
                 .publishAllPorts( true )
-                .waitForTimeout( 120 )
+                .waitForTimeout( 180 )
                 .waitFor( rule -> new AndChecker( rule, waitFor ) );
             environment.forEach( builder::env );
             dockerRule = builder.build();

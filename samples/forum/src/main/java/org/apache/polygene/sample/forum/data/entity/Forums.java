@@ -38,9 +38,9 @@ import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 public interface Forums
     extends Administrators, EntityComposite
 {
-    Identity FORUMS_ID = new StringIdentity( "forums" );
+    Identity FORUMS_ID = StringIdentity.identityOf( "forums" );
 
-    public Query<Forum> forums();
+    Query<Forum> forums();
 
     abstract class Mixin
         implements Forums

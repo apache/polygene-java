@@ -20,8 +20,8 @@
 package org.apache.polygene.runtime.injection.provider;
 
 import java.lang.reflect.Constructor;
-import org.apache.polygene.api.composite.NoSuchTransientException;
-import org.apache.polygene.api.object.NoSuchObjectException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
+import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.bootstrap.InvalidInjectionException;
@@ -83,13 +83,13 @@ public final class UsesInjectionProviderFactory
                     }
                     usesObject = moduleInstance.newTransient( injectionType, uses.toArray() );
                 }
-                catch( NoSuchTransientException e )
+                catch( NoSuchTransientTypeException e )
                 {
                     try
                     {
                         usesObject = moduleInstance.newObject( injectionType, uses.toArray() );
                     }
-                    catch( NoSuchObjectException e1 )
+                    catch( NoSuchObjectTypeException e1 )
                     {
                         // Could not instantiate an instance - to try instantiate as plain class
                         try

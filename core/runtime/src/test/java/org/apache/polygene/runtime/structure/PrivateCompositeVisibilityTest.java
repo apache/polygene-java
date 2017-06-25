@@ -21,7 +21,7 @@
 package org.apache.polygene.runtime.structure;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.composite.NoSuchTransientException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Structure;
@@ -39,7 +39,7 @@ import org.junit.Test;
  */
 public class PrivateCompositeVisibilityTest
 {
-    @Test( expected = NoSuchTransientException.class )
+    @Test( expected = NoSuchTransientTypeException.class )
     public void testPrivateCompositeVisibility()
         throws Exception
     {

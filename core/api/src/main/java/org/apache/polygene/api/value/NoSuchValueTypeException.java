@@ -19,7 +19,10 @@
  */
 package org.apache.polygene.api.value;
 
-import org.apache.polygene.api.composite.NoSuchCompositeException;
+import java.util.stream.Stream;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
@@ -27,20 +30,16 @@ import static java.util.stream.Collectors.joining;
 /**
  * Thrown when no visible value of the requested type is found.
  */
-public class NoSuchValueException
-    extends NoSuchCompositeException
+public class NoSuchValueTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchValueException( String valueType, String moduleName, TypeLookup typeLookup )
+    public NoSuchValueTypeException( String valueType, ModuleDescriptor module )
     {
-        super( "ValueComposite", valueType, moduleName, formatVisibleTypes( typeLookup ) );
+        super( "ValueComposite", valueType, module );
     }
 
-    private static String formatVisibleTypes( TypeLookup typeLookup )
+    @Override
+    protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )
     {
-        return typeLookup.allValues()
-                         .map( descriptor -> descriptor.primaryType().getName() )
-                         .sorted()
-                         .distinct()
-                         .collect( joining( "\n", "Visible value types are:\n", "" ) );
+        return typeLookup.allValues();
     }
 }

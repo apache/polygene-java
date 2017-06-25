@@ -71,7 +71,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
 
     public interface PersonList
     {
-        Identity LIST_ID = StringIdentity.fromString( "person-list" );
+        Identity LIST_ID = StringIdentity.identityOf( "person-list" );
 
         ManyAssociation<Person> all();
     }
@@ -274,7 +274,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
         Commands commands = services.findService( Commands.class ).get();
         Queries queries = services.findService( Queries.class ).get();
 
-        Identity identity = StringIdentity.fromString( "1" );
+        Identity identity = StringIdentity.identityOf( "1" );
 
         try (UnitOfWork uow = services.unitOfWorkFactory().newUnitOfWork( newUsecase( "Step 1" ) ) )
         {

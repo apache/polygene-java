@@ -19,7 +19,10 @@
  */
 package org.apache.polygene.api.unitofwork;
 
-import org.apache.polygene.api.composite.NoSuchCompositeException;
+import java.util.stream.Stream;
+import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.composite.NoSuchCompositeTypeException;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.structure.TypeLookup;
 
 import static java.util.stream.Collectors.joining;
@@ -28,24 +31,16 @@ import static java.util.stream.Collectors.joining;
  * Polygene exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
-public class NoSuchEntityTypeException
-    extends NoSuchCompositeException
+public class NoSuchEntityTypeException extends NoSuchCompositeTypeException
 {
-    public NoSuchEntityTypeException( String typeName, String moduleName, TypeLookup typeLookup )
+    public NoSuchEntityTypeException( String typeName, ModuleDescriptor module )
     {
-        super( "EntityComposite", typeName, moduleName, formatVisibleTypes( typeLookup ) );
+        super( "EntityComposite", typeName, module );
     }
 
-    private static String formatVisibleTypes( TypeLookup typeLookup )
+    @Override
+    protected Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup )
     {
-        return typeLookup.allEntities()
-                         .map( descriptor -> {
-                             String moduleName = descriptor.module().name();
-                             String entityClassName = descriptor.primaryType().getName();
-                             return entityClassName + " in " + moduleName;
-                         } )
-                         .sorted()
-                         .distinct()
-                         .collect( joining( "\n", "Visible entity types are:\n", "" ) );
+        return typeLookup.allEntities();
     }
 }

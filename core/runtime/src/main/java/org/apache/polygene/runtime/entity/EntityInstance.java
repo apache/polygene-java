@@ -20,8 +20,6 @@
 package org.apache.polygene.runtime.entity;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -299,12 +297,11 @@ public final class EntityInstance
         }
         catch( ConstraintViolationException e )
         {
-            List<? extends Type> entityModelList = entityModel.types().collect( toList() );
-            throw new ConstraintViolationException( reference.identity(),
-                                                    entityModelList,
-                                                    e.mixinTypeName(),
-                                                    e.methodName(),
-                                                    e.constraintViolations() );
+            e.setCompositeDescriptor( descriptor() );
+            e.setIdentity( entityState.entityReference().identity() );
+            e.setInstanceString( proxy.toString() );
+            e.setCompositeDescriptor( entityModel );
+            throw e;
         }
     }
 }

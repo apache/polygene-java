@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.association.NamedAssociation;
 import org.apache.polygene.api.common.Optional;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.constraint.Name;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -808,7 +808,7 @@ public class ContextResource
                 // CVE are considered client faults
                 String messages = "";
                 Locale locale = ObjectSelection.type( Locale.class );
-                for( ConstraintViolation constraintViolation : e.constraintViolations() )
+                for( ValueConstraintViolation constraintViolation : e.constraintViolations() )
                 {
                     if( !messages.isEmpty() )
                     {

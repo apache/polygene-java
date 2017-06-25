@@ -23,7 +23,7 @@ package org.apache.polygene.runtime.structure;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.AmbiguousTypeException;
-import org.apache.polygene.api.composite.NoSuchTransientException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.injection.scope.Structure;
@@ -97,7 +97,7 @@ public class MixinVisibilityTest
         assertEquals( "abc", object.test2() );
     }
 
-    @Test( expected = NoSuchTransientException.class )
+    @Test( expected = NoSuchTransientTypeException.class )
     public void testMixinInLayerIsNotVisible()
         throws Exception
     {

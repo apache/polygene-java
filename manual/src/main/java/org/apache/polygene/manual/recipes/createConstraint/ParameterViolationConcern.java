@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.apache.polygene.api.concern.ConcernOf;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 
 // START SNIPPET: report
@@ -39,7 +39,7 @@ public class ParameterViolationConcern extends ConcernOf<InvocationHandler>
         }
         catch( ConstraintViolationException e )
         {
-            for( ConstraintViolation violation : e.constraintViolations() )
+            for( ValueConstraintViolation violation : e.constraintViolations() )
             {
                 String name = violation.name();
                 Object value = violation.value();

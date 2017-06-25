@@ -27,6 +27,6 @@ public class UuidGeneratorMixin
     @Override
     public Identity generate(Class<?> compositeType)
     {
-        return StringIdentity.fromString(UUID.randomUUID().toString());
+        return StringIdentity.identityOf( UUID.randomUUID().toString() );
     }
 }

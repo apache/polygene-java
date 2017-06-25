@@ -21,6 +21,7 @@ package org.apache.polygene.spi.entitystore.helpers;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 
@@ -55,7 +56,10 @@ public final class DefaultNamedAssociationState
     @Override
     public boolean put( String name, EntityReference entityReference )
     {
-        if( references.put( name, entityReference ) == null )
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(entityReference, "entityReference");
+        EntityReference oldReference = references.put( name, entityReference );
+        if( entityReference.equals( oldReference ) )
         {
             return false;
         }

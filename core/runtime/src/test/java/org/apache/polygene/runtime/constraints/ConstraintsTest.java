@@ -29,7 +29,7 @@ import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.constraint.Constraint;
 import org.apache.polygene.api.constraint.ConstraintDeclaration;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.constraint.Constraints;
 import org.apache.polygene.api.constraint.Name;
@@ -66,7 +66,7 @@ public class ConstraintsTest
         }
         catch( ConstraintViolationException e )
         {
-            Collection<ConstraintViolation> violations = e.constraintViolations();
+            Collection<ValueConstraintViolation> violations = e.constraintViolations();
             assertEquals( 2, violations.size() );
 //            assertEquals( MyOne.class.getName(), e.mixinTypeName() );
         }
@@ -87,7 +87,7 @@ public class ConstraintsTest
         }
         catch( ConstraintViolationException e )
         {
-            Collection<ConstraintViolation> violations = e.constraintViolations();
+            Collection<ValueConstraintViolation> violations = e.constraintViolations();
             assertEquals( 2, violations.size() );
 //            assertEquals( MyOne.class.getName(), e.mixinTypeName() );
         }

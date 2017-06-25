@@ -47,9 +47,9 @@ public class Qi383Test extends AbstractPolygeneTest
     {
         try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            unitOfWork.newEntity( Car.class, new StringIdentity( "Ferrari" ) );
-            unitOfWork.newEntity( Car.class, new StringIdentity( "Ford" ) );
-            unitOfWork.newEntity( Car.class, new StringIdentity( "Ferrari" ) );
+            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
+            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ford" ) );
+            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
             unitOfWork.complete();
         }
     }

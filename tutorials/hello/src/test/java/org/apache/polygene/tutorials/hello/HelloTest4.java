@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 public class HelloTest4 extends AbstractPolygeneTest
 {
 
-    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+    public static final Identity TEST_IDENTITY = StringIdentity.identityOf( "123" );
 
     @Override
     public void assemble( ModuleAssembly module )

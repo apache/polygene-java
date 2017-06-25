@@ -181,7 +181,7 @@ public class ModuleUnitOfWork
 
         if( model == null )
         {
-            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
+            throw new NoSuchEntityTypeException( type.getName(), module );
         }
 
         ModuleDescriptor modelModule = model.module();
@@ -238,7 +238,7 @@ public class ModuleUnitOfWork
 
         if( model == null )
         {
-            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
+            throw new NoSuchEntityTypeException( type.getName(), module );
         }
 
         ModuleDescriptor modelModule = model.module();
@@ -264,7 +264,7 @@ public class ModuleUnitOfWork
             }
             else
             {
-                identity = new StringIdentity( propertyState );
+                identity = StringIdentity.identityOf( propertyState );
             }
         }
 
@@ -283,7 +283,7 @@ public class ModuleUnitOfWork
 
         if( !models.iterator().hasNext() )
         {
-            throw new NoSuchEntityTypeException( type.getName(), module.name(), module.typeLookup() );
+            throw new NoSuchEntityTypeException( type.getName(), module );
         }
 
         return uow.get( EntityReference.create( identity ), this, models, type );

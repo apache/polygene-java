@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.polygene.api.association.AssociationDescriptor;
@@ -42,7 +41,6 @@ import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.structure.MetaInfoHolder;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.usecase.Usecase;
-import org.apache.polygene.api.value.ValueBuilder;
 
 /**
  * All operations on entities goes through an UnitOfWork.

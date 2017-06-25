@@ -27,7 +27,7 @@ public class StringIdentity
 {
     private final String value;
 
-    public StringIdentity(String value)
+    private StringIdentity(String value)
     {
         Objects.requireNonNull( value, "Identity can not be null." );
         this.value = value;
@@ -55,7 +55,7 @@ public class StringIdentity
         return value;
     }
 
-    public static Identity fromString(String serializedState)
+    public static Identity identityOf( String serializedState )
     {
         return new StringIdentity( serializedState );
     }

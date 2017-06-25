@@ -32,6 +32,7 @@ import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.HierarchicalVisitor;
@@ -228,7 +229,15 @@ public abstract class CompositeModel
     {
         try
         {
-            return compositeMethodsModel.invoke( mixins, proxy, method, args, module );
+            try
+            {
+                return compositeMethodsModel.invoke( mixins, proxy, method, args, module );
+            }
+            catch( ConstraintViolationException e )
+            {
+                e.setCompositeDescriptor(this);
+                throw e;
+            }
         }
         catch( Throwable throwable )
         {

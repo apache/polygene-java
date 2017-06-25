@@ -22,6 +22,7 @@ package org.apache.polygene.bootstrap;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,10 +30,10 @@ import java.util.stream.Collectors;
  */
 public class AssemblyReportException extends AssemblyException
 {
-    private List<Throwable> problems;
+    private Set<Throwable> problems;
     private String modelReport;
 
-    public AssemblyReportException( List<Throwable> problems )
+    public AssemblyReportException( Set<Throwable> problems )
     {
         this.problems = problems;
     }

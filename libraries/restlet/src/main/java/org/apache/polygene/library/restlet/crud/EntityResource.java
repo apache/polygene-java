@@ -97,7 +97,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
         {
             Class entityType = parameters.entityType().get();
             String idOfEntity = parameters.id().get();
-            locator.find( entityType ).delete( new StringIdentity( idOfEntity ) );
+            locator.find( entityType ).delete( StringIdentity.identityOf( idOfEntity ) );
         }
 
         @Override
@@ -137,7 +137,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
                 throw new RuntimeException( message, e );
             }
             Reference base = parameters.request().get().getResourceRef();
-            return resourceBuilder.createRestLink( new StringIdentity( "" ), base, org.restlet.data.Method.GET );
+            return resourceBuilder.createRestLink( StringIdentity.identityOf( "" ), base, org.restlet.data.Method.GET );
         }
 
         private Object createParametersComposite( RestForm form, Class argType )

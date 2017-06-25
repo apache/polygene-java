@@ -17,40 +17,21 @@
  *
  *
  */
+package org.apache.polygene.entitystore.memory;
 
-package org.apache.polygene.api.constraint;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
+import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 
-import java.lang.annotation.Annotation;
-
-/**
- * When a constraint violation has occurred (ie Constraint.isValid has returned false) it
- * is put in a collection of all violations that have occurred for this value check.
- */
-public final class ConstraintViolation
+public class MemoryEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    private String name;
-    private final Annotation constraint;
-    private final Object value;
-
-    public ConstraintViolation( String name, Annotation constraint, Object value )
+    @Override
+    protected void defineStorageModule( ModuleAssembly module )
     {
-        this.name = name;
-        this.constraint = constraint;
-        this.value = value;
-    }
-
-    public String name()
-    {
-        return name;
-    }
-
-    public Annotation constraint()
-    {
-        return constraint;
-    }
-
-    public Object value()
-    {
-        return value;
+        module.defaultServices();
+        new MemoryEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .assemble( module );
     }
 }

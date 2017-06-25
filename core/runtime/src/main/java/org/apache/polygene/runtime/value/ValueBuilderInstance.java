@@ -22,7 +22,7 @@ package org.apache.polygene.runtime.value;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.composite.Composite;
-import org.apache.polygene.api.value.NoSuchValueException;
+import org.apache.polygene.api.value.NoSuchValueTypeException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueDescriptor;
 import org.apache.polygene.runtime.composite.StateResolver;
@@ -86,7 +86,7 @@ public final class ValueBuilderInstance<T>
 
         if( valueModel == null )
         {
-            throw new NoSuchValueException( valueType.getName(), currentModule.name(), currentModule.typeLookup() );
+            throw new NoSuchValueTypeException( valueType.getName(), currentModule.descriptor() );
         }
         return new ValueBuilderWithPrototype<>( valueModel, currentModule, prototype() ).newInstance();
     }

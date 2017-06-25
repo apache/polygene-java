@@ -84,7 +84,7 @@ abstract class FragmentInvocationHandler
                     // Stop removing if the originating method call has been located in the stack.
                     // For 'semi' and 'extensive' compaction, we don't and do the entire stack instead.
                     trace[ i ] = new StackTraceElement( proxy.getClass()
-                                                            .getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
+                                                             .getInterfaces()[ 0 ].getName(), method.getName(), null, -1 );
                     break; // Stop compacting this trace
                 }
             }
@@ -118,19 +118,22 @@ abstract class FragmentInvocationHandler
 
     private boolean isApplicationClass( String className )
     {
+        boolean jdkInternals = isJdkInternals( className );
         if( compactLevel == CompactLevel.semi )
         {
-            return !isJdkInternals( className );
+            return !jdkInternals;
         }
-        return !( className.endsWith( FragmentClassLoader.GENERATED_POSTFIX ) ||
-                  className.startsWith( "org.apache.polygene.runtime" ) ||
-                  isJdkInternals( className ) );
+        boolean polygeneRuntime = className.startsWith( "org.apache.polygene.runtime" );
+        boolean stubClass = className.endsWith( FragmentClassLoader.GENERATED_POSTFIX );
+        return !( stubClass ||
+                  polygeneRuntime ||
+                  jdkInternals );
     }
 
     private boolean isJdkInternals( String className )
     {
         return className.startsWith( "java.lang.reflect" )
-               || className.startsWith( "jdk.internal.reflect" )
+               || className.startsWith( "reflect" )
                || className.startsWith( "com.sun.proxy" )
                || className.startsWith( "sun.reflect" );
     }

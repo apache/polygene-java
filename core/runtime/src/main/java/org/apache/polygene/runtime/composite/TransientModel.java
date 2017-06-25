@@ -27,6 +27,7 @@ import org.apache.polygene.api.composite.TransientDescriptor;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.runtime.injection.InjectionContext;
+import org.apache.polygene.runtime.property.PropertyModel;
 
 /**
  * Model for Transient Composites
@@ -67,8 +68,18 @@ public class TransientModel extends CompositeModel
     public void checkConstraints( TransientStateInstance instanceState )
         throws ConstraintViolationException
     {
-        stateModel.properties().forEach( propertyModel ->
-            propertyModel.checkConstraints( instanceState.propertyFor( propertyModel.accessor() ).get() )
+        stateModel.properties().forEach( ( PropertyModel propertyModel ) ->
+                                         {
+                                             try
+                                             {
+                                                 propertyModel.checkConstraints( instanceState.propertyFor( propertyModel.accessor() ).get() );
+                                             }
+                                             catch( ConstraintViolationException e )
+                                             {
+                                                 e.setCompositeDescriptor( this );
+                                                 throw e;
+                                             }
+                                         }
         );
     }
 }

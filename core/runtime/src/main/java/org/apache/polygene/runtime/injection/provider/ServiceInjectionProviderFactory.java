@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import org.apache.polygene.api.service.NoSuchServiceException;
+import org.apache.polygene.api.service.NoSuchServiceTypeException;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.service.qualifier.Qualifier;
 import org.apache.polygene.api.util.Classes;
@@ -203,7 +203,7 @@ public final class ServiceInjectionProviderFactory
                                   .filter( serviceQualifier ).findFirst().orElse( null );
                 }
             }
-            catch( NoSuchServiceException e )
+            catch( NoSuchServiceTypeException e )
             {
                 return null;
             }

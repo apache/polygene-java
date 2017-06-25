@@ -55,11 +55,6 @@ public final class DefaultManyAssociationState
     @Override
     public boolean add( int i, EntityReference entityReference )
     {
-        if( references.contains( entityReference ) )
-        {
-            return false;
-        }
-
         references.add( i, entityReference );
         entityState.markUpdated();
         return true;

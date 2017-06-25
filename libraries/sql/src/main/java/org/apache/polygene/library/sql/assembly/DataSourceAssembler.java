@@ -70,7 +70,7 @@ public class DataSourceAssembler
     {
         module.importedServices( DataSource.class ).
             importedBy( ServiceInstanceImporter.class ).
-            setMetaInfo( new StringIdentity( dataSourceServiceId ) ).
+            setMetaInfo( StringIdentity.identityOf( dataSourceServiceId ) ).
             identifiedBy( identity() ).
             visibleIn( visibility() );
         if( circuitBreaker != null )

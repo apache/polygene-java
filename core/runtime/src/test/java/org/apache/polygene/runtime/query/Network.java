@@ -44,8 +44,8 @@ import org.apache.polygene.runtime.query.model.values.ContactsValue;
  */
 class Network
 {
-    public static final Identity KUALALUMPUR = new StringIdentity( "kualalumpur" );
-    public static final Identity PENANG = new StringIdentity( "penang" );
+    public static final Identity KUALALUMPUR = StringIdentity.identityOf( "kualalumpur" );
+    public static final Identity PENANG = StringIdentity.identityOf( "penang" );
     private static List<Domain> domains;
     private static List<Person> persons;
     private static List<Male> males;

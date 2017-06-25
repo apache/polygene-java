@@ -22,8 +22,8 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.property.Property;
-import org.apache.polygene.api.service.qualifier.Tagged;
 import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.service.qualifier.Tagged;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.api.value.ValueBuilder;
@@ -61,7 +61,7 @@ public class Polygene142Test extends AbstractPolygeneTest
             value = serialization.deserialize( module, Regression142Type.class, serialized ); // ok
         }
         {
-            Identity valueId = new StringIdentity( "abcdefg" );
+            Identity valueId = StringIdentity.identityOf( "abcdefg" );
             {
                 try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase( "create" ) ) )
                 {

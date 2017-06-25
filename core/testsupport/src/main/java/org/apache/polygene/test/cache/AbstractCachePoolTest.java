@@ -21,15 +21,18 @@ package org.apache.polygene.test.cache;
 
 import java.util.Collection;
 import java.util.Random;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
+import static org.hamcrest.core.AnyOf.anyOf;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 /**
@@ -75,11 +78,11 @@ public abstract class AbstractCachePoolTest
         catch( ConstraintViolationException e )
         {
             // expected
-            Collection<ConstraintViolation> violations = e.constraintViolations();
+            Collection<ValueConstraintViolation> violations = e.constraintViolations();
             assertEquals( 1, violations.size() );
-            ConstraintViolation violation = violations.iterator().next();
+            ValueConstraintViolation violation = violations.iterator().next();
             assertEquals( "not optional", violation.constraint().toString() );
-            assertEquals( "param1", violation.name() );
+            assertThat( violation.name(), anyOf(equalTo("cacheId"), equalTo( "arg0" )) );  // depends on whether -parameters was given at compile time.
         }
     }
 

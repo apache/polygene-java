@@ -20,16 +20,16 @@
 
 package org.apache.polygene.api.unitofwork;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Test;
 
 public class RemovalTest
     extends AbstractPolygeneTest
@@ -49,7 +49,7 @@ public class RemovalTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, new StringIdentity( "123" ) );
+            EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, StringIdentity.identityOf( "123" ) );
             builder.instance().test().set( "habba" );
             TestEntity test = builder.newInstance();
             uow.remove( test );
