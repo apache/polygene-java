@@ -196,7 +196,13 @@ module.exports = generators.Base.extend(
                         this.log('Caching:', answers.caching);
                         this.log('Features:', answers.features);
                         answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
-                        polygene = answers;
+                        polygene.name = answers.name;
+                        polygene.packageName = answers.packageName;
+                        polygene.applicationtype = answers.applicationtype;
+                        polygene.features = answers.features;
+                        polygene.indexing = answers.indexing;
+                        polygene.entitystore = answers.entitystore;
+                        polygene.caching = answers.caching;
                     }.bind(this)
                 );
             }
@@ -353,7 +359,7 @@ function assignFunctions(polygene) {
         if (props) {
             imported["org.apache.polygene.api.property.Property"] = true;
             for (idx in props) {
-                if( props.hasOwnProperty(idx)) {
+                if (props.hasOwnProperty(idx)) {
                     var prop = props[idx];
                     state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();");
                     imported[prop.type] = true;
@@ -367,7 +373,7 @@ function assignFunctions(polygene) {
         if (assocs) {
             imported["org.apache.polygene.api.association.Association"] = true;
             for (idx in assocs) {
-                if( assocs.hasOwnProperty(idx)) {
+                if (assocs.hasOwnProperty(idx)) {
                     assoc = assocs[idx];
                     state.push("Association" + '<' + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
                     imported[assoc.type] = true;
@@ -378,7 +384,7 @@ function assignFunctions(polygene) {
         if (assocs) {
             imported["org.apache.polygene.api.association.ManyAssociation"] = true;
             for (idx in assocs) {
-                if( assocs.hasOwnProperty(idx)) {
+                if (assocs.hasOwnProperty(idx)) {
                     assoc = assocs[idx];
                     state.push("ManyAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
                     imported[assoc.type] = true;
@@ -389,7 +395,7 @@ function assignFunctions(polygene) {
         if (assocs) {
             imported["org.apache.polygene.api.association.NamedAssociation"] = true;
             for (idx in assocs) {
-                if( assocs.hasOwnProperty(idx)){
+                if (assocs.hasOwnProperty(idx)) {
                     assoc = assocs[idx];
                     state.push("NamedAssociation<" + polygene.typeNameOnly(assoc.type) + "> " + assoc.name + "();");
                     imported[assoc.type] = true;
@@ -438,15 +444,15 @@ function assignFunctions(polygene) {
                         }
                     }
                     state.push("/**");
-                    for( var idxDesc in prop.description ){
-                        if( prop.description.hasOwnProperty(idxDesc)){
+                    for (var idxDesc in prop.description) {
+                        if (prop.description.hasOwnProperty(idxDesc)) {
                             var desc = prop.description[idxDesc];
                             propertyFile.push("# " + desc);
-                            state.push(" * " + desc )
+                            state.push(" * " + desc)
                         }
                     }
                     state.push(" */");
-                    propertyFile.push(prop.name + "=" + propertyDefault +"\n");
+                    propertyFile.push(prop.name + "=" + propertyDefault + "\n");
                     state.push('Property' + '<' + polygene.typeNameOnly(prop.type) + "> " + prop.name + "();\n");
                 }
             }
@@ -455,8 +461,8 @@ function assignFunctions(polygene) {
             state.push('/** TODO: remove sample property');
             state.push(' */');
             state.push('Property<String> name();');
-            propertyFile.push("# This is just the sample configuration value. " );
-            propertyFile.push("# TODO: Remove this config value " );
+            propertyFile.push("# This is just the sample configuration value. ");
+            propertyFile.push("# TODO: Remove this config value ");
             propertyFile.push('name=sample config value');
         }
         currentModule.state = state;
