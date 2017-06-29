@@ -63,7 +63,6 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
     protected PolygeneRestApplication( Context context )
     {
         super( context );
-        setName( polygeneApplication.name() );
     }
 
     protected void printRoutes( PrintStream out )
@@ -78,6 +77,7 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
     public synchronized void start()
         throws Exception
     {
+        setName( polygeneApplication.name() );
         Series<Parameter> parameters = getContext().getParameters();
         String mode = parameters.getFirstValue( "org.apache.polygene.runtime.mode" );
         super.start();
