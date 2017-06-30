@@ -203,6 +203,7 @@ module.exports = generators.Base.extend(
                         polygene.features = answers.features;
                         polygene.indexing = answers.indexing;
                         polygene.entitystore = answers.entitystore;
+                        polygene.dbpool = answers.dbpool;
                         polygene.metrics = answers.metrics;
                         polygene.caching = answers.caching;
                     }.bind(this)
