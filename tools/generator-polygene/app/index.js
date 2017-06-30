@@ -194,6 +194,7 @@ module.exports = generators.Base.extend(
                         this.log('Entity Stores:', answers.entitystore);
                         this.log('Indexing:', answers.indexing);
                         this.log('Caching:', answers.caching);
+                        this.log('Metrics:', answers.metrics);
                         this.log('Features:', answers.features);
                         answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene.name = answers.name;
@@ -202,6 +203,7 @@ module.exports = generators.Base.extend(
                         polygene.features = answers.features;
                         polygene.indexing = answers.indexing;
                         polygene.entitystore = answers.entitystore;
+                        polygene.metrics = answers.metrics;
                         polygene.caching = answers.caching;
                     }.bind(this)
                 );
