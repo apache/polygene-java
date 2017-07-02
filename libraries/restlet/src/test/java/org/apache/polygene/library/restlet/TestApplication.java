@@ -45,11 +45,11 @@ public class TestApplication
         throws Exception
     {
         RestApplicationAssembler assembler = new RestApplicationAssembler( NAME, VERSION, MODE,
-            ConfigurationLayer.class,
-            InfrastructureLayer.class,
-            DomainLayer.class,
-            ResourceLayer.class,
-            ConnectivityLayer.class
+                                                                           ConnectivityLayer.class,
+                                                                           ResourceLayer.class,
+                                                                           DomainLayer.class,
+                                                                           InfrastructureLayer.class,
+                                                                           ConfigurationLayer.class
         );
 
         assembler.initialize();

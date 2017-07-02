@@ -23,6 +23,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.restlet.assembly.RestletCrudModuleAssembler;
 
 <% for( var idx in polygene.current.cruds) {
 %><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.cruds[idx].name + ";" %>
@@ -54,8 +55,7 @@ for( var idx in polygene.current.services) {
 <%
 } %>
 
-import static org.apache.polygene.api.common.Visibility.layer;
-import static org.apache.polygene.api.common.Visibility.application;
+import static org.apache.polygene.api.common.Visibility.*;
 
 public class <%- firstUpper(polygene.current.name) %>Module
     implements ModuleAssembler
@@ -69,8 +69,8 @@ if( polygene.current.cruds ) {
     for( var value in polygene.current.cruds ) {
         var crud = polygene.current.cruds[value];
 %>
-        <%- "module.values( " + crud.name + ".class )" + (crud.visibility ? ".visibleIn( " + crud.visibility +" )" : "" ) %>;
-        <%- "module.entities( " + crud.name + ".class )" + (crud.visibility ? ".visibleIn( " + crud.visibility +" )" : "" ) %>;
+        new RestletCrudModuleAssembler( <%- crud.name %>.class )
+            .assemble( module );
 <%
     }
 }

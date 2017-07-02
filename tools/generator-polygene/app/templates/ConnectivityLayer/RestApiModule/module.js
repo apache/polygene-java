@@ -27,10 +27,6 @@ module.exports = {
                 copyFile(p, "DefaultEnroler");
                 copyFile(p, "DefaultVerifier");
             }
-            else {
-                copyFile(p, "NullEnroler");
-                copyFile(p, "NullVerifier");
-            }
         }
     }
 };

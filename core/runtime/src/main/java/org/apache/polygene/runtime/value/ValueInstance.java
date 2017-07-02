@@ -20,6 +20,7 @@
 package org.apache.polygene.runtime.value;
 
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import org.apache.polygene.api.composite.CompositeInstance;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.runtime.composite.MixinsInstance;
@@ -144,10 +145,23 @@ public final class ValueInstance extends TransientInstance
         return hash + state.hashCode() * 5; // State
     }
 
+    public String toJsonString()
+    {
+        Serializer serialization = ( (ModuleSpi) module().instance() ).serialization();
+        if( serialization != null )
+        {
+            return serialization.serialize( Serializer.Options.NO_TYPE_INFO, proxy() );
+        }
+        return null;
+    }
+
     @Override
     public String toString()
     {
-        Serializer serialization = ( (ModuleSpi) module().instance() ).serialization();
-        return serialization.serialize( Serializer.Options.NO_TYPE_INFO, proxy() );
+        return "ValueInstance{" +
+               "mixins=" + Arrays.toString( mixins ) +
+               ", state=" + state +
+               ", compositeModel=" + compositeModel +
+               '}';
     }
 }

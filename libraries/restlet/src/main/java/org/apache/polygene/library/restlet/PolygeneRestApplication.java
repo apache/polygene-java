@@ -33,6 +33,7 @@ import org.apache.polygene.library.restlet.resource.EntryPointResource;
 import org.apache.polygene.library.restlet.resource.ResourceFactory;
 import org.apache.polygene.library.restlet.resource.ServerResource;
 import org.apache.polygene.library.restlet.serialization.PolygeneConverter;
+import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
@@ -59,10 +60,12 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
     protected ObjectFactory objectFactory;
 
     protected Router router;
+    protected String basePath;
 
-    protected PolygeneRestApplication( Context context )
+    protected PolygeneRestApplication( String basePath, Context context )
     {
         super( context );
+        this.basePath = basePath;
     }
 
     protected void printRoutes( PrintStream out )
@@ -105,25 +108,34 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         router = new Router( context );
 
         addRoutes( router );
-        router.attach( "/", newPolygeneRestlet( EntryPointResource.class, EntryPoint.class ) );
-
-        ChallengeAuthenticator guard = new ChallengeAuthenticator( context, ChallengeScheme.HTTP_BASIC, getName() + " Realm" );
+        router.attach( basePath, newPolygeneRestlet( EntryPointResource.class, EntryPoint.class ) );
 
         Verifier verifier = createVerifier();
-        if( verifier != null )
-        {
-            guard.setVerifier( verifier );
-        }
-
         Enroler enroler = createEnroler();
-        if( enroler != null )
+        if( verifier == null && enroler == null )
         {
-            guard.setEnroler( enroler );
+            return createInterceptors(new Filter()
+                {
+                } );
         }
-        return createInterceptors( guard );
+        else
+        {
+            ChallengeAuthenticator guard = new ChallengeAuthenticator( context, ChallengeScheme.HTTP_BASIC, getName() + " Realm" );
+
+            if( verifier != null )
+            {
+                guard.setVerifier( verifier );
+            }
+
+            if( enroler != null )
+            {
+                guard.setEnroler( enroler );
+            }
+            return createInterceptors( guard );
+        }
     }
 
-    private Restlet createInterceptors( ChallengeAuthenticator guard )
+    private Restlet createInterceptors( Filter guard )
     {
         Filter inner = createInnerInterceptor();
         if( inner != null )

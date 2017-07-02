@@ -19,9 +19,7 @@
 -%>
 package <%= polygene.packageName %>.bootstrap.connectivity;
 
-import java.io.File;
 import java.util.HashMap;
-import javax.servlet.Servlet;
 <% if( hasFeature('security') ) { %>
 import org.apache.polygene.library.http.SecureJettyConfiguration;
 import org.apache.polygene.library.http.SecureJettyServiceAssembler;
@@ -36,7 +34,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.restlet.ext.servlet.ServerServlet;
+import org.apache.polygene.library.restlet.PolygeneServerServlet;
 
 import <%= polygene.packageName %>.rest.<%= polygene.name %>RestApplication;
 
@@ -61,7 +59,6 @@ public class HttpServerModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( Servlet.class ).withMixins( ServerServlet.class );
 <% if( hasFeature('security') ) {
 %>        new HttpShiroAssembler()
             .withConfig( module, Visibility.module );
@@ -89,7 +86,7 @@ public class HttpServerModule
         defaults.port().set( DEFAULT_PORT );
         HashMap<String, String> initParams = new HashMap<>();
         initParams.put("org.restlet.application", <%= polygene.name %>RestApplication.class.getName() );
-        addServlets( serve( "/" ).with(Servlet.class ).withInitParams( initParams ) ).to( module );
+        addServlets( serve( "/*" ).with(PolygeneServerServlet.class ).withInitParams( initParams ) ).to( module );
         return module;
     }
 }

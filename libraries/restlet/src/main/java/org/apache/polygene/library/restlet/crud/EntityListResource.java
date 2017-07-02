@@ -93,13 +93,10 @@ public interface EntityListResource<T extends HasIdentity> extends ServerResourc
                 name = nameField.value().get();
             }
             Reference base = parameters.request().get().getResourceRef();
-
-            //noinspection unchecked
             Class<T> entityType = parameters.entityType().get();
-
             Identity identity = identityManager.generate(entityType, name);
             locator.find( entityType ).create( identity );
-            return resourceBuilder.createRestLink( identity, base, Method.GET );
+            return resourceBuilder.createRestLink( identity.toString(), base, Method.GET );
         }
 
         @SuppressWarnings( "unchecked" )

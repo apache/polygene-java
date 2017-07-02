@@ -38,19 +38,13 @@ if( hasFeature('security') ) {
 %>import <%= polygene.packageName %>.rest.security.DefaultEnroler;
 import <%= polygene.packageName %>.rest.security.DefaultVerifier;
 <%
-} else {
-%>import <%= polygene.packageName %>.rest.security.NullEnroler;
-import <%= polygene.packageName %>.rest.security.NullVerifier;
-<%
 }
 %>
 public class <%= polygene.name %>RestApplication extends PolygeneRestApplication
 {
-    private static final String BASEPATH = "/<%= polygene.name.toLowerCase() %>/";
-
-    public <%= polygene.name %>RestApplication( Context context )
+    public <%= polygene.name %>RestApplication()
     {
-        super( context );
+        super( "/<%= polygene.name.toLowerCase() %>/", createContext() );
     }
 
     @Override
@@ -61,11 +55,18 @@ for( var moduleName in polygene.modules) {
     var module = polygene.modules[moduleName];
     for( var idx2 in module.cruds ) {
         var crud = module.cruds[idx2];
-%>        addResourcePath( "<%= crud.name.toLowerCase() %>", <%= crud.name %>.class, BASEPATH );
+%>        addResourcePath( "<%= crud.name.toLowerCase() %>", <%= crud.name %>.class, basePath );
 <%
     }
 }
-%>        System.out.println( "REST API defined;" );
+%>    }
+
+    @Override
+    public synchronized void start()
+        throws Exception
+    {
+        super.start();
+        System.out.println( "REST API defined;" );
         printRoutes( System.out );
     }
 
@@ -74,7 +75,8 @@ for( var moduleName in polygene.modules) {
 <% if( hasFeature('security') ) {
 %>        return objectFactory.newObject(DefaultVerifier.class, this);
 <% } else {
-%>        return objectFactory.newObject(NullVerifier.class, this);
+%>        // Security was not specified during generation, and Verifier is not needed.
+        return null;
 <% }
 %>    }
 
@@ -83,7 +85,13 @@ for( var moduleName in polygene.modules) {
 <% if( hasFeature('security') ) {
 %>        return objectFactory.newObject(DefaultEnroler.class, this);
 <% } else {
-%>        return objectFactory.newObject(NullEnroler.class, this);
+%>        // Security was not specified during generation, and Enroler is not needed.
+        return null;
 <% }
 %>    }
+
+    private static Context createContext()
+    {
+        return new Context("<%= polygene.packageName %>.rest");
+    }
 }
