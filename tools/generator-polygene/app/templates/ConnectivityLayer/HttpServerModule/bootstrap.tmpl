@@ -21,6 +21,7 @@ package <%= polygene.packageName %>.bootstrap.connectivity;
 
 import java.util.HashMap;
 <% if( hasFeature('security') ) { %>
+import java.io.File;
 import org.apache.polygene.library.http.SecureJettyConfiguration;
 import org.apache.polygene.library.http.SecureJettyServiceAssembler;
 import org.apache.polygene.library.shiro.web.assembly.HttpShiroAssembler;
