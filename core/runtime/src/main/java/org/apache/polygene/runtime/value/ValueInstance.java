@@ -158,6 +158,11 @@ public final class ValueInstance extends TransientInstance
     @Override
     public String toString()
     {
+        String json = toJsonString();
+        if( json != null )
+        {
+            return json;
+        }
         return "ValueInstance{" +
                "mixins=" + Arrays.toString( mixins ) +
                ", state=" + state +
