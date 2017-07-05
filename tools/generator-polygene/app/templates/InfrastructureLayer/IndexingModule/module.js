@@ -22,18 +22,24 @@ module.exports = {
         p.copyTemplate(p.ctx,
             'InfrastructureLayer/IndexingModule/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/infrastructure/' + p.indexing + 'IndexingModule.java');
-        if( p.indexing === 'SQL' ) {
-            p.copyTemplate(p.ctx,
+        if (p.indexing === 'SQL') {
+            p.copyToConfig(
+                p.ctx,
                 'InfrastructureLayer/IndexingModule/indexing/ds-index-postgresql.properties',
-                'app/src/main/resources/ds-index-postgresql.properties');
+                'ds-index-postgresql.properties'
+            );
         }
-        if( p.indexing === 'Solr' ) {
-            p.copyTemplate(p.ctx,
+        if (p.indexing === 'Solr') {
+            p.copyToConfig(
+                p.ctx,
                 'InfrastructureLayer/IndexingModule/indexing/solrconfig.xml',
-                'app/src/main/resources/solrconfig.xml');
-            p.copyTemplate(p.ctx,
+                'solrconfig.xml'
+            );
+            p.copyTemplate(
+                p.ctx,
                 'InfrastructureLayer/IndexingModule/indexing/solr-schema.xml',
-                'app/src/main/resources/schema.xml');
+                'schema.xml'
+            );
         }
     }
 };

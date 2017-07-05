@@ -53,7 +53,6 @@ if( hasFeature( 'security' ) ) {
 }
 %>  implementation "org.apache.polygene.core:org.apache.polygene.core.spi:$polygeneVersion"
   implementation "org.apache.polygene.core:org.apache.polygene.core.bootstrap:$polygeneVersion"
-
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.entitystore-<%= polygene.entitystoremodule.toLowerCase() %>:$polygeneVersion"
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.indexing-<%= polygene.indexing.toLowerCase() %>:$polygeneVersion"
   implementation "org.apache.polygene.extensions:org.apache.polygene.extension.serialization-javaxjson:$polygeneVersion"
@@ -71,32 +70,30 @@ if( hasFeature( 'envisage' ) ) {
 <%
 }
 if( polygene.entitystore == 'LevelDB'  ) {
-%>  implementation "org.fusesource.leveldbjni:leveldbjni-all:$levelDbVersion"
+%>  runtimeOnly "org.fusesource.leveldbjni:leveldbjni-all:$levelDbVersion"
 <%
 }
 if( polygene.entitystore == 'DerbySQL'  ) {
-%>  implementation "org.apache.derby:derby:$derbyVersion"
+%>  runtimeOnly "org.apache.derby:derby:$derbyVersion"
 <%
 }
 if( polygene.entitystore == 'H2SQL'  ) {
-%>  implementation "com.h2database:h2:$h2Version"
+%>  runtimeOnly "com.h2database:h2:$h2Version"
 <%
 }
 if( polygene.entitystore == 'MySQL'  ) {
-%>  implementation "mysql:mysql-connector-java:$mysqlVersion"
+%>  runtimeOnly "mysql:mysql-connector-java:$mysqlVersion"
 <%
 }
-if( polygene.entitystore == 'PostgreSQL'  ) {
-%>  implementation "org.postgresql:postgresql:$postgresVersion"
+if( polygene.entitystore == 'PostgreSQL' || polygene.indexing == 'SQL' ) {
+%>  runtimeOnly "org.postgresql:postgresql:$postgresVersion"
 <%
 }
 if( polygene.entitystore == 'SQLite'  ) {
-%>  implementation "org.xerial:sqlite-jdbc:$sqliteVersion"
+%>  runtimeOnly "org.xerial:sqlite-jdbc:$sqliteVersion"
 <%
 }
-%>
-
-  runtimeOnly "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
+%>  runtimeOnly "org.apache.polygene.core:org.apache.polygene.core.runtime:$polygeneVersion"
   runtimeOnly "org.apache.johnzon:johnzon-core:$johnzonVersion"
   runtimeOnly "org.apache.johnzon:johnzon-mapper:$johnzonVersion"
   runtimeOnly "org.apache.geronimo.specs:geronimo-json_1.1_spec:1.0"
@@ -106,23 +103,4 @@ if( polygene.entitystore == 'SQLite'  ) {
   testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
   testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   testImplementation "com.github.tdomzal:junit-docker-rule:0.3"
-}
-
-
-task createConfigs {
-  def config = file("src/main/config")
-  outputs.dir config
-  doLast {
-    config.mkdirs()
-  }
-}
-
-distributions {
-  main {
-    contents {
-      from(createConfigs) {
-        into "config"
-      }
-    }
-  }
 }

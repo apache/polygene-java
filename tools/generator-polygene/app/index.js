@@ -65,6 +65,7 @@ module.exports = generators.Base.extend(
                 polygene.indexing = polygene.indexing ? polygene.indexing : null;
                 polygene.entitystore = polygene.entitystore ? polygene.entitystore : null;
                 polygene.caching = polygene.caching ? polygene.caching : null;
+                polygene.dbpool = polygene.dbpool === undefined ? "DBCP" : answers.dbpool;
             }
         },
 
@@ -196,14 +197,13 @@ module.exports = generators.Base.extend(
                         this.log('Caching:', answers.caching);
                         this.log('Metrics:', answers.metrics);
                         this.log('Features:', answers.features);
-                        answers.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene.name = answers.name;
                         polygene.packageName = answers.packageName;
                         polygene.applicationtype = answers.applicationtype;
                         polygene.features = answers.features;
                         polygene.indexing = answers.indexing;
                         polygene.entitystore = answers.entitystore;
-                        polygene.dbpool = answers.dbpool;
+                        polygene.dbpool = answers.dbpool === undefined ? "DBCP" : answers.dbpool;
                         polygene.metrics = answers.metrics;
                         polygene.caching = answers.caching;
                     }.bind(this)
@@ -280,16 +280,16 @@ function assignFunctions(polygene) {
     polygene.copyToConfig = function (ctx, from, toName) {
         polygene.copyTemplate(ctx,
             from,
-            'app/src/main/config/development/' + toName);
+            'app/src/dist/config/development/' + toName);
         polygene.copyTemplate(ctx,
             from,
-            'app/src/main/config/qa/' + toName);
+            'app/src/dist/config/qa/' + toName);
         polygene.copyTemplate(ctx,
             from,
-            'app/src/main/config/staging/' + toName);
+            'app/src/dist/config/staging/' + toName);
         polygene.copyTemplate(ctx,
             from,
-            'app/src/main/config/production/' + toName);
+            'app/src/dist/config/production/' + toName);
     };
 
     polygene.copyTemplate = function (ctx, from, to) {

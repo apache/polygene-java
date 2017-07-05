@@ -44,7 +44,7 @@ if( polygene.entitystore == 'MySQL'  ) {
 %>  mysqlVersion = "6.0.6"
 <%
 }
-if( polygene.entitystore == 'PostgreSQL'  ) {
+if( polygene.entitystore == 'PostgreSQL' || polygene.indexing == 'SQL' ) {
 %>  postgresVersion = "42.0.0"
 <%
 }
