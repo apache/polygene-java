@@ -1,6 +1,6 @@
 package org.apache.polygene.index.sql.support.skeletons;
 
-import org.apache.polygene.spi.query.IndexingException;
+import org.apache.polygene.api.indexing.IndexingException;
 
 @SuppressWarnings( "WeakerAccess" )
 public class SqlIndexingException extends IndexingException

@@ -17,17 +17,16 @@
  *
  *
  */
-package org.apache.polygene.api.query;
+package org.apache.polygene.api.indexing;
+
+import org.apache.polygene.api.query.QueryException;
 
 /**
  * This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
  * no indexing subsystem has been declared in the assembly.
  */
-public final class MissingIndexingSystemException
-    extends QueryException
+public final class MissingIndexingSystemException extends IndexingException
 {
-    private static final long serialVersionUID = 5147421865890379209L;
-
     public MissingIndexingSystemException()
     {
         super( "No EntityFinder has been declared in the assembly of the application." );
