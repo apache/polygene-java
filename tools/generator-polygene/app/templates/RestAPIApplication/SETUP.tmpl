@@ -1,0 +1,41 @@
+<%
+if( polygene.entitystore == 'PostgreSQL' || polygene.indexing == 'SQL' ) {
+%>
+Start Postgres in Docker
+=========================
+    docker run -p 5432:5432 --name polygene-postgres -d postgres
+
+Connect to Postgres via Docker
+==============================
+    docker run -it --rm --link polygene-postgres:postgres postgres psql -h postgres -U postgres
+
+Setting up Postgresql database
+==============================
+In the psql command shell, execute the following commands (must have elevated
+permissions, such as user 'postgres'
+
+    CREATE USER polygene WITH PASSWORD 'ThisIsGreat!';
+    CREATE DATABASE <%= polygene.name.toLowerCase() %>;
+    GRANT ALL ON DATABASE <%= polygene.name.toLowerCase() %> TO polygene;
+    \connect <%= polygene.name.toLowerCase() %>
+    CREATE EXTENSION ltree;
+    \q
+<%
+}
+%>
+<%
+if( polygene.entitystore == 'Cassandra' ) {
+%>
+Start Cassandra in Docker
+=========================
+    docker run -d -p 7000:7000 -p 7001:7001 -p 7199:7199 -p 9042:9042 -p 9160:9160 --name polygene-cassandra cassandra
+    docker logs -f polygene-cassandra
+
+and wait for the following log message to appear.
+
+    Starting listening for CQL clients on /0.0.0.0:9042 (unencrypted)...
+
+after that you can Ctrl-C back to command line.
+<%
+}
+%>

@@ -37,12 +37,10 @@ module.exports = {
         } else {
             var esSqlFileName = 'InfrastructureLayer/StorageModule/storage/es-sql.properties';
             p.copyToConfig(p.ctx, esSqlFileName, esFileName);
-            p.copyTemplate(p.ctx, esSqlFileName, 'app/src/test/resources/' + esFileName );
 
             var dsFileName = 'ds-es-' + p.entitystore.toLowerCase() + '.properties';
             var datasourceFile = 'InfrastructureLayer/StorageModule/storage/' + dsFileName;
             p.copyToConfig(p.ctx, datasourceFile, dsFileName);
-            p.copyTemplate(p.ctx, datasourceFile, 'app/src/test/resources/' + dsFileName)
         }
     }
 };

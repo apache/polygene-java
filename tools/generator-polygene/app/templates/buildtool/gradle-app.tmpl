@@ -17,24 +17,29 @@
  *
  *
 -%>
-
-
 apply plugin: 'application'
 
 mainClassName="<%= polygene.packageName %>.app.<%= polygene.name %>Launcher"
 
-applicationDefaultJvmArgs=[]
-// GC Tuning strategies, see https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/
-// Strict memory bound
-// applicationDefaultJvmArgs << "-Xmx512M -Xms512M"
-//
-// Goal oriented, "throughput" and "max pause"
-// applicationDefaultJvmArgs << "-XX:MaxGCPauseMillis=300 -XX:GCTimeRatio=19"
-//
-// Garbage Collector
-// OneOf; -XX:+UseG1GC, -XX:+UseConcMarkSweepGC, -XX:-UseParallelOldGC, -XX:+UseSerialGC
-applicationDefaultJvmArgs << "-XX:+UseG1GC"
+startScripts {
+  applicationName = "<%= polygene.name %>"
+  optsEnvironmentVar = "<%= polygene.name.toUpperCase() %>_OPTS"
 
+  // GC Tuning strategies, see https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/
+  // Strict memory bound
+  // defaultJvmOpts << "-Xmx512M -Xms512M"
+
+  // Goal oriented, "throughput" and "max pause"
+  // defaultJvmOpts << "-XX:MaxGCPauseMillis=300 -XX:GCTimeRatio=19"
+
+  // Garbage Collector
+  // OneOf; -XX:+UseG1GC, -XX:+UseConcMarkSweepGC, -XX:-UseParallelOldGC, -XX:+UseSerialGC
+  defaultJvmOpts << "-XX:+UseG1GC"
+
+  // Custom start scripts
+  unixStartScriptGenerator.template = resources.text.fromFile('src/scripts/customUnixStartScript.txt')
+  windowsStartScriptGenerator.template = resources.text.fromFile('src/scripts/customWindowsStartScript.txt')
+}
 
 dependencies {
   implementation project( ":bootstrap" )
@@ -103,4 +108,8 @@ if( polygene.entitystore == 'SQLite'  ) {
   testImplementation "org.apache.polygene.tools:org.apache.polygene.tool.model-detail:$polygeneVersion"
   testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   testImplementation "com.github.tdomzal:junit-docker-rule:0.3"
+}
+
+tasks.withType(Tar){
+  compression = Compression.GZIP
 }

@@ -46,6 +46,20 @@ module.exports = {
         p.copyTemplate(p.ctx,
             'RestAPIApplication/bootstrap.tmpl',
             'bootstrap/src/main/java/' + p.javaPackageDir + '/bootstrap/' + p.name + 'ApplicationAssembler.java');
+
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/SETUP.tmpl',
+            'SETUP.txt');
+
+        p.ctx.fs.copy(
+            p.ctx.templatePath('RestAPIApplication/customUnixStartScript.txt'),
+            p.ctx.destinationPath('app/src/scripts/customUnixStartScript.txt')
+        );
+
+        p.ctx.fs.copy(
+            p.ctx.templatePath('RestAPIApplication/customWindowsStartScript.txt'),
+            p.ctx.destinationPath('app/src/scripts/customWindowsStartScript.txt')
+        );
     }
 };
 

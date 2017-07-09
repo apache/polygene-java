@@ -290,6 +290,9 @@ function assignFunctions(polygene) {
         polygene.copyTemplate(ctx,
             from,
             'app/src/dist/config/production/' + toName);
+        polygene.copyTemplate(ctx,
+            from,
+            'app/src/test/resources/' + toName);
     };
 
     polygene.copyTemplate = function (ctx, from, to) {

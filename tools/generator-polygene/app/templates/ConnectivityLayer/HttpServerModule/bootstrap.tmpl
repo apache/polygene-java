@@ -47,10 +47,10 @@ public class HttpServerModule
 {<% if( hasFeature('security') ) { %>
     private static final int DEFAULT_PORT = 8443;
     public static final String KS_PASSWORD = "1234";  // TODO: Secure the key stores
-    public static final String SERVER_KEYSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.key";
-    public static final String SERVER_KEYSTORE_TYPE = "JCEKS";
-    public static final String TRUSTSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.key";
-    public static final String TRUSTSTORE_TYPE = "JCEKS";
+    public static final String SERVER_KEYSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.p12";
+    public static final String SERVER_KEYSTORE_TYPE = "PKCS12";
+    public static final String TRUSTSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.p12";
+    public static final String TRUSTSTORE_TYPE = "PKCS12";
 <% } else {
 %>    protected static final int DEFAULT_PORT = 8080;
 <% } %>
@@ -70,7 +70,7 @@ public class HttpServerModule
             .assemble( module );
         SecureJettyConfiguration defaults = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         defaults.keystorePath().set( new File( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
-        defaults.keystoreType().set( "JCEKS" );
+        defaults.keystoreType().set( SERVER_KEYSTORE_TYPE );
         defaults.keystorePassword().set( KS_PASSWORD );
         defaults.truststorePath().set( new File( TRUSTSTORE_FILENAME ).getAbsolutePath() );
         defaults.truststoreType().set( TRUSTSTORE_TYPE );
