@@ -46,6 +46,7 @@ public class RdfMemoryStoreAssembler extends AbstractRdfIndexingAssembler<RdfNat
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( MemoryRepositoryService.class )
               .visibleIn( repositoryVisibility )
               .instantiateOnStartup();

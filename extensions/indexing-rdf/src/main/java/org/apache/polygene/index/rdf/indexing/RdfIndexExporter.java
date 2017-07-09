@@ -77,6 +77,7 @@ public interface RdfIndexExporter extends IndexExporter
                 catch( Exception e )
                 {
                     e.printStackTrace();
+                    throw new IOException( "Problem writing to RdfWriter", e );
                 }
                 finally
                 {
