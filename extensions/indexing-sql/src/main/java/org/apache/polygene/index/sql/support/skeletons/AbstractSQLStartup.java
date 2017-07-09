@@ -1654,9 +1654,14 @@ public abstract class AbstractSQLStartup
         + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END )
         + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START ) + "(.*)"
         + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END )
-        + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START ) + "(" + "[^"
+        + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_START )
+        + "([^"
         + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END + DESCRIPTOR_TYPE_SEPARATOR )
-        + "]+)" + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END ) + "$" );
+        + "]+)"
+        + "(,[^"
+        + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END + DESCRIPTOR_TYPE_SEPARATOR )
+        + "]+)*"
+        + Pattern.quote( DESCRIPTOR_COMPONENT_SEPARATOR_END ) + "$" );
 
     protected static String compositeDescriptorToString( LayerDescriptor layer,
                                                          ModuleDescriptor module, CompositeDescriptor descriptor )
