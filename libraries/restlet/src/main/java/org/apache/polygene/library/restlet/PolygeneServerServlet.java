@@ -19,16 +19,12 @@
  */
 package org.apache.polygene.library.restlet;
 
-import java.util.List;
 import javax.servlet.Servlet;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.api.structure.Module;
 import org.restlet.Context;
 import org.restlet.ext.servlet.ServerServlet;
-import org.restlet.routing.VirtualHost;
-import org.restlet.util.ServerList;
 
 /**
  * Restlet ServerServlet backed by a org.restlet.Application object.
