@@ -44,8 +44,6 @@ public interface PolygeneServerServlet extends Servlet
         @Override
         protected org.restlet.Application createApplication( Context parentContext )
         {
-            ServerList servers = getComponent().getServers();
-            System.out.println(servers);
             return objectFactory.newObject( PolygeneRestApplication.class, parentContext.createChildContext() );
         }
     }
