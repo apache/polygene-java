@@ -64,7 +64,7 @@ public class HttpServerModule
 %>        new HttpShiroAssembler()
             .withConfig( module, Visibility.module )
             .assemble( module );
-        module.forMixin( ShiroIniConfiguration.class ).declareDefaults().iniResourcePath().set("web-shiro.ini");
+        module.forMixin( ShiroIniConfiguration.class ).declareDefaults().iniResourcePath().set("classpath:web-shiro.ini");
         new SecureJettyServiceAssembler()
             .withConfig( module, Visibility.layer )
             .visibleIn( Visibility.layer )
