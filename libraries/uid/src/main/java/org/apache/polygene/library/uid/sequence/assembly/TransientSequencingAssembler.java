@@ -29,6 +29,7 @@ public class TransientSequencingAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( TransientSequencingService.class ).visibleIn( visibility() );
     }
 }

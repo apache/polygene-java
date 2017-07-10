@@ -62,6 +62,7 @@ public abstract class AbstractSQLIndexQueryAssembler<AssemblerType> extends Asse
     @Override
     public final void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         try
         {
             SQLVendor sqlVendor = getSQLVendor();

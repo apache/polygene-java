@@ -36,6 +36,7 @@ public class ESClientIndexQueryAssembler
     @Override
     public void assemble( final ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( ESClientIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )
               .identifiedBy( identity() )

@@ -31,6 +31,7 @@ public class MongoDBEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( MongoDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

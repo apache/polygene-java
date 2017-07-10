@@ -52,6 +52,7 @@ public class RestletCrudModuleAssembler extends Assemblers.VisibilityIdentity<Re
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration declaration = module
             .addServices( repositoryType )
             .visibleIn( Visibility.application )

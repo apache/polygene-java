@@ -31,6 +31,7 @@ public class StandaloneShiroAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( IniSecurityManagerService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();

@@ -31,6 +31,7 @@ public class LiquibaseAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( LiquibaseService.class ).visibleIn( visibility() );
         if( applyChangelogOnStartup )
         {

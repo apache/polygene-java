@@ -108,6 +108,7 @@ public class CodahaleMetricsAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service =
             module.services( CodahaleMetricsProvider.class )
                   .setMetaInfo( declaration )

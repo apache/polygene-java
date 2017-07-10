@@ -42,6 +42,7 @@ public class EntityTestAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

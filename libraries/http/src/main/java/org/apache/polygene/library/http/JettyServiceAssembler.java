@@ -54,6 +54,7 @@ public class JettyServiceAssembler
     @Override
     public final void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( httpService() ).
             visibleIn( visibility() ).
             instantiateOnStartup();

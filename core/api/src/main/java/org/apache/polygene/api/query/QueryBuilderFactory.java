@@ -19,6 +19,8 @@
  */
 package org.apache.polygene.api.query;
 
+import org.apache.polygene.api.indexing.MissingIndexingSystemException;
+
 /**
  * This is used to create QueryBuilders.
  *

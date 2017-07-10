@@ -33,6 +33,7 @@ public class RiakEntityStoreAssembler
     @Override
     public void assemble(ModuleAssembly module)
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( RiakEntityStoreService.class ).
             withMixins( RiakEntityStoreMixin.class ).
                 visibleIn( visibility() );
