@@ -29,6 +29,7 @@ public class RestAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.objects( RestApplication.class ).visibleIn( visibility() );
         module.objects( PolygeneFinder.class,
                         EntitiesResource.class,

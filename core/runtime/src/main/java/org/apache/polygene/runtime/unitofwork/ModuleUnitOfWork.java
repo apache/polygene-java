@@ -547,7 +547,8 @@ public class ModuleUnitOfWork
         return ( (EntityInstance) compositeInstanceOf( (Composite) entity ) ).entityState();
     }
 
-    private static class UoWQuerySource implements QuerySource
+    private static class UoWQuerySource
+        implements QuerySource
     {
         private final ModuleUnitOfWork moduleUnitOfWork;
 

@@ -30,6 +30,7 @@ public class CassandraEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( CassandraEntityStoreService.class )
               .visibleIn( visibility() )
               .identifiedBy( identity() )

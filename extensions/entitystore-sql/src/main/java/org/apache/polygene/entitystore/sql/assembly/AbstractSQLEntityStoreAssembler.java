@@ -44,6 +44,7 @@ public abstract class AbstractSQLEntityStoreAssembler<AssemblerType>
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         SQLDialect dialect = getSQLDialect();
         if( dialect == null )
         {

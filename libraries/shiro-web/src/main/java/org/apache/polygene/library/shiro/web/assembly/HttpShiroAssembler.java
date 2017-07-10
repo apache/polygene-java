@@ -40,6 +40,7 @@ public class HttpShiroAssembler extends Assemblers.Config<HttpShiroAssembler>
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         addContextListeners(
             listen().with( EnvironmentLoaderService.class ) )
             .to( module );

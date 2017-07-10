@@ -41,6 +41,7 @@ public class UoWFileAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( UoWFileFactory.class ).visibleIn( visibility() );
     }
 }

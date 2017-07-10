@@ -45,6 +45,7 @@ public class JavaxJsonSerializationAssembler extends Assemblers.VisibilityIdenti
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration declaration = module.services( JavaxJsonSerialization.class )
                                                .withTypes( Serialization.class,
                                                            Serializer.class, Deserializer.class,

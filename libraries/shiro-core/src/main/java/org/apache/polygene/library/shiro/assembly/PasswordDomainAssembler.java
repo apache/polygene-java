@@ -32,6 +32,7 @@ public class PasswordDomainAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.entities( PasswordSecurable.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( PasswordRealmService.class ).
             instantiateOnStartup().

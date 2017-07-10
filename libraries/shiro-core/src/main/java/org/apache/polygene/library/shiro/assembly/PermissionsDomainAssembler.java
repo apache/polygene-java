@@ -32,6 +32,7 @@ public class PermissionsDomainAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.entities( Role.class, RoleAssignment.class, RoleAssignee.class ).
             visibleIn( visibility() );
         module.services( RoleFactory.class ).

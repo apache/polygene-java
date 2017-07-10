@@ -68,6 +68,7 @@ public class DataSourceAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.importedServices( DataSource.class ).
             importedBy( ServiceInstanceImporter.class ).
             setMetaInfo( StringIdentity.identityOf( dataSourceServiceId ) ).

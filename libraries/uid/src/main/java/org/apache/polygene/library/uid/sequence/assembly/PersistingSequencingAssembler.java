@@ -31,6 +31,7 @@ public class PersistingSequencingAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( PersistingSequencingService.class ).visibleIn( visibility() );
         module.entities( SequenceEntity.class ).visibleIn( Visibility.module );
     }

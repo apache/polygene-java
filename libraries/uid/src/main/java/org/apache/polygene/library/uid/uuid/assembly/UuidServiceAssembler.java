@@ -29,6 +29,7 @@ public class UuidServiceAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( UuidServiceComposite.class ).visibleIn( visibility() );
     }
 }

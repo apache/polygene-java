@@ -31,6 +31,7 @@ public class JdbmEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( JdbmEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

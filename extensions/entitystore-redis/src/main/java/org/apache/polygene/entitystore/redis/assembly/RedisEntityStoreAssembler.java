@@ -34,6 +34,7 @@ public class RedisEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( RedisEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
