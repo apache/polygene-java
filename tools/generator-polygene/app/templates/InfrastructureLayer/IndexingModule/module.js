@@ -35,7 +35,7 @@ module.exports = {
                 'InfrastructureLayer/IndexingModule/indexing/solrconfig.xml',
                 'solrconfig.xml'
             );
-            p.copyTemplate(
+            p.copyToConfig(
                 p.ctx,
                 'InfrastructureLayer/IndexingModule/indexing/solr-schema.xml',
                 'schema.xml'
