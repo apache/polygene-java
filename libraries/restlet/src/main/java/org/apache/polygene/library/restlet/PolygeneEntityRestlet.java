@@ -152,7 +152,6 @@ public class PolygeneEntityRestlet<T extends HasIdentity> extends Restlet
                              }
                              Representation representation = converter.toRepresentation( result, new Variant(), null );
                              response.setEntity( representation );
-                             response.setEntity( representation );
                              response.setStatus( Status.SUCCESS_OK );
                          }
                          else

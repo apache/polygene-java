@@ -30,6 +30,7 @@ public class ESClusterIndexQueryAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( ESClusterIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )
               .identifiedBy( identity() )

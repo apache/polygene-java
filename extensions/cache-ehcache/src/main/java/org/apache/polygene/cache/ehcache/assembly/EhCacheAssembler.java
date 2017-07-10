@@ -31,6 +31,7 @@ public class EhCacheAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( EhCachePoolService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

@@ -31,6 +31,7 @@ public class PreferencesEntityStoreAssembler extends Assemblers.VisibilityIdenti
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         String applicationName = module.layer().application().name();
 
         Preferences root = Preferences.userRoot();

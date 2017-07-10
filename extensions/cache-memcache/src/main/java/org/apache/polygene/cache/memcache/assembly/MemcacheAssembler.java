@@ -34,6 +34,7 @@ public class MemcacheAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

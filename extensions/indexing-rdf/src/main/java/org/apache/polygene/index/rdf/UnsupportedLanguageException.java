@@ -19,10 +19,10 @@
  */
 package org.apache.polygene.index.rdf;
 
+import org.apache.polygene.api.indexing.IndexingException;
 import org.openrdf.query.QueryLanguage;
 
-public class UnsupportedLanguageException
-    extends RuntimeException
+public class UnsupportedLanguageException extends IndexingException
 {
     private QueryLanguage language;
 

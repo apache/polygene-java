@@ -30,6 +30,7 @@ public class ESFilesystemIndexQueryAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( ESFilesystemIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )
               .identifiedBy( identity() )

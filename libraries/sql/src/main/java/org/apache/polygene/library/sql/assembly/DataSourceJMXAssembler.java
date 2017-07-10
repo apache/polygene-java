@@ -29,6 +29,7 @@ public class DataSourceJMXAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( DataSourceConfigurationManagerService.class ).visibleIn( visibility() ).instantiateOnStartup();
     }
 }

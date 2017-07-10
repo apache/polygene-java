@@ -22,7 +22,7 @@ package org.apache.polygene.library.restlet;
 import javax.servlet.Servlet;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.structure.Module;
+import org.apache.polygene.api.object.ObjectFactory;
 import org.restlet.Context;
 import org.restlet.ext.servlet.ServerServlet;
 
@@ -32,16 +32,15 @@ import org.restlet.ext.servlet.ServerServlet;
 @Mixins( PolygeneServerServlet.Mixin.class )
 public interface PolygeneServerServlet extends Servlet
 {
-    class Mixin
-        extends ServerServlet
+    class Mixin extends ServerServlet
     {
         @Structure
-        private Module module;
+        private ObjectFactory objectFactory;
 
         @Override
         protected org.restlet.Application createApplication( Context parentContext )
         {
-            return module.newObject( org.restlet.Application.class, parentContext.createChildContext() );
+            return objectFactory.newObject( PolygeneRestApplication.class, parentContext.createChildContext() );
         }
     }
 }

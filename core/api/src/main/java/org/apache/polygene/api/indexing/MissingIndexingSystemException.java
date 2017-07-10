@@ -1,4 +1,4 @@
-<%#
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -16,19 +16,19 @@
  *  limitations under the License.
  *
  *
--%>
-package <%= polygene.packageName %>.rest.security;
+ */
+package org.apache.polygene.api.indexing;
 
-import org.restlet.security.SecretVerifier;
-import org.restlet.security.Verifier;
+import org.apache.polygene.api.query.QueryException;
 
-public class NullVerifier extends SecretVerifier
-    implements Verifier
+/**
+ * This Exception is thrown in <code>QueryBuilderFactory.newQueryBuilder()</code> method if
+ * no indexing subsystem has been declared in the assembly.
+ */
+public final class MissingIndexingSystemException extends IndexingException
 {
-
-    @Override
-    public int verify( String user, char[] secret )
+    public MissingIndexingSystemException()
     {
-        return RESULT_VALID;
+        super( "No EntityFinder has been declared in the assembly of the application." );
     }
 }

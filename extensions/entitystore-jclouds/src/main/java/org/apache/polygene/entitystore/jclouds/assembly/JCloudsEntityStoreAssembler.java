@@ -32,6 +32,7 @@ public class JCloudsEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( JCloudsEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();

@@ -29,6 +29,7 @@ public class AlarmSystemAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration alarmSystem = module.services( AlarmSystemService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

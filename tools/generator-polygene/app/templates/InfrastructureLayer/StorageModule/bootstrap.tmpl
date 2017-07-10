@@ -87,9 +87,7 @@ if( polygene.entitystore.indexOf( 'SQL' ) >= 0 ) {
             .assemble( module );
 <%
 if( polygene.entitystore === 'Cassandra' ) {
-%>        configModule.forMixin( CassandraEntityStoreConfiguration.class )
-            .declareDefaults()
-            .createIfMissing().set( true );
+%>        configModule.forMixin( CassandraEntityStoreConfiguration.class );
 <%
 }
 %>

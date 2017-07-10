@@ -165,6 +165,9 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.nb-gradle/**'        // Netbeans files
       spec.exclude '**/.nb-gradle*'          // Netbeans files
 
+      // Polygene Generator files
+      spec.exclude 'tools/generator-polygene/app/templates/**/*.txt'
+
       spec.into '.'
     }
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->

@@ -63,6 +63,7 @@ public class ExternalDataSourceAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         if( circuitBreaker != null )
         {
             externalDataSource = DataSources.wrapWithCircuitBreaker( StringIdentity.identityOf( identity() ), externalDataSource, circuitBreaker );

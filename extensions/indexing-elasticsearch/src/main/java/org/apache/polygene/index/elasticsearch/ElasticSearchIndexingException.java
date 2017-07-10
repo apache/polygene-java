@@ -19,17 +19,18 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
-public class ElasticSearchIndexingException extends RuntimeException
+import org.apache.polygene.api.indexing.IndexingException;
+
+public class ElasticSearchIndexingException extends IndexingException
 {
 
-    public ElasticSearchIndexingException( String string )
+    public ElasticSearchIndexingException( String message )
     {
-        super( string );
+        super( message );
     }
 
-    public ElasticSearchIndexingException( String string, Throwable thrwbl )
+    public ElasticSearchIndexingException( String message, Throwable cause )
     {
-        super( string, thrwbl );
+        super( message, cause );
     }
-
 }

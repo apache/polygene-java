@@ -38,6 +38,9 @@ import org.apache.polygene.library.restlet.resource.ResourceBuilder;
 import org.apache.polygene.library.restlet.serialization.FormRepresentation;
 import org.apache.polygene.library.restlet.serialization.JsonRepresentation;
 
+/** This assembler should go to a module in the layer of the {@link RestletCrudModuleAssembler}.
+ *
+ */
 public class RestletCrudConnectivityAssembler
     implements Assembler
 {

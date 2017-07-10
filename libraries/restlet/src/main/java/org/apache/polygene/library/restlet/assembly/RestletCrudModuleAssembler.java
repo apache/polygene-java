@@ -22,14 +22,17 @@ package org.apache.polygene.library.restlet.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkConcern;
-import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.library.restlet.repository.CrudRepository;
 import org.apache.polygene.library.restlet.repository.EntityTypeDescriptor;
 import org.apache.polygene.library.restlet.repository.SmallCrudRepositoryMixin;
 
-public class RestletCrudModuleAssembler
-    implements Assembler
+/**
+ * This assembler should be used for each module that has CRUD types, reachable by the REST API.
+ */
+public class RestletCrudModuleAssembler extends Assemblers.VisibilityIdentity<RestletCrudModuleAssembler>
 {
     private final Class type;
     private final Class repositoryType;
@@ -49,15 +52,22 @@ public class RestletCrudModuleAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
-        module
+        super.assemble( module );
+        ServiceDeclaration declaration = module
             .addServices( repositoryType )
-            .identifiedBy( "repository_" + type.getSimpleName() )
             .visibleIn( Visibility.application )
             .withMixins( SmallCrudRepositoryMixin.class )
             .withConcerns( UnitOfWorkConcern.class )
             .taggedWith( type.getSimpleName() )
-            .setMetaInfo( new EntityTypeDescriptor( type ) )
-        ;
+            .setMetaInfo( new EntityTypeDescriptor( type ) );
+        if( hasIdentity() )
+        {
+            declaration.identifiedBy( identity() );
+        }
+        else
+        {
+            declaration.identifiedBy( "repository_" + type.getSimpleName() );
+        }
         module.entities( type ).visibleIn( Visibility.layer );
         module.values( type ).visibleIn( Visibility.layer );
     }

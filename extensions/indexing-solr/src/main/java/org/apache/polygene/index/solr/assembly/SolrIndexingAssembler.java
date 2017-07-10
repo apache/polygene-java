@@ -31,6 +31,7 @@ public class SolrIndexingAssembler extends Assemblers.VisibilityIdentityConfig<S
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();
         module.services( SolrQueryService.class )
               .taggedWith( "solr", "search", "indexing", "query" )

@@ -32,7 +32,7 @@ public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLaunche
 {
     private static final String name = "<%= polygene.name %>";
     private static final String version = "0.1";
-    private Application.Mode mode = Application.Mode.development;
+    private Application.Mode mode = getApplicationMode();
 
     public static void main( String[] args )
         throws Exception
@@ -68,5 +68,15 @@ public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLaunche
     protected String entryModule()
     {
         return RestApiModule.NAME;
+    }
+
+    private Application.Mode getApplicationMode()
+    {
+        String mode = System.getenv( "APP_MODE" );
+        if( mode == null )
+        {
+            return Application.Mode.development;
+        }
+        return Application.Mode.valueOf( mode );
     }
 }

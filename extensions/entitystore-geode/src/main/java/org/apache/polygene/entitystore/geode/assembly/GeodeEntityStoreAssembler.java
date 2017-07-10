@@ -34,6 +34,7 @@ public class GeodeEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( GeodeEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {

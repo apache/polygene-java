@@ -596,8 +596,7 @@ public abstract class CompositeAssemblyImpl
 
             // No implementation found!
             // Check if if it's a composite constraints
-            if( Arrays.stream( annotationType.getAnnotations() )
-                      .anyMatch( typeHasAnnotation( ConstraintDeclaration.class ) ) )
+            if( typeHasAnnotation( ConstraintDeclaration.class ).test( constraintAnnotation ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(
                     Arrays.stream( annotationType.getAnnotations() ),

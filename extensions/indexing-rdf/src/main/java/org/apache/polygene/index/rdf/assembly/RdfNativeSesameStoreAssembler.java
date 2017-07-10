@@ -47,6 +47,7 @@ public class RdfNativeSesameStoreAssembler extends AbstractRdfIndexingAssembler<
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.services( NativeRepositoryService.class )
               .visibleIn( repositoryVisibility )
               .instantiateOnStartup();

@@ -76,7 +76,9 @@ function copyConfigurationPropertiesFile(p, composites) {
         if (composites.hasOwnProperty(idx)) {
             p.current.clazz = composites[idx];
             p.prepareClazz(p.current);
-            p.copyToConfig(p.ctx,'DomainLayer/DomainModule/config.properties.tmpl', p.current.clazz.name + '.properties');
+            var configurationFile = 'DomainLayer/DomainModule/config.properties.tmpl';
+            var destFileName = p.current.clazz.name + '.properties';
+            p.copyToConfig(p.ctx,configurationFile, destFileName);
         }
     }
 }

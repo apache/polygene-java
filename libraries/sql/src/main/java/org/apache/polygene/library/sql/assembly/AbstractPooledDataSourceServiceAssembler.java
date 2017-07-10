@@ -32,6 +32,7 @@ public abstract class AbstractPooledDataSourceServiceAssembler<AssemblerType>
     @Override
     public final void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         module.values( DataSourceConfiguration.class ).visibleIn( Visibility.module );
         if( hasConfig() )
         {

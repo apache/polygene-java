@@ -31,6 +31,7 @@ public class HazelcastEntityStoreAssembler
     @Override
     public void assemble( ModuleAssembly module )
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( HazelcastEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();

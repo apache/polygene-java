@@ -125,7 +125,7 @@ public interface RdfIndexerService extends StateChangeListener
             catch( Throwable e )
             {
                 e.printStackTrace();
-                //TODO What shall we do with the exception?
+                //TODO What shall we do with the exception? Probably figure out if we can recover, and possibly queue the state changes and retry later.
             }
         }
 
