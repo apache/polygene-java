@@ -359,7 +359,6 @@ we will create a complete project, like this
    create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/ConnectivityLayer.java
    create rest/src/main/java/com/sensetif/sink/rest/FloodRestApplication.java
    create app/src/main/java/com/sensetif/sink/app/FloodLauncher.java
-   create app/src/main/java/com/sensetif/sink/app/DevelopmentKeyManagement.java
    create app/src/main/config/development/web-shiro.ini
    create app/src/main/config/qa/web-shiro.ini
    create app/src/main/config/staging/web-shiro.ini

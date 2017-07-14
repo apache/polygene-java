@@ -165,9 +165,6 @@ class DistributionsPlugin implements Plugin<Project>
       spec.exclude '**/.nb-gradle/**'        // Netbeans files
       spec.exclude '**/.nb-gradle*'          // Netbeans files
 
-      // Polygene Generator files
-      spec.exclude 'tools/generator-polygene/app/templates/**/*.txt'
-
       spec.into '.'
     }
     def srcDistSupplementaryFilesCopySpec = project.copySpec { CopySpec spec ->
@@ -291,8 +288,6 @@ class DistributionsPlugin implements Plugin<Project>
         'manual/**/jquery*.js',
         // W3C XML Schemas - W3C Software License
         'samples/rental/src/main/resources/*.xsd',
-        // Polygene Generator Heroes Templates - MIT
-        'tools/generator-polygene/app/templates/Heroes/**',
       ]
     } as Action<RatTask> )
     project.tasks.create( TaskNames.INSPECT_SOURCE_DIST ) { Task task ->

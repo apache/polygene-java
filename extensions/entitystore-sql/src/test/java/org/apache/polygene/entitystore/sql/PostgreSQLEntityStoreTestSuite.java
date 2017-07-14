@@ -44,7 +44,7 @@ public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "postgres",
-                                                            3000L,
+                                                            10000L,
                                                             "PostgreSQL init process complete; ready for start up." );
 
     @Override

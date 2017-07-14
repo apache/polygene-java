@@ -33,10 +33,8 @@ module.exports = {
             'app/src/main/java/' + p.javaPackageDir + '/app/' + p.name + 'Launcher.java');
 
         if (p.hasFeature('security')) {
-            p.copyTemplate(p.ctx,
-                'RestAPIApplication/DevelopmentKeyManagement.java.tmpl',
-                'app/src/main/java/' + p.javaPackageDir + '/app/DevelopmentKeyManagement.java');
             p.copyToConfig(p.ctx, 'RestAPIApplication/web-shiro.ini.tmpl', 'web-shiro.ini');
+            p.copyToConfig(p.ctx, 'RestAPIApplication/dev-keystore.p12', 'security/keystore-' + p.name + '.p12');
         }
 
         p.copyTemplate(p.ctx,
@@ -51,15 +49,13 @@ module.exports = {
             'RestAPIApplication/SETUP.tmpl',
             'SETUP.txt');
 
-        p.ctx.fs.copy(
-            p.ctx.templatePath('RestAPIApplication/customUnixStartScript.txt'),
-            p.ctx.destinationPath('app/src/scripts/customUnixStartScript.txt')
-        );
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/customUnixStartScript.txt.tmpl',
+            'app/src/scripts/customUnixStartScript.txt.tmpl');
 
-        p.ctx.fs.copy(
-            p.ctx.templatePath('RestAPIApplication/customWindowsStartScript.txt'),
-            p.ctx.destinationPath('app/src/scripts/customWindowsStartScript.txt')
-        );
+        p.copyTemplate(p.ctx,
+            'RestAPIApplication/customWindowsStartScript.txt.tmpl',
+            'app/src/scripts/customWindowsStartScript.txt.tmpl');
     }
 };
 

@@ -45,13 +45,7 @@ public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLaunche
     protected LayeredApplicationAssembler createApplicationAssembler()
         throws AssemblyException
     {
-<% if( polygene.hasFeature( 'security' ) ) {
-%>        if( mode == Application.Mode.development )
-        {
-            DevelopmentKeyManagement.initializeKeyStore();
-        }
-<% }
-%>        return new <%= polygene.name %>ApplicationAssembler( name, version, mode, none -> {} );
+        return new <%= polygene.name %>ApplicationAssembler( name, version, mode, none -> {} );
     }
 
     @Override
