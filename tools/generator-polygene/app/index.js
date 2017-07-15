@@ -312,6 +312,17 @@ function assignFunctions(polygene) {
         }
     };
 
+    polygene.copyBinary = function (ctx, from, to) {
+
+        try {
+            ctx.fs.copy(
+                ctx.templatePath(from),
+                ctx.destinationPath(to));
+        } catch (exception) {
+            console.log("Unable to copy binary: " + from + " to " + to + "\n", exception);
+        }
+    };
+
     polygene.copyPolygeneBootstrap = function (ctx, layer, moduleName, condition) {
         if (condition) {
             copyTemplate(ctx,

@@ -22,6 +22,7 @@ package <%= polygene.packageName %>.bootstrap.connectivity;
 import java.util.HashMap;
 <% if( hasFeature('security') ) { %>
 import java.io.File;
+import java.net.URL;
 import org.apache.polygene.library.http.SecureJettyConfiguration;
 import org.apache.polygene.library.http.SecureJettyServiceAssembler;
 import org.apache.polygene.library.shiro.web.assembly.HttpShiroAssembler;
@@ -46,10 +47,10 @@ public class HttpServerModule
     implements ModuleAssembler
 {<% if( hasFeature('security') ) { %>
     private static final int DEFAULT_PORT = 8443;
-    public static final String KS_PASSWORD = "1234";  // TODO: Secure the key stores
-    public static final String SERVER_KEYSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.p12";
+    public static final String KS_PASSWORD = "123456";  // TODO: Secure the key stores
+    public static final String SERVER_KEYSTORE_FILENAME = "security/keystore-<%= polygene.name.toLowerCase() %>.p12";
     public static final String SERVER_KEYSTORE_TYPE = "PKCS12";
-    public static final String TRUSTSTORE_FILENAME = "security/<%= polygene.name.toLowerCase() %>-app.p12";
+    public static final String TRUSTSTORE_FILENAME = "security/keystore-<%= polygene.name.toLowerCase() %>.p12";
     public static final String TRUSTSTORE_TYPE = "PKCS12";
 <% } else {
 %>    protected static final int DEFAULT_PORT = 8080;
@@ -70,10 +71,18 @@ public class HttpServerModule
             .visibleIn( Visibility.layer )
             .assemble( module );
         SecureJettyConfiguration defaults = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
-        defaults.keystorePath().set( new File( SERVER_KEYSTORE_FILENAME ).getAbsolutePath() );
+        URL keyStoreResource = getClass().getClassLoader().getResource( SERVER_KEYSTORE_FILENAME );
+        if( keyStoreResource != null )
+        {
+            defaults.keystorePath().set( keyStoreResource.toExternalForm() );
+        }
         defaults.keystoreType().set( SERVER_KEYSTORE_TYPE );
         defaults.keystorePassword().set( KS_PASSWORD );
-        defaults.truststorePath().set( new File( TRUSTSTORE_FILENAME ).getAbsolutePath() );
+        URL trustStoreResource = getClass().getClassLoader().getResource( TRUSTSTORE_FILENAME );
+        if( trustStoreResource != null )
+        {
+            defaults.truststorePath().set( trustStoreResource.toExternalForm() );
+        }
         defaults.truststoreType().set( TRUSTSTORE_TYPE );
         defaults.truststorePassword().set( KS_PASSWORD );
         defaults.wantClientAuth().set( Boolean.FALSE );

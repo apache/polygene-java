@@ -34,7 +34,8 @@ module.exports = {
 
         if (p.hasFeature('security')) {
             p.copyToConfig(p.ctx, 'RestAPIApplication/web-shiro.ini.tmpl', 'web-shiro.ini');
-            p.copyToConfig(p.ctx, 'RestAPIApplication/dev-keystore.p12', 'security/keystore-' + p.name + '.p12');
+            p.copyBinary(p.ctx, 'RestAPIApplication/dev-keystore.p12', 'app/src/dist/config/development/security/keystore-' + p.name.toLowerCase() + '.p12');
+            p.copyBinary(p.ctx, 'RestAPIApplication/dev-keystore.p12', 'app/src/test/resources/security/keystore-' + p.name.toLowerCase() + '.p12');
         }
 
         p.copyTemplate(p.ctx,
