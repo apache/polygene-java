@@ -20,7 +20,7 @@ import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 def dependencies = extensions.getByType( DependenciesDeclarationExtension )
 
 // Gradle version
-dependencies.gradleVersion = '4.0'
+dependencies.gradleVersion = '4.0.1'
 
 // Remote repositories
 dependencies.repositoriesUrls << [
