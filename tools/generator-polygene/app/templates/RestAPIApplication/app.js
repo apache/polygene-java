@@ -52,11 +52,11 @@ module.exports = {
 
         p.copyTemplate(p.ctx,
             'RestAPIApplication/customUnixStartScript.txt.tmpl',
-            'app/src/scripts/customUnixStartScript.txt.tmpl');
+            'app/src/scripts/customUnixStartScript.txt');
 
         p.copyTemplate(p.ctx,
             'RestAPIApplication/customWindowsStartScript.txt.tmpl',
-            'app/src/scripts/customWindowsStartScript.txt.tmpl');
+            'app/src/scripts/customWindowsStartScript.txt');
     }
 };
 
