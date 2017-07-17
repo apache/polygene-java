@@ -32,9 +32,6 @@ get <<library-circuitbreaker,Circuit Breaker>> and <<library-jmx, JMX>> integrat
 
 The database schema is managed using <<library-sql-liquibase>>.
 
-TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
-<<extension-indexing-sql>>.
-
 The following SQL databases are supported:
 
 - http://www.postgresql.org/[PostgreSQL]
