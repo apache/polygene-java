@@ -65,7 +65,7 @@ https://github.com/apache/polygene-java/tree/develop/samples/rental[Browse Sourc
 
 NOTE: This sample use PostgreSQL and drop all of its data once run in order to be runnable multiple times.
 
-Sample of how to fully use Polygene™ SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
+Sample of how to fully use Polygene™ SQL support : <<library-sql>>, <<extension-es-sqlkv>> and <<extension-indexing-sql>>.
 
 https://github.com/apache/polygene-java/tree/develop/samples/sql-support[Browse Source]
 

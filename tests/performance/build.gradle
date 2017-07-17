@@ -34,7 +34,7 @@ dependencies {
   perfImplementation polygene.library( 'sql-dbcp' )
   perfImplementation polygene.extension( 'entitystore-memory' )
   perfImplementation polygene.extension( 'entitystore-jdbm' )
-  perfImplementation polygene.extension( 'entitystore-sql' )
+  perfImplementation polygene.extension( 'entitystore-sqlkv' )
   perfImplementation polygene.extension( 'cache-ehcache' )
   perfImplementation polygene.extension( 'indexing-rdf' )
   perfImplementation libraries.derby

@@ -20,9 +20,9 @@
 
 apply plugin: 'polygene-extension'
 
-description = "Apache Polygene™ SQL EntityStore Extension"
+description = "Apache Polygene™ SQL Key/Value EntityStore Extension"
 
-jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL Key/Value" } }
 
 dependencies {
   api polygene.core.bootstrap

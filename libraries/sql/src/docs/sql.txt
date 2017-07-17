@@ -31,7 +31,7 @@ The SQL Library provides facilities for working with SQL databases.
 The center piece is the DataSource support that comes with
 <<library-circuitbreaker>> and <<library-jmx>> support.
 
-TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
+TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sqlkv>> and
 <<extension-indexing-sql>>.
 
 Moreover, supplementary libraries helps dealing with different connection pool implementations and schema migrations.

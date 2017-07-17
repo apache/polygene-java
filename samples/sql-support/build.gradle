@@ -30,7 +30,7 @@ dependencies {
   implementation polygene.core.bootstrap
   implementation polygene.library( 'sql-dbcp' )
   implementation polygene.extension( 'entitystore-preferences' )
-  implementation polygene.extension( 'entitystore-sql' )
+  implementation polygene.extension( 'entitystore-sqlkv' )
   implementation polygene.extension( 'indexing-sql' )
 
   runtimeOnly polygene.core.runtime
