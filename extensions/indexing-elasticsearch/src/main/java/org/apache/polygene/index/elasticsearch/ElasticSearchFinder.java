@@ -130,7 +130,7 @@ public interface ElasticSearchFinder
             SearchResponse response = request.execute().actionGet();
 
             return StreamSupport.stream( response.getHits().spliterator(), false )
-                                .map( hit -> EntityReference.parseEntityReference( hit.id() ) );
+                                .map( hit -> EntityReference.parseEntityReference( hit.getId() ) );
         }
 
         @Override
@@ -154,9 +154,9 @@ public interface ElasticSearchFinder
             // Execute
             SearchResponse response = request.execute().actionGet();
 
-            if( response.getHits().totalHits() == 1 )
+            if( response.getHits().getTotalHits() == 1 )
             {
-                return EntityReference.parseEntityReference( response.getHits().getAt( 0 ).id() );
+                return EntityReference.parseEntityReference( response.getHits().getAt( 0 ).getId() );
             }
 
             return null;

@@ -19,11 +19,12 @@
  */
 package org.apache.polygene.index.elasticsearch.internal;
 
+import org.apache.polygene.index.elasticsearch.ElasticSearchSupport;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.apache.polygene.index.elasticsearch.ElasticSearchSupport;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,8 @@ public abstract class AbstractElasticSearchSupport
                                            .endObject()
                                    .endObject()
                                .endObject()
-                               .string() );
+                               .string(),
+                XContentType.JSON);
             XContentBuilder mapping = XContentFactory.jsonBuilder()
                                                      .startObject()
                                                          .startObject( entitiesType() )

@@ -51,7 +51,7 @@ def commonsLangVersion = '3.5'
 def commonsValidatorVersion = '1.6'
 def derbyVersion = '10.13.1.1'
 def ehcacheVersion = '3.3.1'
-def elasticsearchVersion = '5.2.2'
+def elasticsearchVersion = '5.5.0'
 def freemarkerVersion = '2.3.26-incubating'
 def geodeVersion = '1.1.1'
 def groovyVersion = '2.4.10'
@@ -97,8 +97,8 @@ dependencies.libraries << [
   elasticsearch       : [ "org.elasticsearch:elasticsearch:$elasticsearchVersion",
                           "org.elasticsearch.client:transport:$elasticsearchVersion",
                           // Elasticsearch 5.0 do not work with log4j 2.7
-                          "org.apache.logging.log4j:log4j-api:2.6.2",
-                          "org.apache.logging.log4j:log4j-core:2.6.2" ],
+                          "org.apache.logging.log4j:log4j-api:2.8.2",
+                          "org.apache.logging.log4j:log4j-core:2.8.2" ],
   freemarker          : "org.freemarker:freemarker:$freemarkerVersion",
   geode               : "org.apache.geode:geode-core:$geodeVersion",
   groovy              : "org.codehaus.groovy:groovy-all:$groovyVersion",
