@@ -284,7 +284,7 @@ class DistributionsPlugin implements Plugin<Project>
         // Graphic Resources
         '**/*.svg', '**/*.gif', '**/*.png', '**/*.jpg', '**/*.psd',
         // Keystores
-        '**/*.jceks',
+        '**/*.jceks', '**/*.p12',
         // Syntax Highlighter - MIT
         'manual/**/sh*.css', 'manual/**/sh*.js',
         // jQuery & plugins - MIT
