@@ -33,6 +33,13 @@ It is intended to be a recommendation of best practices for the Apache Polygene�
 The instructions provided here are consistent with, but not a replacement for the https://www.apache.org/dev/release.html[ASF Release Guidelines].
 
 
+== TL;DR
+
+- Build and publish/stage release candidate bits
+- VOTE thread
+    - NO: clean things up
+    - YES: promote the release candidate bits as final and update all properties
+
 
 == Preparing a release
 
@@ -271,14 +278,6 @@ Also review the release distributions in `distributions/build/distributions` whe
 [source,shell]
 ----
 .
-├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz
-├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5
-├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512
-├── apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc
-├── apache-polygene-java-<RELEASE-VERSION>-bin.zip
-├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5
-├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512
-├── apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc
 ├── apache-polygene-java-<RELEASE-VERSION>-src.tgz
 ├── apache-polygene-java-<RELEASE-VERSION>-src.tgz.MD5
 ├── apache-polygene-java-<RELEASE-VERSION>-src.tgz.SHA-512
@@ -330,7 +329,7 @@ Stage artifacts to https://repository.apache.org/[repository.apache.org] :
 [source,shell]
 ----
 cd polygene-java
-./gradlew -Dversion="<RELEASE-VERSION>" publishAsfMavenArtifacts
+./gradlew -Dversion="<RELEASE-VERSION>" uploadArchives
 ----
 
 Close the staging Nexus repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#close-stage[Closing the staged repository] guide.
@@ -356,8 +355,8 @@ that the new version was published and is tagged as `beta`.
 
 === Upload RC distributions
 
-Source and binary distributions, checksums and signatures must be uploaded to https://dist.apache.org/repos/dist/dev/polygene/[dist.apache.org/repos/dist/dev/polygene].
-This build created these in the `buid/distributions` directory, named `apache-polygene-java-<RELEASE-VERSION>-[src|bin]*.*`.
+Source distribution, checksums and signatures must be uploaded to https://dist.apache.org/repos/dist/dev/polygene/[dist.apache.org/repos/dist/dev/polygene].
+This build created these in the `buid/distributions` directory, named `apache-polygene-java-<RELEASE-VERSION>-src*.*`.
 As this release still is a simple candidate, we'll rename them before upload to advertise this in their names.
 
 [source,shell]
@@ -380,24 +379,6 @@ cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEAS
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
 cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
    "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
-# Binary ZIP
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
-# Binary TAR.GZ
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
-cp "polygene-java/distributions/build/distributions/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
-   "polygene-dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
 ----
 
 And then upload them:
@@ -406,7 +387,7 @@ And then upload them:
 ----
 cd polygene-dist/dev/polygene
 svn add * --force
-svn commit -m "polygene: upload <RELEASE-VERSION> to dist/dev/polygene"
+svn commit -m "polygene: upload <RELEASE-VERSION>-RC# to dist/dev/polygene"
 ----
 
 
@@ -446,10 +427,6 @@ The vote is open for the next 72 hours and passes if a majority of at least thre
 [ ] +1 Release Apache Polygene (Java Edition) <RELEASE-VERSION>
 [ ]  0 I don't have a strong opinion about this, but I assume it's ok
 [ ] -1 Do not release Apache Polygene (Java Edition) <RELEASE-VERSION> because...
-
-Here is my vote:
-
-+1 (binding)
 
 Cheers
 ----
@@ -500,14 +477,6 @@ Put them in a directory:
 [source,shell]
 ----
 cd polygene-check-rc
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512
-wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc
 wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz
 wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5
 wget https://dist.apache.org/repos/dist/dev/polygene/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512
@@ -526,8 +495,6 @@ Verify PGP signatures:
 [source,shell]
 ----
 cd polygene-check-rc
-gpg apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
-gpg apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc
 gpg apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc
 gpg apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.asc
 ----
@@ -540,8 +507,6 @@ Verify MD5 checksum:
 [source,shell]
 ----
 cd polygene-check-rc
-echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" | md5sum -c -
-echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" | md5sum -c -
 echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz" | md5sum -c -
 echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5) apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" | md5sum -c -
 ----
@@ -554,8 +519,6 @@ Verify SHA-512 checksum:
 [source,shell]
 ----
 cd polygene-check-rc
-echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" | shasum -a 512 -c -
-echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" | shasum -a 512 -c -
 echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz" | shasum -a 512 -c -
 echo "$(cat apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip.MD5)  apache-polygene-java-<RELEASE-VERSION>-RC#-src.zip" | shasum -a 512 -c -
 ----
@@ -655,32 +618,6 @@ svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-5
      -m "polygene: promoting release <RELEASE-VERSION> distributions"
 svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-src.tgz.asc" \
      "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-src.tgz.asc" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-# Binary ZIP
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.MD5" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.zip.asc" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.zip.asc" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-# Binary TAR.GZ
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.MD5" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
-     -m "polygene: promoting release <RELEASE-VERSION> distributions"
-svn move "$DIST_DEV_URL/apache-polygene-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" \
-     "$DIST_RELEASE_URL/apache-polygene-java-<RELEASE-VERSION>-bin.tgz.asc" \
      -m "polygene: promoting release <RELEASE-VERSION> distributions"
 ----
 
@@ -806,7 +743,7 @@ Register the new release at https://reporter.apache.org/[reporter.apache.org]
 
 === Announce
 
-Finally, send an announcement to mailto:dev@polygene.apache.org[dev@] and mailto:users@polygene.apache.org[users@] mailing lists. Email announcements should have the subject line:
+Finally, send an announcement to mailto:dev@polygene.apache.org[dev@] mailing list. Email announcements should have the subject line:
 
 [source,text]
 ----
@@ -817,7 +754,7 @@ The announcement email should contains the release-notes as text, remember they 
 
 
 
-== VOTE fails
+== VOTE fails or is cancelled
 
 
 === Record failure
@@ -846,9 +783,8 @@ Drop distributions, checksums and signatures from https://dist.apache.org/repos/
 [source,shell]
 ----
 cd polygene-dist/dev/polygene/
-rm "*<RELEASE-VERSION>-RC#*.*"
-svn add * --force
-svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene as the vote failed"
+svn rm "*<RELEASE-VERSION>-RC#*.*"
+svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene as the vote failed/was cancelled"
 ----
 
 Drop NPM packages:
