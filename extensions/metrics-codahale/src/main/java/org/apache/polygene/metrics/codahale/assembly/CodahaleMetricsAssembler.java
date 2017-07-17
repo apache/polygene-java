@@ -30,7 +30,6 @@ import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.metrics.codahale.CodahaleMetricsProvider;
@@ -108,8 +107,8 @@ public class CodahaleMetricsAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
     {
+        super.assemble( module );
         ServiceDeclaration service =
             module.services( CodahaleMetricsProvider.class )
                   .setMetaInfo( declaration )

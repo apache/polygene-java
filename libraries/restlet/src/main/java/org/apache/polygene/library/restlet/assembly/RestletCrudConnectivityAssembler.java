@@ -21,7 +21,6 @@ package org.apache.polygene.library.restlet.assembly;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.restlet.Command;
 import org.apache.polygene.library.restlet.FormField;
@@ -39,12 +38,14 @@ import org.apache.polygene.library.restlet.resource.ResourceBuilder;
 import org.apache.polygene.library.restlet.serialization.FormRepresentation;
 import org.apache.polygene.library.restlet.serialization.JsonRepresentation;
 
+/** This assembler should go to a module in the layer of the {@link RestletCrudModuleAssembler}.
+ *
+ */
 public class RestletCrudConnectivityAssembler
     implements Assembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( EntryPointResource.class,
                        EntityListResource.class,

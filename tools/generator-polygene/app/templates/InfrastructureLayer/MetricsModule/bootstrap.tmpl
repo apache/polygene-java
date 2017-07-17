@@ -24,24 +24,37 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.metrics.<%- polygene.metrics.toLowerCase() %>.assembly.<%- polygene.metrics %>MetricsAssembler;
-
+<%
+if (polygene.metrics === "None") {
+%>import org.apache.polygene.bootstrap.defaults.DefaultMetricsProviderAssembler;
+import org.apache.polygene.api.metrics.MetricsProvider;
+<%
+} else {
+%>import org.apache.polygene.metrics.<%- polygene.metrics.toLowerCase() %>.assembly.<%- polygene.metrics %>MetricsAssembler;
+<%
+}
+%>
 public class <%- polygene.metrics %>MetricsModule
     implements ModuleAssembler
 {
     public static final String NAME = "<%- polygene.metrics %> Metrics Module";
-    private final ModuleAssembly configModule;
-
-    public <%- polygene.metrics %>MetricsModule( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-    }
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.metrics %>MetricsAssembler().assemble( module );
+<%
+if (polygene.metrics === "None") {
+%>        new DefaultMetricsProviderAssembler().assemble( module );
+        module.services( MetricsProvider.class ).visibleIn( Visibility.application );
+<%
+} else {
+%>        new <%- polygene.metrics %>MetricsAssembler()
+            .visibleIn( Visibility.application )
+            .assemble( module );
+<%
+}
+%>
         return module;
     }
 }

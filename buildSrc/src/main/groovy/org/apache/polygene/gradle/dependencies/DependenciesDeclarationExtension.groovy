@@ -25,6 +25,7 @@ import org.gradle.api.artifacts.component.ModuleComponentSelector
 @CompileStatic
 class DependenciesDeclarationExtension
 {
+  String gradleVersion
   final Map<String, String> repositoriesUrls = [ : ]
   final Map<String, Object> libraries = [ : ]
   final Map<String, List<Object>> defaultDependencies = [ : ]

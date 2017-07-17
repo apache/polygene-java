@@ -117,7 +117,7 @@ public class Assemblers
      * Assembler with Visibility adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class Visibility<AssemblerType>
+    public static abstract class Visibility<AssemblerType> extends AssembleChecker
         implements Visible<AssemblerType>
     {
         private org.apache.polygene.api.common.Visibility visibility = org.apache.polygene.api.common.Visibility.module;
@@ -141,7 +141,7 @@ public class Assemblers
      * Assembler with Identity adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class Identity<AssemblerType>
+    public static abstract class Identity<AssemblerType> extends AssembleChecker
         implements Identifiable<AssemblerType>
     {
         private String identity;
@@ -171,7 +171,7 @@ public class Assemblers
      * Assembler with Configuration adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class Config<AssemblerType>
+    public static abstract class Config<AssemblerType> extends AssembleChecker
         implements Configurable<AssemblerType>
     {
         private ModuleAssembly configModule = null;
@@ -210,7 +210,7 @@ public class Assemblers
      * Assembler with Visibility and Identity adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class VisibilityIdentity<AssemblerType>
+    public static abstract class VisibilityIdentity<AssemblerType> extends AssembleChecker
         implements Visible<AssemblerType>,
                    Identifiable<AssemblerType>
     {
@@ -256,7 +256,7 @@ public class Assemblers
      * Assembler with Visibility and Configuration adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class VisibilityConfig<AssemblerType>
+    public static abstract class VisibilityConfig<AssemblerType> extends AssembleChecker
         implements Visible<AssemblerType>,
                    Configurable<AssemblerType>
     {
@@ -311,7 +311,7 @@ public class Assemblers
      * Assembler with Identity and Configuration adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class IdentityConfig<AssemblerType>
+    public static abstract class IdentityConfig<AssemblerType> extends AssembleChecker
         implements Identifiable<AssemblerType>,
                    Configurable<AssemblerType>
     {
@@ -372,7 +372,7 @@ public class Assemblers
      * Assembler with Visibility, Identity and Configuation adapter.
      * @param <AssemblerType> Parameterized type of Assembler
      */
-    public static abstract class VisibilityIdentityConfig<AssemblerType>
+    public static abstract class VisibilityIdentityConfig<AssemblerType> extends AssembleChecker
         implements Visible<AssemblerType>,
                    Identifiable<AssemblerType>,
                    Configurable<AssemblerType>
@@ -445,4 +445,46 @@ public class Assemblers
         }
     }
 
+    public static abstract class AssembleChecker
+        implements Assembler
+    {
+        private boolean assembled = false;
+
+        @Override
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
+        {
+            assembled = true;
+        }
+
+        @Override
+        protected void finalize()
+            throws Throwable
+        {
+            super.finalize();
+            if( !assembled )
+            {
+                System.err.println( "WARNING!!!!!" );
+                System.err.println( "############################################################################" );
+                System.err.println( "##" );
+                System.err.println( "##  The " + getClass().getName() + " assembler was not assembled." );
+                System.err.println( "##" );
+                System.err.println( "##  Expect that some functionality to be missing or incorrect." );
+                System.err.println( "##" );
+                if( getClass().getName().startsWith( "org.apache.polygene" ))
+                {
+                    System.err.println( "## When instantiating a provided Assembler, you must call the assemble(module)" );
+                    System.err.println( "## method after setting the options. This was not done." );
+                }
+                else
+                {
+                    System.err.println( "## When overriding any helper class in org.apache.polygene.bootstrap.Assemblers" );
+                    System.err.println( "## you must call super.assemble(module) in the assmeble(ModuleAssembly module)" );
+                    System.err.println( "## method. This was not done, OR that you forgot to call assemble() method " );
+                    System.err.println( "## after instantiating and setting the options." );
+                }
+                System.err.println( "############################################################################" );
+            }
+        }
+    }
 }

@@ -30,8 +30,8 @@ public class SwingBindingAssembler
     implements Assembler
 {
 
+    @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.objects( StateModel.class, StateInvocationHandler.class, BoundProperty.class );
         addStringToTextFieldAdapter( module );

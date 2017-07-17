@@ -25,7 +25,7 @@ import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.UseDefaults;
-import org.apache.polygene.api.composite.NoSuchTransientException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
@@ -52,7 +52,7 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchTransientException.class )
+    @Test( expected = NoSuchTransientTypeException.class )
     public void newBuilderForUnregisteredComposite()
         throws Exception
     {

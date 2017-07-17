@@ -321,6 +321,14 @@ This term has no definition yet. Learn how to contribute in <<community-docs>>.
 --
 
 
+[[def-object,Object]]Object::
++
+--
+Polygene can manage Java classes that are not Composites, and injections can be made on these objects. Read more
+in the user guide about <<core-api-object>>.
+--
+
+
 [[def-private-mixin,Private Mixin]]Private Mixin::
 +
 --

@@ -36,8 +36,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -53,7 +53,8 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
         module.entities( DualFaced.class );
         module.values( SimpleName.class );
         module.values( DualFaced.class );
-        module.services( MemoryEntityStoreService.class );
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test
@@ -112,7 +113,7 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
         throws UnitOfWorkCompletionException
     {
         ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
-        builder.prototype().identity().set( new StringIdentity( "1234" ) );
+        builder.prototype().identity().set( StringIdentity.identityOf( "1234" ) );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
 
@@ -124,8 +125,8 @@ public class ValueWithAssociationTest extends AbstractPolygeneTest
 
         try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
         {
-            DualFaced entity = uow.get( DualFaced.class, new StringIdentity( "1234" ) );
-            assertThat( entity.identity().get(), equalTo( new StringIdentity( "1234" ) ) );
+            DualFaced entity = uow.get( DualFaced.class, StringIdentity.identityOf( "1234" ) );
+            assertThat( entity.identity().get(), equalTo( StringIdentity.identityOf( "1234" ) ) );
             assertThat( entity.name().get(), equalTo( "Hedhman" ) );
             uow.complete();
         }

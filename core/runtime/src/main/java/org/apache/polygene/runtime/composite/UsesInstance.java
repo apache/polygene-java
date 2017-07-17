@@ -45,6 +45,7 @@ public final class UsesInstance
 
     public UsesInstance use( Object... objects )
     {
+        // There is some case where we get here with only partially initialized composite as "objects". That fails with NPE in useObjects.addAll() below. Should be figured out when this happens and prevent it.
         HashSet<Object> useObjects = new HashSet<>();
         if( !uses.isEmpty() )
         {

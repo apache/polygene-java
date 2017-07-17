@@ -48,6 +48,7 @@ import org.apache.polygene.spi.entitystore.StateChangeListener;
 import org.apache.polygene.spi.serialization.JsonSerializer;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +150,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
                 // Handle errors
                 if( bulkResponse.hasFailures() )
                 {
-                    throw new ElasticSearchIndexException( bulkResponse.buildFailureMessage() );
+                    throw new ElasticSearchIndexingException( bulkResponse.buildFailureMessage() );
                 }
 
                 LOGGER.debug( "Indexing changed Entity states took {}ms", bulkResponse.getTookInMillis() );
@@ -169,7 +170,7 @@ public interface ElasticSearchIndexer extends StateChangeListener
         {
             bulkBuilder.add( support.client().
                 prepareIndex( support.index(), support.entitiesType(), identity ).
-                                        setSource( json ) );
+                    setSource( json, XContentType.JSON ) );
         }
 
         /**

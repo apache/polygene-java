@@ -19,13 +19,11 @@
  */
 package org.apache.polygene.runtime.activation;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.activation.Activator;
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ApplicationActivationTest
 {
@@ -64,16 +62,9 @@ public class ApplicationActivationTest
     public void testApplicationActivator()
             throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-            {
-                module.layer().application().withActivators( TestedActivator.class );
-            }
-
-        };
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> module.layer().application().withActivators( TestedActivator.class )
+        );
 
         // Activate
         Application application = assembly.application();

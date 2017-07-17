@@ -1,0 +1,452 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[tools-shell,Command Line Shell]]
+= Polygene Generator =
+Apache Polygene comes with a http://yeoman.io/[Yeoman] code generator, to
+quickly set up a project for Polygene applications.
+
+== Usage ==
+
+You will need `node` installed in your machine. In case you don't have it
+(you can check this typing `node --version` in your terminal) please visit
+this https://nodejs.org/en/download/[link].
+
+Then run the following command to install Yeoman and the Polygene generator:
+
+[source,shell]
+----
+$ npm install -g yo generator-polygene
+----
+
+Then run the following commands to get started:
+
+[source,shell]
+----
+$ mkdir projectdirname
+$ cd projectdirname
+$ yo polygene
+----
+
+It will ask a lot of questions. For choice questions, you operate up and down, and with multi-choice, you
+select with space bar.
+
+== First Trial ==
+
+=== Project Name ===
+It starts with the Project name. This will be the project name in Gradle and any gradle driven naming of the
+project such as in IDEs. It defaults to current directory with initial uppercase letter.
+
+[source,shell]
+----
+? Your project name
+----
+
+=== Java Package Name ===
+This is the root of the package names in the multi-module, multi-package project.
+
+[source,shell]
+----
+? Java package name
+----
+
+=== Application Type ===
+
+The Application Type that you want to create.
+
+NOTE: Command Line is currently not implemented correctly, and the Rest API is still not complete.
+
+[source,shell]
+----
+? what type of application do you want to create?
+  Command Line
+❯ Rest API
+----
+
+=== Entity Store ===
+Polygene has built-in persistence, and that is backed by entity store plugins. There are currently a fair
+number of implementations to choose from. Not that "memory" is not persistent, but looses the content on shutdown.
+
+[source,shell]
+----
+? Which entity store do you want to use?
+  Cassandra
+  File
+  DerbySQL
+  Geode
+  H2SQL
+  Hazelcast
+  JClouds
+  Jdbm
+  LevelDB
+> Memory
+  MongoDB
+  MySQL
+  Preferences
+  Redis
+  Riak
+  PostgreSQL
+  SQLite
+----
+
+If one of the SQL options are given, then a question of connection pool will pop up.
+
+[source,shell]
+----
+? Which connection pool do you want to use?
+  BoneCP
+> DBCP
+----
+
+=== Indexing/Query system ===
+Select of a pluggable Indexing and Query subsystem.
+
+In Polygene, the indexing/query system is separated from store and retrieve. This allows us to optimize direct
+fetches for navigating object graphs. In practical Polygene applications, we find that querying is not nearly as
+common as in, say, JPA applications. The query layout in the underlying indexing system is also very different
+from the document-oriented approach of most entity stores.
+
+NOTE: Not all indexing subsystems support all of the specified Indexing/Query SPI.
+
+[source,shell]
+----
+? Which indexing system do you want to use?
+> Rdf
+  ElasticSearch
+  Solr
+  SQL
+----
+
+=== Caching System ===
+Some of the entity stores rely on a Polygene level caching SPI. This caching subsystem is pluggable and
+will be used by any of the entity stores that uses the internal MapEntityStore SPI
+
+[source,shell]
+----
+? Which caching system do you want to use?
+> None
+  Memcache
+  EhCache
+----
+
+=== Serialization system ===
+Serialization is a key concept in business applications, and in Polygene that is a pluggable subsystem.
+
+? Which serialization system do you want to use?
+
+[source,shell]
+----
+> JavaxJson
+  JavaxXml
+  MessagePack
+----
+
+=== Metrics System ===
+Metrics is the SPI for measuring the performance and health of an Polygene application. Currently only
+one implementation is available.
+
+? Which metrics capturing system do you want to use?
+
+[source,shell]
+----
+> None
+  Codahale
+----
+
+=== Other Features ===
+
+JMX feature installs the MBean server and registers all Services with it, in the application structure defined.
+
+Mixin Scripting is allowing Mixin methods to be implemented in other languages parallel to Java.
+
+Security installs Apache Shiro and binds Users, Groups and Roles to entity store.
+
+[source,shell]
+----
+? Other features?
+ ◯ jmx
+ ◯ mixin scripting
+ ◯ security
+----
+
+
+=== Example ===
+
+[source,shell]
+----
+~/dev/sensetif/sink$ yo polygene
+? Your project name Sink
+? Java package name com.sensetif.sink
+? what type of application do you want to create? Rest API
+? Which entity store do you want to use? Cassandra
+? Which indexing system do you want to use? Rdf
+? Which caching system do you want to use? None
+? Which serialization system do you want to use? JavaxJson
+? Which metrics capturing system do you want to use? Codahale
+? Other features? jmx, security
+app name Sink
+Entity Stores: Cassandra
+Indexing: Rdf
+Caching: None
+Serialization: JavaxJson
+Features: [ 'jmx', 'security' ]
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigurationLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/InfrastructureLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/DomainLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/ConnectivityLayer.java
+   create app/src/main/webapp/WEB-INF/web.xml
+   create app/build.gradle
+   create bootstrap/build.gradle
+   create model/build.gradle
+   create rest/build.gradle
+   create build.gradle
+   create settings.gradle
+   create gradlew
+   create gradlew.bat
+   create gradle/wrapper/gradle-wrapper.jar
+   create gradle/wrapper/gradle-wrapper.properties
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/FileConfigurationModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/RdfIndexingModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CodahaleMetricsModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/JavaxJsonSerializationModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CassandraStorageModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/CrudModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/JmxModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/SecurityModule.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoConfiguration.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoException.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoService.java
+   create model/src/main/java/com/sensetif/sink/model/security/EncryptedStringPropertyConcern.java
+   create model/src/main/java/com/sensetif/sink/model/security/Group.java
+   create model/src/main/java/com/sensetif/sink/model/security/RealmService.java
+   create model/src/main/java/com/sensetif/sink/model/security/SecurityRepository.java
+   create model/src/main/java/com/sensetif/sink/model/security/User.java
+   create model/src/main/java/com/sensetif/sink/model/security/UserFactory.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/RestApiModule.java
+   create rest/src/main/java/com/sensetif/sink/rest/security/DefaultEnroler.java
+   create rest/src/main/java/com/sensetif/sink/rest/security/DefaultVerifier.java
+----
+
+== Command Line Options ==
+
+[source,shell]
+----
+--import=<modelfile>   Imports the model from a JSON file and creates a project descibed therein.
+--export=<modelfile>   Exports the generated model to a JSON file in the same format as the import model.
+--noPrompt             If this option is not provided for --import-model, the user can still
+                       input answers, which will override the values in the imported model
+----
+
+=== Example ===
+
+If we run the following,
+
+[source,shell]
+----
+$ yo polygene --import=../model.json --noPrompt
+----
+
+where the content of the +../model.json+ is as follows,
+
+[source]
+----
+{
+  "name": "Sink",
+  "packageName": "com.sensetif.sink",
+  "applicationtype": "Rest API",
+  "features": [
+    "security"
+  ],
+  "entitystore": "MongoDB",
+  "indexing": "SQL",
+  "caching": "Memcache",
+  "serialization": "JavaxJson",
+  "metrics": "Codahale",
+  "modules": {
+    "user": {
+      "cruds": [
+        { "name": "Users" },
+        {"name": "Roles"},
+        {"name": "User"},
+        {"name": "Role"},
+        {"name": "Permission"},
+        {"name": "Group"},
+        {"name": "Groups"}
+      ],
+      "services": [
+        {
+          "name": "AuthService",
+          "visibility": "application",
+          "configuration" : [
+            { "name": "backend", "type": "java.lang.String" },
+            { "name": "connectString", "type": "java.lang.String",
+              "description": [
+                  "The connection string to the authentication and authorization backend system."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "organization": {
+      "cruds": [
+        {"name": "Organizations"},
+        {
+          "name": "Organization",
+          "properties": [
+            { "name": "name", "type": "java.lang.String" },
+            { "name": "created", "type": "java.time.Instant" }
+          ]
+        },
+        { "name": "Project" }
+      ],
+      "entities": [
+        { "name": "Invoice" }
+      ],
+      "values": [
+        {
+          "name": "CreditLimit",
+          "properties" : [
+            { "name" : "amount", "type" : "java.math.BigDecimal" },
+            { "name" : "currency", "type" : "java.lang.String" }
+          ]
+        }
+      ],
+      "transients": [
+        { "name": "OrderConfirmation" }
+      ],
+      "objects": [
+        { "name": "PaypalNotification" }
+      ]
+    },
+    "sensor": {
+      "cruds": [
+        { "name": "SensorData" }
+      ],
+      "entities": [
+        { "name": "Sensor" },
+        { "name": "PollSchedule" }
+      ]
+    }
+  }
+}
+----------------
+
+we will create a complete project, like this
+
+[source,shell]
+----
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigurationLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/InfrastructureLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/DomainLayer.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/ConnectivityLayer.java
+   create rest/src/main/java/com/sensetif/sink/rest/FloodRestApplication.java
+   create app/src/main/java/com/sensetif/sink/app/FloodLauncher.java
+   create app/src/main/config/development/web-shiro.ini
+   create app/src/main/config/qa/web-shiro.ini
+   create app/src/main/config/staging/web-shiro.ini
+   create app/src/main/config/production/web-shiro.ini
+   create app/src/test/java/com/sensetif/sink/app/BootstrapTest.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/FloodApplicationAssembler.java
+   create app/build.gradle
+   create bootstrap/build.gradle
+   create model/build.gradle
+   create rest/build.gradle
+   create build.gradle
+   create settings.gradle
+   create gradlew
+   create gradlew.bat
+   create gradle/wrapper/gradle-wrapper.jar
+   create gradle/wrapper/gradle-wrapper.properties
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/config/ConfigModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/MemcacheCachingModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/FileConfigurationModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/RdfIndexingModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CodahaleMetricsModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/JavaxJsonSerializationModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/infrastructure/CassandraStorageModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/CrudModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/UserModule.java
+   create model/src/main/java/com/sensetif/sink/model/user/User.java
+   create model/src/main/java/com/sensetif/sink/model/user/Users.java
+   create model/src/main/java/com/sensetif/sink/model/user/Role.java
+   create model/src/main/java/com/sensetif/sink/model/user/Roles.java
+   create model/src/main/java/com/sensetif/sink/model/user/Permission.java
+   create model/src/main/java/com/sensetif/sink/model/user/Permissions.java
+   create model/src/main/java/com/sensetif/sink/model/user/Group.java
+   create model/src/main/java/com/sensetif/sink/model/user/Groups.java
+   create model/src/main/java/com/sensetif/sink/model/user/AuthService.java
+   create model/src/main/java/com/sensetif/sink/model/user/AuthBackend.java
+   create model/src/main/java/com/sensetif/sink/model/user/AuthConfiguration.java
+   create app/src/main/config/development/AuthService.properties
+   create app/src/main/config/qa/AuthService.properties
+   create app/src/main/config/staging/AuthService.properties
+   create app/src/main/config/production/AuthService.properties
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/OrganizationModule.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Organization.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Project.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Contract.java
+   create model/src/main/java/com/sensetif/sink/model/organization/ContractPart.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Order.java
+   create model/src/main/java/com/sensetif/sink/model/organization/OrderConfirmation.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Invoice.java
+   create model/src/main/java/com/sensetif/sink/model/organization/CreditLimit.java
+   create model/src/main/java/com/sensetif/sink/model/organization/Label.java
+   create model/src/main/java/com/sensetif/sink/model/organization/PaypalNotification.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/SensorModule.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/SensorDetails.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/SensorPoll.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Access.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/JsonDocumentAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/XmlDocumentAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/ModbusDeviceAddress.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/JsonPathSelector.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/XPathSelector.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/ModbusSelector.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/PollSchedule.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/AccessType.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Address.java
+   create model/src/main/java/com/sensetif/sink/model/sensor/Selector.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/JmxModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/domain/SecurityModule.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoConfiguration.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoException.java
+   create model/src/main/java/com/sensetif/sink/model/security/CryptoService.java
+   create model/src/main/java/com/sensetif/sink/model/security/EncryptedStringPropertyConcern.java
+   create model/src/main/java/com/sensetif/sink/model/security/Group.java
+   create model/src/main/java/com/sensetif/sink/model/security/RealmService.java
+   create model/src/main/java/com/sensetif/sink/model/security/SecurityRepository.java
+   create model/src/main/java/com/sensetif/sink/model/security/User.java
+   create model/src/main/java/com/sensetif/sink/model/security/UserFactory.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/HttpServerModule.java
+   create bootstrap/src/main/java/com/sensetif/sink/bootstrap/connectivity/RestApiModule.java
+   create rest/src/main/java/com/sensetif/sink/rest/security/DefaultEnroler.java
+   create rest/src/main/java/com/sensetif/sink/rest/security/DefaultVerifier.java
+   create app/src/main/config/development/es-cassandra.properties
+   create app/src/main/config/qa/es-cassandra.properties
+   create app/src/main/config/staging/es-cassandra.properties
+   create app/src/main/config/production/es-cassandra.properties
+----
+
+Notice that there is a ++app/src/main/config++ directory with 4 sub-directories. Each of those subdirectories
+represents one of the modes in ++Application.Mode++. The start script will look for the environment variable
+SYS_ENVIRONMENT and select the ++Application.Mode++ accordingly and set the configuration directory
+(i.e. make it part of the CLASSPATH) to such.
+

@@ -157,7 +157,7 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    throw new NoSuchEntityTypeException( mixinType.getName(), module.name(), module.typeLookup() );
+                    throw new NoSuchEntityTypeException( mixinType.getName(), module );
                 }
             }
             // Create instance

@@ -62,7 +62,7 @@ include::objects.txt[]
 
 :leveloffset: {level3}
 
-// include::dependency-injection.txt[]
+include::dependency-injection.txt[]
 
 :leveloffset: {level3}
 

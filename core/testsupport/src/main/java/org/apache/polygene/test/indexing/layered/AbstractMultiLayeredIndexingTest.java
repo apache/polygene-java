@@ -31,7 +31,6 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.test.indexing.TestData;
 import org.apache.polygene.test.model.assembly.ApplicationAssembler;
@@ -74,7 +73,7 @@ public abstract class AbstractMultiLayeredIndexingTest
 
     @Before
     public void setup()
-        throws AssemblyException, ActivationException
+        throws ActivationException
     {
         ApplicationAssembler assembler =
             new ApplicationAssembler( "Multi Layered Indexing Test", "1.0", Application.Mode.development, getClass() );

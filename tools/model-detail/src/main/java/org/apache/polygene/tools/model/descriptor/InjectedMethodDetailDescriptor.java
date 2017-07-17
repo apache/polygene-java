@@ -20,6 +20,8 @@
 package org.apache.polygene.tools.model.descriptor;
 
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.composite.InjectedMethodDescriptor;
 
 
@@ -140,4 +142,10 @@ public final class InjectedMethodDetailDescriptor
         methodConcern = descriptor;
     }
 
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "name", descriptor().method().getName() );
+        return builder;
+    }
 }

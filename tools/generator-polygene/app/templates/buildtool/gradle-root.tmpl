@@ -18,19 +18,54 @@
  *
 -%>
 
-version = 1.0
-
-rootProject.ext {
-  polygeneVersion = "<%=polygene.version %>"
+if( project.version == 'unspecified' )
+{
+  project.version = System.properties.version ?: '0'
 }
 
+rootProject.ext {
+  polygeneVersion = "<%= polygene.version %>"
+  logbackVersion = "1.2.3"
+  johnzonVersion = "1.1.0"
+<% if( polygene.applicationtype === "Rest API" ) {
+%>  jettyVersion = "9.2.17.v20160517"
+  restletVersion = "2.3.4"
+<%
+}
+if( polygene.entitystore == 'DerbySQL'  ) {
+%>  derbyVersion = "10.13.1.1"
+<%
+}
+if( polygene.entitystore == 'H2SQL'  ) {
+%>  h2Version = "1.4.194"
+<%
+}
+if( polygene.entitystore == 'MySQL'  ) {
+%>  mysqlVersion = "6.0.6"
+<%
+}
+if( polygene.entitystore == 'PostgreSQL' || polygene.indexing == 'SQL' ) {
+%>  postgresVersion = "42.0.0"
+<%
+}
+if( polygene.entitystore == 'LevelDB'  ) {
+%>  levelDbVersion = "1.8"
+<%
+}
+if( polygene.entitystore == 'SQLite'  ) {
+%>  sqliteVersion = "3.16.1"
+<%
+}
+%>}
+
 allprojects() {
-  apply plugin: 'java'
+  apply plugin: 'java-library'
   apply plugin: 'maven'
 
   defaultTasks 'assemble'
 
   repositories {
+    mavenLocal()
     mavenCentral()
     maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
 <% if( polygene.entitystore == 'Jdbm' ) {
@@ -38,7 +73,7 @@ allprojects() {
   }
 
   dependencies {
-    compile "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
-    testCompile "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
+    implementation "org.apache.polygene.core:org.apache.polygene.core.api:$polygeneVersion"
+    testImplementation "org.apache.polygene.core:org.apache.polygene.core.testsupport:$polygeneVersion"
   }
 }

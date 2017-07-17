@@ -61,6 +61,10 @@ include::../../../../extensions/entitystore-memory/src/docs/es-memory.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/entitystore-file/src/docs/es-cassandra.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
 
 :leveloffset: 2

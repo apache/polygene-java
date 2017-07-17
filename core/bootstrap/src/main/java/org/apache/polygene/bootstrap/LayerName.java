@@ -35,7 +35,6 @@ public final class LayerName
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.layer().setName( name );
     }

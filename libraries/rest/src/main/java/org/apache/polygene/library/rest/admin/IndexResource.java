@@ -20,10 +20,14 @@
 
 package org.apache.polygene.library.rest.admin;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.index.rdf.indexing.RdfExporter;
+import org.apache.polygene.index.rdf.indexing.RdfIndexExporter;
 import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
@@ -38,7 +42,7 @@ public class IndexResource
     extends ServerResource
 {
     @Service
-    private RdfExporter exporter;
+    private RdfIndexExporter exporter;
 
     public IndexResource()
     {

@@ -32,6 +32,7 @@ package org.apache.polygene.bootstrap;
  * and then activate the created application, which will be the runtime
  * instance that forms your application.
  */
+@FunctionalInterface
 public interface ApplicationAssembler
 {
     ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )

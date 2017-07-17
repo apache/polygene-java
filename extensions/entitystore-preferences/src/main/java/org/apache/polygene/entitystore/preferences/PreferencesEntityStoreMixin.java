@@ -213,7 +213,7 @@ public class PreferencesEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new NoSuchEntityTypeException( type, module.name(), module.typeLookup() );
+                throw new NoSuchEntityTypeException( type, module );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
@@ -569,17 +569,21 @@ public class PreferencesEntityStoreMixin
                 for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociation : state.manyAssociations()
                     .entrySet() )
                 {
-                    StringBuilder manyAssocs = new StringBuilder();
-                    for( EntityReference entityReference : manyAssociation.getValue() )
+                    if( manyAssociation.getValue().isEmpty() )
                     {
-                        if( manyAssocs.length() > 0 )
-                        {
-                            manyAssocs.append( "\n" );
-                        }
-                        manyAssocs.append( entityReference.identity().toString() );
+                        manyAssocsPrefs.remove( manyAssociation.getKey().name() );
                     }
-                    if( manyAssocs.length() > 0 )
+                    else
                     {
+                        StringBuilder manyAssocs = new StringBuilder();
+                        for( EntityReference entityReference : manyAssociation.getValue() )
+                        {
+                            if( manyAssocs.length() > 0 )
+                            {
+                                manyAssocs.append( "\n" );
+                            }
+                            manyAssocs.append( entityReference.identity().toString() );
+                        }
                         manyAssocsPrefs.put( manyAssociation.getKey().name(), manyAssocs.toString() );
                     }
                 }
@@ -592,18 +596,24 @@ public class PreferencesEntityStoreMixin
                 for( Map.Entry<QualifiedName, Map<String, EntityReference>> namedAssociation : state.namedAssociations()
                     .entrySet() )
                 {
-                    StringBuilder namedAssocs = new StringBuilder();
-                    for( Map.Entry<String, EntityReference> namedRef : namedAssociation.getValue().entrySet() )
+                    if( namedAssociation.getValue().isEmpty() )
                     {
-                        if( namedAssocs.length() > 0 )
-                        {
-                            namedAssocs.append( "\n" );
-                        }
-                        namedAssocs.append( namedRef.getKey() ).append( "\n" ).append( namedRef.getValue().identity().toString() );
+                        namedAssocsPrefs.remove( namedAssociation.getKey().name() );
                     }
-                    if( namedAssocs.length() > 0 )
+                    else
                     {
-                        namedAssocsPrefs.put( namedAssociation.getKey().name(), namedAssocs.toString() );
+                        StringBuilder namedAssocs = new StringBuilder();
+                        for( Map.Entry<String, EntityReference> namedRef : namedAssociation.getValue().entrySet() )
+                        {
+                            if( namedAssocs.length() > 0 )
+                            {
+                                namedAssocs.append( "\n" );
+                            }
+                            namedAssocs.append( namedRef.getKey() ).append( "\n" ).append(
+                                namedRef.getValue().identity().toString() );
+                        }
+                        String key = namedAssociation.getKey().name();
+                        namedAssocsPrefs.put( key, namedAssocs.toString() );
                     }
                 }
             }

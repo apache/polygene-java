@@ -40,4 +40,14 @@ public interface ApplicationDescriptor
      * @return the Application's name
      */
     String name();
+
+    /**
+     * @return the Application's version
+     */
+    String version();
+
+    /**
+     * @return the Application's runtime mode
+     */
+    Application.Mode mode();
 }

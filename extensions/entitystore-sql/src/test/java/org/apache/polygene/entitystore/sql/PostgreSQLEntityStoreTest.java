@@ -33,46 +33,12 @@ import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
 import static org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
-/**
- * WARN This test run only if localhost:5432 is listening.
- *
- * To run it you need to have a user & database set up in postgresql. Here are two snippets to create and drop the
- * needed test environment.
- *
- * Use 'password' as password for the jdbc_test_login user.
- *
- * Eventually create a database cluster:
- *
- * <pre>
- * initdb -D /usr/local/pgsql/data
- * </pre>
- *
- * Start PostgreSQL. Then, create test user and database:
- *
- * <pre>
- * createuser -A -D -P -E -W jdbc_test_login
- * createdb -O jdbc_test_login -W jdbc_test_db
- * </pre>
- *
- * To clear the data:
- *
- * <pre>
- * dropdb -W jdbc_test_db
- * createdb -O jdbc_test_login -W jdbc_test_db
- * </pre>
- *
- * To remove the test user:
- *
- * <pre>
- * dropuser -W jdbc_test_login
- * </pre>
- */
 public class PostgreSQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
@@ -89,7 +55,7 @@ public class PostgreSQLEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
         // START SNIPPET: assembly
         // DataSourceService

@@ -22,7 +22,6 @@ package org.apache.polygene.index.rdf;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -51,7 +50,6 @@ public class RdfQueryTest
         config.forMixin( NativeConfiguration.class ).declareDefaults()
               .dataDirectory().set( tmpDir.getRoot().getAbsolutePath() );
         new EntityTestAssembler().assemble( config );
-        new DefaultUnitOfWorkAssembler().assemble( config );
     }
 
     @Test

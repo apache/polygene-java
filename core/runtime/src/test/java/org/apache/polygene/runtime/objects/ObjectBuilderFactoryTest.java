@@ -20,16 +20,14 @@
 
 package org.apache.polygene.runtime.objects;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
-import org.apache.polygene.api.object.NoSuchObjectException;
+import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -45,17 +43,11 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchObjectException.class )
+    @Test( expected = NoSuchObjectTypeException.class )
     public void newBuilderForUnregisteredObject()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
         assembler.module().newObject( AnyObject.class );
     }
 
@@ -68,13 +60,7 @@ public class ObjectBuilderFactoryTest
     public void newBuilderForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
         assembler.module().newObject( null );
     }
 
@@ -87,13 +73,7 @@ public class ObjectBuilderFactoryTest
     public void newObjectInstanceForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
         assembler.module().newObject( null );
     }
 
@@ -102,31 +82,17 @@ public class ObjectBuilderFactoryTest
      */
     @Test
     public void newInstanceForRegisteredObject()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( AnyObject.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( AnyObject.class ) );
         assembler.module().newObject( AnyObject.class );
     }
 
     @Test
     public void givenManyConstructorsWhenInstantiateThenChooseCorrectConstructor()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( ManyConstructorObject.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( ManyConstructorObject.class ) );
 
         ManyConstructorObject object = assembler.module().newObject( ManyConstructorObject.class );
         Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
@@ -139,17 +105,9 @@ public class ObjectBuilderFactoryTest
 
     @Test
     public void givenClassWithInnerClassesWhenInstantiateThenInstantiateInnerClass()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( OuterClass.class );
-            }
-        };
+        SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( OuterClass.class ) );
 
         Assert.assertThat( "inner class has been injected", assembler.module()
             .newObject( OuterClass.class )

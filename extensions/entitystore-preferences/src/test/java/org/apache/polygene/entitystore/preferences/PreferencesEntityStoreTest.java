@@ -22,8 +22,6 @@ package org.apache.polygene.entitystore.preferences;
 import java.util.prefs.Preferences;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreInfo;
-import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreService;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -50,5 +48,7 @@ public class PreferencesEntityStoreTest
         PreferencesEntityStoreInfo metaInfo = new PreferencesEntityStoreInfo( node );
         Thread.currentThread().setContextClassLoader( cl );
         module.services( PreferencesEntityStoreService.class ).setMetaInfo( metaInfo ).instantiateOnStartup();
+
+        module.defaultServices();
     }
 }

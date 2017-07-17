@@ -36,10 +36,10 @@ public interface ObjectFactory
      * @return new objects.
      *
      * @throws ConstructionException Thrown if instantiation fails.
-     * @throws NoSuchObjectException Thrown if {@code type} class is not an object.
+     * @throws NoSuchObjectTypeException Thrown if {@code type} class is not an object.
      */
     <T> T newObject( Class<T> type, Object... uses )
-        throws NoSuchObjectException, ConstructionException;
+        throws NoSuchObjectTypeException, ConstructionException;
 
     /**
      * Inject an existing instance. Only fields and methods will be called.

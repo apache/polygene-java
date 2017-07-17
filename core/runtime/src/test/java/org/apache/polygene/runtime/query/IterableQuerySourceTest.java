@@ -22,12 +22,8 @@ package org.apache.polygene.runtime.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
@@ -52,9 +48,10 @@ import org.apache.polygene.runtime.query.model.entities.PetEntity;
 import org.apache.polygene.runtime.query.model.values.ContactValue;
 import org.apache.polygene.runtime.query.model.values.ContactsValue;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.ge;
 import static org.apache.polygene.api.query.QueryExpressions.gt;
@@ -67,6 +64,8 @@ import static org.apache.polygene.api.query.QueryExpressions.or;
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.property;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class IterableQuerySourceTest
 {
@@ -88,7 +87,6 @@ public class IterableQuerySourceTest
 
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         uow = assembler.module().unitOfWorkFactory().newUnitOfWork();
@@ -216,7 +214,7 @@ public class IterableQuerySourceTest
     {
         QueryBuilder<Person> qb = qbf.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        City kl = uow.get( City.class, new StringIdentity( "kualalumpur" ));
+        City kl = uow.get( City.class, StringIdentity.identityOf( "kualalumpur" ) );
         Query<Person> query = qb.where(
             eq( person.mother().get().placeOfBirth(), kl )
         ).newQuery( Network.persons() );

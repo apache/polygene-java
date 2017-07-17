@@ -29,8 +29,6 @@ import java.lang.reflect.Method;
 public final class GenericFragmentInvocationHandler
     extends FragmentInvocationHandler
 {
-    // InvocationHandler implementation ------------------------------
-
     @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable

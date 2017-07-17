@@ -22,6 +22,8 @@ import org.apache.polygene.gradle.code.PublishedCodePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static org.apache.polygene.gradle.structure.ProjectGroupTasks.configureProjectGroupTasks
+
 @CompileStatic
 class ExtensionPlugin implements Plugin<Project>
 {
@@ -29,5 +31,6 @@ class ExtensionPlugin implements Plugin<Project>
   void apply( Project project )
   {
     project.plugins.apply PublishedCodePlugin
+    configureProjectGroupTasks( "extensions", project )
   }
 }

@@ -20,7 +20,6 @@
 package org.apache.polygene.library.shiro.web.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.polygene.library.shiro.web.EnvironmentLoaderService;
@@ -36,26 +35,27 @@ import static org.apache.polygene.library.http.Servlets.addFilters;
 import static org.apache.polygene.library.http.Servlets.filter;
 import static org.apache.polygene.library.http.Servlets.listen;
 
-public class HttpShiroAssembler
-    extends Assemblers.Config<HttpShiroAssembler>
+public class HttpShiroAssembler extends Assemblers.Config<HttpShiroAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
-        addContextListeners( listen().
-            with( EnvironmentLoaderService.class ) ).
-            to( module );
+        super.assemble( module );
+        addContextListeners(
+            listen().with( EnvironmentLoaderService.class ) )
+            .to( module );
 
-        addFilters( filter( "/*" ).
-            through( ShiroFilterService.class ).
-            on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) ).
-            to( module );
+        addFilters(
+            filter( "/*" )
+                .through( ShiroFilterService.class )
+                .on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) )
+            .to( module );
 
         if( hasConfig() )
         {
-            configModule().entities( ShiroIniConfiguration.class ).
-                visibleIn( configVisibility() );
+            configModule()
+                .entities( ShiroIniConfiguration.class )
+                .visibleIn( configVisibility() );
         }
     }
 }

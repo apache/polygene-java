@@ -22,6 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 
@@ -70,5 +73,16 @@ public class ImportedServiceDetailDescriptor
             }
         }
         return visitor.visitLeave( this );
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = super.toJson();
+        {
+            JsonArrayBuilder activatorsBuilder = Json.createArrayBuilder();
+            activators().forEach( activator -> activatorsBuilder.add( activator.toJson() ) );
+            builder.add( "activators", activatorsBuilder.build() );
+        }
+        return builder;
     }
 }

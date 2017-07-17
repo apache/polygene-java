@@ -22,7 +22,6 @@ package org.apache.polygene.library.logging.trace.assemblies;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.logging.trace.service.StandardTraceServiceComposite;
 import org.apache.polygene.library.logging.trace.service.TraceServiceConfiguration;
@@ -32,7 +31,6 @@ public class TracingAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( StandardTraceServiceComposite.class ).visibleIn( Visibility.application );
         module.entities( TraceServiceConfiguration.class );

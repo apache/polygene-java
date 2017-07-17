@@ -21,8 +21,8 @@
 package org.apache.polygene.api.configuration;
 
 import org.apache.polygene.api.composite.Composite;
-import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.entity.Queryable;
+import org.apache.polygene.api.identity.HasIdentity;
 
 /**
  * Services that want to be configurable should have a ConfigurationComposite that contains all the settings.

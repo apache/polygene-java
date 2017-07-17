@@ -123,19 +123,13 @@ public class AbstractAssociationModel<AT>
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {
-        if( constraints != null )
-        {
-            constraints.checkConstraints( value, accessor );
-        }
+        constraints.checkConstraints( value, accessor );
     }
 
     public void checkAssociationConstraints( AbstractAssociation association )
         throws ConstraintViolationException
     {
-        if( associationConstraints != null )
-        {
-            associationConstraints.checkConstraints( association, accessor );
-        }
+        associationConstraints.checkConstraints( association, accessor );
     }
 
     public AssociationInfo builderInfo()

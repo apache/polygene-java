@@ -51,7 +51,6 @@ import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
@@ -80,8 +79,7 @@ public class RestTest extends AbstractPolygeneTest
                         {
                             RestTest.this,
                             new RestAssembler(),
-                            new RdfMemoryStoreAssembler(),
-                            new DefaultUnitOfWorkAssembler()
+                            new RdfMemoryStoreAssembler()
                         }
                     }
                 } )
@@ -113,13 +111,13 @@ public class RestTest extends AbstractPolygeneTest
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, new StringIdentity( "P2" ) );
+            EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, StringIdentity.identityOf( "P2" ) );
             PersonEntity maryDoe = builder1.instance();
             maryDoe.firstname().set( "Mary" );
             maryDoe.lastname().set( "Doe" );
             maryDoe = builder1.newInstance();
 
-            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( PersonEntity.class, new StringIdentity( "P1" ) );
+            EntityBuilder<PersonEntity> builder2 = uow.newEntityBuilder( PersonEntity.class, StringIdentity.identityOf( "P1" ) );
             PersonEntity joeDoe = builder2.instance();
             joeDoe.firstname().set( "Joe" );
             joeDoe.lastname().set( "Doe" );
@@ -164,7 +162,7 @@ public class RestTest extends AbstractPolygeneTest
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            PersonEntity entity = work.get( PersonEntity.class, new StringIdentity( "P1" ) );
+            PersonEntity entity = work.get( PersonEntity.class, StringIdentity.identityOf( "P1" ) );
             assertEquals( "FirstName not changed.", "Jack", entity.firstname().get() );
             assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
             work.complete();
@@ -187,7 +185,7 @@ public class RestTest extends AbstractPolygeneTest
             PersonEntity entity = null;
             try
             {
-                entity = work.get( PersonEntity.class, new StringIdentity( "P1" ) );
+                entity = work.get( PersonEntity.class, StringIdentity.identityOf( "P1" ) );
             }
             catch( NoSuchEntityException expected )
             {

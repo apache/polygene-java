@@ -20,7 +20,6 @@
 package org.apache.polygene.library.shiro.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.library.shiro.domain.passwords.PasswordRealmConfiguration;
@@ -32,8 +31,8 @@ public class PasswordDomainAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.entities( PasswordSecurable.class ).visibleIn( visibility() );
         ServiceDeclaration service = module.services( PasswordRealmService.class ).
             instantiateOnStartup().

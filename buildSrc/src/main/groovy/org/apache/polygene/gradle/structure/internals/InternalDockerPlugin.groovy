@@ -76,7 +76,7 @@ class InternalDockerPlugin implements Plugin<Project>
         project.rootProject.extensions.extraProperties.set( CodePlugin.DOCKER_DISABLED_EXTRA_PROPERTY, true )
         if( project.hasProperty( 'skipDocker' ) )
         {
-            project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
+          project.logger.lifecycle 'skipDocker property is set, all Docker tasks will be SKIPPED'
         }
         else if( project.logger.isEnabled( LogLevel.INFO ) )
         {

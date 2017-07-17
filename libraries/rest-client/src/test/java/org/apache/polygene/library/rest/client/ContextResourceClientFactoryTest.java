@@ -128,6 +128,8 @@ public class ContextResourceClientFactoryTest
 
         module.objects( DescribableContext.class );
         module.transients( TestComposite.class );
+
+        module.defaultServices();
     }
 
     @Override

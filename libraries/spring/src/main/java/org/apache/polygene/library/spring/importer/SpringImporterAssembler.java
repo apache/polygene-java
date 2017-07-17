@@ -22,7 +22,6 @@ package org.apache.polygene.library.spring.importer;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.springframework.context.ApplicationContext;
 
@@ -61,7 +60,7 @@ public class SpringImporterAssembler
     }
 
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
     {
         // Register all Spring beans as services
         String[] names = context.getBeanDefinitionNames();

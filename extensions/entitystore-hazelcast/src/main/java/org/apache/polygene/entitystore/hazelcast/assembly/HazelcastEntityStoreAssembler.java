@@ -20,10 +20,9 @@
 package org.apache.polygene.entitystore.hazelcast.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.hazelcast.HazelcastConfiguration;
+import org.apache.polygene.entitystore.hazelcast.HazelcastEntityStoreConfiguration;
 import org.apache.polygene.entitystore.hazelcast.HazelcastEntityStoreService;
 
 public class HazelcastEntityStoreAssembler
@@ -31,8 +30,8 @@ public class HazelcastEntityStoreAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( HazelcastEntityStoreService.class ).
             visibleIn( visibility() ).
             instantiateOnStartup();
@@ -42,7 +41,7 @@ public class HazelcastEntityStoreAssembler
         }
         if( hasConfig() )
         {
-            configModule().entities( HazelcastConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( HazelcastEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

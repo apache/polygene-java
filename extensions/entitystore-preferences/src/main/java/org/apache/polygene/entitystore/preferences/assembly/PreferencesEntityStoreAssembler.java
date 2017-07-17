@@ -21,28 +21,26 @@ package org.apache.polygene.entitystore.preferences.assembly;
 
 import java.util.prefs.Preferences;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreInfo;
 import org.apache.polygene.entitystore.preferences.PreferencesEntityStoreService;
 
-public class PreferencesEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<PreferencesEntityStoreAssembler>
+public class PreferencesEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig<PreferencesEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         String applicationName = module.layer().application().name();
 
         Preferences root = Preferences.userRoot();
         Preferences node = root.node( applicationName );
         PreferencesEntityStoreInfo info = new PreferencesEntityStoreInfo( node );
         ServiceDeclaration service = module.services( PreferencesEntityStoreService.class )
-            .setMetaInfo( info )
-            .visibleIn( visibility() )
-            .instantiateOnStartup();
+                                           .setMetaInfo( info )
+                                           .visibleIn( visibility() )
+                                           .instantiateOnStartup();
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );

@@ -19,15 +19,15 @@
  */
 package org.apache.polygene.tutorials.hello;
 
+import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
-import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 public class HelloTest4 extends AbstractPolygeneTest
 {
 
-    public static final Identity TEST_IDENTITY = new StringIdentity( "123" );
+    public static final Identity TEST_IDENTITY = StringIdentity.identityOf( "123" );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -43,6 +43,7 @@ public class HelloTest4 extends AbstractPolygeneTest
     {
         module.entities( Hello.class );
         module.services( MemoryEntityStoreService.class );
+        module.defaultServices();
     }
 
     @Test

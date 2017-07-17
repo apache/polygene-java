@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Collections;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
@@ -48,13 +47,13 @@ import org.restlet.routing.Router;
 @Mixins( ResourceBuilder.Mixin.class )
 public interface ResourceBuilder
 {
-    EntityRef createEntityRef(Identity name, Reference base );
+    EntityRef createEntityRef( Identity name, Reference base );
 
     EntityRef createEntityRef( Identity name, RestLink get, RestLink put, RestLink delete );
 
-    RestLink createRestLink( Identity name, Reference base, Method method );
+    RestLink createRestLink( String name, Reference base, Method method );
 
-    RestLink createRestLink( Identity name, Reference base, Method method, String description );
+    RestLink createRestLink( String name, Reference base, Method method, String description );
 
     Command createCommand( Reference base );
 
@@ -62,9 +61,9 @@ public interface ResourceBuilder
 
     FormField createFormField( String name, String type );
 
-    <T extends HasIdentity> Representation toRepresentation(Class<T> type, T composite );
+    <T extends HasIdentity> Representation toRepresentation( Class<T> type, T composite );
 
-    <T extends HasIdentity> T toObject(Class<T> type, Representation representation )
+    <T extends HasIdentity> T toObject( Class<T> type, Representation representation )
         throws IOException;
 
     Route findRoute( String name, Router router );
@@ -88,9 +87,11 @@ public interface ResourceBuilder
         @Override
         public EntityRef createEntityRef( Identity identity, Reference base )
         {
-            RestLink get = createRestLink( identity, base, Method.GET );
-            RestLink put = createRestLink( identity, base, Method.PUT );
-            RestLink delete = createRestLink( identity, base, Method.DELETE );
+            String name = identityManager.extractName( identity );
+
+            RestLink get = createRestLink( name, base, Method.GET );
+            RestLink put = createRestLink( name, base, Method.PUT );
+            RestLink delete = createRestLink( name, base, Method.DELETE );
             return createEntityRef( identity, get, put, delete );
         }
 
@@ -107,10 +108,8 @@ public interface ResourceBuilder
         }
 
         @Override
-        public RestLink createRestLink( Identity identity, Reference base, Method method )
+        public RestLink createRestLink( String name, Reference base, Method method )
         {
-            String name = identityManager.extractName( identity );
-
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
             String path = base.toUri().resolve( name ).getPath();
@@ -120,9 +119,8 @@ public interface ResourceBuilder
         }
 
         @Override
-        public RestLink createRestLink( Identity identity, Reference base, Method method, String description )
+        public RestLink createRestLink( String name, Reference base, Method method, String description )
         {
-            String name = identityManager.extractName( identity );
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
             prototype.path().set( base.toUri().resolve( name ).getPath() + "/" );
@@ -143,7 +141,7 @@ public interface ResourceBuilder
         public RestForm createNameForm( Reference base )
         {
             ValueBuilder<RestForm> builder = vbf.newValueBuilder( RestForm.class );
-            builder.prototype().link().set( createRestLink( new StringIdentity( "form" ), base, Method.POST ) );
+            builder.prototype().link().set( createRestLink( "form", base, Method.POST ) );
             builder.prototype().fields().set( Collections.singletonList( createFormField( "name", FormField.TEXT ) ) );
             return builder.newInstance();
         }
@@ -157,13 +155,13 @@ public interface ResourceBuilder
         }
 
         @Override
-        public <T extends HasIdentity> Representation toRepresentation(Class<T> type, T composite )
+        public <T extends HasIdentity> Representation toRepresentation( Class<T> type, T composite )
         {
             return converter.toRepresentation( composite, new Variant(), null );
         }
 
         @Override
-        public <T extends HasIdentity> T toObject(Class<T> type, Representation representation )
+        public <T extends HasIdentity> T toObject( Class<T> type, Representation representation )
             throws IOException
         {
             return converter.toObject( representation, type, null );

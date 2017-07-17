@@ -20,8 +20,6 @@
 
 package org.apache.polygene.bootstrap;
 
-import org.apache.polygene.api.property.InitialValueProvider;
-
 /**
  * Fluent API for declaring information about properties
  *
@@ -32,6 +30,4 @@ public interface MixinDeclaration<T>
     T declareDefaults();
 
     MixinDeclaration<T> setMetaInfo( Object info );
-
-    MixinDeclaration<T> declareInitialValueProvider(InitialValueProvider provider);
 }

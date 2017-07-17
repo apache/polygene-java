@@ -31,6 +31,7 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.Test;
 
@@ -57,6 +58,16 @@ public class DocumentationSupport extends AbstractPolygeneTest
     public void assemble( ModuleAssembly module )
     {
         module.values( SomeValue.class ); // (2)
+        // END SNIPPET: default
+        // END SNIPPET: service
+        // START SNIPPET: default
+        module.defaultServices(); // (3)
+        // END SNIPPET: default
+        // START SNIPPET: service
+        new JavaxJsonSerializationAssembler().assemble( module ); // (3)
+        // END SNIPPET: service
+        // START SNIPPET: default
+        // START SNIPPET: service
     }
     // END SNIPPET: default
     // END SNIPPET: service
@@ -65,9 +76,9 @@ public class DocumentationSupport extends AbstractPolygeneTest
     // START SNIPPET: default
     public void defaultSerialization()
     {
-        SomeValue someValue = someNewValueInstance(); // (3)
-        String json = someValue.toString(); // (4)
-        SomeValue someNewValue = valueBuilderFactory.newValueFromSerializedState( SomeValue.class, json ); // (5)
+        SomeValue someValue = someNewValueInstance(); // (4)
+        String json = someValue.toString(); // (5)
+        SomeValue someNewValue = valueBuilderFactory.newValueFromSerializedState( SomeValue.class, json ); // (6)
         // END SNIPPET: default
 
         assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
@@ -100,7 +111,7 @@ public class DocumentationSupport extends AbstractPolygeneTest
     }
     // END SNIPPET: service
 
-    static enum AcmeValue
+    enum AcmeValue
     {
         foo,
         bar

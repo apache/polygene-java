@@ -30,8 +30,6 @@ dependencies {
 
   api polygene.core.bootstrap
 
-  implementation polygene.extension( 'entitystore-file' )
-  implementation polygene.extension( 'indexing-rdf' )
   implementation libraries.restlet
 
   runtimeOnly polygene.core.runtime
@@ -39,7 +37,8 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'http' )
   testImplementation libraries.http_client
-
+  testImplementation polygene.extension( 'entitystore-file' )
+  testImplementation polygene.extension( 'indexing-rdf' )
   testRuntimeOnly libraries.logback
 }
 

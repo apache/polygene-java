@@ -50,7 +50,6 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -62,6 +61,7 @@ import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -81,7 +81,6 @@ public abstract class AbstractEntityStoreTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( TestEntity.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
@@ -164,14 +163,15 @@ public abstract class AbstractEntityStoreTest
     public void whenNewEntityThenCanFindEntityAndCorrectValues()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
+        TestEntity instance;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            TestEntity instance = createEntity( unitOfWork );
+            instance = createEntity( unitOfWork );
             unitOfWork.complete();
-
+        }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
+        {
             // Find entity
-            unitOfWork = unitOfWorkFactory.newUnitOfWork();
             instance = unitOfWork.get( instance );
 
             // Check state
@@ -284,12 +284,6 @@ public abstract class AbstractEntityStoreTest
             assertThat( "namedAssociation has correct 'bar' value",
                         instance.namedAssociation().get( "bar" ),
                         equalTo( instance ) );
-
-            unitOfWork.discard();
-        }
-        finally
-        {
-            unitOfWork.discard();
         }
     }
 
@@ -297,20 +291,25 @@ public abstract class AbstractEntityStoreTest
     public void whenRemovedEntityThenCannotFindEntity()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity newInstance = createEntity( unitOfWork );
-        Identity identity = newInstance.identity().get();
-        unitOfWork.complete();
+        TestEntity newInstance;
+        Identity identity;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
+        {
+            newInstance = createEntity( unitOfWork );
+            identity = newInstance.identity().get();
+            unitOfWork.complete();
+        }
 
         // Remove entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        TestEntity instance = unitOfWork.get( newInstance );
-        unitOfWork.remove( instance );
-        unitOfWork.complete();
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
+        {
+            TestEntity instance = unitOfWork.get( newInstance );
+            unitOfWork.remove( instance );
+            unitOfWork.complete();
+        }
 
         // Find entity
-        unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             unitOfWork.get( TestEntity.class, identity );
             fail( "Should not be able to find entity" );
@@ -318,10 +317,6 @@ public abstract class AbstractEntityStoreTest
         catch( NoSuchEntityException e )
         {
             // Ok!
-        }
-        finally
-        {
-            unitOfWork.discard();
         }
     }
 
@@ -331,22 +326,22 @@ public abstract class AbstractEntityStoreTest
     {
         TestEntity testEntity;
         String version;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version ) );
@@ -361,23 +356,23 @@ public abstract class AbstractEntityStoreTest
     {
         TestEntity testEntity;
         String version;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
             version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
@@ -387,32 +382,50 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Test
-    public void givenManyAssociationIsModifiedWhenUnitOfWorkCompletesThenStoreState()
+    public void givenAssociationsModifiedWhenUnitOfWorkCompletesThenStoreState()
         throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
         String version;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
+            testEntity.association().set( testEntity );
             testEntity.manyAssociation().add( 0, testEntity );
+            testEntity.namedAssociation().put( "test", testEntity );
             version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             String newVersion = spi.entityStateOf( testEntity ).version();
+            assertThat( "association persisted", testEntity.association().get(), equalTo( testEntity ) );
+            assertThat( "many association persisted", testEntity.manyAssociation().get( 0 ), equalTo( testEntity ) );
+            assertThat( "named association persisted", testEntity.namedAssociation().get( "test" ), equalTo( testEntity ) );
             assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
 
+            testEntity.association().set( null );
+            testEntity.manyAssociation().clear();
+            testEntity.namedAssociation().clear();
+            unitOfWork.complete();
+        }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
+        {
+            testEntity = unitOfWork.get( testEntity );
+            String newVersion = spi.entityStateOf( testEntity ).version();
+            assertThat( "association cleared", testEntity.association().get(), nullValue() );
+            assertThat( "many association cleared", testEntity.manyAssociation().count(), is( 0 ) );
+            assertThat( "named association cleared", testEntity.namedAssociation().count(), is( 0 ) );
+            assertThat( "version has not changed", newVersion, not( equalTo( version ) ) );
             unitOfWork.complete();
         }
     }
@@ -422,8 +435,8 @@ public abstract class AbstractEntityStoreTest
         throws UnitOfWorkCompletionException
     {
         TestEntity testEntity;
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
 
             testEntity = builder.newInstance();
@@ -446,9 +459,9 @@ public abstract class AbstractEntityStoreTest
             testEntity1.name().set( "A" );
             testEntity1.unsetName().set( "A" );
         }
+        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
         {
             // Start working with same Entity in another UoW, and complete it
-            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             TestEntity testEntity2 = unitOfWork.get( testEntity );
             assertThat( "version is correct", spi.entityStateOf( testEntity1 ).version(), equalTo( version ) );
             testEntity2.name().set( "B" );

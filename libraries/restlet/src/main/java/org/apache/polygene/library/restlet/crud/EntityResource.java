@@ -40,7 +40,6 @@ import org.apache.polygene.library.restlet.RestLink;
 import org.apache.polygene.library.restlet.repository.RepositoryLocator;
 import org.apache.polygene.library.restlet.resource.ResourceBuilder;
 import org.apache.polygene.library.restlet.resource.ServerResource;
-import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.data.Reference;
 
 @Mixins( EntityResource.Mixin.class )
@@ -57,13 +56,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
     {
 
         @Structure
-        private PolygeneSPI spi;
-
-        @Structure
         private ValueBuilderFactory vbf;
-
-        @This
-        private HasIdentity me;
 
         @This
         private Parameters<T> parameters;
@@ -95,9 +88,9 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
         @Override
         public void delete()
         {
-            Class entityType = parameters.entityType().get();
+            Class<? extends HasIdentity> entityType = parameters.entityType().get();
             String idOfEntity = parameters.id().get();
-            locator.find( entityType ).delete( new StringIdentity( idOfEntity ) );
+            locator.find( entityType ).delete( StringIdentity.identityOf( idOfEntity ) );
         }
 
         @Override
@@ -137,10 +130,10 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
                 throw new RuntimeException( message, e );
             }
             Reference base = parameters.request().get().getResourceRef();
-            return resourceBuilder.createRestLink( new StringIdentity( "" ), base, org.restlet.data.Method.GET );
+            return resourceBuilder.createRestLink( "", base, org.restlet.data.Method.GET );
         }
 
-        private Object createParametersComposite( RestForm form, Class argType )
+        private Object createParametersComposite( RestForm form, Class<?> argType )
         {
             ValueBuilder<?> vb = vbf.newValueBuilderWithState(
                 argType,

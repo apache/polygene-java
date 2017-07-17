@@ -22,7 +22,6 @@ package org.apache.polygene.library.rest.client;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.Assembler;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rest.client.api.ContextResourceClient;
 import org.apache.polygene.library.rest.client.api.ContextResourceClientFactory;
@@ -39,7 +38,7 @@ public class ClientAssembler
    implements Assembler
 {
     @Override
-   public void assemble( ModuleAssembly module ) throws AssemblyException
+   public void assemble( ModuleAssembly module )
    {
       module.objects( ContextResourceClientFactory.class, ContextResourceClient.class ).visibleIn( Visibility.application );
 

@@ -59,7 +59,7 @@ public interface MainPage
             ArrayList<Node> nodes = new ArrayList<Node>();
             Document dom = context.dom();
             UnitOfWork uow = uowf.currentUnitOfWork();
-            RentalShop shop = uow.get( RentalShop.class, new StringIdentity( "SHOP" ) );
+            RentalShop shop = uow.get( RentalShop.class, StringIdentity.identityOf( "SHOP" ) );
             for( Booking booking : shop.findAllBookings() )
             {
                 String plate = booking.car().get().licensePlate().get();

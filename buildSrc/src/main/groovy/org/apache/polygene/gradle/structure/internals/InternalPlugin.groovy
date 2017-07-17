@@ -25,9 +25,9 @@ import org.gradle.api.Project
 @CompileStatic
 class InternalPlugin implements Plugin<Project>
 {
-  @Override
-  void apply( Project project )
-  {
-    project.plugins.apply CodePlugin
-  }
+    @Override
+    void apply( Project project )
+    {
+        project.plugins.apply CodePlugin
+    }
 }

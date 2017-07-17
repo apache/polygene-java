@@ -27,15 +27,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.QualifiedName;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.DefaultValues;
 import org.apache.polygene.api.property.GenericPropertyInfo;
-import org.apache.polygene.api.property.InitialValueProvider;
 import org.apache.polygene.api.property.InvalidPropertyTypeException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
@@ -87,8 +87,7 @@ public class PropertyModel
                           boolean useDefaults,
                           ValueConstraintsInstance constraints,
                           MetaInfo metaInfo,
-                          Object initialValue,
-                          InitialValueProvider initialValueProvider
+                          Object initialValue
                         )
     {
         if( accessor instanceof Method )
@@ -105,14 +104,7 @@ public class PropertyModel
         type = GenericPropertyInfo.propertyTypeOf( accessor );
         checkTypeValidity( type );
         qualifiedName = QualifiedName.fromAccessor( accessor );
-        if( initialValueProvider != null )
-        {
-            this.initialValueProvider = initialValueProvider;
-        }
-        else
-        {
-            this.initialValueProvider = new DefaultInitialValueProvider( useDefaults, initialValue );
-        }
+        initialValueProvider = new DefaultInitialValueProvider( useDefaults, initialValue );
         this.constraints = constraints;
         final Queryable queryable = accessor.getAnnotation( Queryable.class );
         this.queryable = queryable == null || queryable.value();
@@ -192,12 +184,6 @@ public class PropertyModel
     public boolean queryable()
     {
         return queryable;
-    }
-
-    @Override
-    public InitialValueProvider initialValueProvider()
-    {
-        return initialValueProvider;
     }
 
     @Override
@@ -300,14 +286,13 @@ public class PropertyModel
         {
             if( constraints != null )
             {
-                List<ConstraintViolation> violations = constraints.checkConstraints( value );
-                if( !violations.isEmpty() )
-                {
-                    Stream<Class<?>> empty = Stream.empty();
-                    throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
-                }
+                constraints.checkConstraints( value, accessor );
             }
         }
+    }
+
+    private interface InitialValueProvider extends BiFunction<Module, PropertyDescriptor, Object>
+    {
     }
 
     private class DefaultInitialValueProvider

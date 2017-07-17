@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+
 public final class ServiceUsage
 {
 
@@ -58,4 +61,18 @@ public final class ServiceUsage
         return layer;
     }
 
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add( "layer", layer().toString() );
+        if( ownerDescriptor() instanceof CompositeDetailDescriptor )
+        {
+            builder.add( "composite", ( (CompositeDetailDescriptor) ownerDescriptor() ).toJson() );
+        }
+        if( ownerDescriptor() instanceof ObjectDetailDescriptor )
+        {
+            builder.add( "object", ( (ObjectDetailDescriptor) ownerDescriptor() ).toJson() );
+        }
+        return builder;
+    }
 }

@@ -24,14 +24,14 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 
 /**
  * TODO
  */
 public class ConstraintViolationMessages
 {
-    public String getMessage( ConstraintViolation violation, Locale locale )
+    public String getMessage( ValueConstraintViolation violation, Locale locale )
         throws IllegalArgumentException
     {
         try

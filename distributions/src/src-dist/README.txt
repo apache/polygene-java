@@ -7,9 +7,9 @@ This Apache Polygene™ Source Distribution contains everything you need to
 create Polygene™ applications.
 
 
-Polygene™ started in 2007, and is still in heavy development under the umbrella of
-the Apache Polygene™ project at the Apache Software Foundation. We would like
-developers around the world to participate in the advancement of this
+Polygene™ started in 2007, and is still in heavy development under the umbrella
+of the Apache Polygene™ project at the Apache Software Foundation. We would
+like developers around the world to participate in the advancement of this
 cool, new and challenging technology. We are especially interested in
 people willing to help improve the SDK, samples, tutorials, documentation
 and other supporting material.
@@ -46,19 +46,21 @@ To build Polygene™ from sources you only need to have a valid Java JDK >= 8
 installation and any version of Gradle.
 
 This distribution embeds the exact version of Gradle needed to build Polygene™.
-It is in the gradle/wrapper/gradle-wrapper.properties file.
 Here is how to bootstrap that version:
 
-    gradle wrapper
+    gradle -b gradle/wrapper-install/build.gradle install
 
-This will download the required Gradle distribution and create gradlew and
-gradlew.bat script files that you should use from now on.
+This will deploy the Gradle Wrapper and create gradlew and gradlew.bat script
+files that you should use from now on.
 
 Once you have the wrapper installed you can invoke the build system.
 
 Here is how to run a full build with checks:
 
     ./gradlew check assemble
+
+Running gradlew for the first time will download the required Gradle
+distribution. You can run ./gradlew tasks to list available tasks.
 
 Read the Polygene™ Build System tutorial for more details:
 https://polygene.apache.org/java/latest/build-system.html

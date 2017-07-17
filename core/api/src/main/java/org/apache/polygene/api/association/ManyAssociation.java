@@ -28,6 +28,11 @@ import org.apache.polygene.api.identity.Identity;
 
 /**
  * Association to a collection of entities.
+ *
+ * <p>
+ * Duplication of entities (defined as Identity equality) is allowed and for each add, there will be
+ * an additional item in the collection/iterator. If de-duplication is requested, see {@link #toSet()} method.
+ * </p>
  */
 public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {
@@ -40,18 +45,23 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
      */
     boolean contains( T entity );
 
-    /** Adds an entity reference representing the given entity to the {@code index} slot of this collection.
+    /**
+     * Adds an entity reference representing the given entity to the {@code index} slot of this collection.
      * <p>
-     *     {@code index=0} represents the beginning of the collection and if the {@code index} is equal or larger
-     *     than the length of the collection, the entity reference will be added to the end.
+     * {@code index=0} represents the beginning of the collection and if the {@code index} is equal or larger
+     * than the length of the collection, the entity reference will be added to the end.
      * </p>
+     *
      * @param entity The entity whose entity reference is to be added to this collection.
-     * @param index the position for the entity to be inserted at.
+     * @param index  the position for the entity to be inserted at, starting at 0. If index is larger than number
+     *               of references present, then it will be added to the end. If index is smaller than 0, then it
+     *               will be added at the beginning, position 0.
      * @return true if the entity reference has been added, false otherwise.
      */
     boolean add( int index, T entity );
 
-    /** Adds an entity reference representing the given entity to the end of this collection.
+    /**
+     * Adds an entity reference representing the given entity to the end of this collection.
      *
      * @param entity The entity whose entity reference is to be added to this collection.
      * @return true if the entity reference has been added, false otherwise.
@@ -61,8 +71,9 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
     /**
      * Removes the given entity from this {@code ManyAssociation}.
      * <p>
-     *     The entity reference representing the given entity is removed from this collection.
+     * The entity reference representing the given entity is removed from this collection.
      * </p>
+     *
      * @param entity The entity reference to be removed.
      * @return true if an entity reference was removed, otherwise false
      */
@@ -71,13 +82,15 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
     /**
      * Clear all entities from this {@code ManyAssociation}.
      * <p>
-     *     All entity references present is removed from this collection.
+     * All entity references present is removed from this collection.
      * </p>
+     *
      * @return true if any entity reference was removed, otherwise false
      */
     boolean clear();
 
-    /** Fetch the entity refrence at the given index and fetch the entity from the entity store.
+    /**
+     * Fetch the entity refrence at the given index and fetch the entity from the entity store.
      *
      * @param index The index location in the collection of the entity reference to be fetched.
      * @return The retrieved entity that the entity reference of this collection represents.
@@ -86,6 +99,7 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 
     /**
      * Returns the number of references in this association.
+     *
      * @return the number of references in this association.
      */
     int count();
@@ -94,9 +108,10 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
      * Fetches all entities represented by entity references in this collection and returns a List of such
      * entities.
      * <p>
-     *     Multiple references to the same entity will be present multiple times in the List, unlike {@link #toSet()}.
-     *     The order in which the entities were added to this collection is preserved.
+     * Multiple references to the same entity will be present multiple times in the List, unlike {@link #toSet()}.
+     * The order in which the entities were added to this collection is preserved.
      * </p>
+     *
      * @return a List of entities represented by the entity references in this collection.
      */
     List<T> toList();
@@ -105,15 +120,17 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
      * Fetches all entities represented by entity references in this collection and returns a Set of such
      * entities.
      * <p>
-     *     Multiple references to the same entity will NOT be present, unlike {@link #toList()}. Sets are defined
-     *     to only contain any particular object once. Order is not preserved.
+     * Multiple references to the same entity will NOT be present, unlike {@link #toList()}. Sets are defined
+     * to only contain any particular object once. Order is not preserved.
      * </p>
+     *
      * @return a Set of entities represented by the entity references in this collection.
      */
     Set<T> toSet();
 
     /**
      * Returns a stream of the references to the associated entities.
+     *
      * @return the references to the associated entities.
      */
     Stream<EntityReference> references();

@@ -90,19 +90,15 @@ public interface TupleQueryExecutor
             }
             catch( RepositoryException e )
             {
-                throw new EntityFinderException( e );
+                throw new EntityFinderException( "Exception when executing query: " + query + "\nwith bindings " + bindings, e );
             }
-            catch( MalformedQueryException e )
+            catch( QueryEvaluationException | MalformedQueryException e )
             {
-                throw new EntityFinderException( e );
-            }
-            catch( QueryEvaluationException e )
-            {
-                throw new EntityFinderException( e );
+                throw new EntityFinderException( "Query is invalid: " + query, e );
             }
             catch( Exception e )
             {
-                throw new EntityFinderException( e );
+                throw new EntityFinderException( "Unexpected Exception while executing: " + query, e );
             }
         }
 

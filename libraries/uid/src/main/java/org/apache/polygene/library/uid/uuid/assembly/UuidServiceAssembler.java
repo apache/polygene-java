@@ -20,7 +20,6 @@
 package org.apache.polygene.library.uid.uuid.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.uid.uuid.UuidServiceComposite;
 
@@ -29,8 +28,8 @@ public class UuidServiceAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.services( UuidServiceComposite.class ).visibleIn( visibility() );
     }
 }

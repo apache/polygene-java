@@ -27,6 +27,7 @@ jar { manifest { name = "Apache Polygene™ Extension - EntityStore - Cassandra"
 dependencies {
   api polygene.core.bootstrap
   api libraries.cassandra_client
+  api polygene.library( 'constraints' )
 
   implementation polygene.library( 'locking' )
   implementation libraries.jackson_mapper

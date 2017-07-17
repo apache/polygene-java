@@ -52,7 +52,7 @@ public final class CompositeMethodModel
     private final ConcernsModel concerns;
     private final SideEffectsModel sideEffects;
     private final MixinsModel mixins;
-    private AnnotatedElement annotations;
+    private final AnnotatedElement annotations;
 
     // Context
 //    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();

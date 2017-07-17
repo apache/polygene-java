@@ -34,7 +34,7 @@ public class JCloudsTransientTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         // START SNIPPET: assembly
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly

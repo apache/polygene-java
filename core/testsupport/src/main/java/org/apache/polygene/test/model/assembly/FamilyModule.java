@@ -21,7 +21,6 @@
 package org.apache.polygene.test.model.assembly;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
@@ -35,10 +34,8 @@ import org.apache.polygene.test.model.Male;
 class FamilyModule
     implements ModuleAssembler
 {
-
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( Male.class,
                          Female.class,

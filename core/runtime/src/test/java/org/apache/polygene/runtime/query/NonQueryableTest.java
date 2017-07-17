@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.runtime.query;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.entity.Queryable;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.query.QueryBuilder;
@@ -29,6 +27,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
@@ -39,6 +39,7 @@ public class NonQueryableTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.defaultServices();
     }
 
     @Test
@@ -81,7 +82,7 @@ public class NonQueryableTest
         }
     }
 
-    static interface Abc
+    interface Abc
     {
         @Queryable( false )
         Property<Boolean> isValid();

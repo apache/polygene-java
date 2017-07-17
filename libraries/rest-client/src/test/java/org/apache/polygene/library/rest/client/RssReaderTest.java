@@ -33,15 +33,12 @@ import org.apache.polygene.library.rest.client.api.ContextResourceClient;
 import org.apache.polygene.library.rest.client.api.ContextResourceClientFactory;
 import org.apache.polygene.library.rest.client.api.ErrorHandler;
 import org.apache.polygene.library.rest.client.api.HandlerCommand;
-import org.apache.polygene.library.rest.client.spi.ResponseHandler;
-import org.apache.polygene.library.rest.client.spi.ResponseReader;
 import org.apache.polygene.library.rest.client.spi.ResultHandler;
 import org.apache.polygene.library.rest.common.ValueAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.restlet.Client;
-import org.restlet.Response;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.resource.ResourceException;
@@ -67,6 +64,7 @@ public class RssReaderTest
         assumeConnectivity( "github.com", 443 );
     }
 
+    @SuppressWarnings( "FieldCanBeLocal" )
     private ContextResourceClient crc;
 
     @Override
@@ -76,48 +74,42 @@ public class RssReaderTest
         // General setup of client
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
+
+        module.defaultServices();
     }
 
     @Test
     public void testReadRssFeed()
     {
         Client client = new Client( Protocol.HTTPS );
-        Reference ref = new Reference( "https://github.com/Qi4j/qi4j-sdk/commits/develop.atom" );
+        Reference ref = new Reference( "https://github.com/Apache/polygene-java/commits/develop.atom" );
         ContextResourceClientFactory contextResourceClientFactory = objectFactory.newObject( ContextResourceClientFactory.class, client );
 
-        contextResourceClientFactory.registerResponseReader( new ResponseReader()
-        {
-            @Override
-            public Object readResponse( Response response, Class<?> resultType )
-                throws ResourceException
+        contextResourceClientFactory.registerResponseReader( ( response, resultType ) -> {
+            if( resultType.equals( Document.class ) )
             {
-                if( resultType.equals( Document.class ) )
+                try
                 {
-                    try
-                    {
-                        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-                        documentBuilderFactory.setNamespaceAware( false );
-                        return documentBuilderFactory.newDocumentBuilder().parse( response.getEntity().getStream() );
-                    }
-                    catch( Exception e )
-                    {
-                        throw new ResourceException( e );
-                    }
+                    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                    documentBuilderFactory.setNamespaceAware( false );
+                    return documentBuilderFactory.newDocumentBuilder().parse( response.getEntity().getStream() );
                 }
-
-                return null;
+                catch( Exception e )
+                {
+                    throw new ResourceException( e );
+                }
             }
+
+            return null;
         } );
 
-        contextResourceClientFactory.setErrorHandler( new ErrorHandler().onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
-        {
-            @Override
-            public HandlerCommand handleResponse( Response response, ContextResourceClient client )
-            {
-                System.out.println( ">> REFRESH on recoverable error: " + response.getStatus() );
-                return refresh();
-            }
-        } ) );
+        contextResourceClientFactory.setErrorHandler(
+            new ErrorHandler()
+                .onError( ErrorHandler.RECOVERABLE_ERROR,
+                          ( response, client1 ) -> {
+                              System.out.println( ">> REFRESH on recoverable error: " + response.getStatus() );
+                              return refresh();
+                          } ) );
 
         crc = contextResourceClientFactory.newClient( ref );
 

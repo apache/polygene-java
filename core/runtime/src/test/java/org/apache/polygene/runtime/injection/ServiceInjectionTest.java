@@ -39,7 +39,6 @@ import org.apache.polygene.api.service.qualifier.AnnotationQualifier;
 import org.apache.polygene.api.service.qualifier.IdentifiedBy;
 import org.apache.polygene.api.service.qualifier.Qualifier;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
@@ -61,21 +60,18 @@ public class ServiceInjectionTest
     public void testInjectService()
         throws Exception
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> {
                 module.services( MyServiceComposite.class )
-                    .identifiedBy( "Foo" )
-                    .setMetaInfo( new ServiceName( "Foo" ) );
+                      .identifiedBy( "Foo" )
+                      .setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( MyServiceComposite2.class )
-                    .identifiedBy( "Bar" )
-                    .setMetaInfo( new ServiceName( "Bar" ) );
+                      .identifiedBy( "Bar" )
+                      .setMetaInfo( new ServiceName( "Bar" ) );
                 module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
             }
-        };
+        );
 
         testInjection( assembly );
     }
@@ -86,7 +82,7 @@ public class ServiceInjectionTest
         ServiceUser user = factory.newObject( ServiceUser.class );
 
         assertEquals( "X", user.testSingle() );
-        assertThat( user.testIdentity(), equalTo( new StringIdentity( "Foo" ) ) );
+        assertThat( user.testIdentity(), equalTo( StringIdentity.identityOf( "Foo" ) ) );
         assertEquals( "FooX", user.testServiceReference() );
         assertEquals( "Bar", user.testQualifier() );
         assertEquals( "A", user.testStringIterable() );
@@ -97,16 +93,13 @@ public class ServiceInjectionTest
 
     @Test
     public void testInjectionServiceBetweenModules()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> {
                 module.services( MyServiceComposite.class )
-                    .identifiedBy( "Foo" )
-                    .setMetaInfo( new ServiceName( "Foo" ) );
+                      .identifiedBy( "Foo" )
+                      .setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( StringService.class, LongService.class );
                 module.objects( ServiceUser.class );
 
@@ -117,23 +110,20 @@ public class ServiceInjectionTest
                 ServiceDeclaration service3Decl = module2.services( MyServiceComposite2.class );
                 service3Decl.identifiedBy( "Boo" ).setMetaInfo( new ServiceName( "Boo" ) );
             }
-        };
+        );
 
         testInjection( assembly );
     }
 
     @Test
     public void testInjectionServiceBetweenLayers()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
+        SingletonAssembler assembly = new SingletonAssembler(
+            module -> {
                 module.services( MyServiceComposite.class )
-                    .identifiedBy( "Foo" )
-                    .setMetaInfo( new ServiceName( "Foo" ) );
+                      .identifiedBy( "Foo" )
+                      .setMetaInfo( new ServiceName( "Foo" ) );
                 module.services( StringService.class, LongService.class );
                 LayerAssembly layerAssembly = module.layer();
                 module.objects( ServiceUser.class );
@@ -147,24 +137,18 @@ public class ServiceInjectionTest
                 ServiceDeclaration service2Decl = module2.services( MyServiceComposite2.class );
                 service2Decl.identifiedBy( "Bar" ).setMetaInfo( new ServiceName( "Bar" ) ).visibleIn( application );
             }
-        };
+        );
 
         testInjection( assembly );
     }
 
     @Test( expected = ConstructionException.class )
     public void testMissingServiceDependency()
-        throws ActivationException, AssemblyException
+        throws ActivationException
     {
         // No service fulfils the dependency injection -> fail to create application
-        new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.objects( ServiceUser.class );
-            }
-        }.module().newObject( ServiceUser.class );
+        new SingletonAssembler( module -> module.objects( ServiceUser.class ) )
+            .module().newObject( ServiceUser.class );
     }
 
     @Mixins( MyServiceMixin.class )

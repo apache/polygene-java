@@ -30,6 +30,7 @@ import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.object.ObjectDescriptor;
 import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.api.structure.LayerDescriptor;
+import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -75,9 +76,9 @@ public final class LayerModel
         return metaInfo.get( infoType );
     }
 
-    public Iterable<ModuleModel> modules()
+    public Stream<? extends ModuleDescriptor> modules()
     {
-        return modules;
+        return modules.stream();
     }
 
     @Override
@@ -147,14 +148,12 @@ public final class LayerModel
         return modules.stream().flatMap( module -> module.visibleEntities( visibility ) );
     }
 
-    /* package */
     @Override
     public Stream<? extends ValueDescriptor> visibleValues( final Visibility visibility )
     {
         return modules.stream().flatMap( module -> module.visibleValues( visibility ) );
     }
 
-    /* package */
     @Override
     public Stream<? extends ModelDescriptor> visibleServices( final Visibility visibility )
     {

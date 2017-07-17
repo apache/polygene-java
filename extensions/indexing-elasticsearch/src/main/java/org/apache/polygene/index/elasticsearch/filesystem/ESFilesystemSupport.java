@@ -26,7 +26,7 @@ import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.index.elasticsearch.ElasticSearchConfiguration;
+import org.apache.polygene.index.elasticsearch.ElasticSearchIndexingConfiguration;
 import org.apache.polygene.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
 import org.elasticsearch.common.settings.Settings;
@@ -36,7 +36,7 @@ public class ESFilesystemSupport
     extends AbstractElasticSearchSupport
 {
     @This
-    private Configuration<ElasticSearchConfiguration> configuration;
+    private Configuration<ElasticSearchIndexingConfiguration> configuration;
 
     @This
     private HasIdentity hasIdentity;
@@ -51,7 +51,7 @@ public class ESFilesystemSupport
         throws Exception
     {
         configuration.refresh();
-        ElasticSearchConfiguration config = configuration.get();
+        ElasticSearchIndexingConfiguration config = configuration.get();
 
         String clusterName = config.clusterName().get() == null ? DEFAULT_CLUSTER_NAME : config.clusterName().get();
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();

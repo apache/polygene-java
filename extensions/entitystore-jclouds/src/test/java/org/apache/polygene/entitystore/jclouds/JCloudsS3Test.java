@@ -23,8 +23,8 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.apache.polygene.test.internal.DockerRule;
 import org.junit.ClassRule;
 
 public class JCloudsS3Test extends AbstractEntityStoreTest
@@ -37,10 +37,11 @@ public class JCloudsS3Test extends AbstractEntityStoreTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         new JCloudsEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
-        JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class )
-                                                            .declareDefaults();
+        JCloudsEntityStoreConfiguration defaults =
+            config.forMixin( JCloudsEntityStoreConfiguration.class ).declareDefaults();
+
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "8000/tcp" );
         defaults.provider().set( "s3" );

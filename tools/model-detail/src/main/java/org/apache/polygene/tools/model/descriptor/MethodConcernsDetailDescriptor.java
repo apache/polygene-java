@@ -22,6 +22,9 @@ package org.apache.polygene.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import org.apache.polygene.api.concern.ConcernsDescriptor;
 
 public final class MethodConcernsDetailDescriptor
@@ -81,5 +84,16 @@ public final class MethodConcernsDetailDescriptor
         Objects.requireNonNull( aDescriptor, "aDescriptor" );
         aDescriptor.setConcerns( this );
         concerns.add( aDescriptor );
+    }
+
+    public JsonObjectBuilder toJson()
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        {
+            JsonArrayBuilder concernsBuilder = Json.createArrayBuilder();
+            concerns().forEach( concern -> concernsBuilder.add( concern.toJson() ) );
+            builder.add( "concerns", concernsBuilder );
+        }
+        return builder;
     }
 }

@@ -24,7 +24,7 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.cache.ehcache.EhCacheConfiguration;
 import org.apache.polygene.cache.ehcache.EhCachePoolService;
-import org.apache.polygene.entitystore.jdbm.JdbmConfiguration;
+import org.apache.polygene.entitystore.jdbm.JdbmEntityStoreConfiguration;
 import org.apache.polygene.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
@@ -46,8 +46,8 @@ public class JdbmEntityStorePerformanceTest
         {
             new JdbmEntityStoreAssembler().assemble( module );
             ModuleAssembly configModule = module.layer().module( "Config" );
-            configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-            new EntityTestAssembler().assemble( configModule );
+            configModule.entities( JdbmEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
+            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( configModule );
 
             module.services( EhCachePoolService.class );
             configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );

@@ -37,8 +37,8 @@ import org.apache.polygene.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -100,12 +100,13 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         module.entities( Person.class );
         module.values( Person.class );
         module.services( PersonRepository.class ).withConcerns( UnitOfWorkConcern.class );
-        module.services( MemoryEntityStoreService.class );
 
         module.services( Runnable.class )
             .withMixins( LoadData.class )
             .withConcerns( UnitOfWorkConcern.class )
             .instantiateOnStartup();
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Override
@@ -150,7 +151,7 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         public Person findPersonByName( String name )
         {
             UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
-            return uow.toValue( Person.class, uow.get( Person.class, new StringIdentity( name ) ) );
+            return uow.toValue( Person.class, uow.get( Person.class, StringIdentity.identityOf( name ) ) );
         }
     }
 
@@ -205,7 +206,7 @@ public class AssociationToValueTest extends AbstractPolygeneTest
         private Person createPerson( String name )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            return uow.newEntity( Person.class, new StringIdentity( name ) );
+            return uow.newEntity( Person.class, StringIdentity.identityOf( name ) );
         }
     }
 }

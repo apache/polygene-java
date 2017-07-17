@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.cassandra.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreConfiguration;
 import org.apache.polygene.entitystore.cassandra.CassandraEntityStoreService;
@@ -30,8 +29,8 @@ public class CassandraEntityStoreAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.services( CassandraEntityStoreService.class )
               .visibleIn( visibility() )
               .identifiedBy( identity() )

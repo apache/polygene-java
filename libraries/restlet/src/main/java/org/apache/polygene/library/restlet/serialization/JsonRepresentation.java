@@ -23,12 +23,12 @@ package org.apache.polygene.library.restlet.serialization;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
@@ -84,7 +84,7 @@ public class JsonRepresentation<T> extends OutputRepresentation
      *
      * @return The wrapped object.
      *
-     * @throws IOException
+     * @throws IOException if there is an underlying I/O problem.
      */
     public T getObject()
         throws IOException
@@ -123,8 +123,7 @@ public class JsonRepresentation<T> extends OutputRepresentation
         }
         else if( object != null )
         {
-            // TODO was WITHOUT TYPE INFO
-            stateSerialization.serialize( new OutputStreamWriter( outputStream ), object );
+            stateSerialization.serialize( Serializer.Options.NO_TYPE_INFO, outputStream, object );
             outputStream.write( '\n' );
         }
     }

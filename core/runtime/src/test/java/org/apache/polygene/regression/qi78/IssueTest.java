@@ -23,9 +23,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.LayerDescriptor;
 import org.apache.polygene.api.util.HierarchicalVisitorAdapter;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -40,23 +38,18 @@ public class IssueTest
     {
         Energy4Java polygene = new Energy4Java();
 
-        Application app = polygene.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
+        Application app = polygene.newApplication( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
 
-                LayerAssembly domainLayer = assembly.layer( null );
-                domainLayer.setName( "Domain" );
+            LayerAssembly domainLayer = assembly.layer( null );
+            domainLayer.setName( "Domain" );
 
-                LayerAssembly infrastructureLayer = assembly.layer( null );
-                infrastructureLayer.setName( "Infrastructure" );
+            LayerAssembly infrastructureLayer = assembly.layer( null );
+            infrastructureLayer.setName( "Infrastructure" );
 
-                domainLayer.uses( infrastructureLayer );
+            domainLayer.uses( infrastructureLayer );
 
-                return assembly;
-            }
+            return assembly;
         } );
         ApplicationDescriptor model = app.descriptor();
         model.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()

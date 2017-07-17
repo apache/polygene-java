@@ -21,7 +21,6 @@
 package org.apache.polygene.library.rest.admin;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
 public class RestAssembler
@@ -29,8 +28,8 @@ public class RestAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.objects( RestApplication.class ).visibleIn( visibility() );
         module.objects( PolygeneFinder.class,
                         EntitiesResource.class,

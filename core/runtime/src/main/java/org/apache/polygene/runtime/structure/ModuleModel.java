@@ -256,6 +256,7 @@ public class ModuleModel
         return objectsModel.models();
     }
 
+    @Override
     public Stream<? extends ValueDescriptor> findVisibleValueTypes()
     {
         return concat( visibleValues( module ),
@@ -269,6 +270,7 @@ public class ModuleModel
         );
     }
 
+    @Override
     public Stream<? extends EntityDescriptor> findVisibleEntityTypes()
     {
         return concat( visibleEntities( module ),
@@ -282,6 +284,7 @@ public class ModuleModel
         );
     }
 
+    @Override
     public Stream<? extends TransientDescriptor> findVisibleTransientTypes()
     {
         return concat( visibleTransients( module ),
@@ -310,6 +313,7 @@ public class ModuleModel
         );
     }
 
+    @Override
     public Stream<? extends ObjectDescriptor> findVisibleObjectTypes()
     {
         return concat( visibleObjects( module ),

@@ -30,8 +30,6 @@ import javax.swing.JPanel;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueBuilder;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.sample.swing.binding.StateModel;
 import org.apache.polygene.sample.swing.binding.SwingBindingAssembler;
@@ -44,18 +42,14 @@ public class Main
     public static void main( String[] args )
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.transients( BoundPersonComposite.class );
-                module.transients( AddressTransient.class );
-                module.values( CityValue.class, CountryValue.class );
-                new SwingBindingAssembler().assemble( module );
+        SingletonAssembler assembler = new SingletonAssembler(
+            moduleAssembly -> {
+                moduleAssembly.transients( BoundPersonComposite.class );
+                moduleAssembly.transients( AddressTransient.class );
+                moduleAssembly.values( CityValue.class, CountryValue.class );
+                new SwingBindingAssembler().assemble( moduleAssembly );
             }
-        };
+        );
         module = assembler.module();
         Address address1 = createAddress( "Vista Damai", "Jalan Tun Razak" );
         Address address2 = createAddress( "Mutiara", "Jalan Ceylon" );

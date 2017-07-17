@@ -114,7 +114,7 @@ public final class PropertyMapper
             }
             catch( NoSuchMethodException e )
             {
-                throw new IllegalArgumentException( "Could not find any property named " + objectObjectEntry.getKey() );
+//                throw new IllegalArgumentException( "Could not find any property named " + objectObjectEntry.getKey() );
             }
             catch( IllegalAccessException e )
             {
@@ -236,7 +236,7 @@ public final class PropertyMapper
     {
         return new Properties()
         {
-            private static final long serialVersionUID = 3550125427530538865L;
+            private static final long serialVersionUID = 1L;
 
             @Override
             public Object get( Object o )

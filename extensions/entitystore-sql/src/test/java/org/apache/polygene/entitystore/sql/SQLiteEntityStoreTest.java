@@ -47,7 +47,7 @@ public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
         // START SNIPPET: assembly
         // DataSourceService

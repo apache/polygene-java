@@ -20,14 +20,10 @@
 
 package org.apache.polygene.library.rdf.entity;
 
-import org.apache.polygene.api.identity.StringIdentity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Before;
-import org.junit.Test;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
+import java.io.PrintWriter;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityDescriptor;
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -40,9 +36,12 @@ import org.apache.polygene.library.rdf.PolygeneEntityType;
 import org.apache.polygene.library.rdf.Rdfs;
 import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entitystore.EntityStore;
-
-import java.io.PrintWriter;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.Before;
+import org.junit.Test;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
 
 
 /**
@@ -96,14 +95,14 @@ public class EntityTypeSerializerTest
             valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
 
-            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, new StringIdentity( "test1") );
+            EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.identityOf( "test1" ) );
             TestEntity rickardTemplate = builder.instance();
             rickardTemplate.name().set( "Rickard" );
             rickardTemplate.title().set( "Mr" );
             rickardTemplate.value().set( testValue );
             TestEntity testEntity = builder.newInstance();
 
-            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, new StringIdentity( "test2") );
+            EntityBuilder<TestEntity> builder2 = unitOfWork.newEntityBuilder(TestEntity.class, StringIdentity.identityOf( "test2" ) );
             TestEntity niclasTemplate = builder2.instance();
             niclasTemplate.name().set( "Niclas" );
             niclasTemplate.title().set( "Mr" );

@@ -29,10 +29,13 @@ import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 public class ConfigModule
     implements ModuleAssembler
 {
+    public static String NAME = "Configuration Module";
+
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.defaultServices();
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
         return module;
     }

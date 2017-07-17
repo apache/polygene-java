@@ -20,22 +20,20 @@
 package <%= polygene.packageName %>.bootstrap.infrastructure;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
-import org.apache.polygene.serialization.<%- polygene.serialization.toLowerCase() %>.assembly.<%- polygene.serialization %>SerializationAssembler;
+import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 
-public class <%- polygene.serialization %>SerializationModule
+public class SerializationModule
     implements ModuleAssembler
 {
-    public static final String NAME = "<%- polygene.serialization %> Serialization Module";
+    public static final String NAME = "Serialization Module";
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
-        throws AssemblyException
     {
-        new <%- polygene.serialization %>SerializationAssembler()
+        new JavaxJsonSerializationAssembler()
             .visibleIn( Visibility.application )
             .assemble( module );
         return module;

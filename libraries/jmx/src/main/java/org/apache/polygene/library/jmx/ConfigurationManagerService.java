@@ -243,7 +243,7 @@ public interface ConfigurationManagerService
             EditableConfiguration( MBeanInfo info, String identity, Map<String, AccessibleObject> propertyNames )
             {
                 this.info = info;
-                this.identity = new StringIdentity(identity);
+                this.identity = StringIdentity.identityOf( identity );
                 this.propertyNames = propertyNames;
             }
 

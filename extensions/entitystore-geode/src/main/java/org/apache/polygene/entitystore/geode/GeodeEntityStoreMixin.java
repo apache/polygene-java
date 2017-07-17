@@ -50,7 +50,7 @@ public class GeodeEntityStoreMixin
         implements ServiceActivation, MapEntityStore
 {
     @This
-    private Configuration<GeodeConfiguration> config;
+    private Configuration<GeodeEntityStoreConfiguration> config;
 
     private AutoCloseable closeable;
     private Region<String, String> region;
@@ -60,7 +60,7 @@ public class GeodeEntityStoreMixin
             throws Exception
     {
         config.refresh();
-        GeodeConfiguration configuration = config.get();
+        GeodeEntityStoreConfiguration configuration = config.get();
         switch( configuration.topology().get() )
         {
             case EMBEDDED:
@@ -75,7 +75,7 @@ public class GeodeEntityStoreMixin
         }
     }
 
-    private void activateEmbedded( GeodeConfiguration configuration )
+    private void activateEmbedded( GeodeEntityStoreConfiguration configuration )
             throws IOException
     {
         Properties cacheProperties = buildCacheProperties( configuration );
@@ -92,7 +92,7 @@ public class GeodeEntityStoreMixin
         closeable = cache;
     }
 
-    private void activateClientServer( GeodeConfiguration configuration )
+    private void activateClientServer( GeodeEntityStoreConfiguration configuration )
             throws IOException
     {
         Properties cacheProperties = buildCacheProperties( configuration );
@@ -109,7 +109,7 @@ public class GeodeEntityStoreMixin
         closeable = cache;
     }
 
-    private Properties buildCacheProperties( GeodeConfiguration config )
+    private Properties buildCacheProperties( GeodeEntityStoreConfiguration config )
             throws IOException
     {
         Properties properties = new Properties();

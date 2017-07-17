@@ -1,0 +1,76 @@
+<%#
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+-%>
+package <%= polygene.packageName %>.app;
+
+import <%= polygene.packageName %>.bootstrap.<%= polygene.name %>ApplicationAssembler;
+import <%= polygene.packageName %>.bootstrap.connectivity.ConnectivityLayer;
+import <%= polygene.packageName %>.bootstrap.connectivity.RestApiModule;
+
+import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
+import org.apache.polygene.library.restlet.PolygeneRestApplicationLauncher;
+
+public class <%= polygene.name %>Launcher extends PolygeneRestApplicationLauncher
+{
+    private static final String name = "<%= polygene.name %>";
+    private static final String version = "0.1";
+    private Application.Mode mode = getApplicationMode();
+
+    public static void main( String[] args )
+        throws Exception
+    {
+        <%= polygene.name %>Launcher app = new <%= polygene.name %>Launcher();
+        app.installShutdownHook();
+        app.initialize();
+    }
+
+    protected LayeredApplicationAssembler createApplicationAssembler()
+        throws AssemblyException
+    {
+        return new <%= polygene.name %>ApplicationAssembler( name, version, mode, none -> {} );
+    }
+
+    @Override
+    public void shutdown()
+    {
+        super.shutdown();
+    }
+
+    protected String entryLayer()
+    {
+        return ConnectivityLayer.NAME;
+    }
+
+    protected String entryModule()
+    {
+        return RestApiModule.NAME;
+    }
+
+    private Application.Mode getApplicationMode()
+    {
+        String mode = System.getenv( "APP_MODE" );
+        if( mode == null )
+        {
+            return Application.Mode.development;
+        }
+        return Application.Mode.valueOf( mode );
+    }
+}

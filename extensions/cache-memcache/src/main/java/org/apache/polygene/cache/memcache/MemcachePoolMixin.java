@@ -28,7 +28,6 @@ import net.spy.memcached.ConnectionFactoryBuilder.Protocol;
 import net.spy.memcached.MemcachedClient;
 import net.spy.memcached.auth.AuthDescriptor;
 import net.spy.memcached.auth.PlainCallbackHandler;
-import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.spi.cache.Cache;
@@ -40,8 +39,10 @@ public class MemcachePoolMixin
     implements MemcachePoolService
 {
     private final Map<String, MemcacheImpl<?>> caches = new HashMap<>();
-    @This @Optional
+
+    @This
     private Configuration<MemcacheConfiguration> configuration;
+
     private MemcachedClient client;
     private int expiration;
 
@@ -49,41 +50,32 @@ public class MemcachePoolMixin
     public void activateService()
         throws Exception
     {
-        if( configuration != null )
+        MemcacheConfiguration config = configuration.get();
+        expiration = ( config.expiration().get() == null )
+                     ? 3600
+                     : config.expiration().get();
+        String addresses = ( config.addresses().get() == null )
+                           ? "localhost:11211"
+                           : config.addresses().get();
+        Protocol protocol = ( config.protocol().get() == null )
+                            ? Protocol.TEXT
+                            : Protocol.valueOf( config.protocol().get().toUpperCase() );
+        String username = config.username().get();
+        String password = config.password().get();
+        String authMech = config.authMechanism().get() == null
+                          ? "PLAIN"
+                          : config.authMechanism().get();
+
+        ConnectionFactoryBuilder builder = new ConnectionFactoryBuilder();
+        builder.setProtocol( protocol );
+        if( username != null && !username.isEmpty() )
         {
-            MemcacheConfiguration config = configuration.get();
-            expiration = ( config.expiration().get() == null )
-                         ? 3600
-                         : config.expiration().get();
-            String addresses = ( config.addresses().get() == null )
-                               ? "localhost:11211"
-                               : config.addresses().get();
-            Protocol protocol = ( config.protocol().get() == null )
-                                ? Protocol.TEXT
-                                : Protocol.valueOf( config.protocol().get().toUpperCase() );
-            String username = config.username().get();
-            String password = config.password().get();
-            String authMech = config.authMechanism().get() == null
-                              ? "PLAIN"
-                              : config.authMechanism().get();
-
-            ConnectionFactoryBuilder builder = new ConnectionFactoryBuilder();
-            builder.setProtocol( protocol );
-            if( username != null && !username.isEmpty() )
-            {
-                builder.setAuthDescriptor(
-                    new AuthDescriptor(
-                        new String[]
-                        {
-                            authMech
-                        },
-                        new PlainCallbackHandler( username, password )
-                    )
-                );
-            }
-
-            client = new MemcachedClient( builder.build(), AddrUtil.getAddresses( addresses ) );
+            String[] authType = { authMech };
+            AuthDescriptor to = new AuthDescriptor( authType, new PlainCallbackHandler( username, password ) );
+            builder.setAuthDescriptor( to );
         }
+
+        client = new MemcachedClient( builder.build(), AddrUtil.getAddresses( addresses ) );
     }
 
     @Override
@@ -107,12 +99,7 @@ public class MemcachePoolMixin
         }
         synchronized( caches )
         {
-            MemcacheImpl<?> cache = caches.get( cacheId );
-            if( cache == null )
-            {
-                cache = new MemcacheImpl<>( client, cacheId, valueType, expiration );
-                caches.put( cacheId, cache );
-            }
+            MemcacheImpl<?> cache = caches.computeIfAbsent( cacheId, identity -> new MemcacheImpl<>( client, identity, valueType, expiration ) );
             cache.incRefCount();
             return (Cache<T>) cache;
         }

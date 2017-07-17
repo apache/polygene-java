@@ -342,7 +342,9 @@ Publish the new version of the `generator-polygene` NPM package tagged as `beta`
 
 [source,shell]
 ----
-cd polygene-java/tools/generator-polygene
+cd polygene-java
+./gradlew tools:generator-polygene:prepareTemplateGradleWrapper
+cd tools/generator-polygene
 npm publish --tag beta
 ----
 
@@ -847,6 +849,13 @@ cd polygene-dist/dev/polygene/
 rm "*<RELEASE-VERSION>-RC#*.*"
 svn add * --force
 svn commit -m "polygene: dropping <RELEASE-VERSION>-RC# from dist/dev/polygene as the vote failed"
+----
+
+Drop NPM packages:
+
+[source,shell]
+----
+npm unpublish generator-polygene@<RELEASE-VERSION>
 ----
 
 

@@ -23,6 +23,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.restlet.assembly.RestletCrudModuleAssembler;
 
 <% for( var idx in polygene.current.cruds) {
 %><%= "import " + polygene.packageName + ".model." + polygene.current.name + "." + polygene.current.cruds[idx].name + ";" %>
@@ -54,8 +55,7 @@ for( var idx in polygene.current.services) {
 <%
 } %>
 
-import static org.apache.polygene.api.common.Visibility.layer;
-import static org.apache.polygene.api.common.Visibility.application;
+import static org.apache.polygene.api.common.Visibility.*;
 
 public class <%- firstUpper(polygene.current.name) %>Module
     implements ModuleAssembler
@@ -69,8 +69,8 @@ if( polygene.current.cruds ) {
     for( var value in polygene.current.cruds ) {
         var crud = polygene.current.cruds[value];
 %>
-        <%- "module.values( " + crud.name + ".class )" + (crud.visibility ? ".visibleIn(" + crud.visibility +")" : "" ) %>;
-        <%- "module.entities( " + crud.name + ".class )" + (crud.visibility ? ".visibleIn(" + crud.visibility +")" : "" ) %>;
+        new RestletCrudModuleAssembler( <%- crud.name %>.class )
+            .assemble( module );
 <%
     }
 }
@@ -78,7 +78,7 @@ if( polygene.current.values ) {
     for( var value in polygene.current.values ) {
         var v = polygene.current.values[value];
 %>
-        <%- "module.values( " + v.name + ".class )" + (v.visibility ? ".visibleIn(" + v.visibility +")" : "" ) %>;
+        <%- "module.values( " + v.name + ".class )" + (v.visibility ? ".visibleIn(" + v.visibility +" )" : "" ) %>;
 <%
     }
 }
@@ -86,7 +86,7 @@ if( polygene.current.entities ) {
     for( var value in polygene.current.entities ) {
         var entity = polygene.current.entities[value];
 %>
-        <%- "module.entities( " + entity.name + ".class )" + (entity.visibility ? ".visibleIn(" + entity.visibility +")" : "" ) %>;
+        <%- "module.entities( " + entity.name + ".class )" + (entity.visibility ? ".visibleIn( " + entity.visibility +" )" : "" ) %>;
 <%
     }
 }
@@ -94,7 +94,7 @@ if( polygene.current.transients ) {
     for( var value in polygene.current.transients ) {
         var trans = polygene.current.transients[value];
 %>
-        <%- "module.transients( " + trans.name + ".class )" + (trans.visibility ? ".visibleIn(" + trans.visibility +")" : "" ) %>;
+        <%- "module.transients( " + trans.name + ".class )" + (trans.visibility ? ".visibleIn( " + trans.visibility +" )" : "" ) %>;
 <%
     }
 }
@@ -102,7 +102,7 @@ if( polygene.current.objects ) {
     for( var value in polygene.current.objects ) {
         var obj = polygene.current.objects[value];
 %>
-        <%- "module.objects( " + obj.name + ".class )" + (obj.visibility ? ".visibleIn(" + obj.visibility +")" : "" ) %>;
+        <%- "module.objects( " + obj.name + ".class )" + (obj.visibility ? ".visibleIn( " + obj.visibility +" )" : "" ) %>;
 <%
     }
 }
@@ -110,8 +110,11 @@ if( polygene.current.services ) {
     for( var value in polygene.current.services ) {
         var service = polygene.current.services[value];
 %>
-        <%- "module.services( " + service.name + ".class )" + (service.visibility ? ".visibleIn(" + service.visibility + ")" : "" ) %>;
-        <%- "module.entities( " + polygene.configurationClassName(service.name) + ".class )" %>;
+        module.services( <%- service.name %>.class )
+            .identifiedBy("<%- service.name %>")
+        <%- (service.visibility ? "    .visibleIn( " + service.visibility + " )" : "" )
+%>;
+        <%- "module.configurations( " + polygene.configurationClassName(service.name) + ".class )" %>;
 <%
     }
 } %>

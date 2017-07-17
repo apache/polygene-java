@@ -66,11 +66,11 @@ public interface CreationResource<T extends HasIdentity> extends ServerResource<
         public RestLink post( RestForm form )
         {
             String name = form.field( "name" ).value().get();
-            Class entityType = parameters.entityType().get();
+            Class<? extends HasIdentity> entityType = parameters.entityType().get();
             Identity identity = identityManager.generate( entityType, name );
             locator.find( entityType ).create( identity );
             doParameterization( form, entityType, identity );
-            return resourceBuilder.createRestLink( identity, parameters.request().get().getResourceRef(), Method.GET );
+            return resourceBuilder.createRestLink( identity.toString(), parameters.request().get().getResourceRef(), Method.GET );
         }
 
         private <P> void doParameterization( RestForm form, Class entityType, Identity identity )
@@ -79,7 +79,7 @@ public interface CreationResource<T extends HasIdentity> extends ServerResource<
             {
                 return;
             }
-            //noinspection unchecked
+            @SuppressWarnings( "unchecked" )
             CreationParameterized<P> created = (CreationParameterized<P>) locator.find( entityType ).get( identity );
             P parameterization = createParameterizationValue( form, created );
             created.parameterize( parameterization );
@@ -94,7 +94,7 @@ public interface CreationResource<T extends HasIdentity> extends ServerResource<
                 association -> null,
                 association -> null,
                 association -> null
-            );
+                                                             );
             return vb.newInstance();
         }
 

@@ -22,13 +22,13 @@ var assert = require('yeoman-assert');
 var shell = require('shelljs');
 
 //See http://yeoman.io/authoring/testing.html
-
-// test with all defaults first.
-test();
+var restApiAppType = "Rest API";
+var commandLineAppType = "Command Line";
+var defaultAppType = restApiAppType;
 
 var appTypes = [
-    "Rest API",
-    'Command Line'
+    restApiAppType,
+    commandLineAppType
 ];
 
 var entityStores = [
@@ -64,12 +64,6 @@ var cachings = [
     'EhCache'
 ];
 
-var serializations = [
-    'JavaxJson',
-    'JavaxXml',
-    'MessagePack'
-];
-
 var metricses = [
     'None',
     'Codahale'
@@ -79,84 +73,88 @@ var featuresset = [
     [],
     ['jmx'],
     ['mixin scripting'],
-    ['security'],
     ['jmx', 'mixin scripting'],
-    ['jmx', 'scripting'],
-    ['mixin scripting', 'scripting'],
-    ['jmx', 'mixin scripting', 'scripting']
+    ['security'],
+    ['jmx', 'security'],
+    ['mixin scripting', 'security'],
+    ['jmx', 'mixin scripting', 'security'],
+    ['envisage'],
+    ['jmx', 'envisage'],
+    ['mixin scripting', 'envisage'],
+    ['jmx', 'mixin scripting', 'envisage'],
+    ['security', 'envisage'],
+    ['jmx', 'security', 'envisage'],
+    ['mixin scripting', 'security', 'envisage'],
+    ['jmx', 'mixin scripting', 'security', 'envisage']
 ];
 
-appTypes.forEach(function (appType) {
-    test(appType, "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
-});
+// test with all defaults first.
+test();
 
-entityStores.forEach(function (entityStore) {
-    test("Rest API", entityStore, "Rdf", "JavaxJson", "Memcache", "Codahale", "[]");
-});
-
-indexings.forEach(function (indexing) {
-    test("Rest API", "Memory", indexing, "JavaxJson", "Memcache", "Codahale", "[]");
-});
-
-serializations.forEach(function (serialization) {
-    test("Rest API", "Memory", "Rdf", serialization, "Memcache", "Codahale", "[]");
-});
-
-cachings.forEach(function (caching) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", caching, "Codahale", "[]");
-});
-
-metricses.forEach(function (metrics) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", metrics, "[]");
-});
-
-featuresset.forEach(function (feature) {
-    test("Rest API", "Memory", "Rdf", "JavaxJson", "Memcache", "Codahale", feature);
-});
-
-// All Tests !!!!
-if(process.env.TEST_ALL == 'yes') {
+if (process.env.TEST_ALL === 'yes') {
+    // All Tests !!!!
     appTypes.forEach(function (appType) {
         entityStores.forEach(function (entitystore) {
             indexings.forEach(function (indexing) {
-                serializations.forEach(function (serialization) {
-                    cachings.forEach(function (caching) {
-                        metricses.forEach(function (metrics) {
-                            featuresset.forEach(function (features) {
-                                test(appType, entitystore, indexing, serialization, caching, metrics, features)
-                            });
+                cachings.forEach(function (caching) {
+                    metricses.forEach(function (metrics) {
+                        featuresset.forEach(function (features) {
+                            test(appType, entitystore, indexing, caching, metrics, features)
                         });
                     });
                 });
             });
         });
     });
+} else {
+    // Subset
+    appTypes.forEach(function (appType) {
+        test(appType, "Memory", "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    entityStores.forEach(function (entityStore) {
+        test(defaultAppType, entityStore, "Rdf", "Memcache", "Codahale", "[]");
+    });
+
+    indexings.forEach(function (indexing) {
+        test(defaultAppType, "Memory", indexing, "Memcache", "Codahale", "[]");
+    });
+
+    cachings.forEach(function (caching) {
+        test(defaultAppType, "Memory", "Rdf", caching, "Codahale", "[]");
+    });
+
+    metricses.forEach(function (metrics) {
+        test(defaultAppType, "Memory", "Rdf", "Memcache", metrics, "[]");
+    });
+
+    featuresset.forEach(function (feature) {
+        test(defaultAppType, "Memory", "Rdf", "Memcache", "Codahale", feature);
+    });
 }
 
-function test(appType, entityStore, indexing, serialization, caching, metrics, features) {
+function test(appType, entityStore, indexing, caching, metrics, features) {
     describe('polygene-generator', function () {
-        var testName = 'generates a Gradle buildable Apache Polygene project with '
-            + entityStore + 'EntityStore, '
-            + indexing + 'Indexing, '
-            + serialization + 'Serialization, '
-            + caching + 'Caching, '
-            + metrics + 'Metrics';
-        if(features) {
-            testName += ', and ' + features;
+        var testName = appType + ' with '
+            + entityStore + ' EntityStore - '
+            + indexing + ' Indexing - '
+            + caching + ' Caching - '
+            + metrics + ' Metrics';
+        if (features && features.length > 0) {
+            testName += ' - ' + features.toString().replace(new RegExp(',', 'g'), ' - ');
         }
-        testName += '.';
-        var testDirName = testName.replace(new RegExp('[, ]','g'), '_');
+        var testDirName = testName.replace(new RegExp(' - ', 'g'), '_').replace(new RegExp(' ', 'g'), '_');
         it(testName,
             function () {
-                this.timeout(10000);
+                console.log("\n\nTest: " + testName);
+                this.timeout(60000);
                 return helpers.run(path.join(__dirname, '../app'))
-                    .inDir(path.join(__dirname, '../build/npm-test/'+testDirName))
+                    .inDir(path.join(__dirname, '../build/npm-test/' + testDirName))
                     .withPrompts({
-                        name: 'test-project',
+                        name: 'TestProject',
                         packageName: 'org.apache.polygene.generator.test',
                         applicationtype: appType,
                         entitystore: entityStore,
-                        serialization: serialization,
                         indexing: indexing,
                         caching: caching,
                         metrics: metrics,
@@ -169,5 +167,5 @@ function test(appType, entityStore, indexing, serialization, caching, metrics, f
 
 function buildAndVerify(dir) {
     assert.file(['gradlew', 'settings.gradle', 'build.gradle']);
-    assert(shell.exec(path.join(dir, 'gradlew') + ' classes --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
+    assert(shell.exec(path.join(dir, 'gradlew') + ' check --init-script ../../stagedMavenRepoInitScript.gradle').code == 0);
 }

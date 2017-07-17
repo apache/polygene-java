@@ -106,7 +106,7 @@ public class EntityResource
     {
         // /entity/{reference}
         Map<String, Object> attributes = getRequest().getAttributes();
-        identity = new StringIdentity( (String) attributes.get( "reference" ) );
+        identity = StringIdentity.identityOf( (String) attributes.get( "reference" ) );
     }
 
     @Override
@@ -474,7 +474,6 @@ public class EntityResource
                             try
                             {
                                 unitOfWork.entityStateOf( module, reference );
-
                                 namedAssociation.remove( name );
                                 namedAssociation.put( name, reference );
 

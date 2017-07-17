@@ -23,7 +23,7 @@ import java.util.Objects;
 import org.apache.polygene.api.query.NotQueryableException;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
-import org.apache.polygene.api.service.NoSuchServiceException;
+import org.apache.polygene.api.service.NoSuchServiceTypeException;
 import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.spi.query.EntityFinder;
@@ -61,7 +61,7 @@ public final class QueryBuilderFactoryImpl
             serviceReference = finder.findService( EntityFinder.class );
             return new QueryBuilderImpl<>( serviceReference.get(), resultType, null );
         }
-        catch( NoSuchServiceException e )
+        catch( NoSuchServiceTypeException e )
         {
             return new QueryBuilderImpl<>( null, resultType, null );
         }

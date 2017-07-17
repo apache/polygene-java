@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.index.elasticsearch.assembly;
 
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.elasticsearch.ElasticSearchClusterConfiguration;
 import org.apache.polygene.index.elasticsearch.cluster.ESClusterIndexQueryService;
@@ -30,8 +29,8 @@ public class ESClusterIndexQueryAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.services( ESClusterIndexQueryService.class )
               .taggedWith( "elasticsearch", "query", "indexing" )
               .identifiedBy( identity() )

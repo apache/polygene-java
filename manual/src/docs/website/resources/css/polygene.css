@@ -823,3 +823,7 @@ h5 { font-size: 1em; margin-bottom: 0.5em; }
     font-family: Consolas, Monaco, monospace;
     background: #DEDEDE;
 }
+
+.glossterm {
+    font-weight: bold;
+}

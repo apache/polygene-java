@@ -24,9 +24,9 @@ import org.apache.polygene.api.identity.StringIdentity;
 
 public interface AccountIds
 {
-    Identity SAVINGS_ACCOUNT_ID = new StringIdentity( "SavingsAccountId" );
-    Identity CHECKING_ACCOUNT_ID = new StringIdentity( "CheckingAccountId" );
-    Identity CREDITOR_ID1 = new StringIdentity( "BakerAccount" );
-    Identity CREDITOR_ID2 = new StringIdentity( "ButcherAccount" );
+    Identity SAVINGS_ACCOUNT_ID = StringIdentity.identityOf( "SavingsAccountId" );
+    Identity CHECKING_ACCOUNT_ID = StringIdentity.identityOf( "CheckingAccountId" );
+    Identity CREDITOR_ID1 = StringIdentity.identityOf( "BakerAccount" );
+    Identity CREDITOR_ID2 = StringIdentity.identityOf( "ButcherAccount" );
 
 }

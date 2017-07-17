@@ -37,14 +37,14 @@ import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.ConstructionException;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.ModelDescriptor;
-import org.apache.polygene.api.composite.NoSuchTransientException;
+import org.apache.polygene.api.composite.NoSuchTransientTypeException;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.composite.TransientDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.metrics.MetricsProvider;
-import org.apache.polygene.api.object.NoSuchObjectException;
+import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.object.ObjectDescriptor;
 import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.property.Property;
@@ -53,7 +53,7 @@ import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.api.query.QueryBuilderFactory;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.serialization.SerializationException;
-import org.apache.polygene.api.service.NoSuchServiceException;
+import org.apache.polygene.api.service.NoSuchServiceTypeException;
 import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.LayerDescriptor;
@@ -63,7 +63,7 @@ import org.apache.polygene.api.structure.TypeLookup;
 import org.apache.polygene.api.type.HasTypes;
 import org.apache.polygene.api.unitofwork.UnitOfWorkException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.NoSuchValueException;
+import org.apache.polygene.api.value.NoSuchValueTypeException;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -88,7 +88,6 @@ import org.apache.polygene.runtime.value.ValueBuilderWithPrototype;
 import org.apache.polygene.runtime.value.ValueBuilderWithState;
 import org.apache.polygene.runtime.value.ValueInstance;
 import org.apache.polygene.spi.entitystore.EntityStore;
-import org.apache.polygene.spi.metrics.MetricsProviderAdapter;
 import org.apache.polygene.spi.module.ModuleSpi;
 
 import static java.util.Arrays.asList;
@@ -119,8 +118,8 @@ public class ModuleInstance
 
     @SuppressWarnings( "LeakingThisInConstructor" )
     ModuleInstance( ModuleModel moduleModel, LayerDescriptor layer, TypeLookup typeLookup,
-                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel
-    )
+                    ServicesModel servicesModel, ImportedServicesModel importedServicesModel
+                  )
     {
         // Constructor parameters
         model = moduleModel;
@@ -167,15 +166,15 @@ public class ModuleInstance
     // Implementation of ObjectFactory
     @Override
     public <T> T newObject( Class<T> mixinType, Object... uses )
-        throws NoSuchObjectException
+        throws NoSuchObjectTypeException
     {
         Objects.requireNonNull( mixinType, "mixinType" );
         ObjectDescriptor model = typeLookup.lookupObjectModel( mixinType );
 
         if( model == null )
         {
-            throw new NoSuchObjectException( mixinType.getName(), name(),
-                                             typeLookup.allObjects().flatMap( HasTypes::types ) );
+            throw new NoSuchObjectTypeException( mixinType.getName(), name(),
+                                                 typeLookup.allObjects().flatMap( HasTypes::types ) );
         }
 
         InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
@@ -191,8 +190,8 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchObjectException( instance.getClass().getName(), name(),
-                                             typeLookup.allObjects().flatMap( HasTypes::types ) );
+            throw new NoSuchObjectTypeException( instance.getClass().getName(), name(),
+                                                 typeLookup.allObjects().flatMap( HasTypes::types ) );
         }
 
         InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
@@ -202,14 +201,14 @@ public class ModuleInstance
     // Implementation of TransientBuilderFactory
     @Override
     public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
-        throws NoSuchTransientException
+        throws NoSuchTransientTypeException
     {
         Objects.requireNonNull( mixinType, "mixinType" );
         TransientDescriptor model = typeLookup.lookupTransientModel( mixinType );
 
         if( model == null )
         {
-            throw new NoSuchTransientException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchTransientTypeException( mixinType.getName(), descriptor() );
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
@@ -229,7 +228,7 @@ public class ModuleInstance
 
     @Override
     public <T> T newTransient( final Class<T> mixinType, Object... uses )
-        throws NoSuchTransientException, ConstructionException
+        throws NoSuchTransientTypeException, ConstructionException
     {
         return newTransientBuilder( mixinType ).use( uses ).newInstance();
     }
@@ -237,21 +236,21 @@ public class ModuleInstance
     // Implementation of ValueBuilderFactory
     @Override
     public <T> T newValue( Class<T> mixinType )
-        throws NoSuchValueException, ConstructionException
+        throws NoSuchValueTypeException, ConstructionException
     {
         return newValueBuilder( mixinType ).newInstance();
     }
 
     @Override
     public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
-        throws NoSuchValueException
+        throws NoSuchValueTypeException
     {
         Objects.requireNonNull( mixinType, "mixinType" );
         ValueDescriptor compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
@@ -264,7 +263,7 @@ public class ModuleInstance
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
                                                          Function<AssociationDescriptor, Stream<EntityReference>> manyAssociationFunction,
                                                          Function<AssociationDescriptor, Stream<Map.Entry<String, EntityReference>>> namedAssociationFunction
-    )
+                                                       )
     {
         Objects.requireNonNull( propertyFunction, "propertyFunction" );
         Objects.requireNonNull( associationFunction, "associationFunction" );
@@ -275,7 +274,7 @@ public class ModuleInstance
 
         if( compositeModelModule == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         StateResolver stateResolver = new FunctionStateResolver(
@@ -333,7 +332,7 @@ public class ModuleInstance
 
         if( model == null )
         {
-            throw new NoSuchValueException( valueType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( valueType.getName(), descriptor() );
         }
 
         return new ValueBuilderWithPrototype<>( model, this, prototype );
@@ -341,14 +340,14 @@ public class ModuleInstance
 
     @Override
     public <T> T newValueFromSerializedState( Class<T> mixinType, String serializedState )
-        throws NoSuchValueException, ConstructionException
+        throws NoSuchValueTypeException, ConstructionException
     {
         Objects.requireNonNull( mixinType, "mixinType" );
         ValueDescriptor model = typeLookup.lookupValueModel( mixinType );
 
         if( model == null )
         {
-            throw new NoSuchValueException( mixinType.getName(), name(), typeLookup );
+            throw new NoSuchValueTypeException( mixinType.getName(), descriptor() );
         }
 
         try
@@ -370,7 +369,7 @@ public class ModuleInstance
 
     @Override
     public <T> ServiceReference<T> findService( Class<T> serviceType )
-        throws NoSuchServiceException
+        throws NoSuchServiceTypeException
     {
         return findService( (Type) serviceType );
     }
@@ -381,7 +380,7 @@ public class ModuleInstance
         ModelDescriptor serviceModel = typeLookup.lookupServiceModel( serviceType );
         if( serviceModel == null )
         {
-            throw new NoSuchServiceException( serviceType.getTypeName(), name(), typeLookup );
+            throw new NoSuchServiceTypeException( serviceType.getTypeName(), descriptor() );
         }
         return findServiceReferenceInstance( serviceModel );
     }
@@ -481,10 +480,9 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<EntityStore> service = findService( EntityStore.class );
-                        store = service.get();
+                        store = findService( EntityStore.class ).get();
                     }
-                    catch( NoSuchServiceException e )
+                    catch( NoSuchServiceTypeException e )
                     {
                         throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
                     }
@@ -505,10 +503,9 @@ public class ModuleInstance
                 {
                     try
                     {
-                        ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
-                        uowf = service.get();
+                        uowf = findService( UnitOfWorkFactory.class ).get();
                     }
-                    catch( NoSuchServiceException e )
+                    catch( NoSuchServiceTypeException e )
                     {
                         throw new UnitOfWorkException( "No UnitOfWorkFactory service available in module " + name() );
                     }
@@ -551,8 +548,7 @@ public class ModuleInstance
             {
                 if( generator == null )
                 {
-                    ServiceReference<IdentityGenerator> service = findService( IdentityGenerator.class );
-                    generator = service.get();
+                    generator = findService( IdentityGenerator.class ).get();
                 }
             }
         }
@@ -568,8 +564,7 @@ public class ModuleInstance
             {
                 if( serialization == null )
                 {
-                    ServiceReference<Serialization> service = findService( Serialization.class );
-                    serialization = service.get();
+                    serialization = findService( Serialization.class ).get();
                 }
             }
         }
@@ -585,15 +580,7 @@ public class ModuleInstance
             {
                 if( metrics == null )
                 {
-                    try
-                    {
-                        ServiceReference<MetricsProvider> service = findService( MetricsProvider.class );
-                        metrics = service.get();
-                    }
-                    catch( NoSuchServiceException e )
-                    {
-                        metrics = new MetricsProviderAdapter();
-                    }
+                    metrics = findService( MetricsProvider.class ).get();
                 }
             }
         }

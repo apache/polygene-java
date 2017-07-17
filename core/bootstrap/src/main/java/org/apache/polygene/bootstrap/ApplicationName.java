@@ -35,7 +35,6 @@ public final class ApplicationName
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.layer().application().setName( name );
     }

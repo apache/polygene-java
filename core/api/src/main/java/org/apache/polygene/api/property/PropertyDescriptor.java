@@ -54,8 +54,6 @@ public interface PropertyDescriptor extends MetaInfoHolder
 
     AccessibleObject accessor();
 
-    InitialValueProvider initialValueProvider();
-
     Object resolveInitialValue(ModuleDescriptor moduleDescriptor);
 
     ValueType valueType();

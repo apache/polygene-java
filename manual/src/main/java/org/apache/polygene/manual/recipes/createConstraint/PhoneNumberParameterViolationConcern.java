@@ -22,7 +22,7 @@ package org.apache.polygene.manual.recipes.createConstraint;
 import java.util.Collection;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.property.Property;
 
@@ -44,7 +44,7 @@ public abstract class PhoneNumberParameterViolationConcern extends ConcernOf<Has
             }
             catch( ConstraintViolationException e )
             {
-                Collection<ConstraintViolation> violations = e.constraintViolations();
+                Collection<ValueConstraintViolation> violations = e.constraintViolations();
                 report( violations );
             }
         }
@@ -52,7 +52,7 @@ public abstract class PhoneNumberParameterViolationConcern extends ConcernOf<Has
 // END SNIPPET: property
 
 // START SNIPPET: property
-        private void report( Collection<ConstraintViolation> violations )
+        private void report( Collection<ValueConstraintViolation> violations )
         {
         }
     }

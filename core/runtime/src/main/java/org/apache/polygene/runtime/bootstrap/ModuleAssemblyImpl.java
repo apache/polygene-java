@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime.bootstrap;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +40,7 @@ import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.IdentityGenerator;
 import org.apache.polygene.api.identity.StringIdentity;
+import org.apache.polygene.api.metrics.MetricsProvider;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.service.DuplicateServiceIdentityException;
 import org.apache.polygene.api.structure.Module;
@@ -70,9 +70,10 @@ import org.apache.polygene.bootstrap.TransientAssembly;
 import org.apache.polygene.bootstrap.TransientDeclaration;
 import org.apache.polygene.bootstrap.ValueAssembly;
 import org.apache.polygene.bootstrap.ValueDeclaration;
-import org.apache.polygene.bootstrap.identity.DefaultIdentityGeneratorAssembler;
-import org.apache.polygene.bootstrap.serialization.DefaultSerializationAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
+import org.apache.polygene.bootstrap.defaults.DefaultIdentityGeneratorAssembler;
+import org.apache.polygene.bootstrap.defaults.DefaultMetricsProviderAssembler;
+import org.apache.polygene.bootstrap.defaults.DefaultSerializationAssembler;
+import org.apache.polygene.bootstrap.defaults.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.runtime.activation.ActivatorsModel;
 import org.apache.polygene.runtime.composite.TransientModel;
 import org.apache.polygene.runtime.composite.TransientsModel;
@@ -103,7 +104,26 @@ import static java.util.stream.Collectors.toList;
 final class ModuleAssemblyImpl
         implements ModuleAssembly
 {
-    private static HashMap<Class, Assembler> defaultAssemblers;
+    /**
+     * Assemblers required on all modules, keyed by service type, assembled by {@link #addRequiredAssemblers()}.
+     */
+    private static final Map<Class, Assembler> REQUIRED_ASSEMBLERS;
+
+    /**
+     * Assemblers for default services, keyed by service type, assembled if {@link #defaultServices()} is called.
+     */
+    private static final Map<Class, Assembler> DEFAULT_ASSEMBLERS;
+
+    static
+    {
+        REQUIRED_ASSEMBLERS = new HashMap<>( 1 );
+        REQUIRED_ASSEMBLERS.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
+
+        DEFAULT_ASSEMBLERS = new HashMap<>( 3 );
+        DEFAULT_ASSEMBLERS.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
+        DEFAULT_ASSEMBLERS.put( Serialization.class, new DefaultSerializationAssembler() );
+        DEFAULT_ASSEMBLERS.put( MetricsProvider.class, new DefaultMetricsProviderAssembler() );
+    }
 
     private final LayerAssembly layerAssembly;
     private String name;
@@ -119,14 +139,6 @@ final class ModuleAssemblyImpl
     private final Map<Class<?>, ObjectAssemblyImpl> objectAssemblies = new LinkedHashMap<>();
 
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
-
-    static
-    {
-        defaultAssemblers = new HashMap<>();
-        defaultAssemblers.put( UnitOfWorkFactory.class, new DefaultUnitOfWorkAssembler() );
-        defaultAssemblers.put( IdentityGenerator.class, new DefaultIdentityGeneratorAssembler() );
-        defaultAssemblers.put( Serialization.class, new DefaultSerializationAssembler() );
-    }
 
     ModuleAssemblyImpl(LayerAssembly layerAssembly, String name)
     {
@@ -163,6 +175,21 @@ final class ModuleAssemblyImpl
     {
         metaInfo.set(info);
         return this;
+    }
+
+    @Override
+    public ServiceDeclaration defaultServices()
+    {
+        Class[] assembledServicesTypes = DEFAULT_ASSEMBLERS
+            .entrySet()
+            .stream()
+            .filter(
+                entry -> serviceAssemblies.stream().noneMatch(
+                    serviceAssembly -> serviceAssembly.hasType( entry.getKey() ) ) )
+            .peek( entry -> entry.getValue().assemble( this ) )
+            .map( Map.Entry::getKey )
+            .toArray( Class[]::new );
+        return services( assembledServicesTypes );
     }
 
     @Override
@@ -337,7 +364,6 @@ final class ModuleAssemblyImpl
 
     @Override
     public ObjectDeclaration objects(Class<?>... objectTypes)
-            throws AssemblyException
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
 
@@ -498,8 +524,8 @@ final class ModuleAssemblyImpl
     ModuleModel assembleModule(LayerModel layerModel, AssemblyHelper helper)
             throws AssemblyException
     {
-        addDefaultAssemblers();
-        List<Throwable> exceptions = new ArrayList<>();
+        addRequiredAssemblers();
+        Set<Throwable> exceptions = new HashSet<>();
         List<TransientModel> transientModels = new ArrayList<>();
         List<ObjectModel> objectModels = new ArrayList<>();
         List<ValueModel> valueModels = new ArrayList<>();
@@ -665,29 +691,15 @@ final class ModuleAssemblyImpl
         throw new AssemblyReportException( exceptions );
     }
 
-    private void addDefaultAssemblers()
-            throws AssemblyException
+    private void addRequiredAssemblers()
     {
-        try
-        {
-            defaultAssemblers.entrySet().stream()
-                    .filter(entry -> serviceAssemblies.stream().noneMatch(serviceAssembly -> serviceAssembly.hasType(entry.getKey())))
-                    .forEach(entry ->
-                    {
-                        try
-                        {
-                            entry.getValue().assemble(this);
-                        }
-                        catch (AssemblyException e)
-                        {
-                            throw new UndeclaredThrowableException(e);
-                        }
-                    });
-        }
-        catch (UndeclaredThrowableException e)
-        {
-            throw (AssemblyException) e.getUndeclaredThrowable();
-        }
+        REQUIRED_ASSEMBLERS
+            .entrySet()
+            .stream()
+            .filter(
+                entry -> serviceAssemblies.stream().noneMatch(
+                    serviceAssembly -> serviceAssembly.hasType( entry.getKey() ) ) )
+            .forEach( entry -> entry.getValue().assemble( this ) );
     }
 
     private Identity generateId(Stream<Class<?>> serviceTypes)
@@ -696,7 +708,7 @@ final class ModuleAssemblyImpl
         Class<?> serviceType = serviceTypes.findFirst()
                 .orElse(null); // Use the first, which *SHOULD* be the main serviceType
         int idx = 0;
-        Identity id = new StringIdentity(serviceType.getSimpleName());
+        Identity id = StringIdentity.identityOf( serviceType.getSimpleName() );
         boolean invalid;
         do
         {
@@ -706,7 +718,7 @@ final class ModuleAssemblyImpl
                 if (serviceAssembly.identity() != null && serviceAssembly.identity().equals(id))
                 {
                     idx++;
-                    id = new StringIdentity(serviceType.getSimpleName() + "_" + idx);
+                    id = StringIdentity.identityOf( serviceType.getSimpleName() + "_" + idx );
                     invalid = true;
                     break;
                 }

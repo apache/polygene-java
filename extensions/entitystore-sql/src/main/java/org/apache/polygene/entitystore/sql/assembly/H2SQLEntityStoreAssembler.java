@@ -25,7 +25,7 @@ import org.jooq.SQLDialect;
  * H2 EntityStore assembly.
  */
 public class H2SQLEntityStoreAssembler
-    extends AbstractSQLMapEntityStoreAssembler<H2SQLEntityStoreAssembler>
+    extends AbstractSQLEntityStoreAssembler<H2SQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()

@@ -11,3 +11,15 @@
  * and limitations under the License.
 //////////////////////
 
+[[core-api-module,Module]]
+= Module =
+Modules are logical compartments to assist developers in creating and maintaining well modularized code. A Module only
+belongs to a single Layer, but many Modules can exist in the same Layer. Composite access is limited to;
+
+    * Composites within the same Module, with Visibility set to Visibility.module (default).
+    * Composites from Modules in the same Layer, with Visibility set to Visibility.layer
+    * Composites from Modules in Layers below, with Visibility set to Visibility.application
+
+Modules contains a lot of the Polygene™ infrastructure, which are the enforcers of these wise modularization principles.
+
+It is not possible to modify the Modules, their resolution nor binding in any way after the application starts.

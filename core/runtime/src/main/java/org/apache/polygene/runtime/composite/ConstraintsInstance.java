@@ -23,11 +23,11 @@ package org.apache.polygene.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
-import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeInstance;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.identity.Identity;
 
 /**
  * JAVADOC
@@ -51,11 +51,11 @@ public final class ConstraintsInstance
         }
 
         // Check constraints
-        List<ConstraintViolation> violations = null;
+        List<ValueConstraintViolation> violations = null;
         for( int i = 0; i < params.length; i++ )
         {
             Object param = params[ i ];
-            List<ConstraintViolation> paramViolations = valueConstraintsInstances.get( i ).checkConstraints( param );
+            List<ValueConstraintViolation> paramViolations = valueConstraintsInstances.get( i ).checkConstraints( param );
             if( !paramViolations.isEmpty() )
             {
                 if( violations == null )
@@ -69,16 +69,20 @@ public final class ConstraintsInstance
         // Check if any constraint failed
         if( violations != null )
         {
-            if( instance instanceof Composite )
+            for( ValueConstraintViolation violation : violations )
             {
-                throw new ConstraintViolationException( (Composite) instance, method, violations );
+                violation.setMixinType( method.getDeclaringClass() );
+                violation.setMethodName( method.getName() );
             }
+            ConstraintViolationException exception = new ConstraintViolationException( violations );
+            Identity identity = instance instanceof HasIdentity ? ( (HasIdentity) instance ).identity().get() : null;
+            exception.setIdentity( identity );
             if( instance instanceof CompositeInstance )
             {
-                throw new ConstraintViolationException( ( (CompositeInstance) instance ).proxy(), method, violations );
+                instance = ( (CompositeInstance) instance ).proxy();
             }
-            Stream<Class<?>> types = Stream.of( instance.getClass() );
-            throw new ConstraintViolationException( instance.toString(), types, method, violations );
+            exception.setInstanceString( instance.toString() );
+            throw exception;
         }
     }
 }

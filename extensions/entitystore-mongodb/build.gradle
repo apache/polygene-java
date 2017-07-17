@@ -32,7 +32,7 @@ dependencies {
 
   runtimeOnly polygene.core.runtime
 
-  testImplementation polygene.core.testsupport
+  testImplementation polygene.internals.testsupport
   testImplementation libraries.embed_mongo
 
   testRuntimeOnly libraries.logback

@@ -54,11 +54,11 @@ import org.junit.Test;
 import static java.util.stream.Collectors.toList;
 import static org.apache.polygene.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.hamcrest.collection.IsIterableContainingInOrder .contains;
 import static org.junit.Assert.assertThat;
 
 // TODO Test errors
@@ -71,7 +71,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
 
     public interface PersonList
     {
-        Identity LIST_ID = StringIdentity.fromString( "person-list" );
+        Identity LIST_ID = StringIdentity.identityOf( "person-list" );
 
         ManyAssociation<Person> all();
     }
@@ -179,7 +179,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
     }
 
     @Override
-    protected final void defineApplication( ApplicationAssembly app ) throws AssemblyException
+    protected final void defineApplication( ApplicationAssembly app )
     {
         app.setName( "app" );
 
@@ -213,7 +213,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
 
     protected Assemblers.Visible<? extends Assembler> entityStoreAssembler( ModuleAssembly configModule, Visibility configVisibility ) throws AssemblyException
     {
-        return new EntityTestAssembler();
+        return new EntityTestAssembler().defaultServicesVisibleIn( Visibility.module );
     }
 
     protected abstract Assemblers.Visible<? extends Assembler> metricsAssembler();
@@ -274,7 +274,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
         Commands commands = services.findService( Commands.class ).get();
         Queries queries = services.findService( Queries.class ).get();
 
-        Identity identity = StringIdentity.fromString( "1" );
+        Identity identity = StringIdentity.identityOf( "1" );
 
         try (UnitOfWork uow = services.unitOfWorkFactory().newUnitOfWork( newUsecase( "Step 1" ) ) )
         {

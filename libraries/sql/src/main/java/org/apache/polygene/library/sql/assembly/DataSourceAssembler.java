@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.service.importer.ServiceInstanceImporter;
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.circuitbreaker.CircuitBreaker;
 import org.apache.polygene.library.sql.datasource.DataSources;
@@ -68,11 +67,11 @@ public class DataSourceAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         module.importedServices( DataSource.class ).
             importedBy( ServiceInstanceImporter.class ).
-            setMetaInfo( new StringIdentity( dataSourceServiceId ) ).
+            setMetaInfo( StringIdentity.identityOf( dataSourceServiceId ) ).
             identifiedBy( identity() ).
             visibleIn( visibility() );
         if( circuitBreaker != null )

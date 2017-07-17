@@ -30,6 +30,8 @@ import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.DefaultMethodsFilter;
 import org.apache.polygene.api.injection.scope.This;
 
+import static org.apache.polygene.api.util.AccessibleObjects.accessible;
+
 @AppliesTo( { DefaultMethodsFilter.class } )
 public class InterfaceDefaultMethodsMixin
     implements InvocationHandler
@@ -65,8 +67,7 @@ public class InterfaceDefaultMethodsMixin
         try
         {
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class, int.class );
-            constructor.setAccessible( true );
-            MethodHandles.Lookup lookup = constructor.newInstance( declaringClass, MethodHandles.Lookup.PRIVATE );
+            MethodHandles.Lookup lookup = accessible( constructor ).newInstance( declaringClass, MethodHandles.Lookup.PRIVATE );
             MethodHandle handle = lookup.unreflectSpecial( method, declaringClass );
             return ( proxy, args ) -> handle.bindTo( proxy ).invokeWithArguments( args );
         }

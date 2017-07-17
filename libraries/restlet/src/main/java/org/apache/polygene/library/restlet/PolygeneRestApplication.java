@@ -19,17 +19,11 @@
  */
 package org.apache.polygene.library.restlet;
 
-import java.util.logging.Level;
-import org.apache.polygene.api.composite.TransientBuilderFactory;
+import java.io.PrintStream;
 import org.apache.polygene.api.identity.HasIdentity;
+import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Application;
-import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.value.ValueBuilderFactory;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.layered.LayeredApplicationAssembler;
 import org.apache.polygene.library.restlet.crud.EntityListResource;
 import org.apache.polygene.library.restlet.crud.EntityResource;
 import org.apache.polygene.library.restlet.resource.CreationResource;
@@ -39,6 +33,7 @@ import org.apache.polygene.library.restlet.resource.EntryPointResource;
 import org.apache.polygene.library.restlet.resource.ResourceFactory;
 import org.apache.polygene.library.restlet.resource.ServerResource;
 import org.apache.polygene.library.restlet.serialization.PolygeneConverter;
+import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
@@ -55,65 +50,41 @@ import org.restlet.util.Series;
 /**
  * This class is generic enough to be promoted to Polygene's Restlet Library
  */
+@SuppressWarnings( { "WeakerAccess", "unused" } )
 public abstract class PolygeneRestApplication extends org.restlet.Application
 {
-    protected org.apache.polygene.api.structure.Application polygeneApplication;
-    protected ServiceFinder serviceFinder;
+    @Structure
+    protected Application polygeneApplication;
+
+    @Structure
     protected ObjectFactory objectFactory;
-    protected TransientBuilderFactory transientBuilderFactory;
-    protected UnitOfWorkFactory unitOfWorkFactory;
-    protected ValueBuilderFactory valueBuilderFactory;
 
-    private Router router;
+    protected Router router;
+    protected String basePath;
 
-    public PolygeneRestApplication( Context context )
-        throws AssemblyException
+    protected PolygeneRestApplication( String basePath, Context context )
     {
         super( context );
+        this.basePath = basePath;
     }
 
-    protected void printRoutes()
+    protected void printRoutes( PrintStream out )
     {
-        router.getRoutes().forEach(
-            route -> System.out.println( route.toString() ) );
+        router.getRoutes()
+              .stream()
+              .map( Object::toString )
+              .forEach( out::println );
     }
-
-    protected abstract LayeredApplicationAssembler createApplicationAssembler( String mode )
-        throws AssemblyException;
 
     @Override
     public synchronized void start()
         throws Exception
     {
+        setName( polygeneApplication.name() );
         Series<Parameter> parameters = getContext().getParameters();
         String mode = parameters.getFirstValue( "org.apache.polygene.runtime.mode" );
-        createApplication( mode );
-        polygeneApplication.activate();
-        Module module = polygeneApplication.findModule( getConnectivityLayer(), getConnectivityModule() );
-        serviceFinder = module;
-        objectFactory = module;
-        transientBuilderFactory = module;
-        unitOfWorkFactory = module.unitOfWorkFactory();
-        valueBuilderFactory = module;
         super.start();
-    }
-
-    private void createApplication( String mode )
-    {
-        try
-        {
-            LayeredApplicationAssembler assembler = createApplicationAssembler(mode);
-            assembler.initialize();
-            polygeneApplication = assembler.application();
-            setName( polygeneApplication.name() );
-        }
-        catch( Throwable e )
-        {
-            e.printStackTrace();
-            getLogger().log( Level.SEVERE, "Unable to start Polygene application.", e );
-            throw new InternalError( "Unable to start Polygene application.", e );
-        }
-        getLogger().info( "RestApplication successfully created." );
+        getLogger().info( "RestApplication successfully started." );
     }
 
     @Override
@@ -121,7 +92,7 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         throws Exception
     {
         super.stop();
-        polygeneApplication.passivate();
+        getLogger().info( "RestApplication successfully stopped." );
     }
 
     @Override
@@ -137,25 +108,34 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         router = new Router( context );
 
         addRoutes( router );
-        router.attach( "/", newPolygeneRestlet( EntryPointResource.class, EntryPoint.class ) );
-
-        ChallengeAuthenticator guard = new ChallengeAuthenticator( context, ChallengeScheme.HTTP_BASIC, "Storm Clouds" );
+        router.attach( basePath, newPolygeneRestlet( EntryPointResource.class, EntryPoint.class ) );
 
         Verifier verifier = createVerifier();
-        if( verifier != null )
-        {
-            guard.setVerifier( verifier );
-        }
-
         Enroler enroler = createEnroler();
-        if( enroler != null )
+        if( verifier == null && enroler == null )
         {
-            guard.setEnroler( enroler );
+            return createInterceptors(new Filter()
+                {
+                } );
         }
-        return createInterceptors( guard );
+        else
+        {
+            ChallengeAuthenticator guard = new ChallengeAuthenticator( context, ChallengeScheme.HTTP_BASIC, getName() + " Realm" );
+
+            if( verifier != null )
+            {
+                guard.setVerifier( verifier );
+            }
+
+            if( enroler != null )
+            {
+                guard.setEnroler( enroler );
+            }
+            return createInterceptors( guard );
+        }
     }
 
-    private Restlet createInterceptors( ChallengeAuthenticator guard )
+    private Restlet createInterceptors( Filter guard )
     {
         Filter inner = createInnerInterceptor();
         if( inner != null )
@@ -198,16 +178,12 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         return null;
     }
 
-    protected abstract String getConnectivityLayer();
-
-    protected abstract String getConnectivityModule();
-
     protected abstract void addRoutes( Router router );
 
     protected void addResourcePath( String name,
                                     Class<? extends HasIdentity> type,
                                     String basePath
-    )
+                                  )
     {
         addResourcePath( name, type, basePath, true, true );
     }
@@ -217,7 +193,7 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
                                     String basePath,
                                     boolean createLink,
                                     boolean rootRoute
-    )
+                                  )
     {
         if( createLink )
         {
@@ -232,21 +208,19 @@ public abstract class PolygeneRestApplication extends org.restlet.Application
         router.attach( basePath + name + "/{id}/{invoke}", newPolygeneRestlet( EntityResource.class, type ) );
     }
 
-    private <K extends HasIdentity, T extends ServerResource<K>> Restlet newPolygeneRestlet(Class<T> resourceClass,
-                                                                                        Class<K> entityClass
-    )
+    private <K extends HasIdentity, T extends ServerResource<K>> Restlet newPolygeneRestlet( Class<T> resourceClass, Class<K> entityClass )
     {
 
         @SuppressWarnings( "unchecked" )
         ResourceFactory<K, T> factory = objectFactory.newObject( DefaultResourceFactoryImpl.class,
                                                                  resourceClass, router
-        );
+                                                               );
         PolygeneConverter converter = new PolygeneConverter( objectFactory );
         return objectFactory.newObject( PolygeneEntityRestlet.class,
                                         factory,
                                         router,
                                         entityClass,
                                         converter
-        );
+                                      );
     }
 }

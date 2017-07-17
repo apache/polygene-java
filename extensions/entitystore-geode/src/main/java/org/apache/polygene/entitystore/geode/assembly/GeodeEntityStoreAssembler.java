@@ -20,10 +20,9 @@
 package org.apache.polygene.entitystore.geode.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.geode.GeodeConfiguration;
+import org.apache.polygene.entitystore.geode.GeodeEntityStoreConfiguration;
 import org.apache.polygene.entitystore.geode.GeodeEntityStoreService;
 
 /**
@@ -34,8 +33,8 @@ public class GeodeEntityStoreAssembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
+        super.assemble( module );
         ServiceDeclaration service = module.services( GeodeEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
@@ -43,7 +42,7 @@ public class GeodeEntityStoreAssembler
         }
         if( hasConfig() )
         {
-            configModule().entities( GeodeConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( GeodeEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

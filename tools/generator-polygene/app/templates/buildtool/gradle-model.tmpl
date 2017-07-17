@@ -21,16 +21,16 @@
 dependencies {
 
 <% if( hasFeature( 'security' ) ) {
-%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.shiro-core:$polygeneVersion"
+%>    implementation "org.apache.polygene.libraries:org.apache.polygene.library.shiro-core:$polygeneVersion"
 <% } %>
 <% if( polygene.applicationtype === 'Rest API' ) {
-%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
+%>    implementation "org.apache.polygene.libraries:org.apache.polygene.library.restlet:$polygeneVersion"
 <% } %>
 <% if( polygene.hasFeature( 'mixin scripting' ) ) {
-%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.scripting:$polygeneVersion"
+%>    implementation "org.apache.polygene.libraries:org.apache.polygene.library.scripting:$polygeneVersion"
 <% } %>
 <% if( polygene.hasFeature( 'jmx' ) ) {
-%>    compile "org.apache.polygene.libraries:org.apache.polygene.library.jmx:$polygeneVersion"
+%>    implementation "org.apache.polygene.libraries:org.apache.polygene.library.jmx:$polygeneVersion"
 <% } %>
 
 }

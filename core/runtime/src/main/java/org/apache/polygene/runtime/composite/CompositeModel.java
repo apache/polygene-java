@@ -32,6 +32,7 @@ import org.apache.polygene.api.common.MetaInfo;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.CompositeDescriptor;
+import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.AccessibleObjects;
 import org.apache.polygene.api.util.HierarchicalVisitor;
@@ -68,7 +69,7 @@ public abstract class CompositeModel
                               final MixinsModel mixinsModel,
                               final StateModel stateModel,
                               final CompositeMethodsModel compositeMethodsModel
-    )
+                            )
     {
         this.module = module;
         this.types = new LinkedHashSet<>( types );
@@ -105,7 +106,6 @@ public abstract class CompositeModel
             } );
     }
 
-    // Model
     @Override
     public Stream<Class<?>> types()
     {
@@ -185,10 +185,10 @@ public abstract class CompositeModel
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    private Class<? extends Composite>  createProxyClass( Class<?> mainType )
+    private Class<? extends Composite> createProxyClass( Class<?> mainType )
         throws ClassNotFoundException, NoSuchMethodException
     {
-        Class<? extends Composite>  proxyClass;
+        Class<? extends Composite> proxyClass;
         if( mainType.isInterface() )
         {
             ClassLoader proxyClassloader = mainType.getClassLoader();
@@ -224,10 +224,42 @@ public abstract class CompositeModel
                                 Object proxy,
                                 Method method,
                                 Object[] args
-    )
+                              )
         throws Throwable
     {
-        return compositeMethodsModel.invoke( mixins, proxy, method, args, module );
+        try
+        {
+            try
+            {
+                return compositeMethodsModel.invoke( mixins, proxy, method, args, module );
+            }
+            catch( ConstraintViolationException e )
+            {
+                e.setCompositeDescriptor(this);
+                throw e;
+            }
+        }
+        catch( Throwable throwable )
+        {
+            decorateModuleInfo( throwable, method.getName() );
+            throw throwable;
+        }
+    }
+
+    private void decorateModuleInfo( Throwable throwable, String methodName )
+    {
+        StackTraceElement[] trace = throwable.getStackTrace();
+        // Only add originating Module/Layer/
+        if( trace[0].getClassName().startsWith( "method " ))
+        {
+            return;
+        }
+        StackTraceElement[] newTrace = new StackTraceElement[ trace.length + 1 ];
+        String message = "method \"" + methodName + "\" of " + this.toString() + " in module [" + module.name() + "] of layer [" + module.layer().name() + "]";
+        String compositeName = this.toString();
+        newTrace[ 0 ] = new StackTraceElement( message, "", "", 0 );
+        System.arraycopy( trace, 0, newTrace, 1, trace.length );
+        throwable.setStackTrace( newTrace );
     }
 
     @Override
@@ -272,7 +304,6 @@ public abstract class CompositeModel
         throws IllegalArgumentException
     {
 
-//        if (!matchesAny( isAssignableFrom( mixinType ), types ))
         if( !mixinsModel.isImplemented( mixinType ) )
         {
             String message = "Composite " + primaryType().getName() + " does not implement type " + mixinType.getName();
@@ -286,6 +317,6 @@ public abstract class CompositeModel
     @Override
     public String toString()
     {
-        return types.toString();
+        return primaryType.getSimpleName();
     }
 }

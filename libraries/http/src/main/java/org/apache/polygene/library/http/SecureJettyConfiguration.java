@@ -34,7 +34,7 @@ import org.apache.polygene.library.constraints.annotation.OneOf;
  */
 // START SNIPPET: configssl
 public interface SecureJettyConfiguration
-        extends JettyConfiguration
+    extends JettyConfiguration
 {
 
     /**

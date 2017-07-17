@@ -33,8 +33,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -44,15 +44,16 @@ import static org.junit.Assert.assertThat;
 public class Qi382Test extends AbstractPolygeneTest
 {
 
-    public static final Identity FERRARI = new StringIdentity( "Ferrari" );
-    public static final Identity NICLAS = new StringIdentity( "Niclas" );
+    public static final Identity FERRARI = StringIdentity.identityOf( "Ferrari" );
+    public static final Identity NICLAS = StringIdentity.identityOf( "Niclas" );
 
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.addServices( MemoryEntityStoreService.class );
         module.entities( Car.class, Person.class );
+
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test
@@ -78,7 +79,7 @@ public class Qi382Test extends AbstractPolygeneTest
     public interface Car extends EntityComposite, Lifecycle
     {
 
-        static class CarMixin implements Lifecycle
+        class CarMixin implements Lifecycle
         {
             @This
             private Car me;

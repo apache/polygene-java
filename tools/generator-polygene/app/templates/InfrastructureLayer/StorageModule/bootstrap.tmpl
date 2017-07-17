@@ -20,11 +20,32 @@
 package <%= polygene.packageName %>.bootstrap.infrastructure;
 
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.identity.IdentityGenerator;
+import org.apache.polygene.api.identity.UuidGeneratorMixin;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+<%
+if( polygene.entitystore !== 'Memory' && polygene.entitystore !== 'Preferences' && polygene.entitystore.indexOf('SQL') == -1 ) {
+%>
+import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.<%- polygene.entitystore %>EntityStoreConfiguration;
+<%
+}
+if( polygene.entitystore.indexOf('SQL') >= 0 ) {
+%>
+import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
+<%
+}
+%>
 import org.apache.polygene.entitystore.<%- polygene.entitystoremodule %>.assembly.<%- polygene.entitystore %>EntityStoreAssembler;
+<%
+if( polygene.entitystore.indexOf('SQL') >= 0 ) {
+%>import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.<%= polygene.dbpool.toLowerCase() %>.<%= polygene.dbpool %>DataSourceServiceAssembler;
+<%
+}
+%>
 
 public class <%- polygene.entitystore %>StorageModule
     implements ModuleAssembler
@@ -32,7 +53,7 @@ public class <%- polygene.entitystore %>StorageModule
     public static final String NAME = "<%- polygene.entitystore %> Storage Module";
     private final ModuleAssembly configModule;
 
-    public <%- polygene.entitystore %>StorageModule( ModuleAssembly configModule )
+    <%- polygene.entitystore %>StorageModule( ModuleAssembly configModule )
     {
         this.configModule = configModule;
     }
@@ -41,11 +62,38 @@ public class <%- polygene.entitystore %>StorageModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        new <%- polygene.entitystore %>EntityStoreAssembler()
+<%
+if( polygene.entitystore.indexOf( 'SQL' ) >= 0 ) {
+%>        // DataSourceService
+        new <%= polygene.dbpool %>DataSourceServiceAssembler()
+            .identifiedBy( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
+
+        // DataSource
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "<%= polygene.entitystore.toLowerCase() %>-datasource-service" )
+            .identifiedBy( "ds-es-<%= polygene.entitystore.toLowerCase() %>" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
+<%
+}
+%>        new <%- polygene.entitystore %>EntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )
-            .identifiedBy( "entitystore-<%- polygene.entitystore.toLowerCase() %>" )
+            .identifiedBy( "es-<%- polygene.entitystore.toLowerCase() %>" )
             .assemble( module );
+<%
+if( polygene.entitystore === 'Cassandra' ) {
+%>        configModule.forMixin( CassandraEntityStoreConfiguration.class );
+<%
+}
+%>
+        module.services( IdentityGenerator.class )
+            .visibleIn( Visibility.application )
+            .withMixins( UuidGeneratorMixin.class );
         return module;
     }
 }

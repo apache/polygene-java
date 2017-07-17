@@ -33,6 +33,7 @@ public class InterfaceCollisionWithUnrelatedReturnTypesTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.defaultServices();
     }
 
     public interface Person

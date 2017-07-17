@@ -37,7 +37,7 @@ public class RdfComplexQueryTest
             throws AssemblyException
     {
         super.assemble( module );
-        module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( RdfIndexingService.class ).instantiateOnStartup();
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
     }

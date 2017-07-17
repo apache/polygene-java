@@ -21,7 +21,7 @@ package org.apache.polygene.index.sql.postgresql;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.internal.DockerRule;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
 import org.junit.ClassRule;
 import org.junit.Ignore;

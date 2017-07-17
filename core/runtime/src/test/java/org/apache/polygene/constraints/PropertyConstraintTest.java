@@ -22,7 +22,7 @@ package org.apache.polygene.constraints;
 import java.util.Collection;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
-import org.apache.polygene.api.constraint.ConstraintViolation;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.constraint.Constraints;
 import org.apache.polygene.api.property.Property;
@@ -53,7 +53,7 @@ public class PropertyConstraintTest
         }
         catch( ConstraintViolationException e )
         {
-            Collection<ConstraintViolation> violations = e.constraintViolations();
+            Collection<ValueConstraintViolation> violations = e.constraintViolations();
             assertEquals( 2, violations.size() );
         }
     }

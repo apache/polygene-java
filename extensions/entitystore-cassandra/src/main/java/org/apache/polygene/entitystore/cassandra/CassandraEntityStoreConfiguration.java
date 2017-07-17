@@ -22,6 +22,7 @@ package org.apache.polygene.entitystore.cassandra;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.constraints.annotation.HostPortList;
 
 // START SNIPPET: config
 public interface CassandraEntityStoreConfiguration
@@ -39,6 +40,7 @@ public interface CassandraEntityStoreConfiguration
      * @return A comma or space separated list of hostnames (and port) to use to connect to the Cassandra cluster.
      */
     @Optional
+    @HostPortList
     Property<String> hostnames();
 
     /** The name of the cluster to connect to.

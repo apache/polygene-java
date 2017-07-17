@@ -36,9 +36,7 @@ import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.ApplicationPassivationThread;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
-import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
-import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
@@ -103,38 +101,32 @@ public class ApplicationBuilder
         throws AssemblyException, ActivationException
     {
         Energy4Java polygene = new Energy4Java();
-        ApplicationDescriptor model = polygene.newApplicationModel( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory factory )
-                throws AssemblyException
+        ApplicationDescriptor model = polygene.newApplicationModel( factory -> {
+            ApplicationAssembly assembly = factory.newApplicationAssembly();
+            assembly.setName( applicationName );
+            if( applicationVersion != null )
             {
-                ApplicationAssembly assembly = factory.newApplicationAssembly();
-                assembly.setName( applicationName );
-                if( applicationVersion != null )
-                {
-                    assembly.setVersion( applicationVersion );
-                }
-                if( applicationMode != null )
-                {
-                    assembly.setMode( applicationMode );
-                }
-                for( Object metaInfo : metaInfos )
-                {
-                    assembly.setMetaInfo( metaInfo );
-                }
-                HashMap<String, LayerAssembly> createdLayers = new HashMap<>();
-                for( Map.Entry<String, LayerDeclaration> entry : layers.entrySet() )
-                {
-                    LayerAssembly layer = entry.getValue().createLayer( assembly );
-                    createdLayers.put( entry.getKey(), layer );
-                }
-                for( LayerDeclaration layer : layers.values() )
-                {
-                    layer.initialize( createdLayers );
-                }
-                return assembly;
+                assembly.setVersion( applicationVersion );
             }
+            if( applicationMode != null )
+            {
+                assembly.setMode( applicationMode );
+            }
+            for( Object metaInfo : metaInfos )
+            {
+                assembly.setMetaInfo( metaInfo );
+            }
+            HashMap<String, LayerAssembly> createdLayers = new HashMap<>();
+            for( Map.Entry<String, LayerDeclaration> entry : layers.entrySet() )
+            {
+                LayerAssembly layer = entry.getValue().createLayer( assembly );
+                createdLayers.put( entry.getKey(), layer );
+            }
+            for( LayerDeclaration layer : layers.values() )
+            {
+                layer.initialize( createdLayers );
+            }
+            return assembly;
         } );
         Application application = model.newInstance( polygene.api() );
         for( ActivationEventListener activationListener : activationListeners )

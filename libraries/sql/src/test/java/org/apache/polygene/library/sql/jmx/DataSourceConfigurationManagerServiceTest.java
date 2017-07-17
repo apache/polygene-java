@@ -24,7 +24,6 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.apache.polygene.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.polygene.library.jmx.JMXAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceJMXAssembler;
@@ -76,8 +75,6 @@ public class DataSourceConfigurationManagerServiceTest
 
                 // Create in-memory store for configurations
                 new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
-
-                new DefaultUnitOfWorkAssembler().assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
                 new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" )

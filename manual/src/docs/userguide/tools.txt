@@ -24,19 +24,20 @@
 
 == Overview ==
 
-The Polygene™ SDK comes with usefull development tools. Theses tools can come in
-handy when assembled into your <<def-application>> in development
-<<def-application-mode>>.
-
-The tools are available in the +tools/+ directory of the Polygene™ SDK.
+The Polygene™ SDK comes with useful development tools:
+ a `yeoman` project generator,
+ a detailed application model and its visualization gui.
 
 :leveloffset: 2
 
-include:: ../../../tools/src/docs/yeoman_polygene.txt[]
+include::../../../../tools/generator-polygene/src/docs/yeoman_polygene.txt[]
 
 :leveloffset: 2
 
-include:: ../../../tools/src/docs/envisage.txt[]
-// include:: ../../../tools/envisage/src/docs/envisage.txt[]
+include::../../../../tools/envisage/src/docs/envisage.txt[]
+
+:leveloffset: 2
+
+include::../../../../tools/model-detail/src/docs/model-detail.txt[]
 
 :leveloffset: 2

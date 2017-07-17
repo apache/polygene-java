@@ -67,6 +67,12 @@ public class StateModel
     }
 
     @Override
+    public boolean hasProperty( QualifiedName name )
+    {
+        return propertiesModel.hasProperty( name );
+    }
+
+    @Override
     public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
         throws ThrowableType
     {

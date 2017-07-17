@@ -32,7 +32,7 @@ import org.apache.polygene.api.constraint.Constraint;
 import org.apache.polygene.api.constraint.ConstraintDeclaration;
 import org.apache.polygene.api.constraint.Constraints;
 import org.apache.polygene.api.injection.scope.Structure;
-import org.apache.polygene.api.object.NoSuchObjectException;
+import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.library.rest.server.api.ObjectSelection;
 import org.apache.polygene.library.rest.server.api.constraint.InteractionConstraint;
@@ -150,7 +150,7 @@ public class InteractionConstraintsService
                     {
                         constraint = module.newObject( constraintClass );
                     }
-                    catch( NoSuchObjectException e )
+                    catch( NoSuchObjectTypeException e )
                     {
                         constraint = constraintClass.newInstance();
                     }
@@ -214,7 +214,7 @@ public class InteractionConstraintsService
                     {
                         constraint = module.newObject( constraintClass );
                     }
-                    catch( NoSuchObjectException e )
+                    catch( NoSuchObjectTypeException e )
                     {
                         constraint = constraintClass.newInstance();
                     }
