@@ -24,13 +24,13 @@
         http://polygene.apache.org/schemas/2008/dev-status/1/dev-status.xsd">
   <status>
         <!--none,early,beta,stable,mature-->
-        <codebase>stable</codebase>
+        <codebase>none</codebase>
 
         <!-- none, brief, good, complete -->
-        <documentation>brief</documentation>
+        <documentation>none</documentation>
 
         <!-- none, some, good, complete -->
-        <unittests>good</unittests>
+        <unittests>none</unittests>
     </status>
     <licenses>
         <license>ALv2</license>
