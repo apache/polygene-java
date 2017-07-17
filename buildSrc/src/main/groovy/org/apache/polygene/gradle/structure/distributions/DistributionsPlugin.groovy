@@ -251,6 +251,9 @@ class DistributionsPlugin implements Plugin<Project>
       task.group = TaskGroups.DISTRIBUTION_VERIFICATION
       task.description = 'Checks the source distribution using Apache RAT.'
       task.dependsOn TaskNames.STAGE_SOURCE_DIST
+      task.plainOutput = true
+      task.htmlOutput = true
+      task.xmlOutput = false
       task.setInputDir unpackedSrcDistDir.absolutePath
       task.onlyIf { !releaseSpec.developmentVersion }
       task.excludes = [
@@ -436,6 +439,9 @@ class DistributionsPlugin implements Plugin<Project>
       task.description = "Checks the binary distribution using Apache RAT."
       task.onlyIf { !releaseSpec.developmentVersion }
       task.dependsOn TaskNames.STAGE_BINARY_DIST
+      task.plainOutput = true
+      task.htmlOutput = true
+      task.xmlOutput = false
       task.inputDir = unpackedBinDistDir.absolutePath
       task.reportDir = project.file( 'build/reports/rat-bin-dist' )
       task.excludes = [
