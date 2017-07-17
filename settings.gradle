@@ -67,7 +67,7 @@ include 'core:api',
         'extensions:entitystore-preferences',
         'extensions:entitystore-redis',
         'extensions:entitystore-riak',
-        'extensions:entitystore-sql',
+        'extensions:entitystore-sqlkv',
         'extensions:indexing-elasticsearch',
         'extensions:indexing-rdf',
         'extensions:indexing-solr',
@@ -96,7 +96,6 @@ include 'core:api',
         'samples:dci',
         'samples:forum',
         'samples:rental',
-        'samples:sql-support',
         'samples:swing'
 
 include 'internals:testsupport-internal'

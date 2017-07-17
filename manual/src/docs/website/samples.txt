@@ -60,37 +60,6 @@ https://github.com/apache/polygene-java/tree/develop/samples/rental[Browse Sourc
 //
 // https://github.com/apache/polygene-java/tree/develop/samples/scala[Browse Source]
 
-[[sample-sql-support,SQL Support Sample]]
-== SQL Support Sample ==
-
-NOTE: This sample use PostgreSQL and drop all of its data once run in order to be runnable multiple times.
-
-Sample of how to fully use Polygene™ SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
-
-https://github.com/apache/polygene-java/tree/develop/samples/sql-support[Browse Source]
-
-Here are the steps needed to setup the database using the `psql` utility command:
-
-[source,bash]
-----
-user@host $ psql postgres
-postgres=# CREATE USER jdbc_test_login WITH PASSWORD 'password';
-CREATE ROLE
-postgres=# CREATE DATABASE jdbc_test_db;
-CREATE DATABASE
-postgres=# GRANT ALL PRIVILEGES ON DATABASE jdbc_test_db TO jdbc_test_login;
-GRANT
-postgres=# \q
-user@host $  psql -d jdbc_test_db</strong>
-postgres=# CREATE EXTENSION ltree;
-CREATE EXTENSION
-postgres=# \q
-user@host $
-----
-
-From the sources you can run the `runSqlSupportSample` Gradle task to run the example.
-See <<build-system>> if you need some guidance.
-
 [[sample-swing,Swing Bindings Sample]]
 == Swing Bindings Sample ==
 

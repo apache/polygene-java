@@ -17,30 +17,30 @@
  *
  *
  */
-import org.apache.polygene.gradle.TaskGroups
 
-apply plugin: 'polygene-sample'
+apply plugin: 'polygene-extension'
 
-description = "SQL Support Sample."
+description = "Apache Polygene™ SQL Key/Value EntityStore Extension"
 
-jar { manifest { name = "Apache Polygene™ Sample - SQL Support" } }
+jar { manifest { name = "Apache Polygene™ Extension - EntityStore - SQL Key/Value" } }
 
 dependencies {
+  api polygene.core.bootstrap
+  api polygene.library( 'sql' )
+  api libraries.jooq
 
-  implementation polygene.core.bootstrap
-  implementation polygene.library( 'sql-dbcp' )
-  implementation polygene.extension( 'entitystore-preferences' )
-  implementation polygene.extension( 'entitystore-sql' )
-  implementation polygene.extension( 'indexing-sql' )
+  implementation polygene.library( 'sql-liquibase' )
 
   runtimeOnly polygene.core.runtime
-  runtimeOnly libraries.postgres
-  runtimeOnly libraries.logback
-}
 
-task( runSqlSupportSample, dependsOn: 'classes', type: JavaExec ) {
-  group = TaskGroups.SAMPLES
-  description = "Runs $project.name sample."
-  main = 'org.apache.polygene.sample.sqlsupport.Main'
-  classpath = sourceSets.main.runtimeClasspath
+  testImplementation polygene.internals.testsupport
+  testImplementation polygene.library( 'sql-dbcp' )
+  testImplementation libraries.docker_junit
+
+  testRuntimeOnly libraries.logback
+  testRuntimeOnly libraries.derby
+  testRuntimeOnly libraries.h2
+  testRuntimeOnly libraries.mysql_connector
+  testRuntimeOnly libraries.postgres
+  testRuntimeOnly libraries.sqlite
 }
