@@ -41,6 +41,8 @@ import static org.apache.polygene.api.util.AccessibleObjects.accessible;
 public final class ConstructorModel
     implements ConstructorDescriptor, VisitableHierarchy<Object, Object>
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private Constructor<?> constructor;
 
     private InjectedParametersModel parameters;
@@ -103,9 +105,9 @@ public final class ConstructorModel
 
     private String createExceptionMessage( Object[] parametersInstance )
     {
-        return "Could not instantiate \n    " + constructor.getDeclaringClass()
-               + "\nusing constructor:\n    " + constructor.toGenericString()
-               + "\nparameter types:\n    " + Arrays.toString( parametersInstance );
+        return "Could not instantiate " + NL + "    " + constructor.getDeclaringClass()
+               + NL + "using constructor:" + NL + "    " + constructor.toGenericString()
+               + NL + "parameter types:" + NL + "    " + Arrays.toString( parametersInstance );
     }
 
     @Override

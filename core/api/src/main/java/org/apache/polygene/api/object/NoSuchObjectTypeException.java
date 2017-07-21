@@ -30,6 +30,7 @@ public class NoSuchObjectTypeException
     extends InvalidApplicationException
 {
     private static final long serialVersionUID = -1121690536365682511L;
+    private static final String NL = System.getProperty( "line.separator" );
 
     private final String objectType;
     private final String moduleName;
@@ -38,8 +39,8 @@ public class NoSuchObjectTypeException
     {
         super( "Could not find any visible Object of type [" + type + "] in module ["
                + moduleName
-               + "]. The visible types are: \n"
-               + visible.map( Class::getName ).collect( Collectors.joining("\n") )
+               + "]. The visible types are: " + NL
+               + visible.map( Class::getName ).collect( Collectors.joining( NL ) )
         );
         this.objectType = type;
         this.moduleName = moduleName;

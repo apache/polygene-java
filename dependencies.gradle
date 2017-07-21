@@ -183,7 +183,6 @@ def awaitilityVersion = '3.0.0'
 def dnsJavaVersion = '2.1.8'
 def dockerJUnitVersion = '0.3'
 def easyMockVersion = '3.4'
-def embedMongoVersion = '2.0.0' // 2.0.0 exists
 def h2Version = '1.4.196'
 def hamcrestVersion = '1.3'
 def jaxRsApiVersion = '2.0.1'
@@ -200,7 +199,6 @@ dependencies.libraries << [
   dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
   docker_junit      : "com.github.tdomzal:junit-docker-rule:$dockerJUnitVersion",
   easymock          : "org.easymock:easymock:$easyMockVersion",
-  embed_mongo       : "de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embedMongoVersion",
   h2                : "com.h2database:h2:$h2Version",
   hamcrest          : [ "org.hamcrest:hamcrest-core:$hamcrestVersion",
                         "org.hamcrest:hamcrest-library:$hamcrestVersion" ],

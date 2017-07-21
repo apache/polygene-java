@@ -32,6 +32,8 @@ import static java.util.stream.Collectors.joining;
  */
 public abstract class NoSuchCompositeTypeException extends InvalidApplicationException
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private final String compositeType;
     private final String moduleName;
     private final String visibleTypes;
@@ -40,7 +42,7 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
 
     protected NoSuchCompositeTypeException( String metaType, String compositeType, ModuleDescriptor module )
     {
-        super( "\n\tCould not find any visible " + metaType + " of type [" + compositeType + "] in module [" + module.name() + "]." );
+        super( NL + "\tCould not find any visible " + metaType + " of type [" + compositeType + "] in module [" + module.name() + "]." );
         this.metaType = metaType;
         this.compositeType = compositeType;
         this.moduleName = module.name();
@@ -71,7 +73,7 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
     @Override
     public String getMessage()
     {
-        return super.getMessage() + "\n" + candidateTypes + "\n" + visibleTypes;
+        return super.getMessage() + NL + candidateTypes + NL + visibleTypes;
     }
 
     private String formatVisibleTypes( TypeLookup typeLookup )
@@ -85,7 +87,7 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
                   } )
             .sorted()
             .distinct()
-            .collect( joining( "\n", "\tVisible " + metaType + " types are:\n", "" ) );
+            .collect( joining( NL, "\tVisible " + metaType + " types are:" + NL, "" ) );
     }
 
     private String findCandidateTypes( ModuleDescriptor module )
@@ -102,7 +104,7 @@ public abstract class NoSuchCompositeTypeException extends InvalidApplicationExc
                                return "\t\t[ " + typeName + "] in [" + descriptor.module().name() + "] with visibility " + descriptor.visibility();
                            } )
                      .distinct()
-                     .collect( joining( "\n", "\tInvisible " + metaType + " types are:\n", "" ) );
+                     .collect( joining( NL, "\tInvisible " + metaType + " types are:" + NL, "" ) );
     }
 
     protected abstract Stream<? extends CompositeDescriptor> descriptors( TypeLookup typeLookup );

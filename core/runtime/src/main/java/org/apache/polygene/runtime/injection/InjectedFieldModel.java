@@ -47,6 +47,8 @@ import static java.util.Collections.singleton;
 public final class InjectedFieldModel
     implements InjectedFieldDescriptor, Dependencies, VisitableHierarchy<InjectedFieldModel, DependencyModel>
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private DependencyModel dependencyModel;
     private Field injectedField;
 
@@ -124,11 +126,11 @@ public final class InjectedFieldModel
                 annotBuilder.append( " " );
             }
             String annots = annotBuilder.toString();
-            String message = "Can not inject the field\n    "
+            String message = "Can not inject the field" + NL + "    "
                              + injectedField.getDeclaringClass()
-                             + "\n    {\n        " + annots + "\n        "
+                             + NL + "    {" + NL + "        " + annots + NL + "        "
                              + injectedField.getType().getSimpleName() + " " + injectedField.getName()
-                             + "\n    }\nwith value \n    " + value + "\nof type\n    "
+                             + NL + "    }" + NL + "with value " + NL + "    " + value + NL + "of type" + NL + "    "
                              + valueClassName;
             throw new InjectionException( message, e );
         }

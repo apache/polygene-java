@@ -33,7 +33,6 @@ dependencies {
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.internals.testsupport
-  testImplementation libraries.embed_mongo
 
   testRuntimeOnly libraries.logback
 }

@@ -29,6 +29,8 @@ import org.apache.polygene.api.entity.EntityReference;
 public class ConcurrentEntityStateModificationException
     extends EntityStoreException
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private Collection<EntityReference> modifiedEntities;
 
     public ConcurrentEntityStateModificationException( Collection<EntityReference> modifiedEntities )
@@ -45,6 +47,6 @@ public class ConcurrentEntityStateModificationException
     @Override
     public String getMessage()
     {
-        return "Entities changed concurrently.\nModified entities are;\n" + modifiedEntities;
+        return "Entities changed concurrently." + NL + "Modified entities are;" + NL + modifiedEntities;
     }
 }

@@ -76,7 +76,8 @@ public final class Energy4Java
             String modelReport = InvalidCompositeException.modelReport();
             if( modelReport != null )
             {
-                throw new AssemblyException( "Composition problems\n\n" + modelReport );
+                String nl = System.getProperty( "line.separator" );
+                throw new AssemblyException( "Composition problems" + nl + nl + modelReport );
             }
             return model;
         }
