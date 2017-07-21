@@ -31,6 +31,8 @@ import static org.junit.Assert.assertThat;
 
 public class ErrorReportingTest extends AbstractPolygeneTest
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     @Override
     public void assemble( ModuleAssembly module )
     {
@@ -41,18 +43,18 @@ public class ErrorReportingTest extends AbstractPolygeneTest
     @Override
     protected void assemblyException( AssemblyException exception )
     {
-        assertThat( exception.getMessage(), containsString( "Composition Problems Report:\n" ) );
-        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method \n"
-                                                            + "    method: Map doAnotherThing(String name, int value)\n"
-                                                            + "    types: [Person,ValueComposite]\n" ) );
+        assertThat( exception.getMessage(), containsString( "Composition Problems Report:" + NL ) );
+        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method" + NL
+                                                            + "    method: Map doAnotherThing(String name, int value)" + NL
+                                                            + "    types: [Person,ValueComposite]" + NL ) );
 
-        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method \n"
-                                                            + "    method: void doOneThing()\n"
-                                                            + "    types: [Person,ValueComposite]\n" ) );
+        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method" + NL
+                                                            + "    method: void doOneThing()" + NL
+                                                            + "    types: [Person,ValueComposite]" + NL ) );
 
-        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method \n"
-                                                            + "    method: void goForWalk(int minutes)\n"
-                                                            + "    types: [Pet,ValueComposite]\n" ) );
+        assertThat( exception.getMessage(), containsString( "    message: No implementation found for method" + NL
+                                                            + "    method: void goForWalk(int minutes)" + NL
+                                                            + "    types: [Pet,ValueComposite]" + NL ) );
     }
 
     @Test

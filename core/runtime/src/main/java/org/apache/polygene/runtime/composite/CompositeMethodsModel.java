@@ -39,6 +39,8 @@ import org.apache.polygene.runtime.injection.DependencyModel;
 public final class CompositeMethodsModel
     implements VisitableHierarchy<Object, Object>, Dependencies
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private final LinkedHashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
@@ -102,14 +104,15 @@ public final class CompositeMethodsModel
 //                return method.invoke( proxy, args );
                 String message = "We have detected a default method on an interface that is not backed by a Composite. "
                                  + "Please report this to dev@polygene.apache.org together with the information below, "
-                                 + "that/those class(es) and the relevant assembly information. Thank you\nMethod:"
+                                 + "that/those class(es) and the relevant assembly information. Thank you"
+                                 + NL + "Method:"
                                  + method.toGenericString()
-                                 + "\nDeclaring Class:"
+                                 + NL + "Declaring Class:"
                                  + method.getDeclaringClass().toGenericString()
-                                 + "\nTypes:"
+                                 + NL + "Types:"
                                  + mixinsModel.mixinTypes()
                                               .map( Class::toGenericString )
-                                              .collect( Collectors.joining( "\n" ) );
+                                              .collect( Collectors.joining( NL ) );
                 throw new UnsupportedOperationException( message );
             }
             throw new MissingMethodException( "Method '" + method + "' is not implemented" );

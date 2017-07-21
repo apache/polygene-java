@@ -34,6 +34,7 @@ public class ConcurrentEntityModificationException
     extends UnitOfWorkCompletionException
 {
     private static final long serialVersionUID = 3872723845064767689L;
+    private static final String NL = System.getProperty( "line.separator" );
 
     private final Map<EntityComposite, HasTypes> concurrentlyModifiedEntities;
 
@@ -41,7 +42,7 @@ public class ConcurrentEntityModificationException
                                                   Usecase usecase
     )
     {
-        super( "Entities changed concurrently, and detected in usecase '" + usecase + "'\nModified entities : " + format( concurrentlyModifiedEntities ) );
+        super( "Entities changed concurrently, and detected in usecase '" + usecase + "'" + NL + "Modified entities : " + format( concurrentlyModifiedEntities ) );
         this.concurrentlyModifiedEntities = concurrentlyModifiedEntities;
     }
 
@@ -54,7 +55,7 @@ public class ConcurrentEntityModificationException
                       + entry.getValue().types().map( Class::getSimpleName )
                           .collect( Collectors.joining( "," ) )
             )
-            .collect( Collectors.joining( "\n" ) );
+            .collect( Collectors.joining( NL ) );
     }
 
     public Map<EntityComposite, HasTypes> concurrentlyModifiedEntities()

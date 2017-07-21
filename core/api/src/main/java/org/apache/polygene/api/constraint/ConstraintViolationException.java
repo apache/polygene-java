@@ -47,11 +47,12 @@ import org.apache.polygene.api.util.Classes;
  */
 public class ConstraintViolationException extends IllegalArgumentException
 {
+    private static final String NL = System.getProperty( "line.separator" );
     private static final boolean longNames = Boolean.getBoolean( "polygene.constraints.longNames" );
-    private static final String DEFAULT_PATTERN = "\n\tConstraint Violation(s) in {0} of types [{3}].\n";
-    private static final String ENTITY_DEFAULT_PATTERN = "\n\tConstraint Violation(s) in entity {0} with id=[{2}].\n";
-    private static final String SERVICE_DEFAULT_PATTERN = "\n\tConstraint Violation(s) in service {0} with id=[{2}].\n";
-    private static final String MIXIN_DEFAULT_PATTERN = "\t\t@{2}({3}) on {0}.{1}(). Parameter [{4}] does not allow value [{5}].\n";
+    private static final String DEFAULT_PATTERN = NL + "\tConstraint Violation(s) in {0} of types [{3}]." + NL;
+    private static final String ENTITY_DEFAULT_PATTERN = NL + "\tConstraint Violation(s) in entity {0} with id=[{2}]." + NL;
+    private static final String SERVICE_DEFAULT_PATTERN = NL + "\tConstraint Violation(s) in service {0} with id=[{2}]." + NL;
+    private static final String MIXIN_DEFAULT_PATTERN = "\t\t@{2}({3}) on {0}.{1}(). Parameter [{4}] does not allow value [{5}]." + NL;
 
     private String instanceToString;                              // arg {0}
     private Class<?> primaryType;                                 // arg {1}

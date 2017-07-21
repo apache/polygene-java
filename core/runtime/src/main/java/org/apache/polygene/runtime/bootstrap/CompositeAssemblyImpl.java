@@ -338,7 +338,7 @@ public abstract class CompositeAssemblyImpl
         {
             return implementMethodWithClass( method, mixinClass );
         }
-        handleInvalidCompositeType( "No implementation found for method ", null, null, null, null, method, types );
+        handleInvalidCompositeType( "No implementation found for method", null, null, null, null, method, types );
         return null;
     }
 

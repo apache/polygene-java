@@ -21,7 +21,6 @@ package org.apache.polygene.bootstrap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,8 @@ import java.util.stream.Collectors;
  */
 public class AssemblyReportException extends AssemblyException
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private Set<Throwable> problems;
     private String modelReport;
 
@@ -44,7 +45,7 @@ public class AssemblyReportException extends AssemblyException
         String message;
         if( modelReport == null )
         {
-            message = "\nComposition Problems Report:\n";
+            message = NL+ "Composition Problems Report:" + NL;
         }
         else
         {
@@ -52,7 +53,7 @@ public class AssemblyReportException extends AssemblyException
         }
         return message + problems.stream()
                                  .map( this::composeMessage )
-                                 .map( m -> m + "\n--\n" )
+                                 .map( m -> m + NL + "--" + NL )
                                  .collect( Collectors.joining() );
     }
 

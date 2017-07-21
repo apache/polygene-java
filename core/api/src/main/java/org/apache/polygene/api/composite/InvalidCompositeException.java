@@ -34,6 +34,7 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
  */
 public class InvalidCompositeException extends RuntimeException
 {
+    private static final String NL = System.getProperty( "line.separator" );
     private static boolean aggregateProblems = true;
     private static ThreadLocal<ArrayList<InvalidCompositeException>> report = ThreadLocal.withInitial( ArrayList::new );
     private ModuleDescriptor module;
@@ -73,13 +74,13 @@ public class InvalidCompositeException extends RuntimeException
     public String getMessage()
     {
         String typeNames = typesString();
-        String primary = primaryType == null ? "" : "    primary: " + primaryType.toGenericString() + "\n";
+        String primary = primaryType == null ? "" : "    primary: " + primaryType.toGenericString() + NL;
         String methodName = memberString();
-        String message = super.getMessage() == null ? "" : "    message: " + super.getMessage() + "\n";
-        String fragment = fragmentClass == null ? "" : "    fragmentClass: " + fragmentClass.getName() + "\n";
-        String valueType = this.valueType == null ? "" : "    valueType: " + this.valueType.getTypeName() + "\n";
-        String module = this.module == null ? "" : "    layer: " + this.module.layer().name() + "\n    module: "
-                                                   + this.module.name() + "\n";
+        String message = super.getMessage() == null ? "" : "    message: " + super.getMessage() + NL;
+        String fragment = fragmentClass == null ? "" : "    fragmentClass: " + fragmentClass.getName() + NL;
+        String valueType = this.valueType == null ? "" : "    valueType: " + this.valueType.getTypeName() + NL;
+        String module = this.module == null ? "" : "    layer: " + this.module.layer().name() + NL + "    module: "
+                                                   + this.module.name() + NL;
         return message + module + primary + fragment + methodName + valueType + typeNames;
     }
 
@@ -93,7 +94,7 @@ public class InvalidCompositeException extends RuntimeException
                + types.stream()
                       .map( Class::getSimpleName )
                       .collect( Collectors.joining( ",", "[", "]" ) )
-               + "\n";
+               + NL;
     }
 
     private String memberString()
@@ -108,12 +109,12 @@ public class InvalidCompositeException extends RuntimeException
             String parameters = Arrays.stream( method.getParameters() )
                                       .map( p -> p.getType().getSimpleName() + " " + p.getName() )
                                       .collect( Collectors.joining( ", ", "(", ")" ) );
-            return "    method: " + method.getReturnType().getSimpleName() + " " + method.getName() + parameters + "\n";
+            return "    method: " + method.getReturnType().getSimpleName() + " " + method.getName() + parameters + NL;
         }
         if( member instanceof Field )
         {
             Field field = (Field) member;
-            return "    field: " + field.getType().getSimpleName() + " " + field.getName() + "\n";
+            return "    field: " + field.getType().getSimpleName() + " " + field.getName() + NL;
         }
         return member.toString();
     }
@@ -122,10 +123,10 @@ public class InvalidCompositeException extends RuntimeException
     {
         if( report.get().size() > 0 )
         {
-            String reportText = "\nComposition Problems Report:\n"
+            String reportText = NL + "Composition Problems Report:" + NL
                                 + report.get().stream()
                                         .map( Throwable::getMessage )
-                                        .map( m -> m + "\n--\n" )
+                                        .map( m -> m + NL + "--" + NL )
                                         .collect( Collectors.joining() );
             report.set( new ArrayList<>() );
             return reportText;

@@ -37,6 +37,8 @@ import org.apache.polygene.api.injection.scope.Uses;
 public class DecoratorMixin
     implements InvocationHandler
 {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private Object delegate;
 
     public DecoratorMixin( @Uses Object delegate )
@@ -78,15 +80,15 @@ public class DecoratorMixin
     private String constructMessage( Method method, Object[] args )
     {
         StringBuilder builder = new StringBuilder();
-        builder.append( "\nmethod: " );
+        builder.append( NL ).append( "method: " );
         builder.append( method.getDeclaringClass().getName() );
         builder.append( "." );
         builder.append( method.getName() );
-        builder.append( "\ndelegate: " );
+        builder.append( NL ).append( "delegate: " );
         builder.append( delegate );
-        builder.append( "\ndelegateType: " );
+        builder.append( NL ).append( "delegateType: " );
         builder.append( delegate == null ? "n/a" : delegate.getClass().getName() );
-        builder.append( "\narguments: \n" );
+        builder.append( NL ).append( "arguments:" ).append( NL );
         for( Object arg : args )
         {
             builder.append( "    " );
@@ -99,7 +101,7 @@ public class DecoratorMixin
             {
                 builder.append( argClass.getName() );
             }
-            builder.append( '\n' );
+            builder.append( NL );
         }
         return builder.toString();
     }
