@@ -62,6 +62,12 @@ Here is how to run a full build with checks:
 Running gradlew for the first time will download the required Gradle
 distribution. You can run ./gradlew tasks to list available tasks.
 
+Also, if Docker engine is present on your system, a large amount of time
+will be spent in testing the many Entity Store implementations, as it
+will spin up the many external systems for the tests (on at a time). If
+Docker is not running, and those external systems are not available locally,
+then those tests will be skipped automatically.
+
 Read the Polygene™ Build System tutorial for more details:
 https://polygene.apache.org/java/latest/build-system.html
 
