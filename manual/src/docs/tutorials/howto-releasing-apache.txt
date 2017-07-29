@@ -675,7 +675,7 @@ open !$
 
 You can reuse the Markdown formatted announcement content.
 
-Add the new released version in `polygene-website/site/content/java/versions.json` below the `latest` entry:
+Add the new released version in `polygene-website/content/java/versions.json` below the `latest` entry:
 
 [source,js]
 ----
@@ -683,17 +683,20 @@ Add the new released version in `polygene-website/site/content/java/versions.jso
     "develop": "develop",
     "latest": "latest",
     "<RELEASE-VERSION>", "<RELEASE-VERSION>",
+    "3.0.0": "3.0.0",
+    "2.1": "2.1",
     "2.0": "2.0",
     "<=1.4.x": "1.4"
 }
 ----
 
-Finally, edit `polygene-website/site/src/_data/releases.yml` with the new release data.
+Finally, edit `polygene-website/src/_data/releases.yml` with the new release data.
 Upmost is the latest:
 
 [source,text]
 ----
 - version: <RELEASE-VERSION>
+  published: true
   announcement: YYYY/MM/DD/apache-polygene-java-<RELEASE-VERSION>
   signer: John Doe
   pgpId: FB751943
