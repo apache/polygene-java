@@ -26,6 +26,7 @@ jar { manifest { name = "Apache Polygene™ Model Detail" }}
 
 dependencies {
   api polygene.core.bootstrap
+  implementation libraries.servlet_api
 
   runtimeOnly polygene.core.runtime
 

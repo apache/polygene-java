@@ -32,6 +32,7 @@ import org.apache.polygene.api.serialization.Serializer;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
+import org.restlet.engine.application.StatusInfo;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
@@ -120,6 +121,10 @@ public class JsonRepresentation<T> extends OutputRepresentation
         if( representation != null )
         {
             representation.write( outputStream );
+        }
+        else if( object instanceof StatusInfo )
+        {
+            outputStream.write(((StatusInfo) object).getReasonPhrase().getBytes());
         }
         else if( object != null )
         {

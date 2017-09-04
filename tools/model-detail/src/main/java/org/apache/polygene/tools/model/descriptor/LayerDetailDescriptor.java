@@ -160,6 +160,29 @@ public final class LayerDetailDescriptor
     }
 
     @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        LayerDetailDescriptor that = (LayerDetailDescriptor) o;
+
+        return descriptor.equals( that.descriptor );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return descriptor.hashCode();
+    }
+
+    @Override
     public final String toString()
     {
         return descriptor.name();

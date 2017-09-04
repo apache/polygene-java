@@ -85,27 +85,7 @@ public class BootstrapTest
     public void applicationBootstrapSucceeds()
         throws Exception
     {
-        <%= polygene.name %>Launcher launcher = new <%= polygene.name %>Launcher()
-        {
-            @Override
-            protected LayeredApplicationAssembler createApplicationAssembler()
-                throws AssemblyException
-            {
-                return new <%= polygene.name %>ApplicationAssembler( "LaunchTest", "0", Application.Mode.development, BootstrapTest.this::setupTest )
-                {
-                    @Override
-                    protected void onModelCreated( ApplicationDescriptor model )
-                    {
-                        ApplicationDetailDescriptor modelDescription = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( model );
-                        System.out.println( "Application Model" );
-                        JsonWriter writer = Json.createWriter( System.out );
-                        System.out.println();
-                        writer.writeObject( modelDescription.toJson() );
-                        super.onModelCreated( model );
-                    }
-                };
-            }
-        };
+        <%= polygene.name %>Launcher launcher = new <%= polygene.name %>Launcher(Application.Mode.development, this::setupTest);
         launcher.initialize();
         System.out.println("Application Launched...");
         // Thread.sleep( 3600000L );

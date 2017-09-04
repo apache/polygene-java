@@ -157,7 +157,7 @@ public final class ActivationDelegate
             {
                 throw ( (ActivationException) e );
             }
-            throw new ActivationException( "Unable to Activate application.", e );
+            throw new ActivationException( "Unable to Activate application: " + target, e );
         }
     }
 
@@ -308,7 +308,7 @@ public final class ActivationDelegate
         public Object get()
         {
             throw new IllegalStateException( "Service is passive, either activating and"
-                                             + " cannot be used yet or passivating and cannot be used anymore." );
+                                             + " cannot be used yet or passivating and cannot be used anymore: " + reference );
         }
 
         @Override

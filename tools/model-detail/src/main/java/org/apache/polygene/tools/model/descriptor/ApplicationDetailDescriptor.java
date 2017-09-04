@@ -19,9 +19,12 @@
  */
 package org.apache.polygene.tools.model.descriptor;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -41,13 +44,14 @@ public final class ApplicationDetailDescriptor
 {
     private final ApplicationDescriptor descriptor;
     private final List<ActivatorDetailDescriptor> activators = new LinkedList<>();
-    private final List<LayerDetailDescriptor> layers = new LinkedList<>();
+    private final SortedSet<LayerDetailDescriptor> layers;
 
     ApplicationDetailDescriptor( ApplicationDescriptor descriptor )
         throws IllegalArgumentException
     {
         Objects.requireNonNull( descriptor, "ApplicationDescriptor" );
         this.descriptor = descriptor;
+        layers = new TreeSet<>( new UsedLayerComparator() );
     }
 
     /**
@@ -81,6 +85,7 @@ public final class ApplicationDetailDescriptor
 
     final void addLayer( LayerDetailDescriptor descriptor )
     {
+        System.out.println("NICLAS!!!! Layer:" + descriptor.toString());
         Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         descriptor.setApplication( this );
         layers.add( descriptor );
@@ -135,5 +140,50 @@ public final class ApplicationDetailDescriptor
         appBuilder.add( "activators", activatorsBuilder.build() );
 
         return appBuilder.build();
+    }
+
+    private static class UsedLayerComparator
+        implements Comparator<LayerDetailDescriptor>
+    {
+
+        @Override
+        public int compare( LayerDetailDescriptor d1, LayerDetailDescriptor d2 )
+        {
+            if( d1.equals( d2 ))
+            {
+                return 0;
+            }
+            if( uses( d1, d2 ) )
+            {
+                return -1;
+            }
+            if( uses(d2, d1) )
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        // 0 = same layer
+        // 1 = user uses used
+        // 2 = not determination
+        private boolean uses( LayerDetailDescriptor user, LayerDetailDescriptor used )
+        {
+            System.out.println("Compare " + user.usedLayers() + " : " + used.usedLayers());
+            System.out.println("Compare " + user.usedBy() + " : " + used.usedBy());
+            System.out.println("---");
+            if( user.equals( used ))
+            {
+                return true;
+            }
+            for( LayerDetailDescriptor usedLayer : user.usedLayers() )
+            {
+                if( uses( usedLayer, used ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

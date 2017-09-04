@@ -37,7 +37,9 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.library.restlet.PolygeneServerServlet;
-
+<% if( hasFeature( 'envisage' ) ) {
+%>import org.apache.polygene.tools.model.EnvisageServlet;
+<% } %>
 import <%= polygene.packageName %>.rest.<%= polygene.name %>RestApplication;
 
 import static org.apache.polygene.library.http.Servlets.addServlets;
@@ -97,6 +99,9 @@ public class HttpServerModule
         defaults.port().set( DEFAULT_PORT );
         HashMap<String, String> initParams = new HashMap<>();
         initParams.put("org.restlet.application", <%= polygene.name %>RestApplication.class.getName() );
+<% if( hasFeature( 'envisage' ) ) {
+%>        addServlets( serve( "/envisage/*" ).with( EnvisageServlet.class ) ).to( module );
+<% } %>
         addServlets( serve( "/*" ).with(PolygeneServerServlet.class ).withInitParams( initParams ) ).to( module );
         return module;
     }
