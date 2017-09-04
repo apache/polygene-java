@@ -228,7 +228,11 @@ public class MixinsModel
                     if( !Modifier.isStatic( method.getModifiers() ) )
                     {
                         MixinModel used = methodImplementation.get( method );
-                        usedMixinClasses.add( used );
+                        if( used != null )
+                        {
+                            // TODO: Should we actually throw an Exception, since this means that a method implementation is missing??
+                            usedMixinClasses.add( used );
+                        }
                     }
                 }
             }
