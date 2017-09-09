@@ -32,8 +32,6 @@ import org.apache.polygene.api.type.ValueType;
  */
 public interface PropertyDescriptor extends MetaInfoHolder
 {
-    boolean isImmutable();
-
     /**
      * Get the qualified name of the property which is equal to:
      * <pre><code>
@@ -54,9 +52,11 @@ public interface PropertyDescriptor extends MetaInfoHolder
 
     AccessibleObject accessor();
 
-    Object resolveInitialValue(ModuleDescriptor moduleDescriptor);
+    boolean isImmutable();
+
+    boolean queryable();
 
     ValueType valueType();
 
-    boolean queryable();
+    Object resolveInitialValue(ModuleDescriptor moduleDescriptor);
 }

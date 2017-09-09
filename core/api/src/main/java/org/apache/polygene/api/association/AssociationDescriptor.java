@@ -59,11 +59,11 @@ public interface AssociationDescriptor extends MetaInfoHolder
      */
     Type type();
 
-    boolean isImmutable();
-
-    boolean isAggregated();
-
     AccessibleObject accessor();
 
     boolean queryable();
+
+    boolean isImmutable();
+
+    boolean isAggregated();
 }

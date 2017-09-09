@@ -50,7 +50,7 @@ abstract class FragmentInvocationHandler
         this.method = method;
     }
 
-    protected Throwable cleanStackTrace( Throwable throwable, Object proxy, Method method )
+    Throwable cleanStackTrace( Throwable throwable, Object proxy, Method method )
     {
         if( compactLevel == CompactLevel.off )
         {
