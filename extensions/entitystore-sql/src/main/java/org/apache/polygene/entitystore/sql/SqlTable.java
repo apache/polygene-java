@@ -211,31 +211,33 @@ public interface SqlTable extends ServiceActivation
             // Eventually create schema
             if( config.createIfMissing().get() )
             {
-                if( !dialect.equals( SQLDialect.SQLITE )
-                    && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
-                {
-                    dsl.createSchema( schemaName ).execute();
-                    datasource.getConnection().commit();
-                }
+                dsl.transaction( t -> {
+                    if( !dialect.equals( SQLDialect.SQLITE )
+                        && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
+                    {
+                        dsl.createSchema( schemaName ).execute();
+                    }
+                } );
 
-                dsl.createTableIfNotExists( DSL.name( schemaName, typesTableName ) )
-                   .column( identityColumn )
-                   .column( tableNameColumn )
-                   .column( createdColumn )
-                   .column( modifiedColumn )
-                   .execute();
-                datasource.getConnection().commit();
+                dsl.transaction( t -> {
 
-                dsl.createTableIfNotExists( DSL.name( schemaName, entitiesTableName ) )
-                   .column( identityColumn )
-                   .column( applicationVersionColumn )
-                   .column( valueIdentityColumn )
-                   .column( versionColumn )
-                   .column( typeNameColumn )
-                   .column( modifiedColumn )
-                   .column( createdColumn )
-                   .execute();
-                datasource.getConnection().commit();
+                    dsl.createTableIfNotExists( DSL.name( schemaName, typesTableName ) )
+                       .column( identityColumn )
+                       .column( tableNameColumn )
+                       .column( createdColumn )
+                       .column( modifiedColumn )
+                       .execute();
+
+                    dsl.createTableIfNotExists( DSL.name( schemaName, entitiesTableName ) )
+                       .column( identityColumn )
+                       .column( applicationVersionColumn )
+                       .column( valueIdentityColumn )
+                       .column( versionColumn )
+                       .column( typeNameColumn )
+                       .column( modifiedColumn )
+                       .column( createdColumn )
+                       .execute();
+                } );
             }
         }
 
