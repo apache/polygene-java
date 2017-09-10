@@ -175,113 +175,119 @@ public abstract class AbstractEntityStoreTest
             instance = unitOfWork.get( instance );
 
             // Check state
-            assertThat( "property 'intValue' has correct value",
+            assertThat( "property 'intValue' has incorrect value",
                         instance.intValue().get(),
                         equalTo( 42 ) );
 
-            assertThat( "property 'longValue' has correct value",
+            assertThat( "property 'longValue' has incorrect value",
                         instance.longValue().get(),
                         equalTo( 42L ) );
 
-            assertThat( "property 'doubleValue' has correct value",
+            assertThat( "property 'doubleValue' has incorrect value",
                         instance.doubleValue().get(),
                         equalTo( 42D ) );
 
-            assertThat( "property 'floatValue' has correct value",
+            assertThat( "property 'floatValue' has incorrect value",
                         instance.floatValue().get(),
                         equalTo( 42F ) );
 
-            assertThat( "property 'booleanValue' has correct value",
+            assertThat( "property 'booleanValue' has incorrect value",
                         instance.booleanValue().get(),
                         equalTo( Boolean.TRUE ) );
 
-            assertThat( "property 'bigInteger' has correct value",
-                        instance.bigIntegerValue().get(),
-                        equalTo( new BigInteger( "42" ) ) );
-
-            assertThat( "property 'bigDecimal' has correct value",
+            assertThat( "property 'bigDecimal' has incorrect value",
                         instance.bigDecimalValue().get(),
                         equalTo( new BigDecimal( "42" ) ) );
 
-            assertThat( "property 'instantValue' has correct value",
-                        instance.instantValue().get(),
-                        equalTo( refDate.toInstant() ) );
+            assertThat( "property 'bigInteger' has incorrect value",
+                        instance.bigIntegerValue().get(),
+                        equalTo( new BigInteger( "42" ) ) );
 
-            assertThat( "property 'dateTimeValue' has correct value",
+            assertThat( "property 'dateTimeValue' has incorrect value",
                         instance.dateTimeValue().get(),
                         equalTo( refDate ) );
 
-            assertThat( "property 'localDateTimeValue' has correct value",
+            assertThat( "property 'instantValue' has incorrect value",
+                        instance.instantValue().get(),
+                        equalTo( refDate.toInstant() ) );
+
+            assertThat( "property 'localDateTimeValue' has incorrect value",
                         instance.localDateTimeValue().get(),
                         equalTo( LocalDateTime.of( 2020, 3, 4, 13, 23, 0 ) ) );
 
-            assertThat( "property 'localDateValue' has correct value",
+            assertThat( "property 'localDateValue' has incorrect value",
                         instance.localDateValue().get(),
                         equalTo( LocalDate.of( 2020, 3, 4 ) ) );
 
-            assertThat( "property 'localTimeValue' has correct value",
+            assertThat( "property 'localTimeValue' has incorrect value",
                         instance.localTimeValue().get(),
                         equalTo( LocalTime.of( 19, 20, 21 ) ) );
 
-            assertThat( "property 'periodValue' has correct value",
+            assertThat( "property 'periodValue' has incorrect value",
                         instance.periodValue().get(),
                         equalTo( Period.of( 1, 1, 2 ) ) );
 
-            assertThat( "property 'durationValue' has correct value",
+            assertThat( "property 'durationValue' has incorrect value",
                         instance.duractionValue().get(),
                         equalTo( Duration.ofSeconds( 3661 ) ) );
 
-            assertThat( "property 'name' has correct value",
+            assertThat( "property 'name' has incorrect value",
                         instance.name().get(),
                         equalTo( "Test" ) );
 
-            assertThat( "property 'unsetName' has correct value",
+            assertThat( "property 'unsetName' has incorrect value",
                         instance.unsetName().get(),
                         equalTo( null ) );
 
-            assertThat( "property 'emptyName' has correct value",
+            assertThat( "property 'emptyName' has incorrect value",
                         instance.emptyName().get(),
                         equalTo( "" ) );
 
-            assertThat( "property 'valueProperty.stringValue' has correct value",
-                        instance.valueProperty().get().valueProperty().get().stringValue().get(),
+            Property<TestValue> testValueProperty = instance.valueProperty();
+            TestValue testValue = testValueProperty.get();
+            Property<TestValue2> testValue2Property = testValue.valueProperty();
+            TestValue2 testValue2 = testValue2Property.get();
+            Property<String> stringProperty = testValue2.stringValue();
+            String actual = stringProperty.get();
+            assertThat( "property 'valueProperty.stringValue' has incorrect value",
+                        actual,
                         equalTo( "Bar" ) );
 
-            assertThat( "property 'valueProperty.listProperty' has correct value",
+            assertThat( "property 'valueProperty.listProperty' has incorrect value",
                         instance.valueProperty().get().listProperty().get().get( 0 ),
                         equalTo( "Foo" ) );
 
-            assertThat( "property 'valueProperty.enumProperty' has correct value",
+            assertThat( "property 'valueProperty.enumProperty' has incorrect value",
                         instance.valueProperty().get().enumProperty().get(),
                         equalTo( TestEnum.VALUE3 ) );
 
-            assertThat( "property 'valueProperty.anotherValue.bling' has correct value",
+            assertThat( "property 'valueProperty.anotherValue.bling' has incorrect value",
                         instance.valueProperty().get().valueProperty().get().anotherValue().get().bling().get(),
                         equalTo( "BlinkLjus" ) );
 
-            assertThat( "property 'valueProperty.tjabbaProperty.bling' has correct value",
+            assertThat( "property 'valueProperty.tjabbaProperty.bling' has incorrect value",
                         instance.valueProperty().get().tjabbaProperty().get().bling().get(),
                         equalTo( "Brakfis" ) );
 
             Map<String, String> mapValue = new HashMap<>();
             mapValue.put( "foo", "bar" );
-            assertThat( "property 'valueProperty.mapStringStringProperty' has correct value",
+            assertThat( "property 'valueProperty.mapStringStringProperty' has incorrect value",
                         instance.valueProperty().get().mapStringStringProperty().get(),
                         equalTo( mapValue ) );
 
-            assertThat( "association has correct value",
+            assertThat( "association has incorrect value",
                         instance.association().get(),
                         equalTo( instance ) );
 
-            assertThat( "manyAssociation has correct value",
+            assertThat( "manyAssociation has incorrect value",
                         instance.manyAssociation().iterator().next(),
                         equalTo( instance ) );
 
-            assertThat( "namedAssociation has correct 'foo' value",
+            assertThat( "namedAssociation has incorrect 'foo' value",
                         instance.namedAssociation().get( "foo" ),
                         equalTo( instance ) );
 
-            assertThat( "namedAssociation has correct 'bar' value",
+            assertThat( "namedAssociation has incorrect 'bar' value",
                         instance.namedAssociation().get( "bar" ),
                         equalTo( instance ) );
         }
