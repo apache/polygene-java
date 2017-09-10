@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql.assembly;
+package org.apache.polygene.entitystore.sqlkv.assembly;
 
 import org.jooq.SQLDialect;
 

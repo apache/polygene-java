@@ -17,11 +17,10 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.HashMap;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.service.ServiceFinder;
@@ -30,31 +29,23 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.ClassRule;
 
-import static org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
+import static org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
-public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
+public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule(
-        "mysql",
-        new HashMap<String, String>()
-        {{
-            put( "MYSQL_ROOT_PASSWORD", "" );
-            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
-            put( "MYSQL_DATABASE", "jdbc_test_db" );
-            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
-        }},
-        30000L
-//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
-    );
+    public static final DockerRule DOCKER = new DockerRule( "postgres",
+                                                            3000L,
+                                                            "PostgreSQL init process complete; ready for start up." );
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
@@ -62,32 +53,32 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
         module.defaultServices();
         // DataSourceService
         new DBCPDataSourceServiceAssembler()
-            .identifiedBy( "mysql-datasource-service" )
+            .identifiedBy( "postgresql-datasource-service" )
             .visibleIn( Visibility.module )
             .withConfig( configModule, Visibility.application )
             .assemble( module );
 
         // DataSource
         new DataSourceAssembler()
-            .withDataSourceServiceIdentity( "mysql-datasource-service" )
-            .identifiedBy( "mysql-datasource" )
+            .withDataSourceServiceIdentity( "postgresql-datasource-service" )
+            .identifiedBy( "postgresql-datasource" )
             .visibleIn( Visibility.module )
             .withCircuitBreaker()
             .assemble( module );
 
         // SQL EntityStore
-        new MySQLEntityStoreAssembler()
+        new PostgreSQLEntityStoreAssembler()
             .visibleIn( Visibility.application )
             .withConfig( configModule, Visibility.application )
             .assemble( module );
 
-        String mysqlHost = DOCKER.getDockerHost();
-        int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
+        String host = DOCKER.getDockerHost();
+        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
         configModule.forMixin( DataSourceConfiguration.class ).declareDefaults()
-                    .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
-                                + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                                + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                    .url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
+        // START SNIPPET: assembly
     }
+    // END SNIPPET: assembly
 
     @Override
     public void tearDown()
@@ -98,18 +89,16 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
         ServiceFinder serviceFinder = storageModule.serviceFinder();
         UnitOfWork uow = uowf.newUnitOfWork(
             UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
-                                                             );
+                                           );
         try
         {
+            SQLConfiguration config = uow.get( SQLConfiguration.class, DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            SQLEntityStoreConfiguration configuration = uow.get( SQLEntityStoreConfiguration.class,
-                                                                 DEFAULT_ENTITYSTORE_IDENTITY );
             connection.setAutoCommit( false );
+            String schemaName = config.schemaName().get();
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "TRUNCATE %s.%s",
-                                             configuration.schemaName().get(),
-                                             configuration.entityTableName().get() ) );
+                stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
                 connection.commit();
             }
         }

@@ -14,8 +14,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.test.performance.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -23,67 +25,60 @@ import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
 import static org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
-/**
- * Performance test for DerbySQLEntityStore.
- */
-public class DerbySQLEntityStorePerformanceTest
-    extends AbstractEntityStorePerformanceTest
+public class DerbySQLEntityStoreTest
+    extends AbstractEntityStoreTest
 {
-
-    public DerbySQLEntityStorePerformanceTest()
+    @Override
+    // START SNIPPET: assembly
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        super( "DerbySQLEntityStore", createAssembler() );
+        // END SNIPPET: assembly
+        super.assemble( module );
+        ModuleAssembly config = module.layer().module( "config" );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+
+        // START SNIPPET: assembly
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "derby-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
+
+        // DataSource
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "derby-datasource-service" )
+            .identifiedBy( "derby-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
+
+        // SQL EntityStore
+        new DerbySQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( config, Visibility.layer )
+            .assemble( module );
     }
-
-    private static Assembler createAssembler()
-    {
-        return module -> {
-            ModuleAssembly config = module.layer().module( "config" );
-            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
-
-            // DataSourceService
-            new DBCPDataSourceServiceAssembler()
-                .identifiedBy( "derby-datasource-service" )
-                .visibleIn( Visibility.module )
-                .withConfig( config, Visibility.layer )
-                .assemble( module );
-
-            // DataSource
-            new DataSourceAssembler()
-                .withDataSourceServiceIdentity( "derby-datasource-service" )
-                .identifiedBy( "derby-datasource" )
-                .withCircuitBreaker()
-                .assemble( module );
-
-            // SQL EntityStore
-            new DerbySQLEntityStoreAssembler()
-                .withConfig( config, Visibility.layer )
-                .assemble( module );
-        };
-    }
+    // END SNIPPET: assembly
 
     @Override
-    protected void cleanUp()
+    public void tearDown()
         throws Exception
     {
-        if( uowf == null )
-        {
-            return;
-        }
-        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" )
-        );
+        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase(
+            "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
             SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
@@ -101,7 +96,7 @@ public class DerbySQLEntityStorePerformanceTest
         finally
         {
             uow.discard();
-            super.cleanUp();
+            super.tearDown();
         }
     }
 }

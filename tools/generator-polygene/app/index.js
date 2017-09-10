@@ -112,6 +112,7 @@ module.exports = generators.Base.extend(
                                 'JClouds',
                                 'Jdbm',
                                 'LevelDB',
+                                'MariaDbSQL',
                                 'Memory',
                                 'MongoDB',
                                 'MySQL',

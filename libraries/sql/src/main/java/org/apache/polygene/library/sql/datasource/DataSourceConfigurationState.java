@@ -40,5 +40,7 @@ public interface DataSourceConfigurationState extends Enabled
     @Optional Property<Integer> maxConnectionAgeSeconds();
     @Optional Property<String> validationQuery();
     @UseDefaults Property<String> properties();
+    @UseDefaults Property<Boolean> autoCommit();
+    @Optional Property<Integer> isolationLevel();
 }
 // END SNIPPET: config

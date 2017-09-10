@@ -17,25 +17,18 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.H2SQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-import static org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
-
-public class DerbySQLEntityStoreTest
+public class H2SQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
     @Override
@@ -51,51 +44,24 @@ public class DerbySQLEntityStoreTest
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler()
-            .identifiedBy( "derby-datasource-service" )
+            .identifiedBy( "h2-datasource-service" )
             .visibleIn( Visibility.module )
             .withConfig( config, Visibility.layer )
             .assemble( module );
 
         // DataSource
         new DataSourceAssembler()
-            .withDataSourceServiceIdentity( "derby-datasource-service" )
-            .identifiedBy( "derby-datasource" )
+            .withDataSourceServiceIdentity( "h2-datasource-service" )
+            .identifiedBy( "h2-datasource" )
             .visibleIn( Visibility.module )
             .withCircuitBreaker()
             .assemble( module );
 
         // SQL EntityStore
-        new DerbySQLEntityStoreAssembler()
+        new H2SQLEntityStoreAssembler()
             .visibleIn( Visibility.application )
             .withConfig( config, Visibility.layer )
             .assemble( module );
     }
     // END SNIPPET: assembly
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" ) );
-        try
-        {
-            SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
-                                                          DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DELETE FROM %s.%s",
-                                             config.schemaName().get(),
-                                             config.entityTableName().get() ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
-    }
 }

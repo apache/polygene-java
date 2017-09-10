@@ -30,7 +30,7 @@ import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.Energy4Java;
-import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.common.SQLUtil;

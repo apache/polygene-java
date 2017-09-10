@@ -15,15 +15,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.entitystore.sql.assembly;
+package org.apache.polygene.entitystore.sqlkv.assembly;
 
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.SQLEntityStoreConfiguration;
-import org.apache.polygene.entitystore.sql.SQLEntityStoreService;
+import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreConfiguration;
+import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreService;
 import org.apache.polygene.library.sql.liquibase.LiquibaseAssembler;
 import org.apache.polygene.library.sql.liquibase.LiquibaseConfiguration;
 import org.jooq.SQLDialect;

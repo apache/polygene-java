@@ -22,7 +22,8 @@ package org.apache.polygene.entitystore.sql;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.SqlEntityStoreAssembler;
+import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sql.assembly.H2SQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
@@ -52,7 +53,7 @@ public class SqlEntityStoreTest extends AbstractEntityStoreTest
         // Assemble a DataSource
         new DataSourceAssembler()
             .withDataSourceServiceIdentity( "datasource" )
-            .identifiedBy( "ds-mysql" )
+            .identifiedBy( "ds-h2" )
             .visibleIn( Visibility.module )
             .assemble( module );
 
@@ -63,7 +64,7 @@ public class SqlEntityStoreTest extends AbstractEntityStoreTest
             .withConfig( config, Visibility.layer )
             .assemble( module );
 
-        new SqlEntityStoreAssembler()
+        new H2SQLEntityStoreAssembler()
             .withConfig( config, Visibility.layer )
             .identifiedBy( "sql-entitystore" )
             .assemble( module );

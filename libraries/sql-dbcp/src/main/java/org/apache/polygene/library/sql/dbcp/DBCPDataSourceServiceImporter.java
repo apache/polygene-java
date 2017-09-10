@@ -19,10 +19,13 @@
  */
 package org.apache.polygene.library.sql.dbcp;
 
+import java.sql.Connection;
+import java.util.function.Consumer;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceImporter;
 import org.apache.polygene.library.sql.datasource.AbstractDataSourceServiceImporterMixin;
@@ -32,7 +35,7 @@ import org.apache.polygene.library.sql.datasource.DataSourceServiceImporterActiv
 @Mixins( DBCPDataSourceServiceImporter.Mixin.class )
 @Activators( DataSourceServiceImporterActivation.Activator.class )
 public interface DBCPDataSourceServiceImporter
-        extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
+    extends ServiceImporter<DataSource>, DataSourceServiceImporterActivation, ServiceComposite
 {
 
     class Mixin extends AbstractDataSourceServiceImporterMixin<BasicDataSource>
@@ -40,7 +43,7 @@ public interface DBCPDataSourceServiceImporter
 
         @Override
         protected BasicDataSource setupDataSourcePool( DataSourceConfiguration config )
-                throws Exception
+            throws Exception
         {
             BasicDataSource pool = new BasicDataSource();
 
@@ -48,37 +51,41 @@ public interface DBCPDataSourceServiceImporter
             pool.setDriverClassName( config.driver().get() );
             pool.setUrl( config.url().get() );
 
-            if ( !config.username().get().equals( "" ) ) {
-                pool.setUsername( config.username().get() );
-                pool.setPassword( config.password().get() );
-            }
+            setConfig( config.username(), pool::setUsername, null );
+            setConfig( config.password(), pool::setPassword, null );
+            setConfig( config.minPoolSize(), pool::setMinIdle, null );
+            setConfig( config.maxPoolSize(), pool::setMaxTotal, null );
+            setConfig( config.maxConnectionAgeSeconds(), v -> pool.setMinEvictableIdleTimeMillis( v * 1000 ), null );
+            setConfig( config.validationQuery(), pool::setValidationQuery, null );
+            setConfig( config.autoCommit(), pool::setDefaultAutoCommit, null );
+            setConfig( config.isolationLevel(), pool::setDefaultTransactionIsolation, Connection.TRANSACTION_SERIALIZABLE );
 
-            if ( config.minPoolSize().get() != null ) {
-                pool.setMinIdle( config.minPoolSize().get() );
-            }
-            if ( config.maxPoolSize().get() != null ) {
-                pool.setMaxTotal( config.maxPoolSize().get() );
-            }
-            if ( config.loginTimeoutSeconds().get() != null ) {
+            // Throws checked exception and can't be neatly handled
+            if( config.loginTimeoutSeconds().get() != null )
+            {
                 pool.setLoginTimeout( config.loginTimeoutSeconds().get() );
             }
-            if ( config.maxConnectionAgeSeconds().get() != null ) {
-                pool.setMinEvictableIdleTimeMillis( config.maxConnectionAgeSeconds().get() * 1000 );
-            }
-            if ( config.validationQuery().get() != null ) {
-                pool.setValidationQuery( config.validationQuery().get() );
-            }
-
             return pool;
+        }
+
+        private <T> void setConfig( Property<T> property, Consumer<T> setter, T defaultValue )
+        {
+            T value = property.get();
+            if( value != null )
+            {
+                setter.accept( value );
+            }
+            else if( defaultValue != null )
+            {
+                setter.accept( defaultValue );
+            }
         }
 
         @Override
         protected void passivateDataSourcePool( BasicDataSource dataSourcePool )
-                throws Exception
+            throws Exception
         {
             dataSourcePool.close();
         }
-
     }
-
 }

@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +50,7 @@ import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.RecordType;
 import org.jooq.Result;
 import org.jooq.Schema;
 import org.jooq.SelectJoinStep;
@@ -83,7 +85,6 @@ public class EntitiesTable
 
     public BaseEntity fetchEntity( EntityReference reference, ModuleDescriptor module )
     {
-
         Result<Record> baseEntityResult = dsl
             .selectFrom( entitiesTable )
             .where( identityColumn.eq( reference.identity().toString() ) )
@@ -128,7 +129,7 @@ public class EntitiesTable
         }
         catch( ClassNotFoundException e )
         {
-            throw new NoSuchEntityTypeException( typeName, module);
+            throw new NoSuchEntityTypeException( typeName, module );
         }
     }
 
@@ -202,18 +203,29 @@ public class EntitiesTable
         };
     }
 
-    void createNewBaseEntity( EntityReference reference, EntityDescriptor descriptor, EntityStoreUnitOfWork uow )
+    BaseEntity createNewBaseEntity( EntityReference reference, EntityDescriptor descriptor, EntityStoreUnitOfWork uow )
     {
         String valueIdentity = UUID.randomUUID().toString();
+        String typeName = descriptor.primaryType().getName();
+        Instant currentTime = uow.currentTime();
         dsl.insertInto( entitiesTable )
            .set( identityColumn, reference.identity().toString() )
-           .set( createdColumn, new Timestamp( uow.currentTime().toEpochMilli() ) )
-           .set( modifiedColumn, new Timestamp( uow.currentTime().toEpochMilli() ) )
+           .set( createdColumn, new Timestamp( currentTime.toEpochMilli() ))
+           .set( modifiedColumn, new Timestamp( currentTime.toEpochMilli()) )
            .set( valueIdentityColumn, valueIdentity )
-           .set( typeNameColumn, descriptor.primaryType().getName() )
+           .set( typeNameColumn, typeName )
            .set( versionColumn, "1" )
            .set( applicationVersionColumn, applicationVersion )
            .execute();
+        BaseEntity baseEntity = new BaseEntity();
+        baseEntity.type = descriptor;
+        baseEntity.version = "1";
+        baseEntity.applicationVersion = applicationVersion;
+        baseEntity.identity = reference.identity();
+        baseEntity.currentValueIdentity = null;
+        baseEntity.modifedAt = currentTime;
+        baseEntity.createdAt = currentTime;
+        return baseEntity;
     }
 
     private void updateBaseEntity( BaseEntity entity, EntityStoreUnitOfWork uow )
@@ -301,19 +313,34 @@ public class EntitiesTable
         String reference = entity.identity.toString();
         SelectQuery<Record> query = from.where( identityColumnOf( entitiesTable ).eq( reference ) ).getQuery();
         Result<Record> result = query.fetch();
+        RecordType<Record> recordType = result.recordType();
         result.forEach( record ->
                         {
                             AssociationValue value = new AssociationValue();
-                            value.name = QualifiedName.fromClass( entityDescriptor.primaryType(), record.getValue( nameColumn ) );
-                            value.position = record.getValue( indexColumn );
-                            value.reference = record.getValue( referenceColumn );
+                            if( recordType.indexOf( referenceColumn ) >= 0 )
+                            {
+                                // some many-to-many association found.
+                                if( recordType.indexOf( nameColumn ) >= 0 )
+                                {
+                                    // NamedAssociations found.
+                                    value.name = QualifiedName.fromClass( entityDescriptor.primaryType(), record.getValue( nameColumn ) );
+                                }
+                                if( recordType.indexOf( indexColumn ) >= 0 )
+                                {
+                                    // ManyAssociations found.
+                                    value.position = record.getValue( indexColumn );
+                                }
+                                value.reference = record.getValue( referenceColumn );
+                            }
                             consume.accept( value );
                         } );
     }
 
     private Field<String> identityColumnOf( Table<Record> joinedTable )
     {
-        return DSL.field( DSL.name( joinedTable.getName(), identityColumn.getName() ), String.class );
+        String name = joinedTable.getName();
+        String identity = identityColumn.getName();
+        return DSL.field( DSL.name( name, identity ), String.class );
     }
 
     public List<Table<Record>> getMixinTables( EntityDescriptor entityDescriptor )
@@ -334,6 +361,7 @@ public class EntitiesTable
             .filter( NOT_HASIDENTITY )
             .map( type -> findMixinTable( type, entityDescriptor ) )
             .map( MixinTable::associationsTable )
+            .filter( Objects::nonNull )
             .collect( Collectors.toList() );
     }
 

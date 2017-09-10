@@ -28,7 +28,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.JooqDslContext;
 import org.apache.polygene.entitystore.sql.SqlEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.SqlEntityStoreService;
-import org.jooq.SQLDialect;
 import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 
@@ -36,7 +35,7 @@ import org.jooq.conf.Settings;
  * JOOQ EntityStore assembly.
  */
 @SuppressWarnings( "WeakerAccess" )
-public class SqlEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig<SqlEntityStoreAssembler>
+public abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreAssembler> extends Assemblers.VisibilityIdentityConfig<T>
     implements Assembler
 {
     public static final Identity DEFAULT_ENTITYSTORE_IDENTITY = StringIdentity.identityOf( "entitystore-sql" );
@@ -71,8 +70,4 @@ public class SqlEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig
         return new Settings().withRenderNameStyle( RenderNameStyle.QUOTED );
     }
 
-    protected SQLDialect getSQLDialect()
-    {
-        return SQLDialect.DEFAULT;
-    }
 }

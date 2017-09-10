@@ -14,81 +14,69 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.test.performance.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
-import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
+import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 
 import static org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
-/**
- * Performance test for DerbySQLEntityStore.
- */
-public class DerbySQLEntityStorePerformanceTest
-    extends AbstractEntityStorePerformanceTest
+public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
-
-    public DerbySQLEntityStorePerformanceTest()
+    @Override
+    protected void defineStorageModule( ModuleAssembly module )
     {
-        super( "DerbySQLEntityStore", createAssembler() );
-    }
+        module.defaultServices();
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler()
+            .identifiedBy( "derby-datasource-service" )
+            .visibleIn( Visibility.module )
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
 
-    private static Assembler createAssembler()
-    {
-        return module -> {
-            ModuleAssembly config = module.layer().module( "config" );
-            new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+        // DataSource
+        new DataSourceAssembler()
+            .withDataSourceServiceIdentity( "derby-datasource-service" )
+            .identifiedBy( "derby-datasource" )
+            .visibleIn( Visibility.module )
+            .withCircuitBreaker()
+            .assemble( module );
 
-            // DataSourceService
-            new DBCPDataSourceServiceAssembler()
-                .identifiedBy( "derby-datasource-service" )
-                .visibleIn( Visibility.module )
-                .withConfig( config, Visibility.layer )
-                .assemble( module );
-
-            // DataSource
-            new DataSourceAssembler()
-                .withDataSourceServiceIdentity( "derby-datasource-service" )
-                .identifiedBy( "derby-datasource" )
-                .withCircuitBreaker()
-                .assemble( module );
-
-            // SQL EntityStore
-            new DerbySQLEntityStoreAssembler()
-                .withConfig( config, Visibility.layer )
-                .assemble( module );
-        };
+        // SQL EntityStore
+        new DerbySQLEntityStoreAssembler()
+            .visibleIn( Visibility.application )
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
     }
 
     @Override
-    protected void cleanUp()
+    public void tearDown()
         throws Exception
     {
-        if( uowf == null )
-        {
-            return;
-        }
+        Module storageModule = application.findModule( "Infrastructure Layer","Storage Module" );
+        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
         UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" )
-        );
+            "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
             SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
                                                           DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
+            Connection connection = storageModule.serviceFinder().findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {
@@ -101,7 +89,7 @@ public class DerbySQLEntityStorePerformanceTest
         finally
         {
             uow.discard();
-            super.cleanUp();
+            super.tearDown();
         }
     }
 }

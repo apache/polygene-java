@@ -17,19 +17,19 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql.assembly;
+package org.apache.polygene.entitystore.sqlkv.assembly;
 
 import org.jooq.SQLDialect;
 
 /**
- * H2 EntityStore assembly.
+ * PostgreSQL EntityStore assembly.
  */
-public class H2SQLEntityStoreAssembler
-    extends AbstractSQLEntityStoreAssembler<H2SQLEntityStoreAssembler>
+public class PostgreSQLEntityStoreAssembler
+    extends AbstractSQLEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()
     {
-        return SQLDialect.H2;
+        return SQLDialect.POSTGRES;
     }
 }

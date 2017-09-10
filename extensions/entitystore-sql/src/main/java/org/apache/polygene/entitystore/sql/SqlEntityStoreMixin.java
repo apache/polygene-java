@@ -317,8 +317,8 @@ public class SqlEntityStoreMixin
         {
             EntityReference ref = state.entityReference();
             EntityDescriptor descriptor = state.entityDescriptor();
-            sqlTable.createNewBaseEntity( ref, descriptor, this.unitOfWork );
-            sqlTable.insertEntity( state, sqlTable.fetchBaseEntity( ref, module ), unitOfWork );
+            BaseEntity baseEntity = sqlTable.createNewBaseEntity( ref, descriptor, this.unitOfWork );
+            sqlTable.insertEntity( state, baseEntity, unitOfWork );
         }
 
         private void updateState( DefaultEntityState state, EntityStoreUnitOfWork unitOfWork )

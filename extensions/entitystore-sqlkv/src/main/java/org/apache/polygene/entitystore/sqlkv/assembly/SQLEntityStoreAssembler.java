@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql.assembly;
+package org.apache.polygene.entitystore.sqlkv.assembly;
 
 /**
  * This is a dummy Assembler to support the Yeoman Polygene Generator, which require naming conventions for

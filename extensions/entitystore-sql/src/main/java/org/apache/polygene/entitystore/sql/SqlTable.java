@@ -20,7 +20,6 @@ package org.apache.polygene.entitystore.sql;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
-import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -30,7 +29,6 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
-import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.Application;
@@ -102,7 +100,7 @@ public interface SqlTable extends ServiceActivation
 
     void fetchAssociations( BaseEntity entity, EntityDescriptor descriptor, Consumer<AssociationValue> consume );
 
-    void createNewBaseEntity( EntityReference ref, EntityDescriptor descriptor, EntityStoreUnitOfWork unitOfWork );
+    BaseEntity createNewBaseEntity( EntityReference ref, EntityDescriptor descriptor, EntityStoreUnitOfWork unitOfWork );
 
     void insertEntity( DefaultEntityState state, BaseEntity baseEntity, EntityStoreUnitOfWork unitOfWork );
 
@@ -162,9 +160,9 @@ public interface SqlTable extends ServiceActivation
         }
 
         @Override
-        public void createNewBaseEntity( EntityReference ref, EntityDescriptor descriptor, EntityStoreUnitOfWork unitOfWork )
+        public BaseEntity createNewBaseEntity( EntityReference ref, EntityDescriptor descriptor, EntityStoreUnitOfWork unitOfWork )
         {
-            entitiesTable.createNewBaseEntity( ref, descriptor, unitOfWork );
+            return entitiesTable.createNewBaseEntity( ref, descriptor, unitOfWork );
         }
 
         @Override
@@ -216,7 +214,8 @@ public interface SqlTable extends ServiceActivation
                 if( !dialect.equals( SQLDialect.SQLITE )
                     && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
                 {
-                    dsl.createSchema( schema ).execute();
+                    dsl.createSchema( schemaName ).execute();
+                    datasource.getConnection().commit();
                 }
 
                 dsl.createTableIfNotExists( DSL.name( schemaName, typesTableName ) )
@@ -225,6 +224,7 @@ public interface SqlTable extends ServiceActivation
                    .column( createdColumn )
                    .column( modifiedColumn )
                    .execute();
+                datasource.getConnection().commit();
 
                 dsl.createTableIfNotExists( DSL.name( schemaName, entitiesTableName ) )
                    .column( identityColumn )
@@ -235,8 +235,8 @@ public interface SqlTable extends ServiceActivation
                    .column( modifiedColumn )
                    .column( createdColumn )
                    .execute();
+                datasource.getConnection().commit();
             }
-            datasource.getConnection().commit();
         }
 
         @Override

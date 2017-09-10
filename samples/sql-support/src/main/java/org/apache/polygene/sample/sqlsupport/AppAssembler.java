@@ -26,7 +26,7 @@ import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSources;

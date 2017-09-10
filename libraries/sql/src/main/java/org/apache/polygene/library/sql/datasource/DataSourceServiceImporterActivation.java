@@ -31,14 +31,11 @@ public interface DataSourceServiceImporterActivation
     class Activator
             extends ActivatorAdapter<ServiceReference<DataSourceServiceImporterActivation>>
     {
-
         @Override
         public void beforePassivation( ServiceReference<DataSourceServiceImporterActivation> passivating )
                 throws Exception
         {
             passivating.get().passivateDataSourceService();
         }
-
     }
-
 }

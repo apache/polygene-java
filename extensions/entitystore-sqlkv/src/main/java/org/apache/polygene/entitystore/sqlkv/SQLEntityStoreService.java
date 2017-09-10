@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.polygene.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;

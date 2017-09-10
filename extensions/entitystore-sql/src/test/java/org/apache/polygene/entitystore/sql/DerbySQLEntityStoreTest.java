@@ -23,29 +23,38 @@ import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
+import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-import static org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
+import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
-public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
+public class DerbySQLEntityStoreTest
+    extends AbstractEntityStoreTest
 {
     @Override
-    protected void defineStorageModule( ModuleAssembly module )
+    // START SNIPPET: assembly
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        module.defaultServices();
+        // END SNIPPET: assembly
+        super.assemble( module );
+        ModuleAssembly config = module.layer().module( "config" );
+        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+
+        // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler()
             .identifiedBy( "derby-datasource-service" )
             .visibleIn( Visibility.module )
-            .withConfig( configModule, Visibility.application )
+            .withConfig( config, Visibility.layer )
             .assemble( module );
 
         // DataSource
@@ -59,29 +68,25 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
         // SQL EntityStore
         new DerbySQLEntityStoreAssembler()
             .visibleIn( Visibility.application )
-            .withConfig( configModule, Visibility.application )
+            .withConfig( config, Visibility.layer )
             .assemble( module );
     }
+    // END SNIPPET: assembly
 
     @Override
     public void tearDown()
         throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer","Storage Module" );
-        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
-        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" ) );
+        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork( newUsecase("Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
-            SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
-                                                          DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = storageModule.serviceFinder().findService( DataSource.class ).get().getConnection();
+            SqlEntityStoreConfiguration config = uow.get( SqlEntityStoreConfiguration.class,
+                                                          AbstractSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
+            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s.%s",
-                                             config.schemaName().get(),
-                                             config.entityTableName().get() ) );
+                stmt.execute( String.format( "DROP DATABASE FROM %s", config.schemaName().get() ) );
                 connection.commit();
             }
         }
