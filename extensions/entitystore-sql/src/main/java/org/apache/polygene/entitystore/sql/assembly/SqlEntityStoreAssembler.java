@@ -63,6 +63,7 @@ public class SqlEntityStoreAssembler extends Assemblers.VisibilityIdentityConfig
         {
             configModule().entities( SqlEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
+        super.assemble( module );
     }
 
     protected Settings getSettings()
