@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -91,12 +92,16 @@ public class PostgreSQLEntityStoreTest
             .withConfig( config, Visibility.layer )
             .assemble( module );
         // END SNIPPET: assembly
+
+
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+
         DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
         defaults.url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
         defaults.username().set( System.getProperty( "user.name" ) );
         defaults.password().set( "ThisIsGreat!" );
+
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
@@ -105,24 +110,8 @@ public class PostgreSQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        String usecaseName = "Delete " + getClass().getSimpleName() + " test data";
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork( newUsecase( usecaseName ) );
-        try
-        {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, AbstractSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            String schemaName = config.schemaName().get();
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
+        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        super.tearDown();
     }
 }

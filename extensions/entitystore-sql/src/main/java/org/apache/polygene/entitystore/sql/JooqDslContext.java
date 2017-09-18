@@ -25,7 +25,11 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
+import org.jooq.Name;
+import org.jooq.Record;
 import org.jooq.SQLDialect;
+import org.jooq.Schema;
+import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
@@ -33,14 +37,19 @@ import org.jooq.impl.DefaultConfiguration;
 @Mixins( JooqDslContext.Mixin.class )
 public interface JooqDslContext extends DSLContext
 {
+    boolean isSchemaCapable();
+    Name tableNameOf( String tableName );
+    Table<Record> tableOf( String tableName );
 
     class Mixin
         implements InvocationHandler
     {
-        private DSLContext dsl;
+        private final Schema schema;
+        private final DSLContext dsl;
 
-        public Mixin( @Service DataSource dataSource, @Uses Settings settings, @Uses SQLDialect dialect )
+        public Mixin( @Service DataSource dataSource, @Uses Settings settings, @Uses SQLDialect dialect, @Uses Schema schema )
         {
+            this.schema = schema;
             Configuration configuration = new DefaultConfiguration()
                 .set( dataSource )
                 .set( dialect )
@@ -49,10 +58,31 @@ public interface JooqDslContext extends DSLContext
         }
 
         @Override
-        public Object invoke( Object o, Method method, Object[] objects )
+        public Object invoke( Object o, Method method, Object[] args )
             throws Throwable
         {
-            return method.invoke( dsl, objects );       // delegate all
+            if(method.getName().equals( "tableOf" )){
+                return DSL.table(tableNameOf( (String) args[0] ) );
+            }
+            if(method.getName().equals( "tableNameOf" )){
+                return tableNameOf( (String) args[ 0 ] );
+            }
+
+            if(method.getName().equals( "isSchemaCapable" ))
+            {
+                return isSchemaCapable();
+            }
+            return method.invoke( dsl, args );       // delegate all
+        }
+
+        private Name tableNameOf( String name )
+        {
+            return this.isSchemaCapable() ? DSL.name( schema.getName(), name ) : DSL.name( name );
+        }
+
+        private boolean isSchemaCapable()
+        {
+            return !dsl.dialect().equals( SQLDialect.SQLITE ) && !dsl.dialect().equals( SQLDialect.MYSQL );
         }
     }
 }

@@ -52,7 +52,6 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.RecordType;
 import org.jooq.Result;
-import org.jooq.Schema;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
@@ -70,17 +69,15 @@ public class EntitiesTable
     private final Table<Record> entitiesTable;
     private JooqDslContext dsl;
     private final TypesTable types;
-    private final Schema schema;
     private String applicationVersion;
     private boolean replacementStrategy = false;  // Figure out later if we should support both and if so, how.
 
-    EntitiesTable( JooqDslContext dsl, Schema schema, TypesTable types, String applicationVersion, String entitiesTableName )
+    EntitiesTable( JooqDslContext dsl, TypesTable types, String applicationVersion, String entitiesTableName )
     {
         this.dsl = dsl;
         this.types = types;
-        this.schema = schema;
         this.applicationVersion = applicationVersion;
-        entitiesTable = types.tableOf( entitiesTableName );
+        entitiesTable = dsl.tableOf( entitiesTableName );
     }
 
     public BaseEntity fetchEntity( EntityReference reference, ModuleDescriptor module )
@@ -165,7 +162,7 @@ public class EntitiesTable
 
     private MixinTable findMixinTable( Class<?> type, EntityDescriptor entityDescriptor )
     {
-        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, schema, types, type, entityDescriptor ) );
+        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, types, type, entityDescriptor ) );
     }
 
     private Set<Class<?>> mixinsOf( Stream<? extends AssociationDescriptor> stream )
@@ -222,7 +219,7 @@ public class EntitiesTable
         baseEntity.version = "1";
         baseEntity.applicationVersion = applicationVersion;
         baseEntity.identity = reference.identity();
-        baseEntity.currentValueIdentity = null;
+        baseEntity.currentValueIdentity = StringIdentity.identityOf( UUID.randomUUID().toString() );
         baseEntity.modifedAt = currentTime;
         baseEntity.createdAt = currentTime;
         return baseEntity;

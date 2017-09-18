@@ -34,9 +34,9 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
-import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDataType;
 
 public class TypesTable
     implements TableFields
@@ -46,32 +46,22 @@ public class TypesTable
 
     private final Table<Record> typesTable;
     private final SQLDialect dialect;
-    private final Schema schema;
 
     private final JooqDslContext dsl;
 
-    TypesTable( JooqDslContext dsl, Schema schema,
+    TypesTable( JooqDslContext dsl,
                 SQLDialect dialect,
                 String typesTablesName
               )
     {
-        this.schema = schema;
         this.dialect = dialect;
-        typesTable = tableOf( typesTablesName );
+        typesTable = dsl.tableOf( typesTablesName );
         this.dsl = dsl;
     }
 
     static <T> Field<T> makeField( String columnName, Class<T> type )
     {
         return DSL.field( DSL.name( columnName ), type );
-    }
-
-    Table<Record> tableOf( String tableName )
-    {
-        return DSL.table(
-            dialect.equals( SQLDialect.SQLITE )
-            ? DSL.name( tableName )
-            : DSL.name( schema.getName(), tableName ) );
     }
 
     String tableNameOf( Class<?> mixinType )
@@ -92,9 +82,9 @@ public class TypesTable
             if( tableName == null )
             {
                 Result<Record> newMixinTable = createNewMixinTable( type, descriptor );
-                return tableOf( newMixinTable.getValue( 0, tableNameColumn ) );
+                return dsl.tableOf( newMixinTable.getValue( 0, tableNameColumn ) );
             }
-            return tableOf( tableName );
+            return dsl.tableOf( tableName );
         } );
     }
 
@@ -110,7 +100,7 @@ public class TypesTable
     {
         String mixinTypeName = mixinType.getName();
         String tableName = createNewTableName( mixinType );
-        CreateTableColumnStep primaryTable = dsl.createTable( DSL.name( schema.getName(), tableName ) )
+        CreateTableColumnStep primaryTable = dsl.createTable( dsl.tableOf( tableName ) )
                                                 .column( identityColumn )
                                                 .column( createdColumn );
         descriptor.state().properties().forEach(

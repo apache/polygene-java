@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -33,6 +34,7 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.junit.Ignore;
 
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -77,23 +79,8 @@ public class DerbySQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = this.unitOfWorkFactory.newUnitOfWork( newUsecase("Delete " + getClass().getSimpleName() + " test data" ) );
-        try
-        {
-            SqlEntityStoreConfiguration config = uow.get( SqlEntityStoreConfiguration.class,
-                                                          AbstractSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DROP DATABASE FROM %s", config.schemaName().get() ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
+        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        super.tearDown();
     }
 }

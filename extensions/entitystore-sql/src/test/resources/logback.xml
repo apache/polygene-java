@@ -30,6 +30,7 @@
         <appender-ref ref="stdout" />
     </root>
 
+    <logger name="org.jooq" level="debug"/>
     <logger name="org.apache.polygene.entitystore.sql" level="debug"/>
 
 </configuration>

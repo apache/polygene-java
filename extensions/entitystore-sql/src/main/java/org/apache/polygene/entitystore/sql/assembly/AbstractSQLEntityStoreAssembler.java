@@ -28,6 +28,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.JooqDslContext;
 import org.apache.polygene.entitystore.sql.SqlEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sql.SqlEntityStoreService;
+import org.jooq.SQLDialect;
 import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 
@@ -60,14 +61,18 @@ public abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntit
 
         if( hasConfig() )
         {
-            configModule().entities( SqlEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().configurations( SqlEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            SqlEntityStoreConfiguration defaults = configModule().forMixin( SqlEntityStoreConfiguration.class )
+                                                                 .declareDefaults();
+            defaults.dialect().set( getSQLDialect().toString() );
         }
         super.assemble( module );
     }
+
+    protected abstract SQLDialect getSQLDialect();
 
     protected Settings getSettings()
     {
         return new Settings().withRenderNameStyle( RenderNameStyle.QUOTED );
     }
-
 }

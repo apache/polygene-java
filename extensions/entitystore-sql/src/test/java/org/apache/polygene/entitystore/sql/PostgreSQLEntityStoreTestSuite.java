@@ -27,7 +27,6 @@ import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
@@ -39,7 +38,7 @@ import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.ClassRule;
 
-import static org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
+import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
 public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -86,27 +85,7 @@ public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
         throws Exception
     {
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
-        ServiceFinder serviceFinder = storageModule.serviceFinder();
-        UnitOfWork uow = uowf.newUnitOfWork(
-            UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
-                                           );
-        try
-        {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, AbstractSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            String schemaName = config.schemaName().get();
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        TearDownUtil.cleanupSQL(storageModule, getClass().getSimpleName());
+        super.tearDown();
     }
 }

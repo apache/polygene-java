@@ -55,6 +55,7 @@ import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.time.ZoneOffset.UTC;

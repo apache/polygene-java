@@ -356,6 +356,7 @@ public class SqlEntityStoreMixin
                                                 removeState( state );
                                             }
                                         }
+
                                     } );
         }
 

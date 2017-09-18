@@ -195,24 +195,24 @@ public interface SqlTable extends ServiceActivation
         {
             SqlEntityStoreConfiguration config = this.configuration.get();
             SQLDialect dialect = getSqlDialect( config );
-
             Settings settings = serviceDescriptor
                 .metaInfo( Settings.class )
                 .withRenderNameStyle( RenderNameStyle.QUOTED );
-            dsl = tbf.newTransient( JooqDslContext.class, settings, dialect );
 
             String schemaName = config.schemaName().get();
             String typesTableName = config.typesTableName().get();
             String entitiesTableName = config.entitiesTableName().get();
             Schema schema = DSL.schema( DSL.name( schemaName ) );
-            types = new TypesTable( dsl, schema, dialect, typesTableName );
-            entitiesTable = new EntitiesTable( dsl, schema, types, application.version(), entitiesTableName );
 
-            // Eventually create schema
+            dsl = tbf.newTransient( JooqDslContext.class, settings, dialect, schema );
+
+            types = new TypesTable( dsl, dialect, typesTableName );
+            entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName );
+
             if( config.createIfMissing().get() )
             {
                 dsl.transaction( t -> {
-                    if( !dialect.equals( SQLDialect.SQLITE )
+                    if( dsl.isSchemaCapable()
                         && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
                     {
                         dsl.createSchema( schemaName ).execute();
@@ -221,14 +221,14 @@ public interface SqlTable extends ServiceActivation
 
                 dsl.transaction( t -> {
 
-                    dsl.createTableIfNotExists( DSL.name( schemaName, typesTableName ) )
+                    dsl.createTableIfNotExists( dsl.tableNameOf( typesTableName ) )
                        .column( identityColumn )
                        .column( tableNameColumn )
                        .column( createdColumn )
                        .column( modifiedColumn )
                        .execute();
 
-                    dsl.createTableIfNotExists( DSL.name( schemaName, entitiesTableName ) )
+                    dsl.createTableIfNotExists( dsl.tableNameOf( entitiesTableName ) )
                        .column( identityColumn )
                        .column( applicationVersionColumn )
                        .column( valueIdentityColumn )

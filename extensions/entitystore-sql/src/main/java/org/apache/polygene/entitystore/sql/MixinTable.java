@@ -36,12 +36,9 @@ import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
 import org.jooq.Field;
 import org.jooq.InsertSetMoreStep;
 import org.jooq.InsertSetStep;
-import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.UpdateSetMoreStep;
-import org.jooq.impl.DSL;
 
 class MixinTable
     implements TableFields
@@ -59,14 +56,14 @@ class MixinTable
     private TypesTable types;
     private final Class<?> mixinType;
 
-    MixinTable( JooqDslContext dsl, Schema schema, TypesTable types, Class<?> mixinType,
+    MixinTable( JooqDslContext dsl, TypesTable types, Class<?> mixinType,
                 EntityDescriptor descriptor )
     {
         this.dsl = dsl;
         this.types = types;
         this.mixinType = mixinType;
         mixinTable = types.tableFor( mixinType, descriptor );
-        mixinAssocsTable = getAssocsTable( descriptor, schema );
+        mixinAssocsTable = getAssocsTable( descriptor );
 
         descriptor.valueType().properties()
                   .filter( this::isThisMixin )
@@ -233,13 +230,12 @@ class MixinTable
         }
     }
 
-    private Table<Record> getAssocsTable( EntityDescriptor descriptor, Schema schema )
+    private Table<Record> getAssocsTable( EntityDescriptor descriptor )
     {
         if( descriptor.state().manyAssociations().count() > 0
             || descriptor.state().namedAssociations().count() > 0 )
         {
-            Name tableName = DSL.name( schema.getName(), mixinTable.getName() + ASSOCS_TABLE_POSTFIX );
-            Table<Record> table = DSL.table( tableName );
+            Table<Record> table = dsl.tableOf( mixinTable.getName() + ASSOCS_TABLE_POSTFIX );
             int result2 = dsl.createTableIfNotExists( table )
                              .column( identityColumn )
                              .column( nameColumn )

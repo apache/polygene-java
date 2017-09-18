@@ -37,6 +37,7 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -94,25 +95,7 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
         throws Exception
     {
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
-        ServiceFinder serviceFinder = storageModule.serviceFinder();
-        UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Delete " + getClass().getSimpleName() + " test data" ) );
-        try
-        {
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            SqlEntityStoreConfiguration config = uow.get( SqlEntityStoreConfiguration.class,
-                                                          AbstractSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            connection.setAutoCommit( false );
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DROP DATABASE FROM %s", config.schemaName().get() ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        super.tearDown();
     }
 }

@@ -20,6 +20,7 @@
 package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.SQLiteEntityStoreAssembler;
@@ -27,6 +28,7 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.junit.After;
 import org.junit.BeforeClass;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
@@ -72,4 +74,13 @@ public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
             .assemble( module );
     }
     // END SNIPPET: assembly
+
+    @After
+    public void tearDown()
+        throws Exception
+    {
+        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
+        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        super.tearDown();
+    }
 }
