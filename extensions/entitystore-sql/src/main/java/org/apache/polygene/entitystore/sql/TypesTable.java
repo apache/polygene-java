@@ -121,6 +121,8 @@ public class TypesTable
                     primaryTable.column( fieldOf( assoc ) );
                 }
             } );
+        primaryTable.constraint( DSL.primaryKey( identityColumn ) );
+
         int result1 = primaryTable.execute();
         int result3 = dsl.insertInto( typesTable )
                          .set( identityColumn, mixinTypeName )
@@ -135,7 +137,7 @@ public class TypesTable
     {
         String typeName = mixinType.getSimpleName();
         String postFix = "";
-        int counter = 0;
+        int counter = 1;
         boolean found = false;
         do
         {
@@ -147,6 +149,10 @@ public class TypesTable
 
     private boolean checkForTableNamed( String tableName )
     {
+        if( tableName.equalsIgnoreCase( "entities" ) || tableName.equalsIgnoreCase( "types" ))
+        {
+            return true;
+        }
         return dsl.select()
                   .from( typesTable )
                   .where( tableNameColumn.eq( tableName ) )

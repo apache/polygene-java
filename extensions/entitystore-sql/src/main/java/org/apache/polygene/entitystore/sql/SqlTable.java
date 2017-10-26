@@ -224,6 +224,7 @@ public interface SqlTable extends ServiceActivation
                        .column( tableNameColumn )
                        .column( createdColumn )
                        .column( modifiedColumn )
+                       .constraint( DSL.primaryKey( identityColumn ) )
                        .execute();
 
                     dsl.createTableIfNotExists( dsl.tableNameOf( entitiesTableName ) )
@@ -234,6 +235,7 @@ public interface SqlTable extends ServiceActivation
                        .column( typeNameColumn )
                        .column( modifiedColumn )
                        .column( createdColumn )
+                       .constraint( DSL.primaryKey( identityColumn ) )
                        .execute();
                 } );
             }

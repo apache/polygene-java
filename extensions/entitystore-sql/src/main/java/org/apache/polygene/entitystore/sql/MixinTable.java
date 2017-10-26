@@ -42,6 +42,7 @@ import org.jooq.InsertSetStep;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 
 class MixinTable
     implements TableFields
@@ -248,6 +249,9 @@ class MixinTable
                              .column( indexColumn )
                              .column( referenceColumn )
                              .execute();
+            dsl.createIndex( DSL.name( "IDX_" + table.getName() ) )
+               .on( table, identityColumn )
+               .execute();
             return table;
         }
         else
