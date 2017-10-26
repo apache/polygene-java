@@ -281,9 +281,8 @@ public class EntitiesTable
      * </p>
      * <code><pre>
      *     SELECT * FROM ENTITIES
-     *     JOIN Person ON identity = ENTITIES.value_id
-     *     JOIN LegalEntity ON identity = ENTITIES.value_id
-     *     JOIN Person_Assoc ON identity = ENTITIES.value_id
+     *     LEFT OUTER JOIN Person ON ENTITIES.value_id = Person.identity
+     *     LEFT OUTER JOIN LegalEntity ON ENTITIES.value_id = LegalEntity.identity
      *     WHERE ENTITIES.identity = '123'
      * </pre></code>
      *
