@@ -96,7 +96,7 @@ public interface EntityListResource<T extends HasIdentity> extends ServerResourc
             Class<T> entityType = parameters.entityType().get();
             Identity identity = identityManager.generate(entityType, name);
             locator.find( entityType ).create( identity );
-            return resourceBuilder.createRestLink( identity.toString(), base, Method.GET );
+            return resourceBuilder.createBaseLink( identity.toString(), base, Method.GET, "Name form" );
         }
 
         @SuppressWarnings( "unchecked" )

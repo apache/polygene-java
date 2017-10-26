@@ -30,6 +30,9 @@ import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.Serialization;
+import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
@@ -53,15 +56,17 @@ class MixinTable
     private final List<QualifiedName> manyAssociations = new CopyOnWriteArrayList<>();
     private final List<QualifiedName> namedAssociations = new CopyOnWriteArrayList<>();
 
-    private TypesTable types;
     private final Class<?> mixinType;
+    private Serialization serialization;
+
+    PolygeneSPI spi;
 
     MixinTable( JooqDslContext dsl, TypesTable types, Class<?> mixinType,
-                EntityDescriptor descriptor )
+                EntityDescriptor descriptor, Serialization serialization )
     {
         this.dsl = dsl;
-        this.types = types;
         this.mixinType = mixinType;
+        this.serialization = serialization;
         mixinTable = types.tableFor( mixinType, descriptor );
         mixinAssocsTable = getAssocsTable( descriptor );
 
@@ -101,17 +106,12 @@ class MixinTable
                .set( identityColumn, valueIdentity )
                .set( createdColumn, new Timestamp( System.currentTimeMillis() ) );
 
-        properties.forEach( ( propertyName, propertyField ) -> primaryTable.set( propertyField, state.propertyValueOf( propertyName ) ) );
-        associations.forEach( ( assocName, assocField ) ->
-                              {
-                                  EntityReference reference = state.associationValueOf( assocName );
-                                  String identity = null;
-                                  if( reference != null )
-                                  {
-                                      identity = reference.identity().toString();
-                                  }
-                                  primaryTable.set( assocField, identity );
-                              }
+        properties
+            .entrySet()
+            .stream()
+            .filter( entry -> !entry.getKey().name().equals( "identity" ) )
+            .forEach( entry -> primaryTable.set( entry.getValue(), getStateValue( entry.getValue(), state, entry.getKey() ) ) );
+        associations.forEach( ( assocName, assocField ) -> primaryTable.set( assocField, referenceToString( state, assocName ) )
                             );
         int result = primaryTable.execute();
 
@@ -140,8 +140,11 @@ class MixinTable
                                               set.newRecord();
                                           }
                                       }
-                                      InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
-                                      assocs.execute();
+                                      if( counter > 0 )
+                                      {
+                                          InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
+                                          assocs.execute();
+                                      }
                                   } );
 
         namedAssociations.forEach( assocName ->
@@ -149,20 +152,23 @@ class MixinTable
                                        InsertSetStep<Record> assocsTable = dsl.insertInto( mixinAssocsTable );
                                        NamedAssociationState entityReferences = state.namedAssociationValueOf( assocName );
                                        int count = entityReferences.count();
-                                       for( String name : entityReferences )
+                                       if( count > 0 )
                                        {
-                                           EntityReference ref = entityReferences.get( name );
-                                           InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
-                                                                                      .set( nameColumn, assocName.name() )
-                                                                                      .set( indexColumn, name )
-                                                                                      .set( referenceColumn, ref.identity().toString() );
-                                           if( --count > 0 )
+                                           for( String name : entityReferences )
                                            {
-                                               set.newRecord();
+                                               EntityReference ref = entityReferences.get( name );
+                                               InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
+                                                                                          .set( nameColumn, assocName.name() )
+                                                                                          .set( indexColumn, name )
+                                                                                          .set( referenceColumn, ref.identity().toString() );
+                                               if( --count > 0 )
+                                               {
+                                                   set.newRecord();
+                                               }
                                            }
+                                           InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
+                                           assocs.execute();
                                        }
-                                       InsertSetMoreStep<Record> assocs = assocsTable.set( Collections.emptyMap() );
-                                       assocs.execute();
                                    } );
     }
 
@@ -209,15 +215,15 @@ class MixinTable
             dsl.update( mixinTable )
                .set( Collections.emptyMap() );  // empty map is a hack to get the right type returned from JOOQ.
 
-        properties.forEach( ( propertyName, propertyField ) -> primaryTable.set( propertyField, state.propertyValueOf( propertyName ) ) );
-        associations.forEach( ( assocName, assocField ) ->
-                              {
-                                  EntityReference reference = state.associationValueOf( assocName );
-                                  primaryTable.set( assocField,
-                                                    reference == null ? null : reference.identity().toString()
-                                                  );
-                              }
-                            );
+        properties
+            .entrySet()
+            .stream()
+            .filter( entry -> !entry.getKey().name().equals( "identity" ) )
+            .forEach( entry -> primaryTable.set( entry.getValue(), getStateValue( entry.getValue(), state, entry.getKey() ) ) );
+
+        // Set the Association<?> fields
+        associations.forEach( ( assocName, assocField ) -> primaryTable.set( assocField, referenceToString( state, assocName ) ) );
+
         int result = primaryTable.execute();
 
         if( mixinAssocsTable != null )
@@ -248,5 +254,48 @@ class MixinTable
         {
             return null;
         }
+    }
+
+    private Object getStateValue( Field<Object> field, DefaultEntityState state, QualifiedName name )
+    {
+        PropertyDescriptor property = state.entityDescriptor().state().findPropertyModelByQualifiedName( name );
+        ValueType type = property.valueType();
+        Object value = state.propertyValueOf( name );
+        Class<?> javaType = field.getDataType().getType();
+        int sqlType = field.getDataType().getSQLType();
+
+        if( value == null )
+        {
+            return null;
+        }
+        if( value.getClass().isPrimitive() )
+        {
+            return value;
+        }
+        if( type.equals( ValueType.STRING )
+            || type.equals( ValueType.INTEGER )
+            || type.equals( ValueType.BOOLEAN )
+            || type.equals( ValueType.DOUBLE )
+            || type.equals( ValueType.IDENTITY )
+            || type.equals( ValueType.LONG )
+            || type.equals( ValueType.FLOAT )
+            || type.equals( ValueType.BYTE )
+            || type.equals( ValueType.CHARACTER )
+            || type.equals( ValueType.SHORT )
+            )
+        {
+            return value;
+        }
+        return serialization.serialize( value );
+    }
+
+    private String referenceToString( DefaultEntityState state, QualifiedName assocName )
+    {
+        EntityReference reference = state.associationValueOf( assocName );
+        if( reference == null )
+        {
+            return null;
+        }
+        return reference.identity().toString();
     }
 }

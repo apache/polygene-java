@@ -51,13 +51,13 @@ public interface ResourceBuilder
 
     EntityRef createEntityRef( Identity name, RestLink get, RestLink put, RestLink delete );
 
-    RestLink createRestLink( String name, Reference base, Method method );
+    RestLink createBaseLink( String name, Reference base, Method method, String description );
 
-    RestLink createRestLink( String name, Reference base, Method method, String description );
+    RestLink createLeafLink( String name, Reference base, Method method, String description );
 
     Command createCommand( Reference base );
 
-    RestForm createNameForm( Reference base );
+    RestForm createNameForm( Reference base, String formName );
 
     FormField createFormField( String name, String type );
 
@@ -89,9 +89,9 @@ public interface ResourceBuilder
         {
             String name = identityManager.extractName( identity );
 
-            RestLink get = createRestLink( name, base, Method.GET );
-            RestLink put = createRestLink( name, base, Method.PUT );
-            RestLink delete = createRestLink( name, base, Method.DELETE );
+            RestLink get = createBaseLink( name, base, Method.GET, "Fetch " + name );
+            RestLink put = createBaseLink( name, base, Method.PUT, "Save " + name );
+            RestLink delete = createBaseLink( name, base, Method.DELETE, "Delete " + name );
             return createEntityRef( identity, get, put, delete );
         }
 
@@ -108,22 +108,24 @@ public interface ResourceBuilder
         }
 
         @Override
-        public RestLink createRestLink( String name, Reference base, Method method )
+        public RestLink createBaseLink( String name, Reference base, Method method, String description )
         {
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
             String path = base.toUri().resolve( name ).getPath();
             prototype.path().set( path.endsWith( "/" ) ? path : path + "/" );
             prototype.method().set( method.getName() );
+            prototype.description().set( description );
             return builder.newInstance();
         }
 
         @Override
-        public RestLink createRestLink( String name, Reference base, Method method, String description )
+        public RestLink createLeafLink( String name, Reference base, Method method, String description )
         {
             ValueBuilder<RestLink> builder = vbf.newValueBuilder( RestLink.class );
             RestLink prototype = builder.prototype();
-            prototype.path().set( base.toUri().resolve( name ).getPath() + "/" );
+            String path = base.toUri().resolve( name ).getPath();
+            prototype.path().set( path );
             prototype.method().set( method.getName() );
             prototype.description().set( description );
             return builder.newInstance();
@@ -131,17 +133,17 @@ public interface ResourceBuilder
 
         public Command createCommand( Reference base )
         {
-            RestForm form = createNameForm( base );
+            RestForm form = createNameForm( base, "create" );
             ValueBuilder<Command> builder = vbf.newValueBuilder( Command.class );
             builder.prototype().name().set( "create" );
             builder.prototype().form().set( form );
             return builder.newInstance();
         }
 
-        public RestForm createNameForm( Reference base )
+        public RestForm createNameForm( Reference base, String formName )
         {
             ValueBuilder<RestForm> builder = vbf.newValueBuilder( RestForm.class );
-            builder.prototype().link().set( createRestLink( "form", base, Method.POST ) );
+            builder.prototype().link().set( createBaseLink( formName, base, Method.POST, "" ) );
             builder.prototype().fields().set( Collections.singletonList( createFormField( "name", FormField.TEXT ) ) );
             return builder.newInstance();
         }

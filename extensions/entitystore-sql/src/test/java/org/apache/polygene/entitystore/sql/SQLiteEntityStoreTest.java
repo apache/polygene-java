@@ -75,12 +75,4 @@ public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
-        super.tearDown();
-    }
 }

@@ -19,7 +19,6 @@ package org.apache.polygene.entitystore.sql;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import javax.sql.DataSource;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
@@ -29,6 +28,7 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.Application;
@@ -39,7 +39,6 @@ import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.Schema;
 import org.jooq.SelectQuery;
-import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
@@ -125,7 +124,7 @@ public interface SqlTable extends ServiceActivation
         private Configuration<SqlEntityStoreConfiguration> configuration;
 
         @Service
-        private DataSource datasource;
+        private Serialization serialization;
 
         @Uses
         private ServiceDescriptor serviceDescriptor;
@@ -196,8 +195,7 @@ public interface SqlTable extends ServiceActivation
             SqlEntityStoreConfiguration config = this.configuration.get();
             SQLDialect dialect = getSqlDialect( config );
             Settings settings = serviceDescriptor
-                .metaInfo( Settings.class )
-                .withRenderNameStyle( RenderNameStyle.QUOTED );
+                .metaInfo( Settings.class );
 
             String schemaName = config.schemaName().get();
             String typesTableName = config.typesTableName().get();
@@ -207,7 +205,7 @@ public interface SqlTable extends ServiceActivation
             dsl = tbf.newTransient( JooqDslContext.class, settings, dialect, schema );
 
             types = new TypesTable( dsl, dialect, typesTableName );
-            entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName );
+            entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName, serialization );
 
             if( config.createIfMissing().get() )
             {
@@ -250,7 +248,7 @@ public interface SqlTable extends ServiceActivation
 
         private SQLDialect getSqlDialect( SqlEntityStoreConfiguration config )
         {
-            SQLDialect dialect = null;
+            SQLDialect dialect;
             String dialectString = config.dialect().get();
             if( dialectString.length() == 0 )
             {

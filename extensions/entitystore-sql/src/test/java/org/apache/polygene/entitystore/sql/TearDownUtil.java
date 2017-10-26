@@ -16,7 +16,7 @@ import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 public class TearDownUtil
 {
 
-    public static void cleanupSQL( Module storageModule, String testName )
+    public static void dropSchema( Module storageModule, String testName )
         throws Exception
     {
         String usecaseName = "Delete " + testName + " test data";

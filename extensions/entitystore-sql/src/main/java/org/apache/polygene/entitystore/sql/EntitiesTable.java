@@ -40,6 +40,7 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.property.PropertyDescriptor;
+import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.EntityCompositeType;
 import org.apache.polygene.api.unitofwork.NoSuchEntityTypeException;
@@ -70,13 +71,15 @@ public class EntitiesTable
     private JooqDslContext dsl;
     private final TypesTable types;
     private String applicationVersion;
+    private Serialization serialization;
     private boolean replacementStrategy = false;  // Figure out later if we should support both and if so, how.
 
-    EntitiesTable( JooqDslContext dsl, TypesTable types, String applicationVersion, String entitiesTableName )
+    EntitiesTable( JooqDslContext dsl, TypesTable types, String applicationVersion, String entitiesTableName, Serialization serialization )
     {
         this.dsl = dsl;
         this.types = types;
         this.applicationVersion = applicationVersion;
+        this.serialization = serialization;
         entitiesTable = dsl.tableOf( entitiesTableName );
     }
 
@@ -162,7 +165,7 @@ public class EntitiesTable
 
     private MixinTable findMixinTable( Class<?> type, EntityDescriptor entityDescriptor )
     {
-        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, types, type, entityDescriptor ) );
+        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, types, type, entityDescriptor, serialization ) );
     }
 
     private Set<Class<?>> mixinsOf( Stream<? extends AssociationDescriptor> stream )
@@ -219,7 +222,7 @@ public class EntitiesTable
         baseEntity.version = "1";
         baseEntity.applicationVersion = applicationVersion;
         baseEntity.identity = reference.identity();
-        baseEntity.currentValueIdentity = StringIdentity.identityOf( UUID.randomUUID().toString() );
+        baseEntity.currentValueIdentity = StringIdentity.identityOf( valueIdentity );
         baseEntity.modifedAt = currentTime;
         baseEntity.createdAt = currentTime;
         return baseEntity;
@@ -237,6 +240,7 @@ public class EntitiesTable
            .set( valueIdentityColumn, entity.currentValueIdentity.toString() )
            .set( versionColumn, entity.version )
            .set( applicationVersionColumn, applicationVersion )
+           .where( identityColumn.eq( entity.identity.toString() ) )
            .execute();
     }
 

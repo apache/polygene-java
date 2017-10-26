@@ -70,7 +70,7 @@ public interface CreationResource<T extends HasIdentity> extends ServerResource<
             Identity identity = identityManager.generate( entityType, name );
             locator.find( entityType ).create( identity );
             doParameterization( form, entityType, identity );
-            return resourceBuilder.createRestLink( identity.toString(), parameters.request().get().getResourceRef(), Method.GET );
+            return resourceBuilder.createBaseLink( identity.toString(), parameters.request().get().getResourceRef(), Method.GET, "" );
         }
 
         private <P> void doParameterization( RestForm form, Class entityType, Identity identity )

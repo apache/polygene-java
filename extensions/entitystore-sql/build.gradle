@@ -33,6 +33,7 @@ dependencies {
 
   testImplementation polygene.internals.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
+  testImplementation polygene.library( 'sql-bonecp' )
   testImplementation libraries.docker_junit
   testImplementation libraries.h2
 

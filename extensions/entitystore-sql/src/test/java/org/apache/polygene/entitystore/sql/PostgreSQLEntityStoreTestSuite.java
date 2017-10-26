@@ -19,33 +19,35 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.ClassRule;
 
-import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
-
 public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres",
-                                                            3000L,
-                                                            "PostgreSQL init process complete; ready for start up." );
+    public static final DockerRule DOCKER;
+
+    static
+    {
+        Map<String,String> environment = new HashMap<>();
+        environment.put( "POSTGRES_USER", System.getProperty( "user.name" ));
+        environment.put( "POSTGRES_PASSWORD", "ThisIsGreat!");
+
+        DOCKER = new DockerRule( "postgres",
+                                 environment,
+                                 3000L,
+                                 "PostgreSQL init process complete; ready for start up." );
+    }
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
@@ -74,8 +76,11 @@ public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 
         String host = DOCKER.getDockerHost();
         int port = DOCKER.getExposedContainerPort( "5432/tcp" );
-        configModule.forMixin( DataSourceConfiguration.class ).declareDefaults()
-                    .url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
+        DataSourceConfiguration defaults = configModule.forMixin( DataSourceConfiguration.class ).declareDefaults();
+        defaults.url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
+        defaults.username().set( System.getProperty( "user.name" ) );
+        defaults.password().set( "ThisIsGreat!" );
+
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
@@ -85,7 +90,7 @@ public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
         throws Exception
     {
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL(storageModule, getClass().getSimpleName());
+        TearDownUtil.dropSchema( storageModule, getClass().getSimpleName() );
         super.tearDown();
     }
 }

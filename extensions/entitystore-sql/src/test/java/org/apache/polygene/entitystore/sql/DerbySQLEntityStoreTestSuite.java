@@ -19,24 +19,15 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.SqlEntityStoreConfiguration;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.Ignore;
-
-import static org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
 public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -70,8 +61,22 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
     public void tearDown()
         throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
         super.tearDown();
+        try
+        {
+            DriverManager.getConnection( "jdbc:derby:memory:testdb;drop=true" );
+        }
+        catch( SQLException e )
+        {
+            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
+        }
+        try
+        {
+            DriverManager.getConnection( "jdbc:derby:memory:testdb;shutdown=true" );
+        }
+        catch( SQLException e )
+        {
+            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
+        }
     }
 }

@@ -55,7 +55,7 @@ for( var moduleName in polygene.modules) {
     var module = polygene.modules[moduleName];
     for( var idx2 in module.cruds ) {
         var crud = module.cruds[idx2];
-%>        addResourcePath( "<%= crud.name.toLowerCase() %>", <%= crud.name %>.class, basePath );
+%>        addResourcePath( "<%= crud.name.toLowerCase() %>/", <%= crud.name %>.class, basePath );
 <%
     }
 }

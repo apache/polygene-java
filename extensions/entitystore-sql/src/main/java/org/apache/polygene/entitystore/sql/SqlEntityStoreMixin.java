@@ -17,13 +17,8 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Timestamp;
-import java.time.Duration;
+import java.math.BigInteger;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,88 +152,13 @@ public class SqlEntityStoreMixin
             || type.equals( ValueType.FLOAT )
             || type.equals( ValueType.BYTE )
             || type.equals( ValueType.CHARACTER )
-            || type.equals( ValueType.ENTITY_REFERENCE )
             || type.equals( ValueType.SHORT )
-            || type.equals( ValueType.BIG_INTEGER )
-            || type.equals( ValueType.BIG_DECIMAL )
             )
         {
             return value;
         }
-        if( type.equals( ValueType.INSTANT ) )  // Instant type contains timezone (why?), and we promise to always return in UTC (or is that just bad testcases, and that we actually promise to return original instant timezone?).
-        {
-            if( value instanceof Instant )
-            {
-                return Instant.ofEpochMilli( ( (Instant) value ).toEpochMilli() );
-            }
-            if( value instanceof OffsetDateTime )
-            {
-                return Instant.ofEpochMilli( ( (OffsetDateTime) value ).toInstant().toEpochMilli() );
-            }
-            if( value instanceof ZonedDateTime )
-            {
-                return Instant.ofEpochMilli( ( (ZonedDateTime) value ).toInstant().toEpochMilli() );
-            }
-        }
-        if( type.equals( ValueType.ZONED_DATE_TIME ) )
-        {
-            if( value instanceof ZonedDateTime )
-            {
-                return ( (ZonedDateTime) value ).withZoneSameInstant( ZoneOffset.UTC );
-            }
-            if( value instanceof OffsetDateTime )
-            {
-                return ( (OffsetDateTime) value ).toZonedDateTime().withZoneSameInstant( ZoneOffset.UTC );
-            }
-        }
-        if( type.equals( ValueType.OFFSET_DATE_TIME ) )
-        {
-            if( value instanceof OffsetDateTime )
-            {
-                return ( (OffsetDateTime) value ).withOffsetSameInstant( ZoneOffset.UTC );
-            }
-            if( value instanceof ZonedDateTime )
-            {
-                return ( (ZonedDateTime) value ).toOffsetDateTime().withOffsetSameInstant( ZoneOffset.UTC );
-            }
-        }
-        if( type.equals( ValueType.LOCAL_DATE_TIME ) )
-        {
-            if( value instanceof Timestamp )
-            {
-                return ( (Timestamp) value ).toLocalDateTime();
-            }
-        }
-        if( type.equals( ValueType.PERIOD ) )
-        {
-            if( value instanceof String )
-            {
-                return Period.parse( (String) value );
-            }
-        }
-        if( type.equals( ValueType.DURATION ) )
-        {
-            if( value instanceof String )
-            {
-                return Duration.parse( (String) value );
-            }
-        }
-        if( type.equals( ValueType.LOCAL_DATE ) )
-        {
-            if( value instanceof java.sql.Date )
-            {
-                return ( (java.sql.Date) value ).toLocalDate();
-            }
-        }
-        if( type.equals( ValueType.LOCAL_TIME ) )
-        {
-            if( value instanceof java.sql.Time )
-            {
-                return ( (java.sql.Time) value ).toLocalTime();
-            }
-        }
         // otherwise, we deal with a serialized value.
-        return serialization.deserialize( module, type, (String) value );
+        return serialization.deserialize( module, type, value.toString() );
     }
 
     private void addNamedAssociation( AssociationStateDescriptor stateDescriptor, Map<QualifiedName, Map<String, EntityReference>> namedAssocs, AssociationValue associationValue )
@@ -356,7 +276,6 @@ public class SqlEntityStoreMixin
                                                 removeState( state );
                                             }
                                         }
-
                                     } );
         }
 

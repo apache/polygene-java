@@ -501,7 +501,8 @@ public abstract class AbstractEntityStoreTest
         UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
         try
         {
-            Identity identity = createEntity( unitOfWork ).identity().get();
+            TestEntity entity1 = createEntity( unitOfWork );
+            Identity identity = entity1.identity().get();
             unitOfWork.complete();
 
             unitOfWork = unitOfWorkFactory.newUnitOfWork();

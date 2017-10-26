@@ -19,28 +19,20 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
-
-import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
 public class PostgreSQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -60,6 +52,9 @@ public class PostgreSQLEntityStoreTest
                                  "PostgreSQL init process complete; ready for start up." );
     }
 
+    private String storageModuleName;
+    private String storageLayerName;
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -67,6 +62,8 @@ public class PostgreSQLEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
+        storageModuleName = module.name();
+        storageLayerName = module.layer().name();
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
@@ -110,8 +107,8 @@ public class PostgreSQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        Module storageModule = application.findModule( storageLayerName, storageModuleName );
+        TearDownUtil.dropSchema( storageModule, getClass().getSimpleName() );
         super.tearDown();
     }
 }

@@ -78,14 +78,12 @@ public interface EntryPointResource extends ServerResource<EntryPoint>
                         Reference hostRef = parameters.request().get().getOriginalRef();
 //                        Reference reference = new Reference( hostRef, template.getPattern() );
                         RestLink link;
-                        if( route.getDescription() == null )
+                        String description = route.getDescription();
+                        if( description == null )
                         {
-                            link = resourceBuilder.createRestLink( template.getPattern(), hostRef, Method.GET );
+                            description = "";
                         }
-                        else
-                        {
-                            link = resourceBuilder.createRestLink( template.getPattern(), hostRef, Method.GET, route.getDescription() );
-                        }
+                        link = resourceBuilder.createLeafLink( template.getPattern(), hostRef, Method.GET, description );
                         entryPoints.put( route.getName(), link );
                     }
                 }

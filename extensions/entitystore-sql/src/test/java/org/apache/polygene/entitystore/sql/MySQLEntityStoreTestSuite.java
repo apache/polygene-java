@@ -19,17 +19,10 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.HashMap;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
@@ -37,9 +30,6 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.ClassRule;
-import org.junit.Ignore;
-
-import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
 public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -95,7 +85,7 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
         throws Exception
     {
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
+        TearDownUtil.dropSchema( storageModule, getClass().getSimpleName() );
         super.tearDown();
     }
 }

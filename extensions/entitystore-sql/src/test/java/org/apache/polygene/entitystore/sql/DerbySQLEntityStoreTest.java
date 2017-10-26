@@ -20,27 +20,27 @@
 package org.apache.polygene.entitystore.sql;
 
 import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import org.apache.derby.jdbc.AutoloadedDriver;
+import org.apache.derby.jdbc.Driver42;
+import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.Ignore;
-
-import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 
 public class DerbySQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    private String storageModuleName;
+    private String storageLayerName;
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -48,6 +48,8 @@ public class DerbySQLEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
+        storageModuleName = module.name();
+        storageLayerName = module.layer().name();
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
@@ -79,8 +81,22 @@ public class DerbySQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
         super.tearDown();
+        try
+        {
+            DriverManager.getConnection( "jdbc:derby:memory:testdb;drop=true" );
+        }
+        catch( SQLException e )
+        {
+            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
+        }
+        try
+        {
+            DriverManager.getConnection( "jdbc:derby:memory:testdb;shutdown=true" );
+        }
+        catch( SQLException e )
+        {
+            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
+        }
     }
 }

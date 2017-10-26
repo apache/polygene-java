@@ -130,7 +130,7 @@ public interface EntityResource<T extends HasIdentity> extends ServerResource<T>
                 throw new RuntimeException( message, e );
             }
             Reference base = parameters.request().get().getResourceRef();
-            return resourceBuilder.createRestLink( "", base, org.restlet.data.Method.GET );
+            return resourceBuilder.createBaseLink( "", base, org.restlet.data.Method.GET, "" );
         }
 
         private Object createParametersComposite( RestForm form, Class<?> argType )

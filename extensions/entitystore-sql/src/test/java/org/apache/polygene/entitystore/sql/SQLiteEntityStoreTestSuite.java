@@ -64,14 +64,4 @@ public class SQLiteEntityStoreTestSuite extends EntityStoreTestSuite
             .withConfig( configModule, Visibility.application )
             .assemble( module );
     }
-
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
-        super.tearDown();
-    }
-
 }

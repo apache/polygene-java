@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.junit.After;
-import org.junit.Ignore;
 
 public class H2SQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -55,15 +54,6 @@ public class H2SQLEntityStoreTestSuite extends EntityStoreTestSuite
             .visibleIn( Visibility.application )
             .withConfig( configModule, Visibility.application )
             .assemble( module );
-    }
-
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.cleanupSQL( storageModule, getClass().getSimpleName() );
-        super.tearDown();
     }
 
 }

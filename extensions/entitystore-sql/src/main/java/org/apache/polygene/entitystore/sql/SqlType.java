@@ -62,7 +62,7 @@ class SqlType
         }
         if( Instant.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.TIMESTAMPWITHTIMEZONE;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( Interval.class.isAssignableFrom( propertyType ) )
         {
@@ -74,23 +74,23 @@ class SqlType
         }
         if( LocalDate.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.LOCALDATE;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( LocalTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.LOCALTIME;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( LocalDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.LOCALDATETIME;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( ZonedDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.OFFSETDATETIME;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( OffsetDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.OFFSETDATETIME;
+            return (DataType<T>) SQLDataType.VARCHAR;
         }
         if( Character.class.isAssignableFrom( propertyType ) )
         {
@@ -114,7 +114,7 @@ class SqlType
         }
         if( BigInteger.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.DECIMAL(50, 0);
+            return (DataType<T>) SQLDataType.DECIMAL;
         }
         if( propertyType.isPrimitive() )
         {
