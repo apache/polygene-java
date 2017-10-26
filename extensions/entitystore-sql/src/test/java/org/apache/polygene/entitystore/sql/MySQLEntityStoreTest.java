@@ -32,7 +32,9 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 
+@Ignore( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
 public class MySQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
