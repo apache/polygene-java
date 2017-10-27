@@ -37,7 +37,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "postgres",
-                                                            3000L,
+                                                            5000L,
                                                             "PostgreSQL init process complete; ready for start up." );
 
     @Override
@@ -46,6 +46,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
         throws AssemblyException
     {
         // END SNIPPET: assembly
+        delay();
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
@@ -77,6 +78,18 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
         DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
         defaults.url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
         // START SNIPPET: assembly
+    }
+
+    static void delay()
+    {
+        try
+        {
+            Thread.sleep( 5000L );
+        }
+        catch( InterruptedException e )
+        {
+            // ignore;
+        }
     }
     // END SNIPPET: assembly
 

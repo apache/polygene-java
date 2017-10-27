@@ -46,13 +46,14 @@ public class PostgreSQLEntityStoreTestSuite extends EntityStoreTestSuite
 
         DOCKER = new DockerRule( "postgres",
                                  environment,
-                                 3000L,
+                                 5000L,
                                  "PostgreSQL init process complete; ready for start up." );
     }
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
+        PostgreSQLEntityStoreTest.delay();
         module.defaultServices();
         // DataSourceService
         new DBCPDataSourceServiceAssembler()

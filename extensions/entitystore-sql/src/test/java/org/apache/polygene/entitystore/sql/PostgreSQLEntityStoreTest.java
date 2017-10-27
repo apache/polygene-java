@@ -49,7 +49,7 @@ public class PostgreSQLEntityStoreTest
 
         DOCKER = new DockerRule( "postgres",
                                  environment,
-                                 3000L,
+                                 5000L,
                                  "PostgreSQL init process complete; ready for start up." );
     }
 
@@ -59,6 +59,7 @@ public class PostgreSQLEntityStoreTest
         throws AssemblyException
     {
         // END SNIPPET: assembly
+        delay();
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
@@ -96,6 +97,18 @@ public class PostgreSQLEntityStoreTest
         defaults.password().set( "ThisIsGreat!" );
 
         // START SNIPPET: assembly
+    }
+
+    static void delay()
+    {
+        try
+        {
+            Thread.sleep( 5000L );
+        }
+        catch( InterruptedException e )
+        {
+            // ignore.
+        }
     }
     // END SNIPPET: assembly
 

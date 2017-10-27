@@ -35,13 +35,18 @@ import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
+import org.jooq.TransactionProvider;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DataSourceConnectionProvider;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.ThreadLocalTransactionProvider;
 import org.junit.Test;
 
 import static java.util.stream.Collectors.toList;
@@ -58,7 +63,8 @@ import static org.junit.Assert.assertTrue;
 public class LiquibaseServiceTest
 {
     @Test
-    public void testLiquibase() throws ActivationException
+    public void testLiquibase()
+        throws ActivationException
     {
         final SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -105,38 +111,49 @@ public class LiquibaseServiceTest
         DataSource ds = module.findService( DataSource.class ).get();
 
         // Prepare jOOQ and the schema model
-        DSLContext jooq = DSL.using( ds, SQLDialect.DERBY );
+        SQLDialect dialect = SQLDialect.DERBY;
+        ConnectionProvider connectionProvider = new DataSourceConnectionProvider( ds );
+        TransactionProvider transactionProvider = new ThreadLocalTransactionProvider( connectionProvider, false );
+        org.jooq.Configuration configuration = new DefaultConfiguration()
+            .set( dialect )
+            .set( connectionProvider )
+            .set( transactionProvider );
+        DSLContext jooq = DSL.using( configuration );
+
         Table<Record> testTable = table( "TEST" );
         Field<String> idColumn = field( "ID", String.class );
         Field<String> fooColumn = field( "FOO", String.class );
 
-        // Assert that insertion works
-        InsertValuesStep2 insert = jooq.insertInto( testTable )
-                                       .columns( idColumn, fooColumn )
-                                       .values( "someid", "bar" );
-        assertTrue( insert.execute() == 1 );
+        jooq.transaction( conf -> {
+            // Assert that insertion works
+            InsertValuesStep2 insert = jooq.insertInto( testTable )
+                                           .columns( idColumn, fooColumn )
+                                           .values( "someid", "bar" );
+            assertTrue( insert.execute() == 1 );
+        } );
+        jooq.transaction( conf -> {
+            List<Record> records = jooq.selectFrom( testTable ).stream().collect( toList() );
+            assertThat( records.size(), is( 1 ) );
+            assertThat( records.get( 0 ).get( idColumn ), equalTo( "someid" ) );
+            assertThat( records.get( 0 ).get( fooColumn ), equalTo( "bar" ) );
 
-        List<Record> records = jooq.selectFrom( testTable ).stream().collect( toList() );
-        assertThat( records.size(), is( 1 ) );
-        assertThat( records.get( 0 ).get( idColumn ), equalTo( "someid" ) );
-        assertThat( records.get( 0 ).get( fooColumn ), equalTo( "bar" ) );
+            Function<Record, SomeValue> toValue = record ->
+            {
+                ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
+                builder.prototype().id().set( record.get( idColumn ) );
+                builder.prototype().foo().set( record.get( fooColumn ) );
+                return builder.newInstance();
+            };
 
-        Function<Record, SomeValue> toValue = record ->
-        {
-            ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
-            builder.prototype().id().set( record.get( idColumn ) );
-            builder.prototype().foo().set( record.get( fooColumn ) );
-            return builder.newInstance();
-        };
+            List<SomeValue> values = jooq.selectFrom( testTable ).stream()
+                                         .map( toValue )
+                                         .peek( System.out::println )
+                                         .collect( toList() );
 
-        List<SomeValue> values = jooq.selectFrom( testTable ).stream()
-                                     .map( toValue )
-                                     .peek( System.out::println )
-                                     .collect( toList() );
-
-        assertThat( values.size(), is( 1 ) );
-        assertThat( values.get( 0 ).id().get(), equalTo( "someid" ) );
-        assertThat( values.get( 0 ).foo().get(), equalTo( "bar" ) );
+            assertThat( values.size(), is( 1 ) );
+            assertThat( values.get( 0 ).id().get(), equalTo( "someid" ) );
+            assertThat( values.get( 0 ).foo().get(), equalTo( "bar" ) );
+        } );
     }
 
     interface SomeValue
