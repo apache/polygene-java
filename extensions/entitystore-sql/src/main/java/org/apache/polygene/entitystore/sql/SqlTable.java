@@ -37,7 +37,6 @@ import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
-import org.jooq.Schema;
 import org.jooq.SelectQuery;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
@@ -197,26 +196,16 @@ public interface SqlTable extends ServiceActivation
             Settings settings = serviceDescriptor
                 .metaInfo( Settings.class );
 
-            String schemaName = config.schemaName().get();
             String typesTableName = config.typesTableName().get();
             String entitiesTableName = config.entitiesTableName().get();
-            Schema schema = DSL.schema( DSL.name( schemaName ) );
 
-            dsl = tbf.newTransient( JooqDslContext.class, settings, dialect, schema );
+            dsl = tbf.newTransient( JooqDslContext.class, settings, dialect );
 
             types = new TypesTable( dsl, dialect, typesTableName );
             entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName, serialization );
 
             if( config.createIfMissing().get() )
             {
-                dsl.transaction( t -> {
-                    if( dsl.isSchemaCapable()
-                        && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
-                    {
-                        dsl.createSchema( schemaName ).execute();
-                    }
-                } );
-
                 dsl.transaction( t -> {
 
                     dsl.createTableIfNotExists( dsl.tableNameOf( typesTableName ) )

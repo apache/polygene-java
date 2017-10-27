@@ -40,7 +40,6 @@ public class HazelcastEntityStoreTestSuite extends EntityStoreTestSuite
     @After
     @Override
     public void tearDown()
-        throws Exception
     {
         super.tearDown();
         // TODO : delete test data

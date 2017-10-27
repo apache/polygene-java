@@ -55,7 +55,6 @@ import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.time.ZoneOffset.UTC;
@@ -77,7 +76,8 @@ public abstract class AbstractEntityStoreTest
     private EntityStore store;
 
     @Structure
-    private Module moduleInstance;
+    protected Module moduleInstance;
+
     private ZonedDateTime refDate = ZonedDateTime.of( 2020, 3, 4, 13, 24, 35, 0, UTC );
 
     @Override
@@ -91,7 +91,6 @@ public abstract class AbstractEntityStoreTest
     @Override
     @After
     public void tearDown()
-        throws Exception
     {
         super.tearDown();
     }

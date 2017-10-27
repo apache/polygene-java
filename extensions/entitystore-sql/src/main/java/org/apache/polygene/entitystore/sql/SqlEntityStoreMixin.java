@@ -17,7 +17,6 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -88,7 +88,6 @@ public class AbstractAnyQueryTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         if( this.unitOfWork != null )
         {

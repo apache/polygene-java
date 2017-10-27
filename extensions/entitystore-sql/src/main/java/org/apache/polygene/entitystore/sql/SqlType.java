@@ -27,7 +27,6 @@ import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import org.jooq.DataType;
-import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
 import org.jooq.types.Interval;
 

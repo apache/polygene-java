@@ -19,15 +19,14 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.jooq.SQLDialect;
+import org.junit.After;
 
 public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -58,25 +57,9 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        super.tearDown();
-        try
-        {
-            DriverManager.getConnection( "jdbc:derby:memory:testdb;drop=true" );
-        }
-        catch( SQLException e )
-        {
-            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
-        }
-        try
-        {
-            DriverManager.getConnection( "jdbc:derby:memory:testdb;shutdown=true" );
-        }
-        catch( SQLException e )
-        {
-            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
-        }
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.DERBY, super::tearDown );
     }
 }

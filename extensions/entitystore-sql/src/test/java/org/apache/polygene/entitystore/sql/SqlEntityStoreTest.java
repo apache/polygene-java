@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.sql;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.AbstractSQLEntityStoreAssembler;
 import org.apache.polygene.entitystore.sql.assembly.H2SQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
@@ -30,6 +29,7 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -86,4 +86,11 @@ public class SqlEntityStoreTest extends AbstractEntityStoreTest
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
+
+    @Override
+    @After
+    public void tearDown()
+    {
+        TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
+    }
 }

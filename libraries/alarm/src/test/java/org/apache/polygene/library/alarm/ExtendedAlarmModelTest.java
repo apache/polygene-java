@@ -75,7 +75,6 @@ public class ExtendedAlarmModelTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         if( uow != null )

@@ -19,28 +19,21 @@
  */
 package org.apache.polygene.entitystore.sqlkv;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
-import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.jooq.SQLDialect;
+import org.junit.After;
 import org.junit.ClassRule;
 
-import static org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
-
-public class PostgreSQLEntityStoreTest
-    extends AbstractEntityStoreTest
+public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule( "postgres",
@@ -88,28 +81,9 @@ public class PostgreSQLEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork(
-            UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
-        );
-        try
-        {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            String schemaName = config.schemaName().get();
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DROP SCHEMA \"%s\" CASCADE", schemaName ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        TearDown.dropTables( moduleInstance, SQLDialect.POSTGRES, super::tearDown );
     }
 }

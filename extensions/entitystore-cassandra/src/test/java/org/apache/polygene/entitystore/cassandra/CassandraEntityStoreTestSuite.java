@@ -63,7 +63,6 @@ public class CassandraEntityStoreTestSuite extends EntityStoreTestSuite
 
     @Override
     public void tearDown()
-        throws Exception
     {
         Module module = application.findModule( "Infrastructure Layer", "Storage Module" );
         ServiceReference<CanRemoveAll> cleaner = module.serviceFinder().findService( CanRemoveAll.class );

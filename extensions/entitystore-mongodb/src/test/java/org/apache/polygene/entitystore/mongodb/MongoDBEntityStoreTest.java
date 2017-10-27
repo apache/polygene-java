@@ -77,7 +77,6 @@ public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         mongo.dropDatabase( dbName );
         super.tearDown();

@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.H2SQLEntityStoreAssembler;
@@ -28,6 +27,7 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.jooq.SQLDialect;
 import org.junit.After;
 
 public class H2SQLEntityStoreTest
@@ -66,4 +66,11 @@ public class H2SQLEntityStoreTest
             .assemble( module );
     }
     // END SNIPPET: assembly
+
+    @Override
+    @After
+    public void tearDown()
+    {
+        TearDown.dropTables( moduleInstance, SQLDialect.H2, super::tearDown );
+    }
 }

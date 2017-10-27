@@ -22,13 +22,14 @@ package org.apache.polygene.entitystore.sqlkv.assembly;
 import org.jooq.SQLDialect;
 
 /**
- * Derby EntityStore assembly.
+ * MySQL EntityStore assembly.
  */
-public class DerbySQLEntityStoreAssembler extends AbstractSQLEntityStoreAssembler<DerbySQLEntityStoreAssembler>
+public class MariaDbSQLEntityStoreAssembler
+    extends AbstractSQLEntityStoreAssembler<MariaDbSQLEntityStoreAssembler>
 {
     @Override
     protected SQLDialect getSQLDialect()
     {
-        return SQLDialect.DERBY;
+        return SQLDialect.MARIADB;
     }
 }

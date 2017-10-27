@@ -43,7 +43,7 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
     }
 
     @Override
-    public void tearDown() throws Exception
+    public void tearDown()
     {
         riakFixture.deleteTestData();
         super.tearDown();

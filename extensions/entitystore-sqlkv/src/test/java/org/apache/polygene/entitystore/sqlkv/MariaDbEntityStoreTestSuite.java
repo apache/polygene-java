@@ -17,12 +17,12 @@
  *
  *
  */
-package org.apache.polygene.entitystore.sql;
+package org.apache.polygene.entitystore.sqlkv;
 
 import java.util.HashMap;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
@@ -34,11 +34,11 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 
 @Ignore( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
-public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
+public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule(
-        "mysql",
+        "mariadb",
         new HashMap<String, String>()
         {{
             put( "MYSQL_ROOT_PASSWORD", "" );
@@ -87,6 +87,6 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
     @After
     public void tearDown()
     {
-        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MYSQL, super::tearDown );
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MARIADB, super::tearDown );
     }
 }

@@ -22,16 +22,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
-import liquibase.Contexts;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.ObjectQuotingStrategy;
-import liquibase.exception.LiquibaseException;
 import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
@@ -40,34 +34,33 @@ import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceActivation;
 import org.apache.polygene.api.service.ServiceDescriptor;
-import org.apache.polygene.library.sql.liquibase.LiquibaseService;
 import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entitystore.EntityNotFoundException;
 import org.apache.polygene.spi.entitystore.helpers.JSONKeys;
 import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
+import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Query;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
-import org.jooq.Schema;
 import org.jooq.Table;
+import org.jooq.TransactionProvider;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DataSourceConnectionProvider;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.ThreadLocalTransactionProvider;
 
 public class SQLEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {
-    private static final String TABLE_NAME_LIQUIBASE_PARAMETER = "es-sql.table";
     private static final String IDENTITY_COLUMN_NAME = "ENTITY_IDENTITY";
     private static final String VERSION_COLUMN_NAME = "ENTITY_VERSION";
     private static final String STATE_COLUMN_NAME = "ENTITY_STATE";
 
     @Service
     private DataSource dataSource;
-
-    @Service
-    private LiquibaseService liquibaseService;
 
     @Service
     private JavaxJsonFactories jsonFactories;
@@ -78,7 +71,6 @@ public class SQLEntityStoreMixin
     @This
     private Configuration<SQLEntityStoreConfiguration> configuration;
 
-    private Schema schema;
     private Table<Record> table;
     private Field<String> identityColumn;
     private Field<String> versionColumn;
@@ -86,7 +78,8 @@ public class SQLEntityStoreMixin
     private DSLContext dsl;
 
     @Override
-    public void activateService() throws Exception
+    public void activateService()
+        throws Exception
     {
         configuration.refresh();
         SQLEntityStoreConfiguration config = configuration.get();
@@ -94,66 +87,36 @@ public class SQLEntityStoreMixin
         // Prepare jooq DSL
         SQLDialect dialect = descriptor.metaInfo( SQLDialect.class );
         Settings settings = descriptor.metaInfo( Settings.class );
-        String schemaName = config.schemaName().get();
         String tableName = config.entityTableName().get();
-        schema = DSL.schema( DSL.name( schemaName ) );
-        table = DSL.table(
-            dialect.equals( SQLDialect.SQLITE )
-            ? DSL.name( tableName )
-            : DSL.name( schema.getName(), tableName )
-        );
+        ConnectionProvider connectionProvider = new DataSourceConnectionProvider( dataSource );
+        TransactionProvider transactionProvider = new ThreadLocalTransactionProvider( connectionProvider, false );
+        org.jooq.Configuration configuration = new DefaultConfiguration()
+            .set( dialect )
+            .set( connectionProvider )
+            .set( transactionProvider )
+            .set( settings );
+        dsl = DSL.using( configuration );
+        table = DSL.table( DSL.name( tableName ) );
         identityColumn = DSL.field( DSL.name( IDENTITY_COLUMN_NAME ), String.class );
         versionColumn = DSL.field( DSL.name( VERSION_COLUMN_NAME ), String.class );
         stateColumn = DSL.field( DSL.name( STATE_COLUMN_NAME ), String.class );
-        dsl = DSL.using( dataSource, dialect, settings );
 
-        // Eventually create schema and apply Liquibase changelog
         if( config.createIfMissing().get() )
         {
-            if( !dialect.equals( SQLDialect.SQLITE )
-                && dsl.meta().getSchemas().stream().noneMatch( s -> schema.getName().equalsIgnoreCase( s.getName() ) ) )
-            {
-                dsl.createSchema( schema ).execute();
-            }
-
-            applyLiquibaseChangelog( dialect );
-        }
-    }
-
-    private void applyLiquibaseChangelog( SQLDialect dialect ) throws SQLException, LiquibaseException
-    {
-        Liquibase liquibase = liquibaseService.newConnectedLiquibase();
-        Database db = liquibase.getDatabase();
-        db.setObjectQuotingStrategy( ObjectQuotingStrategy.QUOTE_ALL_OBJECTS );
-        try
-        {
-            if( !dialect.equals( SQLDialect.SQLITE ) )
-            {
-                if( db.supportsSchemas() )
-                {
-                    db.setDefaultSchemaName( schema.getName() );
-                    db.setLiquibaseSchemaName( schema.getName() );
-                }
-                if( db.supportsCatalogs() )
-                {
-                    db.setDefaultCatalogName( schema.getName() );
-                    db.setLiquibaseCatalogName( schema.getName() );
-                }
-            }
-            liquibase.getChangeLogParameters().set( TABLE_NAME_LIQUIBASE_PARAMETER, table.getName() );
-            liquibase.update( new Contexts() );
-        }
-        finally
-        {
-            db.close();
+            dsl.transaction( t -> dsl.createTableIfNotExists( table )
+                                     .column( identityColumn )
+                                     .column( versionColumn )
+                                     .column( stateColumn )
+                                     .constraint( DSL.primaryKey( identityColumn ) )
+                                     .execute() );
         }
     }
 
     @Override
-    public void passivateService() throws Exception
+    public void passivateService()
+        throws Exception
     {
         dsl = null;
-        schema = null;
         table = null;
         identityColumn = null;
         versionColumn = null;
@@ -182,7 +145,8 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public void applyChanges( MapChanges changes ) throws Exception
+    public void applyChanges( MapChanges changes )
+        throws Exception
     {
         List<Query> operations = new ArrayList<>();
         changes.visitMap( new MapChanger()
@@ -193,7 +157,8 @@ public class SQLEntityStoreMixin
                 return new StringWriter( 1000 )
                 {
                     @Override
-                    public void close() throws IOException
+                    public void close()
+                        throws IOException
                     {
                         super.close();
                         String state = toString();
@@ -204,7 +169,7 @@ public class SQLEntityStoreMixin
                             dsl.insertInto( table )
                                .columns( identityColumn, versionColumn, stateColumn )
                                .values( ref.identity().toString(), version, state )
-                        );
+                                      );
                     }
                 };
             }
@@ -215,7 +180,8 @@ public class SQLEntityStoreMixin
                 return new StringWriter( 1000 )
                 {
                     @Override
-                    public void close() throws IOException
+                    public void close()
+                        throws IOException
                     {
                         super.close();
                         String state = toString();
@@ -225,7 +191,7 @@ public class SQLEntityStoreMixin
                                .set( stateColumn, state )
                                .where( identityColumn.equal( mapChange.reference().identity().toString() ) )
                                .and( versionColumn.equal( mapChange.previousVersion() ) )
-                        );
+                                      );
                     }
                 };
             }
@@ -236,9 +202,9 @@ public class SQLEntityStoreMixin
                 operations.add(
                     dsl.deleteFrom( table )
                        .where( identityColumn.equal( ref.identity().toString() ) )
-                );
+                              );
             }
         } );
-        dsl.batch( operations ).execute();
+        dsl.transaction( t -> dsl.batch( operations ).execute() );
     }
 }

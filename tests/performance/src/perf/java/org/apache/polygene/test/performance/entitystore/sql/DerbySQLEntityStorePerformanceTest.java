@@ -92,8 +92,7 @@ public class DerbySQLEntityStorePerformanceTest
             connection.setAutoCommit( false );
             try( Statement stmt = connection.createStatement() )
             {
-                stmt.execute( String.format( "DELETE FROM %s.%s",
-                                             config.schemaName().get(),
+                stmt.execute( String.format( "DELETE FROM \"%s\"",
                                              config.entityTableName().get() ) );
                 connection.commit();
             }

@@ -52,17 +52,25 @@ class RiakFixture
         System.out.println( ">> Riak HealthCheck END, took " + java.time.Duration.between( start, Instant.now() ) );
     }
 
-    void deleteTestData() throws ExecutionException, InterruptedException
+    void deleteTestData()
     {
         // Riak doesn't expose bucket deletion in its API so we empty it
         if( namespace != null )
         {
-            ListKeys listKeys = new ListKeys.Builder( namespace ).build();
-            ListKeys.Response listKeysResponse = client.execute( listKeys );
-            for( Location location : listKeysResponse )
+            try
             {
-                DeleteValue delete = new DeleteValue.Builder( location ).build();
-                client.execute( delete );
+                ListKeys listKeys = new ListKeys.Builder( namespace ).build();
+                ListKeys.Response listKeysResponse = client.execute( listKeys );
+                for( Location location : listKeysResponse )
+                {
+                    DeleteValue delete = new DeleteValue.Builder( location ).build();
+                    client.execute( delete );
+                }
+            }
+            catch(Exception e )
+            {
+                System.err.println("WARNING: Unable to clean up test data in RiakFixture" );
+                e.printStackTrace();
             }
         }
     }

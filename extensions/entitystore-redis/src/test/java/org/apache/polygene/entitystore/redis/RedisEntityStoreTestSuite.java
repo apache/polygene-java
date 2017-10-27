@@ -63,7 +63,6 @@ public class RedisEntityStoreTestSuite extends EntityStoreTestSuite
 
     @Override
     public void tearDown()
-        throws Exception
     {
         try( Jedis jedis = jedisPool.getResource() )
         {

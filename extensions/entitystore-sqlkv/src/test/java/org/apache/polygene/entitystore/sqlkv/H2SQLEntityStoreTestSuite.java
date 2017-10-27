@@ -25,6 +25,8 @@ import org.apache.polygene.entitystore.sqlkv.assembly.H2SQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.jooq.SQLDialect;
+import org.junit.After;
 
 public class H2SQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -52,5 +54,12 @@ public class H2SQLEntityStoreTestSuite extends EntityStoreTestSuite
             .visibleIn( Visibility.application )
             .withConfig( configModule, Visibility.application )
             .assemble( module );
+    }
+
+    @Override
+    @After
+    public void tearDown()
+    {
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.H2, super::tearDown );
     }
 }

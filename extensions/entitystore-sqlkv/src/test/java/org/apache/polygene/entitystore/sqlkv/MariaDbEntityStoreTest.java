@@ -19,19 +19,39 @@
  */
 package org.apache.polygene.entitystore.sqlkv;
 
+import java.util.HashMap;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler;
+import org.apache.polygene.entitystore.sqlkv.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.After;
+import org.junit.ClassRule;
+import org.junit.Ignore;
 
-public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
+@Ignore( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
+public class MariaDbEntityStoreTest extends AbstractEntityStoreTest
 {
+    @ClassRule
+    public static final DockerRule DOCKER = new DockerRule(
+        "mariadb",
+        new HashMap<String, String>()
+        {{
+            put( "MYSQL_ROOT_PASSWORD", "" );
+            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
+            put( "MYSQL_DATABASE", "jdbc_test_db" );
+            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
+        }},
+        30000L
+//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
+    );
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -45,24 +65,32 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler()
-            .identifiedBy( "derby-datasource-service" )
+            .identifiedBy( "mysql-datasource-service" )
             .visibleIn( Visibility.module )
             .withConfig( config, Visibility.layer )
             .assemble( module );
 
         // DataSource
         new DataSourceAssembler()
-            .withDataSourceServiceIdentity( "derby-datasource-service" )
-            .identifiedBy( "derby-datasource" )
+            .withDataSourceServiceIdentity( "mysql-datasource-service" )
+            .identifiedBy( "mysql-datasource" )
             .visibleIn( Visibility.module )
             .withCircuitBreaker()
             .assemble( module );
 
         // SQL EntityStore
-        new DerbySQLEntityStoreAssembler()
+        new MySQLEntityStoreAssembler()
             .visibleIn( Visibility.application )
             .withConfig( config, Visibility.layer )
             .assemble( module );
+        // END SNIPPET: assembly
+        String mysqlHost = DOCKER.getDockerHost();
+        int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
+        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
+              .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
+                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
+                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 
@@ -70,6 +98,6 @@ public class DerbySQLEntityStoreTest extends AbstractEntityStoreTest
     @After
     public void tearDown()
     {
-        TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
+        TearDown.dropTables( moduleInstance, SQLDialect.MARIADB, super::tearDown );
     }
 }

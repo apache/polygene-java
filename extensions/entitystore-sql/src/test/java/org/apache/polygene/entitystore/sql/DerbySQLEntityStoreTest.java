@@ -19,14 +19,7 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import org.apache.derby.jdbc.AutoloadedDriver;
-import org.apache.derby.jdbc.Driver42;
-import org.apache.derby.jdbc.EmbeddedDriver;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
@@ -34,13 +27,12 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.jooq.SQLDialect;
+import org.junit.After;
 
 public class DerbySQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    private String storageModuleName;
-    private String storageLayerName;
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -48,8 +40,6 @@ public class DerbySQLEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
-        storageModuleName = module.name();
-        storageLayerName = module.layer().name();
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
@@ -78,25 +68,9 @@ public class DerbySQLEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        super.tearDown();
-        try
-        {
-            DriverManager.getConnection( "jdbc:derby:memory:testdb;drop=true" );
-        }
-        catch( SQLException e )
-        {
-            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
-        }
-        try
-        {
-            DriverManager.getConnection( "jdbc:derby:memory:testdb;shutdown=true" );
-        }
-        catch( SQLException e )
-        {
-            // ignore, it is EXPECTED to get an exception when the database shuts down. No idea why.
-        }
+        TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
     }
 }

@@ -57,7 +57,6 @@ public final class CachingInjectionProviderDecorator
                 }
             }
         }
-
         return singletonInstance;
     }
 }

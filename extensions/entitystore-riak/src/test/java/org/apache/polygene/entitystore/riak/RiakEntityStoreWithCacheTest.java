@@ -46,7 +46,7 @@ public class RiakEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTe
     }
 
     @Override
-    public void tearDown() throws Exception
+    public void tearDown()
     {
         riakFixture.deleteTestData();
         super.tearDown();

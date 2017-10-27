@@ -76,7 +76,6 @@ public class CassandraEntityStoreTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         CanRemoveAll cleaner = serviceFinder.findService( CanRemoveAll.class ).get();
         cleaner.removeAll();

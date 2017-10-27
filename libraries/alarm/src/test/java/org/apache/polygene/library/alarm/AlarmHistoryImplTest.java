@@ -73,7 +73,6 @@ public class AlarmHistoryImplTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         if ( unitOfWorkFactory.isUnitOfWorkActive())
         {

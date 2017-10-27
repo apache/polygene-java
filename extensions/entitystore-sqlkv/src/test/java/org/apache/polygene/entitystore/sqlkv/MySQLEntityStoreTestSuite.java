@@ -19,28 +19,21 @@
  */
 package org.apache.polygene.entitystore.sqlkv;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.HashMap;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.service.ServiceFinder;
-import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sqlkv.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.jooq.SQLDialect;
+import org.junit.After;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 
-import static org.apache.polygene.entitystore.sqlkv.assembly.MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
-
+@Ignore( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
 public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
@@ -91,33 +84,9 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
-        ServiceFinder serviceFinder = storageModule.serviceFinder();
-        UnitOfWork uow = uowf.newUnitOfWork(
-            UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
-                                                             );
-        try
-        {
-            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
-            SQLEntityStoreConfiguration configuration = uow.get( SQLEntityStoreConfiguration.class,
-                                                                 DEFAULT_ENTITYSTORE_IDENTITY );
-            connection.setAutoCommit( false );
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "TRUNCATE %s.%s",
-                                             configuration.schemaName().get(),
-                                             configuration.entityTableName().get() ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MYSQL, super::tearDown );
     }
 }

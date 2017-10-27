@@ -22,16 +22,8 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 
 // START SNIPPET: config
-public interface SqlEntityStoreConfiguration extends SQLConfiguration
+public interface SqlEntityStoreConfiguration
 {
-    /**
-     * Name of the database schema to use.
-     * Ignored on SQL databases that don't support schemas.
-     */
-    @UseDefaults( "POLYGENE" )
-    @Override
-    Property<String> schemaName();
-
     /**
      * Name of the entities table.
      * <p>
@@ -54,7 +46,7 @@ public interface SqlEntityStoreConfiguration extends SQLConfiguration
     Property<String> typesTableName();
 
     /**
-     * Defines whether the database schema and table should be created if not already present.
+     * Defines whether the database table should be created if not already present.
      */
     @UseDefaults( "true" )
     Property<Boolean> createIfMissing();

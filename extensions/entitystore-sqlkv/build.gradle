@@ -29,8 +29,6 @@ dependencies {
   api polygene.library( 'sql' )
   api libraries.jooq
 
-  implementation polygene.library( 'sql-liquibase' )
-
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.internals.testsupport

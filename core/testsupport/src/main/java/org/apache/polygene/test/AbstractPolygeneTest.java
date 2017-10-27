@@ -90,7 +90,6 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
     @After
     @Override
     public void tearDown()
-        throws Exception
     {
         if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive() )
         {

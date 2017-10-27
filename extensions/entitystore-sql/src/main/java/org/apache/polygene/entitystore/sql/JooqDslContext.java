@@ -29,7 +29,6 @@ import org.jooq.DSLContext;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
-import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TransactionProvider;
 import org.jooq.conf.Settings;
@@ -41,8 +40,6 @@ import org.jooq.impl.ThreadLocalTransactionProvider;
 @Mixins( JooqDslContext.Mixin.class )
 public interface JooqDslContext extends DSLContext
 {
-    boolean isSchemaCapable();
-
     Name tableNameOf( String tableName );
 
     Table<Record> tableOf( String tableName );
@@ -50,12 +47,10 @@ public interface JooqDslContext extends DSLContext
     class Mixin
         implements InvocationHandler
     {
-        private final Schema schema;
         private final DSLContext dsl;
 
-        public Mixin( @Service DataSource dataSource, @Uses Settings settings, @Uses SQLDialect dialect, @Uses Schema schema )
+        public Mixin( @Service DataSource dataSource, @Uses Settings settings, @Uses SQLDialect dialect )
         {
-            this.schema = schema;
             ConnectionProvider connectionProvider = new DataSourceConnectionProvider( dataSource );
             TransactionProvider transactionProvider = new ThreadLocalTransactionProvider( connectionProvider, false );
             Configuration configuration = new DefaultConfiguration()
@@ -79,21 +74,12 @@ public interface JooqDslContext extends DSLContext
                 return tableNameOf( (String) args[ 0 ] );
             }
 
-            if( method.getName().equals( "isSchemaCapable" ) )
-            {
-                return isSchemaCapable();
-            }
             return method.invoke( dsl, args );       // delegate all
         }
 
         private Name tableNameOf( String name )
         {
-            return this.isSchemaCapable() ? DSL.name( schema.getName(), name ) : DSL.name( name );
-        }
-
-        private boolean isSchemaCapable()
-        {
-            return !dsl.dialect().equals( SQLDialect.SQLITE ) && !dsl.dialect().equals( SQLDialect.MYSQL ) && !dsl.dialect().equals( SQLDialect.DERBY );
+            return DSL.name( name );
         }
     }
 }

@@ -51,7 +51,6 @@ public class RiakEntityStoreTestSuite extends EntityStoreTestSuite
 
     @Override
     public void tearDown()
-        throws Exception
     {
         riakFixture.deleteTestData();
         super.tearDown();

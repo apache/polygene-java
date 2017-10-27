@@ -71,7 +71,6 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
 
     @Override
     public void tearDown()
-        throws Exception
     {
         if( unitOfWorkFactory.isUnitOfWorkActive() )
         {

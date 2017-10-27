@@ -49,8 +49,14 @@ public class PreferencesEntityStoreTestSuite extends EntityStoreTestSuite
 
     @After
     public void tearDown()
-        throws BackingStoreException
     {
-        rootNode.removeNode();
+        try
+        {
+            rootNode.removeNode();
+        }
+        catch( BackingStoreException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 }

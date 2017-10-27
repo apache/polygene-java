@@ -21,7 +21,6 @@ package org.apache.polygene.entitystore.sql;
 
 import java.util.HashMap;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
@@ -31,6 +30,8 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
+import org.jooq.SQLDialect;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 
@@ -52,9 +53,6 @@ public class MySQLEntityStoreTest
 //        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
     );
 
-    private String storageModuleName;
-    private String storageLayerName;
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -62,8 +60,6 @@ public class MySQLEntityStoreTest
     {
         // END SNIPPET: assembly
         super.assemble( module );
-        storageModuleName = module.name();
-        storageLayerName = module.layer().name();
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
@@ -100,11 +96,9 @@ public class MySQLEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        Module storageModule = application.findModule( storageLayerName, storageModuleName );
-        TearDownUtil.dropSchema( storageModule, getClass().getSimpleName() );
-        super.tearDown();
+        TearDown.dropTables( moduleInstance, SQLDialect.MYSQL, super::tearDown );
     }
 }

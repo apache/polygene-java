@@ -19,22 +19,16 @@
  */
 package org.apache.polygene.entitystore.sqlkv;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import javax.sql.DataSource;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.sqlkv.SQLEntityStoreConfiguration;
 import org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-
-import static org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
+import org.jooq.SQLDialect;
+import org.junit.After;
 
 public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -65,31 +59,9 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer","Storage Module" );
-        UnitOfWorkFactory uowf = storageModule.unitOfWorkFactory();
-        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
-            "Delete " + getClass().getSimpleName() + " test data" ) );
-        try
-        {
-            SQLEntityStoreConfiguration config = uow.get( SQLEntityStoreConfiguration.class,
-                                                          DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = storageModule.serviceFinder().findService( DataSource.class ).get().getConnection();
-            connection.setAutoCommit( false );
-            try( Statement stmt = connection.createStatement() )
-            {
-                stmt.execute( String.format( "DELETE FROM %s.%s",
-                                             config.schemaName().get(),
-                                             config.entityTableName().get() ) );
-                connection.commit();
-            }
-        }
-        finally
-        {
-            uow.discard();
-            super.tearDown();
-        }
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.DERBY, super::tearDown );
     }
 }

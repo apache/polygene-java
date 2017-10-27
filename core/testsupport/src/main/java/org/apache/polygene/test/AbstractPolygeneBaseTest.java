@@ -19,6 +19,7 @@
  */
 package org.apache.polygene.test;
 
+import org.apache.polygene.api.activation.PassivationException;
 import org.apache.polygene.test.util.NotYetImplemented;
 import org.junit.After;
 import org.junit.Before;
@@ -119,11 +120,16 @@ public abstract class AbstractPolygeneBaseTest
 
     @After
     public void tearDown()
-        throws Exception
     {
         if( application != null )
         {
-            application.passivate();
+            try
+            {
+                application.passivate();
+            } catch( Exception e )
+            {
+                throw new RuntimeException( "Unable to shut down test harness cleanly.", e );
+            }
         }
     }
 }

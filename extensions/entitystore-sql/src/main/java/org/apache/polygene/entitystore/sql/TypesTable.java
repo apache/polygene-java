@@ -36,7 +36,6 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultDataType;
 
 public class TypesTable
     implements TableFields

@@ -30,6 +30,7 @@ import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.object.ObjectFactory;
+import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.Module;
@@ -71,7 +72,22 @@ public abstract class AbstractPolygeneMultiLayeredTestWithModel extends Abstract
     private static final String FRIEND = "Friend";
     private static final String COLLEAGUE = "Colleague";
 
+    protected static final String ACCESS_LAYER = "Access Layer";
+    protected static final String DOMAIN_LAYER = "Domain Layer";
+    protected static final String INFRASTRUCTURE_LAYER = "Infrastructure Layer";
+    protected static final String CONFIGURATION_LAYER = "Configuration Layer";
+    protected static final String CONFIGURATION_MODULE = "Configuration Module";
+    protected static final String SERIALIZATION_MODULE = "Serialization Module";
+    protected static final String STORAGE_MODULE = "Storage Module";
+    protected static final String MONETARY_MODULE = "Monetary Module";
+    protected static final String PEOPLE_MODULE = "People Module";
+    protected static final String LEGAL_MODULE = "Legal Module";
+    protected static final String TEST_CASE_MODULE = "TestCase Module";
+
     protected ModuleAssembly configModule;
+
+    @Structure
+    protected Module configurationModule;
 
     @Structure
     protected ValueBuilderFactory valueBuilderFactory;
@@ -89,18 +105,18 @@ public abstract class AbstractPolygeneMultiLayeredTestWithModel extends Abstract
     protected void defineApplication( ApplicationAssembly applicationAssembly )
         throws AssemblyException
     {
-        LayerAssembly accessLayer = applicationAssembly.layer( "Access Layer" );
-        LayerAssembly domainLayer = applicationAssembly.layer( "Domain Layer" );
-        LayerAssembly infrastructureLayer = applicationAssembly.layer( "Infrastructure Layer" );
-        LayerAssembly configLayer = applicationAssembly.layer( "Configuration Layer" );
+        LayerAssembly accessLayer = applicationAssembly.layer( ACCESS_LAYER );
+        LayerAssembly domainLayer = applicationAssembly.layer( DOMAIN_LAYER );
+        LayerAssembly infrastructureLayer = applicationAssembly.layer( INFRASTRUCTURE_LAYER );
+        LayerAssembly configLayer = applicationAssembly.layer( CONFIGURATION_LAYER );
         accessLayer.uses( domainLayer.uses( infrastructureLayer.uses( configLayer ) ) );
-        defineConfigModule( configLayer.module( "Configuration Module" ) );
-        defineSerializationModule( configLayer.module( "Serialization Module" ) );
-        defineStorageModule( infrastructureLayer.module( "Storage Module" ) );
-        defineMonetaryModule( domainLayer.module( "Monetary Module" ) );
-        definePeopleModule( domainLayer.module( "People Module" ) );
-        defineLegalModule( domainLayer.module( "Legal Module" ) );
-        defineTestModule( accessLayer.module( "TestCase Module" ) );
+        defineConfigModule( configLayer.module( CONFIGURATION_MODULE ) );
+        defineSerializationModule( configLayer.module( SERIALIZATION_MODULE ) );
+        defineStorageModule( infrastructureLayer.module( STORAGE_MODULE ) );
+        defineMonetaryModule( domainLayer.module( MONETARY_MODULE ) );
+        definePeopleModule( domainLayer.module( PEOPLE_MODULE ) );
+        defineLegalModule( domainLayer.module( LEGAL_MODULE ) );
+        defineTestModule( accessLayer.module( TEST_CASE_MODULE ) );
     }
 
     @Override

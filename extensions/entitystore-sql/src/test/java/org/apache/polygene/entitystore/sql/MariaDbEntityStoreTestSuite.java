@@ -21,7 +21,6 @@ package org.apache.polygene.entitystore.sql;
 
 import java.util.HashMap;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
@@ -29,6 +28,8 @@ import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.jooq.SQLDialect;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 
@@ -37,7 +38,7 @@ public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @ClassRule
     public static final DockerRule DOCKER = new DockerRule(
-        "mysql",
+        "mariadb",
         new HashMap<String, String>()
         {{
             put( "MYSQL_ROOT_PASSWORD", "" );
@@ -83,11 +84,9 @@ public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @After
     public void tearDown()
-        throws Exception
     {
-        Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
-        TearDownUtil.dropSchema( storageModule, getClass().getSimpleName() );
-        super.tearDown();
+        TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MARIADB, super::tearDown );
     }
 }
