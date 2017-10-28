@@ -45,15 +45,18 @@ public class TypesTable
 
     private final Table<Record> typesTable;
     private final SQLDialect dialect;
+    private final SqlEntityStoreConfiguration config;
 
     private final JooqDslContext dsl;
 
     TypesTable( JooqDslContext dsl,
                 SQLDialect dialect,
-                String typesTablesName
+                String typesTablesName,
+                SqlEntityStoreConfiguration config
               )
     {
         this.dialect = dialect;
+        this.config = config;
         typesTable = dsl.tableOf( typesTablesName );
         this.dsl = dsl;
     }
@@ -148,7 +151,7 @@ public class TypesTable
 
     private boolean checkForTableNamed( String tableName )
     {
-        if( tableName.equalsIgnoreCase( "entities" ) || tableName.equalsIgnoreCase( "types" ))
+        if( tableName.equalsIgnoreCase( config.entitiesTableName().get() ) || tableName.equalsIgnoreCase( config.typesTableName().get() ))
         {
             return true;
         }

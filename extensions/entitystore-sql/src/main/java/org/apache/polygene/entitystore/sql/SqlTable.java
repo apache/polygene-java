@@ -193,15 +193,14 @@ public interface SqlTable extends ServiceActivation
         {
             SqlEntityStoreConfiguration config = this.configuration.get();
             SQLDialect dialect = getSqlDialect( config );
-            Settings settings = serviceDescriptor
-                .metaInfo( Settings.class );
+            Settings settings = serviceDescriptor.metaInfo( Settings.class );
 
             String typesTableName = config.typesTableName().get();
             String entitiesTableName = config.entitiesTableName().get();
 
             dsl = tbf.newTransient( JooqDslContext.class, settings, dialect );
 
-            types = new TypesTable( dsl, dialect, typesTableName );
+            types = new TypesTable( dsl, dialect, typesTableName, config );
             entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName, serialization );
 
             if( config.createIfMissing().get() )
