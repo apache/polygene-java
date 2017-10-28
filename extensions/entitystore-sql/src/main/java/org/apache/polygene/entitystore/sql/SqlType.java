@@ -30,6 +30,9 @@ import org.jooq.DataType;
 import org.jooq.impl.SQLDataType;
 import org.jooq.types.Interval;
 
+/**
+ * Translation of Java types to SQLDataType in JOOQ.
+ */
 class SqlType
 {
     @SuppressWarnings( "unchecked" )

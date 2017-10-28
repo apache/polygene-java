@@ -17,16 +17,16 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[extension-es-jooq,SQL EntityStore]]
+[[extension-es-sql,SQL EntityStore]]
 = ORM EntityStore =
 
 [devstatus]
 --------------
-source=extensions/entitystore-jooq/dev-status.xml
+source=extensions/entitystore-sql/dev-status.xml
 --------------
 
 This entitystore is backed by a SQL server, and maps each mixin type of the Composite into separate tables. This is more
-enterprise-friendly, but comes at the cost of less performance compared to the <<extension-es-sql>>.
+enterprise-friendly, but comes at the cost of less performance compared to the <<extension-es-sqlkv>>.
 
 This extension fully leverage the <<library-sql>> meaning that you must use it to assemble your DataSource and that you
 get <<library-circuitbreaker,Circuit Breaker>> and <<library-jmx, JMX>> integration for free.
@@ -39,7 +39,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jooq/src/test/java/org/apache/polygene/entitystore/jooq/JooqEntityStoreTest.java
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/SqlEntityStoreTest.java
 tag=assembly
 ----
 
@@ -56,3 +56,6 @@ tag=config
 All authentication related properties are optional.
 By default no authentication is used.
 As soon as you provide a `username`, authentication is set up.
+It is also strongly recommended that a connection pool is setup. <<library-sql-dbcp>> and <<library-bonecp>> are
+available in Polygene, but you can create your own.
+

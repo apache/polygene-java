@@ -22,6 +22,13 @@ import org.jooq.Field;
 
 import static org.apache.polygene.entitystore.sql.TypesTable.makeField;
 
+/**
+ *  SQL field names and definitions.
+ *  <p>
+ *      All internal names start with an underscore, to avoid collision, even though there should not be any risk of
+ *      collision and more serves as a marker for what is Polygene overhead vs business data.
+ *  </p>
+ */
 public interface TableFields
 {
     // Common in all tables

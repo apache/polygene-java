@@ -21,6 +21,9 @@ import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 
+/**
+ * Configuration for the SQL Entity Store.
+ */
 // START SNIPPET: config
 public interface SqlEntityStoreConfiguration
 {

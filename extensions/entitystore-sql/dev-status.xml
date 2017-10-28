@@ -24,7 +24,7 @@
         http://polygene.apache.org/schemas/2008/dev-status/1/dev-status.xsd">
   <status>
         <!--none,early,beta,stable,mature-->
-        <codebase>early</codebase>
+        <codebase>beta</codebase>
 
         <!-- none, brief, good, complete -->
         <documentation>brief</documentation>

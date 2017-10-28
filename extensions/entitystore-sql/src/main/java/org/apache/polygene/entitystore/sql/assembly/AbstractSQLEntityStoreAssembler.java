@@ -33,7 +33,7 @@ import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 
 /**
- * JOOQ EntityStore assembly.
+ * The common abstract part of the SQL EntityStore assembly.
  */
 @SuppressWarnings( "WeakerAccess" )
 public abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreAssembler> extends Assemblers.VisibilityIdentityConfig<T>

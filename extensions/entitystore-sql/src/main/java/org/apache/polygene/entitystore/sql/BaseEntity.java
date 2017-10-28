@@ -21,6 +21,12 @@ import java.time.Instant;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.identity.Identity;
 
+/**
+ * The BaseEntity is the representation of the entity metadata that is associated with a given identity.
+ * <p>
+ * Internal class and should never be used outside of this extension.
+ * </p>
+ */
 @SuppressWarnings( "WeakerAccess" )
 public class BaseEntity
 {

@@ -19,6 +19,12 @@ package org.apache.polygene.entitystore.sql;
 
 import org.apache.polygene.api.common.QualifiedName;
 
+/**
+ * Internal call to hold an assocation temporary in memory.
+ * <p>
+ *     This class should never be used outside of this extension.
+ * </p>
+ */
 @SuppressWarnings( "WeakerAccess" )
 public class AssociationValue
 {

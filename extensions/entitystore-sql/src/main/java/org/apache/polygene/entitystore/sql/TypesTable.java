@@ -37,6 +37,9 @@ import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
+/**
+ * This class is effectively the manager of the {@link MixinTable} instances.
+ */
 public class TypesTable
     implements TableFields
 {

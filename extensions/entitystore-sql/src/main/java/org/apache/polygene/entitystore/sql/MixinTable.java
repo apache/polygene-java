@@ -44,6 +44,16 @@ import org.jooq.Table;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 
+/**
+ * MixinTable is a class that handles the creation of the queries into the Mixin tables, both for insertions/updates
+ * as well as retrieval.
+ * <p>
+ *     Note that these tables are only queried as part of a SQL {@code JOIN} statement and never directly.
+ * </p>
+ * <p>
+ *     Creation of the actual Mixin tables happens in {@link TypesTable}.
+ * </p>
+ */
 class MixinTable
     implements TableFields
 {

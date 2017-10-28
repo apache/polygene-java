@@ -37,6 +37,10 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.ThreadLocalTransactionProvider;
 
+/**
+ * The JOOQ Context is extended (Polygene-style) to get additional functionality and still backed by the underlying
+ * JOOQ DSLContext implementation.
+ */
 @Mixins( JooqDslContext.Mixin.class )
 public interface JooqDslContext extends DSLContext
 {

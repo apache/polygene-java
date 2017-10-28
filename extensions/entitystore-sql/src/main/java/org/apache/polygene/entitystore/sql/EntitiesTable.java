@@ -58,6 +58,13 @@ import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
+/**
+ * This class handles all the dealing with the main table, called the Entities Table.
+ * <p>
+ *     This is the table that holds the {@link BaseEntity} rows, and joins with the different so called
+ *     {@link MixinTable}, which handles one table per Mixin type.
+ * </p>
+ */
 @SuppressWarnings( "WeakerAccess" )
 public class EntitiesTable
     implements TableFields
