@@ -24,6 +24,7 @@ import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.property.Property;
 
+@SuppressWarnings( "unused" )
 public class DocSupport
 {
     // START SNIPPET: types
