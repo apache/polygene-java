@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[extension-es-sql,SQL EntityStore]]
-= ORM EntityStore =
+= SQL EntityStore =
 
 [devstatus]
 --------------
@@ -49,7 +49,7 @@ Here are the available configuration properties:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jooq/src/main/java/org/apache/polygene/entitystore/jooq/JooqEntityStoreConfiguration.java
+source=extensions/entitystore-sql/src/main/java/org/apache/polygene/entitystore/sql/SqlEntityStoreConfiguration.java
 tag=config
 ----
 
@@ -59,3 +59,198 @@ As soon as you provide a `username`, authentication is set up.
 It is also strongly recommended that a connection pool is setup. <<library-sql-dbcp>> and <<library-bonecp>> are
 available in Polygene, but you can create your own.
 
+== Table Layout ==
+The SQL Entity Store will create, if createIfMissing() is true, or expect that the following tables exist.
+
+
+[width="80%",options="header", cols="4*<", title="TYPES Table", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Java classname of the Entity Type.
+|_table_name |VARCHAR ||Chosen name of the Mixin table. This name is the simple name of the class name, unless that table already exists, in which case a sequence number (starting with 0) is added at the end of the name, e.g. Person_0.
+|_created_at |TIMESTAMP ||The time of the creation into this table.
+|_modified_at |TIMESTAMP ||The time of the last modification of this record. Should never change.
+|=======
+
+Or in DDL (assuming default value for SqlEntityStoreConfiguration.typesTableName();
+
+[source, bash]
+----
+create table if not exists "TYPES"(
+    "_identity" varchar null,
+    "_table_name" varchar null,
+    "_created_at" timestamp null,
+    "_modified_at" timestamp null,
+    primary key ("_identity")
+)
+----
+
+
+[width="80%",options="header", cols="4*<", title="ENTITIES Table", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Identity of the entity.
+|_created_at |TIMESTAMP ||The time of creation of the entity.
+|_type |VARCHAR ||The identity of the type of entity. Linked to the TYPES table _identity field.
+|_app_version |VARCHAR ||The Application.version() when the entity was last modified.
+|_version |VARCHAR ||The MVCC version of the entity, to ensure consistency with optimistic locking.
+|_modified_at |TIMESTAMP ||The time of latest change to the entity.
+|_value_id |VARCHAR ||The identity of the values that are stored in the Mixin tables (their _identity field)
+|=======
+
+[source, bash]
+----
+create table if not exists "ENTITIES"(
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    "_type" varchar null,
+    "_app_version" varchar null,
+    "_version" varchar null,
+    "_modified_at" timestamp null,
+    "_value_id" varchar null,
+    primary key ("_identity")
+)
+----
+
+
+
+Additionally, for each Mixin type, two tables will be created. One that contains one field per Property and
+one field per Association. The second table will contain a fixed layout that holds all ManyAssociation and all
+NamedAssociarion in a multi-field key-value table (see below).
+
+The primary Mixin table will be named as the Mixin type's simple class name, unless there is conflicts, in which
+case a sequence number will be added to the table name. The TYPES table contains the mapping from Mixin type
+(i.e. Java class name) to table name.
+
+For instance, the following types will end up creating 4 Mixin tables, plus the 4 association tables,
+
+[snippet,java]
+----
+source=extensions/entitystore-sql/src/test/java/org/apache/polygene/entitystore/sql/DocSupport.java
+tag=types
+----
+
+And the structures will be;
+
+[width="80%",options="header", cols="4*<", title="Person", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Identity of the current value, i.e. _value_id from ENTITIES table
+|_created_at |TIMESTAMP ||The time of creation of the entity value. It will become possible to choose to keep old values for history/audit purposes, but not yet supported. This field is preparation for that.
+|spouse |VARCHAR ||Association<Person> spouse();
+|=======
+
+And the corresponding DDL.
+
+[source, bash]
+----
+create table "Person" (
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    "spouse" varchar null,
+    primary key ("_identity")
+)
+----
+
+
+[width="80%",options="header", cols="4*<", title="HasName", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Identity of the current value, i.e. _value_id from ENTITIES table
+|_created_at |TIMESTAMP ||The time of creation of the entity value. It will become possible to choose to keep old values for history/audit purposes, but not yet supported. This field is preparation for that.
+|name |VARCHAR ||Property<String> name();
+|=======
+
+And the corresponding DDL.
+
+[source, bash]
+----
+create table "HasName" (
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    "name" varchar null,
+    primary key ("_identity")
+)
+----
+
+[width="80%",options="header", cols="4*<", title="HasAddress", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Identity of the current value, i.e. _value_id from ENTITIES table
+|_created_at |TIMESTAMP ||The time of creation of the entity value. It will become possible to choose to keep old values for history/audit purposes, but not yet supported. This field is preparation for that.
+|street1 |VARCHAR ||Property<String> street1();
+|street2 |VARCHAR ||Property<String> street2();
+|zipCode |VARCHAR ||Property<String> zipCode();
+|country |VARCHAR ||Assocication<String> country();  which contains Identity of the Country entity referenced.
+|=======
+
+And the corresponding DDL.
+
+[source, bash]
+----
+create table "HasName" (
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    "street1" varchar null,
+    "street2" varchar null,
+    "zipCode" varchar null,
+    "country" varchar null,
+    primary key ("_identity")
+)
+----
+
+[width="80%",options="header", cols="4*<", title="Country", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR |PRIMARY KEY |The Identity of the current value, i.e. _value_id from ENTITIES table
+|_created_at |TIMESTAMP ||The time of creation of the entity value. It will become possible to choose to keep old values for history/audit purposes, but not yet supported. This field is preparation for that.
+|=======
+
+And the corresponding DDL.
+
+[source, bash]
+----
+create table "HasName" (
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    primary key ("_identity")
+)
+----
+
+NOTE: Country has no fields, as the HasName mixin type will be in its own table (above). But the _created_at field,
+indicating latest change time, will be maintained.
+
+
+And additionally four tables will be created, with identical structures. The names will be
+Person_ASSOCS, HasName_ASSOCS, HasAddress_ASSOCS, Country_ASSOCS and the structure is;
+
+[width="80%",options="header", cols="4*<", title="*_ASSOCS", halign="left"]
+|=======
+|*Field* |*Type* |*Constraint* |*Description*
+|_identity |VARCHAR ||The Identity of the current value, i.e. _value_id from ENTITIES table
+|_created_at |TIMESTAMP ||The time of creation of the entity value. It will become possible to choose to keep old values for history/audit purposes, but not yet supported. This field is preparation for that.
+|_name |VARCHAR ||The name of the ManyAssociation or NamedAssociation in the Mixin type.
+|_index |VARCHAR ||For NamedAssociations this is the name of the association, i.e. the key. For ManyAssociation, this is the sequence number within the ordered list.
+|_reference |VARCHAR ||The entity identity that the association is pointing to.
+|=======
+
+[source, bash]
+----
+create table if not exists "Person_ASSOCS"(
+    "_identity" varchar null,
+    "_created_at" timestamp null,
+    "_name" varchar null,
+    "_index" varchar null,
+    "_reference" varchar null
+)
+----
+
+Additionally, one INDEX will be created for each _ASSOCS table. So the above four will have
+
+[source, bash]
+----
+create index "IDX_Person_ASSOCS" on "Person_ASSOCS"("_identity")
+create index "IDX_HasName_ASSOCS" on "HasName_ASSOCS"("_identity")
+create index "IDX_HasAddress_ASSOCS" on "HasAddress_ASSOCS"("_identity")
+create index "IDX_Country_ASSOCS" on "Country_ASSOCS"("_identity")
+----

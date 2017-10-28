@@ -217,12 +217,12 @@ public interface SqlTable extends ServiceActivation
 
                     dsl.createTableIfNotExists( dsl.tableNameOf( entitiesTableName ) )
                        .column( identityColumn )
-                       .column( applicationVersionColumn )
-                       .column( valueIdentityColumn )
-                       .column( versionColumn )
-                       .column( typeNameColumn )
-                       .column( modifiedColumn )
                        .column( createdColumn )
+                       .column( typeNameColumn )
+                       .column( applicationVersionColumn )
+                       .column( versionColumn )
+                       .column( modifiedColumn )
+                       .column( valueIdentityColumn )
                        .constraint( DSL.primaryKey( identityColumn ) )
                        .execute();
                 } );

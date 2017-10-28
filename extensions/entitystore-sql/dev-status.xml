@@ -27,7 +27,7 @@
         <codebase>beta</codebase>
 
         <!-- none, brief, good, complete -->
-        <documentation>brief</documentation>
+        <documentation>good</documentation>
 
         <!-- none, some, good, complete -->
         <unittests>good</unittests>
