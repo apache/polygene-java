@@ -255,36 +255,36 @@ public class EntitiesTable
      * <p>
      * Example; If we have the following entity
      * </p>
-     * <code><pre>
+     * <pre><code>
      *     public interface LegalEntity
      *     {
      *         Property&lt;String&gt; registration();
      *     }
-     * <p>
+     *
      *     public interface Person extends LegalEntity
      *     {
      *         Property&lt;String&gt; name();
-     * <p>
+     *
      *         &#64;Optional
      *         Association&lt;Person&gt; spouse();
-     * <p>
+     *
      *         ManyAssocation&lt;Person&gt; children();
      *     }
-     * </pre></code>
+     * </code></pre>
      * <p>
      * and we do a simple;
-     * <code><pre>
+     * <pre><code>
      *     Person p = uow.get( Person.class, "niclas" );
-     * </pre></code>
+     * </code></pre>
      * <p>
      * then the generated query will be
      * </p>
-     * <code><pre>
+     * <pre><code>
      *     SELECT * FROM ENTITIES
      *     LEFT OUTER JOIN Person ON ENTITIES.value_id = Person.identity
      *     LEFT OUTER JOIN LegalEntity ON ENTITIES.value_id = LegalEntity.identity
      *     WHERE ENTITIES.identity = '123'
-     * </pre></code>
+     * </code></pre>
      *
      * @param entityDescriptor The descriptor of the entity type to be built.
      * @return The SELECT query that can be executed to retrieve the entity.
