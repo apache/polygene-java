@@ -143,6 +143,7 @@ class MixinTable
                                       for( EntityReference ref : entityReferences )
                                       {
                                           InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
+                                                                                     .set( createdColumn, new Timestamp( System.currentTimeMillis() ) )
                                                                                      .set( nameColumn, assocName.name() )
                                                                                      .set( indexColumn, "" + counter++ )
                                                                                      .set( referenceColumn, ref == null ? null : ref.identity().toString() );
@@ -169,6 +170,7 @@ class MixinTable
                                            {
                                                EntityReference ref = entityReferences.get( name );
                                                InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
+                                                                                          .set( createdColumn, new Timestamp( System.currentTimeMillis() ) )
                                                                                           .set( nameColumn, assocName.name() )
                                                                                           .set( indexColumn, name )
                                                                                           .set( referenceColumn, ref.identity().toString() );
@@ -255,6 +257,7 @@ class MixinTable
             Table<Record> table = dsl.tableOf( mixinTable.getName() + ASSOCS_TABLE_POSTFIX );
             int result2 = dsl.createTableIfNotExists( table )
                              .column( identityColumn )
+                             .column( createdColumn )
                              .column( nameColumn )
                              .column( indexColumn )
                              .column( referenceColumn )
