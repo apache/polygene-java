@@ -67,10 +67,10 @@ import org.jooq.impl.DSL;
  * <h2>Mixin Tables</h2>
  * <p>
  * Each Mixin is stored in its own table. Only the following column is always present;
+ * </p>
  * <ul>
  * <li>identity - this is not entity identity but the UUID of the value_id in the Entities Table above.</li>
  * </ul>
- * </p>
  * <p>
  * Each Property of the Mixin (as defined by QualifiedName of the Property, will reside in its own column.
  * All values in columns are (for now) serialized using a ValueSerialization service.
