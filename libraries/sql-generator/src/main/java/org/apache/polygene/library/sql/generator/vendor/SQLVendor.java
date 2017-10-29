@@ -36,7 +36,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.QuerySpecificatio
  * syntax elements. Additionally, the vendor creates the textual representation of these syntax elements so that the
  * query may be passed directly to database, for example, through JDBC.
  *
- * @author Stanislav Muhametsin
+ *
  * @see MySQLVendor
  * @see PostgreSQLVendor
  * @see QueryFactory

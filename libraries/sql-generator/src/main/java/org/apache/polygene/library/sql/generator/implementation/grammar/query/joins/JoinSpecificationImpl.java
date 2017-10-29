@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.S
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class JoinSpecificationImpl<JoinSpecificationType extends JoinSpecification> extends
                                                                                              SQLSyntaxElementBase<JoinSpecification, JoinSpecificationType>

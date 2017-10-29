@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
  * This enum is for table commit action ({@code ON COMMIT} ...) in table definition. The commit action may be either
  * {@link #ON_COMMIT_PRESERVE_ROWS} or {@link #ON_COMMIT_DELETE_ROWS}.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public final class TableCommitAction

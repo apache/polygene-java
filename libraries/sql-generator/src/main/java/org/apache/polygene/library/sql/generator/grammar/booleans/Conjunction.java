@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * A conjunction ({@code AND}) of two boolean expressions.
  *
- * @author Stanislav Muhametsin
  */
 public interface Conjunction
     extends ComposedBooleanExpression

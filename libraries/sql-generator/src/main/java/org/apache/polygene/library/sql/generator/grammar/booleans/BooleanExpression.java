@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 /**
  * A common interface for all boolean expressions in SQL language.
  *
- * @author Stanislav Muhametsin
  */
 public interface BooleanExpression
     extends ValueExpression
@@ -33,7 +32,6 @@ public interface BooleanExpression
     /**
      * This class represents a boolean expression which always evaluates to true ({@code TRUE}).
      *
-     * @author Stanislav Muhametsin
      */
     final class True
         implements BooleanExpression
@@ -60,7 +58,6 @@ public interface BooleanExpression
     /**
      * This class represents a boolean expression which always evaluates to false ({@code FALSE}.
      *
-     * @author Stanislav Muhametsin
      */
     final class False
         implements BooleanExpression

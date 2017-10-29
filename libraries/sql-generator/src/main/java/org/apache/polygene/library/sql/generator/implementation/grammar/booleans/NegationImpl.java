@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.Negation;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class NegationImpl extends ComposedBooleanExpressionImpl<Negation>
     implements Negation

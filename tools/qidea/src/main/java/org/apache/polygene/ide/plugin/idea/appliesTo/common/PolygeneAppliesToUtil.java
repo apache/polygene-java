@@ -37,7 +37,6 @@ import static org.apache.polygene.ide.plugin.idea.common.psi.PsiClassUtil.getPSI
 import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneAppliesToUtil

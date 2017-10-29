@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * The drop behaviour for generalized {@code DROP} statement. Typically one of {@link #CASCADE} or {@link #RESTRICT}.
  *
- * @author Stanislav Muhametsin
+ *
  * @see DropStatement
  */
 public final class DropBehaviour

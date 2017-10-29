@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
  * This enum represents the five referential actions of SQL. These are {@link #CASCADE}, {@link #SET_NULL},
  * {@link #SET_DEFAULT}, {@link #RESTRICT}, and {@link #NO_ACTION}.
  *
- * @author Stanislav Muhametsin
  */
 public final class ReferentialAction
 {

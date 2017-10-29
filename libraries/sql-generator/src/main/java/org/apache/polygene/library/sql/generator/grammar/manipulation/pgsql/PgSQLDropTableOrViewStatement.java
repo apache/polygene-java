@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation.pgsql;
 import org.apache.polygene.library.sql.generator.grammar.manipulation.DropTableOrViewStatement;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public interface PgSQLDropTableOrViewStatement extends DropTableOrViewStatement
 {

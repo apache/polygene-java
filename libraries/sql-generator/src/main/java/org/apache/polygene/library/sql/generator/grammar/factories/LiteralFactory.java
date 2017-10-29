@@ -31,7 +31,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 /**
  * A factory to create various literal expressions. This factory is obtainable from {@link SQLVendor}.
  *
- * @author Stanislav Muhametsin
  * @see SQLVendor
  */
 public interface LiteralFactory

@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is common interface for actions altering table.
  *
- * @author Stanislav Muhametsin
+ *
  * @see AlterTableStatement
  */
 public interface AlterTableAction

@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 /**
  * This syntax element represents a comma-separated row value definition of {@code VALUES} expression in query.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface RowDefinition
     extends RowValueConstructor

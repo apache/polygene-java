@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.Unique
 /**
  * This is builder for {@code UNIQUE(...)} and {@code PRIMARY KEY(...)} table constraints in table definition.
  *
- * @author Stanislav Muhametsin
  */
 public interface UniqueConstraintBuilder
     extends AbstractBuilder<UniqueConstraint>

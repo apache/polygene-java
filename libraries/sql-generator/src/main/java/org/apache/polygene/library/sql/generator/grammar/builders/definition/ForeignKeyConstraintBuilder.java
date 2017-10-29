@@ -29,7 +29,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.Refere
 /**
  * The builder for table constraint {@code FOREIGN KEY(source columns) REFERENCES table_name(target columns) etc....}).
  *
- * @author Stanislav Muhametsin
  */
 public interface ForeignKeyConstraintBuilder
     extends AbstractBuilder<ForeignKeyConstraint>

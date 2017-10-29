@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is a common interface for all definitions that may be present in schema definition.
  *
- * @author Stanislav Muhametsin
  * @see SchemaDefinition
  */
 public interface SchemaElement

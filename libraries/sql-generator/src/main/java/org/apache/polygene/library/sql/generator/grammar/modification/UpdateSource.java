@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This syntax element represents the data source for column in {@code SET} clause of {@code UPDATE}
  * statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface UpdateSource
     extends Typeable<UpdateSource>

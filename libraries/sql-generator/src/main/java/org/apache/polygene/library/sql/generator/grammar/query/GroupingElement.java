@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is a common interface for a grouping element of the {@code GROUP BY} clause.
  *
- * @author Stanislav Muhametsin
+ *
  * @see GroupByClause
  */
 public interface GroupingElement
@@ -34,7 +34,7 @@ public interface GroupingElement
      * This syntax element represents the grand total grouping element. It is open parenthesis followed by close
      * parenthesis.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     final class GrandTotal
         implements GroupingElement

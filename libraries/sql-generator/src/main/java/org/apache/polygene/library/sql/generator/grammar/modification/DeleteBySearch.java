@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpress
 /**
  * This syntax element represents a {@code DELETE FROM} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DeleteBySearch
     extends DeleteStatement

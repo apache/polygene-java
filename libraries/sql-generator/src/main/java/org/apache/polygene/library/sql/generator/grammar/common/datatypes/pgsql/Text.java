@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLDat
 /**
  * This data type represents the {@code TEXT} data type in PostgreSQL.
  *
- * @author Stanislav Muhametsin
  */
 public interface Text
     extends SQLDataType

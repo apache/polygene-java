@@ -26,7 +26,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
  * This syntax element represents the {@code FETCH FIRST <number> ROWS ONLY} element of the query. This addition has
  * been defined in SQL 2008 standard.
  *
- * @author 2011 Stanislav Muhametsin
  */
 public interface LimitSpecification
     extends Typeable<LimitSpecification>

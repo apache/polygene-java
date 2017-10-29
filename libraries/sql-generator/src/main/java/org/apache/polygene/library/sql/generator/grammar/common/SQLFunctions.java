@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 /**
  * A container for textual names of default SQL functions.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLFunctions
 {

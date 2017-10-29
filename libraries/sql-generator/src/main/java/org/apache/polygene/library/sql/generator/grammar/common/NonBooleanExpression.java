@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 /**
  * A common interface for all expressions, which return non-boolean value.
  *
- * @author Stanislav Muhametsin
  */
 public interface NonBooleanExpression
     extends ValueExpression

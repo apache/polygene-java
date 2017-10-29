@@ -34,13 +34,11 @@ import java.util.Map;
  * inefficient.
  * </p>
  * <p>
- * <p>
  * This is when this interface comes to aid. It provides a method returning an API interface/class, which is implemented
  * by the implementation. Then one can use the {@link Map#get(Object)} and {@link Map#containsKey(Object)} methods in
  * order to retrieve the object associated with specific API interface, without the need to iterate through whole map.
  * </p>
  *
- * @author Stanislav Muhametsin
  */
 public interface Typeable<BaseType>
 {

@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * This syntax element represents the {@code CREATE VIEW} statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface ViewDefinition
     extends SchemaDefinitionStatement, SchemaElement

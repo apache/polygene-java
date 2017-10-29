@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This is common interface for table names. Table name may be either {@link TableNameDirect} or
  * {@link TableNameFunction}.
  *
- * @author 2011 Stanislav Muhametsin
  */
 public interface TableName
     extends Typeable<TableName>

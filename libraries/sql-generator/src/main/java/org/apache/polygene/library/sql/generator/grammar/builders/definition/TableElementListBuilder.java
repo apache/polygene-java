@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableE
 /**
  * This is the builder for table element list used in {@code CREATE TABLE} statements.
  *
- * @author Stanislav Muhametsin
  */
 public interface TableElementListBuilder
     extends AbstractBuilder<TableElementList>

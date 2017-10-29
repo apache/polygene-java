@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.vendor.MySQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class MySQLVendorImpl extends DefaultVendor
     implements MySQLVendor

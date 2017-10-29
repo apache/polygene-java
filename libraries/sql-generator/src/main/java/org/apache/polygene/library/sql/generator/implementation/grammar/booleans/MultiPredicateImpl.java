@@ -28,7 +28,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class MultiPredicateImpl<ExpressionType extends MultiPredicate> extends
                                                                                 AbstractBooleanExpression<ExpressionType>

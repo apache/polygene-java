@@ -19,7 +19,7 @@
 package org.apache.polygene.ide.plugin.idea.mixins.common;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class PolygeneMixinConstants

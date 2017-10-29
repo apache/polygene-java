@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * The interface for syntax element representing existence test ({@code EXISTS}).
  *
- * @author Stanislav Muhametsin
  */
 public interface ExistsPredicate
     extends UnaryPredicate

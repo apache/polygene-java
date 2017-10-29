@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query.joins;
 /**
  * This syntax element represents the cross join ({@code CROSS JOIN} between two tables.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface CrossJoinedTable
     extends JoinedTable

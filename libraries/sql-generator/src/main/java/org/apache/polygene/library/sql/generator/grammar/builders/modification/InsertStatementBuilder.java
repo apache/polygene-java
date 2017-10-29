@@ -29,7 +29,6 @@ import org.apache.polygene.library.sql.generator.grammar.modification.InsertStat
  * This builder builds statements inserting rows to tables ({@code INSERT INTO } tableName {@code [(} column names
  * {@code )]} expression).
  *
- * @author Stanislav Muhametsin
  * @see TableName
  * @see ColumnSource
  */

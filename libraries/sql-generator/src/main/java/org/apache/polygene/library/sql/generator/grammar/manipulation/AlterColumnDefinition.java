@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * This syntax element represents the alteration of column.
  *
- * @author Stanislav Muhametsin
+ *
  * @see AlterTableAction
  */
 public interface AlterColumnDefinition

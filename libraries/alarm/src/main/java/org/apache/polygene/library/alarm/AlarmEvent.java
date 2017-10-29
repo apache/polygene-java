@@ -33,7 +33,6 @@ import org.apache.polygene.api.service.ServiceComposite;
 /**
  * Event for indicating change of AlarmStatus of an AlarmPoint.
  *
- * @author Niclas Hedhman
  */
 @Mixins( AlarmEvent.Mixin.class )
 public interface AlarmEvent

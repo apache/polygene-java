@@ -41,7 +41,6 @@ import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSid
 import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class AppliesToAnnotationDeclaredCorrectlyInspection extends AbstractInspection

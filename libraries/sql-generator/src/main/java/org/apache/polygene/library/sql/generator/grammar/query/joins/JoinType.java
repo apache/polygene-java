@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.query.joins;
  * This enum represents the join type, used in {@link QualifiedJoinedTable} and {@link NaturalJoinedTable}. Is one of
  * {@link #INNER}, {@link #LEFT_OUTER}, {@link #RIGHT_OUTER}, or {@link #FULL_OUTER}.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public final class JoinType
 {

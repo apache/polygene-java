@@ -28,7 +28,6 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.query.Li
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public abstract class AbstractQueryFactoryImpl<ExpressionType> extends SQLBuilderBase
     implements AbstractQueryBuilder<ExpressionType>

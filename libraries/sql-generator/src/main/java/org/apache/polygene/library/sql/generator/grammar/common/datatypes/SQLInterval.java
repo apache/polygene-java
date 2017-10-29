@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code INTEGER} type, sometimes abbreviated as {@code INT} (typically 32-bit integer).
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLInterval
     extends SQLDataType, ParametrizableDataType

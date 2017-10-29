@@ -24,7 +24,6 @@ import java.sql.Timestamp;
 /**
  * This syntax element encapsulates reference to some time stamp to be inserted into SQL statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface TimestampTimeLiteral
     extends TemporalLiteral

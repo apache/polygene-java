@@ -28,7 +28,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
  * statement.
  * </p>
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface ColumnSourceByValues
     extends DynamicColumnSource

@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * This syntax element represents setting a new default for a column in table alteration statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface SetColumnDefault
     extends AlterColumnAction

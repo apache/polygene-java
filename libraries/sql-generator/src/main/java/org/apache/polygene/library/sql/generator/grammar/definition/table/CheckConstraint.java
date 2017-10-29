@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpress
 /**
  * This syntax element represents the {@code CHECK( ... )} constraint in table definition.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public interface CheckConstraint

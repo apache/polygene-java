@@ -28,7 +28,6 @@ import org.jdom.Element;
 import org.apache.polygene.ide.plugin.idea.common.facet.ui.PolygeneFacetEditorTab;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneFacetConfiguration

@@ -32,7 +32,6 @@ import org.apache.polygene.api.property.Property;
 /**
  * Status of an AlarmPoint.
  *
- * @author Niclas Hedhman
  */
 @Mixins( AlarmStatus.AlarmStatusMixin.class )
 public interface AlarmStatus

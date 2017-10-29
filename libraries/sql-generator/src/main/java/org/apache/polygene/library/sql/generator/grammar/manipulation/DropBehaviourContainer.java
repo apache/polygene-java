@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * A generic drop behaviour container (for any {@code DROP} clause and statement).
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropBehaviourContainer
 {

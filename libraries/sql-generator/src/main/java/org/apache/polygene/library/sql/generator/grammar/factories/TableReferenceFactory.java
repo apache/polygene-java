@@ -39,7 +39,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
  * A factory for creating builders and syntax elements related to tables. This factory is obtainable from
  * {@link SQLVendor}.
  *
- * @author Stanislav Muhametsin
  * @see SQLVendor
  */
 public interface TableReferenceFactory

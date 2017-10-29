@@ -19,7 +19,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 
 /**
- * @author Stanislav Muhametsin
  */
 public class MySQLDataDefinitionTest extends AbstractDataDefinitionTest
 {

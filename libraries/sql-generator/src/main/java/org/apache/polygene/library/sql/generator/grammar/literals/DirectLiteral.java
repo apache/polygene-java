@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.literals;
 /**
  * This syntax element encapsulates text to be inserted directly into SQL statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface DirectLiteral
     extends LiteralExpression

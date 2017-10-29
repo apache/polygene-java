@@ -43,7 +43,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class MySQLProcessor extends DefaultSQLProcessor
 {

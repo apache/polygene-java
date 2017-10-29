@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SchemaManipulati
 /**
  * This is a common interface for all {@code ALTER} statements.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface AlterStatement
     extends SchemaManipulationStatement

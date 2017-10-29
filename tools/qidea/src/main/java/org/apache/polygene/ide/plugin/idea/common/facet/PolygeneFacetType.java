@@ -39,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneFacetType extends FacetType<PolygeneFacet, PolygeneFacetConfiguration>

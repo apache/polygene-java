@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.Disjunction;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class DisjunctionImpl extends ComposedBooleanExpressionImpl<Disjunction>
     implements Disjunction

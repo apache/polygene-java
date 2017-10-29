@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
 /**
  * This constraint defines the columns to be unique ({@code UNIQUE(col1, col2, ...)}).
  *
- * @author Stanislav Muhametsin
  */
 public interface UniqueConstraint
     extends TableConstraint

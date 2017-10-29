@@ -27,7 +27,6 @@ import org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundl
 import static com.intellij.codeHighlighting.HighlightDisplayLevel.ERROR;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public abstract class AbstractInspection extends BaseJavaLocalInspectionTool

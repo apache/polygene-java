@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.apache.polygene.ide.plugin.idea.common.actions.AbstractCreateElementActionBase;
 
 /**
- * @author edward.yakop@gmail.com
  */
 public class CreateConcernFromMixinTypeOrCompositeAction extends AbstractCreateElementActionBase
 {

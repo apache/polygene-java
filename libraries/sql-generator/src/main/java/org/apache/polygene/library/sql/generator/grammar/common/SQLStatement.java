@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * A single SQL statement, which is to be sent to database.
  *
- * @author Stanislav Muhametsin
  * @see QueryExpression
  * @see DeleteStatement
  * @see UpdateStatement

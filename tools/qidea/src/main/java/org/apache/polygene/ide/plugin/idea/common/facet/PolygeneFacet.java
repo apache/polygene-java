@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneFacet extends Facet<PolygeneFacetConfiguration>

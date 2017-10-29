@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code FLOAT} type.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLFloat
     extends SQLDataType, ParametrizableDataType

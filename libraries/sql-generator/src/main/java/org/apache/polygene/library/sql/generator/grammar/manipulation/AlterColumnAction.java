@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is common interface for column alteration actions.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface AlterColumnAction
     extends Typeable<AlterColumnAction>
@@ -33,7 +33,7 @@ public interface AlterColumnAction
     /**
      * This syntax element represents dropping column default in table alteration statement.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     final class DropDefault
         implements AlterColumnAction

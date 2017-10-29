@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
  * This syntax element represents the join based on same-named columns in two tables having same value. Used in
  * {@link QualifiedJoinedTable}.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface NamedColumnsJoin
     extends JoinSpecification

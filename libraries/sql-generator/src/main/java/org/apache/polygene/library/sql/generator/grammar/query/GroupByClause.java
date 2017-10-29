@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This syntax element represents the {@code GROUP BY} clause in {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface GroupByClause
     extends Typeable<GroupByClause>

@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query.joins;
 /**
  * This syntax element represents the {@code UNION JOIN} between two tables.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface UnionJoinedTable
     extends JoinedTable

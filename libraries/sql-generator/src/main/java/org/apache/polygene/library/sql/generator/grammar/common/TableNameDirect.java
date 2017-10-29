@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 /**
  * A direct table name may be just table name, or schema-qualified table name.
  *
- * @author Stanislav Muhametsin
  */
 public interface TableNameDirect
     extends TableName

@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SetQuantifier;
 /**
  * This is common interface for columns of {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface SelectColumnClause
     extends Typeable<SelectColumnClause>

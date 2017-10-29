@@ -53,7 +53,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 /**
  * A factory for creating various {@link BooleanExpression}s. This factory is obtainable from {@link SQLVendor}.
  *
- * @author Stanislav Muhametsin
  * @see SQLVendor
  */
 public interface BooleanFactory

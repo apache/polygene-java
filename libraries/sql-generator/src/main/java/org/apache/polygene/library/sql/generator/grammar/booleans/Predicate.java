@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * A common interfaces for predicates (boolean expressions not containing other boolean expressions).
  *
- * @author Stanislav Muhametsin
  */
 public interface Predicate
     extends BooleanExpression
@@ -32,7 +31,6 @@ public interface Predicate
      * encountered inside {@link Conjunction} or {@link Disjunction}, their operator is omitted. So, <i>empty
      * predicate</i> {@code AND} <i>something</i> becomes just <i>something</i>.
      *
-     * @author Stanislav Muhametsin
      */
     final class EmptyPredicate
         implements Predicate

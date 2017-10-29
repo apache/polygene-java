@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 /**
  * This syntax element represents the sort specification used in {@code ORDER BY} clause.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface SortSpecification
     extends Typeable<SortSpecification>

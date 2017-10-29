@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * A negation ({@code NOT} x) of a boolean expression.
  *
- * @author Stanislav Muhametsin
  */
 public interface Negation
     extends ComposedBooleanExpression

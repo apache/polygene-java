@@ -28,7 +28,6 @@ import org.apache.polygene.library.sql.generator.grammar.modification.TargetTabl
  * This builder builds statements deleting rows matching search condition ({@code DELETE FROM} table {@code [WHERE}
  * searchCondition {@code ]}).
  *
- * @author Stanislav Muhametsin
  * @see TargetTable
  * @see BooleanBuilder
  */

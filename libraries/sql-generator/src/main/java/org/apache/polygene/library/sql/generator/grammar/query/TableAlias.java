@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
 /**
  * This syntax element represents the alias for a table. Table alias may have additional list of column aliases.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface TableAlias
     extends Typeable<TableAlias>

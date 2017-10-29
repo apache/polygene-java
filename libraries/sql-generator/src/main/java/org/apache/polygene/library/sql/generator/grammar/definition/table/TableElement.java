@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This is a common interface for table elements in the table element list of table definition. It is usually column
  * definition.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  * @see ColumnDefinition
  */

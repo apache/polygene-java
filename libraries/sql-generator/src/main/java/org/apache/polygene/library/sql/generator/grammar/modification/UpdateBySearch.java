@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpress
 /**
  * This syntax element represents {@code UPDATE} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface UpdateBySearch
     extends UpdateStatement

@@ -26,7 +26,6 @@ import org.apache.polygene.library.sql.generator.grammar.manipulation.ObjectType
 import org.apache.polygene.library.sql.generator.grammar.manipulation.pgsql.PgSQLDropTableOrViewStatement;
 
 /**
- * @author Stanislav Muhametsin
  */
 public interface PgSQLManipulationFactory
     extends ManipulationFactory

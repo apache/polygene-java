@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * This syntax element represents dropping a column from a table in table alteration statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropColumnDefinition
     extends AlterTableAction, DropBehaviourContainer

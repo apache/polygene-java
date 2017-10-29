@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinedTable
 /**
  * This is common interface for a queries and joined tables.
  *
- * @author Stanislav Muhametsin
+ *
  * @see QueryExpressionBodyActual
  * @see JoinedTable
  */
@@ -36,7 +36,7 @@ public interface QueryExpressionBody
      * This syntax element represents the empty query expression body. It is defined for convenience. For example, an
      * {@code UNION} (or any other set operation) between empty query and another query is always just another query.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     final class EmptyQueryExpressionBody
         implements QueryExpressionBody

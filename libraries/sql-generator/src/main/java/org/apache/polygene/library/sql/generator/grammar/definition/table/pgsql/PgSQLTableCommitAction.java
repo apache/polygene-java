@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableC
  * This class extends the default table commit actions ({@code PRESERVE/DELETE ROWS}) to include third option,
  * {@code DROP}, supported in PostgreSQL.
  *
- * @author Stanislav Muhametsin
  */
 public class PgSQLTableCommitAction
 {

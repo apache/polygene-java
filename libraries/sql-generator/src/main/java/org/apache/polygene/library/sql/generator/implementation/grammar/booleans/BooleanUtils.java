@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.ComposedBoolea
 import org.apache.polygene.library.sql.generator.grammar.booleans.Predicate.EmptyPredicate;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class BooleanUtils
 {

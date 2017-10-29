@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * The interface for syntax element representing the test for uniqueness ({@code UNIQUE} sub-query).
  *
- * @author Stanislav Muhametsin
  */
 public interface UniquePredicate
     extends UnaryPredicate

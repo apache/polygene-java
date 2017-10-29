@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.view;
 /**
  * View check option is typically either {@link #CASCADED} or {@link #LOCAL}.
  *
- * @author Stanislav Muhametsin
  */
 public final class ViewCheckOption
 {

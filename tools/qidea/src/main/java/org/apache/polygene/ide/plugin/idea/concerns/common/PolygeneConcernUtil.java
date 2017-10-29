@@ -36,7 +36,6 @@ import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearch
 import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcernConstants.*;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneConcernUtil

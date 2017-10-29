@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
  * This syntax element represents the column reference in {@code SELECT <column reference>} clause, where the column
  * reference is column name, either with table name or without.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface ColumnReferenceByName
     extends ColumnReference

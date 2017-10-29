@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * Common interface for columns in expression {@code SELECT <column1>, <column2>, ...}.
  *
- * @author Stanislav Muhametsin
+ *
  * @see ColumnReferenceByName
  * @see ColumnReferenceByExpression
  */

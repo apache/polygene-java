@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinConditi
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class JoinConditionImpl extends JoinSpecificationImpl<JoinCondition>
     implements JoinCondition

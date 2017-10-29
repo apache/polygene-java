@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class PgSQLDataTypeFactoryImpl extends DefaultDataTypeFactory
     implements PgSQLDataTypeFactory

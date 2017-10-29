@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.vendor;
  * This is vendor for MySQL database. MySQL typically does not understand schema-qualified names, so this vendor doesn't
  * process any schema name it encounters when creating a SQL string.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface MySQLVendor
     extends SQLVendor

@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SQLStatement;
  * {@link SQLVendor#toString(SQLStatement)} method when the vendor encounters a
  * SQL syntax element that the vendor doesn't understand.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public class UnsupportedElementException extends RuntimeException
 {

@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
 /**
  * This syntax element represents the sub-query which acts as a table in {@code FROM} clause.
  *
- * @author Stanislav Muhametsin
+ *
  * @see FromClause
  * @see QueryExpression
  */

@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
 /**
  * This syntax element represents the column name list in view definition.
  *
- * @author Stanislav Muhametsin
  * @see ViewDefinition
  */
 public interface RegularViewSpecification

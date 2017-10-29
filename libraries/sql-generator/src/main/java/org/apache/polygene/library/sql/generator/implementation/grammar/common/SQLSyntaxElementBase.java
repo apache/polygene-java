@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public abstract class SQLSyntaxElementBase<BaseInterfaceType extends Typeable<?>, ActualInterfaceType extends BaseInterfaceType>
     extends TypeableImpl<BaseInterfaceType, ActualInterfaceType>

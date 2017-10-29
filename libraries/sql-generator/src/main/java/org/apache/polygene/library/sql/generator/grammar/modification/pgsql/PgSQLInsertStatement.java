@@ -27,11 +27,10 @@ import org.apache.polygene.library.sql.generator.grammar.query.SelectColumnClaus
  * This interface represents {@code INSERT} statement with PostgreSQL-specific elements.
  * </p>
  * <p>
- * <p>
  * TODO: {@code WITH RECURSIVE} query
  * </p>
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface PgSQLInsertStatement extends InsertStatement
 {

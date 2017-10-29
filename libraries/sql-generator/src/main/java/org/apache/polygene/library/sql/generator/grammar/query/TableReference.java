@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinedTable
 /**
  * This is common interface for all table references in {@code FROM} clause.
  *
- * @author Stanislav Muhametsin
+ *
  * @see FromClause
  * @see TableReferencePrimary
  * @see JoinedTable

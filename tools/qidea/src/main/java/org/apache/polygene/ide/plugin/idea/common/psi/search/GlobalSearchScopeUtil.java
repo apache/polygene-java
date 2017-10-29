@@ -31,7 +31,6 @@ import static com.intellij.openapi.module.ModuleUtil.findModuleForPsiElement;
 import static org.apache.polygene.ide.plugin.idea.common.vfs.VirtualFileUtil.getVirtualFile;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public class GlobalSearchScopeUtil

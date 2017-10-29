@@ -29,7 +29,6 @@ package org.apache.polygene.library.alarm;
  * Virtual Machine, there are situations when the sequence of <i>old state</i>
  * and <i>new state</i> in <code>AlarmEvents</code> will not match.
  *
- * @author Niclas Hedhman
  */
 public interface AlarmListener
 {

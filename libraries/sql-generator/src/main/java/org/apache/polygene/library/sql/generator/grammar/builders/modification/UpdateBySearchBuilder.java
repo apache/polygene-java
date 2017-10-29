@@ -30,7 +30,6 @@ import org.apache.polygene.library.sql.generator.grammar.modification.UpdateBySe
  * This builder builds statements updating rows matching search condition ({@code UPDATE} table {@code SET} set-clauses
  * {@code [WHERE} searchCondition {@code ]}).
  *
- * @author Stanislav Muhametsin
  * @see SetClause
  * @see BooleanBuilder
  */

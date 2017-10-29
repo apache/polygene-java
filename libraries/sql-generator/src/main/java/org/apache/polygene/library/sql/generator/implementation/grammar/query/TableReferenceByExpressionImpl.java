@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.TableReferenceByE
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class TableReferenceByExpressionImpl extends TableReferencePrimaryImpl<TableReferenceByExpression>
     implements TableReferenceByExpression

@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SchemaManipulati
 /**
  * This is a common interface for {@code DROP} statements.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropStatement
     extends SchemaManipulationStatement, DropBehaviourContainer

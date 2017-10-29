@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
  * The interface for syntax element representing {@code <X> IS [NOT] (TRUE | FALSE | UNKNOWN)} expression (boolean
  * test), where {@code <X>} is some boolean expression.
  *
- * @author Stanislav Muhametsin
  */
 public interface BooleanTest
     extends ComposedBooleanExpression
@@ -31,7 +30,6 @@ public interface BooleanTest
     /**
      * The type of the test.
      *
-     * @author Stanislav Muhametsin
      */
     final class TestType
     {
@@ -50,7 +48,6 @@ public interface BooleanTest
     /**
      * The tested truth value.
      *
-     * @author Stanislav Muhametsin
      */
     final class TruthValue
     {

@@ -29,7 +29,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QuerySpecificatio
  * The builder that builds the SQL queries having {@code UNION}, {@code INTERSECT}, or {@code EXCEPT} between the
  * {@code SELECT} statements.
  *
- * @author Stanislav Muhametsin
  * @see QueryExpressionBody
  * @see QuerySpecification
  * @see QuerySpecificationBuilder

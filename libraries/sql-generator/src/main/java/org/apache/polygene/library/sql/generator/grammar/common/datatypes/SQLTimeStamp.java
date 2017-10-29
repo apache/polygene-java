@@ -20,21 +20,18 @@
 package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 
 /**
- * @author Stanislav Muhametsin
  */
 public interface SQLTimeStamp
     extends SQLDataType, ParametrizableDataType
 {
 
     /**
-     * Returns the precision for this {@code TIMESTAMP}. May be {@code null}.
-     *
-     * @return The precision for this {@code TIMESTAMP}.
+     * @return the precision for this {@code TIMESTAMP}. May be {@code null}.
      */
     Integer getPrecision();
 
     /**
-     * Returns whether the {@code TIMESTAMP} should be with time zone. May be {@code null} if no choice specified.
+     * @return whether the {@code TIMESTAMP} should be with time zone. May be {@code null} if no choice specified.
      */
     Boolean isWithTimeZone();
 }

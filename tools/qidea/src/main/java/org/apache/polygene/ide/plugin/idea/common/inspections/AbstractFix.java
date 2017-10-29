@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResourceBundle.message;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public abstract class AbstractFix

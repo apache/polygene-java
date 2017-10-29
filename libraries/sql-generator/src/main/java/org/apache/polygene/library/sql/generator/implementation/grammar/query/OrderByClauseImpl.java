@@ -29,7 +29,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.S
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class OrderByClauseImpl extends SQLSyntaxElementBase<OrderByClause, OrderByClause>
     implements OrderByClause

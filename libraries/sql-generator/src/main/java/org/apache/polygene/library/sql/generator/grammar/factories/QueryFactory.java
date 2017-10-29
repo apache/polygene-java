@@ -50,7 +50,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
  * A factory, which creates builders and syntax elements for SQL queries ({@code SELECT} statements). This factory may
  * be obtained from {@link SQLVendor}.
  *
- * @author Stanislav Muhametsin
  * @see SQLVendor
  * @see QueryExpression
  * @see QuerySpecification

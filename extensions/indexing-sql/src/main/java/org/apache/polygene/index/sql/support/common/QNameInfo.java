@@ -40,7 +40,6 @@ import org.apache.polygene.api.property.PropertyDescriptor;
  * A helper interface to encapsulate information about qualified name and how it appears in
  * database.
  *
- * @author Stanislav Muhametsin
  */
 public final class QNameInfo
 {

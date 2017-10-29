@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
 /**
  * This syntax element represents subquery in {@code VALUES} expression in query.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface RowSubQuery
     extends RowValueConstructor

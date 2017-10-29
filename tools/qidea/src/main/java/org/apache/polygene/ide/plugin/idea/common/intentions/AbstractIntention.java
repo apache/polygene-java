@@ -35,7 +35,6 @@ import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResour
 /**
  * This class is based from {@code com.siyeh.ipp.base.Intention}
  *
- * @author edward.yakop@gmail.com
  */
 public abstract class AbstractIntention extends PsiElementBaseIntentionAction
 {

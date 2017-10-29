@@ -41,7 +41,6 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for SequencingConcern.
  *
- * @author Alin Dreghiciu
  */
 public class SequencingConcernTest
 {

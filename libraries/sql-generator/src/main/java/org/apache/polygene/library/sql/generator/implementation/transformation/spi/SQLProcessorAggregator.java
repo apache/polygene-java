@@ -23,7 +23,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public interface SQLProcessorAggregator
 {

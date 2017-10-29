@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
 /**
  * This syntax element represents the constraint definition for a table.
  *
- * @author Stanislav Muhametsin
  * @see TableElement
  * @see TableDefinition
  * @see TableConstraint

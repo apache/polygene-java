@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This syntax elements represents either subquery or parenthesized row definition of {@code VALUES} expression in
  * query.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface RowValueConstructor
     extends Typeable<RowValueConstructor>

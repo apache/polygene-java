@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLDat
 import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public final class NumericImpl extends TypeableImpl<SQLDataType, Numeric>
     implements Numeric

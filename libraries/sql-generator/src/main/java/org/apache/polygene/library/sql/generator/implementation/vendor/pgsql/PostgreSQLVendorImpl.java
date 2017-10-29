@@ -32,7 +32,7 @@ import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class PostgreSQLVendorImpl extends DefaultVendor
     implements PostgreSQLVendor

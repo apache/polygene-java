@@ -30,7 +30,7 @@ import static org.apache.polygene.ide.plugin.idea.injections.structure.common.Po
 import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult.*;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class PolygeneStructureAnnotationUtil

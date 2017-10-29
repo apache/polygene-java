@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class TableNameDirectImpl extends TableNameImpl<TableNameDirect>
     implements TableNameDirect

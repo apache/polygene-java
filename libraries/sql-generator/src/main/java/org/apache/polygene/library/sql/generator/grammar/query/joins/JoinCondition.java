@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpress
 /**
  * This syntax element represents the join condition, used in {@link QualifiedJoinedTable}.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface JoinCondition
     extends JoinSpecification

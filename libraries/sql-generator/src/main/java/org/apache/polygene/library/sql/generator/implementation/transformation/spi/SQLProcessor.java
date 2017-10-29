@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.implementation.transformation.
 import org.apache.polygene.library.sql.generator.Typeable;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public interface SQLProcessor
 {

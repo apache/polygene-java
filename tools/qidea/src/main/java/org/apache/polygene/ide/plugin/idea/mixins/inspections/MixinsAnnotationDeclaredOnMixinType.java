@@ -33,7 +33,7 @@ import static org.apache.polygene.ide.plugin.idea.common.resource.PolygeneResour
 import static org.apache.polygene.ide.plugin.idea.mixins.common.PolygeneMixinUtil.getMixinsAnnotation;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class MixinsAnnotationDeclaredOnMixinType extends AbstractInspection

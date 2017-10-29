@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * A common interface for all predicates accepting more than two expressions.
  *
- * @author Stanislav Muhametsin
  */
 public interface MultiPredicate
     extends Predicate

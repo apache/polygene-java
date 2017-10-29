@@ -26,7 +26,6 @@ import org.apache.polygene.library.sql.generator.grammar.factories.DataTypeFacto
  * methods provided by your vendor's data type factory (most likely sub-interface of {@link DataTypeFactory}) instead of
  * using this interface. However, when data type is dynamically created, it is quite a must to use this type.
  *
- * @author Stanislav Muhametsin
  */
 public interface UserDefinedType
     extends SQLDataType

@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinType;
 /**
  * The builder to build joined tables. A joined table contains 0 or more joins.
  *
- * @author Stanislav Muhametsin
  * @see TableReference
  */
 public interface TableReferenceBuilder

@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
  * This class represents {@code CHARACTER} and {@code CHARACTER VARYING} data types, typically abbreviated as
  * {@code CHAR} and {@code VARCHAR}, respectively.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLChar
     extends SQLDataType, ParametrizableDataType

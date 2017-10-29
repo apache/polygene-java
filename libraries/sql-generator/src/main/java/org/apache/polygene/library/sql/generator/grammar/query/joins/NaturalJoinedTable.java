@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query.joins;
 /**
  * This syntax element represents the {@code NATURAL JOIN} between two tables.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface NaturalJoinedTable
     extends JoinedTable

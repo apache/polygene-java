@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
 /**
  * A common interface for column sources with named columns for {@code INSERT INTO} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DynamicColumnSource
     extends ColumnSource

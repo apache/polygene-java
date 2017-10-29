@@ -37,7 +37,6 @@ import static java.util.Arrays.asList;
  * {@code AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection} is a helper method to check whether
  * injection annotation are declared in either constructor or non static field.
  *
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public abstract class AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection

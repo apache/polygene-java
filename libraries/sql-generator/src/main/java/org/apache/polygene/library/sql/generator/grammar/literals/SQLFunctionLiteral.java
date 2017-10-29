@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 /**
  * This syntax element encapsulates reference to some SQL function to be inserted into SQL statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLFunctionLiteral
     extends LiteralExpression

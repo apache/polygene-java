@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * The interface for syntax element representing the test of left value being greater than right value (x {@code >} y).
  *
- * @author Stanislav Muhametsin
  */
 public interface GreaterThanPredicate
     extends BinaryPredicate

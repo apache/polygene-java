@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This is common interface for syntax elements representing the data source for columns in {@code INSERT INTO}
  * statement.
  *
- * @author Stanislav Muhametsin
+ *
  * @see InsertStatement
  */
 public interface ColumnSource
@@ -34,7 +34,7 @@ public interface ColumnSource
     /**
      * This syntax element represents when default values of columns are wanted to be inserted into table.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     final class Defaults
         implements ColumnSource

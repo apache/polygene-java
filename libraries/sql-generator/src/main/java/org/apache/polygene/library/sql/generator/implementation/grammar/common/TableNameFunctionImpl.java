@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.literals.SQLFunctionLit
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public class TableNameFunctionImpl extends TableNameImpl<TableNameFunction>
     implements TableNameFunction

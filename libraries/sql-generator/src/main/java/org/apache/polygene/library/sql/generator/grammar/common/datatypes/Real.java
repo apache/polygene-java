@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code REAL} data type.
  *
- * @author Stanislav Muhametsin
  */
 public interface Real
     extends SQLDataType

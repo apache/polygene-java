@@ -28,7 +28,6 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public class PsiAnnotationUtil

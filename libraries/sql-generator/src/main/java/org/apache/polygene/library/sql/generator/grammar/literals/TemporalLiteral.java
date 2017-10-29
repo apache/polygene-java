@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.literals;
 /**
  * This syntax element represents any literal that represents some kind of time.
  *
- * @author 2011 Stanislav Muhametsin
  * @see TimestampTimeLiteral
  */
 public interface TemporalLiteral

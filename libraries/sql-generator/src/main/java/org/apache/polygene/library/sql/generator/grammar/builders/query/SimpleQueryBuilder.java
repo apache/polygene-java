@@ -30,7 +30,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
  * This is builder to quickly create simple queries, without the generic and not-so-easy-to-use methods of traditional
  * {@link QuerySpecificationBuilder} + {@link QueryFactory} style. Using this builder is generally not thread-safe.
  *
- * @author Stanislav Muhametsin
  */
 public interface SimpleQueryBuilder
     extends AbstractQueryBuilder<QueryExpression>

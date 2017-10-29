@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code BIGINT} type (typically 64-bit integer).
  *
- * @author Stanislav Muhametsin
  */
 public interface BigInt
     extends SQLDataType

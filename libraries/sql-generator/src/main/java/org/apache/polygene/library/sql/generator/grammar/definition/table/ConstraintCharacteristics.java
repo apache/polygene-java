@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
  * This enum represents three different policies for checking constraints time. These policies are
  * {@link #INITIALLY_IMMEDIATE_DEFERRABLE}, {@link #INITIALLY_DEFERRED_DEFERRABLE}, and {@link #NOT_DEFERRABLE}.
  *
- * @author Stanislav Muhametsin
  */
 public final class ConstraintCharacteristics
 {

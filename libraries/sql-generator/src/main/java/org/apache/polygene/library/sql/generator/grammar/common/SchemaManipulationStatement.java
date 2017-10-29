@@ -20,7 +20,6 @@
 package org.apache.polygene.library.sql.generator.grammar.common;
 
 /**
- * @author Stanislav Muhametsin
  */
 public interface SchemaManipulationStatement
     extends SchemaStatement

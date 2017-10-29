@@ -34,7 +34,6 @@ import org.apache.polygene.ide.plugin.idea.common.inspections.AbstractInspection
 import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public abstract class AbstractInjectionAnnotationDeclarationOnFieldInspection extends AbstractInspection

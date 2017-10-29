@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.UserDe
 import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class UserDefinedTypeImpl extends TypeableImpl<SQLDataType, UserDefinedType>
     implements UserDefinedType

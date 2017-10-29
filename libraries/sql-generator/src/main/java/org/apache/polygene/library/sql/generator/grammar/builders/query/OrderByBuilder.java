@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.SortSpecification
 /**
  * The builder that builds the {@code ORDER BY} clause in SQL {@code SELECT} query.
  *
- * @author Stanislav Muhametsin
  * @see OrderByClause
  * @see SortSpecification
  */

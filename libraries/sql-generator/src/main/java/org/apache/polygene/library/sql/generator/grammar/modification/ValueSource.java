@@ -28,7 +28,7 @@ public class ValueSource
      * This syntax element represents the {@code DEFAULT} keyword as data source for column, meaning
      * to use the default value for the column.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     public static final class Default
         implements ValueExpression
@@ -56,7 +56,7 @@ public class ValueSource
      * This syntax element represents the {@code NULL} keyword as data source for column, meaning to
      * use the {@code NULL} value for the column.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     public static final class Null
         implements ValueExpression

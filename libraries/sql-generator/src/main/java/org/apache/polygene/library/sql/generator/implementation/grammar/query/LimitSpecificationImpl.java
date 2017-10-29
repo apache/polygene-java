@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.S
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public class LimitSpecificationImpl extends SQLSyntaxElementBase<LimitSpecification, LimitSpecification>
     implements LimitSpecification

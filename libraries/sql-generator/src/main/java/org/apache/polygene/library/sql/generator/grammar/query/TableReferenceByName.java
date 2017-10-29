@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableName;
 /**
  * This syntax element represents the reference to a table in {@code FROM} clause.
  *
- * @author Stanislav Muhametsin
+ *
  * @see TableName
  */
 public interface TableReferenceByName

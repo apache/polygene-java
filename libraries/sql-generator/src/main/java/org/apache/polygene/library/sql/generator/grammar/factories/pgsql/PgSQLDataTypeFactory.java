@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.factories.DataTypeFacto
 /**
  * This is factory for creating SQL pre-defined types, as well as types specific for PostgreSQL.
  *
- * @author Stanislav Muhametsin
  */
 public interface PgSQLDataTypeFactory
     extends DataTypeFactory

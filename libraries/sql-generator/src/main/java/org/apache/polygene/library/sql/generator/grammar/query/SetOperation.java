@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
  * This enum represents the possible set operations to combine queries with. These set operations are {@link #UNION},
  * {@link #INTERSECT}, and {@link #EXCEPT}.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public final class SetOperation
 {

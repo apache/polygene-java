@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SetQuantifier;
  * This syntax element represents two queries which have a set operation ({@code UNION}, {@code INTERSECT}, or
  * {@code EXCEPT}) between them.
  *
- * @author Stanislav Muhametsin
+ *
  * @see SetOperation
  */
 public interface QueryExpressionBodyBinary

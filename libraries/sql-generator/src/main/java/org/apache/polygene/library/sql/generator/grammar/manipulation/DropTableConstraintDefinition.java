@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * This syntax element represents dropping a table constraint in table alteration statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropTableConstraintDefinition
     extends AlterTableAction, DropBehaviourContainer

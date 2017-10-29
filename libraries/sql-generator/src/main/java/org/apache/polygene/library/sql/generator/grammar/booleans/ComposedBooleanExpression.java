@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * A common interface for all boolean expressions composing of other boolean expressions.
  *
- * @author Stanislav Muhametsin
  */
 public interface ComposedBooleanExpression
     extends BooleanExpression, Iterable<BooleanExpression>

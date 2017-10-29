@@ -30,7 +30,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * This is a builder for {@code CREATE VIEW} statements.
  *
- * @author Stanislav Muhametsin
  * @see ViewDefinition
  */
 public interface ViewDefinitionBuilder

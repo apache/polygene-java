@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
  * This enum represents the three different ways of matching foreign keys. May be {@link #FULL}, {@link #PARTIAL}, or
  * {@link #SIMPLE}.
  *
- * @author Stanislav Muhametsin
  */
 public final class MatchType
 {

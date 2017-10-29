@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.literals;
 /**
  * This syntax element encapsulates reference to some number to be inserted into SQL statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface NumericLiteral
     extends LiteralExpression

@@ -19,7 +19,6 @@
 package org.apache.polygene.ide.plugin.idea.injections.invocation.common;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneInvocationAnnotationConstants

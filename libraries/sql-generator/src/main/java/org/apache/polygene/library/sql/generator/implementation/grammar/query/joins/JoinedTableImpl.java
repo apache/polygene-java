@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.query.Qu
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class JoinedTableImpl<TableReferenceType extends JoinedTable> extends
                                                                               QueryExpressionBodyImpl<TableReferenceType>

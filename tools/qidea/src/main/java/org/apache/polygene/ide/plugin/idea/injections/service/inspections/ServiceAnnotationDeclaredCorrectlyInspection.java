@@ -38,7 +38,7 @@ import static org.apache.polygene.ide.plugin.idea.injections.structure.common.Po
 /**
  * {@code ServiceAnnotationDeclaredCorrectly} validates {@code @Service} injection annotation declaration.
  *
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public class ServiceAnnotationDeclaredCorrectlyInspection

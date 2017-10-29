@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLDat
 /**
  * This syntax element represents the column definition of the table definition statement.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public interface ColumnDefinition

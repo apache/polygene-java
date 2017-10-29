@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.literals.NumericLiteral
 import org.apache.polygene.library.sql.generator.grammar.query.LimitSpecification;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public interface AbstractQueryBuilder<ExpressionType>
     extends AbstractBuilder<ExpressionType>

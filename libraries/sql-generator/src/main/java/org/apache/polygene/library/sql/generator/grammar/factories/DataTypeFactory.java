@@ -40,7 +40,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableD
 /**
  * This is factory for creating SQL data types. Typically required when defining tables.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public interface DataTypeFactory

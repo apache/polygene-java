@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This is a common interface for table source in table definition (in most cases, it is a comma-separated list of
  * column definitions).
  *
- * @author Stanislav Muhametsin
  */
 public interface TableContentsSource
     extends Typeable<TableContentsSource>

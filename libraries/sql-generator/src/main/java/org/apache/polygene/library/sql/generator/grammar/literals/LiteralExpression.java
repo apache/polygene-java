@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * This is common interface for all literal expressions.
  *
- * @author Stanislav Muhametsin
  */
 public interface LiteralExpression
     extends NonBooleanExpression

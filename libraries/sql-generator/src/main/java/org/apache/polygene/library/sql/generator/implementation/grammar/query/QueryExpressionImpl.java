@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.N
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class QueryExpressionImpl extends NonBooleanExpressionImpl<QueryExpression>
     implements QueryExpression

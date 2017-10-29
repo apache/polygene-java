@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.manipulation.ObjectType
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class DropSchemaStatementImpl extends DropStatementImpl<DropSchemaStatement>
     implements DropSchemaStatement

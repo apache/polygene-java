@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 /**
  * This syntax element represents the target table of {@code DELETE FROM} and {@code UPDATE} statements.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface TargetTable
     extends Typeable<TargetTable>

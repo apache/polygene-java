@@ -30,7 +30,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.SelectColumnClaus
 /**
  * This builder builds the columns for {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
  * @see SelectColumnClause
  * @see QuerySpecification
  * @see ColumnReference

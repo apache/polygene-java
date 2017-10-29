@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * A common interface for all boolean expressions requiring exactly one value expression.
  *
- * @author Stanislav Muhametsin
  */
 public interface UnaryPredicate
     extends Predicate

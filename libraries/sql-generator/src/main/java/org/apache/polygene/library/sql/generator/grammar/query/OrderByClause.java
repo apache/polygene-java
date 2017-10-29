@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This syntax element represents the {@code ORDER BY} clause of {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface OrderByClause
     extends Typeable<OrderByClause>

@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ColumnSourceByQueryImpl extends DynamicColumnSourceImpl<ColumnSourceByQuery>
     implements ColumnSourceByQuery

@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
 /**
  * This syntax element represents the asterisk in expression {@code SELECT} *.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface AsteriskSelect
     extends SelectColumnClause

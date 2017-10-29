@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.P
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ManipulationProcessing
 {

@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.N
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class QueryExpressionBodyImpl<ExpressionType extends QueryExpressionBody> extends
                                                                                           NonBooleanExpressionImpl<ExpressionType>

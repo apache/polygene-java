@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class NonBooleanExpressionImpl<ExpressionType extends NonBooleanExpression> extends
                                                                                             SQLSyntaxElementBase<ValueExpression, ExpressionType>

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provides easy way of acquiring vendors for specific databases.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public class SQLVendorProvider
 {

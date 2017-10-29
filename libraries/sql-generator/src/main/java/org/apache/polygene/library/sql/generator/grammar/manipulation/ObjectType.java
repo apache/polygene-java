@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
  * Object type is used in generalized {@code DROP} statement to define what to drop. It is usually one of
  * {@link #SCHEMA}, {@link #TABLE}, or {@link #VIEW}.
  *
- * @author Stanislav Muhametsin
+ *
  * @see DropStatement
  */
 public final class ObjectType

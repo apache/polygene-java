@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents {@code DOUBLE PRECISION} data type.
  *
- * @author Stanislav Muhametsin
  */
 public interface DoublePrecision
     extends SQLDataType

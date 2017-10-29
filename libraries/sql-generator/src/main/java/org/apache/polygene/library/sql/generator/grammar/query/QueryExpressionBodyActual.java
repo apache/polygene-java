@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
  * This is common interface for a query, which is either one {@code SELECT} statement, or many {@code SELECT} statements
  * joined together with {@link SetOperation}s.
  *
- * @author Stanislav Muhametsin
+ *
  * @see QuerySpecification
  */
 public interface QueryExpressionBodyActual

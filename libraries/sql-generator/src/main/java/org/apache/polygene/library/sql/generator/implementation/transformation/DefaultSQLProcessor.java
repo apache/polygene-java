@@ -221,7 +221,7 @@ import org.apache.polygene.library.sql.generator.vendor.UnsupportedElementExcept
  * processors for nearly all default syntax elements, and a way to easily extend this class in order
  * to add custom processors, or replace default processors with custom ones.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public class DefaultSQLProcessor
     implements SQLProcessorAggregator

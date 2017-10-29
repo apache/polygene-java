@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.Conjunction;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ConjunctionImpl extends ComposedBooleanExpressionImpl<Conjunction>
     implements Conjunction

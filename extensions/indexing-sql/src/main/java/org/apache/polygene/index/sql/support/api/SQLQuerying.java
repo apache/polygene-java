@@ -32,7 +32,6 @@ import org.apache.polygene.spi.query.EntityFinderException;
  * This interface provides parsing support from Polygene queries to SQL queries. The idea is that this interface produces
  * SQL which can be used when creating a {@link PreparedStatement}.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLQuerying
 {

@@ -37,7 +37,6 @@ import org.junit.Test;
  * <p>
  * TODO how to actually verify queries? Currently this only outputs them.
  *
- * @author Stanislav Muhametsin
  */
 public abstract class AbstractQueryTest extends AbstractSQLSyntaxTest
 {

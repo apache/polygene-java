@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.builders.query.QuerySpe
 /**
  * This syntax element represents the single {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
+ *
  * @see QuerySpecificationBuilder
  * @see SelectColumnClause
  * @see FromClause

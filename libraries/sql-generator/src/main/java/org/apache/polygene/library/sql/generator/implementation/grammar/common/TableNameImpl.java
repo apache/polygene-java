@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public class TableNameImpl<TableNameType extends TableName> extends SQLSyntaxElementBase<TableName, TableNameType>
     implements TableName

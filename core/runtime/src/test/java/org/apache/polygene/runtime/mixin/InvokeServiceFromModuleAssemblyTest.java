@@ -31,7 +31,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import static org.junit.Assert.fail;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class InvokeServiceFromModuleAssemblyTest
     extends AbstractPolygeneTest

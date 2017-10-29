@@ -31,7 +31,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableS
 /**
  * This is the builder for table definition statements ({@code CREATE TABLE} ...).
  *
- * @author Stanislav Muhametsin
  */
 public interface TableDefinitionBuilder
     extends AbstractBuilder<TableDefinition>

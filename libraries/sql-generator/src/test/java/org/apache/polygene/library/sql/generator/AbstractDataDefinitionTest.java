@@ -29,7 +29,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.junit.Test;
 
 /**
- * @author Stanislav Muhametsin
  */
 public abstract class AbstractDataDefinitionTest extends AbstractSQLSyntaxTest
 {

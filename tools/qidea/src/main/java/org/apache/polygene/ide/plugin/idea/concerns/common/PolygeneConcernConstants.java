@@ -21,7 +21,6 @@ package org.apache.polygene.ide.plugin.idea.concerns.common;
 import org.jetbrains.annotations.NonNls;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneConcernConstants

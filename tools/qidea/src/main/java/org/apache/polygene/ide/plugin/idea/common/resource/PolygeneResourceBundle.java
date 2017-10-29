@@ -27,7 +27,6 @@ import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneResourceBundle

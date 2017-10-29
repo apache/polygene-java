@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 /**
  * This class represents {@code TIMESTAMP} data type.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public final class SQLTimeStampImpl extends TypeableImpl<SQLDataType, SQLTimeStamp>
     implements SQLTimeStamp

@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ColumnNameList;
  * This syntax element represents the {@code CORRESPONDING BY} clause in {@code UNION}, {@code INTERSECT}, and
  * {@code EXCEPT} operations on queries.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface CorrespondingSpec
     extends Typeable<CorrespondingSpec>

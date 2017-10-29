@@ -36,7 +36,7 @@ import static org.apache.polygene.ide.plugin.idea.common.psi.search.GlobalSearch
 import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectConstants.*;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class PolygeneSideEffectUtil

@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Properties;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public abstract class AbstractCreateElementActionBase extends CreateElementActionBase

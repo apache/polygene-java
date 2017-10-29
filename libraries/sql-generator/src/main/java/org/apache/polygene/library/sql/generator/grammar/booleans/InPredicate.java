@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
  * The interface for syntax element representing the test of something being one of the specified set of values (x
  * {@code IN (}y, z, {@code ...)}).
  *
- * @author Stanislav Muhametsin
  */
 public interface InPredicate
     extends MultiPredicate

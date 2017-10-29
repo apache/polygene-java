@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * The interface for syntax element representing inequality test (x {@code <>} y).
  *
- * @author Stanislav Muhametsin
  */
 public interface NotEqualsPredicate
     extends BinaryPredicate

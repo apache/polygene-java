@@ -41,7 +41,6 @@ import org.apache.polygene.library.sql.generator.grammar.manipulation.SetColumnD
  * This is factory for creating builders and syntax elements related to SQL Data Manipulation (typically {@code ALTER}
  * and {@code DROP} statements).
  *
- * @author Stanislav Muhametsin
  */
 public interface ManipulationFactory
 {

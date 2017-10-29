@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
  * This syntax element represents the column reference in {@code SELECT <column reference>} clause, where the column
  * reference is some kind of expression (for example, a constant, or a query).
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface ColumnReferenceByExpression
     extends ColumnReference

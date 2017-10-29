@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 /**
  * This syntax element represents column source acquired by some query, for {@code INSERT INTO} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface ColumnSourceByQuery
     extends DynamicColumnSource

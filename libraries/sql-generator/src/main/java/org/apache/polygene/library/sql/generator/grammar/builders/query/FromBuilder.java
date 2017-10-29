@@ -28,7 +28,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.TableReference;
  * The builder that builds the {@code FROM} clause in SQL {@code SELECT} query. It treats {@code FROM} clause as a list
  * of {@link TableReference}s, and acts as aggregator for {@link TableReferenceBuilder}s.
  *
- * @author Stanislav Muhametsin
  * @see TableReference
  * @see TableReferenceBuilder
  */

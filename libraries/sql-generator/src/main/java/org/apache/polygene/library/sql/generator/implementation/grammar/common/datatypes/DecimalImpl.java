@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLDat
 import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public final class DecimalImpl extends TypeableImpl<SQLDataType, Decimal>
     implements Decimal

@@ -30,7 +30,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * @param <RealImplementedType> The actual, possibly extended in other project, type of API interface or class. This is
  *                              useful when one has a complex and extendable type hierarchy and wants the implementation class to be
  *                              extendable as well.
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class TypeableImpl<ImplementedType extends Typeable<?>, RealImplementedType extends ImplementedType>
     implements Typeable<ImplementedType>

@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
  * This is common interface for all SQL data types. The data types provided in this project cover most of of SQL
  * predefined types, however each vendor may extend these with their own custom types.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLDataType
     extends Typeable<SQLDataType>

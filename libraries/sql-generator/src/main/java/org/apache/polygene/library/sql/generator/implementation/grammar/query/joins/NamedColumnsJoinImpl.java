@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.NamedColumn
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class NamedColumnsJoinImpl extends JoinSpecificationImpl<NamedColumnsJoin>
     implements NamedColumnsJoin

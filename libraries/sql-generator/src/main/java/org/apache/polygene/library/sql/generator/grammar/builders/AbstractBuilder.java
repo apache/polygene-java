@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.builders;
  * A common interface for all builders.
  *
  * @param <ExpressionType> The type of the expression being built.
- * @author Stanislav Muhametsin
  */
 public interface AbstractBuilder<ExpressionType>
 {

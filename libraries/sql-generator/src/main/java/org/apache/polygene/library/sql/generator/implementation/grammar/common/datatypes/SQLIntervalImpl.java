@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.datatypes.SQLInt
 import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class SQLIntervalImpl extends TypeableImpl<SQLDataType, SQLInterval>
     implements SQLInterval

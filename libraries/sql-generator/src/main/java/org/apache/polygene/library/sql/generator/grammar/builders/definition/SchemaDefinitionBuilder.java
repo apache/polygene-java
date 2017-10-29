@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.schema.Schem
 /**
  * This is builder interface for creating schema definition statements ({@code CREATE SCHEMA} ...).
  *
- * @author Stanislav Muhametsin
  */
 public interface SchemaDefinitionBuilder
     extends AbstractBuilder<SchemaDefinition>

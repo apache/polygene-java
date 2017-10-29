@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SQLStatement;
 /**
  * A common interface for all statements deleting data from tables.
  *
- * @author Stanislav Muhametsin
+ *
  * @see DeleteBySearch
  */
 public interface DeleteStatement

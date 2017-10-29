@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 /**
  * A container for common textual constants of SQL language.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLConstants
 {

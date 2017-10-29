@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanTest;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class BooleanTestImpl extends ComposedBooleanExpressionImpl<BooleanTest>
     implements BooleanTest

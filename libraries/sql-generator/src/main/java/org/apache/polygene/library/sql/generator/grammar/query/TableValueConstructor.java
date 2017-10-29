@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * This syntax element represents the {@code VALUES} expression in query.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface TableValueConstructor
     extends QueryExpressionBodyActual

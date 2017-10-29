@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 import org.apache.polygene.library.sql.generator.Typeable;
 
 /**
- * @author Stanislav Muhametsin
  */
 public interface SchemaStatement
     extends Typeable<SchemaStatement>, SQLStatement

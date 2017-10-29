@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is a common interface for all table constraints.
  *
- * @author Stanislav Muhametsin
  * @see TableConstraintDefinition
  * @see TableDefinition
  */

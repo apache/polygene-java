@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code SMALLINT} type (typically 16-bit integer).
  *
- * @author Stanislav Muhametsin
  */
 public interface SmallInt
     extends SQLDataType

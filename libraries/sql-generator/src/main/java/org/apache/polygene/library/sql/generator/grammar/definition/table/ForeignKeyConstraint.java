@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 /**
  * This syntax element represents the {@code FOREIGN KEY(col1, col2, ...) ...} table constraint in table definition.
  *
- * @author Stanislav Muhametsin
  * @see TableConstraint
  * @see TableDefinition
  */

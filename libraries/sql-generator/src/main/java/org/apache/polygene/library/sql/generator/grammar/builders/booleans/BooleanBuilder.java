@@ -26,7 +26,6 @@ import org.apache.polygene.library.sql.generator.grammar.builders.AbstractBuilde
  * A builder-pattern interface to build boolean expressions. It holds the current expression, modifying it as per user's
  * instructions, and returns it once the {@link #createExpression()} method is called.
  *
- * @author Stanislav Muhametsin
  */
 public interface BooleanBuilder
     extends AbstractBuilder<BooleanExpression>

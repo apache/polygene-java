@@ -27,7 +27,7 @@ import org.apache.polygene.library.sql.generator.grammar.factories.pgsql.PgSQLMa
  * {@code LIMIT} and {@code OFFSET} clauses), and this vendor gives access to factory, which enables the creation of
  * these elements.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface PostgreSQLVendor
     extends SQLVendor

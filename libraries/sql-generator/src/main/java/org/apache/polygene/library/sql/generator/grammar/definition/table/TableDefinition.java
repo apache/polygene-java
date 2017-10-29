@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.schema.Schem
 /**
  * This syntax element represents the table definition ({@code CREATE TABLE }) statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface TableDefinition
     extends SchemaDefinitionStatement, SchemaElement

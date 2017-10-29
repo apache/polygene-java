@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinedTable
 /**
  * This syntax element represents the {@code FROM} clause in {@code SELECT} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface FromClause
     extends Typeable<FromClause>

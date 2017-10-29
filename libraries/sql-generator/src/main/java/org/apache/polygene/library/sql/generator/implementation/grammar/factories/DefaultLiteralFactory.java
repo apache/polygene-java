@@ -38,7 +38,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class DefaultLiteralFactory extends SQLFactoryBase
     implements LiteralFactory

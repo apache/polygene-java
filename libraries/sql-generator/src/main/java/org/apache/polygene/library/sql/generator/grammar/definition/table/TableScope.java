@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
  * This enum is for table scope in table definition. The scope may be either {@link #GLOBAL_TEMPORARY} or
  * {@link #LOCAL_TEMPORARY}.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public final class TableScope

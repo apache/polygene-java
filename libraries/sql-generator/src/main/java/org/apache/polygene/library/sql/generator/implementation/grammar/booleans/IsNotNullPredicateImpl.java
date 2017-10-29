@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class IsNotNullPredicateImpl extends UnaryPredicateImpl<IsNotNullPredicate>
     implements IsNotNullPredicate

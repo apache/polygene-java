@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This is marker interface for SQL data types which may be parametrized (like, {@code DECIMAL} or {@code VARCHAR}).
  *
- * @author Stanislav Muhametsin
  */
 public interface ParametrizableDataType
 {

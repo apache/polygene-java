@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents the {@code DATE} data type.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLDate
     extends SQLDataType

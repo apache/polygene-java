@@ -29,7 +29,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.manipula
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class PgSQLDropTableOrViewStatementImpl extends DropTableOrViewStatementImpl
     implements PgSQLDropTableOrViewStatement

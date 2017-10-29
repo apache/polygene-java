@@ -26,7 +26,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * The builder to build {@code IN} expressions
  *
- * @author Stanislav Muhametsin
  * @see InPredicate
  */
 public interface InBuilder

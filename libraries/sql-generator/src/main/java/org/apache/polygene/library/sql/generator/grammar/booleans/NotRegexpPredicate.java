@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
  * The interface for syntax element representing the test of left expression not matching the supplied pattern using
  * advanced regular expression match (operator varies). By default this kind of matching is not supported.
  *
- * @author Stanislav Muhametsin
  */
 public interface NotRegexpPredicate
     extends BinaryPredicate

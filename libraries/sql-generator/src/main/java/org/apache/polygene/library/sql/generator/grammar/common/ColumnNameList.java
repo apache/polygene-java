@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This interface presents a non-empty list of plain-text column names.
  *
- * @author Stanislav Muhametsin
  */
 public interface ColumnNameList extends Typeable<ColumnNameList>
 {

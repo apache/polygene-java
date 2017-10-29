@@ -30,7 +30,6 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.vendor.MySQLVendor;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public class QueryProcessing
 {

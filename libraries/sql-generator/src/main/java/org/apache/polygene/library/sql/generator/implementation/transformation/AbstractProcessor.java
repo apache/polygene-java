@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class AbstractProcessor<ProcessableType extends Typeable<?>>
     implements SQLProcessor

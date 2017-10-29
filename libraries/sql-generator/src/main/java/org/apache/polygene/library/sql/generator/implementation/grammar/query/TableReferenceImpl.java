@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.common.S
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class TableReferenceImpl<TypeableType extends Typeable<? super TypeableType>, RealType extends TypeableType>
     extends SQLSyntaxElementBase<TypeableType, RealType>

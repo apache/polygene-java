@@ -28,7 +28,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.ColumnReferences;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ColumnReferencesImpl extends SelectColumnClauseImpl<ColumnReferences>
     implements ColumnReferences

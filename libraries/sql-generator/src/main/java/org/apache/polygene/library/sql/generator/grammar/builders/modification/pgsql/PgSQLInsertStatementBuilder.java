@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.SelectColumnClaus
 /**
  * This build is used for creating {@code INSERT} statements specific for PostgreSQL databases.
  *
- * @author Stanislav Muhametsin
  */
 public interface PgSQLInsertStatementBuilder extends InsertStatementBuilder
 {

@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
  * This syntax element represents the ordinary grouping set specification. In future there might be {@code CUBE} or
  * {@code ROLLUP} grouping sets.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface OrdinaryGroupingSet
     extends GroupingElement

@@ -29,7 +29,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.definiti
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class TableElementListBuilderImpl extends SQLBuilderBase
     implements TableElementListBuilder

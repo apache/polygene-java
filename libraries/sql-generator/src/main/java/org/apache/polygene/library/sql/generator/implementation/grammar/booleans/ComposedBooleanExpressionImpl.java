@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.ComposedBoolea
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public abstract class ComposedBooleanExpressionImpl<ExpressionType extends ComposedBooleanExpression> extends
                                                                                                       AbstractBooleanExpression<ExpressionType>

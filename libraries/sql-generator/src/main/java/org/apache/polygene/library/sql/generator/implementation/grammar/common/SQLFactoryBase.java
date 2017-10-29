@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public abstract class SQLFactoryBase
 {

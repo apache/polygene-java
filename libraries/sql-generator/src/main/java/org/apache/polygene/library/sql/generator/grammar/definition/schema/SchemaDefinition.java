@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.SchemaDefinition
 /**
  * This syntax element represents the {@code CREATE SCHEMA} statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface SchemaDefinition
     extends SchemaDefinitionStatement

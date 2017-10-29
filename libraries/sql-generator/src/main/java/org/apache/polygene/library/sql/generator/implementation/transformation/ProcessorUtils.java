@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SetQuantifier;
 import org.apache.polygene.library.sql.generator.grammar.manipulation.DropBehaviour;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ProcessorUtils
 {

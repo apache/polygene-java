@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.TableReference;
 /**
  * This is common interface for joined tables.
  *
- * @author Stanislav Muhametsin
+ *
  * @see CrossJoinedTable
  * @see NaturalJoinedTable
  * @see QualifiedJoinedTable

@@ -29,7 +29,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.QuerySpecificatio
  * {@code WHERE} clause, {@link GroupByBuilder} for {@code GROUP BY} clause, another {@link BooleanBuilder} for grouping
  * conditions in {@code HAVING} clause, and finally {@link OrderByBuilder} for {@code ORDER BY} clause.
  *
- * @author Stanislav Muhametsin
  * @see QuerySpecification
  */
 public interface QuerySpecificationBuilder

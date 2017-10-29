@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.definition.table;
 /**
  * This class defines the policy for auto-generated columns ({@code GENERATED <strategy> AS IDENTITY}.
  *
- * @author Stanislav Muhametsin
  * @see ColumnDefinition
  */
 public final class AutoGenerationPolicy

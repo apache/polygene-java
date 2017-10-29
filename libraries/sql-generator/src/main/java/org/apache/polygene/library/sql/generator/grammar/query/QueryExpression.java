@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SQLStatement;
  * This syntax element represents the {@link QueryExpressionBody} and, in future, the WithClause ({@code WITH}) to be
  * used with query.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface QueryExpression
     extends NonBooleanExpression, SQLStatement

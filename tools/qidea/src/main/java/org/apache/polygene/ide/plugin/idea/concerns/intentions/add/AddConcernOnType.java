@@ -43,7 +43,6 @@ import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcer
 /**
  * JAVADOC: This is disabled in PolygeneApplicationComponent.
  *
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class AddConcernOnType

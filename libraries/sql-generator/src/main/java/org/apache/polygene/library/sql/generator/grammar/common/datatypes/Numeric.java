@@ -30,7 +30,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
  * as precise as declared, while NUMERIC(s,p) must be at least as precise as declared.
  * </p>
  *
- * @author Stanislav Muhametsin
  */
 public interface Numeric
     extends SQLDataType, ParametrizableDataType

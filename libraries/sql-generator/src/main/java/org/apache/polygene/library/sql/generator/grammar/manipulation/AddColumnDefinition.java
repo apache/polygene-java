@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.Column
 /**
  * This syntax element represents adding a new column to table.
  *
- * @author Stanislav Muhametsin
  */
 public interface AddColumnDefinition
     extends AlterTableAction

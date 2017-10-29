@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class represents {@code TIME} data type.
  *
- * @author Stanislav Muhametsin
  */
 public interface SQLTime
     extends SQLDataType, ParametrizableDataType
@@ -37,6 +36,8 @@ public interface SQLTime
 
     /**
      * Returns whether the {@code TIME} should be with time zone. May be {@code null} if no choice specified.
+     *
+     * @return true if the time includes the timezone.
      */
     Boolean isWithTimeZone();
 }

@@ -44,7 +44,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.view.ViewDef
  * This is factory for creating builders and syntax elements related to SQL Data Definition (typically {@code CREATE}
  * statements).
  *
- * @author Stanislav Muhametsin
  */
 public interface DefinitionFactory
 {

@@ -57,7 +57,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class QueryProcessing
 {

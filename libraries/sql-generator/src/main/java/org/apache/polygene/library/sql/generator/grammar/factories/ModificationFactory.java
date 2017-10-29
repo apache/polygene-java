@@ -42,7 +42,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
  * A factory, which creates SQL syntax elements related to modification statements ({@code INSERT INTO},
  * {@code DELETE FROM}, and {@code UPDATE}). This factory is obtainable from {@link SQLVendor}.
  *
- * @author Stanislav Muhametsin
  * @see SQLVendor
  */
 public interface ModificationFactory

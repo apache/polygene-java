@@ -25,7 +25,6 @@ import org.apache.polygene.library.sql.generator.grammar.booleans.BooleanExpress
 /**
  * A common interface for {@link BooleanExpression} and {@link NonBooleanExpression}.
  *
- * @author Stanislav Muhametsin
  */
 public interface ValueExpression
     extends Typeable<ValueExpression>

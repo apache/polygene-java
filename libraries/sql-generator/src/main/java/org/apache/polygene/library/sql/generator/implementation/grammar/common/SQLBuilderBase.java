@@ -23,7 +23,6 @@ import java.util.Objects;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author 2011 Stanislav Muhametsin
  */
 public abstract class SQLBuilderBase
 {

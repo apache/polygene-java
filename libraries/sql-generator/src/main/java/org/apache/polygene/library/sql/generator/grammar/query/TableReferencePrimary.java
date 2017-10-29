@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is common interface for non-joined table references.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface TableReferencePrimary
     extends TableReference, Typeable<TableReferencePrimary>

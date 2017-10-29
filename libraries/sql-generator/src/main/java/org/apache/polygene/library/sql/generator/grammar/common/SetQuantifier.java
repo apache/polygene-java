@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common;
 /**
  * Set quantifer, can be either {@link #ALL} or {@link #DISTINCT}.
  *
- * @author Stanislav Muhametsin
  */
 public final class SetQuantifier
 {

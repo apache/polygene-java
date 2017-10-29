@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 /**
  * This is generalized statement to drop tables and views.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropTableOrViewStatement
     extends DropStatement

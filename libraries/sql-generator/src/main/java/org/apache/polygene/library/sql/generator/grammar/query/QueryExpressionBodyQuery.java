@@ -23,7 +23,7 @@ package org.apache.polygene.library.sql.generator.grammar.query;
  * This syntax element represents the single query (currently only {@code SELECT} statement, represented by
  * {@link QuerySpecification}.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface QueryExpressionBodyQuery
     extends QueryExpressionBodyActual

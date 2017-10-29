@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.implementation.grammar.common.
 import org.apache.polygene.library.sql.generator.grammar.common.datatypes.pgsql.Text;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class TextImpl
     implements Text

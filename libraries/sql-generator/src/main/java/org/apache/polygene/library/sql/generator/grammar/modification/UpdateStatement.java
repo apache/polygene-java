@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.SQLStatement;
 /**
  * This is common interface for all statements doing updates.
  *
- * @author Stanislav Muhametsin
+ *
  * @see UpdateBySearch
  */
 public interface UpdateStatement

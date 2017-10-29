@@ -39,7 +39,7 @@ import static org.apache.polygene.ide.plugin.idea.mixins.common.PolygeneMixinUti
 import static org.apache.polygene.ide.plugin.idea.sideEffects.common.PolygeneSideEffectUtil.isASideEffect;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class MixinImplementsMixinType extends AbstractInspection

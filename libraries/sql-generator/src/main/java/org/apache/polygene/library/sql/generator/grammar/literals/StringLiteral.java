@@ -23,7 +23,6 @@ package org.apache.polygene.library.sql.generator.grammar.literals;
  * This syntax element encapsulates reference to SQL string, that is, some element between {@code '} and {@code '}
  * characters.
  *
- * @author Stanislav Muhametsin
  */
 public interface StringLiteral
     extends LiteralExpression

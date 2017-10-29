@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.ValueExpression;
 /**
  * This syntax element represents the update source having value of whatever expression it holds.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface UpdateSourceByExpression
     extends UpdateSource

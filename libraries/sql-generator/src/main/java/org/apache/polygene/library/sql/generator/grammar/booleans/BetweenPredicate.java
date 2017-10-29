@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * The interface for syntax element representing SQL expression {@code BETWEEN }x {@code AND} y.
  *
- * @author Stanislav Muhametsin
  */
 public interface BetweenPredicate
     extends MultiPredicate

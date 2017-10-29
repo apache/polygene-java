@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.literals.SQLFunctionLit
 /**
  * A table name function serves as a function call when selecting data.
  *
- * @author 2011 Stanislav Muhametsin
  */
 public interface TableNameFunction
     extends TableName

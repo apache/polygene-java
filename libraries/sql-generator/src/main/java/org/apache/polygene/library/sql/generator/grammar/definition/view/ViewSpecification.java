@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This a common interface for view specification (typically column name list).
  *
- * @author Stanislav Muhametsin
  */
 public interface ViewSpecification
     extends Typeable<ViewSpecification>

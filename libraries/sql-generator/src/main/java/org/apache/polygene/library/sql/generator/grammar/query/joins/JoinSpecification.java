@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This is common interface for join specification used in {@link QualifiedJoinedTable}.
  *
- * @author Stanislav Muhametsin
+ *
  * @see JoinCondition
  * @see NamedColumnsJoin
  */

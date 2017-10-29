@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 /**
  * This syntax element represents a {@code INSERT INTO} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface InsertStatement
     extends SQLStatement, Typeable<InsertStatement>

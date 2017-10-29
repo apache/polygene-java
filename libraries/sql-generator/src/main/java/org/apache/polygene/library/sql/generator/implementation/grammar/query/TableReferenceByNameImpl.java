@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.TableReferenceByN
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class TableReferenceByNameImpl extends TableReferencePrimaryImpl<TableReferenceByName>
     implements TableReferenceByName

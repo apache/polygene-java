@@ -32,7 +32,7 @@ import static org.apache.polygene.ide.plugin.idea.injections.service.common.Poly
 import static org.apache.polygene.ide.plugin.idea.injections.structure.common.PolygeneStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**
- * @author edward.yakop@gmail.com
+ *
  * @since 0.1
  */
 public final class PolygeneServiceAnnotationUtil

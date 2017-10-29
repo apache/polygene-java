@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nls;
 import javax.swing.*;
 
 /**
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public final class PolygeneFacetEditorTab extends FacetEditorTab

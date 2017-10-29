@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.modification.ColumnSour
 /**
  * This builder builds the {@link ColumnSourceByValues} syntax element.
  *
- * @author Stanislav Muhametsin
  */
 public interface ColumnSourceByValuesBuilder
     extends AbstractBuilder<ColumnSourceByValues>

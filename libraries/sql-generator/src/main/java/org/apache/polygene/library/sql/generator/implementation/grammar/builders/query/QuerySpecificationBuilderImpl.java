@@ -40,7 +40,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.query.Qu
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class QuerySpecificationBuilderImpl extends AbstractQueryFactoryImpl<QuerySpecification>
     implements QuerySpecificationBuilder

@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableC
 /**
  * This syntax element represents the new table constraint to be added in table alteration statement.
  *
- * @author Stanislav Muhametsin
  */
 public interface AddTableConstraintDefinition
     extends AlterTableAction

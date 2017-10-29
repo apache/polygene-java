@@ -26,7 +26,7 @@ import java.util.Objects;
  * This syntax element represents the whole {@code SELECT <column1>, <column2>, ...} clause, up until {@code FROM}. Each
  * column might have an alias.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface ColumnReferences
     extends SelectColumnClause
@@ -34,7 +34,7 @@ public interface ColumnReferences
     /**
      * A helper class to encapsulate column reference along with its alias.
      *
-     * @author Stanislav Muhametsin
+     *
      */
     class ColumnReferenceInfo
     {

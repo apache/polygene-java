@@ -22,7 +22,6 @@ package org.apache.polygene.entitystore.preferences;
 import java.util.prefs.Preferences;
 
 /**
- * @author edward.yakop@gmail.com
  */
 public final class PreferencesEntityStoreInfo
 {

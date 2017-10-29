@@ -24,7 +24,7 @@ import org.apache.polygene.library.sql.generator.Typeable;
 /**
  * This syntax element represents a single {@code SET} element of {@code UPDATE} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface SetClause
     extends Typeable<SetClause>

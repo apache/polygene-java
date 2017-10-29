@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLSyntaxTest
 {

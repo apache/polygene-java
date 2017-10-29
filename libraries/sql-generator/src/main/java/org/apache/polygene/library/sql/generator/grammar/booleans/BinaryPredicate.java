@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.common.NonBooleanExpres
 /**
  * A common interface for all boolean expressions taking two value expressions and having some operator between them.
  *
- * @author Stanislav Muhametsin
  */
 public interface BinaryPredicate
     extends Predicate

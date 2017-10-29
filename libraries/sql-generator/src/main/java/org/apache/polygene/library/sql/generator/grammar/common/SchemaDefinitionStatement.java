@@ -24,7 +24,6 @@ import org.apache.polygene.library.sql.generator.grammar.definition.table.TableD
 /**
  * This is a common interface for all definition ({@code CREATE}) clauses.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  */
 public interface SchemaDefinitionStatement

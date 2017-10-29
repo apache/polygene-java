@@ -27,7 +27,6 @@ import org.apache.polygene.library.sql.generator.grammar.query.GroupingElement;
 /**
  * The builder that builds the {@code GROUP BY} clause in SQL {@code SELECT} query.
  *
- * @author Stanislav Muhametsin
  * @see GroupByClause
  * @see GroupingElement
  */

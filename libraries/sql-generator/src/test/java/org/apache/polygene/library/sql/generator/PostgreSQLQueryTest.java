@@ -19,7 +19,6 @@ import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 import org.junit.Test;
 
 /**
- * @author Stanislav Muhametsin
  */
 public class PostgreSQLQueryTest extends AbstractQueryTest
 {

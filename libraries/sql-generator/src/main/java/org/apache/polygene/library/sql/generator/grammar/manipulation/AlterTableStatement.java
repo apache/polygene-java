@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 import org.apache.polygene.library.sql.generator.grammar.common.TableNameDirect;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public interface AlterTableStatement
     extends AlterStatement

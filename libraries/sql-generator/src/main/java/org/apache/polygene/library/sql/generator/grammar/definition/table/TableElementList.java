@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * This syntax element represents the table element list in table definition.
  *
- * @author Stanislav Muhametsin
  * @see TableDefinition
  * @see TableElement
  */

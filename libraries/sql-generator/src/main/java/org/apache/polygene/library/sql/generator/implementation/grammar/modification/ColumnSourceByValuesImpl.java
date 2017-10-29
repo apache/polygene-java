@@ -29,7 +29,7 @@ import org.apache.polygene.library.sql.generator.grammar.modification.ColumnSour
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class ColumnSourceByValuesImpl extends DynamicColumnSourceImpl<ColumnSourceByValues>
     implements ColumnSourceByValues

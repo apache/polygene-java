@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.booleans;
 /**
  * A disjunction ({@code OR} of two boolean expressions.
  *
- * @author Stanislav Muhametsin
  */
 public interface Disjunction
     extends ComposedBooleanExpression

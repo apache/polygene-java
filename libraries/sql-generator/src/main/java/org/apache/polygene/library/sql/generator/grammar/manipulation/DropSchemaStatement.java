@@ -22,7 +22,7 @@ package org.apache.polygene.library.sql.generator.grammar.manipulation;
 /**
  * This syntax element represents the {@code DROP SCHEMA} statement.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public interface DropSchemaStatement
     extends DropStatement

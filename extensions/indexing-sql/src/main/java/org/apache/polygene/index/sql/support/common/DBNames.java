@@ -22,8 +22,7 @@ package org.apache.polygene.index.sql.support.common;
 /**
  * This is helper class to contain all the SQL constants used throughout the SQL Indexing.
  * 
- * @author Stanislav Muhametsin
- * 
+ *
  */
 public class DBNames
 {

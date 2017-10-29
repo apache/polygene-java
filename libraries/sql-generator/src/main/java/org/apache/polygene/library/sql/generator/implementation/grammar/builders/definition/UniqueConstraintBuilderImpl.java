@@ -31,7 +31,7 @@ import org.apache.polygene.library.sql.generator.implementation.grammar.definiti
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class UniqueConstraintBuilderImpl extends SQLBuilderBase
     implements UniqueConstraintBuilder

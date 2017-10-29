@@ -22,7 +22,6 @@ package org.apache.polygene.library.sql.generator.grammar.common.datatypes;
 /**
  * This class contains all the types for fields in {@code INTERVAL} data type.
  *
- * @author Stanislav Muhametsin
  */
 public final class IntervalDataType
 {

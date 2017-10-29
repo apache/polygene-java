@@ -29,7 +29,7 @@ import org.apache.polygene.library.sql.generator.implementation.TypeableImpl;
 import org.apache.polygene.library.sql.generator.implementation.transformation.spi.SQLProcessorAggregator;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class QueryExpressionBodyBinaryImpl extends QueryExpressionBodyImpl<QueryExpressionBodyBinary>
     implements QueryExpressionBodyBinary

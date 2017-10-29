@@ -31,7 +31,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 
 /**
- * @author Stanislav Muhametsin
+ *
  */
 public class QI273Test
     extends AbstractPolygeneTest

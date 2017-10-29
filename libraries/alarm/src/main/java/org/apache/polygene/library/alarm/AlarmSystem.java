@@ -71,7 +71,6 @@ import org.apache.polygene.api.value.ValueBuilderFactory;
  *   }
  * </code></pre>
  *
- * @author Niclas Hedhman
  */
 @Mixins( AlarmSystemService.AlarmSystemMixin.class )
 public interface AlarmSystem

@@ -41,7 +41,6 @@ import static org.apache.polygene.ide.plugin.idea.concerns.common.PolygeneConcer
 /**
  * JAVADOC: Non generic concern
  *
- * @author edward.yakop@gmail.com
  * @since 0.1
  */
 public class CreateConcernOfInPackageAction extends CreateInPackageActionBase

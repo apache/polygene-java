@@ -39,7 +39,7 @@ import org.apache.polygene.library.sql.generator.implementation.transformation.s
 /**
  * Currently not thread-safe.
  *
- * @author Stanislav Muhametsin
+ *
  */
 public class BooleanExpressionProcessing
 {
