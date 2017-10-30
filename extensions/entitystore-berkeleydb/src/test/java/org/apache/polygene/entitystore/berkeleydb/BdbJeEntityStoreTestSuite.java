@@ -17,11 +17,11 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje;
+package org.apache.polygene.entitystore.berkeleydb;
 
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.entitystore.bdbje.assembly.BdbJeEntityStoreAssembler;
+import org.apache.polygene.entitystore.berkeleydb.assembly.BerkeleyDBEntityStoreAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
@@ -40,8 +40,8 @@ public class BdbJeEntityStoreTestSuite extends EntityStoreTestSuite
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
-        new BdbJeEntityStoreAssembler().visibleIn( Visibility.application )
-                                       .withConfig( configModule, Visibility.application )
-                                       .assemble( module );
+        new BerkeleyDBEntityStoreAssembler().visibleIn( Visibility.application )
+                                            .withConfig( configModule, Visibility.application )
+                                            .assemble( module );
     }
 }

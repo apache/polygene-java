@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje;
+package org.apache.polygene.entitystore.berkeleydb;
 
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
@@ -47,9 +47,11 @@ import org.apache.polygene.api.configuration.Configuration;
 import org.apache.polygene.api.entity.EntityDescriptor;
 import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.service.ServiceDescriptor;
+import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.library.fileconfig.FileConfiguration;
 import org.apache.polygene.library.locking.ReadLock;
 import org.apache.polygene.library.locking.WriteLock;
@@ -60,18 +62,21 @@ import org.apache.polygene.spi.entitystore.helpers.MapEntityStore;
 /**
  * BDB JE implementation of MapEntityStore.
  */
-public class BdbJeEntityStoreMixin
-    implements BdbJeEntityStoreActivation, MapEntityStore
+public class BerkeleyDBEntityStoreMixin
+    implements BerkeleyDBEntityStoreActivation, MapEntityStore
 {
     @Optional
     @Service
     private FileConfiguration fileConfiguration;
 
     @This
-    private Configuration<BdbJeEntityStoreConfiguration> config;
+    private Configuration<BerkeleyDBEntityStoreConfiguration> config;
 
     @Uses
     private ServiceDescriptor descriptor;
+
+    @Structure
+    private Application application;
 
     private Database database;
     private Environment envHandle;
@@ -205,27 +210,29 @@ public class BdbJeEntityStoreMixin
         return StreamSupport.stream( new RecordIterable( database ).spliterator(), false );
     }
 
-    private File getDatabaseHome()
+    private File getDataDirectory()
     {
-        String pathname = config.get().homeDirectory().get();
-        if( pathname == null )
+        File dataDir;
+        String pathname = config.get().dataDirectory().get();
+        if( pathname != null )
+        {
+            dataDir = new File( pathname );
+        }
+        else
         {
             if( fileConfiguration != null )
             {
-                File dataDir = fileConfiguration.dataDirectory();
-                File bdbJeDir = new File( dataDir, descriptor.identity() + "/bdbje_data" );
-                pathname = bdbJeDir.getAbsolutePath();
+                dataDir = new File( fileConfiguration.dataDirectory(), application.name() + "/" + descriptor.identity() );
             }
             else
             {
-                pathname = System.getProperty( "user.dir" ) + "/polygene/bdbje_data";
+                dataDir = new File( System.getProperty( "user.dir" ) );
             }
+            dataDir = new File( dataDir, "data" );
         }
-
-        File directory = new File( pathname ).getAbsoluteFile();
         //noinspection ResultOfMethodCallIgnored
-        directory.mkdirs();
-        return directory;
+        dataDir.mkdirs();
+        return dataDir;
     }
 
     private void closeDown()
@@ -243,10 +250,10 @@ public class BdbJeEntityStoreMixin
     private void initialize()
         throws IOException
     {
-        File homeDir = getDatabaseHome();
+        File dataDirectory = getDataDirectory();
         EnvironmentConfig configuration = createConfiguration();
 
-        envHandle = new Environment( homeDir, configuration );
+        envHandle = new Environment( dataDirectory, configuration );
         DatabaseConfig dbConfig = new DatabaseConfig();
         dbConfig.setAllowCreate( configuration.getAllowCreate() );
         dbConfig.setTransactional( configuration.getTransactional() );
@@ -256,7 +263,7 @@ public class BdbJeEntityStoreMixin
     private EnvironmentConfig createConfiguration()
     {
         EnvironmentConfig environmentConfig = new EnvironmentConfig();
-        BdbJeEntityStoreConfiguration storeConfiguration = config.get();
+        BerkeleyDBEntityStoreConfiguration storeConfiguration = config.get();
         Boolean allowCreate = storeConfiguration.allowCreate().get();
         environmentConfig.setAllowCreate( allowCreate );
         environmentConfig.setLocking( storeConfiguration.locking().get() );

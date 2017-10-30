@@ -17,7 +17,7 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje;
+package org.apache.polygene.entitystore.berkeleydb;
 
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.configuration.Configuration;
@@ -25,7 +25,6 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.library.locking.LockingAbstractComposite;
 import org.apache.polygene.library.locking.ReadLockConcern;
 import org.apache.polygene.library.locking.WriteLockConcern;
-import org.apache.polygene.spi.entitystore.BackupRestore;
 import org.apache.polygene.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.apache.polygene.spi.entitystore.EntityStateVersions;
 import org.apache.polygene.spi.entitystore.EntityStore;
@@ -39,14 +38,14 @@ import org.apache.polygene.spi.entitystore.helpers.StateStore;
  * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class, ReadLockConcern.class, WriteLockConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class, BdbJeEntityStoreMixin.class } )
-public interface BdbJeEntityStoreService
-    extends BdbJeEntityStoreActivation,
+@Mixins( { JSONMapEntityStoreMixin.class, BerkeleyDBEntityStoreMixin.class } )
+public interface BerkeleyDBEntityStoreService
+    extends BerkeleyDBEntityStoreActivation,
             JSONMapEntityStoreActivation,
             EntityStore,
             EntityStateVersions,
             StateStore,
             LockingAbstractComposite,
-            Configuration<BdbJeEntityStoreConfiguration>
+            Configuration<BerkeleyDBEntityStoreConfiguration>
 {
 }

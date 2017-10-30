@@ -17,41 +17,50 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje;
+package org.apache.polygene.entitystore.berkeleydb;
 
 import com.sleepycat.je.CacheMode;
-import com.sleepycat.je.Durability;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 
 /**
- * Configuration for the BdbJeEntityStoreService.
+ * Configuration for the BerkeleyDBEntityStoreService.
+ * <p>
+ * <strong>NOTE:</strong> Most of the documentation for all the properties are copied from the Berkeley DB javadocs.
+ * </p>
  */
 // START SNIPPET: config
-public interface BdbJeEntityStoreConfiguration
+public interface BerkeleyDBEntityStoreConfiguration
 {
     /**
      * Name of the database containing the Polygene entities.
      */
-    @UseDefaults("polygene")
+    @UseDefaults( "polygene" )
     Property<String> databaseName();
 
     /**
-     * The file where the BDB JE data will be stored
+     * The directory where the BDB JE data (files) will be stored
      * <p>
-     * Default: System.getProperty( "user.dir" ) + "/polygene/bdbjestore.data";
+     * Default:
      * </p>
+     * <pre><code>
+     * if( fileConfiguration != null )
+     *     dataDir = new File( fileConfiguration.dataDirectory(), application.name() + "/" + descriptor.identity() );
+     * else
+     *     dataDir = new File( System.getProperty( "user.dir" ) );
+     * dataDir = new File( dataDir, "data" );
+     * </code></pre>
      *
-     * @return path to data file relative to current path
+     * @return path to data directory, by passing the string to {@code new File(dataDirectory()).getAbsoluteFile() }
      */
     @Optional
-    Property<String> homeDirectory();
+    Property<String> dataDirectory();
 
     /**
      * If true, creates the database environment if it doesn't already exist.
      */
-    @UseDefaults("true")
+    @UseDefaults( "true" )
     Property<Boolean> allowCreate();
 
     /**
@@ -67,7 +76,7 @@ public interface BdbJeEntityStoreConfiguration
      * the cleaner is running.
      * </p>
      */
-    @UseDefaults("true")
+    @UseDefaults( "true" )
     Property<Boolean> locking();
 
     /**
@@ -82,7 +91,7 @@ public interface BdbJeEntityStoreConfiguration
      * Expressed in milliseconds. Default: 500ms
      * </p>
      */
-    @UseDefaults("500")
+    @UseDefaults( "500" )
     Property<Long> lockTimeout();
 
     /**
@@ -178,7 +187,7 @@ public interface BdbJeEntityStoreConfiguration
      * environment.
      * </p>
      */
-    @UseDefaults("true")
+    @UseDefaults( "true" )
     Property<Boolean> transactional();
 
     /**
@@ -211,7 +220,7 @@ public interface BdbJeEntityStoreConfiguration
      * WriteOptions.setCacheMode(CacheMode).
      * </p>
      */
-    @UseDefaults("DEFAULT")
+    @UseDefaults( "DEFAULT" )
     Property<CacheMode> cacheMode();
 
     /**
@@ -254,7 +263,7 @@ public interface BdbJeEntityStoreConfiguration
      * calculating cache memory sizes.
      * </p>
      */
-    @UseDefaults("60")
+    @UseDefaults( "60" )
     Property<Integer> cachePercent();
 
     /**

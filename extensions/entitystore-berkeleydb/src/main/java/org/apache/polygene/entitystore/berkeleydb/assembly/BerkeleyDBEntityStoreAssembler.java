@@ -17,29 +17,29 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje.assembly;
+package org.apache.polygene.entitystore.berkeleydb.assembly;
 
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
-import org.apache.polygene.entitystore.bdbje.BdbJeEntityStoreConfiguration;
-import org.apache.polygene.entitystore.bdbje.BdbJeEntityStoreService;
+import org.apache.polygene.entitystore.berkeleydb.BerkeleyDBEntityStoreConfiguration;
+import org.apache.polygene.entitystore.berkeleydb.BerkeleyDBEntityStoreService;
 
-public class BdbJeEntityStoreAssembler
-    extends Assemblers.VisibilityIdentityConfig<BdbJeEntityStoreAssembler>
+public class BerkeleyDBEntityStoreAssembler
+    extends Assemblers.VisibilityIdentityConfig<BerkeleyDBEntityStoreAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
     {
         super.assemble( module );
-        ServiceDeclaration service = module.services( BdbJeEntityStoreService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( BerkeleyDBEntityStoreService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
         if( hasConfig() )
         {
-            configModule().entities( BdbJeEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( BerkeleyDBEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

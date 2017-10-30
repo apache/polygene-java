@@ -17,17 +17,17 @@
  *
  *
  */
-package org.apache.polygene.entitystore.bdbje;
+package org.apache.polygene.entitystore.berkeleydb;
 
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.service.ServiceReference;
 
 /**
- * Activation for BdbJeEntityStoreMixin.
+ * Activation for BerkeleyDBEntityStoreMixin.
  */
-@Activators( { BdbJeEntityStoreActivation.Activator.class } )
-public interface BdbJeEntityStoreActivation
+@Activators( { BerkeleyDBEntityStoreActivation.Activator.class } )
+public interface BerkeleyDBEntityStoreActivation
 {
 
     void setUpBdbJe()
@@ -37,18 +37,18 @@ public interface BdbJeEntityStoreActivation
             throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<BdbJeEntityStoreActivation>>
+            extends ActivatorAdapter<ServiceReference<BerkeleyDBEntityStoreActivation>>
     {
 
         @Override
-        public void afterActivation( ServiceReference<BdbJeEntityStoreActivation> activated )
+        public void afterActivation( ServiceReference<BerkeleyDBEntityStoreActivation> activated )
                 throws Exception
         {
             activated.get().setUpBdbJe();
         }
 
         @Override
-        public void beforePassivation( ServiceReference<BdbJeEntityStoreActivation> passivating )
+        public void beforePassivation( ServiceReference<BerkeleyDBEntityStoreActivation> passivating )
                 throws Exception
         {
             passivating.get().tearDownBdbJe();

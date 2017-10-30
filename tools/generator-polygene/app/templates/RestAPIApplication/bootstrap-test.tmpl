@@ -126,6 +126,12 @@ if(  polygene.entitystore === 'Cassandra' ) {
                                                          .waitForTimeout( 120 )
                                                          .waitFor( WaitFor.logMessageSequence( "Starting listening for CQL clients" ) ) );
 <% }
+if(  polygene.entitystore === 'BerkeleyDB' ) {
+%>
+    private void entityStoreSetup(ApplicationAssembly assembly )
+    {
+    }
+<% }
 if(  polygene.entitystore === 'DerbySQL' ) {
 %>
     private void entityStoreSetup(ApplicationAssembly assembly )

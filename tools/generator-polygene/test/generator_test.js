@@ -32,6 +32,7 @@ var appTypes = [
 ];
 
 var entityStores = [
+    'BerkeleyDB',
     'Cassandra',
     'File',
     'DerbySQL',
