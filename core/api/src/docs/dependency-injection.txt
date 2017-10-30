@@ -146,9 +146,15 @@ If the ++@Uses++ is ++@Optional++ then no implict object creation will take plac
 
 [[core-api-state,@State]]
 == @State ==
-This injection scope can inject either a ++StateHolder++ which allows inspection of current state of the Composite,
-or it can inject any declared <<def-property>>, <<def-assocation>>, <<def-manyassociation>> or
-<<def-namedassociation>>.
+This injection scope can inject either state related types.
+
+    * ++StateDescriptor++ which holds metainfo about the state of the Composite,
+    * ++StateHolder++ which allows inspection of current state of the Composite,
+    * <<def-property>> to get a direct reference to a declared ++Property++
+    * <<def-assocation>> to get a direct reference to a declared ++Association++
+    * <<def-manyassociation>> to get a direct reference to a declared ++ManyAssociation++
+    * <<def-namedassociation>> to get a direct reference to a declared ++NamedAssociation++
 
 [[core-api-custom-injection,Custom Injection Scopes]]
 == Custom Injection Scopes ==
+Custom Injection scopes are not yet supported.

@@ -57,6 +57,11 @@ public final class StateInjectionProviderFactory
             // @State StateHolder properties;
             return new StateInjectionProvider();
         }
+        else if( StateDescriptor.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        {
+            StateDescriptor descriptor = ( (StatefulCompositeDescriptor) resolution.model() ).state();
+            return new StateDescriptorInjectionProvider( descriptor );
+        }
         else if( UnitOfWork.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
         {
             if( !( resolution.model() instanceof EntityDescriptor ) )
@@ -181,7 +186,7 @@ public final class StateInjectionProviderFactory
             throws InjectionProviderException
         {
             AbstractAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).
-                associationFor( associationDescriptor.accessor() );
+                                                                                                      associationFor( associationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -208,7 +213,7 @@ public final class StateInjectionProviderFactory
             throws InjectionProviderException
         {
             ManyAssociation<?> abstractAssociation = ( (AssociationStateHolder) context.state() ).
-                manyAssociationFor( manyAssociationDescriptor.accessor() );
+                                                                                                     manyAssociationFor( manyAssociationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -235,7 +240,7 @@ public final class StateInjectionProviderFactory
             throws InjectionProviderException
         {
             NamedAssociation<?> abstractAssociation = ( (AssociationStateHolder) context.state() ).
-                namedAssociationFor( namedAssociationDescriptor.accessor() );
+                                                                                                      namedAssociationFor( namedAssociationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
                 return abstractAssociation;
@@ -258,6 +263,24 @@ public final class StateInjectionProviderFactory
         }
     }
 
+    static private class StateDescriptorInjectionProvider
+        implements InjectionProvider
+    {
+        private StateDescriptor descriptor;
+
+        public StateDescriptorInjectionProvider( StateDescriptor descriptor )
+        {
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
+        {
+            return descriptor;
+        }
+    }
+
     static private class UnitOfWorkInjectionProvider
         implements InjectionProvider
     {
@@ -269,5 +292,4 @@ public final class StateInjectionProviderFactory
             return ( (EntityInstance) context.compositeInstance() ).unitOfWork();
         }
     }
-
 }
