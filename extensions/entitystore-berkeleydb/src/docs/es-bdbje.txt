@@ -1,0 +1,65 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[extension-es-bdbje,Berkeley DB (Java Edition) EntityStore]]
+= Berkeley DB EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-bdbje/dev-status.xml
+--------------
+
+EntityStore service backed by Berkeley DB (Java Edition) embedded database from Oracle.
+
+The Berkeley DB is a classic among the embedded key-value databases, and for many years was not acceptable to the
+Apache community and downstream users due to a restrictive license (Sleepycat license). Oracle has re-license this
+to the Apache License 2.0, and enabled many projects around the world to leverage this technology.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/test/java/org/apache/polygene/entitystore/bdbje/BdbJeEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the Berkeley DB (Java Edition) EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/main/java/org/apache/polygene/entitystore/bdbje/BdbJeEntityStoreConfiguration.java
+tag=config
+----
+
+All configuration properties are defaulted to the implementation defaults meaning that you can use this EntityStore
+service without configuration.
+
+The data directory is determined as follows
+
+1. if +dataDirectory()+ in configuration is specified, use that by passig the string to +new File(dataDir).getAbsoluteFile()+,
+2. if the <<library-fileconfig>> is present, use the DATA directory of the operating system, followed by the +Application.name()+ and the identity of this entity store followed by +/data+,
+3. otherwise, use current working directory, followed by +/data+
+
+

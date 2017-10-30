@@ -70,6 +70,8 @@ allprojects() {
     maven { name 'restlet-repo'; url 'http://maven.restlet.org/' }
 <% if( polygene.entitystore == 'Jdbm' ) {
 -%>    maven { name 'clojure-repo'; url 'http://clojars.org/repo/' }<% } -%>
+<% if( polygene.entitystore == 'BerkeleyDB' ) {
+-%>    maven { name 'oracle-repo'; url 'http://download.oracle.com/maven/' }<% } -%>
   }
 
   dependencies {

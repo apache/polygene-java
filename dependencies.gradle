@@ -27,6 +27,7 @@ dependencies.repositoriesUrls << [
   mavenCentral: "https://repo1.maven.org/maven2/",
   restlet     : 'https://maven.restlet.com/',
   clojars     : "https://clojars.org/repo/",
+  oracle      : "http://download.oracle.com/maven/"
 ]
 
 // Core dependencies
@@ -42,6 +43,7 @@ dependencies.libraries << [
 ]
 
 // Extensions, Libraries and Tools dependencies
+def bdbjeVersion = '7.4.5'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.57'
 def cassandraClientVersion = '3.3.0'
@@ -81,6 +83,7 @@ def springVersion = '4.3.9.RELEASE'
 def spymemcachedVersion = '2.12.3'
 def velocityVersion = '1.7'
 dependencies.libraries << [
+  bdb_je              : "com.sleepycat:je:$bdbjeVersion",
   bonecp              : "com.jolbox:bonecp:$bonecpVersion",
   bouncy_castle       : [
           "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",

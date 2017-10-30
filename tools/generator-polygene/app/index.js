@@ -103,6 +103,7 @@ module.exports = generators.Base.extend(
                             type: 'list',
                             name: 'entitystore',
                             choices: [
+                                'BerkeleyDB',
                                 'Cassandra',
                                 'File',
                                 'DerbySQL',
@@ -112,7 +113,6 @@ module.exports = generators.Base.extend(
                                 'JClouds',
                                 'Jdbm',
                                 'LevelDB',
-                                'MariaDbSQL',
                                 'Memory',
                                 'MongoDB',
                                 'MySQL',
