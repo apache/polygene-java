@@ -287,6 +287,7 @@ public interface BerkeleyDBEntityStoreConfiguration
      * data structure. Btree objects are not serialized the main cache, so no object materialization is needed to
      * access the Btree there. Access to records in the main cache is therefore very fast, but the main cache has
      * drawbacks as well:
+     * </p>
      * <ol>
      * <li>
      * The larger the main cache, the more likely it is to have Java GC performance problems.
@@ -298,9 +299,9 @@ public interface BerkeleyDBEntityStoreConfiguration
      * cache.
      * </li>
      * </ol>
-     * </p>
      * <p>
      * The use of the file system cache has performance benefits, but also has its own drawbacks:
+     * </p>
      * <ol>
      * <li>
      * There is a significant redundancy between the main cache and the file system cache because all data and Btree
@@ -312,7 +313,6 @@ public interface BerkeleyDBEntityStoreConfiguration
      * words, the size of the main cache alone determines the maximum size of the in-memory "dirty set".
      * </li>
      * </ol>
-     * </p>
      * <p>
      * The off-heap cache is stored outside the Java heap using a native platform memory allocator. The current
      * implementation relies on internals that are specific to the Oracle and IBM JDKs; however, a memory allocator
