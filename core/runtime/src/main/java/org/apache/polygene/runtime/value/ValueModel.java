@@ -101,51 +101,51 @@ public final class ValueModel extends CompositeModel
                                        );
 
         // IF no UnitOfWork is active, then the Association checks shouldn't be done.
-        if( UnitOfWorkInstance.getCurrent().empty() )
+        if( ! UnitOfWorkInstance.getCurrent().empty() )
         {
-            return;
+            ( (ValueStateModel) stateModel ).associations().forEach(
+                associationModel ->
+                {
+                    try
+                    {
+                        associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() );
+                    }
+                    catch( ConstraintViolationException e )
+                    {
+                        violations.addAll( e.constraintViolations() );
+                    }
+                }
+            );
+
+            ( (ValueStateModel) stateModel ).manyAssociations().forEach(
+                model ->
+                {
+                    try
+                    {
+                        model.checkAssociationConstraints( state.manyAssociationFor( model.accessor() ) );
+                    }
+                    catch( ConstraintViolationException e )
+                    {
+                        violations.addAll( e.constraintViolations() );
+                    }
+                }
+            );
+
+            ( (ValueStateModel) stateModel ).namedAssociations().forEach(
+                model ->
+                {
+                    try
+                    {
+                        model.checkAssociationConstraints( state.namedAssociationFor( model.accessor() ) );
+                    }
+                    catch( ConstraintViolationException e )
+                    {
+                        violations.addAll( e.constraintViolations() );
+                    }
+                }
+            );
         }
-        ( (ValueStateModel) stateModel ).associations().forEach(
-            associationModel ->
-            {
-                try
-                {
-                    associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() );
-                }
-                catch( ConstraintViolationException e )
-                {
-                    violations.addAll( e.constraintViolations() );
-                }
-            }
-                                                               );
 
-        ( (ValueStateModel) stateModel ).manyAssociations().forEach(
-            model ->
-            {
-                try
-                {
-                    model.checkAssociationConstraints( state.manyAssociationFor( model.accessor() ) );
-                }
-                catch( ConstraintViolationException e )
-                {
-                    violations.addAll( e.constraintViolations() );
-                }
-            }
-                                                                   );
-
-        ( (ValueStateModel) stateModel ).namedAssociations().forEach(
-            model ->
-            {
-                try
-                {
-                    model.checkAssociationConstraints( state.namedAssociationFor( model.accessor() ) );
-                }
-                catch( ConstraintViolationException e )
-                {
-                    violations.addAll( e.constraintViolations() );
-                }
-            }
-                                                                    );
         if( !violations.isEmpty() )
         {
             ConstraintViolationException exception = new ConstraintViolationException( violations );
