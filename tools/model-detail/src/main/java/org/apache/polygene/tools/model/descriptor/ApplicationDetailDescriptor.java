@@ -85,7 +85,6 @@ public final class ApplicationDetailDescriptor
 
     final void addLayer( LayerDetailDescriptor descriptor )
     {
-        System.out.println("NICLAS!!!! Layer:" + descriptor.toString());
         Objects.requireNonNull( descriptor, "LayerDetailDescriptor" );
         descriptor.setApplication( this );
         layers.add( descriptor );
