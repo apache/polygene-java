@@ -50,8 +50,13 @@ public interface RepositoryLocator
         @Override
         public <T extends HasIdentity> CrudRepository<T> find(Class<T> entityType )
         {
-            //noinspection unchecked
-            return repositories.get( entityType );
+            @SuppressWarnings( "unchecked" )
+            CrudRepository<T> repository = repositories.get( entityType );
+            if( repository == null )
+            {
+                throw new MissingRepositoryException( entityType );
+            }
+            return repository;
         }
     }
 }
