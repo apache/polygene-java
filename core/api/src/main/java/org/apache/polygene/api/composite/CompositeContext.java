@@ -36,19 +36,30 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 public class CompositeContext<T extends TransientComposite>
     extends ThreadLocal<T>
 {
-    private ModuleDescriptor module;
-    private Class<T> type;
+    private static final Object[] EMPTY = new Object[0];
+
+    private final ModuleDescriptor module;
+    private final Class<T> type;
+    private final Object[] uses;
 
     public CompositeContext( ModuleDescriptor module, Class<T> type )
     {
         this.module = module;
         this.type = type;
+        uses = EMPTY;
+    }
+
+    public CompositeContext( ModuleDescriptor module, Class<T> type, Object... uses )
+    {
+        this.module = module;
+        this.type = type;
+        this.uses = uses;
     }
 
     @Override
     protected T initialValue()
     {
-        return module.instance().newTransient( type );
+        return module.instance().newTransient( type, uses );
     }
 
     @SuppressWarnings( "unchecked" )
