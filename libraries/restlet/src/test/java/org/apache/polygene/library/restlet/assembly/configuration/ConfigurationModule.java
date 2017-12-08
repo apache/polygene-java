@@ -30,6 +30,7 @@ public class ConfigurationModule
     implements ModuleAssembler
 {
     public static final String NAME = "Configuration Module";
+
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
     {

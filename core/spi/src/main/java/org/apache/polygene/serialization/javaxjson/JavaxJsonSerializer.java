@@ -114,7 +114,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
     }
 
     @SuppressWarnings( "unchecked" )
-    private JsonValue doSerialize( Options options, Object object, boolean root )
+    private <T> JsonValue doSerialize( Options options, T object, boolean root )
     {
         if( object == null )
         {
@@ -126,7 +126,7 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
         {
             return doSerialize( options, converter.toString( object ), false );
         }
-        JavaxJsonAdapter<?> adapter = adapters.adapterFor( objectClass );
+        JavaxJsonAdapter<T> adapter = adapters.adapterFor( (Class<T>) objectClass );
         if( adapter != null )
         {
             return adapter.serialize( jsonFactories, object, obj -> doSerialize( options, obj, false ) );

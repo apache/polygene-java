@@ -42,7 +42,7 @@ public interface JavaxJsonAdapter<T>
      * @param serialize Serialization function for nested structure serialization
      * @return Serialized JSON representation
      */
-    JsonValue serialize( JavaxJsonFactories jsonFactories, Object object, Function<Object, JsonValue> serialize );
+    JsonValue serialize( JavaxJsonFactories jsonFactories, T object, Function<Object, JsonValue> serialize );
 
     /**
      * Deserialize.

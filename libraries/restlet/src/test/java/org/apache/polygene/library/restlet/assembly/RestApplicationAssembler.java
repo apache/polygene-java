@@ -47,24 +47,20 @@ public class RestApplicationAssembler extends LayeredApplicationAssembler
     @Override
     protected void assembleLayers( ApplicationAssembly assembly )
     {
+        LayerAssembly layerBelow = null;
         for( Class<? extends LayerAssembler> layer : layers )
         {
             LayerAssembly layerAssembly = createLayer( layer );
             assemblies.put( layer, layerAssembly );
+            if( layerBelow != null )
+            {
+                layerAssembly.uses( layerBelow );
+            }
+            layerBelow = layerAssembly;
         }
     }
 
-    public void setupUses( BinaryOperator<LayerAssembly> uses )
-    {
-        assemblies.values().stream().reduce( uses );
-    }
-
-    public void setupUses()
-    {
-        assemblies.values().stream().reduce( LayerAssembly::uses );
-    }
-
-    public LayerAssembly layer( Class<? extends LayerAssembler> layerClass, ModuleAssembler... assemblers )
+    public LayerAssembly layer( Class<? extends LayerAssembler> layerClass )
     {
         return assemblies.get( layerClass );
     }

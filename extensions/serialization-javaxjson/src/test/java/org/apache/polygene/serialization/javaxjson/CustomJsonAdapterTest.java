@@ -86,7 +86,7 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
 
         @Override
         public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                    Object object, Function<Object, JsonValue> serialize )
+                                    CustomValue object, Function<Object, JsonValue> serialize )
         {
             return jsonFactories.toJsonString( type().cast( object ).state );
         }
@@ -111,12 +111,11 @@ public class CustomJsonAdapterTest extends AbstractPolygeneTest
 
         @Override
         public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                    Object object, Function<Object, JsonValue> serialize )
+                                    CustomStructure object, Function<Object, JsonValue> serialize )
         {
-            CustomStructure customStructure = type().cast( object );
             return jsonFactories.builderFactory().createObjectBuilder()
-                                .add( "foo", customStructure.foo )
-                                .add( "bar", serialize.apply( customStructure.bar ) )
+                                .add( "foo", object.foo )
+                                .add( "bar", serialize.apply( object.bar ) )
                                 .build();
         }
 

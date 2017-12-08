@@ -20,7 +20,14 @@
 
 package org.apache.polygene.library.restlet;
 
+import java.util.stream.Stream;
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.composite.ModelDescriptor;
 import org.apache.polygene.api.structure.Application;
+import org.apache.polygene.api.structure.Layer;
+import org.apache.polygene.api.structure.ModuleDescriptor;
+import org.apache.polygene.api.structure.TypeLookup;
+import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.restlet.assembly.RestApplicationAssembler;
 import org.apache.polygene.library.restlet.assembly.configuration.ConfigurationModule;
@@ -31,6 +38,8 @@ import org.apache.polygene.library.restlet.assembly.infrastructue.FileStorageMod
 import org.apache.polygene.library.restlet.assembly.infrastructue.InfrastructureLayer;
 import org.apache.polygene.library.restlet.assembly.resource.ResourceLayer;
 
+import static java.util.stream.Stream.concat;
+
 // START SNIPPET: app
 public class TestApplication
 {
@@ -40,27 +49,32 @@ public class TestApplication
 
     // END SNIPPET: app
 
-
     public static void main( String[] args )
         throws Exception
     {
         RestApplicationAssembler assembler = new RestApplicationAssembler( NAME, VERSION, MODE,
-                                                                           ConnectivityLayer.class,
-                                                                           ResourceLayer.class,
-                                                                           DomainLayer.class,
+                                                                           ConfigurationLayer.class,
                                                                            InfrastructureLayer.class,
-                                                                           ConfigurationLayer.class
+                                                                           DomainLayer.class,
+                                                                           ResourceLayer.class,
+                                                                           ConnectivityLayer.class
         );
 
         assembler.initialize();
+        assembler.application()
+                 .layers()
+                 .peek( layer -> System.out.println( layer + "  uses " + layer.descriptor().usedLayers().toString() ) )
+                 .flatMap( Layer::modules )
+                 .peek( module -> System.out.println( "  " + module ) )
+                 .flatMap( module -> {
+                     TypeLookup lookup = module.typeLookup();
+                     ModuleDescriptor model = module.descriptor();
+                     return concat( concat( lookup.allServices().filter( service -> model.equals( service.module() ) ),
+                                            lookup.allEntities().filter( service -> model.equals( service.module() ) ) ),
+                                    lookup.allValues().filter( service -> model.equals( service.module() ) ) );
+                 } )
+                 .forEach( composite -> System.out.println( "    " + composite + ", visibility:" + composite.visibility().name() ) );
 
-        ModuleAssembly configModule = assembler.layer( ConfigurationLayer.class ).module( ConfigurationModule.NAME );
-        assembler.layer( InfrastructureLayer.class,
-                         new FileStorageModule( configModule ) );
-
-        assembler.layer( DomainLayer.class,
-                         new OrdersModule()
-        );
         assembler.start();
         assembler.addShutdownHook();
     }

@@ -39,7 +39,7 @@ public class InfrastructureLayer extends LayeredLayerAssembler
         return new InfrastructureLayer( config );
     }
 
-    public InfrastructureLayer( ModuleAssembly configModule )
+    private InfrastructureLayer( ModuleAssembly configModule )
     {
         this.configModule = configModule;
     }
@@ -47,6 +47,7 @@ public class InfrastructureLayer extends LayeredLayerAssembler
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
     {
+        new FileStorageModule( configModule ).assemble( layer, layer.module( FileStorageModule.NAME ) );
         new IndexingModule( configModule ).assemble( layer, layer.module( IndexingModule.NAME ) );
         new SerializationModule().assemble( layer, layer.module( SerializationModule.NAME ) );
         return layer;

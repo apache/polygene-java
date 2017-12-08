@@ -41,14 +41,9 @@ public class IndexingModule
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
     {
-//        new FileConfigurationAssembler().assemble( module );
-//        new ESFilesystemIndexQueryAssembler()
-//            .visibleIn( Visibility.application )
-//            .withConfig( configModule, Visibility.application )
-//            .assemble( module );
-
-        configModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
-        new RdfNativeSesameStoreAssembler(Visibility.application, Visibility.module).assemble( module );
+        new RdfNativeSesameStoreAssembler(Visibility.application, Visibility.module)
+            .withConfig( configModule, Visibility.application )
+            .assemble( module );
         return module;
     }
 }

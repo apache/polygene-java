@@ -120,7 +120,7 @@ public interface JavaxJsonAdapters
         private static abstract class ToJsonStringAdapter<T> implements JavaxJsonAdapter<T>
         {
             @Override
-            public JsonValue serialize( JavaxJsonFactories jsonFactories, Object object,
+            public JsonValue serialize( JavaxJsonFactories jsonFactories, T object,
                                         Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.toJsonString( object );
@@ -158,7 +158,7 @@ public interface JavaxJsonAdapters
             public Class<Boolean> type() { return Boolean.class; }
 
             @Override
-            public JsonValue serialize( JavaxJsonFactories jsonFactories, Object object,
+            public JsonValue serialize( JavaxJsonFactories jsonFactories, Boolean object,
                                         Function<Object, JsonValue> serialize )
             {
                 return type().cast( object ) ? JsonValue.TRUE : JsonValue.FALSE;
@@ -192,7 +192,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Integer object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )
@@ -225,7 +225,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Long object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )
@@ -258,7 +258,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Short object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )
@@ -291,7 +291,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Byte object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )
@@ -324,7 +324,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Float object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )
@@ -357,7 +357,7 @@ public interface JavaxJsonAdapters
 
             @Override
             public JsonValue serialize( JavaxJsonFactories jsonFactories,
-                                        Object object, Function<Object, JsonValue> serialize )
+                                        Double object, Function<Object, JsonValue> serialize )
             {
                 return jsonFactories.builderFactory().createObjectBuilder()
                                     .add( "value", type().cast( object ) )

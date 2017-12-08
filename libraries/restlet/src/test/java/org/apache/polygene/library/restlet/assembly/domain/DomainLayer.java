@@ -32,6 +32,7 @@ public class DomainLayer extends LayeredLayerAssembler
     public LayerAssembly assemble( LayerAssembly layer )
     {
         createModule( layer, CrudModule.class );
+        createModule( layer, OrdersModule.class );
         return layer;
     }
 }

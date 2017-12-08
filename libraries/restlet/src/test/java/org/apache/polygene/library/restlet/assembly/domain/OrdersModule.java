@@ -18,12 +18,15 @@
  *
  */
 
-package org.apache.polygene.library.restlet;
+package org.apache.polygene.library.restlet.assembly.domain;
 
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
+import org.apache.polygene.library.restlet.Customer;
+import org.apache.polygene.library.restlet.Order;
+import org.apache.polygene.library.restlet.Product;
 import org.apache.polygene.library.restlet.assembly.RestletCrudModuleAssembler;
 
 public class OrdersModule

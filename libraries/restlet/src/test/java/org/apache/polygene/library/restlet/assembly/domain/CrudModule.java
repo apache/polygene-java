@@ -32,6 +32,7 @@ public class CrudModule
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
     {
+        module.defaultServices();
         new CrudServiceAssembler().assemble( module );
         return module;
     }

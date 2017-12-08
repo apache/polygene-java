@@ -41,6 +41,7 @@ public class FileStorageModule
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
     {
+        module.defaultServices().visibleIn( Visibility.layer );
         new FileEntityStoreAssembler()
             .visibleIn( Visibility.application  )
             .withConfig( configModule, Visibility.application )
