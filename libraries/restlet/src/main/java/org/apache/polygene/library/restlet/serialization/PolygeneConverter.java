@@ -22,9 +22,7 @@ package org.apache.polygene.library.restlet.serialization;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.spi.PolygeneSPI;
 import org.restlet.data.MediaType;
 import org.restlet.data.Preference;
 import org.restlet.engine.converter.ConverterHelper;
@@ -38,9 +36,6 @@ import org.restlet.resource.Resource;
  */
 public class PolygeneConverter extends ConverterHelper
 {
-    @Structure
-    private PolygeneSPI spi;
-
     /**
      * Variant with media type application/json.
      */
