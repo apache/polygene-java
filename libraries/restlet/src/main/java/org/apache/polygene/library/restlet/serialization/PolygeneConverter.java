@@ -82,7 +82,7 @@ public class PolygeneConverter extends ConverterHelper
         {
             return objectFactory.newObject( FormRepresentation.class, source, objectClass );
         }
-        else if( VARIANT_WWW_FORM_URLENCODED.isCompatible( source ) )
+        else if( VARIANT_JSON.isCompatible( source ) )
         {
             //noinspection unchecked
             return objectFactory.newObject( JsonRepresentation.class, source, objectClass );
