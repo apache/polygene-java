@@ -61,8 +61,8 @@ h2.title
 .logo
 {
     position: fixed;
-    top: 45px;
-    left: 20px;
+    top: 0px;
+    left: 0px;
     z-index: 18;
 }
 
