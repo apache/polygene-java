@@ -38,7 +38,7 @@ import org.apache.polygene.runtime.activation.ActivatorsModel;
  * JAVADOC
  */
 public final class ImportedServiceModel
-    implements ImportedServiceDescriptor, VisitableHierarchy<Object, Object>
+    implements ImportedServiceDescriptor
 {
     private final ModuleDescriptor module;
     private final Class<?> type;

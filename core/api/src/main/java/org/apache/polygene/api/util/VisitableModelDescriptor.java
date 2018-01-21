@@ -17,20 +17,14 @@
  *
  *
  */
+package org.apache.polygene.api.util;
 
-package org.apache.polygene.api.composite;
-
-import org.apache.polygene.api.util.VisitableModelDescriptor;
-
-import java.util.stream.Stream;
+import org.apache.polygene.api.composite.ModelDescriptor;
 
 /**
- * Composite Descriptor.
+ * A modeldescriptor, that is also part of a VisitableHierarchy
  */
-public interface CompositeDescriptor
-    extends VisitableModelDescriptor
+public interface VisitableModelDescriptor
+        extends ModelDescriptor, VisitableHierarchy<Object, Object>
 {
-    Class<?> primaryType();
-
-    Stream<Class<?>> mixinTypes();
 }

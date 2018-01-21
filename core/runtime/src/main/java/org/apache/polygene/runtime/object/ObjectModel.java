@@ -39,7 +39,7 @@ import org.apache.polygene.runtime.injection.InjectionContext;
  * JAVADOC
  */
 public final class ObjectModel
-    implements ObjectDescriptor, VisitableHierarchy<Object, Object>
+    implements ObjectDescriptor
 {
     private final ModuleDescriptor module;
     private final Class<?> objectType;

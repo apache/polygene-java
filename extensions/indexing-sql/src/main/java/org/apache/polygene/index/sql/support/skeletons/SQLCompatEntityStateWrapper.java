@@ -35,6 +35,7 @@ import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.type.CollectionType;
 import org.apache.polygene.api.type.EntityCompositeType;
 import org.apache.polygene.api.type.ValueType;
+import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entity.EntityStatus;
@@ -278,6 +279,12 @@ class SQLCompatEntityStateWrapper
         public int hashCode()
         {
             return wrappedEntityDescriptor.hashCode();
+        }
+
+        @Override
+        public <ThrowableType extends Throwable> boolean accept(HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor) throws ThrowableType
+        {
+            return wrappedEntityDescriptor.accept(visitor);
         }
     }
 

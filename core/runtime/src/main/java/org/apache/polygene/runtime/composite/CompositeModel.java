@@ -47,7 +47,7 @@ import static org.apache.polygene.api.composite.InvalidCompositeException.handle
  * JAVADOC
  */
 public abstract class CompositeModel
-    implements VisitableHierarchy<Object, Object>, Dependencies, CompositeDescriptor
+    implements Dependencies, CompositeDescriptor
 {
     protected final ModuleDescriptor module;
     protected final MixinsModel mixinsModel;
