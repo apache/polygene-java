@@ -300,19 +300,6 @@ public class ModuleModel
         );
     }
 
-    public Stream<? extends ModelDescriptor> findVisibleServiceTypes()
-    {
-        return concat( visibleServices( module ),
-                       concat(
-                           layer().visibleServices( layer ),
-                           concat(
-                               layer().visibleServices( application ),
-                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleServices( application ) )
-                           )
-                       )
-        );
-    }
-
     @Override
     public Stream<? extends ObjectDescriptor> findVisibleObjectTypes()
     {
