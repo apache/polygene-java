@@ -31,6 +31,7 @@ import org.apache.polygene.api.service.ImportedServiceDescriptor;
 import org.apache.polygene.api.service.ServiceImporter;
 import org.apache.polygene.api.structure.ModuleDescriptor;
 import org.apache.polygene.api.util.Classes;
+import org.apache.polygene.api.util.HierarchicalVisitor;
 
 /**
  * XXX Workaround for inconsistency in Polygene core-api/spi
@@ -97,6 +98,12 @@ public class ImportedServiceCompositeDescriptor
     public Class<? extends ServiceImporter> serviceImporter()
     {
         return importedService.serviceImporter();
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept(HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor) throws ThrowableType
+    {
+        return importedService.accept(visitor);
     }
 
     public String toURI()

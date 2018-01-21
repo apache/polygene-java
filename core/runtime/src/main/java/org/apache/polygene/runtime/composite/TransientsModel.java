@@ -21,48 +21,14 @@
 package org.apache.polygene.runtime.composite;
 
 import java.util.List;
-import java.util.stream.Stream;
-import org.apache.polygene.api.composite.TransientDescriptor;
-import org.apache.polygene.api.util.HierarchicalVisitor;
-import org.apache.polygene.api.util.VisitableHierarchy;
 
 /**
  * JAVADOC
  */
-public class TransientsModel
-    implements VisitableHierarchy<Object, Object>
+public class TransientsModel extends CompositesModel<TransientModel>
 {
-    private final List<TransientModel> transientModels;
-
     public TransientsModel( List<TransientModel> transientModels )
     {
-        this.transientModels = transientModels;
-    }
-
-    public Stream<TransientModel> models()
-    {
-        return transientModels.stream();
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
-        throws ThrowableType
-    {
-        if( modelVisitor.visitEnter( this ) )
-        {
-            for( TransientModel transientModel : transientModels )
-            {
-                if( !transientModel.accept( modelVisitor ) )
-                {
-                    break;
-                }
-            }
-        }
-        return modelVisitor.visitLeave( this );
-    }
-
-    public Stream<? extends TransientDescriptor> stream()
-    {
-        return transientModels.stream();
+        super(transientModels);
     }
 }

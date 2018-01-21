@@ -56,7 +56,7 @@ public class ServicesInstance
 
     public Stream<? extends ServiceDescriptor> models()
     {
-        return servicesModel.models();
+        return servicesModel.stream();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ServicesInstance
 
     public Stream<? extends ServiceDescriptor> descriptors()
     {
-        return servicesModel.models();
+        return servicesModel.stream();
     }
 
     public Stream<ServiceReference<?>> references()

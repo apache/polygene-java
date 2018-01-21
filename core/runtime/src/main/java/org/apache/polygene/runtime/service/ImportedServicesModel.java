@@ -20,58 +20,31 @@
 
 package org.apache.polygene.runtime.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.ModuleDescriptor;
-import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
+import org.apache.polygene.runtime.composite.CompositesModel;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * JAVADOC
  */
-public class ImportedServicesModel
+public class ImportedServicesModel extends CompositesModel<ImportedServiceModel>
     implements VisitableHierarchy<Object, Object>
 {
-    private List<ImportedServiceModel> importedServiceModels;
-
     public ImportedServicesModel( List<ImportedServiceModel> importedServiceModels )
     {
-        this.importedServiceModels = importedServiceModels;
+        super(importedServiceModels);
     }
 
     public ImportedServicesInstance newInstance( ModuleDescriptor module )
     {
-        List<ServiceReference<?>> serviceReferences = new ArrayList<>();
-        for( ImportedServiceModel serviceModel : importedServiceModels )
-        {
-            ImportedServiceReferenceInstance serviceReferenceInstance = new ImportedServiceReferenceInstance( serviceModel, module );
-            serviceReferences.add( serviceReferenceInstance );
-        }
-
-        return new ImportedServicesInstance( this, serviceReferences );
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
-        throws ThrowableType
-    {
-        if( visitor.visitEnter( this ) )
-        {
-            for( ImportedServiceModel importedServiceModel : importedServiceModels )
-            {
-                if( !importedServiceModel.accept( visitor ) )
-                {
-                    break;
-                }
-            }
-        }
-        return visitor.visitLeave( this );
-    }
-
-    public Stream<ImportedServiceModel> models()
-    {
-        return importedServiceModels.stream();
+        List<ServiceReference<?>> serviceReferences = stream()
+                .map(serviceModel -> new ImportedServiceReferenceInstance(serviceModel, module))
+                .<ServiceReference<?>>map(ServiceReference.class::cast)
+                .collect(Collectors.toList());
+        return new ImportedServicesInstance(this, serviceReferences );
     }
 }

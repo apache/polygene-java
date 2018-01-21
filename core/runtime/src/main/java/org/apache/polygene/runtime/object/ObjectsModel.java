@@ -20,43 +20,19 @@
 
 package org.apache.polygene.runtime.object;
 
-import java.util.List;
-import java.util.stream.Stream;
-import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
+import org.apache.polygene.runtime.composite.CompositesModel;
+
+import java.util.List;
 
 /**
  * JAVADOC
  */
-public class ObjectsModel
+public class ObjectsModel extends CompositesModel<ObjectModel>
     implements VisitableHierarchy<Object, Object>
 {
-    private final List<ObjectModel> objectModels;
-
     public ObjectsModel( List<ObjectModel> objectModels )
     {
-        this.objectModels = objectModels;
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
-        throws ThrowableType
-    {
-        if( visitor.visitEnter( this ) )
-        {
-            for( ObjectModel objectModel : objectModels )
-            {
-                if( !objectModel.accept( visitor ) )
-                {
-                    break;
-                }
-            }
-        }
-        return visitor.visitLeave( this );
-    }
-
-    public Stream<ObjectModel> models()
-    {
-        return objectModels.stream();
+        super(objectModels);
     }
 }

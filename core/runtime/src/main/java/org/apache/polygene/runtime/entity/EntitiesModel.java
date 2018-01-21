@@ -20,49 +20,19 @@
 
 package org.apache.polygene.runtime.entity;
 
-import java.util.List;
-import java.util.stream.Stream;
-import org.apache.polygene.api.entity.EntityDescriptor;
-import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
+import org.apache.polygene.runtime.composite.CompositesModel;
+
+import java.util.List;
 
 /**
  * Model of entities in a particular Module.
  */
-public class EntitiesModel
+public class EntitiesModel extends CompositesModel<EntityModel>
     implements VisitableHierarchy<Object, Object>
 {
-    private final List<EntityModel> entityModels;
-
     public EntitiesModel( List<EntityModel> entityModels )
     {
-        this.entityModels = entityModels;
-    }
-
-    public Stream<EntityModel> models()
-    {
-        return entityModels.stream();
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> modelVisitor )
-        throws ThrowableType
-    {
-        if( modelVisitor.visitEnter( this ) )
-        {
-            for( EntityModel entityModel : entityModels )
-            {
-                if( !entityModel.accept( modelVisitor ) )
-                {
-                    break;
-                }
-            }
-        }
-        return modelVisitor.visitLeave( this );
-    }
-
-    public Stream<? extends EntityDescriptor> stream()
-    {
-        return entityModels.stream();
+        super(entityModels);
     }
 }
