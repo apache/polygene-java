@@ -273,45 +273,19 @@ public class ModuleModel
     @Override
     public Stream<? extends EntityDescriptor> findVisibleEntityTypes()
     {
-        return concat( visibleEntities( module ),
-                       concat(
-                           layer().visibleEntities( layer ),
-                           concat(
-                               layer().visibleEntities( application ),
-                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleEntities( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allEntities();
     }
 
     @Override
     public Stream<? extends TransientDescriptor> findVisibleTransientTypes()
     {
-        return concat( visibleTransients( module ),
-                       concat(
-                           layer().visibleTransients( layer ),
-                           concat(
-                               layer().visibleTransients( application ),
-                               layer().usedLayers()
-                                   .layers()
-                                   .flatMap( layer1 -> layer1.visibleTransients( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allTransients();
     }
 
     @Override
     public Stream<? extends ObjectDescriptor> findVisibleObjectTypes()
     {
-        return concat( visibleObjects( module ),
-                       concat(
-                           layer().visibleObjects( layer ),
-                           concat(
-                               layer().visibleObjects( application ),
-                               layer().usedLayers().layers().flatMap( layer -> layer.visibleObjects( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allObjects();
     }
 
     public Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility )
