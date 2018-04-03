@@ -152,7 +152,7 @@ public class TableResponseWriter extends AbstractResponseWriter
                                     JsonObjectBuilder cellBuilder = jsonBuilderFactory.createObjectBuilder();
                                     if( value != null )
                                     {
-                                        cellBuilder.add( "v", jsonSerializer.toJson( Serializer.Options.ALL_TYPE_INFO, value ) );
+                                        cellBuilder.add( "v", jsonSerializer.toJson( Serializer.Options.NO_TYPE_INFO, value ) );
                                     }
                                     if( cellValue.f().get() != null )
                                     {

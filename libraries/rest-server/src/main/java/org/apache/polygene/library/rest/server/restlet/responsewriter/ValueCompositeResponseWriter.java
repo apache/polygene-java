@@ -63,7 +63,7 @@ public class ValueCompositeResponseWriter extends AbstractResponseWriter
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedMediaTypes ).getMediaType();
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                StringRepresentation representation = new StringRepresentation( serializer.serialize( Serializer.Options.ALL_TYPE_INFO, result ),
+                StringRepresentation representation = new StringRepresentation( serializer.serialize( Serializer.Options.NO_TYPE_INFO, result ),
                                                                                 MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
                 return true;

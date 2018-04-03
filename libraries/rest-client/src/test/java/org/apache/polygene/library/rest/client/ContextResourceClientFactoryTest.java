@@ -125,7 +125,6 @@ public class ContextResourceClientFactoryTest
 
         module.objects( RootRestlet.class, RootResource.class, RootContext.class, SubResource1.class, PagesResource.class );
 
-
         module.objects( DescribableContext.class );
         module.transients( TestComposite.class );
 
@@ -146,18 +145,18 @@ public class ContextResourceClientFactoryTest
         server = new Server( Protocol.HTTP, port );
         ContextRestlet restlet = objectFactory.newObject( ContextRestlet.class, new org.restlet.Context() );
 
-        ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
+        ChallengeAuthenticator guard = new ChallengeAuthenticator( null, ChallengeScheme.HTTP_BASIC, "testRealm" );
         MapVerifier mapVerifier = new MapVerifier();
-        mapVerifier.getLocalSecrets().put("rickard", "secret".toCharArray());
-        guard.setVerifier(mapVerifier);
+        mapVerifier.getLocalSecrets().put( "rickard", "secret".toCharArray() );
+        guard.setVerifier( mapVerifier );
 
-        guard.setNext(restlet);
+        guard.setNext( restlet );
 
         server.setNext( guard );
         server.start();
 
         //START SNIPPET: client-create1
-        Client client =   new Client( Protocol.HTTP );
+        Client client = new Client( Protocol.HTTP );
 
         ContextResourceClientFactory contextResourceClientFactory = objectFactory.newObject( ContextResourceClientFactory.class, client );
         contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
@@ -171,14 +170,16 @@ public class ContextResourceClientFactoryTest
             @Override
             public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
-                    if (tried)
-                        throw new ResourceException( response.getStatus() );
+                if( tried )
+                {
+                    throw new ResourceException( response.getStatus() );
+                }
 
-                    tried = true;
-                    client.getContextResourceClientFactory().getInfo().setUser( new User("rickard", "secret") );
+                tried = true;
+                client.getContextResourceClientFactory().getInfo().setUser( new User( "rickard", "secret" ) );
 
-                    // Try again
-                    return refresh();
+                // Try again
+                return refresh();
             }
         } ).onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
         {
@@ -222,15 +223,15 @@ public class ContextResourceClientFactoryTest
                 return query( "querywithoutvalue" );
             }
         } ).
-        onQuery( "querywithoutvalue", new ResultHandler<TestResult>()
-        {
-            @Override
-            public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
-            {
-                Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
-                return null;
-            }
-        } );
+               onQuery( "querywithoutvalue", new ResultHandler<TestResult>()
+               {
+                   @Override
+                   public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
+                   {
+                       Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
+                       return null;
+                   }
+               } );
 
         crc.start();
         //END SNIPPET: query-without-value
@@ -351,7 +352,7 @@ public class ContextResourceClientFactoryTest
     @Test
     public void testIndexedResource()
     {
-        crc.newClient("subcontext/pages/").onResource( new ResultHandler<Resource>()
+        crc.newClient( "subcontext/pages/" ).onResource( new ResultHandler<Resource>()
         {
             @Override
             public HandlerCommand handleResult( Resource result, ContextResourceClient client )
@@ -359,16 +360,15 @@ public class ContextResourceClientFactoryTest
                 return query( "index" );
             }
         } ).onQuery( "index", new ResultHandler<Links>()
-                {
-                    @Override
-                    public HandlerCommand handleResult( Links result, ContextResourceClient client )
-                    {
-                        Assert.assertEquals( result.links().get().size(), 3 );
-                        return null;
-                    }
-                } )
-        .start();
-
+        {
+            @Override
+            public HandlerCommand handleResult( Links result, ContextResourceClient client )
+            {
+                Assert.assertEquals( result.links().get().size(), 3 );
+                return null;
+            }
+        } )
+           .start();
     }
 
     public interface TestQuery
@@ -441,10 +441,10 @@ public class ContextResourceClientFactoryTest
 
         public Links commandwithvalue()
         {
-            return new LinksBuilder(module).
-                command( "commandwithvalue" ).
-                addLink( "Command ABC","right" ).
-                addLink( "Command XYZ", "wrong" ).newLinks();
+            return new LinksBuilder( module ).
+                                                 command( "commandwithvalue" ).
+                                                 addLink( "Command ABC", "right" ).
+                                                 addLink( "Command XYZ", "wrong" ).newLinks();
         }
 
         @Override
@@ -519,7 +519,7 @@ public class ContextResourceClientFactoryTest
         }
 
         @Requires( File.class )
-        public TestResult queryWithRoleRequirement(TestQuery query)
+        public TestResult queryWithRoleRequirement( TestQuery query )
         {
             return context( SubContext.class ).queryWithRoleRequirement( query );
         }
@@ -549,7 +549,8 @@ public class ContextResourceClientFactoryTest
         }
 
         @SubResource
-        public void pages() {
+        public void pages()
+        {
             subResource( PagesResource.class );
         }
     }
@@ -566,7 +567,7 @@ public class ContextResourceClientFactoryTest
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return vbf.newValueFromSerializedState( TestResult.class, "{\"xyz\":\""+query.abc().get()+"\"}" );
+            return vbf.newValueFromSerializedState( TestResult.class, "{\"xyz\":\"" + query.abc().get() + "\"}" );
         }
 
         public TestResult queryWithoutValue()
@@ -705,11 +706,11 @@ public class ContextResourceClientFactoryTest
         @Override
         public Links index()
         {
-            return new LinksBuilder(module)
-                    .addLink( "Page1", "page1")
-                    .addLink( "Page2", "page2")
-                    .addLink( "Page3", "page3")
-                    .newLinks();
+            return new LinksBuilder( module )
+                .addLink( "Page1", "page1" )
+                .addLink( "Page2", "page2" )
+                .addLink( "Page3", "page3" )
+                .newLinks();
         }
     }
 
