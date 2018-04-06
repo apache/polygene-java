@@ -17,22 +17,14 @@
  *
  *
  */
+package org.apache.polygene.api.util;
 
-package org.apache.polygene.runtime.object;
-
-import org.apache.polygene.api.util.VisitableHierarchy;
-import org.apache.polygene.runtime.composite.CompositesModel;
-
-import java.util.List;
+import org.apache.polygene.api.composite.ModelDescriptor;
 
 /**
- * JAVADOC
+ * A modeldescriptor, that is also part of a VisitableHierarchy
  */
-public class ObjectsModel extends CompositesModel<ObjectModel>
-    implements VisitableHierarchy<Object, Object>
+public interface VisitableModelDescriptor
+        extends ModelDescriptor, VisitableHierarchy<Object, Object>
 {
-    public ObjectsModel( List<ObjectModel> objectModels )
-    {
-        super(objectModels);
-    }
 }

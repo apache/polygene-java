@@ -53,7 +53,7 @@ public class Model2XML
         simpleMappings.put( "EntitiesModel", "entities" );
         simpleMappings.put( "ServicesModel", "services" );
         simpleMappings.put( "ImportedServicesModel", "importedservices" );
-        simpleMappings.put( "ObjectsModel", "objects" );
+        simpleMappings.put( "CompositesModel", "objects" );
         simpleMappings.put( "ValuesModel", "values" );
         simpleMappings.put( "MixinsModel", "mixins" );
         simpleMappings.put( "CompositeMethodsModel", "methods" );

@@ -235,7 +235,7 @@ public class ModuleModel
     @Override
     public Stream<? extends ServiceDescriptor> serviceComposites()
     {
-        return servicesModel.models();
+        return servicesModel.stream();
     }
 
     @Override
@@ -247,13 +247,13 @@ public class ModuleModel
     @Override
     public Stream<? extends ImportedServiceDescriptor> importedServices()
     {
-        return importedServicesModel.models();
+        return importedServicesModel.stream();
     }
 
     @Override
     public Stream<? extends ObjectDescriptor> objects()
     {
-        return objectsModel.models();
+        return objectsModel.stream();
     }
 
     @Override
@@ -273,90 +273,51 @@ public class ModuleModel
     @Override
     public Stream<? extends EntityDescriptor> findVisibleEntityTypes()
     {
-        return concat( visibleEntities( module ),
-                       concat(
-                           layer().visibleEntities( layer ),
-                           concat(
-                               layer().visibleEntities( application ),
-                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleEntities( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allEntities();
     }
 
     @Override
     public Stream<? extends TransientDescriptor> findVisibleTransientTypes()
     {
-        return concat( visibleTransients( module ),
-                       concat(
-                           layer().visibleTransients( layer ),
-                           concat(
-                               layer().visibleTransients( application ),
-                               layer().usedLayers()
-                                   .layers()
-                                   .flatMap( layer1 -> layer1.visibleTransients( application ) )
-                           )
-                       )
-        );
-    }
-
-    public Stream<? extends ModelDescriptor> findVisibleServiceTypes()
-    {
-        return concat( visibleServices( module ),
-                       concat(
-                           layer().visibleServices( layer ),
-                           concat(
-                               layer().visibleServices( application ),
-                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleServices( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allTransients();
     }
 
     @Override
     public Stream<? extends ObjectDescriptor> findVisibleObjectTypes()
     {
-        return concat( visibleObjects( module ),
-                       concat(
-                           layer().visibleObjects( layer ),
-                           concat(
-                               layer().visibleObjects( application ),
-                               layer().usedLayers().layers().flatMap( layer -> layer.visibleObjects( application ) )
-                           )
-                       )
-        );
+        return typeLookup.allObjects();
     }
 
     public Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility )
     {
-        return objectsModel.models()
+        return objectsModel.stream()
             .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends TransientDescriptor> visibleTransients( Visibility visibility )
     {
-        return transientsModel.models()
+        return transientsModel.stream()
             .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends EntityDescriptor> visibleEntities( Visibility visibility )
     {
-        return entitiesModel.models()
+        return entitiesModel.stream()
             .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends ValueDescriptor> visibleValues( Visibility visibility )
     {
-        return valuesModel.models()
+        return valuesModel.stream()
             .filter( new VisibilityPredicate( visibility ) );
     }
 
     public Stream<? extends ModelDescriptor> visibleServices( Visibility visibility )
     {
         return concat(
-            servicesModel.models()
+            servicesModel.stream()
                 .filter( new VisibilityPredicate( visibility ) ),
-            importedServicesModel.models()
+            importedServicesModel.stream()
                 .filter( new VisibilityPredicate( visibility ) )
         );
     }

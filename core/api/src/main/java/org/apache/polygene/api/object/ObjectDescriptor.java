@@ -21,11 +21,12 @@
 package org.apache.polygene.api.object;
 
 import org.apache.polygene.api.composite.ModelDescriptor;
+import org.apache.polygene.api.util.VisitableModelDescriptor;
 
 /**
  * Object Descriptor.
  */
 public interface ObjectDescriptor
-    extends ModelDescriptor
+    extends VisitableModelDescriptor
 {
 }

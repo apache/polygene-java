@@ -20,49 +20,19 @@
 
 package org.apache.polygene.runtime.value;
 
-import java.util.List;
-import java.util.stream.Stream;
-import org.apache.polygene.api.util.HierarchicalVisitor;
 import org.apache.polygene.api.util.VisitableHierarchy;
-import org.apache.polygene.api.value.ValueDescriptor;
+import org.apache.polygene.runtime.composite.CompositesModel;
+
+import java.util.List;
 
 /**
  * JAVADOC
  */
-public final class ValuesModel
+public final class ValuesModel extends CompositesModel<ValueModel>
     implements VisitableHierarchy<Object, Object>
 {
-    private final List<ValueModel> valueModels;
-
     public ValuesModel( List<ValueModel> valueModels )
     {
-        this.valueModels = valueModels;
-    }
-
-    public Stream<ValueModel> models()
-    {
-        return valueModels.stream();
-    }
-
-    @Override
-    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
-        throws ThrowableType
-    {
-        if( visitor.visitEnter( this ) )
-        {
-            for( ValueModel valueModel : valueModels )
-            {
-                if( !valueModel.accept( visitor ) )
-                {
-                    break;
-                }
-            }
-        }
-        return visitor.visitLeave( this );
-    }
-
-    public Stream<? extends ValueDescriptor> stream()
-    {
-        return valueModels.stream();
+        super(valueModels);
     }
 }

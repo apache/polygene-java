@@ -22,12 +22,13 @@ package org.apache.polygene.api.service;
 
 import org.apache.polygene.api.composite.ModelDescriptor;
 import org.apache.polygene.api.identity.Identifiable;
+import org.apache.polygene.api.util.VisitableModelDescriptor;
 
 /**
  * {@code ServiceDescriptor} provides meta information of a service.
  */
 public interface ImportedServiceDescriptor
-    extends ModelDescriptor, Identifiable
+    extends VisitableModelDescriptor, Identifiable
 {
     Class<? extends ServiceImporter> serviceImporter();
 

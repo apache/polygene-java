@@ -20,13 +20,15 @@
 
 package org.apache.polygene.api.composite;
 
+import org.apache.polygene.api.util.VisitableModelDescriptor;
+
 import java.util.stream.Stream;
 
 /**
  * Composite Descriptor.
  */
 public interface CompositeDescriptor
-    extends ModelDescriptor
+    extends VisitableModelDescriptor
 {
     Class<?> primaryType();
 
