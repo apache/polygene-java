@@ -72,7 +72,7 @@
   <xsl:template name="header.navigation">
     <div class="logo">
       <a href="index.html">
-        <img src="images/logo-standard.png"/>
+        <img src="images/logo-standard.png" style="width:80%;height:80%; padding-top:20px;"/>
       </a>
     </div>
 

@@ -17,17 +17,17 @@
  */
 import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 
-def dependencies = extensions.getByType( DependenciesDeclarationExtension )
+def dependencies = extensions.getByType(DependenciesDeclarationExtension)
 
 // Gradle version
 dependencies.gradleVersion = '4.2.1'
 
 // Remote repositories
 dependencies.repositoriesUrls << [
-  mavenCentral: "https://repo1.maven.org/maven2/",
-  restlet     : 'https://maven.restlet.com/',
-  clojars     : "https://clojars.org/repo/",
-  oracle      : "http://download.oracle.com/maven/"
+        mavenCentral: "https://repo1.maven.org/maven2/",
+        restlet     : 'https://maven.restlet.com/',
+        clojars     : "https://clojars.org/repo/",
+        oracle      : "http://download.oracle.com/maven/"
 ]
 
 // Core dependencies
@@ -35,11 +35,11 @@ def asmVersion = '5.2'
 def javaxJsonVersion = '1.1'
 def osgiVersion = '4.3.1'
 dependencies.libraries << [
-  asm        : "org.ow2.asm:asm:$asmVersion",
-  asm_commons: "org.ow2.asm:asm-commons:$asmVersion",
-  asm_util   : "org.ow2.asm:asm-util:$asmVersion",
-  javax_json : "javax.json:javax.json-api:$javaxJsonVersion",
-  osgi_core  : "org.osgi:org.osgi.core:$osgiVersion",
+        asm        : "org.ow2.asm:asm:$asmVersion",
+        asm_commons: "org.ow2.asm:asm-commons:$asmVersion",
+        asm_util   : "org.ow2.asm:asm-util:$asmVersion",
+        javax_json : "javax.json:javax.json-api:$javaxJsonVersion",
+        osgi_core  : "org.osgi:org.osgi.core:$osgiVersion",
 ]
 
 // Extensions, Libraries and Tools dependencies
@@ -83,92 +83,92 @@ def springVersion = '4.3.9.RELEASE'
 def spymemcachedVersion = '2.12.3'
 def velocityVersion = '1.7'
 dependencies.libraries << [
-  bdb_je              : "com.sleepycat:je:$bdbjeVersion",
-  bonecp              : "com.jolbox:bonecp:$bonecpVersion",
-  bouncy_castle       : [
-          "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
-          "org.bouncycastle:bcpkix-jdk15on:$bouncyVersion",
-          "org.bouncycastle:bctls-jdk15on:$bouncyVersion"
-  ],
-  cassandra_client    : "com.datastax.cassandra:cassandra-driver-core:$cassandraClientVersion",
-  codahale_metrics    : [ "io.dropwizard.metrics:metrics-core:$codahaleMetricsVersion",
-                          "io.dropwizard.metrics:metrics-healthchecks:$codahaleMetricsVersion" ],
-  commons_dbcp        : "org.apache.commons:commons-dbcp2:$commonsDbcpVersion",
-  commons_lang        : "org.apache.commons:commons-lang3:$commonsLangVersion",
-  commons_validator   : "commons-validator:commons-validator:$commonsValidatorVersion",
-  ehcache             : "org.ehcache:ehcache:$ehcacheVersion",
-  elasticsearch       : [ "org.elasticsearch:elasticsearch:$elasticsearchVersion",
-                          "org.elasticsearch.client:transport:$elasticsearchVersion",
-                          // Elasticsearch 5.0 do not work with log4j 2.7
-                          "org.apache.logging.log4j:log4j-api:2.8.2",
-                          "org.apache.logging.log4j:log4j-core:2.8.2" ],
-  freemarker          : "org.freemarker:freemarker:$freemarkerVersion",
-  geode               : "org.apache.geode:geode-core:$geodeVersion",
-  groovy              : "org.codehaus.groovy:groovy-all:$groovyVersion",
-  hazelcast           : "com.hazelcast:hazelcast:$hazelcastVersion",
-  http_client         : "org.apache.httpcomponents:httpclient:$httpClientVersion",
-  jackson_mapper      : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
-  jaxb_api            : "javax.xml.bind:jaxb-api:$jaxbApiVersion",
-  jclouds_core        : "org.apache.jclouds:jclouds-core:$jcloudsVersion",
-  jclouds_blobstore   : "org.apache.jclouds:jclouds-allblobstore:$jcloudsVersion",
-  jclouds_filesystem  : "org.apache.jclouds.api:filesystem:$jcloudsVersion",
-  jetty_server        : "org.eclipse.jetty:jetty-server:$jettyVersion",
-  jetty_webapp        : "org.eclipse.jetty:jetty-webapp:$jettyVersion",
-  jetty_servlet       : "org.eclipse.jetty:jetty-servlet:$jettyVersion",
-  jetty_http          : "org.eclipse.jetty:jetty-http:$jettyVersion",
-  jetty_io            : "org.eclipse.jetty:jetty-io:$jettyVersion",
-  jetty_jmx           : "org.eclipse.jetty:jetty-jmx:$jettyVersion",
-  jetty_security      : "org.eclipse.jetty:jetty-security:$jettyVersion",
-  jetty_jsp           : "org.eclipse.jetty:jetty-jsp:$jettyVersion",
-  jetty_util          : "org.eclipse.jetty:jetty-util:$jettyVersion",
-  jetty_continuation  : "org.eclipse.jetty:jetty-continuation:$jettyVersion",
-  jetty_client        : "org.eclipse.jetty:jetty-client:$jettyVersion",
-  jetty_xml           : "org.eclipse.jetty:jetty-xml:$jettyVersion",
-  johnzon             : "org.apache.johnzon:johnzon-core:$johnzonVersion",
-  jooq                : "org.jooq:jooq:$jooqVersion",
-  jdbm                : "jdbm:jdbm:$jdbmVersion",
-  jedis               : "redis.clients:jedis:$jedisVersion",
-  leveldb_api         : "org.iq80.leveldb:leveldb-api:$leveldbVersion",
-  leveldb_java        : "org.iq80.leveldb:leveldb:$leveldbVersion",
-  leveldb_jni_all     : "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
-  liquibase           : "org.liquibase:liquibase-core:$liquibaseVersion",
-  mongodb             : "org.mongodb:mongo-java-driver:$mongodbVersion",
-  msgpack             : "org.msgpack:msgpack-core:$msgpackVersion",
-  osgi_compendium     : "org.osgi:org.osgi.compendium:$osgiVersion",
-  osgi_enterprise     : "org.osgi:org.osgi.enterprise:$osgiVersion",
-  restlet             : [ "org.restlet.jee:org.restlet:$restletVersion",
-                          "org.restlet.jee:org.restlet.ext.atom:$restletVersion",
-                          "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
-                          "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion" ],
-  restlet_xml         : "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
-  riak                : "com.basho.riak:riak-client:$riakVersion",
-  servlet_api         : "javax.servlet:javax.servlet-api:$servletVersion",
-  sesame              : [ "org.openrdf.sesame:sesame-model:$rdfVersion",
-                          "org.openrdf.sesame:sesame-queryparser-sparql:$rdfVersion",
-                          "org.openrdf.sesame:sesame-repository-dataset:$rdfVersion",
-                          "org.openrdf.sesame:sesame-repository-http:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-api:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-n3:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-ntriples:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-trig:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-trix:$rdfVersion",
-                          "org.openrdf.sesame:sesame-rio-turtle:$rdfVersion",
-                          "org.openrdf.sesame:sesame-sail-api:$rdfVersion",
-                          "org.openrdf.sesame:sesame-sail-memory:$rdfVersion",
-                          "org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion",
-                          "org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion" ],
-  shiro               : "org.apache.shiro:shiro-core:$shiroVersion",
-  shiro_web           : "org.apache.shiro:shiro-web:$shiroVersion",
-  slf4j_api           : "org.slf4j:slf4j-api:$slf4jVersion",
-  solr                : [ "org.apache.solr:solr-core:$solrVersion",
-                          "org.apache.solr:solr-solrj:$solrVersion" ],
-  sparql              : [ "org.openrdf.sesame:sesame-queryresultio-sparqlxml:$rdfVersion",
-                          "org.openrdf.sesame:sesame-queryresultio-sparqljson:$rdfVersion" ],
-  spring_core         : [ "org.springframework:spring-beans:$springVersion",
-                          "org.springframework:spring-context:$springVersion" ],
-  spymemcached        : "net.spy:spymemcached:$spymemcachedVersion",
-  velocity            : "org.apache.velocity:velocity:$velocityVersion",
+        bdb_je            : "com.sleepycat:je:$bdbjeVersion",
+        bonecp            : "com.jolbox:bonecp:$bonecpVersion",
+        bouncy_castle     : [
+                "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
+                "org.bouncycastle:bcpkix-jdk15on:$bouncyVersion",
+                "org.bouncycastle:bctls-jdk15on:$bouncyVersion"
+        ],
+        cassandra_client  : "com.datastax.cassandra:cassandra-driver-core:$cassandraClientVersion",
+        codahale_metrics  : ["io.dropwizard.metrics:metrics-core:$codahaleMetricsVersion",
+                             "io.dropwizard.metrics:metrics-healthchecks:$codahaleMetricsVersion"],
+        commons_dbcp      : "org.apache.commons:commons-dbcp2:$commonsDbcpVersion",
+        commons_lang      : "org.apache.commons:commons-lang3:$commonsLangVersion",
+        commons_validator : "commons-validator:commons-validator:$commonsValidatorVersion",
+        ehcache           : "org.ehcache:ehcache:$ehcacheVersion",
+        elasticsearch     : ["org.elasticsearch:elasticsearch:$elasticsearchVersion",
+                             "org.elasticsearch.client:transport:$elasticsearchVersion",
+                             // Elasticsearch 5.0 do not work with log4j 2.7
+                             "org.apache.logging.log4j:log4j-api:2.8.2",
+                             "org.apache.logging.log4j:log4j-core:2.8.2"],
+        freemarker        : "org.freemarker:freemarker:$freemarkerVersion",
+        geode             : "org.apache.geode:geode-core:$geodeVersion",
+        groovy            : "org.codehaus.groovy:groovy-all:$groovyVersion",
+        hazelcast         : "com.hazelcast:hazelcast:$hazelcastVersion",
+        http_client       : "org.apache.httpcomponents:httpclient:$httpClientVersion",
+        jackson_mapper    : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+        jaxb_api          : "javax.xml.bind:jaxb-api:$jaxbApiVersion",
+        jclouds_core      : "org.apache.jclouds:jclouds-core:$jcloudsVersion",
+        jclouds_blobstore : "org.apache.jclouds:jclouds-allblobstore:$jcloudsVersion",
+        jclouds_filesystem: "org.apache.jclouds.api:filesystem:$jcloudsVersion",
+        jetty_server      : "org.eclipse.jetty:jetty-server:$jettyVersion",
+        jetty_webapp      : "org.eclipse.jetty:jetty-webapp:$jettyVersion",
+        jetty_servlet     : "org.eclipse.jetty:jetty-servlet:$jettyVersion",
+        jetty_http        : "org.eclipse.jetty:jetty-http:$jettyVersion",
+        jetty_io          : "org.eclipse.jetty:jetty-io:$jettyVersion",
+        jetty_jmx         : "org.eclipse.jetty:jetty-jmx:$jettyVersion",
+        jetty_security    : "org.eclipse.jetty:jetty-security:$jettyVersion",
+        jetty_jsp         : "org.eclipse.jetty:jetty-jsp:$jettyVersion",
+        jetty_util        : "org.eclipse.jetty:jetty-util:$jettyVersion",
+        jetty_continuation: "org.eclipse.jetty:jetty-continuation:$jettyVersion",
+        jetty_client      : "org.eclipse.jetty:jetty-client:$jettyVersion",
+        jetty_xml         : "org.eclipse.jetty:jetty-xml:$jettyVersion",
+        johnzon           : "org.apache.johnzon:johnzon-core:$johnzonVersion",
+        jooq              : "org.jooq:jooq:$jooqVersion",
+        jdbm              : "jdbm:jdbm:$jdbmVersion",
+        jedis             : "redis.clients:jedis:$jedisVersion",
+        leveldb_api       : "org.iq80.leveldb:leveldb-api:$leveldbVersion",
+        leveldb_java      : "org.iq80.leveldb:leveldb:$leveldbVersion",
+        leveldb_jni_all   : "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
+        liquibase         : "org.liquibase:liquibase-core:$liquibaseVersion",
+        mongodb           : "org.mongodb:mongo-java-driver:$mongodbVersion",
+        msgpack           : "org.msgpack:msgpack-core:$msgpackVersion",
+        osgi_compendium   : "org.osgi:org.osgi.compendium:$osgiVersion",
+        osgi_enterprise   : "org.osgi:org.osgi.enterprise:$osgiVersion",
+        restlet           : ["org.restlet.jee:org.restlet:$restletVersion",
+                             "org.restlet.jee:org.restlet.ext.atom:$restletVersion",
+                             "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
+                             "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion"],
+        restlet_xml       : "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
+        riak              : "com.basho.riak:riak-client:$riakVersion",
+        servlet_api       : "javax.servlet:javax.servlet-api:$servletVersion",
+        sesame            : ["org.openrdf.sesame:sesame-model:$rdfVersion",
+                             "org.openrdf.sesame:sesame-queryparser-sparql:$rdfVersion",
+                             "org.openrdf.sesame:sesame-repository-dataset:$rdfVersion",
+                             "org.openrdf.sesame:sesame-repository-http:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-api:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-n3:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-ntriples:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-trig:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-trix:$rdfVersion",
+                             "org.openrdf.sesame:sesame-rio-turtle:$rdfVersion",
+                             "org.openrdf.sesame:sesame-sail-api:$rdfVersion",
+                             "org.openrdf.sesame:sesame-sail-memory:$rdfVersion",
+                             "org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion",
+                             "org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion"],
+        shiro             : "org.apache.shiro:shiro-core:$shiroVersion",
+        shiro_web         : "org.apache.shiro:shiro-web:$shiroVersion",
+        slf4j_api         : "org.slf4j:slf4j-api:$slf4jVersion",
+        solr              : ["org.apache.solr:solr-core:$solrVersion",
+                             "org.apache.solr:solr-solrj:$solrVersion"],
+        sparql            : ["org.openrdf.sesame:sesame-queryresultio-sparqlxml:$rdfVersion",
+                             "org.openrdf.sesame:sesame-queryresultio-sparqljson:$rdfVersion"],
+        spring_core       : ["org.springframework:spring-beans:$springVersion",
+                             "org.springframework:spring-context:$springVersion"],
+        spymemcached      : "net.spy:spymemcached:$spymemcachedVersion",
+        velocity          : "org.apache.velocity:velocity:$velocityVersion",
 ]
 
 // Tools dependencies
@@ -176,9 +176,9 @@ def jgoodiesLooksVersion = '2.7.0'
 def pdfboxVersion = '2.0.6'
 def prefuseVersion = '1.0.1'
 dependencies.libraries << [
-  jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
-  pdfbox        : "org.apache.pdfbox:pdfbox:$pdfboxVersion",
-  prefuse       : "de.sciss:prefuse-core:$prefuseVersion",
+        jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
+        pdfbox        : "org.apache.pdfbox:pdfbox:$pdfboxVersion",
+        prefuse       : "de.sciss:prefuse-core:$prefuseVersion",
 ]
 
 // Runtime, Test and Samples dependencies
@@ -189,7 +189,7 @@ def easyMockVersion = '3.4'
 def h2Version = '1.4.196'
 def hamcrestVersion = '1.3'
 def jaxRsApiVersion = '2.0.1'
-def junitVersion = '4.12'
+def junit5Version = '5.1.1'
 def logbackVersion = '1.2.3' // TODO Replace with Apache Log4j 2
 def mockitoVersion = '2.8.47'
 def mysqlVersion = '6.0.6'
@@ -197,93 +197,89 @@ def postgresqlVersion = '42.1.4'
 def sqliteVersion = '3.19.3'
 def xmlUnitVersion = '2.3.0'
 dependencies.libraries << [
-  awaitility        : "org.awaitility:awaitility:$awaitilityVersion",
-  derby             : "org.apache.derby:derby:$derbyVersion",
-  dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
-  docker_junit      : "com.github.tdomzal:junit-docker-rule:$dockerJUnitVersion",
-  easymock          : "org.easymock:easymock:$easyMockVersion",
-  h2                : "com.h2database:h2:$h2Version",
-  hamcrest          : [ "org.hamcrest:hamcrest-core:$hamcrestVersion",
-                        "org.hamcrest:hamcrest-library:$hamcrestVersion" ],
-  junit             : "junit:junit:$junitVersion",
-  logback           : "ch.qos.logback:logback-classic:$logbackVersion",
-  mockito           : "org.mockito:mockito-core:$mockitoVersion",
-  mysql_connector   : "mysql:mysql-connector-java:$mysqlVersion",
-  postgres          : "org.postgresql:postgresql:$postgresqlVersion",
-  spring_testsupport: "org.springframework:spring-test:$springVersion",
-  sqlite            : "org.xerial:sqlite-jdbc:$sqliteVersion",
-  xmlunit           : "org.xmlunit:xmlunit-matchers:$xmlUnitVersion",
+        awaitility        : "org.awaitility:awaitility:$awaitilityVersion",
+        derby             : "org.apache.derby:derby:$derbyVersion",
+        dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
+        docker_junit      : "com.github.tdomzal:junit-docker-rule:$dockerJUnitVersion",
+        easymock          : "org.easymock:easymock:$easyMockVersion",
+        h2                : "com.h2database:h2:$h2Version",
+        hamcrest          : ["org.hamcrest:hamcrest-core:$hamcrestVersion",
+                             "org.hamcrest:hamcrest-library:$hamcrestVersion"],
+        junit             : [
+                "org.junit.jupiter:junit-jupiter-api:$junit5Version",
+                "org.junit.jupiter:junit-jupiter-params:$junit5Version",
+                "org.junit.vintage:junit-vintage-engine:$junit5Version"
+        ],
+        logback           : "ch.qos.logback:logback-classic:$logbackVersion",
+        mockito           : "org.mockito:mockito-core:$mockitoVersion",
+        mysql_connector   : "mysql:mysql-connector-java:$mysqlVersion",
+        postgres          : "org.postgresql:postgresql:$postgresqlVersion",
+        spring_testsupport: "org.springframework:spring-test:$springVersion",
+        sqlite            : "org.xerial:sqlite-jdbc:$sqliteVersion",
+        xmlunit           : "org.xmlunit:xmlunit-matchers:$xmlUnitVersion",
 ]
 
 // Default dependencies
 dependencies.defaultDependencies << [
-  testImplementation: [ dependencies.libraries.junit, dependencies.libraries.hamcrest ]
+        testImplementation: [dependencies.libraries.junit, dependencies.libraries.hamcrest]
 ]
 
 // Resolution rules
 dependencies.dependencySubstitutionSpec = { DependencySubstitution substitution, ModuleComponentSelector dep ->
-  // Always resolve ASM to the same version
-  if( dep.group == 'org.ow2.asm' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: asmVersion
-  }
-  // Always resolve OSGi to the same version
-  else if( dep.group == 'org.osgi' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: osgiVersion
-  }
-  // Always resolve SLF4J to the same version
-  else if( dep.group == 'org.slf4j' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: slf4jVersion
-  }
-  // Always resolve Jackson to the same version
-  else if( dep.group.startsWith( 'com.fasterxml.jackson' ) && dep.module != 'jackson-parent' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: jacksonVersion
-  }
-  // Always resolve JAX-RS API to the same version
-  else if( [ 'jaxrs-api', 'jsr311-api', 'javax.ws.rs-api' ].contains( dep.module ) )
-  {
-    substitution.useTarget group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsApiVersion
-  }
-  // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
-  else if( dep.group == 'woodstox' && dep.module == 'wstx-asl' )
-  {
-    substitution.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: dep.version
-  }
-  // some bad citizens have SNAPSHOT parents ...
-  else if( dep.module == 'commons-sandbox-parent' && dep.version == '3-SNAPSHOT' )
-  {
-    substitution.useTarget group: dep.group, name: dep.module, version: '3'
-  }
-  // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
-  // Apache 2 licensed instead
-  else if( dep.group == 'net.sourceforge.findbugs' && dep.module == 'annotations' )
-  {
-    substitution.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
-  }
+    // Always resolve ASM to the same version
+    if (dep.group == 'org.ow2.asm') {
+        substitution.useTarget group: dep.group, name: dep.module, version: asmVersion
+    }
+    // Always resolve OSGi to the same version
+    else if (dep.group == 'org.osgi') {
+        substitution.useTarget group: dep.group, name: dep.module, version: osgiVersion
+    }
+    // Always resolve SLF4J to the same version
+    else if (dep.group == 'org.slf4j') {
+        substitution.useTarget group: dep.group, name: dep.module, version: slf4jVersion
+    }
+    // Always resolve Jackson to the same version
+    else if (dep.group.startsWith('com.fasterxml.jackson') && dep.module != 'jackson-parent') {
+        substitution.useTarget group: dep.group, name: dep.module, version: jacksonVersion
+    }
+    // Always resolve JAX-RS API to the same version
+    else if (['jaxrs-api', 'jsr311-api', 'javax.ws.rs-api'].contains(dep.module)) {
+        substitution.useTarget group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: jaxRsApiVersion
+    }
+    // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
+    else if (dep.group == 'woodstox' && dep.module == 'wstx-asl') {
+        substitution.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: dep.version
+    }
+    // some bad citizens have SNAPSHOT parents ...
+    else if (dep.module == 'commons-sandbox-parent' && dep.version == '3-SNAPSHOT') {
+        substitution.useTarget group: dep.group, name: dep.module, version: '3'
+    }
+    // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
+    // Apache 2 licensed instead
+    else if (dep.group == 'net.sourceforge.findbugs' && dep.module == 'annotations') {
+        substitution.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
+    }
 }
 
 // NodeJS
 dependencies.nodeVersions << [
-    node: '6.10.2',
-    npm: '4.4.4'
+        node: '6.10.2',
+        npm : '4.4.4'
 ]
 
 // Build Tools
 dependencies.buildToolsVersions << [
-  jacoco: '0.7.9'
+        jacoco: '0.7.9'
 ]
 
 // Docker Images
 dependencies.dockerImagesVersions << [
-  cassandra: 'cassandra:3.10',
-  memcached: 'memcached:1.4.39-alpine',
-  mariadb  : 'mariadb:10.1.21',
-  mongo    : 'mongo:3.5.10',
-  postgres : 'postgres:9.6.3-alpine',
-  redis    : 'redis:4.0.0-alpine',
-  riak     : 'basho/riak-kv:ubuntu-2.2.3',
-  s3server : 'scality/s3server:mem-bb2a38c0'
+        cassandra: 'cassandra:3.10',
+        memcached: 'memcached:1.4.39-alpine',
+        mariadb  : 'mariadb:10.1.21',
+        mongo    : 'mongo:3.5.10',
+        postgres : 'postgres:9.6.3-alpine',
+        redis    : 'redis:4.0.0-alpine',
+        riak     : 'basho/riak-kv:ubuntu-2.2.3',
+        s3server : 'scality/s3server:mem-bb2a38c0'
 ]
