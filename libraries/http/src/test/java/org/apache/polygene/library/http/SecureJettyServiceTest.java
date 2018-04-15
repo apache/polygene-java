@@ -23,20 +23,21 @@ import java.io.IOException;
 import javax.net.ssl.SSLHandshakeException;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.polygene.test.util.FreePortFinder;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.util.FreePortFinder;
+import org.junit.Test;
 
 import static javax.servlet.DispatcherType.REQUEST;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.apache.polygene.library.http.Servlets.addFilters;
 import static org.apache.polygene.library.http.Servlets.addServlets;
 import static org.apache.polygene.library.http.Servlets.filter;
 import static org.apache.polygene.library.http.Servlets.serve;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class SecureJettyServiceTest
     extends AbstractSecureJettyTest
@@ -93,6 +94,6 @@ public class SecureJettyServiceTest
     {
         String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ),
                                                  stringResponseHandler );
-        assertEquals( "Hello World", output );
+        assertThat( output, equalTo( "Hello World" ) );
     }
 }

@@ -31,11 +31,11 @@ import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.service.qualifier.ServiceQualifier.withId;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * JAVADOC

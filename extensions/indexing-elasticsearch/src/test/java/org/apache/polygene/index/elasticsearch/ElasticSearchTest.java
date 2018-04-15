@@ -41,7 +41,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 
@@ -50,8 +50,9 @@ import static org.apache.polygene.api.query.QueryExpressions.ne;
 import static org.apache.polygene.api.query.QueryExpressions.not;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class ElasticSearchTest
     extends AbstractPolygeneTest
@@ -202,47 +203,47 @@ public class ElasticSearchTest
 
         QueryBuilder<Post> queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class );
         Query<Post> query = uow.newQuery( queryBuilder );
-        assertEquals( 1, query.count() );
+        assertThat( query.count(), equalTo( 1 ) );
         post = query.find();
-        assertNotNull( post );
-        assertEquals( title, post.title().get() );
+        assertThat( post, notNullValue() );
+        assertThat( post.title().get(), equalTo( title ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), title ) );
         query = uow.newQuery( queryBuilder );
-        assertEquals( 1, query.count() );
+        assertThat( query.count(), equalTo( 1 ) );
         post = query.find();
-        assertNotNull( post );
-        assertEquals( title, post.title().get() );
+        assertThat( post, notNullValue() );
+        assertThat( post.title().get(), equalTo( title ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( eq( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
-        assertEquals( 0, query.count() );
+        assertThat( query.count(), equalTo( 0 ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( ne( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
-        assertEquals( 1, query.count() );
+        assertThat( query.count(), equalTo( 1 ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( not( eq( post.title(), "Not available" ) ) );
         query = uow.newQuery( queryBuilder );
         post = query.find();
-        assertNotNull( post );
-        assertEquals( title, post.title().get() );
+        assertThat( post, notNullValue() );
+        assertThat( post.title().get(), equalTo( title ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( eq( post.author().get().nickname(), "eskatos" ) );
         query = uow.newQuery( queryBuilder );
-        assertEquals( 1, query.count() );
+        assertThat( query.count(), equalTo( 1 ) );
         post = query.find();
-        assertNotNull( post );
-        assertEquals( title, post.title().get() );
+        assertThat( post, notNullValue() );
+        assertThat( post.title().get(), equalTo( title ) );
 
         uow.discard();
     }

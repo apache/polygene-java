@@ -27,8 +27,10 @@ import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class IssueTest
 {
@@ -75,7 +77,7 @@ public class IssueTest
                 if( visited instanceof LayerDescriptor )
                 {
                     ( (LayerDescriptor) visited ).usedLayers().layers().forEach( usedLayerModel -> {
-                        Assert.assertNotNull( "Used layer model is null", usedLayerModel );
+                        assertThat( "Used layer model is null", usedLayerModel, notNullValue() );
                     } );
                 }
 

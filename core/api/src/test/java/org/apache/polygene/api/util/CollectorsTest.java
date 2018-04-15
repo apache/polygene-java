@@ -21,14 +21,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CollectorsTest
 {
@@ -60,8 +59,8 @@ public void single()
 @Test
 public void singleOrEmpty()
 {
-    assertEquals( Optional.empty(), Stream.of().collect( Collectors.singleOrEmpty() ) );
-    assertEquals( Optional.of( 1 ), Stream.of( 1 ).collect( Collectors.singleOrEmpty() ) );
+    assertThat( Stream.of().collect( Collectors.singleOrEmpty() ), equalTo( Optional.empty() ) );
+    assertThat( Stream.of( 1 ).collect( Collectors.singleOrEmpty() ), equalTo( Optional.of( 1 ) ) );
 
     try
     {

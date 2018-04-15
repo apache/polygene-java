@@ -20,16 +20,15 @@
 
 package org.apache.polygene.library.locking;
 
-import org.junit.Test;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
 /**
  * JAVADOC

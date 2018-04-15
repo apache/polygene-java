@@ -27,8 +27,8 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.mock.MockComposite;
 import org.apache.polygene.test.mock.MockPlayerMixin;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -36,7 +36,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for SequencingConcern.
@@ -49,7 +49,7 @@ public class SequencingConcernTest
      * returned.
      */
     @Test
-    @Ignore( "Expectations need to be figured out." )
+    @Disabled( "Expectations need to be figured out." )
     public void failingBooking()
         throws ActivationException, AssemblyException
     {
@@ -80,7 +80,7 @@ public class SequencingConcernTest
      * returned.
      */
     @Test
-    @Ignore( "Expectations need to be figured out." )
+    @Disabled( "Expectations need to be figured out." )
     public void successfulBooking()
         throws ActivationException, AssemblyException
     {

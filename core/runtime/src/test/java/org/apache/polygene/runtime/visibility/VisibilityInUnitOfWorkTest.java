@@ -36,7 +36,7 @@ import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VisibilityInUnitOfWorkTest
 {

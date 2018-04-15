@@ -22,10 +22,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import junit.framework.AssertionFailedError;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+//import junit.framework.AssertionFailedError;
+//import org.junit.rules.TestRule;
+//import org.junit.runner.Description;
+//import org.junit.runners.model.Statement;
 
 /**
  * JUnit annotation and rule to mark not yet implemented tests.
@@ -41,40 +41,40 @@ public @interface NotYetImplemented
 {
     String reason() default "";
 
-    class Rule implements TestRule
-    {
-        @Override
-        public Statement apply( Statement base, Description description )
-        {
-            if( description.getAnnotation( NotYetImplemented.class ) == null )
-            {
-                return base;
-            }
-            return new Statement()
-            {
-                @Override
-                public void evaluate() throws Throwable
-                {
-                    boolean passed = false;
-                    try
-                    {
-                        base.evaluate();
-                        passed = true;
-                    }
-                    catch( Throwable ex )
-                    {
-                        System.err.println( "Not yet implemented test expectedly failed" );
-                        ex.printStackTrace( System.err );
-                    }
-                    if( passed )
-                    {
-                        throw new AssertionFailedError(
-                            "Test " + description.getDisplayName()
-                            + " is annotated as not yet implemented, expected it to fail but it passed."
-                        );
-                    }
-                }
-            };
-        }
-    }
+//    class Rule implements TestRule
+//    {
+//        @Override
+//        public Statement apply( Statement base, Description description )
+//        {
+//            if( description.getAnnotation( NotYetImplemented.class ) == null )
+//            {
+//                return base;
+//            }
+//            return new Statement()
+//            {
+//                @Override
+//                public void evaluate() throws Throwable
+//                {
+//                    boolean passed = false;
+//                    try
+//                    {
+//                        base.evaluate();
+//                        passed = true;
+//                    }
+//                    catch( Throwable ex )
+//                    {
+//                        System.err.println( "Not yet implemented test expectedly failed" );
+//                        ex.printStackTrace( System.err );
+//                    }
+//                    if( passed )
+//                    {
+//                        throw new AssertionFailedError(
+//                            "Test " + description.getDisplayName()
+//                            + " is annotated as not yet implemented, expected it to fail but it passed."
+//                        );
+//                    }
+//                }
+//            };
+//        }
+//    }
 }

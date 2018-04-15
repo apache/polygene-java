@@ -20,11 +20,12 @@
 package org.apache.polygene.api.annotation;
 
 import java.lang.annotation.Annotation;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 /**
  * Tests public api exposed by Mixins annotation.
@@ -37,9 +38,9 @@ public class MixinsTest
     public void retention()
     {
         Annotation[] annotations = Annotated.class.getDeclaredAnnotations();
-        assertNotNull( "annotations should not be null", annotations );
-        assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", Mixins.class, annotations[ 0 ].annotationType() );
+        assertThat( "annotations should not be null", annotations, notNullValue() );
+        assertThat( "number of annotations", annotations.length, equalTo( 1 ) );
+        assertThat( "annotation type", annotations[ 0 ].annotationType(), equalTo( Mixins.class ) );
     }
 
     @Mixins( Object.class )

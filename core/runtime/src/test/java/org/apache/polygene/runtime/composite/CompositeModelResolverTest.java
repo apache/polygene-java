@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.runtime.composite;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.This;
@@ -29,6 +27,10 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class CompositeModelResolverTest
 {
@@ -45,7 +47,7 @@ public class CompositeModelResolverTest
             }
         }.module();
 
-        Assert.assertEquals( "ok", module.newTransient( TestComposite1.class ).testB() );
+        assertThat( module.newTransient( TestComposite1.class ).testB(), equalTo( "ok" ) );
     }
 
     public void assemble( ModuleAssembly module )

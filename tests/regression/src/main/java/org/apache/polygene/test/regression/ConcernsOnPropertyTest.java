@@ -30,9 +30,10 @@ import org.apache.polygene.api.sideeffect.SideEffectOf;
 import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ConcernsOnPropertyTest
     extends AbstractPolygeneTest
@@ -49,7 +50,7 @@ public class ConcernsOnPropertyTest
         Car prototype = builder.prototypeFor( Car.class );
         prototype.manufacturer().set( "Volvo" );
         Car car = builder.newInstance();
-        Assert.assertEquals( "Concern on Property methods.", "Simon says: Volvo", car.manufacturer().get() );
+        assertThat( "Concern on Property methods.", car.manufacturer().get(), equalTo( "Simon says: Volvo" ) );
     }
 
     public interface CarComposite

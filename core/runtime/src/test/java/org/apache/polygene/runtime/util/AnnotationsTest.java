@@ -21,13 +21,14 @@ package org.apache.polygene.runtime.util;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.api.util.Annotations;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class AnnotationsTest
 {
@@ -41,11 +42,11 @@ public class AnnotationsTest
     public void getAnnotationOrNull()
         throws NoSuchMethodException
     {
-        assertNotNull( "Mixins annotation found", Annotations.annotationOn( AnnotatedClass.class, Mixins.class ) );
+        assertThat( "Mixins annotation found", Annotations.annotationOn( AnnotatedClass.class, Mixins.class ), notNullValue() );
 
-        assertNull( "No SideEffects annotation found", Annotations.annotationOn( AnnotatedClass.class, SideEffects.class ) );
+        assertThat( "No SideEffects annotation found", Annotations.annotationOn( AnnotatedClass.class, SideEffects.class ), nullValue() );
 
         final Type returnType = AnnotatedClass.class.getDeclaredMethod( "list" ).getGenericReturnType();
-        assertNull( "Null on no class type", Annotations.annotationOn( returnType, Mixins.class ) );
+        assertThat( "Null on no class type", Annotations.annotationOn( returnType, Mixins.class ), nullValue() );
     }
 }

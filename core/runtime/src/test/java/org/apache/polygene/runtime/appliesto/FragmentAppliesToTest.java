@@ -26,7 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
@@ -39,9 +38,11 @@ import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class FragmentAppliesToTest
     extends AbstractPolygeneTest
@@ -59,16 +60,16 @@ public class FragmentAppliesToTest
         TransientBuilder<Composite1> builder = transientBuilderFactory.newTransientBuilder( Composite1.class );
 
         Composite1 instance = builder.newInstance();
-        assertNotNull( "DependencyOld not injected.", instance.getBuilderFactory() );
-        assertNotNull( "This not injected.", instance.getMeAsMixin2() );
-        assertEquals( 1, instance.getValue() );
+        assertThat( "DependencyOld not injected.", instance.getBuilderFactory(), notNullValue() );
+        assertThat( "This not injected.", instance.getMeAsMixin2(), notNullValue() );
+        assertThat( instance.getValue(), equalTo( 1 ) );
         instance.getBuilderFactory();
         instance.getMeAsMixin2();
         instance.getBuilderFactory();
         instance.getMeAsMixin2();
         instance.getMeAsMixin2();
         instance.getBuilderFactory();
-        assertEquals( 4, instance.getValue() );
+        assertThat( instance.getValue(), equalTo( 4 ) );
     }
 
     @Mixins( { Mixin1.Mixin1Impl.class, Mixin2.Mixin2Impl.class, CounterImpl.class } )

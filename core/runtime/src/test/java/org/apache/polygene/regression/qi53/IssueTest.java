@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.regression.qi53;
 
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
 import org.apache.polygene.api.composite.TransientComposite;
@@ -31,8 +30,10 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -48,10 +49,10 @@ public class IssueTest
         throws SecurityException, NoSuchMethodException
     {
         TransientBuilder<CostPerUnitComposite> builder = transientBuilderFactory.newTransientBuilder( CostPerUnitComposite.class );
-        builder.prototype().unit().set( new Unit<Integer>( 10 ) );
+        builder.prototype().unit().set( new Unit<>( 10 ) );
         CostPerUnitComposite test = builder.newInstance();
-        assertEquals( 10, test.unit().get().value );
-        assertEquals( 50, test.toCostPer( new Unit<Integer>( 50 ) ).unit().get().value );
+        assertThat( test.unit().get().value, equalTo( 10 ) );
+        assertThat( test.toCostPer( new Unit<>( 50 ) ).unit().get().value, equalTo( 50 ) );
     }
 
     public interface CostPerUnit

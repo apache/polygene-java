@@ -16,7 +16,7 @@ package org.apache.polygene.library.sql.generator;
 
 import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

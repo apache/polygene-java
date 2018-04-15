@@ -23,8 +23,6 @@ package org.apache.polygene.runtime.mixin;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.injection.scope.This;
@@ -33,8 +31,11 @@ import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class MethodInterceptionMixinTest
     extends AbstractPolygeneTest
@@ -50,8 +51,8 @@ public class MethodInterceptionMixinTest
     {
         ServiceReference<SomeService> service = serviceFinder.findService( SomeService.class );
         Collection<String> result1 = service.get().result();
-        assertEquals( "Concern should have been called.", 1, result1.size() );
-        assertEquals( "Concern should have been called.", "Concern1", result1.iterator().next() );
+        assertThat( "Concern should have been called.", result1.size(), equalTo( 1 ) );
+        assertThat( "Concern should have been called.", result1.iterator().next(), equalTo( "Concern1" ) );
     }
 
     @Concerns( { SomeConcern1.class } )

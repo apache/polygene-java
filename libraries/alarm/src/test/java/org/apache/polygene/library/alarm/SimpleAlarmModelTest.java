@@ -22,23 +22,23 @@ package org.apache.polygene.library.alarm;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class SimpleAlarmModelTest
     extends AbstractPolygeneTest
@@ -89,7 +89,7 @@ public class SimpleAlarmModelTest
         throws Exception
     {
         SimpleAlarmModelService.SimpleAlarmModelMixin spi = new SimpleAlarmModelService.SimpleAlarmModelMixin();
-        assertEquals( "org.apache.polygene.library.alarm.model.simple", spi.modelName() );
+        assertThat( spi.modelName(), equalTo( "org.apache.polygene.library.alarm.model.simple" ) );
     }
 
     @Test
@@ -101,14 +101,14 @@ public class SimpleAlarmModelTest
         boolean test2 = spi.modelDescription().toLowerCase().contains( "activated" );
         boolean test3 = spi.modelDescription().toLowerCase().contains( "activation" );
         boolean test4 = spi.modelDescription().toLowerCase().contains( "deactivation" );
-        assertTrue( test1 && test2 && test3 && test4 );
+        assertThat( test1 && test2 && test3 && test4, is( true ) );
 
         Locale english = new Locale( "en" );
         test1 = spi.modelDescription( english ).toLowerCase().contains( "normal" );
         test2 = spi.modelDescription( english ).toLowerCase().contains( "activated" );
         test3 = spi.modelDescription( english ).toLowerCase().contains( "activation" );
         test4 = spi.modelDescription( english ).toLowerCase().contains( "deactivation" );
-        assertTrue( test1 && test2 && test3 && test4 );
+        assertThat( test1 && test2 && test3 && test4, is( true ) );
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SimpleAlarmModelTest
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         List<String> triggers = provider.alarmTriggers();
-        assertEquals( 2, triggers.size() );
+        assertThat( triggers.size(), equalTo( 2 ) );
         int result = 0;
         for( String trigger : triggers )
         {
@@ -151,8 +151,8 @@ public class SimpleAlarmModelTest
                 result |= 64;
             }
         }
-        assertEquals( 3, result );
-        assertEquals( AlarmPoint.STATUS_NORMAL, underTest.currentStatus().name(null) );
+        assertThat( result, equalTo( 3 ) );
+        assertThat( underTest.currentStatus().name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
     }
 
     @Test
@@ -162,17 +162,17 @@ public class SimpleAlarmModelTest
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
+        assertThat( event1.systemName().get(), equalTo( AlarmPoint.EVENT_ACTIVATION ) );
 
         alarm = createAlarm( "Another 2" );
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertNull( event2 );
+        assertThat( event2, nullValue() );
 
         try
         {
             alarm = createAlarm( "Another 3" );
             AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-            assertNull( event3 );
+            assertThat( event3, nullValue() );
             fail( "[Acknowledge] trigger should not be allowed on this model." );
         }
         catch( IllegalArgumentException e )
@@ -190,12 +190,12 @@ public class SimpleAlarmModelTest
         alarm.activate();
 
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertNull( event1 );
+        assertThat( event1, nullValue() );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( AlarmPoint.EVENT_DEACTIVATION, event2.systemName().get() );
+        assertThat( event2.systemName().get(), equalTo( AlarmPoint.EVENT_DEACTIVATION ) );
     }
 
     @Test
@@ -224,13 +224,13 @@ public class SimpleAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -243,13 +243,13 @@ public class SimpleAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name(null) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -259,7 +259,7 @@ public class SimpleAlarmModelTest
         AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         underTest.updateCondition( false );
         AlarmEvent event = underTest.history().lastEvent();
-        assertNull( "Generated an event but should have not.", event );
+        assertThat( "Generated an event but should have not.", event, nullValue() );
     }
 
     @Test
@@ -271,13 +271,13 @@ public class SimpleAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -290,13 +290,13 @@ public class SimpleAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name(null) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -305,9 +305,9 @@ public class SimpleAlarmModelTest
     {
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
-        assertFalse( provider.computeCondition( s1 ) );
+        assertThat( provider.computeCondition( s1 ), is( false ) );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
-        assertTrue( provider.computeCondition( s2 ) );
+        assertThat( provider.computeCondition( s2 ), is( true ) );
     }
 
     @Test
@@ -321,10 +321,10 @@ public class SimpleAlarmModelTest
         String trigger2 = provider.computeTrigger( s2, true );
         String trigger5 = provider.computeTrigger( s1, false );
         String trigger6 = provider.computeTrigger( s2, false );
-        assertEquals( AlarmPoint.TRIGGER_ACTIVATE, trigger1 );
-        assertEquals( null, trigger2 );
-        assertEquals( null, trigger5 );
-        assertEquals( AlarmPoint.TRIGGER_DEACTIVATE, trigger6 );
+        assertThat( trigger1, equalTo( AlarmPoint.TRIGGER_ACTIVATE ) );
+        assertThat( trigger2, equalTo( null ) );
+        assertThat( trigger5, equalTo( null ) );
+        assertThat( trigger6, equalTo( AlarmPoint.TRIGGER_DEACTIVATE ) );
     }
 
     private AlarmPoint createAlarm( String name )

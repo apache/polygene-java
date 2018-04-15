@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.runtime.property;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.entity.EntityBuilder;
@@ -31,10 +28,15 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public final class ImmutablePropertyTest
     extends AbstractPolygeneTest
@@ -58,8 +60,8 @@ public final class ImmutablePropertyTest
 
     private void testNamePropertyGet( Location location, String locationName )
     {
-        assertNotNull( location );
-        assertEquals( locationName, location.name().get() );
+        assertThat( location, notNullValue() );
+        assertThat( location.name().get(), equalTo( locationName ) );
     }
 
     @Test
@@ -73,14 +75,15 @@ public final class ImmutablePropertyTest
         testNamePropertyGet( location, KUALA_LUMPUR );
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public final void testSetter()
     {
-        Location location = createLocation( KUALA_LUMPUR );
-
-        // Must fail!
-        Property<String> stringProperty = location.name();
-        stringProperty.set( "abc" );
+        assertThrows( IllegalStateException.class, () -> {
+            Location location = createLocation( KUALA_LUMPUR );
+            // Must fail!
+            Property<String> stringProperty = location.name();
+            stringProperty.set( "abc" );
+        } );
     }
 
     @Test
@@ -96,7 +99,7 @@ public final class ImmutablePropertyTest
             try
             {
                 location.name().set( "Niclas" );
-                Assert.fail( "Should be immutable" );
+                fail( "Should be immutable" );
             }
             catch( IllegalStateException e )
             {

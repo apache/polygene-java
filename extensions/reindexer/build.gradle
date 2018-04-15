@@ -32,6 +32,7 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation polygene.extension( 'entitystore-jdbm' )
   testImplementation polygene.extension( 'indexing-rdf' )
+  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
 }

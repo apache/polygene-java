@@ -30,14 +30,14 @@ import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.builder.ApplicationBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PassivationExceptionTest
 {

@@ -23,13 +23,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Test for QI-298.

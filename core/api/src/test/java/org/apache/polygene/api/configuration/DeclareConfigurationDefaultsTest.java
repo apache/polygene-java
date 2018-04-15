@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.api.configuration;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
@@ -29,6 +27,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class DeclareConfigurationDefaultsTest
     extends AbstractPolygeneTest
@@ -36,15 +38,14 @@ public class DeclareConfigurationDefaultsTest
 
     @Mixins( FooServiceMixin.class )
     public static interface FooServiceComposite
-            extends ServiceComposite
+        extends ServiceComposite
     {
 
         String configuredFoo();
-
     }
 
     public static abstract class FooServiceMixin
-            implements FooServiceComposite
+        implements FooServiceComposite
     {
 
         @This
@@ -54,19 +55,17 @@ public class DeclareConfigurationDefaultsTest
         {
             return config.get().foo().get();
         }
-
     }
 
     public static interface FooConfigurationComposite
-            extends ConfigurationComposite
+        extends ConfigurationComposite
     {
 
         Property<String> foo();
-
     }
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( FooServiceComposite.class ).identifiedBy( "bazar" );
         module.entities( FooConfigurationComposite.class );
@@ -79,7 +78,6 @@ public class DeclareConfigurationDefaultsTest
     public void testConfigurationDefaults()
     {
         FooServiceComposite fooService = serviceFinder.findService( FooServiceComposite.class ).get();
-        Assert.assertEquals( "bar", fooService.configuredFoo() );
+        assertThat( fooService.configuredFoo(), equalTo( "bar" ) );
     }
-
 }

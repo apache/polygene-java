@@ -33,5 +33,6 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation libraries.spring_testsupport
 
+  testImplementation libraries.junit_vintage
   testRuntimeOnly libraries.logback
 }

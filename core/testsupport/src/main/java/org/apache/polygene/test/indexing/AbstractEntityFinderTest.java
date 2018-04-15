@@ -41,8 +41,8 @@ import org.apache.polygene.test.model.Female;
 import org.apache.polygene.test.model.Male;
 import org.apache.polygene.test.model.Nameable;
 import org.apache.polygene.test.model.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.polygene.api.query.QueryExpressions.and;
@@ -58,7 +58,8 @@ import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.apache.polygene.api.query.QueryExpressions.variable;
 import static org.apache.polygene.test.indexing.NameableAssert.assertNames;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Abstract satisfiedBy with tests for the EntityFinder interface.
@@ -87,10 +88,9 @@ public abstract class AbstractEntityFinderTest
     @Structure
     Module moduleInstance;
 
-
     private EntityFinder entityFinder;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp()
         throws Exception
@@ -330,7 +330,7 @@ public abstract class AbstractEntityFinderTest
             NO_SORTING2,
             NO_FIRST_RESULT, 2,
             NO_VARIABLES );
-        assertEquals( "2 identities", 2, references.count() );
+        assertThat( "2 identities", references.count(), equalTo( 2 ) );
     }
 
     @Test
@@ -343,7 +343,7 @@ public abstract class AbstractEntityFinderTest
             NO_SORTING2,
             3, 2,
             NO_VARIABLES );
-        assertEquals( "2 identitities", 2, references.count() );
+        assertThat( "2 identitities", references.count(), equalTo( 2 ) );
     }
 
     @Test
@@ -443,5 +443,4 @@ public abstract class AbstractEntityFinderTest
             variables ).collect( toList() );
         assertNames( entities, "Gaming" );
     }
-
 }

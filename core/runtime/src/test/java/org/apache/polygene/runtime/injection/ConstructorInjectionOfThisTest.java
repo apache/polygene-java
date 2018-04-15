@@ -28,9 +28,10 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.sideeffect.SideEffectOf;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * This test is created in response to QI-359
@@ -91,7 +92,7 @@ public class ConstructorInjectionOfThisTest
         @Override
         public void doSomething()
         {
-            assertFalse( doesPrivateFragment.someState().get() );
+            assertThat( doesPrivateFragment.someState().get(), is( false ) );
         }
     }
 

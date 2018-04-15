@@ -21,9 +21,6 @@
 package org.apache.polygene.api.common;
 
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -34,10 +31,15 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests for ValueComposites
@@ -54,14 +56,16 @@ public class ValueCompositeTest
         new EntityTestAssembler().assemble( module );
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void testImmutabilityOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        SomeValue some = builder.prototype();
-        some.other().set( "test" );
-        some = builder.newInstance();
-        some.other().set( "test2" );
+        assertThrows( IllegalStateException.class, () -> {
+            ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+            SomeValue some = builder.prototype();
+            some.other().set( "test" );
+            some = builder.newInstance();
+            some.other().set( "test2" );
+        } );
     }
 
     @Test
@@ -85,8 +89,8 @@ public class ValueCompositeTest
         prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
-        Assert.assertFalse( "Instances should not be the same.", instance == other );
-        Assert.assertEquals( "Equal values.", instance, other );
+        assertThat( "Instances should not be the same.", instance == other, is( false ) );
+        assertThat( "Equal values.", other, equalTo( instance ) );
     }
 
     @Test
@@ -101,8 +105,8 @@ public class ValueCompositeTest
         prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
-        Assert.assertFalse( "Instances should not be the same.", instance == other );
-        Assert.assertEquals( "Equal values.", instance.hashCode(), other.hashCode() );
+        assertThat( "Instances should not be the same.", instance == other, is( false ) );
+        assertThat( "Equal values.", other.hashCode(), equalTo( instance.hashCode() ) );
     }
 
     @Test
@@ -140,16 +144,18 @@ public class ValueCompositeTest
         assertThat( "Some is set to bar", instance.some().get(), equalTo( "bar" ) );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenValueWhenModifyToIncorrectValueThenThrowConstraintException()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        SomeValue prototype = builder.prototype();
-        prototype.some().set( "foo" );
-        SomeValue instance = builder.newInstance();
+        assertThrows( ConstraintViolationException.class, () -> {
+            ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+            SomeValue prototype = builder.prototype();
+            prototype.some().set( "foo" );
+            SomeValue instance = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
-        builder.prototype().some().set( null );
+            builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
+            builder.prototype().some().set( null );
+        } );
     }
 
     @Test
@@ -169,7 +175,7 @@ public class ValueCompositeTest
         try
         {
             some.anotherList().get().get( 0 ).val1().set( "Bar" );
-            Assert.fail( "Should not be allowed to modify value" );
+            fail( "Should not be allowed to modify value" );
         }
         catch( IllegalStateException e )
         {

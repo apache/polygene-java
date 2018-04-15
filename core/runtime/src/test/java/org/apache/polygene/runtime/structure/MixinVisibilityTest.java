@@ -34,9 +34,11 @@ import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * JAVADOC
@@ -66,67 +68,73 @@ public class MixinVisibilityTest
         } );
         app.activate();
         ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
+        assertThat( object.test1(), equalTo( "ok" ) );
+        assertThat( object.test2(), equalTo( "abc" ) );
     }
 
-    @Test( expected = AmbiguousTypeException.class )
+    @Test
     public void testMultipleMixinsInModuleWillFail()
         throws Exception
     {
-        Energy4Java polygene = new Energy4Java();
-        Assembler[][][] assemblers = new Assembler[][][]
-            {
-                { // Layer
-                  {  // Module 1
-                     module -> {
-                         module.setName( "Module A" );
-                         module.transients( B1Composite.class, B2Composite.class );
-                         module.objects( ObjectA.class );
-                     }
-                  }
-                }
-            };
+        assertThrows( AmbiguousTypeException.class, () -> {
 
-        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
-        {
+            Energy4Java polygene = new Energy4Java();
+            Assembler[][][] assemblers = new Assembler[][][]
+                {
+                    { // Layer
+                      {  // Module 1
+                         module -> {
+                             module.setName( "Module A" );
+                             module.transients( B1Composite.class, B2Composite.class );
+                             module.objects( ObjectA.class );
+                         }
+                      }
+                    }
+                };
+
+            Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            {
+            } );
+            app.activate();
+            ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
+            assertThat( object.test1(), equalTo( "ok" ) );
+            assertThat( object.test2(), equalTo( "abc" ) );
         } );
-        app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void testMixinInLayerIsNotVisible()
         throws Exception
     {
-        Energy4Java polygene = new Energy4Java();
-        Assembler[][][] assemblers = new Assembler[][][]
-            {
-                { // Layer
-                  {
-                      module -> {
-                          module.setName( "Module A" );
-                          module.objects( ObjectA.class );
-                      }
-                  },
-                  {
-                      module -> {
-                          module.setName( "Module B" );
-                          module.transients( B1Composite.class );
-                      }
-                  }
-                }
-            };
+        assertThrows( NoSuchTransientTypeException.class, () -> {
 
-        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
-        {
+            Energy4Java polygene = new Energy4Java();
+            Assembler[][][] assemblers = new Assembler[][][]
+                {
+                    { // Layer
+                      {
+                          module -> {
+                              module.setName( "Module A" );
+                              module.objects( ObjectA.class );
+                          }
+                      },
+                      {
+                          module -> {
+                              module.setName( "Module B" );
+                              module.transients( B1Composite.class );
+                          }
+                      }
+                    }
+                };
+
+            Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            {
+            } );
+            app.activate();
+            ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
+            assertThat( object.test1(), equalTo( "ok" ) );
+            assertThat( object.test2(), equalTo( "abc" ) );
         } );
-        app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
     }
 
     @Test
@@ -157,79 +165,85 @@ public class MixinVisibilityTest
         } );
         app.activate();
         ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
+        assertThat( object.test1(), equalTo( "ok" ) );
+        assertThat( object.test2(), equalTo( "abc" ) );
     }
 
-    @Test( expected = AmbiguousTypeException.class )
+    @Test
     public void testMultipleMixinsInLayerWillFailSameModule()
         throws Exception
     {
-        Energy4Java polygene = new Energy4Java();
-        Assembler[][][] assemblers = new Assembler[][][]
-            {
-                { // Layer
-                  {
-                      module -> {
-                          module.setName( "Module A" );
-                          module.objects( ObjectA.class );
-                      }
-                  },
-                  {
-                      module -> {
-                          module.setName( "Module B" );
-                          module.transients( B1Composite.class, B2Composite.class )
-                                .visibleIn( Visibility.layer );
-                      }
-                  }
-                }
-            };
+        assertThrows( AmbiguousTypeException.class, () -> {
 
-        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
-        {
+            Energy4Java polygene = new Energy4Java();
+            Assembler[][][] assemblers = new Assembler[][][]
+                {
+                    { // Layer
+                      {
+                          module -> {
+                              module.setName( "Module A" );
+                              module.objects( ObjectA.class );
+                          }
+                      },
+                      {
+                          module -> {
+                              module.setName( "Module B" );
+                              module.transients( B1Composite.class, B2Composite.class )
+                                  .visibleIn( Visibility.layer );
+                          }
+                      }
+                    }
+                };
+
+            Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            {
+            } );
+            app.activate();
+            ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
+            assertThat( object.test1(), equalTo( "ok" ) );
+            assertThat( object.test2(), equalTo( "abc" ) );
         } );
-        app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
     }
 
-    @Test( expected = AmbiguousTypeException.class )
+    @Test
     public void testMultipleMixinsInLayerWillFailDiffModule()
         throws Exception
     {
-        Energy4Java polygene = new Energy4Java();
-        Assembler[][][] assemblers = new Assembler[][][]
-            {
-                { // Layer
-                  { // Module 1
-                    module -> {
-                        module.setName( "Module A" );
-                        module.objects( ObjectA.class );
-                    }
-                  },
-                  { // Module 2
-                    module -> {
-                        module.setName( "Module B" );
-                        module.transients( B1Composite.class ).visibleIn( Visibility.layer );
-                    }
-                  },
-                  { // Module 3
-                    module -> {
-                        module.setName( "Module C" );
-                        module.transients( B2Composite.class ).visibleIn( Visibility.layer );
-                    }
-                  }
-                }
-            };
+        assertThrows( AmbiguousTypeException.class, () -> {
 
-        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
-        {
+            Energy4Java polygene = new Energy4Java();
+            Assembler[][][] assemblers = new Assembler[][][]
+                {
+                    { // Layer
+                      { // Module 1
+                        module -> {
+                            module.setName( "Module A" );
+                            module.objects( ObjectA.class );
+                        }
+                      },
+                      { // Module 2
+                        module -> {
+                            module.setName( "Module B" );
+                            module.transients( B1Composite.class ).visibleIn( Visibility.layer );
+                        }
+                      },
+                      { // Module 3
+                        module -> {
+                            module.setName( "Module C" );
+                            module.transients( B2Composite.class ).visibleIn( Visibility.layer );
+                        }
+                      }
+                    }
+                };
+
+            Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            {
+            } );
+            app.activate();
+            ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
+            assertThat( object.test1(), equalTo( "ok" ) );
+            assertThat( object.test2(), equalTo( "abc" ) );
         } );
-        app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
     }
 
     // @Test( expected= MixinTypeNotAvailableException.class )
@@ -264,8 +278,8 @@ public class MixinVisibilityTest
         } );
         app.activate();
         ObjectA object = app.findModule( "Layer 1", "Module " ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
+        assertThat( object.test1(), equalTo( "ok" ) );
+        assertThat( object.test2(), equalTo( "abc" ) );
     }
 
     @Test
@@ -298,8 +312,8 @@ public class MixinVisibilityTest
         } );
         app.activate();
         ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        assertEquals( "ok", object.test1() );
-        assertEquals( "abc", object.test2() );
+        assertThat( object.test1(), equalTo( "ok" ) );
+        assertThat( object.test2(), equalTo( "abc" ) );
     }
 
     class AssemblerB

@@ -20,14 +20,16 @@
 
 package org.apache.polygene.api.property;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Error messages for Properties
@@ -42,21 +44,22 @@ public class PropertyErrorTest
         module.entities( PersonEntity.class );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenEntityWithNonOptionPropertyWhenInstantiatedThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            PersonEntity person = unitOfWork.newEntity( PersonEntity.class );
-
-            unitOfWork.complete();
-        }
-        finally
-        {
-            unitOfWork.discard();
-        }
+        assertThrows( ConstraintViolationException.class, () -> {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+            {
+                PersonEntity person = unitOfWork.newEntity( PersonEntity.class );
+                unitOfWork.complete();
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
+        } );
     }
 
     interface PersonEntity

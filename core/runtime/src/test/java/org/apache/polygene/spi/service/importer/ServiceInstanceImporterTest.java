@@ -31,9 +31,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ImportedServiceDeclaration;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * JAVADOC
@@ -59,7 +60,7 @@ public class ServiceInstanceImporterTest
     @Test
     public void testImportServiceFromService()
     {
-        Assert.assertThat( service.helloWorld(), CoreMatchers.equalTo( "Hello World" ) );
+        assertThat( service.helloWorld(), equalTo( "Hello World" ) );
     }
 
     public static class TestService

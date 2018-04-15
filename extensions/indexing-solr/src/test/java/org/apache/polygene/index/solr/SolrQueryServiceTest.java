@@ -21,10 +21,6 @@ package org.apache.polygene.index.solr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.polygene.index.solr.assembly.SolrIndexingAssembler;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Property;
@@ -34,17 +30,21 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.index.solr.assembly.SolrIndexingAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Assert;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class SolrQueryServiceTest
     extends AbstractPolygeneTest
@@ -93,7 +93,7 @@ public class SolrQueryServiceTest
                                                                        .where( SolrExpressions.search( "hello" ) ) );
 
             TestEntity test = query.find();
-            Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
+            assertThat( test.name().get(), equalTo( "Hello World" ) );
         }
     }
 
@@ -112,7 +112,7 @@ public class SolrQueryServiceTest
             lookAhead.add( result.getFieldValue( "name" ).toString() );
         }
 
-        Assert.assertThat( lookAhead.toString(), equalTo( "[Hello World]" ) );
+        assertThat( lookAhead.toString(), equalTo( "[Hello World]" ) );
     }
 
     public interface TestEntity

@@ -34,11 +34,12 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Theses tests ensure that Type to Composite lookup work as expected for
@@ -107,9 +108,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newObject( SomeOtherFooImpl.class ).bar() );
-        assertEquals( CATHEDRAL, module.newObject( BasicFooImpl.class ).bar() );
-        assertEquals( CATHEDRAL, module.newObject( Foo.class ).bar() );
+        assertThat( module.newObject( SomeOtherFooImpl.class ).bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newObject( BasicFooImpl.class ).bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newObject( Foo.class ).bar(), equalTo( CATHEDRAL ) );
     }
 
     @Test
@@ -128,8 +129,8 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newObject( SomeOtherFooImpl.class ).bar() );
-        assertEquals( BAZAR, module.newObject( BasicFooImpl.class ).bar() );
+        assertThat( module.newObject( SomeOtherFooImpl.class ).bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newObject( BasicFooImpl.class ).bar(), equalTo( BAZAR ) );
 
         try
         {
@@ -157,9 +158,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newTransientBuilder( BasicFoo.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newTransientBuilder( Foo.class ).newInstance().bar() );
+        assertThat( module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newTransientBuilder( BasicFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newTransientBuilder( Foo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
     }
 
     @Test
@@ -178,8 +179,8 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar() );
-        assertEquals( BAZAR, module.newTransientBuilder( BasicFoo.class ).newInstance().bar() );
+        assertThat( module.newTransientBuilder( SomeOtherFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newTransientBuilder( BasicFoo.class ).newInstance().bar(), equalTo( BAZAR ) );
 
         try
         {
@@ -207,9 +208,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newValueBuilder( BasicFoo.class ).newInstance().bar() );
-        assertEquals( CATHEDRAL, module.newValueBuilder( Foo.class ).newInstance().bar() );
+        assertThat( module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newValueBuilder( BasicFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newValueBuilder( Foo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
     }
 
     @Test
@@ -228,8 +229,8 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar() );
-        assertEquals( BAZAR, module.newValueBuilder( BasicFoo.class ).newInstance().bar() );
+        assertThat( module.newValueBuilder( SomeOtherFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.newValueBuilder( BasicFoo.class ).newInstance().bar(), equalTo( BAZAR ) );
 
         try
         {
@@ -264,9 +265,9 @@ public class TypeToCompositeLookupTest
         BasicFoo basicFoo = uow.newEntityBuilder( BasicFoo.class ).newInstance();
         Foo foo = uow.newEntityBuilder( Foo.class ).newInstance();
 
-        assertEquals( CATHEDRAL, someOtherFoo.bar() );
-        assertEquals( CATHEDRAL, basicFoo.bar() );
-        assertEquals( CATHEDRAL, foo.bar() );
+        assertThat( someOtherFoo.bar(), equalTo( CATHEDRAL ) );
+        assertThat( basicFoo.bar(), equalTo( CATHEDRAL ) );
+        assertThat( foo.bar(), equalTo( CATHEDRAL ) );
 
         Identity someOtherFooIdentity = ((HasIdentity) someOtherFoo).identity().get();
         Identity basicFooIdentity = ((HasIdentity) basicFoo).identity().get();
@@ -314,10 +315,10 @@ public class TypeToCompositeLookupTest
         }
 
         // Specific Type used
-        assertEquals( CATHEDRAL, uow.newEntityBuilder( SomeOtherFoo.class ).newInstance().bar() );
+        assertThat( uow.newEntityBuilder( SomeOtherFoo.class ).newInstance().bar(), equalTo( CATHEDRAL ) );
 
         // Specific Type used
-        assertEquals( BAZAR, uow.newEntityBuilder( BasicFoo.class ).newInstance().bar() );
+        assertThat( uow.newEntityBuilder( BasicFoo.class ).newInstance().bar(), equalTo( BAZAR ) );
 
         Identity someOtherFooIdentity = ((HasIdentity) someOtherFoo).identity().get();
         Identity basicFooIdentity = ((HasIdentity) basicFoo).identity().get();
@@ -326,10 +327,10 @@ public class TypeToCompositeLookupTest
 
         uow = uowf.newUnitOfWork();
 
-        assertEquals( CATHEDRAL, uow.get( SomeOtherFoo.class, someOtherFooIdentity ).bar() );
-        assertEquals( BAZAR, uow.get( BasicFoo.class, basicFooIdentity ).bar() );
-        assertEquals( CATHEDRAL, uow.get( Foo.class, someOtherFooIdentity ).bar() );
-        assertEquals( BAZAR, uow.get( Foo.class, basicFooIdentity ).bar() );
+        assertThat( uow.get( SomeOtherFoo.class, someOtherFooIdentity ).bar(), equalTo( CATHEDRAL ) );
+        assertThat( uow.get( BasicFoo.class, basicFooIdentity ).bar(), equalTo( BAZAR ) );
+        assertThat( uow.get( Foo.class, someOtherFooIdentity ).bar(), equalTo( CATHEDRAL ) );
+        assertThat( uow.get( Foo.class, basicFooIdentity ).bar(), equalTo( BAZAR ) );
 
         uow.discard();
     }
@@ -350,9 +351,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( CATHEDRAL, module.findService( SomeOtherFoo.class ).get().bar() );
-        assertEquals( CATHEDRAL, module.findService( BasicFoo.class ).get().bar() );
-        assertEquals( CATHEDRAL, module.findService( Foo.class ).get().bar() );
+        assertThat( module.findService( SomeOtherFoo.class ).get().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.findService( BasicFoo.class ).get().bar(), equalTo( CATHEDRAL ) );
+        assertThat( module.findService( Foo.class ).get().bar(), equalTo( CATHEDRAL ) );
     }
 
     @Test
@@ -371,23 +372,23 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertEquals( 1, module.findServices( SomeOtherFoo.class ).count() );
-        assertEquals( 2, module.findServices( BasicFoo.class ).count() );
-        assertEquals( 2, module.findServices( Foo.class ).count() );
+        assertThat( module.findServices( SomeOtherFoo.class ).count(), equalTo( 1 ) );
+        assertThat( module.findServices( BasicFoo.class ).count(), equalTo( 2 ) );
+        assertThat( module.findServices( Foo.class ).count(), equalTo( 2 ) );
 
-        assertEquals( CATHEDRAL, module.findService( SomeOtherFoo.class ).get().bar() );
+        assertThat( module.findService( SomeOtherFoo.class ).get().bar(), equalTo( CATHEDRAL ) );
 
         // Exact type match first even if it is assembled _after_ an assignable, the assignable comes after
         Iterator<ServiceReference<BasicFoo>> basicFoos = module.findServices( BasicFoo.class ).iterator();
-        assertEquals( BAZAR, basicFoos.next().get().bar() );
-        assertEquals( CATHEDRAL, basicFoos.next().get().bar() );
-        assertFalse( basicFoos.hasNext() );
+        assertThat( basicFoos.next().get().bar(), equalTo( BAZAR ) );
+        assertThat( basicFoos.next().get().bar(), equalTo( CATHEDRAL ) );
+        assertThat( basicFoos.hasNext(), is( false ) );
 
         // No exact type match, all assembled are assignable, follows assembly Type order
         Iterator<ServiceReference<Foo>> foos = module.findServices( Foo.class ).iterator();
-        assertEquals( CATHEDRAL, foos.next().get().bar() );
-        assertEquals( BAZAR, foos.next().get().bar() );
-        assertFalse( foos.hasNext() );
+        assertThat( foos.next().get().bar(), equalTo( CATHEDRAL ) );
+        assertThat( foos.next().get().bar(), equalTo( BAZAR ) );
+        assertThat( foos.hasNext(), is( false ) );
     }
 
 }

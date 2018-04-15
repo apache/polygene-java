@@ -19,25 +19,14 @@
  */
 package org.apache.polygene.test.entity.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.polygene.api.association.NamedAssociation;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.composite.TransientBuilderFactory;
-import org.apache.polygene.api.constraint.ConstraintViolationException;
-import org.apache.polygene.api.identity.Identity;
-import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.object.ObjectFactory;
-import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.NoSuchEntityException;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
@@ -60,12 +49,6 @@ import org.apache.polygene.test.entity.model.people.PeopleRepository;
 import org.apache.polygene.test.entity.model.people.Person;
 import org.apache.polygene.test.entity.model.people.PhoneNumber;
 import org.apache.polygene.test.entity.model.people.Rent;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 public abstract class AbstractPolygeneMultiLayeredTestWithModel extends AbstractPolygeneBaseTest
 {

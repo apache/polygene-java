@@ -25,10 +25,10 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Assert Cache behaviour when used by an EntityStore.

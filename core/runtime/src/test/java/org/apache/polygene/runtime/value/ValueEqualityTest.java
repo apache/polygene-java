@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.runtime.value;
 
-import org.junit.Test;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.api.value.ValueDescriptor;
@@ -30,16 +29,17 @@ import org.apache.polygene.runtime.property.PropertyEqualityTest.Other;
 import org.apache.polygene.runtime.property.PropertyEqualityTest.PrimitivesValue;
 import org.apache.polygene.runtime.property.PropertyEqualityTest.Some;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildAnotherSomeValue;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildAnotherSomeValueWithDifferentState;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildOtherValue;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildPrimitivesValue;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildSomeValue;
 import static org.apache.polygene.runtime.property.PropertyEqualityTest.buildSomeValueWithDifferentState;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Assert that Value equals/hashcode methods combine ValueDescriptor and ValueState.

@@ -21,8 +21,6 @@
 package org.apache.polygene.api.value;
 
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
@@ -38,13 +36,15 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.MaxLength;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests for ValueComposites
@@ -62,14 +62,16 @@ public class ValueCompositeTest
         new EntityTestAssembler().assemble( module );
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void testImmutabilityOfValueComposite()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        SomeValue some = builder.prototype();
-        some.other().set( "test" );
-        some = builder.newInstance();
-        some.other().set( "test2" );
+        assertThrows( IllegalStateException.class, () -> {
+            ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+            SomeValue some = builder.prototype();
+            some.other().set( "test" );
+            some = builder.newInstance();
+            some.other().set( "test2" );
+        } );
     }
 
     @Test
@@ -81,7 +83,7 @@ public class ValueCompositeTest
         builder.newInstance();
 
         // Check that @UseDefaults works for ValueComposites
-        assertEquals( "{\"val1\":\"\"}", some.another().get().toString() );
+        assertThat( some.another().get().toString(), equalTo( "{\"val1\":\"\"}" ) );
     }
 
     @Test
@@ -92,8 +94,8 @@ public class ValueCompositeTest
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
         SomeValue other = builder.newInstance();
-        Assert.assertFalse( "Instances should not be the same.", instance == other );
-        Assert.assertEquals( "Equal values.", instance, other );
+        assertThat( "Instances should not be the same.", instance == other, is( false ) );
+        assertThat( "Equal values.", other, equalTo( instance ) );
     }
 
     @Test
@@ -104,8 +106,8 @@ public class ValueCompositeTest
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
         SomeValue other = builder.newInstance();
-        Assert.assertFalse( "Instances should not be the same.", instance == other );
-        Assert.assertEquals( "Equal values.", instance.hashCode(), other.hashCode() );
+        assertThat( "Instances should not be the same.", instance == other, is( false ) );
+        assertThat( "Equal values.", other.hashCode(), equalTo( instance.hashCode() ) );
     }
 
     @Test
@@ -143,16 +145,18 @@ public class ValueCompositeTest
         assertThat( "Some is set to bar", instance.some().get(), equalTo( "bar" ) );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenValueWhenModifyToIncorrectValueThenThrowConstraintException()
     {
-        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
-        SomeValue prototype = builder.prototype();
-        prototype.some().set( "foo" );
-        SomeValue instance = builder.newInstance();
+        assertThrows( ConstraintViolationException.class, () -> {
+            ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
+            SomeValue prototype = builder.prototype();
+            prototype.some().set( "foo" );
+            SomeValue instance = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
-        builder.prototype().some().set( "123456" );
+            builder = valueBuilderFactory.newValueBuilderWithPrototype( instance );
+            builder.prototype().some().set( "123456" );
+        } );
     }
 
     @Test
@@ -160,24 +164,15 @@ public class ValueCompositeTest
     {
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
-        SomeValue some = builder.newInstance();
+        SomeValue some1 = builder.newInstance();
 
-        builder = valueBuilderFactory.newValueBuilderWithPrototype( some );
+        builder = valueBuilderFactory.newValueBuilderWithPrototype( some1 );
         builder.prototype().anotherList().get().get( 0 ).val1().set( "Foo" );
         builder.prototype().anotherList().get().add( valueBuilderFactory.newValue( AnotherValue.class ) );
-        some = builder.newInstance();
+        SomeValue some2 = builder.newInstance();
 
-        assertThat( "Val1 has been set", some.anotherList().get().get( 0 ).val1().get(), equalTo( "Foo" ) );
-
-        try
-        {
-            some.anotherList().get().get( 0 ).val1().set( "Bar" );
-            Assert.fail( "Should not be allowed to modify value" );
-        }
-        catch( IllegalStateException e )
-        {
-            // Ok
-        }
+        assertThat( "Val1 has been set", some2.anotherList().get().get( 0 ).val1().get(), equalTo( "Foo" ) );
+        assertThrows( IllegalStateException.class, () -> some2.anotherList().get().get( 0 ).val1().set( "Bar" ) );
     }
 
     @Test
@@ -243,7 +238,7 @@ public class ValueCompositeTest
             AssociationValue newAssociationValue = valueBuilderFactory.newValueFromSerializedState(
                 AssociationValue.class, json );
 
-            Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
+            assertThat( newAssociationValue.some().get(), equalTo( associationValue.some().get() ) );
         }
         finally
         {

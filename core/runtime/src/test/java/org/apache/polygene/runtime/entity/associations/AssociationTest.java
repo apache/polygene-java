@@ -22,9 +22,6 @@ package org.apache.polygene.runtime.entity.associations;
 
 import java.io.Serializable;
 import javax.swing.Icon;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
@@ -34,11 +31,14 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Tests for associations
@@ -67,18 +67,17 @@ public class AssociationTest
         try
         {
             Company company = unitOfWork.newEntity( Company.class );
-            Assert.assertEquals( "Company Name Default", "A Company", company.name().get() );
-
+            assertThat( "Company Name Default", company.name().get(), equalTo( "A Company" ) );
             {
                 EntityBuilder<Company> builder = unitOfWork.newEntityBuilder( Company.class );
                 final Company companyPrototype = builder.instance();
                 companyPrototype.name().set( "JayWay" );
                 company = builder.newInstance();
-                Assert.assertEquals( "Company Name ", "JayWay", company.name().get() );
+                assertThat( "Company Name ", company.name().get(), equalTo( "JayWay" ) );
             }
 
             company.name().set( "Jayway" );
-            Assert.assertEquals( "Company Name ", "Jayway", company.name().get() );
+            assertThat( "Company Name ", company.name().get(), equalTo( "Jayway" ) );
 
             System.out.println( "Name is:" + company.name().get() );
 
@@ -100,8 +99,8 @@ public class AssociationTest
                 System.out.println( ( (Nameable) employer ).name() );
             }
 
-            Assert.assertEquals( niclas.friend().get(), rickard );
-            Assert.assertEquals( niclas.members().get( 0 ), rickard );
+            assertThat( rickard, equalTo( niclas.friend().get() ) );
+            assertThat( rickard, equalTo( niclas.members().get( 0 ) ) );
 
             // Empty associations
             niclas.friend().set( null );

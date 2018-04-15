@@ -45,9 +45,11 @@ import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
 
 public class Qi95IssueTest
@@ -144,9 +146,9 @@ public class Qi95IssueTest
         QueryBuilder<ItemType> qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
         Iterable<ItemType> initialList = copyOf( uow.newQuery( qb ) );
 
-        assertTrue( "Band is not in the initial list", hasItemTypeNamed( "Band", initialList ) );
-        assertTrue( "Bracelet is not in the initial list", hasItemTypeNamed( "Bracelet", initialList ) );
-        assertTrue( "Necklace is not in the initial list", hasItemTypeNamed( "Necklace", initialList ) );
+        assertThat( "Band is not in the initial list", hasItemTypeNamed( "Band", initialList ), is( true ) );
+        assertThat( "Bracelet is not in the initial list", hasItemTypeNamed( "Bracelet", initialList ), is( true ) );
+        assertThat( "Necklace is not in the initial list", hasItemTypeNamed( "Necklace", initialList ), is( true ) );
 
         newItemType( uow, "Watch" );
         uow.complete();
@@ -169,11 +171,11 @@ public class Qi95IssueTest
 
         uow = unitOfWorkFactory.newUnitOfWork();
         Iterable<ItemType> finalList = copyOf( uow.newQuery( qb ) );
-        assertTrue( "Band is not in the final list", hasItemTypeNamed( "Band", finalList ) );
-        assertTrue( "Bracelet is not in the final list", hasItemTypeNamed( "Bracelet", finalList ) );
-        assertTrue( "Necklace is not in the final list", hasItemTypeNamed( "Necklace", finalList ) );
-        assertTrue( "Watch is not in the final list", hasItemTypeNamed( "Watch", finalList ) );
-        assertTrue( "Ear ring is not in the final list", hasItemTypeNamed( "Ear ring", finalList ) );
+        assertThat( "Band is not in the final list", hasItemTypeNamed( "Band", finalList ), is( true ) );
+        assertThat( "Bracelet is not in the final list", hasItemTypeNamed( "Bracelet", finalList ), is( true ) );
+        assertThat( "Necklace is not in the final list", hasItemTypeNamed( "Necklace", finalList ), is( true ) );
+        assertThat( "Watch is not in the final list", hasItemTypeNamed( "Watch", finalList ), is( true ) );
+        assertThat( "Ear ring is not in the final list", hasItemTypeNamed( "Ear ring", finalList ), is( true ) );
         uow.complete();
     }
 

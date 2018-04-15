@@ -21,8 +21,6 @@
 package org.apache.polygene.spi.metrics;
 
 import java.time.Instant;
-import org.apache.polygene.api.time.SystemTime;
-import org.junit.Test;
 import org.apache.polygene.api.metrics.MetricsCounter;
 import org.apache.polygene.api.metrics.MetricsCounterFactory;
 import org.apache.polygene.api.metrics.MetricsGauge;
@@ -36,8 +34,11 @@ import org.apache.polygene.api.metrics.MetricsMeterFactory;
 import org.apache.polygene.api.metrics.MetricsProvider;
 import org.apache.polygene.api.metrics.MetricsTimer;
 import org.apache.polygene.api.metrics.MetricsTimerFactory;
+import org.apache.polygene.api.time.SystemTime;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class DefaultMetricsTest
 {
@@ -64,7 +65,7 @@ public class DefaultMetricsTest
                 return SystemTime.now();
             }
         } );
-        assertNull( test.value() );
+        assertThat( test.value(), nullValue() );
     }
 
     @Test

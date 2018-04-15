@@ -20,15 +20,18 @@
 package org.apache.polygene.index.rdf.qi64.withPropagationRequired;
 
 import org.apache.polygene.api.identity.Identity;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.qi64.AbstractIssueTest;
 import org.apache.polygene.index.rdf.qi64.AccountComposite;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public final class IssueTest
     extends AbstractIssueTest
@@ -53,12 +56,12 @@ public final class IssueTest
         Identity id = newPolygeneAccount();
 
         // Make sure there's no unit of work
-        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
+        assertThat( unitOfWorkFactory.isUnitOfWorkActive(), is( false ) );
 
         AccountComposite account = accountService.getAccountById( id );
-        assertNotNull( account );
+        assertThat( account, notNullValue() );
 
-        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
+        assertThat( unitOfWorkFactory.isUnitOfWorkActive(), is( false ) );
     }
 
     @Test
@@ -69,17 +72,17 @@ public final class IssueTest
         Identity id = newPolygeneAccount();
 
         // Make sure there's no unit of work
-        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
+        assertThat( unitOfWorkFactory.isUnitOfWorkActive(), is( false ) );
 
         UnitOfWork parentUnitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         AccountComposite account = accountService.getAccountById( id );
-        assertNotNull( account );
+        assertThat( account, notNullValue() );
 
         UnitOfWork currentUnitOfWork = unitOfWorkFactory.currentUnitOfWork();
-        assertEquals( parentUnitOfWork, currentUnitOfWork );
+        assertThat( currentUnitOfWork, equalTo( parentUnitOfWork ) );
 
-        assertTrue( currentUnitOfWork.isOpen() );
+        assertThat( currentUnitOfWork.isOpen(), is( true ) );
 
         // Close the parent unit of work
         parentUnitOfWork.complete();

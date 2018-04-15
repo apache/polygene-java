@@ -39,6 +39,7 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation libraries.http_client
   testImplementation libraries.junit
+  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
 }

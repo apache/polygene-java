@@ -26,6 +26,7 @@ jar { manifest { name = "Apache Polygene™ Internals - Test Support" } }
 dependencies {
     api polygene.core.testsupport
 
-    implementation libraries.docker_junit
+    implementation (libraries.docker_junit ) { exclude group: "junit", module: "junit" }
+    implementation libraries.junit_vintage
     runtimeOnly polygene.core.runtime
 }

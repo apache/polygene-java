@@ -33,7 +33,7 @@ dependencies {
 
   testImplementation polygene.internals.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
-  testImplementation libraries.docker_junit
+  testImplementation (libraries.docker_junit ) { exclude group: "junit", module: "junit" }
 
   testRuntimeOnly libraries.logback
   testRuntimeOnly libraries.derby

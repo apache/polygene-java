@@ -20,16 +20,17 @@
 
 package org.apache.polygene.library.rdf.repository;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.RepositoryException;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Test;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * JAVADOC
@@ -50,7 +51,7 @@ public class MemoryRepositoryTest
     public void testMemoryRepository() throws RepositoryException
     {
         RepositoryConnection conn = repository.getConnection();
-        Assert.assertThat( "repository is open", conn.isOpen(), CoreMatchers.equalTo( true ) );
+        assertThat( "repository is open", conn.isOpen(), CoreMatchers.equalTo( true ) );
         conn.close();
     }
 }

@@ -19,13 +19,14 @@
  */
 package org.apache.polygene.regression.qi55;
 
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -39,7 +40,7 @@ public class IssueTest
     @Test
     public void objectWithGenericUsage()
     {
-        assertEquals( "Using - Test string", objectFactory.newObject( AClass.class, "Test string" ).uses() );
+        assertThat( objectFactory.newObject( AClass.class, "Test string" ).uses(), equalTo( "Using - Test string" ) );
     }
 
     public static class AClass<T>

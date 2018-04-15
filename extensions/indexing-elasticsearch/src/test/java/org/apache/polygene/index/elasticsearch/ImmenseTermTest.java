@@ -38,15 +38,15 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * ImmenseTermTest.

@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.runtime.threaded;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.CompositeContext;
 import org.apache.polygene.api.composite.TransientBuilder;
@@ -28,8 +26,11 @@ import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ContextCompositeTest
     extends AbstractPolygeneTest
@@ -58,9 +59,9 @@ public class ContextCompositeTest
             w2.join();
             System.out.println( "W1: " + w1.getData() );
             System.out.println( "W2: " + w2.getData() );
-            assertEquals( 0, (int) c1.data().get() );
-            assertEquals( 100, w1.getData() );
-            assertEquals( 400, w2.getData() );
+            assertThat( (int) c1.data().get(), equalTo( 0 ) );
+            assertThat( w1.getData(), equalTo( 100 ) );
+            assertThat( w2.getData(), equalTo( 400 ) );
         }
     }
 

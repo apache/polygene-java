@@ -19,17 +19,17 @@
  */
 package org.apache.polygene.runtime.composite;
 
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class QI247Test1
     extends AbstractPolygeneTest
@@ -43,22 +43,22 @@ public class QI247Test1
 
     private void checkToString( ObjectMethods withMixin )
     {
-        assertEquals( ObjectMethods.MESSAGE, withMixin.toString() );
+        assertThat( withMixin.toString(), equalTo( ObjectMethods.MESSAGE ) );
     }
 
     private void checkHashCode( ObjectMethods withMixin )
     {
-        assertEquals( ObjectMethods.CODE, withMixin.hashCode() );
+        assertThat( withMixin.hashCode(), equalTo( ObjectMethods.CODE ) );
     }
 
     private void checkSelfEquals( ObjectMethods withMixin )
     {
-        assertEquals( withMixin, withMixin );
+        assertThat( withMixin, equalTo( withMixin ) );
     }
 
     private void checkTwoNotEqual( ObjectMethods first, ObjectMethods second )
     {
-        assertFalse( first.equals( second ) );
+        assertThat( first.equals( second ), is( false ) );
     }
 
     // MIXIN
@@ -88,7 +88,7 @@ public class QI247Test1
     public void testWithMixinSelfEquals2()
     {
         ObjectMethods withMixin = transientBuilderFactory.newTransient( ObjectMethods.class );
-        assertTrue( withMixin.equals( withMixin ) );
+        assertThat( withMixin.equals( withMixin ), is( true ) );
     }
 
     @Test

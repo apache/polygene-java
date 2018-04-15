@@ -21,17 +21,17 @@ package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class QI247Test2
     extends AbstractPolygeneTest
@@ -45,22 +45,22 @@ public class QI247Test2
 
     private void checkToString( ObjectMethods instance )
     {
-        assertEquals( ObjectMethods.MESSAGE, instance.toString() );
+        assertThat( instance.toString(), equalTo( ObjectMethods.MESSAGE ) );
     }
 
     private void checkHashCode( ObjectMethods instance )
     {
-        assertEquals( ObjectMethods.CODE, instance.hashCode() );
+        assertThat( instance.hashCode(), equalTo( ObjectMethods.CODE ) );
     }
 
     private void checkSelfEquals( ObjectMethods instance )
     {
-        assertEquals( instance, instance );
+        assertThat( instance, equalTo( instance ) );
     }
 
     private void checkTwoNotEqual( ObjectMethods first, ObjectMethods second )
     {
-        assertFalse( first.equals( second ) );
+        assertThat( first.equals( second ), is( false ) );
     }
 
     //HANDLER
@@ -90,7 +90,7 @@ public class QI247Test2
     public void testWithHandlerSelfEquals2()
     {
         ObjectMethods withHandler = transientBuilderFactory.newTransient( ObjectMethods.class );
-        assertTrue( withHandler.equals( withHandler ) );
+        assertThat( withHandler.equals( withHandler ), is( true ) );
     }
 
     @Test

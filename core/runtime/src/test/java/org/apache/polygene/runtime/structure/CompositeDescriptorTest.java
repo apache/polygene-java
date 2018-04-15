@@ -25,11 +25,12 @@ import org.apache.polygene.api.composite.TransientDescriptor;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class CompositeDescriptorTest
     extends AbstractPolygeneTest
@@ -42,9 +43,9 @@ public class CompositeDescriptorTest
         AddressComposite address = transientBuilderFactory.newTransient( AddressComposite.class );
         CompositeDescriptor addressDescriptor = spi.compositeDescriptorFor( address );
 
-        assertNotNull( addressDescriptor );
-        assertEquals( AddressComposite.class, addressDescriptor.types().findFirst().orElse( null ) );
-        assertTrue( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ) );
+        assertThat( addressDescriptor, notNullValue() );
+        assertThat( addressDescriptor.types().findFirst().orElse( null ), equalTo( AddressComposite.class ) );
+        assertThat( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ), is( true ) );
     }
 
     @Test
@@ -55,9 +56,9 @@ public class CompositeDescriptorTest
         AddressComposite address = transientBuilderFactory.newTransient( AddressComposite.class );
         TransientDescriptor addressDescriptor = spi.transientDescriptorFor( address );
 
-        assertNotNull( addressDescriptor );
-        assertEquals( AddressComposite.class, addressDescriptor.types().findFirst().orElse( null ) );
-        assertTrue( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ) );
+        assertThat( addressDescriptor, notNullValue() );
+        assertThat( addressDescriptor.types().findFirst().orElse( null ), equalTo( AddressComposite.class ) );
+        assertThat( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ), is( true ) );
     }
 
     @Test
@@ -65,9 +66,9 @@ public class CompositeDescriptorTest
     {
         // Test with composite
         TransientDescriptor addressDesc = module.transientDescriptor( AddressComposite.class.getName() );
-        assertNotNull( addressDesc );
+        assertThat( addressDesc, notNullValue() );
 
-        assertEquals( AddressComposite.class, addressDesc.types().findFirst().orElse( null ) );
+        assertThat( addressDesc.types().findFirst().orElse( null ), equalTo( AddressComposite.class ) );
     }
 
     public final void assemble( ModuleAssembly aModule )

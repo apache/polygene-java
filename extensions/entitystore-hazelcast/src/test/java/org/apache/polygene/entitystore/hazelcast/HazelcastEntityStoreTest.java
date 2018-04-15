@@ -26,8 +26,8 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.hazelcast.assembly.HazelcastEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public class HazelcastEntityStoreTest
     extends AbstractEntityStoreTest
@@ -55,7 +55,7 @@ public class HazelcastEntityStoreTest
         super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown()
     {

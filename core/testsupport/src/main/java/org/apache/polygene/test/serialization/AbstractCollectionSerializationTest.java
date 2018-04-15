@@ -44,10 +44,11 @@ import org.apache.polygene.api.type.ValueType;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * Assert that Serialization behaviour on Collections and Maps is correct.
@@ -101,7 +102,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.BYTE );
         List<Byte> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( byteCollection(), list );
+        assertThat( list, equalTo( byteCollection() ) );
     }
 
     @Test
@@ -112,7 +113,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.setOf( ValueType.BYTE );
         Set<Byte> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( new LinkedHashSet<>( byteCollection() ), list );
+        assertThat( list, equalTo( new LinkedHashSet<>( byteCollection() ) ) );
     }
 
     @Test
@@ -123,7 +124,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.CHARACTER );
         List<Character> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( characterCollection(), list );
+        assertThat( list, equalTo( characterCollection() ) );
     }
 
     @Test
@@ -134,7 +135,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.SHORT );
         List<Short> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( shortCollection(), list );
+        assertThat( list, equalTo( shortCollection() ) );
     }
 
     @Test
@@ -145,7 +146,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.INTEGER );
         List<Integer> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( integerCollection(), list );
+        assertThat( list, equalTo( integerCollection() ) );
     }
 
     @Test
@@ -156,7 +157,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.LONG );
         List<Long> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( longCollection(), list );
+        assertThat( list, equalTo( longCollection() ) );
     }
 
     @Test
@@ -167,7 +168,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.FLOAT );
         List<Float> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( floatCollection(), list );
+        assertThat( list, equalTo( floatCollection() ) );
     }
 
     @Test
@@ -178,7 +179,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.DOUBLE );
         List<Double> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( doubleCollection(), list );
+        assertThat( list, equalTo( doubleCollection() ) );
     }
 
     @Test
@@ -189,7 +190,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( ValueType.BIG_INTEGER );
         List<BigInteger> list = serialization.deserialize( module, collectionType, output );
-        assertEquals( bigIntegerCollection(), list );
+        assertThat( list, equalTo( bigIntegerCollection() ) );
     }
 
     @Test
@@ -200,7 +201,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.collectionOf( ValueType.BIG_DECIMAL );
         Collection<BigDecimal> collection = serialization.deserialize( module, collectionType, output );
-        assertEquals( bigDecimalCollection(), collection );
+        assertThat( collection, equalTo( bigDecimalCollection() ) );
     }
 
     @Test
@@ -211,7 +212,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         MapType mapType = MapType.of( ValueType.STRING, ValueType.BYTE );
         Map<String, Byte> value = serialization.deserialize( module, mapType, output );
-        assertEquals( stringByteMap(), value );
+        assertThat( value, equalTo( stringByteMap() ) );
     }
 
     @Test
@@ -223,7 +224,7 @@ public class AbstractCollectionSerializationTest
         CollectionType collectionType = CollectionType.listOf( ValueType.STRING );
         MapType mapType = MapType.of( ValueType.STRING, collectionType );
         Map<String, List<String>> value = serialization.deserialize( module, mapType, output );
-        assertEquals( stringMultiMap(), value );
+        assertThat( value, equalTo( stringMultiMap() ) );
     }
 
     @Test
@@ -234,7 +235,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType collectionType = CollectionType.listOf( MapType.of( ValueType.STRING, ValueType.STRING ) );
         List<Map<String, String>> value = serialization.deserialize( module, collectionType, output );
-        assertEquals( stringListOfMaps(), value );
+        assertThat( value, equalTo( stringListOfMaps() ) );
     }
 
     @Test
@@ -246,7 +247,7 @@ public class AbstractCollectionSerializationTest
         ValueCompositeType valueType = module.valueDescriptor( SomeValue.class.getName() ).valueType();
         CollectionType collectionType = CollectionType.listOf( valueType );
         List<SomeValue> value = serialization.deserialize( module, collectionType, output );
-        assertEquals( valueCompositesList(), value );
+        assertThat( value, equalTo( valueCompositesList() ) );
     }
 
     @Test
@@ -257,7 +258,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         CollectionType valueType = CollectionType.setOf( EnumType.of( SomeEnum.class ) );
         Set<SomeEnum> value = serialization.deserialize( module, valueType, output );
-        assertEquals( enumSet, value );
+        assertThat( value, equalTo( enumSet ) );
     }
 
     @Test
@@ -272,7 +273,7 @@ public class AbstractCollectionSerializationTest
         System.out.println( output );
         MapType valueType = MapType.of( EnumType.of( SomeEnum.class ), ValueType.of( Integer.class ) );
         Map<SomeEnum, Number> value = serialization.deserialize( module, valueType, output );
-        assertEquals( enumMap, value );
+        assertThat( value, equalTo( enumMap ) );
     }
 
     private ArrayList<Byte> byteCollection()

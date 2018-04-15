@@ -47,13 +47,13 @@ import org.apache.polygene.index.rdf.indexing.RdfIndexerService;
 import org.apache.polygene.index.rdf.query.SesameExpressions;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings( "ResultOfMethodCallIgnored" )
 public class QueryPerformanceTest
@@ -127,7 +127,7 @@ public class QueryPerformanceTest
                                          + "}";
     private File indexingDataDir;
 
-    @Before
+    @BeforeEach
     public void setup()
         throws Exception
     {
@@ -139,7 +139,7 @@ public class QueryPerformanceTest
         uowf = module.unitOfWorkFactory();
     }
 
-    @After
+    @AfterEach
     public void tearDown()
         throws Exception
     {
@@ -244,7 +244,7 @@ public class QueryPerformanceTest
             end = System.currentTimeMillis();
             if( lead == null )
             {
-                Assert.fail( "Entity was not found or more than one entity was found." );
+                fail( "Entity was not found or more than one entity was found." );
                 return;
             }
             System.out.println( "Lead: " + lead );
@@ -265,7 +265,7 @@ public class QueryPerformanceTest
             end = System.currentTimeMillis();
             if( lead == null )
             {
-                Assert.fail( "Entity was not found or more than one entity was found." );
+                fail( "Entity was not found or more than one entity was found." );
                 return;
             }
             System.out.println( "Lead: " + lead );

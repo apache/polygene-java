@@ -28,7 +28,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
 import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class RdfQueryTest

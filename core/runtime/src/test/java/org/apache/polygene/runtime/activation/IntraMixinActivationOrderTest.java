@@ -20,8 +20,6 @@
 package org.apache.polygene.runtime.activation;
 
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.activation.Activators;
@@ -35,8 +33,11 @@ import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.ActivationStep;
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorder;
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorderInstance;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Assert that intra-mixin activation order is correct.
@@ -47,7 +48,7 @@ public class IntraMixinActivationOrderTest
 
     public static final ActivationStepsRecorder RECORDER = new ActivationStepsRecorderInstance();
 
-    @Before
+    @BeforeEach
     public void beforeEachTest()
     {
         RECORDER.reset();
@@ -207,7 +208,7 @@ public class IntraMixinActivationOrderTest
             "beta.tear-down",
         } );
         String actual = Arrays.toString( RECORDER.steps().toArray() );
-        assertEquals( expected, actual );
+        assertThat( actual, equalTo( expected ) );
     }
 
 }

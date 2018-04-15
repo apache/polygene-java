@@ -19,65 +19,70 @@
  */
 package org.apache.polygene.api.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class QualifiedNameTest
 {
     @Test
     public void testQualifiedNameWithDollar()
     {
-        assertEquals( "Name containing dollar is modified", "Test-Test",
-                      new QualifiedName( TypeName.nameOf( "Test$Test" ), "satisfiedBy" ).type() );
+        assertThat( "Name containing dollar is modified",
+                    new QualifiedName( TypeName.nameOf( "Test$Test" ), "satisfiedBy" ).type(),
+                    equalTo( "Test-Test" )
+        );
     }
 
     @Test
     public void testQualifiedNameFromQNWithDollar()
     {
-        assertEquals( "Name containing dollar is cleaned up", "Test-Test",
-                      QualifiedName.fromFQN( "Test$Test:satisfiedBy" ).type() );
+        assertThat( "Name containing dollar is cleaned up",
+                    QualifiedName.fromFQN( "Test$Test:satisfiedBy" ).type(),
+                    equalTo( "Test-Test" ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments1()
     {
-        new QualifiedName( TypeName.nameOf( "Test" ), null );
+        assertThrows( NullPointerException.class, () -> new QualifiedName( TypeName.nameOf( "Test" ), null ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments2()
     {
-        new QualifiedName( null, "satisfiedBy" );
+        assertThrows( NullPointerException.class, () -> new QualifiedName( null, "satisfiedBy" ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments3()
     {
-        new QualifiedName( null, null );
+        assertThrows( NullPointerException.class, () -> new QualifiedName( null, null ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments4()
     {
-        QualifiedName.fromFQN( null );
+        assertThrows( NullPointerException.class, () -> QualifiedName.fromFQN( null ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments5()
     {
-        QualifiedName.fromAccessor( null );
+        assertThrows( NullPointerException.class, () -> QualifiedName.fromAccessor( null ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments6()
     {
-        QualifiedName.fromClass( null, "satisfiedBy" );
+        assertThrows( NullPointerException.class, () -> QualifiedName.fromClass( null, "satisfiedBy" ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test
     public void nonNullArguments7()
     {
-        QualifiedName.fromClass( null, null );
+        assertThrows( NullPointerException.class, () -> QualifiedName.fromClass( null, null ) );
     }
 }

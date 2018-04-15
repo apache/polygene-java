@@ -30,12 +30,12 @@ import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * JAVADOC
@@ -64,11 +64,11 @@ public class UseDefaultsTest extends AbstractPolygeneTest
         assertThat( "assemblyString is set string", testComposite.assemblyString().get(), equalTo( "habba" ) );
 
         assertThat( "nullPrimitiveArray is null", testComposite.nullPrimitiveArray().get(), nullValue() );
-        assertTrue( "emptyPrimitiveArray is empty",
-                    Arrays.equals( testComposite.emptyPrimitiveArray().get(), new int[ 0 ] ) );
+        assertThat( "emptyPrimitiveArray is empty",
+                    Arrays.equals( testComposite.emptyPrimitiveArray().get(), new int[ 0 ] ), is( true ) );
         assertThat( "nullArray is null", testComposite.nullArray().get(), nullValue() );
-        assertTrue( "emptyArray is empty array",
-                    Arrays.equals( testComposite.emptyArray().get(), new Integer[ 0 ] ) );
+        assertThat( "emptyArray is empty array",
+                    Arrays.equals( testComposite.emptyArray().get(), new Integer[ 0 ] ), is( true ) );
     }
 
     @Test
@@ -85,10 +85,14 @@ public class UseDefaultsTest extends AbstractPolygeneTest
         Map<String, Integer> expectedMap = Collections.singletonMap( "abcd", 345 );
         assertThat( testComposite.initializedMapDefaultValue().get(), equalTo( expectedMap ) );
 
-        assertTrue( "initializedPrimitiveArray is set",
-                    Arrays.equals( testComposite.initializedPrimitiveArray().get(), new int[] { 23, 42 } ) );
-        assertTrue( "initializedArray is set",
-                    Arrays.equals( testComposite.initializedArray().get(), new Integer[] { 23, 42 } ) );
+        assertThat( "initializedPrimitiveArray is set",
+                    Arrays.equals( testComposite.initializedPrimitiveArray().get(), new int[]{ 23, 42 } ),
+                    is( true )
+        );
+        assertThat( "initializedArray is set",
+                    Arrays.equals( testComposite.initializedArray().get(), new Integer[]{ 23, 42 } ),
+                    is( true )
+        );
     }
 
     interface TestComposite

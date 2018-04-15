@@ -39,9 +39,10 @@ import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class DebuggingTest
     extends AbstractPolygeneTest
@@ -68,10 +69,10 @@ public class DebuggingTest
 
 //            QueryBuilder<DebugRecord> builder = module.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );
-//            assertEquals( 0, query.count() );
+//            assertThat( query.count() , equalTo( 0));
             Some service = serviceFinder.findService( Some.class ).get();
             String message = service.doSomething( "World!", 10 );
-            assertEquals( message, "Hello!" );
+            assertThat( "Hello!", equalTo( message ) );
             EntityStore es = serviceFinder.findService( EntityStore.class ).get();
             final Identity[] result = new Identity[1];
             try( Stream<EntityState> entityStates = es.entityStates( module ) )
@@ -90,7 +91,7 @@ public class DebuggingTest
             ServiceDebugRecordEntity debugEntry = uow.get( ServiceDebugRecordEntity.class, result[ 0 ] );
             String mess = debugEntry.message().get();
             System.out.println( mess );
-            assertEquals( "some message.", mess );
+            assertThat( mess, equalTo( "some message." ) );
             uow.complete();
         }
         catch( ConcurrentEntityModificationException e )

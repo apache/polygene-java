@@ -31,10 +31,11 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemovalTest
     extends AbstractPolygeneTest
@@ -62,7 +63,7 @@ public class RemovalTest
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
             Abc abc = uow.get( Abc.class, TEST_IDENTITY);
-            assertEquals( "Niclas", abc.name().get() );
+            assertThat( abc.name().get(), equalTo( "Niclas" ) );
         }
         finally
         {
@@ -83,7 +84,7 @@ public class RemovalTest
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();
             Abc abc = uow.get( Abc.class, TEST_IDENTITY);
-            assertEquals( "Niclas", abc.name().get() );
+            assertThat( abc.name().get(), equalTo( "Niclas" ) );
             uow.remove( abc );
             uow.complete();
             uow = unitOfWorkFactory.newUnitOfWork();

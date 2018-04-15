@@ -23,8 +23,10 @@ import org.apache.polygene.api.activation.Activator;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ModuleActivationTest
 {
@@ -70,13 +72,13 @@ public class ModuleActivationTest
         Application application = assembly.application();
 
         // Assert activated
-        Assert.assertEquals( "Activation Level", 2, activationLevel );
+        assertThat( "Activation Level", activationLevel, equalTo( 2 ) );
 
         // Passivate
         application.passivate();
 
         // Assert passivated
-        Assert.assertEquals( "Passivation Level", 2, passivationLevel );
+        assertThat( "Passivation Level", passivationLevel, equalTo( 2 ) );
     }
 
 }

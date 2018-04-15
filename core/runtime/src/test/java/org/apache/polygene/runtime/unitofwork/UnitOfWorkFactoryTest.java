@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.runtime.unitofwork;
 
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.UseDefaults;
@@ -32,6 +31,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class UnitOfWorkFactoryTest
     extends AbstractPolygeneTest
@@ -61,8 +64,8 @@ public class UnitOfWorkFactoryTest
         Product chair = cb.newInstance();
 
         String actual = chair.name().get();
-        org.junit.Assert.assertThat( "Chair.name()", actual, org.hamcrest.CoreMatchers.equalTo( "Chair" ) );
-        org.junit.Assert.assertThat( "Chair.price()", chair.price().get(), org.hamcrest.CoreMatchers.equalTo( 57 ) );
+        assertThat( "Chair.name()", actual, equalTo( "Chair" ) );
+        assertThat( "Chair.price()", chair.price().get(), equalTo( 57 ) );
 
         unitOfWork.complete();
     }

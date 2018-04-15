@@ -22,9 +22,6 @@ package org.apache.polygene.runtime.query;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.property.Property;
@@ -32,15 +29,17 @@ import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.apache.polygene.api.query.QueryExpressions.and;
 import static org.apache.polygene.api.query.QueryExpressions.ge;
 import static org.apache.polygene.api.query.QueryExpressions.lt;
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * JAVADOC
@@ -56,7 +55,7 @@ public class QueryBuilderFactoryImplTest
         module.transients( TestComposite.class );
     }
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -74,8 +73,8 @@ public class QueryBuilderFactoryImplTest
     public void givenPlainQueryWhenFindEntityExpectFirstEntityReturned()
     {
         Query<TestComposite> query = queryBuilderFactory.newQueryBuilder( TestComposite.class ).newQuery( composites );
-        assertEquals( "A", query.find().a().get() );
-        assertEquals( 6, query.count() );
+        assertThat( query.find().a().get(), equalTo( "A" ) );
+        assertThat( query.count(), equalTo( 6 ) );
     }
 
     @Test

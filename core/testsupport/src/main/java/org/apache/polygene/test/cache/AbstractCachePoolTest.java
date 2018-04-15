@@ -21,19 +21,18 @@ package org.apache.polygene.test.cache;
 
 import java.util.Collection;
 import java.util.Random;
-import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.AnyOf.anyOf;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Abstract satisfiedBy with tests for the CachePool interface.
@@ -79,10 +78,10 @@ public abstract class AbstractCachePoolTest
         {
             // expected
             Collection<ValueConstraintViolation> violations = e.constraintViolations();
-            assertEquals( 1, violations.size() );
+            assertThat( violations.size(), equalTo( 1 ) );
             ValueConstraintViolation violation = violations.iterator().next();
-            assertEquals( "not optional", violation.constraint().toString() );
-            assertThat( violation.name(), anyOf(equalTo("cacheId"), equalTo( "arg0" )) );  // depends on whether -parameters was given at compile time.
+            assertThat( violation.constraint().toString(), equalTo( "not optional" ) );
+            assertThat( violation.name(), anyOf( equalTo( "cacheId" ), equalTo( "arg0" ) ) );  // depends on whether -parameters was given at compile time.
         }
     }
 
@@ -101,32 +100,32 @@ public abstract class AbstractCachePoolTest
     @Test
     public void givenEmptyCacheWhenFetchingValueExpectNull()
     {
-        assertNull( cache.get( "1" ) );
+        assertThat( cache.get( "1" ), nullValue() );
     }
 
     @Test
     public void givenCacheWithAValueWhenRequestingThatValueExpectItBack()
     {
         cache.put( "Habba", "Zout" );
-        assertEquals( "Zout", cache.get( "Habba" ) );
+        assertThat( cache.get( "Habba" ), equalTo( "Zout" ) );
     }
 
     @Test
     public void givenCacheWithAValueWhenReplacingValueExpectNewValue()
     {
         cache.put( "Habba", "Zout" );
-        assertEquals( "Zout", cache.get( "Habba" ) );
+        assertThat( cache.get( "Habba" ), equalTo( "Zout" ) );
         cache.put( "Habba", "Zout2" );
-        assertEquals( "Zout2", cache.get( "Habba" ) );
+        assertThat( cache.get( "Habba" ), equalTo( "Zout2" ) );
     }
 
     @Test
     public void givenCacheWithValueWhenDroppingReferenceAndRequestNewCacheAndItsValueExpectItToBeGone()
     {
         cache.put( "Habba", "Zout" );
-        assertEquals( "Zout", cache.get( "Habba" ) );
+        assertThat( cache.get( "Habba" ), equalTo( "Zout" ) );
         cachePool.returnCache( cache );
         cache = cachePool.fetchCache( "1", String.class );
-        assertNull( "Value not missing", cache.get( "Habba" ) );
+        assertThat( "Value not missing", cache.get( "Habba" ), nullValue() );
     }
 }

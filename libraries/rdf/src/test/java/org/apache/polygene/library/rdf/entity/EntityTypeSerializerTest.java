@@ -39,7 +39,7 @@ import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 

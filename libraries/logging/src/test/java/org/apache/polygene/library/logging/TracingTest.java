@@ -20,7 +20,7 @@
 
 package org.apache.polygene.library.logging;
 
-import org.junit.Test;
+import java.util.Iterator;
 import org.apache.polygene.api.concern.ConcernOf;
 import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.mixin.Mixins;
@@ -40,13 +40,14 @@ import org.apache.polygene.library.logging.trace.records.EntityTraceRecordEntity
 import org.apache.polygene.library.logging.trace.records.ServiceTraceRecordEntity;
 import org.apache.polygene.library.logging.trace.records.TraceRecord;
 import org.apache.polygene.test.AbstractPolygeneTest;
-
-import java.util.Iterator;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TracingTest
     extends AbstractPolygeneTest
@@ -69,8 +70,8 @@ public class TracingTest
         throws Exception
     {
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
-        assertEquals( 123, sc.doSomethingImportant() );
-        assertEquals( 456, sc.doSomethingLessImportant() );
+        assertThat( sc.doSomethingImportant(), equalTo( 123 ) );
+        assertThat( sc.doSomethingLessImportant(), equalTo( 456 ) );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
@@ -78,10 +79,10 @@ public class TracingTest
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );
         Iterator<TraceRecord> result = query.iterator();
-        assertTrue( result.hasNext() );
+        assertThat( result.hasNext(), is( true ) );
         TraceRecord rec1 = result.next();
-        assertEquals( "doSomethingImportant", rec1.methodName().get() );
-        assertFalse( result.hasNext() );
+        assertThat( rec1.methodName().get(), equalTo( "doSomethingImportant" ) );
+        assertThat( result.hasNext(), is( false ) );
         uow.complete();
     }
 
@@ -90,8 +91,8 @@ public class TracingTest
         throws Exception
     {
         SomeService2 sc = serviceFinder.findService( SomeService2.class ).get();
-        assertEquals( 123, sc.doSomethingImportant() );
-        assertEquals( 456, sc.doSomethingLessImportant() );
+        assertThat( sc.doSomethingImportant(), equalTo( 123 ) );
+        assertThat( sc.doSomethingLessImportant(), equalTo( 456 ) );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
@@ -99,13 +100,13 @@ public class TracingTest
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );
         Iterator<TraceRecord> result = query.iterator();
-        assertTrue( result.hasNext() );
+        assertThat( result.hasNext(), is( true ) );
         TraceRecord rec1 = result.next();
-        assertEquals( "doSomethingImportant", rec1.methodName().get() );
-        assertTrue( result.hasNext() );
+        assertThat( rec1.methodName().get(), equalTo( "doSomethingImportant" ) );
+        assertThat( result.hasNext(), is( true ) );
         TraceRecord rec2 = result.next();
-        assertEquals( "doSomethingLessImportant", rec2.methodName().get() );
-        assertFalse( result.hasNext() );
+        assertThat( rec2.methodName().get(), equalTo( "doSomethingLessImportant" ) );
+        assertThat( result.hasNext(), is( false ) );
         uow.complete();
     }
 
@@ -114,8 +115,8 @@ public class TracingTest
         throws Exception
     {
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
-        assertEquals( 123, sc.doSomethingImportant() );
-        assertEquals( 789, sc.doSomethingModeratelyImportant() );
+        assertThat( sc.doSomethingImportant(), equalTo( 123 ) );
+        assertThat( sc.doSomethingModeratelyImportant(), equalTo( 789 ) );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
         {
@@ -125,13 +126,13 @@ public class TracingTest
             TraceRecord template = templateFor( TraceRecord.class );
             query.orderBy( orderBy( template.methodName() ) );
             Iterator<TraceRecord> result = query.iterator();
-            assertTrue( result.hasNext() );
+            assertThat( result.hasNext(), is( true ) );
             TraceRecord rec1 = result.next();
-            assertEquals( "doSomethingImportant", rec1.methodName().get() );
-            assertTrue( result.hasNext() );
+            assertThat( rec1.methodName().get(), equalTo( "doSomethingImportant" ) );
+            assertThat( result.hasNext(), is( true ) );
             TraceRecord rec2 = result.next();
-            assertEquals( "doSomethingModeratelyImportant", rec2.methodName().get() );
-            assertFalse( result.hasNext() );
+            assertThat( rec2.methodName().get(), equalTo( "doSomethingModeratelyImportant" ) );
+            assertThat( result.hasNext(), is( false ) );
             uow.complete();
         }
         catch( Exception e )
@@ -153,8 +154,8 @@ public class TracingTest
         // It is not possible to put Annotation on Concern Methods, so it should only record one.
 
         SomeService sc = serviceFinder.findService( SomeService.class ).get();
-        assertEquals( 123, sc.doSomethingImportant() );
-        assertEquals( 753, sc.doSomethingInsanelyImportant() );
+        assertThat( sc.doSomethingImportant(), equalTo( 123 ) );
+        assertThat( sc.doSomethingInsanelyImportant(), equalTo( 753 ) );
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
@@ -162,10 +163,10 @@ public class TracingTest
 //        TraceRecord template = templateFor( TraceRecord.class );
 //        query.orderBy( orderBy( template.methodName() ) );
         Iterator<TraceRecord> result = query.iterator();
-        assertTrue( result.hasNext() );
+        assertThat( result.hasNext(), is( true ) );
         TraceRecord rec1 = result.next();
-        assertEquals( "doSomethingImportant", rec1.methodName().get() );
-        assertFalse( result.hasNext() );
+        assertThat( rec1.methodName().get(), equalTo( "doSomethingImportant" ) );
+        assertThat( result.hasNext(), is( false ) );
         uow.complete();
     }
 

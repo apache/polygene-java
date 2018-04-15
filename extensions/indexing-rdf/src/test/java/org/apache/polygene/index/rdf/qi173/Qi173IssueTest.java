@@ -19,11 +19,10 @@
  */
 package org.apache.polygene.index.rdf.qi173;
 
-import org.apache.polygene.api.identity.Identity;
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.Iterator;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.query.Query;
 import org.apache.polygene.api.query.QueryBuilder;
@@ -36,10 +35,13 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-
-import java.util.Iterator;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class Qi173IssueTest
     extends AbstractPolygeneTest
@@ -84,19 +86,19 @@ public class Qi173IssueTest
         Query<Car> query = uow.newQuery( qb );
         query.orderBy( orderBy( template.manufacturer() ), orderBy( template.model() ) );
         Iterator<Car> cars = query.iterator();
-        Assert.assertTrue( cars.hasNext() );
+        Assert.assertThat( cars.hasNext(), is( true ) );
         Car car1 = cars.next();
-        Assert.assertEquals( car1.manufacturer().get(), "Ford" );
-        Assert.assertEquals( car1.model().get(), "Mustang" );
-        Assert.assertEquals( (int) car1.year().get(), 2007 );
+        assertThat( "Ford", equalTo( car1.manufacturer().get() ) );
+        assertThat( "Mustang", equalTo( car1.model().get() ) );
+        assertThat( 2007, equalTo( (int) car1.year().get() ) );
         Car car2 = cars.next();
-        Assert.assertEquals( car2.manufacturer().get(), "Ford" );
-        Assert.assertEquals( car2.model().get(), "Transit" );
-        Assert.assertEquals( (int) car2.year().get(), 2007 );
+        assertThat( "Ford", equalTo( car2.manufacturer().get() ) );
+        assertThat( "Transit", equalTo( car2.model().get() ) );
+        assertThat( 2007, equalTo( (int) car2.year().get() ) );
         Car car3 = cars.next();
-        Assert.assertEquals( car3.manufacturer().get(), "Volvo" );
-        Assert.assertEquals( car3.model().get(), "S80" );
-        Assert.assertEquals( (int) car3.year().get(), 2007 );
+        assertThat( "Volvo", equalTo( car3.manufacturer().get() ) );
+        assertThat( "S80", equalTo( car3.model().get() ) );
+        assertThat( 2007, equalTo( (int) car3.year().get() ) );
         for( Car car : query )
         {
             System.out.println( car.manufacturer().get() + " " + car.model().get() + ", " + car.year().get() );

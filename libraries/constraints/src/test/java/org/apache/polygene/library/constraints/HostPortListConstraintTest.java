@@ -26,7 +26,9 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.HostPortList;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class HostPortListConstraintTest extends AbstractPolygeneTest
 {
@@ -63,20 +65,24 @@ public class HostPortListConstraintTest extends AbstractPolygeneTest
         someValue.hostPort().set( "habba.zout.com:1234" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenInvalidHostNameWhenSettingPropertyExpectConstrainViolation()
         throws Exception
     {
-        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
-        someValue.hostPort().set( "1:2:3_i:1234" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+            someValue.hostPort().set( "1:2:3_i:1234" );
+        } );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenInvalidPortNumberWhenSettingPropertyExpectConstrainViolation()
         throws Exception
     {
-        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
-        someValue.hostPort().set( "1.2.3.4:123456" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+            someValue.hostPort().set( "1.2.3.4:123456" );
+        } );
     }
 
     @Test
@@ -111,20 +117,24 @@ public class HostPortListConstraintTest extends AbstractPolygeneTest
         someValue.hostPort().set( "habba.zout.com:1234,12.34.56.78:1234" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenInvalidListHostNameWhenSettingPropertyExpectConstrainViolation()
         throws Exception
     {
-        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
-        someValue.hostPort().set( "1.2.3.4:12,1:2:3_i:1234" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+            someValue.hostPort().set( "1.2.3.4:12,1:2:3_i:1234" );
+        } );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenInvalidListPortNumberWhenSettingPropertyExpectConstrainViolation()
         throws Exception
     {
-        SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
-        someValue.hostPort().set( "1.2.3.4:1234 1.2.3.4:123456" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            SomeValue someValue = transientBuilderFactory.newTransient( SomeValue.class );
+            someValue.hostPort().set( "1.2.3.4:1234 1.2.3.4:123456" );
+        } );
     }
 
     @Test

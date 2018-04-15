@@ -19,12 +19,14 @@
  */
 package org.apache.polygene.library.constraints.qi70;
 
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -36,10 +38,12 @@ public class IssueTest
         module.transients( SampleComposite.class );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testNotEmpty()
     {
-        TransientBuilder<Sample> cb = transientBuilderFactory.newTransientBuilder( Sample.class );
-        cb.prototypeFor( Sample.class ).stuff().set( null );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<Sample> cb = transientBuilderFactory.newTransientBuilder( Sample.class );
+            cb.prototypeFor( Sample.class ).stuff().set( null );
+        } );
     }
 }

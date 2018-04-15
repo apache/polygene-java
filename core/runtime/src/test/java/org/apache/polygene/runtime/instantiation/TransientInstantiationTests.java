@@ -19,14 +19,16 @@
  */
 package org.apache.polygene.runtime.instantiation;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TransientInstantiationTests
     extends AbstractPolygeneTest
@@ -43,7 +45,7 @@ public class TransientInstantiationTests
     {
         TransientBuilder<My> builder = transientBuilderFactory.newTransientBuilder( My.class );
         My my = builder.newInstance();
-        Assert.assertEquals( "Niclas", my.doSomething() );
+        assertThat( my.doSomething(), equalTo( "Niclas" ) );
     }
 
     @Mixins( MyMixin.class )

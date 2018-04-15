@@ -22,7 +22,6 @@ package org.apache.polygene.api.activation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationEvent.EventType;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -31,9 +30,15 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.apache.polygene.api.activation.ActivationEvent.EventType.*;
+import static org.apache.polygene.api.activation.ActivationEvent.EventType.ACTIVATED;
+import static org.apache.polygene.api.activation.ActivationEvent.EventType.ACTIVATING;
+import static org.apache.polygene.api.activation.ActivationEvent.EventType.PASSIVATED;
+import static org.apache.polygene.api.activation.ActivationEvent.EventType.PASSIVATING;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ActivationEventsTest
 {
@@ -106,7 +111,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
 
-        assertFalse( it.hasNext() );
+        assertThat( it.hasNext(), is( false ) );
     }
 
     @Test
@@ -157,7 +162,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
 
-        assertFalse( it.hasNext() );
+        assertThat( it.hasNext(), is( false ) );
     }
 
     @Test
@@ -206,7 +211,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
 
-        assertFalse( it.hasNext() );
+        assertThat( it.hasNext(), is( false ) );
 
         events.clear();
         application.activate();
@@ -242,7 +247,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
 
-        assertFalse( it.hasNext() );
+        assertThat( it.hasNext(), is( false ) );
     }
 
     private static class EventsRecorder

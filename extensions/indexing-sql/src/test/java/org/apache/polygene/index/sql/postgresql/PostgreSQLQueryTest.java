@@ -25,7 +25,7 @@ import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
 import org.junit.ClassRule;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * PostgreSQL Query Tests.

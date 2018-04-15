@@ -34,8 +34,8 @@ import org.apache.polygene.api.usecase.UsecaseBuilder;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.test.indexing.TestData;
 import org.apache.polygene.test.model.assembly.ApplicationAssembler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractMultiLayeredIndexingTest
 {
@@ -71,7 +71,7 @@ public abstract class AbstractMultiLayeredIndexingTest
         AbstractMultiLayeredIndexingTest.indexingAssembler = indexingAssembler;
     }
 
-    @Before
+    @BeforeEach
     public void setup()
         throws ActivationException
     {

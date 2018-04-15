@@ -19,15 +19,16 @@
  */
 package org.apache.polygene.library.osgi;
 
-import org.junit.Test;
-import org.osgi.framework.BundleContext;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+import org.osgi.framework.BundleContext;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -54,7 +55,7 @@ public class OSGiServiceTest
     {
         MyService service = serviceFinder.findService( MyService.class ).get();
         service.value().set( 15 );
-        assertEquals( (Integer) 15, service.value().get() );
+        assertThat( service.value().get(), equalTo( 15 ) );
         String[] expectedClasses = new String[]
         {
             "org.apache.polygene.library.osgi.OSGiServiceTest$MyService",

@@ -55,14 +55,13 @@ import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.AnyOf.anyOf;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class RestTest extends AbstractPolygeneTest
 {
@@ -73,17 +72,18 @@ public class RestTest extends AbstractPolygeneTest
         throws AssemblyException
     {
         return polygene.newApplicationModel( new ApplicationAssemblerAdapter(
-            new Assembler[][][]
-                {
-                    {
-                        {
-                            RestTest.this,
-                            new RestAssembler(),
-                            new RdfMemoryStoreAssembler()
-                        }
-                    }
-                } )
-        {}  // subclassing ApplicationAssemblerAdapter
+                                                 new Assembler[][][]
+                                                     {
+                                                         {
+                                                             {
+                                                                 RestTest.this,
+                                                                 new RestAssembler(),
+                                                                 new RdfMemoryStoreAssembler()
+                                                             }
+                                                         }
+                                                     } )
+                                             {
+                                             }  // subclassing ApplicationAssemblerAdapter
         );
     }
 
@@ -103,7 +103,7 @@ public class RestTest extends AbstractPolygeneTest
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -163,8 +163,8 @@ public class RestTest extends AbstractPolygeneTest
         try
         {
             PersonEntity entity = work.get( PersonEntity.class, StringIdentity.identityOf( "P1" ) );
-            assertEquals( "FirstName not changed.", "Jack", entity.firstname().get() );
-            assertEquals( "LastName not changed.", "Doe", entity.lastname().get() );
+            assertThat( "FirstName not changed.", entity.firstname().get(), equalTo( "Jack" ) );
+            assertThat( "LastName not changed.", entity.lastname().get(), equalTo( "Doe" ) );
             work.complete();
         }
         finally
@@ -191,7 +191,7 @@ public class RestTest extends AbstractPolygeneTest
             {
                 // expected
             }
-            assertNull( "Entity not removed.", entity );
+            assertThat( "Entity not removed.", entity, nullValue() );
             work.complete();
         }
         finally
@@ -227,7 +227,7 @@ public class RestTest extends AbstractPolygeneTest
             CloseableHttpClient client = HttpClients.createDefault();
             HttpGet method = new HttpGet( "http://localhost:" + ADMIN_PORT + "/entity/" + identity + ".rdf" );
             method.addHeader( "Accept", "application/rdf+xml" );
-            try( CloseableHttpResponse response = client.execute( method ) )
+            try (CloseableHttpResponse response = client.execute( method ))
             {
                 if( response.getStatusLine().getStatusCode() != 200 )
                 {
@@ -248,7 +248,7 @@ public class RestTest extends AbstractPolygeneTest
                 parameters.add( new BasicNameValuePair( entry.getKey(), entry.getValue() ) );
             }
             method.setEntity( new UrlEncodedFormEntity( parameters ) );
-            try( CloseableHttpResponse response = client.execute( method ) )
+            try (CloseableHttpResponse response = client.execute( method ))
             {
                 if( response.getStatusLine().getStatusCode() != 205 )
                 {
@@ -262,7 +262,7 @@ public class RestTest extends AbstractPolygeneTest
         {
             CloseableHttpClient client = HttpClients.createDefault();
             HttpDelete method = new HttpDelete( "http://localhost:" + ADMIN_PORT + "/entity/" + identity );
-            try( CloseableHttpResponse response = client.execute( method ) )
+            try (CloseableHttpResponse response = client.execute( method ))
             {
                 if( response.getStatusLine().getStatusCode() != 204 )
                 {
@@ -277,7 +277,7 @@ public class RestTest extends AbstractPolygeneTest
             CloseableHttpClient client = HttpClients.createDefault();
             HttpGet method = new HttpGet( "http://localhost:" + ADMIN_PORT + "/entity.rdf" );
             method.addHeader( "Accept", "application/rdf+xml" );
-            try( CloseableHttpResponse response = client.execute( method ) )
+            try (CloseableHttpResponse response = client.execute( method ))
             {
                 if( response.getStatusLine().getStatusCode() != 200 )
                 {

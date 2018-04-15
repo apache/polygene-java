@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.library.rest.client.docsupport;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.api.value.ValueComposite;
@@ -32,6 +30,7 @@ import org.apache.polygene.library.rest.client.spi.NullResponseHandler;
 import org.apache.polygene.library.rest.client.spi.ResponseHandler;
 import org.apache.polygene.library.rest.client.spi.ResultHandler;
 import org.apache.polygene.library.rest.common.Resource;
+import org.hamcrest.CoreMatchers;
 import org.restlet.Client;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
@@ -42,6 +41,7 @@ import org.restlet.security.User;
 
 import static org.apache.polygene.library.rest.client.api.HandlerCommand.query;
 import static org.apache.polygene.library.rest.client.api.HandlerCommand.refresh;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RestPrimerDocs
 {
@@ -67,7 +67,7 @@ public class RestPrimerDocs
         @Override
         public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
         {
-            Assert.assertThat(result.xyz().get(), CoreMatchers.equalTo("bar"));
+            assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
             return null;
         }
     } );

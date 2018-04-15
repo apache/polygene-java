@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.identity.StringIdentity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class HasTypesCollectorsTest
 {
@@ -64,12 +63,12 @@ public class HasTypesCollectorsTest
 
         Optional<ValueType> number = valueTypes.stream()
                                                .collect( HasTypesCollectors.matchingType( Number.class ) );
-        assertTrue( number.isPresent() );
+        assertThat( number.isPresent(), is( true ) );
         assertThat( number.get(), equalTo( ValueType.of( Double.class ) ) );
 
         Optional<ValueType> integer = valueTypes.stream()
                                                 .collect( HasTypesCollectors.matchingType( Integer.class ) );
-        assertTrue( integer.isPresent() );
+        assertThat( integer.isPresent(), is( true ) );
         assertThat( integer.get(), equalTo( ValueType.of( Integer.class ) ) );
     }
 
@@ -117,19 +116,19 @@ public class HasTypesCollectorsTest
         Optional<ValueType> number = valueTypes.stream()
                                                .collect(
                                                    HasTypesCollectors.matchingType( ValueType.of( Number.class ) ) );
-        assertTrue( number.isPresent() );
+        assertThat( number.isPresent(), is( true ) );
         assertThat( number.get(), equalTo( ValueType.of( Number.class ) ) );
 
         Optional<ValueType> integer = valueTypes.stream()
                                                 .collect(
                                                     HasTypesCollectors.matchingType( ValueType.of( Integer.class ) ) );
-        assertTrue( integer.isPresent() );
+        assertThat( integer.isPresent(), is( true ) );
         assertThat( integer.get(), equalTo( ValueType.of( Integer.class ) ) );
 
         Optional<ValueType> both = valueTypes.stream()
                                              .collect( HasTypesCollectors.matchingType( ValueType.of( Number.class,
                                                                                                       Integer.class ) ) );
-        assertTrue( both.isPresent() );
+        assertThat( both.isPresent(), is( true ) );
         assertThat( both.get(), equalTo( ValueType.of( Number.class, Integer.class ) ) );
     }
 

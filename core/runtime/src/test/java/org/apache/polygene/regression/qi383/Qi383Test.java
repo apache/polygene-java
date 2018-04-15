@@ -28,7 +28,9 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Qi383Test extends AbstractPolygeneTest
 {
@@ -41,17 +43,19 @@ public class Qi383Test extends AbstractPolygeneTest
         new EntityTestAssembler().assemble( module );
     }
 
-    @Test( expected = EntityCompositeAlreadyExistsException.class )
+    @Test
     public void givenUnitOfWorkInProgressWhenAddingSameEntityTwiceExpectException()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork() )
-        {
-            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
-            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ford" ) );
-            unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
-            unitOfWork.complete();
-        }
+        assertThrows( EntityCompositeAlreadyExistsException.class, () -> {
+            try (UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork())
+            {
+                unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
+                unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ford" ) );
+                unitOfWork.newEntity( Car.class, StringIdentity.identityOf( "Ferrari" ) );
+                unitOfWork.complete();
+            }
+        } );
     }
 
     public interface Car extends EntityComposite

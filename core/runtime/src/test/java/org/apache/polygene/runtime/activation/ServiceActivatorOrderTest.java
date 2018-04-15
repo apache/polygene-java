@@ -20,8 +20,6 @@
 package org.apache.polygene.runtime.activation;
 
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.activation.Activators;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -33,8 +31,11 @@ import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.Activati
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorderInstance;
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.Expected;
 import org.apache.polygene.runtime.activation.ActivatorOrderTestSupport.OrderTestActivator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ServiceActivatorOrderTest
 {
@@ -44,7 +45,7 @@ public class ServiceActivatorOrderTest
     //
     public static final ActivationStepsRecorder RECORDER = new ActivationStepsRecorderInstance();
 
-    @Before
+    @BeforeEach
     public void beforeEachTest()
     {
         RECORDER.reset();
@@ -233,7 +234,7 @@ public class ServiceActivatorOrderTest
 
         String actual = Arrays.toString( RECORDER.steps().toArray() );
         // System.out.println( "\n" + Expected.ALPHA_BETA_SINGLE + "\n" + actual + "\n" );
-        assertEquals( Expected.ALPHA_BETA_SINGLE, actual );
+        assertThat( actual, equalTo( Expected.ALPHA_BETA_SINGLE ) );
     }
 
     @Test
@@ -269,7 +270,7 @@ public class ServiceActivatorOrderTest
 
         String actual = Arrays.toString( RECORDER.steps().toArray() );
         // System.out.println( "\n" + expected + "\n" + actual + "\n" );
-        assertEquals( expected, actual );
+        assertThat( actual, equalTo( expected ) );
     }
 
     @Test
@@ -314,7 +315,7 @@ public class ServiceActivatorOrderTest
 
         String actual = Arrays.toString( RECORDER.steps().toArray() );
         // System.out.println( "\n" + expected + "\n" + actual + "\n" );
-        assertEquals( expected, actual );
+        assertThat( actual, equalTo( expected ) );
     }
     
     @Test
@@ -362,7 +363,7 @@ public class ServiceActivatorOrderTest
         } );
         String actual = Arrays.toString( RECORDER.steps().toArray() );
         // System.out.println( "\n" + expected + "\n" + actual + "\n" );
-        assertEquals( expected, actual );
+        assertThat( actual, equalTo( expected ) );
     }
 
 }

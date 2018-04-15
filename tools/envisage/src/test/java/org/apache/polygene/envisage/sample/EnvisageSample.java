@@ -20,11 +20,9 @@
 
 package org.apache.polygene.envisage.sample;
 
+import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.identity.HasIdentity;
 import org.apache.polygene.api.identity.Identity;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
@@ -34,6 +32,8 @@ import org.apache.polygene.envisage.Envisage;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.test.util.Assume.assumeDisplayPresent;
 
@@ -48,7 +48,7 @@ public class EnvisageSample
         sample.runSample();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void assumeDisplay()
     {
         assumeDisplayPresent();

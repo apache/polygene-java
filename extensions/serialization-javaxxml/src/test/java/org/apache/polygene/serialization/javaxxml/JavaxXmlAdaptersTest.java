@@ -23,12 +23,12 @@ import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class JavaxXmlAdaptersTest extends AbstractPolygeneTest
 {

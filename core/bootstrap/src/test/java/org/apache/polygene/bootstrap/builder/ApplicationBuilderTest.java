@@ -29,13 +29,13 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.polygene.bootstrap.ClassScanner.findClasses;
 import static org.apache.polygene.bootstrap.ClassScanner.matches;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class ApplicationBuilderTest
 {

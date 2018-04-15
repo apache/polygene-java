@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime.service;
 
-import junit.framework.TestCase;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
@@ -29,18 +28,22 @@ import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Test of lazily activated services
  */
 public class LazyActivatedServiceTest
-    extends TestCase
 {
     @Service
     ServiceReference<MyService> service;
 
     public static boolean isActive;
 
+    @Test
     public void testActivatable()
         throws Exception
     {
@@ -54,23 +57,23 @@ public class LazyActivatedServiceTest
             }
         };
 
-        assertFalse( isActive );
+        assertThat( isActive, is( false ) );
 
         assembly.module().injectTo( this );
 
-        assertFalse( isActive );
+        assertThat( isActive, is( false ) );
 
         service.get();
 
-        assertFalse( isActive );
+        assertThat( isActive, is( false ) );
 
         service.get().doStuff();
 
-        assertTrue( isActive );
+        assertThat( isActive, is( true ) );
 
         assembly.application().passivate();
 
-        assertFalse( isActive );
+        assertThat( isActive, is( false ) );
     }
 
     @Mixins( { MyServiceMixin.class } )

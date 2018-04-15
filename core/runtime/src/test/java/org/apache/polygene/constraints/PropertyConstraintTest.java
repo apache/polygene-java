@@ -22,9 +22,9 @@ package org.apache.polygene.constraints;
 import java.util.Collection;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
-import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.constraint.Constraints;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -32,20 +32,22 @@ import org.apache.polygene.library.constraints.MinLengthConstraint;
 import org.apache.polygene.library.constraints.annotation.Matches;
 import org.apache.polygene.library.constraints.annotation.MinLength;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PropertyConstraintTest
     extends AbstractPolygeneTest
 {
-    @org.junit.Test
+    @Test
     public void givenConstraintOnPropertyWhenInvalidValueThenThrowException()
         throws Throwable
     {
-        TransientBuilder<Test> builder = transientBuilderFactory.newTransientBuilder( Test.class );
+        TransientBuilder<TestType> builder = transientBuilderFactory.newTransientBuilder( TestType.class );
         builder.prototype().test().set( "XXXXXX" );
-        Test test = builder.newInstance();
+        TestType test = builder.newInstance();
         try
         {
             test.test().set( "YY" );
@@ -54,7 +56,7 @@ public class PropertyConstraintTest
         catch( ConstraintViolationException e )
         {
             Collection<ValueConstraintViolation> violations = e.constraintViolations();
-            assertEquals( 2, violations.size() );
+            assertThat( violations.size(), equalTo( 2 ) );
         }
     }
 
@@ -66,11 +68,11 @@ public class PropertyConstraintTest
 
     @Constraints( { MinLengthConstraint.class } )
     public interface TestComposite
-        extends Test, TransientComposite
+        extends TestType, TransientComposite
     {
     }
 
-    public interface Test
+    public interface TestType
     {
         @MinLength( 3 )
         @Matches( "X*" )

@@ -20,8 +20,6 @@
 
 package org.apache.polygene.api.common;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
@@ -33,10 +31,13 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for @Optional
@@ -60,11 +61,13 @@ public class OptionalTest
         instance.doStuff( "Hello WOrld", "Hello World" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenOptionalMethodWhenMandatoryMissingThenException()
     {
-        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
-        instance.doStuff( "Hello World", null );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
+            instance.doStuff( "Hello World", null );
+        } );
     }
 
     @Test
@@ -91,10 +94,10 @@ public class OptionalTest
         TestComposite2 testComposite2 = builder.newInstance();
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenMandatoryPropertyWhenMandatoryMissingThenException()
     {
-        TestComposite2 testComposite2 = transientBuilderFactory.newTransient( TestComposite2.class );
+        assertThrows( ConstraintViolationException.class, () -> transientBuilderFactory.newTransient( TestComposite2.class ) );
     }
 
     @Test
@@ -140,25 +143,27 @@ public class OptionalTest
         }
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenMandatoryAssociationWhenMandatoryMissingThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
+        assertThrows( ConstraintViolationException.class, () -> {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+            {
+                TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
 
-            EntityBuilder<TestComposite3> builder = unitOfWork.newEntityBuilder( TestComposite3.class );
-            builder.instance().optionalAssociation().set( ref );
-            TestComposite3 testComposite3 = builder.newInstance();
+                EntityBuilder<TestComposite3> builder = unitOfWork.newEntityBuilder( TestComposite3.class );
+                builder.instance().optionalAssociation().set( ref );
+                TestComposite3 testComposite3 = builder.newInstance();
 
-            unitOfWork.complete();
-        }
-        finally
-        {
-            unitOfWork.discard();
-        }
+                unitOfWork.complete();
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
+        } );
     }
 
     @Mixins( TestComposite.TestMixin.class )

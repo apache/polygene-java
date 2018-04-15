@@ -21,7 +21,7 @@ package org.apache.polygene.test.performance.runtime.object;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests performance of new object creation.

@@ -25,14 +25,18 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValueConstraintTest extends AbstractPolygeneTest {
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void testProhibitNewInstanceWithViolation() {
-        ValueBuilder<Value1> builder = valueBuilderFactory.newValueBuilder(Value1.class);
-        builder.newInstance();
+        assertThrows( ConstraintViolationException.class, () -> {
+            ValueBuilder<Value1> builder = valueBuilderFactory.newValueBuilder( Value1.class );
+            builder.newInstance();
+        } );
     }
 
     public void assemble(ModuleAssembly module)

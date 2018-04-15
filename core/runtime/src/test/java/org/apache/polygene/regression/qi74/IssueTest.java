@@ -19,8 +19,6 @@
  */
 package org.apache.polygene.regression.qi74;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
@@ -28,6 +26,9 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -45,7 +46,7 @@ public class IssueTest
         {
             TransientBuilder<ValueHolder> builder = transientBuilderFactory.newTransientBuilder( ValueHolder.class );
             builder.newInstance();
-            Assert.fail( "NotNull constraint violated but no exception is raised" );
+            fail( "NotNull constraint violated but no exception is raised" );
         }
         catch( ConstraintViolationException e )
         {

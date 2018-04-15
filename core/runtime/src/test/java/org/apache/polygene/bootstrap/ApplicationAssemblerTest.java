@@ -29,8 +29,11 @@ import org.apache.polygene.api.service.ServiceDescriptor;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.util.HierarchicalVisitorAdapter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * TODO
@@ -78,14 +81,14 @@ public class ApplicationAssemblerTest
                     {
                         return false;
                     }
-                    Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
-                    Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
+                    assertThat( serviceDescriptor.isInstantiateOnStartup(), is( true ) );
+                    assertThat( serviceDescriptor.visibility(), equalTo( Visibility.layer ) );
                     return false;
                 }
                 else if( visited instanceof EntityDescriptor )
                 {
                     EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-                    Assert.assertTrue( entityDescriptor.visibility() == Visibility.application );
+                    assertThat( entityDescriptor.visibility(), equalTo( Visibility.application ) );
                     return false;
                 }
 

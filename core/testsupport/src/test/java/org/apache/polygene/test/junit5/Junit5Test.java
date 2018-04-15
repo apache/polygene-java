@@ -1,13 +1,13 @@
 package org.apache.polygene.test.junit5;
 
+import org.apache.polygene.api.identity.StringIdentity;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.test.PolygeneUnitExtension;
 import org.apache.polygene.test.model.Cat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -20,7 +20,7 @@ public class Junit5Test
 {
 
     @RegisterExtension
-    PolygeneUnitExtension polygene = PolygeneUnitExtension.forModule( module -> {
+    public PolygeneUnitExtension polygene = PolygeneUnitExtension.forModule( module -> {
         module.values(Cat.class );
     } ).build();
 
@@ -31,6 +31,7 @@ public class Junit5Test
     public void givenPolygeneWhenInstantiatingCatExpectCatInstantiation()
     {
         ValueBuilder<Cat> builder = vbf.newValueBuilder( Cat.class );
+        builder.prototype().identity().set( StringIdentity.identityOf( "123" ) );
         builder.prototype().name().set( "Kim" );
         Cat cat = builder.newInstance();
 

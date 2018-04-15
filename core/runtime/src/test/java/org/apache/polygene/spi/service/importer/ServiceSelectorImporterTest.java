@@ -20,7 +20,6 @@
 
 package org.apache.polygene.spi.service.importer;
 
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.injection.scope.Service;
@@ -30,10 +29,11 @@ import org.apache.polygene.api.service.qualifier.ServiceQualifier;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.apache.polygene.bootstrap.ImportedServiceDeclaration.SERVICE_SELECTOR;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test of service selector importer

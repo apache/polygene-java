@@ -35,8 +35,10 @@ import org.apache.polygene.library.servlet.lifecycle.AbstractPolygeneServletBoot
 import org.apache.polygene.test.util.FreePortFinder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ServletTest
 {
@@ -45,11 +47,11 @@ public class ServletTest
 
     // START SNIPPET: bootstrap
     public static class FooServletContextListener
-            extends AbstractPolygeneServletBootstrap
+        extends AbstractPolygeneServletBootstrap
     {
 
         public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
+            throws AssemblyException
         {
             ApplicationAssembly appass = applicationFactory.newApplicationAssembly();
             // END SNIPPET: bootstrap
@@ -60,7 +62,6 @@ public class ServletTest
             // START SNIPPET: bootstrap
             return appass;
         }
-
     }
     // END SNIPPET: bootstrap
 
@@ -70,27 +71,27 @@ public class ServletTest
 
     // START SNIPPET: usage
     public static class FooServlet
-            extends PolygeneServlet
+        extends PolygeneServlet
     {
 
         @Override
         protected void doGet( HttpServletRequest req, HttpServletResponse resp )
-                throws ServletException, IOException
+            throws ServletException, IOException
         {
             // Output the assembled Application's name as an example
             resp.getWriter().println( application().name() );
         }
-
     }
     // END SNIPPET: usage
 
     @Test
     public void test()
-            throws Exception
+        throws Exception
     {
         int port = FreePortFinder.findFreePortOnLoopback();
         Server server = new Server( port );
-        try {
+        try
+        {
 
             ServletContextHandler context = new ServletContextHandler();
             context.setContextPath( "/" );
@@ -100,16 +101,16 @@ public class ServletTest
             server.setHandler( context );
             server.start();
 
-            try( CloseableHttpClient client = HttpClientBuilder.create().build() )
+            try (CloseableHttpClient client = HttpClientBuilder.create().build())
             {
                 String result = client.execute( new HttpGet( "http://127.0.0.1:" + port + "/" ),
                                                 new BasicResponseHandler() );
-                Assert.assertEquals( APP_NAME, result.trim() );
+                assertThat( result.trim(), equalTo( APP_NAME ) );
             }
-
-        } finally {
+        }
+        finally
+        {
             server.stop();
         }
     }
-
 }

@@ -48,9 +48,9 @@ import org.apache.polygene.runtime.query.model.entities.PetEntity;
 import org.apache.polygene.runtime.query.model.values.ContactValue;
 import org.apache.polygene.runtime.query.model.values.ContactsValue;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.ge;
@@ -64,8 +64,9 @@ import static org.apache.polygene.api.query.QueryExpressions.or;
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.property;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class IterableQuerySourceTest
 {
@@ -73,7 +74,7 @@ public class IterableQuerySourceTest
     private UnitOfWork uow;
     private QueryBuilderFactory qbf;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
@@ -97,7 +98,7 @@ public class IterableQuerySourceTest
         qbf = assembler.module();
     }
 
-    @After
+    @AfterEach
     public void tearDown()
     {
         if( uow != null )
@@ -115,7 +116,7 @@ public class IterableQuerySourceTest
         for( Nameable entity : results )
         {
             String name = entity.name().get();
-            assertTrue( name + " returned but not expected", expected.remove( name ) );
+            assertThat( name + " returned but not expected", expected.remove( name ), is( true ) );
         }
 
         for( String notReturned : expected )

@@ -20,8 +20,6 @@
 
 package org.apache.polygene.regression.qi230;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.concern.ConcernOf;
@@ -34,8 +32,11 @@ import org.apache.polygene.api.mixin.NoopMixin;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * JAVADOC
@@ -57,9 +58,9 @@ public class Qi230IssueTest
     {
         Result result = serviceFinder.findService( Result.class ).get();
         Some some = serviceFinder.findService( Some.class ).get();
-        assertEquals( "method()", some.method() );
-        assertEquals( some.identity(), result.some().identity() );
-        assertEquals( some.identity().get(), result.some().identity().get() );
+        assertThat( some.method(), equalTo( "method()" ) );
+        assertThat( result.some().identity(), equalTo( some.identity() ) );
+        assertThat( result.some().identity().get(), equalTo( some.identity().get() ) );
     }
 
     @Mixins( ResultMixin.class )

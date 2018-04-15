@@ -36,6 +36,7 @@ dependencies {
   runtimeOnly libraries.leveldb_jni_all
 
   testImplementation polygene.core.testsupport
+  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
 }

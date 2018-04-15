@@ -26,13 +26,13 @@ import java.beans.VetoableChangeListener;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.awaitility.Awaitility.await;
 import static org.awaitility.Duration.ONE_SECOND;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * JAVADOC
@@ -42,7 +42,7 @@ public class CircuitBreakerTest
 
     private CircuitBreaker cb;
 
-    @Before
+    @BeforeEach
     public void createCircuitBreaker()
     {
         // START SNIPPET: direct

@@ -22,16 +22,15 @@ package org.apache.polygene.runtime.mixin;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test mixin declaration precedence satisfiedBy
@@ -66,7 +65,7 @@ public class MixinPrecedenceTest
     public void whenMultipleGenericMixinsPrecedence()
     {
         TestComposite3 instance = transientBuilderFactory.newTransient( TestComposite3.class );
-        assertEquals( "GM1", instance.AMethod() );
+        assertThat( instance.AMethod(), equalTo( "GM1" ) );
     }
 
     @Mixins( { AMixin1.class, AMixin2.class } )

@@ -21,18 +21,18 @@ package org.apache.polygene.test.performance.runtime.service;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
-import junit.framework.TestCase;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.bootstrap.SingletonAssembler;
+import org.junit.jupiter.api.Test;
 
 public class ServiceInvocationPerformanceTest
-    extends TestCase
 {
     @Service
     ServiceInvocationPerformanceTest.MyService service;
 
+    @Test
     public void testInjectService()
         throws Exception
     {
@@ -103,5 +103,4 @@ public class ServiceInvocationPerformanceTest
             return null;
         }
     }
-
 }

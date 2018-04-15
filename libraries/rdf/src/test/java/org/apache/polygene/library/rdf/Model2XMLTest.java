@@ -33,7 +33,7 @@ import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.rdf.model.Model2XML;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 /**

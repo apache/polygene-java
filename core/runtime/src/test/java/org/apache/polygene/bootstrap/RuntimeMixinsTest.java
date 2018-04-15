@@ -22,11 +22,11 @@ package org.apache.polygene.bootstrap;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.mixin.NoopMixin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class RuntimeMixinsTest
 {

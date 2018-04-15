@@ -19,23 +19,25 @@
  */
 package org.apache.polygene.library.uid.uuid;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.uid.uuid.assembly.UuidServiceAssembler;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class UuidServiceTest extends AbstractPolygeneTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        new UuidServiceAssembler().assemble(module);
+        new UuidServiceAssembler().assemble( module );
         module.transients( UnderTestComposite.class );
     }
 
@@ -47,11 +49,11 @@ public class UuidServiceTest extends AbstractPolygeneTest
         for( int hashLength = 1; hashLength < 50; hashLength++ )
         {
             String uid = ut.generateUuid( hashLength );
-            assertEquals( hashLength * 2, uid.length() );
+            assertThat( uid.length(), equalTo( hashLength * 2 ) );
             for( int i = 0; i < uid.length(); i++ )
             {
                 char ch = uid.charAt( i );
-                assertTrue( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ) );
+                assertThat( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ), is( true ) );
             }
         }
     }
@@ -72,10 +74,10 @@ public class UuidServiceTest extends AbstractPolygeneTest
             }
             else
             {
-                assertTrue( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ) );
+                assertThat( ( ch >= '0' && ch <= '9' ) || ( ch >= 'A' && ch <= 'F' ), is( true ) );
             }
         }
-        assertEquals( 5, dashCounter );
+        assertThat( dashCounter, equalTo( 5 ) );
     }
 
     @Mixins( UnderTestMixin.class )
@@ -91,7 +93,8 @@ public class UuidServiceTest extends AbstractPolygeneTest
     public static class UnderTestMixin
         implements UnderTest
     {
-        @Service private UuidService service;
+        @Service
+        private UuidService service;
 
         public String generateUuid( int len )
         {

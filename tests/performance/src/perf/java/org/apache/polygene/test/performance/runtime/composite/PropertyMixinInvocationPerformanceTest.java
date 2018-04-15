@@ -28,7 +28,7 @@ import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * PropertyMixin invocation performance test.

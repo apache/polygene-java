@@ -24,11 +24,11 @@ import org.apache.polygene.api.serialization.Deserializer;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 public class HandCraftedXmlTest extends AbstractPolygeneTest
 {

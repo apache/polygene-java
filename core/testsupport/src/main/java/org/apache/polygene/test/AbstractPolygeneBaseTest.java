@@ -19,10 +19,6 @@
  */
 package org.apache.polygene.test;
 
-import org.apache.polygene.api.activation.PassivationException;
-import org.apache.polygene.test.util.NotYetImplemented;
-import org.junit.After;
-import org.junit.Before;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
@@ -31,11 +27,12 @@ import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.spi.PolygeneSPI;
-import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractPolygeneBaseTest
 {
-    @Rule public NotYetImplemented.Rule notYetImplementedRule = new NotYetImplemented.Rule();
+//    @Rule public NotYetImplemented.Rule notYetImplementedRule = new NotYetImplemented.Rule();
 
     protected PolygeneAPI api;
     protected PolygeneSPI spi;
@@ -44,7 +41,7 @@ public abstract class AbstractPolygeneBaseTest
     protected ApplicationDescriptor applicationModel;
     protected Application application;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -118,7 +115,7 @@ public abstract class AbstractPolygeneBaseTest
     {
     }
 
-    @After
+    @AfterEach
     public void tearDown()
     {
         if( application != null )

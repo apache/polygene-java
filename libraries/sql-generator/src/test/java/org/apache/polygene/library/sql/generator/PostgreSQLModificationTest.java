@@ -25,7 +25,7 @@ import org.apache.polygene.library.sql.generator.grammar.modification.ValueSourc
 import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PostgreSQLModificationTest extends AbstractModificationTest
 {

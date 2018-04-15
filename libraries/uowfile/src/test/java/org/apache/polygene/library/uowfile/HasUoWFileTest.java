@@ -53,17 +53,16 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class HasUoWFileTest
     extends AbstractPolygeneTest
@@ -216,7 +215,7 @@ public class HasUoWFileTest
             TestedEntity entity = createTestedEntity( uow, "Testing Creation Rollback" );
             attachedFile = entity.attachedFile();
         }
-        assertFalse( "File still exists after discarded creation UoW", attachedFile.exists() );
+        assertThat( "File still exists after discarded creation UoW", attachedFile.exists(), is( false ) );
 
         // Test completed creation
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -299,7 +298,7 @@ public class HasUoWFileTest
             TestedEntity entity = uow.get( TestedEntity.class, entityId );
             uow.remove( entity );
         }
-        assertTrue( "File do not exists after discarded deletion", attachedFile.exists() );
+        assertThat( "File do not exists after discarded deletion", attachedFile.exists(), is( true ) );
 
         // Testing completed deletion
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -308,7 +307,7 @@ public class HasUoWFileTest
             uow.remove( entity );
             uow.complete();
         }
-        assertFalse( "File still exists after deletion", attachedFile.exists() );
+        assertThat( "File still exists after deletion", attachedFile.exists(), is( false ) );
     }
 
     @Test
@@ -408,7 +407,7 @@ public class HasUoWFileTest
             eachEx.printStackTrace();
         }
 
-        assertTrue( "There were errors during TestRetry", ex.isEmpty() );
+        assertThat( "There were errors during TestRetry", ex.isEmpty(), is( true ) );
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
             assertThat( "Modified file content was not the good one",

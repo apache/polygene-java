@@ -23,8 +23,6 @@ package org.apache.polygene.runtime.property;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import javax.swing.Icon;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.composite.TransientComposite;
@@ -34,8 +32,11 @@ import org.apache.polygene.api.property.PropertyMixin;
 import org.apache.polygene.api.property.PropertyWrapper;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Tests for properties
@@ -70,8 +71,8 @@ public class PropertyTest
             company = builder.newInstance();
         }
 
-        company.name().set( "Jayway" );
-        assertEquals( "Jayway", company.name().get() );
+        company.name().set( "CodeDragons" );
+        assertThat( company.name().get(), equalTo( "CodeDragons" ) );
         System.out.println( "Name is:" + company.name().get() );
     }
 

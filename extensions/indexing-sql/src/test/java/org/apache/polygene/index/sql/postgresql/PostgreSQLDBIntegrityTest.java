@@ -39,7 +39,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.docker.DockerRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PostgreSQLDBIntegrityTest
     extends AbstractPolygeneTest

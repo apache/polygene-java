@@ -34,16 +34,16 @@ import org.apache.polygene.test.model.Female;
 import org.apache.polygene.test.model.Male;
 import org.apache.polygene.test.model.Nameable;
 import org.apache.polygene.test.model.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.apache.polygene.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.apache.polygene.test.indexing.NameableAssert.verifyUnorderedResults;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Abstract satisfiedBy with tests for named queries against Index/Query engines.
@@ -52,11 +52,11 @@ public abstract class AbstractNamedQueryTest
     extends AbstractAnyQueryTest
 {
     @Structure
-    Module moduleInstance;
+    private Module moduleInstance;
 
     protected final Map<String, Predicate<Composite>> queries = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void assembleQueryStrings()
     {
         String[] query = queryStrings();

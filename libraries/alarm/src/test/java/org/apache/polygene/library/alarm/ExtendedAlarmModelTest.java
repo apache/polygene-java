@@ -22,9 +22,8 @@ package org.apache.polygene.library.alarm;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
-import org.apache.polygene.api.identity.Identity;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
@@ -33,12 +32,13 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExtendedAlarmModelTest
     extends AbstractPolygeneTest
@@ -100,7 +100,7 @@ public class ExtendedAlarmModelTest
         boolean test9 = provider.modelDescription().toLowerCase().contains( "unblock" );
         boolean test10 = provider.modelDescription().toLowerCase().contains( "disable" );
         boolean test11 = provider.modelDescription().toLowerCase().contains( "enable" );
-        assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
+        assertThat( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11, is( true ) );
 
         Locale english = new Locale( "en" );
         test1 = provider.modelDescription( english ).toLowerCase().contains( "normal" );
@@ -114,7 +114,7 @@ public class ExtendedAlarmModelTest
         test9 = provider.modelDescription( english ).toLowerCase().contains( "unblock" );
         test10 = provider.modelDescription( english ).toLowerCase().contains( "disable" );
         test11 = provider.modelDescription( english ).toLowerCase().contains( "enable" );
-        assertTrue( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11 );
+        assertThat( test1 && test2 && test3 && test4 && test5 && test6 && test7 && test8 && test9 && test10 && test11, is( true ) );
     }
 
     @Test
@@ -124,7 +124,7 @@ public class ExtendedAlarmModelTest
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         List<String> triggers = provider.alarmTriggers();
-        assertEquals( 7, triggers.size() );
+        assertThat( triggers.size(), equalTo( 7 ) );
         int result = 0;
         for( String trigger : triggers )
         {
@@ -157,8 +157,8 @@ public class ExtendedAlarmModelTest
                 result |= 64;
             }
         }
-        assertEquals( 127, result );
-        assertEquals( AlarmPoint.STATUS_NORMAL, underTest.currentStatus().name( null ) );
+        assertThat( result, equalTo( 127 ) );
+        assertThat( underTest.currentStatus().name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
     }
 
     @Test
@@ -168,31 +168,31 @@ public class ExtendedAlarmModelTest
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
+        assertThat( event1.systemName().get(), equalTo( AlarmPoint.EVENT_ACTIVATION ) );
 
         alarm = createAlarm( "Another 2" );
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertNull( event2 );
+        assertThat( event2, nullValue() );
 
         alarm = createAlarm( "Another 3" );
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertNull( event3 );
+        assertThat( event3, nullValue() );
 
         alarm = createAlarm( "Another 4" );
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertEquals( AlarmPoint.EVENT_BLOCKING, event4.systemName().get() );
+        assertThat( event4.systemName().get(), equalTo( AlarmPoint.EVENT_BLOCKING ) );
 
         alarm = createAlarm( "Another 5" );
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertNull( event5 );
+        assertThat( event5, nullValue() );
 
         alarm = createAlarm( "Another 6" );
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertEquals( AlarmPoint.EVENT_DISABLING, event6.systemName().get() );
+        assertThat( event6.systemName().get(), equalTo( AlarmPoint.EVENT_DISABLING ) );
 
         alarm = createAlarm( "Another 7" );
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertNull( event7 );
+        assertThat( event7, nullValue() );
     }
 
     @Test
@@ -204,37 +204,37 @@ public class ExtendedAlarmModelTest
         alarm.activate();
 
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertNull( event1 );
+        assertThat( event1, nullValue() );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( AlarmPoint.EVENT_DEACTIVATION, event2.systemName().get() );
+        assertThat( event2.systemName().get(), equalTo( AlarmPoint.EVENT_DEACTIVATION ) );
 
         alarm = createAlarm( "Another 3" );
         alarm.activate();
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertEquals( AlarmPoint.EVENT_ACKNOWLEDGEMENT, event3.systemName().get() );
+        assertThat( event3.systemName().get(), equalTo( AlarmPoint.EVENT_ACKNOWLEDGEMENT ) );
 
         alarm = createAlarm( "Another 4" );
         alarm.activate();
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertEquals( AlarmPoint.EVENT_BLOCKING, event4.systemName().get() );
+        assertThat( event4.systemName().get(), equalTo( AlarmPoint.EVENT_BLOCKING ) );
 
         alarm = createAlarm( "Another 5" );
         alarm.activate();
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertNull( event5 );
+        assertThat( event5, nullValue() );
 
         alarm = createAlarm( "Another 6" );
         alarm.activate();
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertEquals( AlarmPoint.EVENT_DISABLING, event6.systemName().get() );
+        assertThat( event6.systemName().get(), equalTo( AlarmPoint.EVENT_DISABLING ) );
 
         alarm = createAlarm( "Another 7" );
         alarm.activate();
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertNull( event7 );
+        assertThat( event7, nullValue() );
     }
 
     @Test
@@ -247,43 +247,43 @@ public class ExtendedAlarmModelTest
         alarm.acknowledge();
 
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertNull( event1 );
+        assertThat( event1, nullValue() );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( AlarmPoint.EVENT_DEACTIVATION, event2.systemName().get() );
+        assertThat( event2.systemName().get(), equalTo( AlarmPoint.EVENT_DEACTIVATION ) );
 
         alarm = createAlarm( "Another 3" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertNull( event3 );
+        assertThat( event3, nullValue() );
 
         alarm = createAlarm( "Another 4" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertEquals( AlarmPoint.EVENT_BLOCKING, event4.systemName().get() );
+        assertThat( event4.systemName().get(), equalTo( AlarmPoint.EVENT_BLOCKING ) );
 
         alarm = createAlarm( "Another 5" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertNull( event5 );
+        assertThat( event5, nullValue() );
 
         alarm = createAlarm( "Another 6" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertEquals( AlarmPoint.EVENT_DISABLING, event6.systemName().get() );
+        assertThat( event6.systemName().get(), equalTo( AlarmPoint.EVENT_DISABLING ) );
 
         alarm = createAlarm( "Another 7" );
         alarm.activate();
         alarm.acknowledge();
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertNull( event7 );
+        assertThat( event7, nullValue() );
     }
 
     @Test
@@ -295,43 +295,43 @@ public class ExtendedAlarmModelTest
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
+        assertThat( event1.systemName().get(), equalTo( AlarmPoint.EVENT_ACTIVATION ) );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertNull( event2 );
+        assertThat( event2, nullValue() );
 
         alarm = createAlarm( "Another 3" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertEquals( AlarmPoint.EVENT_ACKNOWLEDGEMENT, event3.systemName().get() );
+        assertThat( event3.systemName().get(), equalTo( AlarmPoint.EVENT_ACKNOWLEDGEMENT ) );
 
         alarm = createAlarm( "Another 4" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertEquals( AlarmPoint.EVENT_BLOCKING, event4.systemName().get() );
+        assertThat( event4.systemName().get(), equalTo( AlarmPoint.EVENT_BLOCKING ) );
 
         alarm = createAlarm( "Another 5" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertNull( event5 );
+        assertThat( event5, nullValue() );
 
         alarm = createAlarm( "Another 6" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertEquals( AlarmPoint.EVENT_DISABLING, event6.systemName().get() );
+        assertThat( event6.systemName().get(), equalTo( AlarmPoint.EVENT_DISABLING ) );
 
         alarm = createAlarm( "Another 7" );
         alarm.activate();
         alarm.deactivate();
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertNull( event7 );
+        assertThat( event7, nullValue() );
     }
 
     @Test
@@ -343,43 +343,43 @@ public class ExtendedAlarmModelTest
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertNull( event1 );
+        assertThat( event1, nullValue() );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertNull( event2 );
+        assertThat( event2, nullValue() );
 
         alarm = createAlarm( "Another 3" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertNull( event3 );
+        assertThat( event3, nullValue() );
 
         alarm = createAlarm( "Another 4" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertNull( event4 );
+        assertThat( event4, nullValue() );
 
         alarm = createAlarm( "Another 5" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertEquals( AlarmPoint.EVENT_UNBLOCKING, event5.systemName().get() );
+        assertThat( event5.systemName().get(), equalTo( AlarmPoint.EVENT_UNBLOCKING ) );
 
         alarm = createAlarm( "Another 6" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertEquals( AlarmPoint.EVENT_DISABLING, event6.systemName().get() );
+        assertThat( event6.systemName().get(), equalTo( AlarmPoint.EVENT_DISABLING ) );
 
         alarm = createAlarm( "Another 7" );
         alarm.activate();
         alarm.trigger( "block" );
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertNull( event7 );
+        assertThat( event7, nullValue() );
     }
 
     @Test
@@ -391,43 +391,43 @@ public class ExtendedAlarmModelTest
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
-        assertNull( event1 );
+        assertThat( event1, nullValue() );
 
         alarm = createAlarm( "Another 2" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event2 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DEACTIVATE );
-        assertNull( event2 );
+        assertThat( event2, nullValue() );
 
         alarm = createAlarm( "Another 3" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event3 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACKNOWLEDGE );
-        assertNull( event3 );
+        assertThat( event3, nullValue() );
 
         alarm = createAlarm( "Another 4" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event4 = provider.evaluate( alarm, AlarmPoint.TRIGGER_BLOCK );
-        assertNull( event4 );
+        assertThat( event4, nullValue() );
 
         alarm = createAlarm( "Another 5" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event5 = provider.evaluate( alarm, AlarmPoint.TRIGGER_UNBLOCK );
-        assertNull( event5 );
+        assertThat( event5, nullValue() );
 
         alarm = createAlarm( "Another 6" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event6 = provider.evaluate( alarm, AlarmPoint.TRIGGER_DISABLE );
-        assertNull( event6 );
+        assertThat( event6, nullValue() );
 
         alarm = createAlarm( "Another 7" );
         alarm.activate();
         alarm.trigger( "disable" );
         AlarmEvent event7 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ENABLE );
-        assertEquals( AlarmPoint.EVENT_ENABLING, event7.systemName().get() );
+        assertThat( event7.systemName().get(), equalTo( AlarmPoint.EVENT_ENABLING ) );
     }
 
     @Test
@@ -456,13 +456,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -475,13 +475,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DEACTIVATED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DEACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -495,13 +495,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACKNOWLEDGED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_ACKNOWLEDGED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -516,13 +516,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_DEACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_DEACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -537,13 +537,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACKNOWLEDGED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACKNOWLEDGED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -558,13 +558,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -579,13 +579,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -598,13 +598,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -618,13 +618,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -639,13 +639,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_DEACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_DEACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -660,13 +660,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACKNOWLEDGED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACKNOWLEDGED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -679,13 +679,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -699,13 +699,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -720,13 +720,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_DEACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_DEACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -741,13 +741,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACKNOWLEDGED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACKNOWLEDGED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -762,13 +762,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_BLOCKED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_BLOCKED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -783,13 +783,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DISABLED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DISABLED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -800,7 +800,7 @@ public class ExtendedAlarmModelTest
 
         underTest.updateCondition( false );
         AlarmEvent event = underTest.history().lastEvent();
-        assertNull( "Generated an event but should have not.", event );
+        assertThat( "Generated an event but should have not.", event, nullValue() );
     }
 
     @Test
@@ -813,13 +813,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -833,13 +833,13 @@ public class ExtendedAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name( null ) );
+        assertThat( oldstate.name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
 
         AlarmStatus newstate = event.newStatus().get();
-        assertEquals( AlarmPoint.STATUS_DEACTIVATED, newstate.name( null ) );
+        assertThat( newstate.name( null ), equalTo( AlarmPoint.STATUS_DEACTIVATED ) );
 
         AlarmPoint eventalarm = getAlarm( event.identity().get() );
-        assertEquals( underTest, eventalarm );
+        assertThat( eventalarm, equalTo( underTest ) );
     }
 
     @Test
@@ -848,20 +848,20 @@ public class ExtendedAlarmModelTest
     {
         AlarmModel provider = serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
-        assertFalse( provider.computeCondition( s1 ) );
+        assertThat( provider.computeCondition( s1 ), is( false ) );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
-        assertTrue( provider.computeCondition( s2 ) );
+        assertThat( provider.computeCondition( s2 ), is( true ) );
         AlarmStatus s3 = createStatus( AlarmPoint.STATUS_DEACTIVATED );
-        assertFalse( provider.computeCondition( s3 ) );
+        assertThat( provider.computeCondition( s3 ), is( false ) );
         AlarmStatus s4 = createStatus( AlarmPoint.STATUS_ACKNOWLEDGED );
-        assertTrue( provider.computeCondition( s4 ) );
+        assertThat( provider.computeCondition( s4 ), is( true ) );
 
         AlarmStatus s5 = createStatus( AlarmPoint.STATUS_DISABLED );
-        assertFalse( provider.computeCondition( s5 ) );
+        assertThat( provider.computeCondition( s5 ), is( false ) );
         AlarmStatus s6 = createStatus( AlarmPoint.STATUS_BLOCKED );
-        assertFalse( provider.computeCondition( s6 ) );
+        assertThat( provider.computeCondition( s6 ), is( false ) );
         AlarmStatus s7 = createStatus( AlarmPoint.STATUS_REACTIVATED );
-        assertTrue( provider.computeCondition( s7 ) );
+        assertThat( provider.computeCondition( s7 ), is( true ) );
     }
 
     @Test
@@ -872,8 +872,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_NORMAL );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( AlarmPoint.TRIGGER_ACTIVATE, trigger1 );
-        assertEquals( null, trigger2 );
+        assertThat( trigger1, equalTo( AlarmPoint.TRIGGER_ACTIVATE ) );
+        assertThat( trigger2, equalTo( null ) );
     }
 
     @Test
@@ -883,8 +883,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_ACTIVATED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( null, trigger1 );
-        assertEquals( AlarmPoint.TRIGGER_DEACTIVATE, trigger2 );
+        assertThat( trigger1, equalTo( null ) );
+        assertThat( trigger2, equalTo( AlarmPoint.TRIGGER_DEACTIVATE ) );
     }
 
     @Test
@@ -894,8 +894,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_DEACTIVATED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( AlarmPoint.TRIGGER_ACTIVATE, trigger1 );
-        assertEquals( null, trigger2 );
+        assertThat( trigger1, equalTo( AlarmPoint.TRIGGER_ACTIVATE ) );
+        assertThat( trigger2, equalTo( null ) );
     }
 
     @Test
@@ -905,8 +905,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_ACKNOWLEDGED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( null, trigger1 );
-        assertEquals( AlarmPoint.TRIGGER_DEACTIVATE, trigger2 );
+        assertThat( trigger1, equalTo( null ) );
+        assertThat( trigger2, equalTo( AlarmPoint.TRIGGER_DEACTIVATE ) );
     }
 
     @Test
@@ -916,8 +916,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_REACTIVATED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( null, trigger1 );
-        assertEquals( AlarmPoint.TRIGGER_DEACTIVATE, trigger2 );
+        assertThat( trigger1, equalTo( null ) );
+        assertThat( trigger2, equalTo( AlarmPoint.TRIGGER_DEACTIVATE ) );
     }
 
     @Test
@@ -927,8 +927,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_BLOCKED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( null, trigger1 );
-        assertEquals( null, trigger2 );
+        assertThat( trigger1, equalTo( null ) );
+        assertThat( trigger2, equalTo( null ) );
     }
 
     @Test
@@ -938,8 +938,8 @@ public class ExtendedAlarmModelTest
         AlarmStatus status = createStatus( AlarmPoint.STATUS_DISABLED );
         String trigger1 = provider.computeTrigger( status, true );
         String trigger2 = provider.computeTrigger( status, false );
-        assertEquals( null, trigger1 );
-        assertEquals( null, trigger2 );
+        assertThat( trigger1, equalTo( null ) );
+        assertThat( trigger2, equalTo( null ) );
     }
 
     private AlarmPoint createAlarm( String name )

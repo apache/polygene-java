@@ -46,8 +46,8 @@ import org.apache.polygene.test.model.Male;
 import org.apache.polygene.test.model.Nameable;
 import org.apache.polygene.test.model.Person;
 import org.apache.polygene.test.model.QueryParam;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static java.time.ZoneOffset.UTC;
 import static org.apache.polygene.api.query.QueryExpressions.and;
@@ -68,9 +68,10 @@ import static org.apache.polygene.api.query.QueryExpressions.orderBy;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.apache.polygene.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.apache.polygene.test.indexing.NameableAssert.verifyUnorderedResults;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Abstract satisfiedBy with tests for simple queries against Index/Query engines.
@@ -379,34 +380,42 @@ public abstract class AbstractQueryTest
         assertThat( query.find().name().get(), is( equalTo( "Gaming" ) ) );
     }
 
-    @Test( expected = NotQueryableException.class )
+    @Test
     public void script25()
     {
-        this.moduleInstance.newQueryBuilder( File.class );
+        assertThrows( NotQueryableException.class, () ->
+            this.moduleInstance.newQueryBuilder( File.class )
+        );
     }
 
-    @Test( expected = NotQueryableException.class )
+    @Test
     public void script26()
     {
-        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
-        Person person = templateFor( Person.class );
-        qb.where( eq( person.personalWebsite().get().file().get().value(), "some/path" ) );
+        assertThrows( NotQueryableException.class, () -> {
+            QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
+            Person person = templateFor( Person.class );
+            qb.where( eq( person.personalWebsite().get().file().get().value(), "some/path" ) );
+        } );
     }
 
-    @Test( expected = NotQueryableException.class )
+    @Test
     public void script27()
     {
-        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
-        Person person = templateFor( Person.class );
-        qb.where( eq( person.personalWebsite().get().host().get().value(), "polygene.apache.org" ) );
+        assertThrows( NotQueryableException.class, () -> {
+            QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
+            Person person = templateFor( Person.class );
+            qb.where( eq( person.personalWebsite().get().host().get().value(), "polygene.apache.org" ) );
+        } );
     }
 
-    @Test( expected = NotQueryableException.class )
+    @Test
     public void script28()
     {
-        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
-        Person person = templateFor( Person.class );
-        qb.where( eq( person.personalWebsite().get().port().get().value(), 8080 ) );
+        assertThrows( NotQueryableException.class, () -> {
+            QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
+            Person person = templateFor( Person.class );
+            qb.where( eq( person.personalWebsite().get().port().get().value(), 8080 ) );
+        } );
     }
 
     @Test
@@ -425,7 +434,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Wait till 1.1?" )
+    @Disabled( "Wait till 1.1?" )
     // Paul: I don't understand this test
     @SuppressWarnings( "unchecked" )
     public void script30()
@@ -439,7 +448,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Equality on Property<Map<?,?>> not implemented" )
+    @Disabled( "Equality on Property<Map<?,?>> not implemented" )
     public void script31()
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
@@ -508,7 +517,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Traversing of NamedAssociations is not implemented" )
+    @Disabled( "Traversing of NamedAssociations is not implemented" )
     public void script37()
     {
         QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );

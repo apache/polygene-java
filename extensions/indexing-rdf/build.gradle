@@ -35,6 +35,7 @@ dependencies {
   testImplementation polygene.core.testsupport
   testImplementation polygene.extension( 'entitystore-preferences' )
   testImplementation polygene.extension( 'entitystore-jdbm' )
+  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
 }

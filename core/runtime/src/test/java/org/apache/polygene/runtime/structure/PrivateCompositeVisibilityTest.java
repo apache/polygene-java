@@ -32,35 +32,39 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * JAVADOC
  */
 public class PrivateCompositeVisibilityTest
 {
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void testPrivateCompositeVisibility()
         throws Exception
     {
-        Energy4Java polygene = new Energy4Java();
-        Assembler[][][] assemblers = new Assembler[][][]
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            Energy4Java polygene = new Energy4Java();
+            Assembler[][][] assemblers = new Assembler[][][]
+                {
+                    { // Layer
+                      {
+                          new AssemblerA()
+                      },
+                      {
+                          new AssemblerB()
+                      }
+                    }
+                };
+            Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
             {
-                { // Layer
-                  {
-                      new AssemblerA()
-                  },
-                  {
-                      new AssemblerB()
-                  }
-                }
-            };
-        Application app = polygene.newApplication( new ApplicationAssemblerAdapter( assemblers )
-        {
+            } );
+            app.activate();
+            ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
+            object.test();
         } );
-        app.activate();
-        ObjectA object = app.findModule( "Layer 1", "Module A" ).newObject( ObjectA.class );
-        object.test();
     }
 
     class AssemblerA

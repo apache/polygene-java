@@ -28,11 +28,12 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.util.AccessibleObjects.accessible;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class PropertyMapperTest
 {
@@ -54,72 +55,72 @@ public class PropertyMapperTest
     public void testMappingOfInteger()
         throws Exception
     {
-        assertEquals( 5, mapToType( null, Integer.class, "5" ) );
-        assertEquals( -5, mapToType( null, Integer.class, "-5" ) );
-        assertEquals( Integer.class, mapToType( null, Integer.class, "5" ).getClass() );
+        assertThat( mapToType( null, Integer.class, "5" ), equalTo( 5 ) );
+        assertThat( mapToType( null, Integer.class, "-5" ), equalTo( -5 ) );
+        assertThat( mapToType( null, Integer.class, "5" ).getClass(), equalTo( Integer.class ) );
     }
 
     @Test
     public void testMappingOfLong()
         throws Exception
     {
-        assertEquals( 5L, mapToType( null, Long.class, "5" ) );
-        assertEquals( 5876328476238746238L, mapToType( null, Long.class, "5876328476238746238" ) );
-        assertEquals( Long.class, mapToType( null, Long.class, "5" ).getClass() );
+        assertThat( mapToType( null, Long.class, "5" ), equalTo( 5L ) );
+        assertThat( mapToType( null, Long.class, "5876328476238746238" ), equalTo( 5876328476238746238L ) );
+        assertThat( mapToType( null, Long.class, "5" ).getClass(), equalTo( Long.class ) );
     }
 
     @Test
     public void testMappingOfBoolean()
         throws Exception
     {
-        assertEquals( false, mapToType( null, Boolean.class, "false" ) );
-        assertEquals( true, mapToType( null, Boolean.class, "true" ) );
-        assertEquals( Boolean.class, mapToType( null, Boolean.class, "false" ).getClass() );
+        assertThat( mapToType( null, Boolean.class, "false" ), is( false ) );
+        assertThat( mapToType( null, Boolean.class, "true" ), is( true ) );
+        assertThat( mapToType( null, Boolean.class, "false" ).getClass(), equalTo( Boolean.class ) );
     }
 
     @Test
     public void testMappingOfFloat()
         throws Exception
     {
-        assertEquals( 5.1234f, mapToType( null, Float.class, "5.1234" ) );
-        assertEquals( 5876328476.6238f, mapToType( null, Float.class, "5876328476.6238" ) );
-        assertEquals( Float.class, mapToType( null, Float.class, "5" ).getClass() );
+        assertThat( mapToType( null, Float.class, "5.1234" ), equalTo( 5.1234f ) );
+        assertThat( mapToType( null, Float.class, "5876328476.6238" ), equalTo( 5876328476.6238f ) );
+        assertThat( mapToType( null, Float.class, "5" ).getClass(), equalTo( Float.class ) );
     }
 
     @Test
     public void testMappingOfDouble()
         throws Exception
     {
-        assertEquals( 5.1234, mapToType( null, Double.class, "5.1234" ) );
-        assertEquals( 5876328476.623823, mapToType( null, Double.class, "5876328476.623823" ) );
-        assertEquals( Double.class, mapToType( null, Double.class, "5" ).getClass() );
+        assertThat( mapToType( null, Double.class, "5.1234" ), equalTo( 5.1234 ) );
+        assertThat( mapToType( null, Double.class, "5876328476.623823" ), equalTo( 5876328476.623823 ) );
+        assertThat( mapToType( null, Double.class, "5" ).getClass(), equalTo( Double.class ) );
     }
 
     @Test
     public void testMappingOfBigDecimal()
         throws Exception
     {
-        assertEquals( new BigDecimal( 3 ), mapToType( null, BigDecimal.class, "3" ) );
-        assertEquals( new BigDecimal( "12345.67891011" ), mapToType( null, BigDecimal.class, "12345.67891011" ) );
-        assertEquals( BigDecimal.class, mapToType( null, BigDecimal.class, "5" ).getClass() );
+        assertThat( mapToType( null, BigDecimal.class, "3" ), equalTo( new BigDecimal( 3 ) ) );
+        assertThat( mapToType( null, BigDecimal.class, "12345.67891011" ), equalTo( new BigDecimal( "12345.67891011" ) ) );
+        assertThat( mapToType( null, BigDecimal.class, "5" ).getClass(), equalTo( BigDecimal.class ) );
     }
 
     @Test
     public void testMappingOfBigInteger()
         throws Exception
     {
-        assertEquals( new BigInteger( "20", 16 ), mapToType( null, BigInteger.class, "32" ) );
-        assertEquals( new BigInteger( "1234567891011" ), mapToType( null, BigInteger.class, "1234567891011" ) );
-        assertEquals( BigInteger.class, mapToType( null, BigInteger.class, "5" ).getClass() );
+        assertThat( mapToType( null, BigInteger.class, "32" ), equalTo( new BigInteger( "20", 16 ) ) );
+        assertThat( mapToType( null, BigInteger.class, "1234567891011" ), equalTo( new BigInteger( "1234567891011" ) ) );
+        assertThat( mapToType( null, BigInteger.class, "5" ).getClass(), equalTo( BigInteger.class ) );
     }
 
     @Test
     public void testMappingOfEnum()
         throws Exception
     {
-        assertEquals( TestEnum.FIRST, mapToType( null, TestEnum.class, "FIRST" ) );
-        assertEquals( TestEnum.SECOND, mapToType( null, TestEnum.class, "SECOND" ) );
-        assertEquals( TestEnum.class, mapToType( null, TestEnum.class, "SECOND" ).getClass() );
+        assertThat( mapToType( null, TestEnum.class, "FIRST" ), is( TestEnum.FIRST ) );
+        assertThat( mapToType( null, TestEnum.class, "SECOND" ), is( TestEnum.SECOND ) );
+        assertThat( mapToType( null, TestEnum.class, "SECOND" ).getClass(), equalTo( TestEnum.class ) );
     }
 
     @Test
@@ -127,12 +128,12 @@ public class PropertyMapperTest
         throws Exception
     {
         Object[] value = (Object[]) mapToType( null, Integer[].class, "5,4 , 3   ,2,1" );
-        assertEquals( 5, value.length );
-        assertEquals( 5, value[ 0 ] );
-        assertEquals( 4, value[ 1 ] );
-        assertEquals( 3, value[ 2 ] );
-        assertEquals( 2, value[ 3 ] );
-        assertEquals( 1, value[ 4 ] );
+        assertThat( value.length, equalTo( 5 ) );
+        assertThat( value[ 0 ], equalTo( 5 ) );
+        assertThat( value[ 1 ], equalTo( 4 ) );
+        assertThat( value[ 2 ], equalTo( 3 ) );
+        assertThat( value[ 3 ], equalTo( 2 ) );
+        assertThat( value[ 4 ], equalTo( 1 ) );
     }
 
     @Test
@@ -141,21 +142,21 @@ public class PropertyMapperTest
     {
         {
             Object[] value = (Object[]) mapToType( null, String[].class, "5,4 , 3   ,2,1" );
-            assertEquals( 5, value.length );
-            assertEquals( "5", value[ 0 ] );
-            assertEquals( "4 ", value[ 1 ] );
-            assertEquals( " 3   ", value[ 2 ] );
-            assertEquals( "2", value[ 3 ] );
-            assertEquals( "1", value[ 4 ] );
+            assertThat( value.length, equalTo( 5 ) );
+            assertThat( value[ 0 ], equalTo( "5" ) );
+            assertThat( value[ 1 ], equalTo( "4 " ) );
+            assertThat( value[ 2 ], equalTo( " 3   " ) );
+            assertThat( value[ 3 ], equalTo( "2" ) );
+            assertThat( value[ 4 ], equalTo( "1" ) );
         }
         {
             Object[] value = (Object[]) mapToType( null, String[].class, "5,4 ,\" 3,   \",  \" 2\" ,1" );
-            assertEquals( "5", value[ 0 ] );
-            assertEquals( "4 ", value[ 1 ] );
-            assertEquals( " 3,   ", value[ 2 ] );
-            assertEquals( " 2", value[ 3 ] );
-            assertEquals( "1", value[ 4 ] );
-            assertEquals( 5, value.length );
+            assertThat( value[ 0 ], equalTo( "5" ) );
+            assertThat( value[ 1 ], equalTo( "4 " ) );
+            assertThat( value[ 2 ], equalTo( " 3,   " ) );
+            assertThat( value[ 3 ], equalTo( " 2" ) );
+            assertThat( value[ 4 ], equalTo( "1" ) );
+            assertThat( value.length, equalTo( 5 ) );
         }
     }
 
@@ -164,13 +165,13 @@ public class PropertyMapperTest
         throws Exception
     {
         Object[] value = (Object[]) mapToType( null, Boolean[].class, " true,false,  false, true ,true,false" );
-        assertEquals( true, value[ 0 ] );
-        assertEquals( false, value[ 1 ] );
-        assertEquals( false, value[ 2 ] );
-        assertEquals( true, value[ 3 ] );
-        assertEquals( true, value[ 4 ] );
-        assertEquals( false, value[ 5 ] );
-        assertEquals( 6, value.length );
+        assertThat( value[ 0 ], equalTo( true ) );
+        assertThat( value[ 1 ], equalTo( false ) );
+        assertThat( value[ 2 ], equalTo( false ) );
+        assertThat( value[ 3 ], equalTo( true ) );
+        assertThat( value[ 4 ], equalTo( true ) );
+        assertThat( value[ 5 ], equalTo( false ) );
+        assertThat( value.length, equalTo( 6 ) );
     }
 
     @Test
@@ -179,12 +180,12 @@ public class PropertyMapperTest
     {
         Type type = Testing.class.getDeclaredMethod( "list" ).getGenericReturnType();
         List<String> value = (List<String>) mapToType( null, type, "5,4 ,\" 3,   \",  \" 2\" ,1" );
-        assertEquals( "5", value.get( 0 ) );
-        assertEquals( "4 ", value.get( 1 ) );
-        assertEquals( " 3,   ", value.get( 2 ) );
-        assertEquals( " 2", value.get( 3 ) );
-        assertEquals( "1", value.get( 4 ) );
-        assertEquals( 5, value.size() );
+        assertThat( value.get( 0 ), equalTo( "5" ) );
+        assertThat( value.get( 1 ), equalTo( "4 " ) );
+        assertThat( value.get( 2 ), equalTo( " 3,   " ) );
+        assertThat( value.get( 3 ), equalTo( " 2" ) );
+        assertThat( value.get( 4 ), equalTo( "1" ) );
+        assertThat( value.size(), equalTo( 5 ) );
     }
 
     @Test
@@ -193,12 +194,12 @@ public class PropertyMapperTest
     {
         Type type = Testing.class.getDeclaredMethod( "set" ).getGenericReturnType();
         Set<String> value = (Set<String>) mapToType( null, type, "5,4 ,\" 3,   \",  \" 2\" ,1" );
-        assertTrue( value.contains( "5" ) );
-        assertTrue( value.contains( "4 " ) );
-        assertTrue( value.contains( " 3,   " ) );
-        assertTrue( value.contains( " 2" ) );
-        assertTrue( value.contains( "1" ) );
-        assertEquals( 5, value.size() );
+        assertThat( value.contains( "5" ), is( true ) );
+        assertThat( value.contains( "4 " ), is( true ) );
+        assertThat( value.contains( " 3,   " ), is( true ) );
+        assertThat( value.contains( " 2" ), is( true ) );
+        assertThat( value.contains( "1" ), is( true ) );
+        assertThat( value.size(), equalTo( 5 ) );
     }
 
     @Test
@@ -207,12 +208,12 @@ public class PropertyMapperTest
     {
         Type type = Testing.class.getDeclaredMethod( "map" ).getGenericReturnType();
         Map<String, String> value = (Map<String, String>) mapToType( null, type, "first:5,second:4 , third:\" 3,   \", fourth:  \" 2\" ,fifth : 1" );
-        assertEquals( "5", value.get( "first" ) );
-        assertEquals( "4 ", value.get( "second" ) );
-        assertEquals( " 3,   ", value.get( " third" ) );
-        assertEquals( " 2", value.get( " fourth" ) );
-        assertEquals( " 1", value.get( "fifth " ) );
-        assertEquals( 5, value.size() );
+        assertThat( value.get( "first" ), equalTo( "5" ) );
+        assertThat( value.get( "second" ), equalTo( "4 " ) );
+        assertThat( value.get( " third" ), equalTo( " 3,   " ) );
+        assertThat( value.get( " fourth" ), equalTo( " 2" ) );
+        assertThat( value.get( "fifth " ), equalTo( " 1" ) );
+        assertThat( value.size(), equalTo( 5 ) );
     }
 
     private Object mapToType( Composite composite, Type propertyType, Object value )

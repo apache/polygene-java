@@ -30,8 +30,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.test.model.Male;
 import org.apache.polygene.test.model.Person;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class Suite1Case1
     implements TestCase
