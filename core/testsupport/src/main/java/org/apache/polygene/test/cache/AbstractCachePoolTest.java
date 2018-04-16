@@ -26,6 +26,7 @@ import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.spi.cache.Cache;
 import org.apache.polygene.spi.cache.CachePool;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,6 +45,7 @@ public abstract class AbstractCachePoolTest
     protected Cache<String> cache;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

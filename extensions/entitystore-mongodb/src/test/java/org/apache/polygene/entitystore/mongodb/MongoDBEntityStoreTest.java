@@ -28,6 +28,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the MongoDBEntityStoreService.
@@ -66,6 +67,7 @@ public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
     private String dbName;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

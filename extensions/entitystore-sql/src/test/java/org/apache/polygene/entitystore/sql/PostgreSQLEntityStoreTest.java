@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.entitystore.sql;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.polygene.api.common.Visibility;
@@ -35,23 +38,27 @@ import org.jooq.SQLDialect;
 import org.junit.After;
 import org.junit.ClassRule;
 
+@Docker( image = "postgres",
+         ports = @Port( exposed = 45432, inner = 5432 ),
+         waitFor = @WaitFor( "PostgreSQL init process complete; ready for start up." ),
+         newForEachCase = false )
 public class PostgreSQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER;
-
-    static
-    {
-        Map<String,String> environment = new HashMap<>();
-        environment.put( "POSTGRES_USER", System.getProperty( "user.name" ));
-        environment.put( "POSTGRES_PASSWORD", "ThisIsGreat!");
-
-        DOCKER = new DockerRule( "postgres",
-                                 environment,
-                                 5000L,
-                                 "PostgreSQL init process complete; ready for start up." );
-    }
+//    @ClassRule
+//    public static final DockerRule DOCKER;
+//
+//    static
+//    {
+//        Map<String, String> environment = new HashMap<>();
+//        environment.put( "POSTGRES_USER", System.getProperty( "user.name" ) );
+//        environment.put( "POSTGRES_PASSWORD", "ThisIsGreat!" );
+//
+//        DOCKER = new DockerRule( "postgres",
+//                                 environment,
+//                                 5000L,
+//                                 "PostgreSQL init process complete; ready for start up." );
+//    }
 
     @Override
     // START SNIPPET: assembly
@@ -87,10 +94,10 @@ public class PostgreSQLEntityStoreTest
             .assemble( module );
         // END SNIPPET: assembly
 
-
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
-
+//        String host = DOCKER.getDockerHost();
+//        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        int port = 45432;
+        String host = "localhost";
         DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
         defaults.url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
         defaults.username().set( System.getProperty( "user.name" ) );

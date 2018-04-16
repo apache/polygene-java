@@ -28,6 +28,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.apache.polygene.test.docker.DockerRule;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the MongoDBEntityStoreService usage with a CachePool.
@@ -61,6 +62,7 @@ public class MongoDBEntityStoreWithCacheTest
     private String dbName;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

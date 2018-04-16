@@ -44,6 +44,7 @@ import org.apache.polygene.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
@@ -56,6 +57,7 @@ public class EntitySerializerTest
 {
     @Service
     EntityStore entityStore;
+
     @Uses
     EntityStateSerializer serializer;
 
@@ -70,7 +72,7 @@ public class EntitySerializerTest
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {

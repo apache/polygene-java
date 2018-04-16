@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.cache.memcache;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -31,11 +34,14 @@ import org.junit.ClassRule;
 /**
  * Memcache CachePool Test.
  */
+@Docker( image = "memcached",
+         ports = @Port( exposed = 11211, inner = 11211 ),
+         newForEachCase = false )
 public class MemcacheCachePoolTest
     extends AbstractCachePoolTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "memcached", 11211 );
+//    @ClassRule
+//    public static final DockerRule DOCKER = new DockerRule( "memcached", 11211 );
 
     @Override
     // START SNIPPET: assembly
@@ -43,6 +49,14 @@ public class MemcacheCachePoolTest
         throws AssemblyException
     {
         // END SNIPPET: assembly
+        try
+        {
+            Thread.sleep(10000);
+        }
+        catch( InterruptedException e )
+        {
+            e.printStackTrace();
+        }
         ModuleAssembly confModule = module.layer().module( "confModule" );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( confModule );
         // START SNIPPET: assembly
@@ -52,8 +66,11 @@ public class MemcacheCachePoolTest
             assemble( module );
         // END SNIPPET: assembly
         MemcacheConfiguration memcacheConf = confModule.forMixin( MemcacheConfiguration.class ).declareDefaults();
-        String dockerHost = DOCKER.getDockerHost();
-        int dockerPort = DOCKER.getExposedContainerPort( "11211/tcp" );
+//        String dockerHost = DOCKER.getDockerHost();
+//        int dockerPort = DOCKER.getExposedContainerPort( "11211/tcp" );
+        String dockerHost = "localhost";
+        int dockerPort = 11211;
+
         memcacheConf.addresses().set( dockerHost + ':' + dockerPort );
         memcacheConf.protocol().set( "binary" );
         // START SNIPPET: assembly

@@ -23,6 +23,7 @@ import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,6 +36,7 @@ public class Step2TestCase
     private ShippingService shippingService;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

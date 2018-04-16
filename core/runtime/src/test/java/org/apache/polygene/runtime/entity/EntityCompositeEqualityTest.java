@@ -44,8 +44,8 @@ public class EntityCompositeEqualityTest
     private UnitOfWork unitOfWork;
     private EntityBuilder<MyComposite> myCompositeBuilder;
 
-    @BeforeEach
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

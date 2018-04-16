@@ -26,6 +26,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.qi64.AbstractIssueTest;
 import org.apache.polygene.index.rdf.qi64.AccountComposite;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,8 +41,8 @@ public final class IssueTest
 {
     private AccountService accountService;
 
-    @Before
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

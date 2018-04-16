@@ -64,8 +64,8 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
     @Structure
     protected ModuleDescriptor module;
 
-    @BeforeEach
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -87,8 +87,8 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
         assemble( module );
     }
 
-    @AfterEach
     @Override
+    @AfterEach
     public void tearDown()
     {
         if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive() )

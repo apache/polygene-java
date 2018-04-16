@@ -55,6 +55,7 @@ public class QueryBuilderFactoryImplTest
         module.transients( TestComposite.class );
     }
 
+    @Override
     @BeforeEach
     public void setUp()
         throws Exception

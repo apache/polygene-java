@@ -90,8 +90,8 @@ public abstract class AbstractEntityFinderTest
 
     private EntityFinder entityFinder;
 
-    @BeforeEach
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

@@ -24,6 +24,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 public class PostgreSQLEntityFinderTest
     extends AbstractEntityFinderTest
@@ -42,6 +43,7 @@ public class PostgreSQLEntityFinderTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

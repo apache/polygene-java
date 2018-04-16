@@ -28,6 +28,7 @@ import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the CassandraEntityStoreService.
@@ -68,6 +69,7 @@ public class CassandraEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

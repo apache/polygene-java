@@ -39,6 +39,7 @@ import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.docker.DockerRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PostgreSQLDBIntegrityTest
@@ -68,6 +69,7 @@ public class PostgreSQLDBIntegrityTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

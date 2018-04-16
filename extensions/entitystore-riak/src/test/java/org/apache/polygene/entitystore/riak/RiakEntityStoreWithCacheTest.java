@@ -28,6 +28,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.apache.polygene.test.docker.DockerRule;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 public class RiakEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
@@ -37,7 +38,9 @@ public class RiakEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTe
     private RiakFixture riakFixture;
 
     @Override
-    public void setUp() throws Exception
+    @BeforeEach
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         RiakEntityStoreService es = serviceFinder.findService( RiakEntityStoreService.class ).get();

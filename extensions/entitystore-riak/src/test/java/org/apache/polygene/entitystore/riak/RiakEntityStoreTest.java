@@ -25,6 +25,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 public class RiakEntityStoreTest extends AbstractEntityStoreTest
 {
@@ -34,7 +35,9 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
     private RiakFixture riakFixture;
 
     @Override
-    public void setUp() throws Exception
+    @BeforeEach
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         RiakEntityStoreService es = serviceFinder.findService( RiakEntityStoreService.class ).get();

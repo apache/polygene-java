@@ -27,6 +27,7 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -59,6 +60,7 @@ public class RedisEntityStoreTest
     private JedisPool jedisPool;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

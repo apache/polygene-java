@@ -24,6 +24,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractComplexQueryTest;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 
 public class PostgreSQLComplexQueryTest
     extends AbstractComplexQueryTest
@@ -42,6 +43,7 @@ public class PostgreSQLComplexQueryTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {

@@ -25,6 +25,7 @@ import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
 import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -51,6 +52,7 @@ public class PostgreSQLQueryTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
