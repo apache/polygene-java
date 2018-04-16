@@ -19,24 +19,24 @@
  */
 package org.apache.polygene.entitystore.redis;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
-import org.apache.polygene.test.docker.DockerRule;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+@Docker( image = "redis",
+         ports = @Port( exposed = 8801, inner = 6379))
 public class RedisEntityStoreWithCacheTest
     extends AbstractEntityStoreWithCacheTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "redis", 6379 );
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -47,8 +47,8 @@ public class RedisEntityStoreWithCacheTest
         new RedisEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         RedisEntityStoreConfiguration redisConfig = config.forMixin( RedisEntityStoreConfiguration.class )
                                                           .declareDefaults();
-        redisConfig.host().set( DOCKER.getDockerHost() );
-        redisConfig.port().set( DOCKER.getExposedContainerPort( "6379/tcp" ) );
+        redisConfig.host().set( "localhost" );
+        redisConfig.port().set( 8801 );
     }
 
     private JedisPool jedisPool;
@@ -64,6 +64,7 @@ public class RedisEntityStoreWithCacheTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         try( Jedis jedis = jedisPool.getResource() )

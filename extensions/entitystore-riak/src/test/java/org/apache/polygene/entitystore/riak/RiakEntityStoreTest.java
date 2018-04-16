@@ -17,21 +17,23 @@
  */
 package org.apache.polygene.entitystore.riak;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+@Docker( image = "riak",
+         ports = @Port( exposed = 8801, inner = 8087),
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 30000))
 public class RiakEntityStoreTest extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
-
     private RiakFixture riakFixture;
 
     @Override
@@ -46,6 +48,7 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         riakFixture.deleteTestData();
@@ -65,8 +68,8 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
         // END SNIPPET: assembly
         RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
                                                         .declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
+        String host = "localhost";
+        int port = 8801;
         riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
         // START SNIPPET: assembly
     }

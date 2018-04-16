@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Locale;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.Visibility;
@@ -29,27 +30,29 @@ import org.apache.polygene.index.elasticsearch.assembly.ESFilesystemIndexQueryAs
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.elasticsearch.client.Client;
-import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+import static org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversalMode.BOTTOM_UP;
+import static org.junit.platform.commons.util.ReflectionUtils.findFields;
 
 /**
  * Embedded Elasticsearch JUnit Rule.
- *
+ * <p>
  * Starting from Elasticsearch 5, startup is way slower.
  * Reuse an embedded instance across tests.
  */
-public class ESEmbeddedRule implements TestRule
+@ExtendWith( TemporaryFolder.class )
+public class EmbeddedElasticSearchExtension
+    implements BeforeAllCallback, AfterAllCallback
 {
-    private final TemporaryFolder tmpDir;
+    private TemporaryFolder tmpDir;
     private Client client;
-
-    public ESEmbeddedRule( TemporaryFolder tmpDir )
-    {
-        this.tmpDir = tmpDir;
-    }
+    private Application application;
 
     public Client client()
     {
@@ -65,32 +68,6 @@ public class ESEmbeddedRule implements TestRule
             indexName += '-' + methodName;
         }
         return indexName.toLowerCase( Locale.US );
-    }
-
-    @Override
-    public Statement apply( final Statement base, final Description description )
-    {
-        return new Statement()
-        {
-            @Override
-            public void evaluate() throws Throwable
-            {
-                String name = indexName( description.getClassName(), description.getMethodName() );
-                SingletonAssembler assembler = activateEmbeddedElasticsearch( name );
-                Application application = assembler.application();
-                client = findClient( assembler.module() );
-                try
-                {
-                    base.evaluate();
-                }
-                finally
-                {
-                    application.passivate();
-                    client.close();
-                    client = null;
-                }
-            }
-        };
     }
 
     private SingletonAssembler activateEmbeddedElasticsearch( final String name )
@@ -127,5 +104,46 @@ public class ESEmbeddedRule implements TestRule
             throw new IllegalStateException( "Embedded Elasticsearch Rule - Failed to find client" );
         }
         return client;
+    }
+
+    @Override
+    public void beforeAll( ExtensionContext context )
+        throws Exception
+    {
+        this.tmpDir = new TemporaryFolder();
+        this.tmpDir.beforeEach( context );
+
+        String name = indexName( context.getRequiredTestClass().getSimpleName(), context.getRequiredTestMethod().getName() );
+        SingletonAssembler assembler = activateEmbeddedElasticsearch( name );
+        application = assembler.application();
+        client = findClient( assembler.module() );
+        inject( context );
+    }
+
+    private void inject( ExtensionContext context )
+    {
+        findFields( context.getRequiredTestClass(),
+                    f -> f.getType().equals( EmbeddedElasticSearchExtension.class ), BOTTOM_UP )
+            .forEach( f -> {
+                try
+                {
+                    f.setAccessible( true );
+                    f.set( context.getRequiredTestInstance(), this );
+                }
+                catch( IllegalAccessException e )
+                {
+                    throw new UndeclaredThrowableException( e );
+                }
+            } );
+    }
+
+    @Override
+    public void afterAll( ExtensionContext context )
+        throws Exception
+    {
+        application.passivate();
+        client.close();
+        client = null;
+        tmpDir.afterEach( context );
     }
 }

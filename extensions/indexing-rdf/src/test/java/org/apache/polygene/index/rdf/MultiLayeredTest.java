@@ -27,9 +27,9 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.layered.ModuleAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.indexing.layered.AbstractMultiLayeredIndexingTest;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
-@Ignore("Disabled until the new Query sturcture is in place, properly supporting multilayered applications.")
+@Disabled( "Disabled until the new Query sturcture is in place, properly supporting multilayered applications.")
 public class MultiLayeredTest extends AbstractMultiLayeredIndexingTest
 {
     public MultiLayeredTest()

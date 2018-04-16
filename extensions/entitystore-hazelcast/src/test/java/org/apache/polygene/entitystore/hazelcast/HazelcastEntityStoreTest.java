@@ -55,8 +55,8 @@ public class HazelcastEntityStoreTest
         super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
     }
 
-    @AfterEach
     @Override
+    @AfterEach
     public void tearDown()
     {
         super.tearDown();

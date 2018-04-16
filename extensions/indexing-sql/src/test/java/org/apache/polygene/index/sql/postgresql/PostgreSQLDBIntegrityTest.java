@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.index.sql.postgresql;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.apache.polygene.api.common.UseDefaults;
@@ -36,18 +39,17 @@ import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.polygene.test.docker.DockerRule;
-import org.junit.Assert;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+
+@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432 ),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000 ) )
 public class PostgreSQLDBIntegrityTest
     extends AbstractPolygeneTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
-
     public interface TestEntity
         extends EntityComposite
     {
@@ -62,8 +64,8 @@ public class PostgreSQLDBIntegrityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        String host = "localhost";
+        int port = 8801;
         SQLTestHelper.assembleWithMemoryEntityStore( module, host, port );
         module.entities( TestEntity.class );
     }
@@ -101,19 +103,19 @@ public class PostgreSQLDBIntegrityTest
             GenericDatabaseExplorer.visitDatabaseTables(
                 connection, null, schemaName, null,
                 new DatabaseProcessorAdapter()
-            {
-                @Override
-                public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
                 {
-                    if( ( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
-                          && ( tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 0 )
-                               || tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 1 ) ) )
-                        || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
-                        || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+                    @Override
+                    public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
                     {
-                        throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                        if( ( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                              && ( tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 0 )
+                                   || tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 1 ) ) )
+                            || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
+                            || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
+                        {
+                            throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
+                        }
                     }
-                }
                 },
                 SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
         }
@@ -138,8 +140,7 @@ public class PostgreSQLDBIntegrityTest
 
         uow = this.unitOfWorkFactory.newUnitOfWork();
         entity = uow.get( entity );
-        Assert.assertEquals( "New value did not store in indexing.", "NewTestString", entity
-            .testString().get() );
+        assertThat( "New value did not store in indexing.", entity.testString().get(), equalTo( "NewTestString" ) );
         uow.discard();
     }
 }

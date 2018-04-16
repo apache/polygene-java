@@ -38,9 +38,9 @@ import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_1;
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_2;
@@ -51,10 +51,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith( TemporaryFolder.class )
 public class ContainsTest extends AbstractPolygeneTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

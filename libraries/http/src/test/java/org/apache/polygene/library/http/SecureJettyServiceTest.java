@@ -28,7 +28,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static javax.servlet.DispatcherType.REQUEST;
 import static org.apache.polygene.library.http.Servlets.addFilters;
@@ -37,6 +37,7 @@ import static org.apache.polygene.library.http.Servlets.filter;
 import static org.apache.polygene.library.http.Servlets.serve;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class SecureJettyServiceTest
@@ -69,23 +70,27 @@ public class SecureJettyServiceTest
         // END SNIPPET: assemblyssl
     }
 
-    @Test( expected = NoHttpResponseException.class )
+    @Test
     // This test exists for demonstration purpose only, it do not test usefull things but it's on purpose
     public void testNoSSL()
         throws IOException
     {
-        HttpGet get = new HttpGet( "http://127.0.0.1:" + httpsPort + "/hello" );
-        defaultHttpClient.execute( get );
-        fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
+        assertThrows(NoHttpResponseException.class, () -> {
+            HttpGet get = new HttpGet( "http://127.0.0.1:" + httpsPort + "/hello" );
+            defaultHttpClient.execute( get );
+        });
+        // We could reach the HTTPS connector using a HTTP url, that's no good
     }
 
-    @Test( expected = SSLHandshakeException.class )
+    @Test
     // This test exists for demonstration purpose only, it do not test useful things but it's on purpose
     public void testNoTruststore()
         throws IOException
     {
-        defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ) );
-        fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
+        assertThrows( SSLHandshakeException.class, () -> {
+            defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:" + httpsPort + "/hello" ) );
+        } );
+        // We could reach the HTTPS connector without proper truststore, this should not happen
     }
 
     @Test

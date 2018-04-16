@@ -35,10 +35,8 @@ dependencies {
   testImplementation polygene.library( 'sql-dbcp' )
   testImplementation polygene.library( 'sql-bonecp' )
 
-  testImplementation 'com.github.faustxvi:junit5-docker:1.0.0-RC5'
-//  testImplementation (libraries.docker_junit ) { exclude group: "junit", module: "junit" }
+  testImplementation libraries.docker_junit
   testImplementation libraries.h2
-  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
   testRuntimeOnly libraries.derby

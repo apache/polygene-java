@@ -24,15 +24,15 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.file.assembly.FileEntityStoreAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class FileEntityStoreTestSuite
     extends EntityStoreTestSuite
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )

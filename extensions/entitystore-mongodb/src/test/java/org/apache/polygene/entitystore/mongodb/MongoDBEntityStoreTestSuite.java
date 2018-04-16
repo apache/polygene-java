@@ -19,23 +19,23 @@
  */
 package org.apache.polygene.entitystore.mongodb;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import com.mongodb.Mongo;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.ClassRule;
 
 /**
  * Test the MongoDBEntityStoreService.
  */
+@Docker( image = "mongo",
+         ports = @Port( exposed = 8801, inner = 27017))
 public class MongoDBEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "mongo", 27017 );
-
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
@@ -49,8 +49,8 @@ public class MongoDBEntityStoreTestSuite extends EntityStoreTestSuite
         mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
-        mongoConfig.hostname().set( DOCKER.getDockerHost() );
-        mongoConfig.port().set( DOCKER.getExposedContainerPort( "27017/tcp" ) );
+        mongoConfig.hostname().set( "localhost" );
+        mongoConfig.port().set( 8801 );
     }
 
     private Mongo mongo;

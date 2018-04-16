@@ -44,19 +44,17 @@ import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
 
+@ExtendWith( TemporaryFolder.class )
 public class Qi95IssueTest
 {
-
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Test
     public void canCreateAndQueryWithNativeRdfAndJdbm()
@@ -133,7 +131,7 @@ public class Qi95IssueTest
 
     public void createABunchOfStuffAndDoQueries( UnitOfWorkFactory unitOfWorkFactory,
                                                  QueryBuilderFactory queryBuilderFactory
-    )
+                                               )
         throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
@@ -157,14 +155,14 @@ public class Qi95IssueTest
         qb = queryBuilderFactory.newQueryBuilder( ItemType.class );
         Iterable<ItemType> listAfterFirstQueryAndAdd = copyOf( uow.newQuery( qb ) );
 
-        assertTrue( "Band is not in the list after the first query and add",
-                    hasItemTypeNamed( "Band", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Bracelet is not in the list after the first query and add",
-                    hasItemTypeNamed( "Bracelet", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Necklace is not in the list after the first query and add",
-                    hasItemTypeNamed( "Necklace", listAfterFirstQueryAndAdd ) );
-        assertTrue( "Watch is not in the list after the first query and add",
-                    hasItemTypeNamed( "Watch", listAfterFirstQueryAndAdd ) );
+        assertThat( "Band is not in the list after the first query and add",
+                    hasItemTypeNamed( "Band", listAfterFirstQueryAndAdd ), is( true ) );
+        assertThat( "Bracelet is not in the list after the first query and add",
+                    hasItemTypeNamed( "Bracelet", listAfterFirstQueryAndAdd ), is( true ) );
+        assertThat( "Necklace is not in the list after the first query and add",
+                    hasItemTypeNamed( "Necklace", listAfterFirstQueryAndAdd ), is( true ) );
+        assertThat( "Watch is not in the list after the first query and add",
+                    hasItemTypeNamed( "Watch", listAfterFirstQueryAndAdd ), is( true ) );
 
         newItemType( uow, "Ear ring" );
         uow.complete();
@@ -182,7 +180,7 @@ public class Qi95IssueTest
     private Application createApplication( final ModuleAssemblyBuilder queryServiceModuleBuilder,
                                            final ModuleAssemblyBuilder entityStoreModuleBuilder,
                                            final LayerAssemblyBuilder domainLayerBuilder
-    )
+                                         )
         throws AssemblyException
     {
         Energy4Java polygene = new Energy4Java();

@@ -35,6 +35,7 @@ dependencies {
 
   testImplementation polygene.internals.testsupport
   testImplementation libraries.awaitility
+  testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
 }

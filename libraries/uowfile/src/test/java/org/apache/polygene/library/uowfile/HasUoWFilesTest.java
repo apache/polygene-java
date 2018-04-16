@@ -51,10 +51,10 @@ import org.apache.polygene.library.uowfile.plural.UoWFilesLocator;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Before;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +64,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@ExtendWith( TemporaryFolder.class )
 public class HasUoWFilesTest
     extends AbstractPolygeneTest
 {
@@ -71,8 +72,7 @@ public class HasUoWFilesTest
     private static final URL CREATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "creation.txt" );
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "modification.txt" );
 
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     // START SNIPPET: uowfile
     public enum MyEnum
@@ -213,7 +213,7 @@ public class HasUoWFilesTest
 
     private TestService testService;
 
-    @Before
+    @BeforeEach
     public void beforeTest()
     {
         testService = serviceFinder.findService( TestService.class ).get();

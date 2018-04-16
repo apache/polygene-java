@@ -27,9 +27,9 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -40,10 +40,10 @@ import static org.hamcrest.core.IsEqual.equalTo;
 /**
  * JAVADOC
  */
+@ExtendWith( TemporaryFolder.class )
 public class NativeRepositoryTest extends AbstractPolygeneTest
 {
-   @Rule
-   public final TemporaryFolder tmpDir = new TemporaryFolder();
+   private TemporaryFolder tmpDir;
 
    @Service
    Repository repository;

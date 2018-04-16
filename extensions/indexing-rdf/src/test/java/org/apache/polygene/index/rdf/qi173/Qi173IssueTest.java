@@ -35,7 +35,6 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.orderBy;
@@ -86,7 +85,7 @@ public class Qi173IssueTest
         Query<Car> query = uow.newQuery( qb );
         query.orderBy( orderBy( template.manufacturer() ), orderBy( template.model() ) );
         Iterator<Car> cars = query.iterator();
-        Assert.assertThat( cars.hasNext(), is( true ) );
+        assertThat( cars.hasNext(), is( true ) );
         Car car1 = cars.next();
         assertThat( "Ford", equalTo( car1.manufacturer().get() ) );
         assertThat( "Mustang", equalTo( car1.model().get() ) );

@@ -20,11 +20,11 @@
 package org.apache.polygene.library.spring.bootstrap;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.apache.polygene.library.spring.bootstrap.PolygeneTestBootstrap.COMMENT_SERVICE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +32,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith( SpringExtension.class)
 @ContextConfiguration
 public final class PolygeneExportServiceTest
 {

@@ -38,7 +38,7 @@ dependencies {
 
   testImplementation polygene.internals.testsupport
   testImplementation libraries.jclouds_filesystem
-  testImplementation libraries.junit_vintage
+  testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
 }

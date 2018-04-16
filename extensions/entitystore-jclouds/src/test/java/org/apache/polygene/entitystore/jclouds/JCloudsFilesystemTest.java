@@ -25,16 +25,16 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jclouds.filesystem.reference.FilesystemConstants;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class JCloudsFilesystemTest
     extends AbstractEntityStoreTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

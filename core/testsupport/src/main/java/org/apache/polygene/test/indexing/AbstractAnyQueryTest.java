@@ -37,6 +37,7 @@ import org.apache.polygene.test.model.Port;
 import org.apache.polygene.test.model.Protocol;
 import org.apache.polygene.test.model.QueryParam;
 import org.apache.polygene.test.model.URL;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -89,6 +90,7 @@ public class AbstractAnyQueryTest
 
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         if( this.unitOfWork != null )

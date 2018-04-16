@@ -19,18 +19,19 @@
  */
 package org.apache.polygene.entitystore.jclouds;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.ClassRule;
 
+@Docker( image = "s3server",
+         ports = @Port( exposed = 8801, inner = 8000),
+         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000))
 public class JCloudsS3TestSuite extends EntityStoreTestSuite
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "s3server", "server started" );
-
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
@@ -43,8 +44,8 @@ public class JCloudsS3TestSuite extends EntityStoreTestSuite
         JCloudsEntityStoreConfiguration defaults =
             configModule.forMixin( JCloudsEntityStoreConfiguration.class ).declareDefaults();
 
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "8000/tcp" );
+        String host = "localhost";
+        int port = 8801;
         defaults.provider().set( "s3" );
         defaults.endpoint().set( "http://" + host + ':' + port );
         defaults.identifier().set( "dummyIdentifier" );

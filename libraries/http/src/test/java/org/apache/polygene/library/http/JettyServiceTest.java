@@ -29,7 +29,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
 import org.hamcrest.core.Is;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static javax.servlet.DispatcherType.REQUEST;
 import static org.apache.polygene.library.http.Servlets.addFilters;

@@ -38,12 +38,11 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
+import org.apache.polygene.test.TestName;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.ne;
@@ -54,26 +53,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+@ExtendWith( { TemporaryFolder.class, EmbeddedElasticSearchExtension.class, TestName.class } )
 public class ElasticSearchTest
     extends AbstractPolygeneTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
 
-    @ClassRule
-    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
 
-    @ClassRule
-    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+    public static EmbeddedElasticSearchExtension ELASTIC_SEARCH;
 
-    @Rule
-    public final TestName testName = new TestName();
+    public TestName testName;
 
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     public interface Post
         extends HasIdentity
@@ -139,8 +134,7 @@ public class ElasticSearchTest
             .withConfig( config, Visibility.layer )
             .assemble( module );
         ElasticSearchIndexingConfiguration esConfig = config.forMixin( ElasticSearchIndexingConfiguration.class ).declareDefaults();
-        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(),
-                                                        testName.getMethodName() ) );
+        esConfig.index().set( ELASTIC_SEARCH.indexName( ElasticSearchQueryTest.class.getName(), testName.getMethodName() ) );
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig

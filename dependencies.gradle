@@ -20,7 +20,7 @@ import org.apache.polygene.gradle.dependencies.DependenciesDeclarationExtension
 def dependencies = extensions.getByType(DependenciesDeclarationExtension)
 
 // Gradle version
-dependencies.gradleVersion = '4.2.1'
+dependencies.gradleVersion = '4.6'
 
 // Remote repositories
 dependencies.repositoriesUrls << [
@@ -79,7 +79,7 @@ def servletVersion = '3.1.0'
 def shiroVersion = '1.4.0'
 def slf4jVersion = '1.7.25'
 def solrVersion = "1.4.1" // 4.x Fails to compile!
-def springVersion = '4.3.9.RELEASE'
+def springVersion = '5.0.5.RELEASE'
 def spymemcachedVersion = '2.12.3'
 def velocityVersion = '1.7'
 dependencies.libraries << [
@@ -184,7 +184,8 @@ dependencies.libraries << [
 // Runtime, Test and Samples dependencies
 def awaitilityVersion = '3.0.0'
 def dnsJavaVersion = '2.1.8'
-def dockerJUnitVersion = '0.3'
+def dockerJUnit5Version = '1.0.0-RC5'
+
 def easyMockVersion = '3.4'
 def h2Version = '1.4.196'
 def hamcrestVersion = '1.3'
@@ -200,7 +201,8 @@ dependencies.libraries << [
         awaitility        : "org.awaitility:awaitility:$awaitilityVersion",
         derby             : "org.apache.derby:derby:$derbyVersion",
         dnsjava           : "dnsjava:dnsjava:$dnsJavaVersion",
-        docker_junit      : "com.github.tdomzal:junit-docker-rule:$dockerJUnitVersion",
+        docker_junit      : "com.github.faustxvi:junit5-docker:$dockerJUnit5Version",
+
         easymock          : "org.easymock:easymock:$easyMockVersion",
         h2                : "com.h2database:h2:$h2Version",
         hamcrest          : ["org.hamcrest:hamcrest-core:$hamcrestVersion",
@@ -208,7 +210,6 @@ dependencies.libraries << [
         junit             : ["org.junit.jupiter:junit-jupiter-api:$junitVersion",
                              "org.junit.jupiter:junit-jupiter-params:$junitVersion"
         ],
-        junit_vintage     : "org.junit.vintage:junit-vintage-engine:$junitVersion",
 
         logback           : "ch.qos.logback:logback-classic:$logbackVersion",
         mockito           : "org.mockito:mockito-core:$mockitoVersion",

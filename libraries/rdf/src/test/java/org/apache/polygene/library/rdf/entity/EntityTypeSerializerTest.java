@@ -38,7 +38,6 @@ import org.apache.polygene.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openrdf.model.Statement;

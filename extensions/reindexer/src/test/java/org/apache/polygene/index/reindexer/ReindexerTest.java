@@ -40,23 +40,23 @@ import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+@ExtendWith( TemporaryFolder.class )
 public class ReindexerTest
     extends AbstractPolygeneTest
 {
     private static final String ENTITIES_DIR = "polygene-entities";
     private static final String INDEX_DIR = "polygene-index";
 
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

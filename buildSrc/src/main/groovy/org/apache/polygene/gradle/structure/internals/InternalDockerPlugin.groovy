@@ -34,6 +34,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.CopySpec
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.logging.Logger
 
 @CompileStatic
 class InternalDockerPlugin implements Plugin<Project>
@@ -84,7 +85,9 @@ class InternalDockerPlugin implements Plugin<Project>
         }
         else
         {
-          project.logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ ( ( Exception ) ex ).message }"
+          def logger = project.logger
+          def mess = ex == null ? "" : ((Exception) ex).message
+          logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ mess }"
         }
       }
       task.onComplete = {

@@ -30,7 +30,6 @@ dependencies {
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.core.testsupport
-  testImplementation libraries.junit_vintage
 
   testRuntimeOnly libraries.logback
 }

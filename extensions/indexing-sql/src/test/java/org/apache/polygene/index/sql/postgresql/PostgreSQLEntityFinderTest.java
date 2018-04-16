@@ -19,26 +19,26 @@
  */
 package org.apache.polygene.index.sql.postgresql;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 
+@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000))
 public class PostgreSQLEntityFinderTest
     extends AbstractEntityFinderTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres", 3000L, "PostgreSQL init process complete; ready for start up." );
-
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
     {
         super.assemble( mainModule );
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        String host = "localhost";
+        int port = 8801;
         SQLTestHelper.assembleWithMemoryEntityStore( mainModule, host, port );
     }
 

@@ -25,9 +25,9 @@ import org.apache.polygene.library.rdf.entity.EntityStateSerializer;
 import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 import org.apache.polygene.test.indexing.AbstractComplexQueryTest;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
-@Ignore( "RDF Index/Query do not support Complex Queries, ie. queries by 'example values'" )
+@Disabled( "RDF Index/Query do not support Complex Queries, ie. queries by 'example values'" )
 public class RdfComplexQueryTest
         extends AbstractComplexQueryTest
 {

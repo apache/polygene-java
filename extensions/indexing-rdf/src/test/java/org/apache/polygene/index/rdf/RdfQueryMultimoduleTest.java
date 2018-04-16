@@ -27,14 +27,14 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class RdfQueryMultimoduleTest
     extends RdfQueryTest
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

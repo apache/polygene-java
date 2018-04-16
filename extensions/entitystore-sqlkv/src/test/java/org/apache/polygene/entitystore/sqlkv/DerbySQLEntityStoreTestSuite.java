@@ -20,15 +20,13 @@
 package org.apache.polygene.entitystore.sqlkv;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.structure.Module;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sqlkv.assembly.DerbySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.jooq.SQLDialect;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -59,7 +57,7 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown()
     {
         TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.DERBY, super::tearDown );

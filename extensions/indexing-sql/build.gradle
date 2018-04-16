@@ -35,6 +35,7 @@ dependencies {
 
   testImplementation polygene.internals.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
+  testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
   testRuntimeOnly libraries.derby

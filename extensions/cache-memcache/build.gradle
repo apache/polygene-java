@@ -32,7 +32,7 @@ dependencies {
   runtimeOnly polygene.core.runtime
 
   testImplementation polygene.internals.testsupport
-  testImplementation 'com.github.faustxvi:junit5-docker:1.0.0-RC5'
+  testImplementation libraries.docker_junit
 
   testRuntimeOnly libraries.logback
 }

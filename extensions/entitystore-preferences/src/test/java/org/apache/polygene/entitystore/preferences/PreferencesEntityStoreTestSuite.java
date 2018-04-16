@@ -24,15 +24,15 @@ import java.util.prefs.Preferences;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.preferences.assembly.PreferencesEntityStoreAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class PreferencesEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
     private Preferences rootNode;
 
     @Override
@@ -47,7 +47,7 @@ public class PreferencesEntityStoreTestSuite extends EntityStoreTestSuite
             .assemble( module );
     }
 
-    @After
+    @AfterEach
     public void tearDown()
     {
         try

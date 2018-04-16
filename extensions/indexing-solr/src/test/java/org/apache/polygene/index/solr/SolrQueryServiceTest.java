@@ -35,22 +35,22 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+@ExtendWith( TemporaryFolder.class )
 public class SolrQueryServiceTest
     extends AbstractPolygeneTest
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -70,7 +70,7 @@ public class SolrQueryServiceTest
         module.entities( TestEntity.class );
     }
 
-    @Before
+    @BeforeEach
     public void index()
         throws UnitOfWorkCompletionException, InterruptedException
     {

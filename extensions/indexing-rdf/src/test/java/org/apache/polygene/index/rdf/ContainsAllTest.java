@@ -42,19 +42,19 @@ import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Rule;
+import org.apache.polygene.test.TemporaryFolder;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 // A test to verify that containsAll QueryExpression works properly.
+@ExtendWith( TemporaryFolder.class )
 public class ContainsAllTest
     extends AbstractPolygeneTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     public static final String TEST_STRING_1 = "TestString1";
     public static final String TEST_STRING_2 = "Some\\Weird\"$String/[]";

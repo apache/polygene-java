@@ -47,8 +47,8 @@ import org.gradle.api.tasks.bundling.Zip
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
-import org.gradle.plugins.ide.internal.IdeDependenciesExtractor
-import org.gradle.plugins.ide.internal.resolver.model.IdeExtendedRepoFileDependency
+//import org.gradle.plugins.ide.internal.IdeDependenciesExtractor
+//import org.gradle.plugins.ide.internal.resolver.model.IdeExtendedRepoFileDependency
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.process.ExecSpec
@@ -553,6 +553,7 @@ class DistributionsPlugin implements Plugin<Project>
         }
         // Copy Maven artifacts using the Gradle IDE Model
         // Include sources if available, otherwise include javadoc if available
+/* TODO: Paul!!! These internal classes disappeared in Gradle between 4.2 and 4.6
         IdeDependenciesExtractor dependenciesExtractor = new IdeDependenciesExtractor()
         def ideDependencies = dependenciesExtractor.extractRepoFileDependencies project.dependencies,
                                                                                 [ configuration ], [ ],
@@ -575,6 +576,7 @@ class DistributionsPlugin implements Plugin<Project>
             Files.exists( javadocDestination ) ?: Files.copy( ideDependency.javadocFile.toPath(), javadocDestination )
           }
         }
+*/
       }
     }
     project.tasks.create( TaskNames.ZIP_DEPENDENCIES_DIST, Zip ) { Zip task ->
