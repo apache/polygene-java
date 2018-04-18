@@ -33,7 +33,7 @@ dependencies {
   compile 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
   compile 'org.apache.httpcomponents:httpclient:4.5.2'
   compile 'org.apache.httpcomponents:httpmime:4.5.2'
-  compile 'com.bmuschko:gradle-docker-plugin:3.0.7'
+  compile 'com.bmuschko:gradle-docker-plugin:3.2.6'
   compile 'com.moowork.gradle:gradle-node-plugin:1.1.1'
 
   testCompile 'junit:junit:4.12'

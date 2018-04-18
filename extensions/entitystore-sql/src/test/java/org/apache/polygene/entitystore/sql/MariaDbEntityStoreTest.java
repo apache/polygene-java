@@ -37,12 +37,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
-@Docker( image = "mariadb", ports = @Port( exposed = 8801, inner = 3306 ),
+@Docker( image = "mariadb",
+         ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
              @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
              @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
-             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" ),
-             @Environment( key = "MYSQL_ROOT_HOST", value = "172.17.0.1" ),
+             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" )
          },
          waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000 ),
          newForEachCase = false
@@ -92,6 +92,8 @@ public class MariaDbEntityStoreTest
                             + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
         defaults.driver().set( "com.mysql.jdbc.Driver" );
         defaults.enabled().set( true );
+        defaults.username().set("root");
+        defaults.password().set( "" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
@@ -100,7 +102,7 @@ public class MariaDbEntityStoreTest
     {
         try
         {
-            Thread.sleep( 500 );
+            Thread.sleep( 11500 );
         }
         catch( InterruptedException e )
         {

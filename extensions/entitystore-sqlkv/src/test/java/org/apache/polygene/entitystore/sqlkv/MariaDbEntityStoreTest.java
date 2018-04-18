@@ -37,7 +37,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
-@Docker( image = "mariadb", ports = @Port( exposed = 8801, inner = 3306),
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-mariadb",
+         ports = @Port( exposed = 8801, inner = 3306),
          environments = {
              @Environment( key = "MYSQL_ROOT_PASSWORD", value = ""),
              @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Test the MongoDBEntityStoreService usage with a CachePool.
  */
-@Docker( image = "mongo",
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-mongo",
          ports = @Port( exposed = 8801, inner = 27017),
          newForEachCase = false
 )
