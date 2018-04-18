@@ -42,13 +42,16 @@ import org.junit.jupiter.api.Disabled;
              @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
              @Environment( key = "MYSQL_ROOT_HOST", value = "172.17.0.1"),
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
+        MariaDbEntityStoreTest.sleep();
         module.defaultServices();
         // DataSourceService
         new DBCPDataSourceServiceAssembler()
@@ -79,9 +82,8 @@ public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
                                 + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
     }
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpData()
     {
         TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MARIADB, super::tearDown );
     }

@@ -52,6 +52,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        assertThat( findClasses( Test.class ).count(), equalTo( 185 ) );
+        assertThat( findClasses( Test.class ).count(), equalTo( 89L ) );
     }
 }

@@ -28,9 +28,11 @@ import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-@Docker( image = "s3server",
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-s3server",
          ports = @Port( exposed = 8801, inner = 8000),
-         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class JCloudsS3Test extends AbstractEntityStoreTest
 {
 

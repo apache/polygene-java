@@ -64,8 +64,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 /**
  * Abstract satisfiedBy with tests for the EntityFinder interface.
  */
-public abstract class AbstractEntityFinderTest
-    extends AbstractAnyQueryTest
+public abstract class AbstractEntityFinderTest extends AbstractAnyQueryTest
 {
 
     private static final Predicate<Composite> ALL = null;
@@ -330,7 +329,7 @@ public abstract class AbstractEntityFinderTest
             NO_SORTING2,
             NO_FIRST_RESULT, 2,
             NO_VARIABLES );
-        assertThat( "2 identities", references.count(), equalTo( 2 ) );
+        assertThat( "2 identities", references.count(), equalTo( 2L ) );
     }
 
     @Test
@@ -343,7 +342,7 @@ public abstract class AbstractEntityFinderTest
             NO_SORTING2,
             3, 2,
             NO_VARIABLES );
-        assertThat( "2 identitities", references.count(), equalTo( 2 ) );
+        assertThat( "2 identitities", references.count(), equalTo( 2L ) );
     }
 
     @Test

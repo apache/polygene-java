@@ -27,11 +27,15 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.redis.assembly.RedisEntityStoreAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 @Docker( image = "redis",
-         ports = @Port( exposed = 8801, inner = 6379))
+         ports = @Port( exposed = 8801, inner = 6379),
+         newForEachCase = false
+)
 public class RedisEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @Override
@@ -51,23 +55,20 @@ public class RedisEntityStoreTestSuite extends EntityStoreTestSuite
 
     private JedisPool jedisPool;
 
-    @Override
-    public void setUp()
-        throws Exception
+    @BeforeEach
+    public void initializeRedis()
     {
-        super.setUp();
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
         RedisEntityStoreService es = storageModule.findService( RedisEntityStoreService.class ).get();
         jedisPool = es.jedisPool();
     }
 
-    @Override
-    public void tearDown()
+    @AfterEach
+    public void cleanUpRedis()
     {
         try( Jedis jedis = jedisPool.getResource() )
         {
             jedis.flushDB();
         }
-        super.tearDown();
     }
 }

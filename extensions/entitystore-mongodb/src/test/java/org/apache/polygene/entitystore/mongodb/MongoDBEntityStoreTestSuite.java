@@ -28,12 +28,17 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the MongoDBEntityStoreService.
  */
 @Docker( image = "mongo",
-         ports = @Port( exposed = 8801, inner = 27017))
+         ports = @Port( exposed = 8801, inner = 27017),
+         waitFor = @WaitFor( value = "MongoDB starting", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class MongoDBEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @Override
@@ -56,11 +61,10 @@ public class MongoDBEntityStoreTestSuite extends EntityStoreTestSuite
     private Mongo mongo;
     private String dbName;
 
-    @Override
-    public void setUp()
+    @BeforeEach
+    public void initializeMongo()
         throws Exception
     {
-        super.setUp();
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
         MongoDBEntityStoreService es = storageModule.serviceFinder().findService( MongoDBEntityStoreService.class ).get();
         mongo = es.mongoInstanceUsed();
@@ -68,6 +72,7 @@ public class MongoDBEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         mongo.dropDatabase( dbName );

@@ -66,7 +66,8 @@ def jdbmVersion = '2.4'
 def jedisVersion = '2.9.0'
 def jettyVersion = '9.2.17.v20160517' // 9.3.x Tests fail!
 def johnzonVersion = '1.1.1'
-def jooqVersion = '3.10.1'
+def jooqVersion = '3.10.6'
+def kotlinVersion = '1.2.31'
 def leveldbVersion = '0.9'
 def leveldbJniVersion = '1.8'
 def liquibaseVersion = '3.5.3'
@@ -128,6 +129,7 @@ dependencies.libraries << [
         jooq              : "org.jooq:jooq:$jooqVersion",
         jdbm              : "jdbm:jdbm:$jdbmVersion",
         jedis             : "redis.clients:jedis:$jedisVersion",
+        kotlin            : "org.jetbrains.kotlin:kotlin-project:$kotlinVersion",
         leveldb_api       : "org.iq80.leveldb:leveldb-api:$leveldbVersion",
         leveldb_java      : "org.iq80.leveldb:leveldb:$leveldbVersion",
         leveldb_jni_all   : "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
@@ -208,8 +210,9 @@ dependencies.libraries << [
         hamcrest          : ["org.hamcrest:hamcrest-core:$hamcrestVersion",
                              "org.hamcrest:hamcrest-library:$hamcrestVersion"],
         junit             : ["org.junit.jupiter:junit-jupiter-api:$junitVersion",
-                             "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+                             "org.junit.jupiter:junit-jupiter-params:$junitVersion",
         ],
+        junit_engine      : "org.junit.jupiter:junit-jupiter-engine:$junitVersion",
 
         logback           : "ch.qos.logback:logback-classic:$logbackVersion",
         mockito           : "org.mockito:mockito-core:$mockitoVersion",
@@ -222,7 +225,10 @@ dependencies.libraries << [
 
 // Default dependencies
 dependencies.defaultDependencies << [
-        testImplementation: [dependencies.libraries.junit, dependencies.libraries.hamcrest]
+        testImplementation: [
+                dependencies.libraries.junit,
+                dependencies.libraries.hamcrest,
+        ]
 ]
 
 // Resolution rules

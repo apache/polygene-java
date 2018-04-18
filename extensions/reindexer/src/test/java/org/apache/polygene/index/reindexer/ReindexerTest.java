@@ -131,7 +131,7 @@ public class ReindexerTest
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );
         Query<MyEntity> q = uow.newQuery( qBuilder );
 
-        assertThat( q.count(), equalTo( 1 ) );
+        assertThat( q.count(), equalTo( 1L ) );
         assertThat( q.iterator().next().name().get(), equalTo( TEST_NAME ) );
 
         uow.complete();

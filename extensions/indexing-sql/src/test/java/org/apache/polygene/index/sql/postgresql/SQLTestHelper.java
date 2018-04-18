@@ -121,4 +121,15 @@ class SQLTestHelper
     private SQLTestHelper()
     {
     }
+
+    static void sleep()
+    {
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch( InterruptedException e )
+        {
+        }
+    }
 }

@@ -21,13 +21,14 @@ package org.apache.polygene.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -37,7 +38,7 @@ import static org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversal
 import static org.junit.platform.commons.util.ReflectionUtils.findFields;
 
 public class TemporaryFolder
-    implements Extension, BeforeEachCallback, AfterEachCallback
+    implements Extension, BeforeEachCallback, AfterEachCallback, BeforeAllCallback, AfterAllCallback
 {
     private File root;
 
@@ -45,9 +46,27 @@ public class TemporaryFolder
     {
     }
 
+    public void beforeAll( ExtensionContext context )
+    {
+        createDir();
+        inject( context );
+    }
+
     @Override
     public void beforeEach( ExtensionContext context )
-        throws Exception
+    {
+        createDir();
+        inject( context );
+    }
+
+    private void inject( ExtensionContext context )
+    {
+        findFields( context.getRequiredTestClass(),
+                    f -> f.getType().equals( TemporaryFolder.class ), BOTTOM_UP )
+            .forEach( f -> PolygeneUnitExtension.setField( f, this, context ) );
+    }
+
+    public void createDir()
     {
         try
         {
@@ -59,20 +78,13 @@ public class TemporaryFolder
         }
         root.delete(); // Remove if already exists
         root.mkdir();
+    }
 
-        findFields( context.getRequiredTestClass(),
-                    f -> f.getType().equals( TemporaryFolder.class ), BOTTOM_UP )
-            .forEach( f -> {
-                try
-                {
-                    f.setAccessible( true );
-                    f.set( context.getRequiredTestInstance(), this );
-                }
-                catch( IllegalAccessException e )
-                {
-                    throw new UndeclaredThrowableException( e );
-                }
-            } );
+    @Override
+    public void afterAll( ExtensionContext context )
+        throws Exception
+    {
+        afterEach( context );
     }
 
     @Override
@@ -85,7 +97,7 @@ public class TemporaryFolder
         }
         catch( IOException ioe )
         {
-            throw new RuntimeException( ioe );
+            // ignore, nothing we can/should do. In JUnit5, we get that some files are not found in afterAll() cases.
         }
     }
 

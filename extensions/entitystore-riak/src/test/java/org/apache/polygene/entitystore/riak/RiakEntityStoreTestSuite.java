@@ -26,11 +26,14 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@Docker( image = "riak",
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-riak",
          ports = @Port( exposed = 8801, inner = 8087),
-         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class RiakEntityStoreTestSuite extends EntityStoreTestSuite
 {
     private RiakFixture riakFixture;
@@ -51,22 +54,20 @@ public class RiakEntityStoreTestSuite extends EntityStoreTestSuite
         riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
     }
 
-    @Override
-    public void tearDown()
-    {
-        riakFixture.deleteTestData();
-        super.tearDown();
-    }
-
-    @Override
     @BeforeEach
-    public void setUp()
+    public void initializeRiak()
         throws Exception
     {
-        super.setUp();
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
         RiakEntityStoreService es = storageModule.findService( RiakEntityStoreService.class ).get();
         riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
         riakFixture.waitUntilReady();
+    }
+
+    @AfterEach
+    public void cleanUpRiak()
+    {
+        riakFixture.deleteTestData();
+        super.tearDown();
     }
 }

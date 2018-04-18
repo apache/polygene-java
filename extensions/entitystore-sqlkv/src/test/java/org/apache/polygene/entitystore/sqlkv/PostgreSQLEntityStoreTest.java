@@ -34,8 +34,11 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
 
-@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432),
-         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000))
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
 {
     @Override

@@ -32,8 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractPolygeneBaseTest
 {
-//    @Rule public NotYetImplemented.Rule notYetImplementedRule = new NotYetImplemented.Rule();
-
     protected PolygeneAPI api;
     protected PolygeneSPI spi;
 

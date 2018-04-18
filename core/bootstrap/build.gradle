@@ -26,4 +26,6 @@ dependencies {
   api polygene.core.spi
 
   testRuntimeOnly polygene.core.runtime
+
+  testRuntime libraries.kotlin
 }

@@ -34,7 +34,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 @Docker( image = "redis",
-         ports = @Port( exposed = 8801, inner = 6379))
+         ports = @Port( exposed = 8801, inner = 6379),
+         newForEachCase = false
+)
 public class RedisEntityStoreTest
     extends AbstractEntityStoreTest
 {

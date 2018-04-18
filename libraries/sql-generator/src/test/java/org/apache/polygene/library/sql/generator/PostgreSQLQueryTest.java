@@ -18,8 +18,6 @@ import org.apache.polygene.library.sql.generator.vendor.PostgreSQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
 import org.junit.jupiter.api.Test;
 
-/**
- */
 public class PostgreSQLQueryTest extends AbstractQueryTest
 {
 

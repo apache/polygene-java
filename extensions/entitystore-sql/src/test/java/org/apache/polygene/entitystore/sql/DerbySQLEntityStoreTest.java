@@ -67,9 +67,8 @@ public class DerbySQLEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
     }

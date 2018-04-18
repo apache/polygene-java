@@ -45,8 +45,11 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432 ),
-         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000 ) )
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432 ),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000 ),
+         newForEachCase = false
+)
 public class PostgreSQLDBIntegrityTest
     extends AbstractPolygeneTest
 {
@@ -64,6 +67,7 @@ public class PostgreSQLDBIntegrityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        SQLTestHelper.sleep();
         String host = "localhost";
         int port = 8801;
         SQLTestHelper.assembleWithMemoryEntityStore( module, host, port );

@@ -29,13 +29,16 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.cassandra.assembly.CassandraEntityStoreAssembler;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  * Test the CassandraEntityStoreService.
  */
 @Docker( image = "cassandra",
          ports = @Port( exposed = 8801, inner = 9042),
-         waitFor = @WaitFor( value = "Starting listening for CQL clients", timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "Starting listening for CQL clients", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class CassandraEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @Override
@@ -62,6 +65,7 @@ public class CassandraEntityStoreTestSuite extends EntityStoreTestSuite
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         Module module = application.findModule( "Infrastructure Layer", "Storage Module" );

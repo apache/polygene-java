@@ -197,7 +197,7 @@ public class ElasticSearchTest
 
         QueryBuilder<Post> queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class );
         Query<Post> query = uow.newQuery( queryBuilder );
-        assertThat( query.count(), equalTo( 1 ) );
+        assertThat( query.count(), equalTo( 1L ) );
         post = query.find();
         assertThat( post, notNullValue() );
         assertThat( post.title().get(), equalTo( title ) );
@@ -205,7 +205,7 @@ public class ElasticSearchTest
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), title ) );
         query = uow.newQuery( queryBuilder );
-        assertThat( query.count(), equalTo( 1 ) );
+        assertThat( query.count(), equalTo( 1L ) );
         post = query.find();
         assertThat( post, notNullValue() );
         assertThat( post.title().get(), equalTo( title ) );
@@ -214,13 +214,13 @@ public class ElasticSearchTest
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( eq( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
-        assertThat( query.count(), equalTo( 0 ) );
+        assertThat( query.count(), equalTo( 0L ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( ne( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
-        assertThat( query.count(), equalTo( 1 ) );
+        assertThat( query.count(), equalTo( 1L ) );
 
         post = templateFor( Post.class );
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
@@ -234,7 +234,7 @@ public class ElasticSearchTest
         queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class )
                                           .where( eq( post.author().get().nickname(), "eskatos" ) );
         query = uow.newQuery( queryBuilder );
-        assertThat( query.count(), equalTo( 1 ) );
+        assertThat( query.count(), equalTo( 1L ) );
         post = query.find();
         assertThat( post, notNullValue() );
         assertThat( post.title().get(), equalTo( title ) );

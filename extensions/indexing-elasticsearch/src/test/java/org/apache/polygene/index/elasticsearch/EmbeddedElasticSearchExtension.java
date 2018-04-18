@@ -17,6 +17,7 @@
  */
 package org.apache.polygene.index.elasticsearch;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Locale;
 import org.apache.polygene.api.activation.ActivationException;
@@ -34,7 +35,6 @@ import org.apache.polygene.test.TemporaryFolder;
 import org.elasticsearch.client.Client;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversalMode.BOTTOM_UP;
@@ -46,7 +46,6 @@ import static org.junit.platform.commons.util.ReflectionUtils.findFields;
  * Starting from Elasticsearch 5, startup is way slower.
  * Reuse an embedded instance across tests.
  */
-@ExtendWith( TemporaryFolder.class )
 public class EmbeddedElasticSearchExtension
     implements BeforeAllCallback, AfterAllCallback
 {
@@ -108,12 +107,11 @@ public class EmbeddedElasticSearchExtension
 
     @Override
     public void beforeAll( ExtensionContext context )
-        throws Exception
     {
         this.tmpDir = new TemporaryFolder();
-        this.tmpDir.beforeEach( context );
+        this.tmpDir.createDir();
 
-        String name = indexName( context.getRequiredTestClass().getSimpleName(), context.getRequiredTestMethod().getName() );
+        String name = indexName( context.getRequiredTestClass().getSimpleName(), null );
         SingletonAssembler assembler = activateEmbeddedElasticsearch( name );
         application = assembler.application();
         client = findClient( assembler.module() );
@@ -128,7 +126,11 @@ public class EmbeddedElasticSearchExtension
                 try
                 {
                     f.setAccessible( true );
-                    f.set( context.getRequiredTestInstance(), this );
+                    if( Modifier.isStatic( f.getModifiers() ) )
+                    {
+                        // only allow static field injections (for now).
+                        f.set( null, EmbeddedElasticSearchExtension.this );
+                    }
                 }
                 catch( IllegalAccessException e )
                 {
@@ -141,9 +143,17 @@ public class EmbeddedElasticSearchExtension
     public void afterAll( ExtensionContext context )
         throws Exception
     {
-        application.passivate();
-        client.close();
-        client = null;
-        tmpDir.afterEach( context );
+        if( application != null )
+        {
+            application.passivate();
+        }
+        if( client != null )
+        {
+            client.close();
+        }
+        if( tmpDir != null )
+        {
+            tmpDir.afterEach( context );
+        }
     }
 }

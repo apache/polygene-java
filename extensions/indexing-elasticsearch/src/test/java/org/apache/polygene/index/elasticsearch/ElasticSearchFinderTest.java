@@ -34,8 +34,7 @@ import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
 @SuppressWarnings( "unused" )
 @ExtendWith( { TemporaryFolder.class, EmbeddedElasticSearchExtension.class, TestName.class } )
-public class ElasticSearchFinderTest
-    extends AbstractEntityFinderTest
+public class ElasticSearchFinderTest extends AbstractEntityFinderTest
 {
     private static EmbeddedElasticSearchExtension ELASTIC_SEARCH;
 

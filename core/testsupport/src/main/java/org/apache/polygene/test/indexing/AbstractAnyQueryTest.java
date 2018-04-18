@@ -43,8 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.
  */
-public class AbstractAnyQueryTest
-    extends AbstractPolygeneTest
+public class AbstractAnyQueryTest extends AbstractPolygeneTest
 {
     protected UnitOfWork unitOfWork;
 

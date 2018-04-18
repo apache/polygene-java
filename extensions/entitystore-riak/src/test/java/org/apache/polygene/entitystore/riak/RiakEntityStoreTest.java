@@ -29,27 +29,26 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@Docker( image = "riak",
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-riak",
          ports = @Port( exposed = 8801, inner = 8087),
-         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class RiakEntityStoreTest extends AbstractEntityStoreTest
 {
     private RiakFixture riakFixture;
 
-    @Override
     @BeforeEach
-    public void setUp()
+    public void setupRiak()
         throws Exception
     {
-        super.setUp();
         RiakEntityStoreService es = serviceFinder.findService( RiakEntityStoreService.class ).get();
         riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
         riakFixture.waitUntilReady();
     }
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpRiak()
     {
         riakFixture.deleteTestData();
         super.tearDown();

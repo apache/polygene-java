@@ -69,7 +69,7 @@ public class Suite1Case2
     public void expect()
         throws Exception
     {
-        assertThat( query.count(), equalTo(1) );
+        assertThat( query.count(), equalTo(1L) );
         Male male = query.find();
         assertThat( male.title().get(), equalTo( Person.Title.MR ));
     }

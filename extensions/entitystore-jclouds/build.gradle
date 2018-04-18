@@ -36,7 +36,7 @@ dependencies {
   runtimeOnly polygene.core.runtime
   runtimeOnly libraries.jaxb_api
 
-  testImplementation polygene.internals.testsupport
+  testImplementation polygene.core.testsupport
   testImplementation libraries.jclouds_filesystem
   testImplementation libraries.docker_junit
 

@@ -27,8 +27,11 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
 import org.junit.jupiter.api.BeforeEach;
 
-@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432),
-         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000))
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class PostgreSQLEntityFinderTest
     extends AbstractEntityFinderTest
 {
@@ -36,6 +39,7 @@ public class PostgreSQLEntityFinderTest
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
     {
+        SQLTestHelper.sleep();
         super.assemble( mainModule );
         String host = "localhost";
         int port = 8801;

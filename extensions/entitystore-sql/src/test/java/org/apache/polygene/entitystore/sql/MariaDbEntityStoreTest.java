@@ -37,14 +37,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
-@Docker( image = "mariadb", ports = @Port( exposed = 8801, inner = 3306),
+@Docker( image = "mariadb", ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
-             @Environment( key = "MYSQL_ROOT_PASSWORD", value = ""),
-             @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),
-             @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
-             @Environment( key = "MYSQL_ROOT_HOST", value = "172.17.0.1"),
+             @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
+             @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
+             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" ),
+             @Environment( key = "MYSQL_ROOT_HOST", value = "172.17.0.1" ),
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections",timeoutInMillis = 30000))
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000 ),
+         newForEachCase = false
+)
 public class MariaDbEntityStoreTest
     extends AbstractEntityStoreTest
 {
@@ -55,6 +57,7 @@ public class MariaDbEntityStoreTest
         throws AssemblyException
     {
         // END SNIPPET: assembly
+        sleep();
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
@@ -83,17 +86,30 @@ public class MariaDbEntityStoreTest
         // END SNIPPET: assembly
         String host = "localhost";
         int port = 8801;
-        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
-              .url().set( "jdbc:mysql://" + host + ":" + port
-                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
+        defaults.url().set( "jdbc:mysql://" + host + ":" + port
+                            + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
+                            + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        defaults.driver().set( "com.mysql.jdbc.Driver" );
+        defaults.enabled().set( true );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 
-    @Override
+    static void sleep()
+    {
+        try
+        {
+            Thread.sleep( 500 );
+        }
+        catch( InterruptedException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
     @AfterEach
-    public void tearDown()
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.MARIADB, super::tearDown );
     }

@@ -82,6 +82,8 @@ class CodePlugin implements Plugin<Project>
         }
       }
     }
+    def junitEngine = declaration.libraries.get("junit_engine")
+    project.dependencies.add "testRuntime", junitEngine
   }
 
   private static void configureTest( Project project )
@@ -104,6 +106,7 @@ class CodePlugin implements Plugin<Project>
       def workDir = new File( testDir, 'work' )
       def tmpDir = new File( testDir, 'tmp' )
       def homeDir = new File( testDir, 'home' )
+      testTask.useJUnitPlatform()
       testTask.workingDir = workDir
       testTask.systemProperties << ( [
         'user.dir'      : workDir.absolutePath,

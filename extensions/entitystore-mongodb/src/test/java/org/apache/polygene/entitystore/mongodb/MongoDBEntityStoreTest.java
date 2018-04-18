@@ -36,7 +36,9 @@ import org.junit.jupiter.api.BeforeEach;
  * Test the MongoDBEntityStoreService.
  */
 @Docker( image = "mongo",
-         ports = @Port( exposed = 8801, inner = 27017))
+         ports = @Port( exposed = 8801, inner = 27017),
+         newForEachCase = false
+)
 public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
 {
     @Override

@@ -75,7 +75,7 @@ public class QueryBuilderFactoryImplTest
     {
         Query<TestComposite> query = queryBuilderFactory.newQueryBuilder( TestComposite.class ).newQuery( composites );
         assertThat( query.find().a().get(), equalTo( "A" ) );
-        assertThat( query.count(), equalTo( 6 ) );
+        assertThat( query.count(), equalTo( 6L ) );
     }
 
     @Test
@@ -137,13 +137,13 @@ public class QueryBuilderFactoryImplTest
 
     private void verifyOrder( Query<TestComposite> query, String expected )
     {
-        String actual = "";
+        StringBuilder actual = new StringBuilder();
         for( TestComposite testComposite : query )
         {
-            actual = actual + testComposite.b().get();
+            actual.append( testComposite.b().get() );
         }
 
-        assertThat( "Query is correct", actual, equalTo( expected ) );
+        assertThat( "Query is correct", actual.toString(), equalTo( expected ) );
         assertThat( "Count is correct", query.count(), equalTo( (long) expected.length() ) );
     }
 

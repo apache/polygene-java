@@ -47,6 +47,7 @@ public class PreferencesEntityStoreTestSuite extends EntityStoreTestSuite
             .assemble( module );
     }
 
+    @Override
     @AfterEach
     public void tearDown()
     {

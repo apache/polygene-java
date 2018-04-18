@@ -1,11 +1,11 @@
 package org.apache.polygene.test;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Optional;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversalMode.BOTTOM_UP;
 import static org.junit.platform.commons.util.ReflectionUtils.findFields;
 
@@ -39,17 +39,7 @@ public class TestName
     {
         findFields( context.getRequiredTestClass(),
                     f -> f.getType().equals( TestName.class ), BOTTOM_UP )
-            .forEach( f -> {
-                try
-                {
-                    f.setAccessible( true );
-                    f.set( context.getRequiredTestInstance(), this );
-                }
-                catch( IllegalAccessException e )
-                {
-                    throw new UndeclaredThrowableException( e );
-                }
-            } );
+            .forEach( f -> PolygeneUnitExtension.setField( f, this, context ) );
     }
 
     public String getTestName()

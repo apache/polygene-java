@@ -67,9 +67,8 @@ public class H2SQLEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.H2, super::tearDown );
     }

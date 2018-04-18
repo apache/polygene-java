@@ -34,8 +34,11 @@ import org.junit.jupiter.api.Test;
  * <p>Many features are not supported.</p>
  */
 // See org.apache.polygene.index.sql.support.skeletons.SQLCompatEntityStateWrapper that filter out unsupported properties.
-@Docker( image = "postgres", ports = @Port( exposed = 8801, inner = 5432),
-         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000))
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class PostgreSQLQueryTest
     extends AbstractQueryTest
 {
@@ -43,6 +46,7 @@ public class PostgreSQLQueryTest
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
     {
+        SQLTestHelper.sleep();
         super.assemble( mainModule );
         String host = "localhost";
         int port = 8801;

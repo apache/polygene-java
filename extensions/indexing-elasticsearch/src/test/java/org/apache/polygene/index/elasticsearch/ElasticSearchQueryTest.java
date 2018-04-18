@@ -31,8 +31,8 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.TestName;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
-import org.apache.polygene.test.util.NotYetImplemented;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -80,7 +80,7 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
             .assemble( module );
     }
 
-    @NotYetImplemented( reason = "IndexExporter service not implemented" )
+    @Disabled( "IndexExporter service not implemented" )
     @Test
     @Override
     public void showNetwork()
@@ -89,7 +89,7 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
         super.showNetwork();
     }
 
-    @NotYetImplemented( reason = "oneOf() Query Expression not implemented" )
+    @Disabled( "oneOf() Query Expression not implemented" )
     @Test
     @Override
     public void script23()
@@ -97,9 +97,8 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
         super.script23();
     }
 
-    @NotYetImplemented(
-        reason = "ElasticSearch perform automatic TimeZone resolution when querying on dates, "
-                 + "this test assert that the underlying Index/Query engine do not."
+    @Disabled(
+        "ElasticSearch perform automatic TimeZone resolution when querying on dates, this test assert that the underlying Index/Query engine do not."
     )
     @Test
     @Override

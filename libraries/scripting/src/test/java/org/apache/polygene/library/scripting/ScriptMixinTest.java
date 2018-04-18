@@ -78,9 +78,9 @@ public class ScriptMixinTest
         domain2.inc();
         domain2.inc();
         domain3.inc();
-        assertThat(domain1.count(), equalTo(4.0D) );
-        assertThat(domain2.count(), equalTo(3.0D) );
-        assertThat(domain3.count(), equalTo(1.0D) );
+        assertThat(domain1.count(), equalTo(4.0) );
+        assertThat(domain2.count(), equalTo(3.0) );
+        assertThat(domain3.count(), equalTo(1.0) );
     }
 
     @Test

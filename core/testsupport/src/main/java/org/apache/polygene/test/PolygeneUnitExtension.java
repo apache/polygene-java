@@ -19,6 +19,10 @@
  */
 package org.apache.polygene.test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Optional;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -47,6 +51,30 @@ public class PolygeneUnitExtension
     {
 
         this.assembler = assembler;
+    }
+
+    static void setField( Field f, Object injectable, ExtensionContext context )
+    {
+        try
+        {
+            f.setAccessible( true );
+            Optional<Object> possibleInstance = context.getTestInstance();
+            if( possibleInstance.isPresent() )
+            {
+                f.set( possibleInstance.get(), injectable );
+            }
+            else
+            {
+                if( Modifier.isStatic( f.getModifiers() ) )
+                {
+                    f.set( null, injectable );
+                }
+            }
+        }
+        catch( IllegalAccessException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
     }
 
     @Override

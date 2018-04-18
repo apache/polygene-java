@@ -17,25 +17,8 @@
  *
  *
  */
+package org.apache.polygene.test.docker;
 
-apply plugin: 'polygene-extension'
-
-description = "Apache Polygene™ Berkeley DB (Java Edition) EntityStore Extension"
-
-jar { manifest { name = "Apache Polygene™ Extension - EntityStore - BDB/JE" } }
-
-dependencies {
-    api polygene.core.bootstrap
-    api libraries.bdb_je
-    api polygene.library( 'constraints' )
-    api polygene.library( 'fileconfig' )
-
-    implementation polygene.library( 'locking' )
-    implementation libraries.jackson_mapper
-
-    runtimeOnly polygene.core.runtime
-
-    testImplementation polygene.core.testsupport
-
-    testRuntimeOnly libraries.logback
+public class Dummy
+{
 }

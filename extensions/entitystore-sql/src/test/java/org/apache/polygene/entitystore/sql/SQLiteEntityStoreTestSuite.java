@@ -65,9 +65,8 @@ public class SQLiteEntityStoreTestSuite extends EntityStoreTestSuite
             .assemble( module );
     }
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpData()
     {
         TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.SQLITE, super::tearDown );
     }

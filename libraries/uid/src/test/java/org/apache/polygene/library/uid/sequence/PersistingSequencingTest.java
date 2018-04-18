@@ -47,7 +47,7 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertThat( underTest.currentValue(), equalTo( 0 ) );
+        assertThat( underTest.currentValue(), equalTo( 0L ) );
     }
 
     @Test
@@ -55,8 +55,8 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertThat( underTest.nextValue(), equalTo( 1 ) );
-        assertThat( underTest.currentValue(), equalTo( 1 ) );
+        assertThat( underTest.nextValue(), equalTo( 1L ) );
+        assertThat( underTest.currentValue(), equalTo( 1L ) );
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        for( int i = 1; i <= 100; i++ )
+        for( long i = 1; i <= 100; i++ )
         {
             assertThat( underTest.nextValue(), equalTo( i ) );
             assertThat( underTest.currentValue(), equalTo( i ) );

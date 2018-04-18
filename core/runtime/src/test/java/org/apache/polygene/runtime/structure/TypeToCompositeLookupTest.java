@@ -372,9 +372,9 @@ public class TypeToCompositeLookupTest
 
         }.module();
 
-        assertThat( module.findServices( SomeOtherFoo.class ).count(), equalTo( 1 ) );
-        assertThat( module.findServices( BasicFoo.class ).count(), equalTo( 2 ) );
-        assertThat( module.findServices( Foo.class ).count(), equalTo( 2 ) );
+        assertThat( module.findServices( SomeOtherFoo.class ).count(), equalTo( 1L ) );
+        assertThat( module.findServices( BasicFoo.class ).count(), equalTo( 2L ) );
+        assertThat( module.findServices( Foo.class ).count(), equalTo( 2L ) );
 
         assertThat( module.findService( SomeOtherFoo.class ).get().bar(), equalTo( CATHEDRAL ) );
 

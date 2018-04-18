@@ -73,7 +73,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        assertThrows( ConstraintViolationException.class, () -> {
+        assertThrows( IllegalStateException.class, () -> {
             UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
             try
             {

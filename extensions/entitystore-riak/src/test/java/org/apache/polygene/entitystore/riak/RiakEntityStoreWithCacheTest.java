@@ -32,16 +32,17 @@ import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@Docker( image = "riak",
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-riak",
          ports = @Port( exposed = 8801, inner = 8087 ),
-         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 30000 ) )
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000 ),
+         newForEachCase = false
+)
 public class RiakEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
     private RiakFixture riakFixture;
 
-    @Override
     @BeforeEach
-    public void setUp()
+    public void setupRiak()
         throws Exception
     {
         super.setUp();
@@ -50,9 +51,8 @@ public class RiakEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTe
         riakFixture.waitUntilReady();
     }
 
-    @Override
     @AfterEach
-    public void tearDown()
+    public void cleanUpRiak()
     {
         riakFixture.deleteTestData();
         super.tearDown();
