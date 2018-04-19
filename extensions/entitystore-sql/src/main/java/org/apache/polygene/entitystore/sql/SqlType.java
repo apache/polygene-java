@@ -19,6 +19,7 @@ package org.apache.polygene.entitystore.sql;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +28,10 @@ import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import org.jooq.DataType;
+import org.jooq.Field;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
 import org.jooq.types.Interval;
 
@@ -35,16 +40,30 @@ import org.jooq.types.Interval;
  */
 class SqlType
 {
+    static <T> Field<T> makeField( String columnName, Class<T> type, SQLDialect dialect, boolean reference )
+    {
+        return DSL.field( DSL.name( columnName ), getSqlDataTypeFor( dialect, type, reference ) );
+    }
+
+    public static <T> Field<T> makeField( String columnName, Class<T> type, SQLDialect dialect )
+    {
+        return makeField( columnName, type, dialect, true );
+    }
+
     @SuppressWarnings( "unchecked" )
-    static <T> DataType<T> getSqlDataTypeFor( Class<?> propertyType )
+    static <T> DataType<T> getSqlDataTypeFor( SQLDialect dialect, Class<T> propertyType, boolean reference )
     {
         if( String.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( Integer.class.isAssignableFrom( propertyType ) )
         {
             return (DataType<T>) SQLDataType.INTEGER;
+        }
+        if( Timestamp.class.isAssignableFrom( propertyType ) )
+        {
+            return (DataType<T>) SQLDataType.TIMESTAMP;
         }
         if( Long.class.isAssignableFrom( propertyType ) )
         {
@@ -64,35 +83,35 @@ class SqlType
         }
         if( Instant.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( Interval.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( Period.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( LocalDate.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( LocalTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( LocalDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( ZonedDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( OffsetDateTime.class.isAssignableFrom( propertyType ) )
         {
-            return (DataType<T>) SQLDataType.VARCHAR;
+            return (DataType<T>) varCharType( dialect, reference );
         }
         if( Character.class.isAssignableFrom( propertyType ) )
         {
@@ -153,6 +172,22 @@ class SqlType
                 return (DataType<T>) SQLDataType.INTEGER;
             }
         }
-        return (DataType<T>) SQLDataType.VARCHAR;
+        return (DataType<T>) varCharType( dialect, reference );
+    }
+
+    private static DataType<String> varCharType( SQLDialect dialect, boolean reference )
+    {
+        if( dialect == SQLDialect.MYSQL || dialect == SQLDialect.MARIADB )
+        {
+            if( reference )
+            {
+                return SQLDataType.VARCHAR.length(1000).nullable(false);
+            }
+            else
+            {
+                return new DefaultDataType<>( null, String.class, "MEDIUMTEXT" );
+            }
+        }
+        return SQLDataType.VARCHAR;
     }
 }

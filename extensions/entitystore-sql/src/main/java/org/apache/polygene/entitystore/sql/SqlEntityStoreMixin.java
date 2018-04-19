@@ -142,13 +142,20 @@ public class SqlEntityStoreMixin
         {
             return value;
         }
+        if( type.equals( ValueType.FLOAT ) )
+        {
+            if( value instanceof Double )       // MariaDB/MySQL returns a Double
+            {
+                return new Float( (Double) value );
+            }
+            return value;
+        }
         if( type.equals( ValueType.STRING )
             || type.equals( ValueType.INTEGER )
             || type.equals( ValueType.BOOLEAN )
             || type.equals( ValueType.DOUBLE )
             || type.equals( ValueType.IDENTITY )
             || type.equals( ValueType.LONG )
-            || type.equals( ValueType.FLOAT )
             || type.equals( ValueType.BYTE )
             || type.equals( ValueType.CHARACTER )
             || type.equals( ValueType.SHORT )

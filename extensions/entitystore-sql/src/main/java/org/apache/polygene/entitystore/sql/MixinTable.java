@@ -32,7 +32,6 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.serialization.Serialization;
 import org.apache.polygene.api.type.ValueType;
-import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.spi.entity.ManyAssociationState;
 import org.apache.polygene.spi.entity.NamedAssociationState;
 import org.apache.polygene.spi.entitystore.helpers.DefaultEntityState;
@@ -40,6 +39,7 @@ import org.jooq.Field;
 import org.jooq.InsertSetMoreStep;
 import org.jooq.InsertSetStep;
 import org.jooq.Record;
+import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
@@ -48,18 +48,25 @@ import org.jooq.impl.DSL;
  * MixinTable is a class that handles the creation of the queries into the Mixin tables, both for insertions/updates
  * as well as retrieval.
  * <p>
- *     Note that these tables are only queried as part of a SQL {@code JOIN} statement and never directly.
+ * Note that these tables are only queried as part of a SQL {@code JOIN} statement and never directly.
  * </p>
  * <p>
- *     Creation of the actual Mixin tables happens in {@link TypesTable}.
+ * Creation of the actual Mixin tables happens in {@link TypesTable}.
  * </p>
  */
 class MixinTable
-    implements TableFields
 {
+    static final String NAME_COLUMN_NAME = "_name";
+    static final String INDEX_COLUMN_NAME = "_index";    // either index in ManyAssociation or name in NamedAssociation
+    static final String REFERENCE_COLUMN_NAME = "_reference";
+    private static final String ASSOCS_TABLE_POSTFIX = "_ASSOCS";
 
     private final Table<Record> mixinTable;
     private final Table<Record> mixinAssocsTable;
+
+    private Field<String> nameColumn;
+    private Field<String> referenceColumn;
+    private Field<String> indexColumn;
 
     private final JooqDslContext dsl;
     private final Map<QualifiedName, Field<Object>> properties = new ConcurrentHashMap<>();
@@ -68,16 +75,20 @@ class MixinTable
     private final List<QualifiedName> namedAssociations = new CopyOnWriteArrayList<>();
 
     private final Class<?> mixinType;
+    private final TypesTable types;
     private Serialization serialization;
 
-    PolygeneSPI spi;
-
-    MixinTable( JooqDslContext dsl, TypesTable types, Class<?> mixinType,
+    MixinTable( JooqDslContext dsl, SQLDialect dialect, TypesTable types, Class<?> mixinType,
                 EntityDescriptor descriptor, Serialization serialization )
     {
+        this.types = types;
         this.dsl = dsl;
         this.mixinType = mixinType;
         this.serialization = serialization;
+        nameColumn = SqlType.makeField( NAME_COLUMN_NAME, String.class, dialect);
+        referenceColumn = SqlType.makeField( REFERENCE_COLUMN_NAME, String.class, dialect );
+        indexColumn = SqlType.makeField( INDEX_COLUMN_NAME, String.class, dialect );
+
         mixinTable = types.tableFor( mixinType, descriptor );
         mixinAssocsTable = getAssocsTable( descriptor );
 
@@ -114,8 +125,8 @@ class MixinTable
     {
         InsertSetMoreStep<Record> primaryTable =
             dsl.insertInto( mixinTable )
-               .set( identityColumn, valueIdentity )
-               .set( createdColumn, new Timestamp( System.currentTimeMillis() ) );
+               .set( types.identityColumn(), valueIdentity )
+               .set( types.createdColumn(), new Timestamp( System.currentTimeMillis() ) );
 
         properties
             .entrySet()
@@ -142,8 +153,8 @@ class MixinTable
                                       int counter = 0;
                                       for( EntityReference ref : entityReferences )
                                       {
-                                          InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
-                                                                                     .set( createdColumn, new Timestamp( System.currentTimeMillis() ) )
+                                          InsertSetMoreStep<Record> set = assocsTable.set( types.identityColumn(), valueIdentity )
+                                                                                     .set( types.createdColumn(), new Timestamp( System.currentTimeMillis() ) )
                                                                                      .set( nameColumn, assocName.name() )
                                                                                      .set( indexColumn, "" + counter++ )
                                                                                      .set( referenceColumn, ref == null ? null : ref.identity().toString() );
@@ -169,8 +180,8 @@ class MixinTable
                                            for( String name : entityReferences )
                                            {
                                                EntityReference ref = entityReferences.get( name );
-                                               InsertSetMoreStep<Record> set = assocsTable.set( identityColumn, valueIdentity )
-                                                                                          .set( createdColumn, new Timestamp( System.currentTimeMillis() ) )
+                                               InsertSetMoreStep<Record> set = assocsTable.set( types.identityColumn(), valueIdentity )
+                                                                                          .set( types.createdColumn(), new Timestamp( System.currentTimeMillis() ) )
                                                                                           .set( nameColumn, assocName.name() )
                                                                                           .set( indexColumn, name )
                                                                                           .set( referenceColumn, ref.identity().toString() );
@@ -243,7 +254,7 @@ class MixinTable
         {
             // Need to remove existing records.
             dsl.delete( mixinAssocsTable )
-               .where( identityColumn.eq( valueId ) )
+               .where( types.identityColumn().eq( valueId ) )
                .execute();
             insertManyAndNamedAssociations( state, valueId );
         }
@@ -255,15 +266,15 @@ class MixinTable
             || descriptor.state().namedAssociations().count() > 0 )
         {
             Table<Record> table = dsl.tableOf( mixinTable.getName() + ASSOCS_TABLE_POSTFIX );
-            int result2 = dsl.createTableIfNotExists( table )
-                             .column( identityColumn )
-                             .column( createdColumn )
-                             .column( nameColumn )
-                             .column( indexColumn )
-                             .column( referenceColumn )
-                             .execute();
+            int result = dsl.createTableIfNotExists( table )
+                            .column( types.identityColumn() )
+                            .column( types.createdColumn() )
+                            .column( nameColumn )
+                            .column( indexColumn )
+                            .column( referenceColumn )
+                            .execute();
             dsl.createIndex( DSL.name( "IDX_" + table.getName() ) )
-               .on( table, identityColumn )
+               .on( table, types.identityColumn() )
                .execute();
             return table;
         }

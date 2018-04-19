@@ -185,11 +185,11 @@ public abstract class AbstractEntityStoreTest
 
             assertThat( "property 'doubleValue' has incorrect value",
                         instance.doubleValue().get(),
-                        equalTo( 42D ) );
+                        equalTo( 42.0 ) );
 
             assertThat( "property 'floatValue' has incorrect value",
                         instance.floatValue().get(),
-                        equalTo( 42F ) );
+                        equalTo( 42f ) );
 
             assertThat( "property 'booleanValue' has incorrect value",
                         instance.booleanValue().get(),

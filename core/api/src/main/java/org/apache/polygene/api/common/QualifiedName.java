@@ -258,4 +258,9 @@ public final class QualifiedName
         }
         return name.compareTo( other.name );
     }
+
+    public boolean isOriginatingFrom( Class<?> mixinType )
+    {
+        return typeName.isClass( mixinType );
+    }
 }

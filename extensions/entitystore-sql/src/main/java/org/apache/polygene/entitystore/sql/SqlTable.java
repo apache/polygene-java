@@ -39,7 +39,6 @@ import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.SelectQuery;
 import org.jooq.conf.Settings;
-import org.jooq.impl.DSL;
 
 /**
  * This class handles all the Jooq interactions.
@@ -189,7 +188,6 @@ public interface SqlTable extends ServiceActivation
 
         @Override
         public void activateService()
-            throws Exception
         {
             SqlEntityStoreConfiguration config = this.configuration.get();
             SQLDialect dialect = getSqlDialect( config );
@@ -201,37 +199,19 @@ public interface SqlTable extends ServiceActivation
             dsl = tbf.newTransient( JooqDslContext.class, settings, dialect );
 
             types = new TypesTable( dsl, dialect, typesTableName, config );
-            entitiesTable = new EntitiesTable( dsl, types, application.version(), entitiesTableName, serialization );
+            entitiesTable = new EntitiesTable( dsl, dialect, types, application.version(), entitiesTableName, serialization );
 
             if( config.createIfMissing().get() )
             {
                 dsl.transaction( t -> {
-
-                    dsl.createTableIfNotExists( dsl.tableNameOf( typesTableName ) )
-                       .column( identityColumn )
-                       .column( tableNameColumn )
-                       .column( createdColumn )
-                       .column( modifiedColumn )
-                       .constraint( DSL.primaryKey( identityColumn ) )
-                       .execute();
-
-                    dsl.createTableIfNotExists( dsl.tableNameOf( entitiesTableName ) )
-                       .column( identityColumn )
-                       .column( createdColumn )
-                       .column( typeNameColumn )
-                       .column( applicationVersionColumn )
-                       .column( versionColumn )
-                       .column( modifiedColumn )
-                       .column( valueIdentityColumn )
-                       .constraint( DSL.primaryKey( identityColumn ) )
-                       .execute();
+                    types.create();
+                    entitiesTable.create();
                 } );
             }
         }
 
         @Override
         public void passivateService()
-            throws Exception
         {
 
         }

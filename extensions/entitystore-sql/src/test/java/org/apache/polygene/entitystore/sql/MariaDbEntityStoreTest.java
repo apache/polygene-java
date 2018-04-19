@@ -23,6 +23,7 @@ import com.github.junit5docker.Docker;
 import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
+import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -34,9 +35,8 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 
-@Disabled( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
 @Docker( image = "mariadb",
          ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
@@ -44,12 +44,24 @@ import org.junit.jupiter.api.Disabled;
              @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
              @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" )
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000 ),
+         waitFor = @WaitFor( value = "mariadb.org binary distribution", timeoutInMillis = 30000 ),
          newForEachCase = false
 )
-public class MariaDbEntityStoreTest
-    extends AbstractEntityStoreTest
+public class MariaDbEntityStoreTest extends AbstractEntityStoreTest
 {
+
+    @BeforeAll
+    public static void waitForDockerToSettle()
+    {
+        try
+        {
+            Thread.sleep( 5000 );
+        }
+        catch( InterruptedException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
+    }
 
     @Override
     // START SNIPPET: assembly
@@ -57,7 +69,6 @@ public class MariaDbEntityStoreTest
         throws AssemblyException
     {
         // END SNIPPET: assembly
-        sleep();
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
@@ -92,23 +103,11 @@ public class MariaDbEntityStoreTest
                             + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
         defaults.driver().set( "com.mysql.jdbc.Driver" );
         defaults.enabled().set( true );
-        defaults.username().set("root");
+        defaults.username().set( "root" );
         defaults.password().set( "" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
-
-    static void sleep()
-    {
-        try
-        {
-            Thread.sleep( 11500 );
-        }
-        catch( InterruptedException e )
-        {
-            e.printStackTrace();
-        }
-    }
 
     @AfterEach
     public void cleanUpData()

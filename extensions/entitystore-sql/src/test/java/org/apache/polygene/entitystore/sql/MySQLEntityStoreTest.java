@@ -23,6 +23,7 @@ import com.github.junit5docker.Docker;
 import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
+import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -34,22 +35,33 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 
-@Disabled( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
-@Docker( image = "mysql", ports = @Port( exposed = 8801, inner = 3306),
+@Docker( image = "mysql", ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
-             @Environment( key = "MYSQL_ROOT_PASSWORD", value = ""),
-             @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),
-             @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
-             @Environment( key = "MYSQL_ROOT_HOST", value = "172.17.0.1"),
+             @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
+             @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
+             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" )
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000),
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 40000 ),
          newForEachCase = false
 )
 public class MySQLEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @BeforeAll
+    public static void waitForDockerToSettle()
+    {
+        try
+        {
+            Thread.sleep( 10000 );
+        }
+        catch( InterruptedException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
+    }
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -84,10 +96,14 @@ public class MySQLEntityStoreTest
         // END SNIPPET: assembly
         String mysqlHost = "localhost";
         int mysqlPort = 8801;
-        config.forMixin( DataSourceConfiguration.class ).declareDefaults()
-              .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
-                          + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
+        defaults.url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
+                            + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
+                            + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        defaults.driver().set( "com.mysql.jdbc.Driver" );
+        defaults.enabled().set( true );
+        defaults.username().set( "root" );
+        defaults.password().set( "" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

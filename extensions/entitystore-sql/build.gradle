@@ -27,6 +27,7 @@ jar { manifest { name = "Apache Polygene™ Extension - EntityStore - ORM" } }
 dependencies {
   api polygene.core.bootstrap
   api polygene.library( 'sql' )
+  api polygene.library( 'constraints' )
   api libraries.jooq
 
   runtimeOnly polygene.core.runtime
