@@ -190,14 +190,17 @@ public class ConstraintViolationException extends IllegalArgumentException
                            : instanceTypes.stream()
                                           .map( this::nameOf )
                                           .collect( Collectors.joining( "," ) );
-            String name;
-            if( longNames )
+            String name = "";
+            if( primaryType != null )
             {
-                name = primaryType.getName();
-            }
-            else
-            {
-                name = primaryType.getSimpleName();
+                if( longNames )
+                {
+                    name = primaryType.getName();
+                }
+                else
+                {
+                    name = primaryType.getSimpleName();
+                }
             }
             Object[] args = new Object[]{ name, instanceToString, identity, types };
             MessageFormat formatter = new MessageFormat( compositePattern, locale );

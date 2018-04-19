@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.polygene.api.composite.Composite;
+import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.property.PropertyWrapper;
@@ -97,7 +98,15 @@ public class PropertyInstance<T>
             throw new IllegalStateException( "Property [" + model.qualifiedName() + "] is immutable." );
         }
 
-        model.checkConstraints( aNewValue );
+        try
+        {
+            model.checkConstraints( aNewValue );
+        }
+        catch( ConstraintViolationException e )
+        {
+            e.setInstanceString( model.qualifiedName().toString() );
+            throw e;
+        }
 
         value = aNewValue;
     }

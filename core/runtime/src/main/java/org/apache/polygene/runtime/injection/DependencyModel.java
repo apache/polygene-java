@@ -261,10 +261,7 @@ public final class DependencyModel
 
             if( injectionProvider == null && !optional )
             {
-                String message =
-                    "[Module " + resolution.module()
-                        .name() + "] Non-optional @" + rawInjectionClass.getName() + " was not bound in " + injectedClass
-                        .getName();
+                String message = "[Module " + resolution.module().name() + "] Non-optional @" + rawInjectionClass.getName() + " was not bound in " + injectedClass.getName();
                 throw new ConstructionException( message );
             }
         }
@@ -301,9 +298,7 @@ public final class DependencyModel
         if( injectedValue == null && !optional )
         {
             String simpleName = injectionAnnotation.annotationType().getSimpleName();
-            String message = "[Module " + context.module().name() + "] Non-optional @" +
-                             simpleName + " " + injectionType.toString() +
-                             " was null in " + injectedClass.getName();
+            String message = "[Module " + context.module().name() + "] Non-optional @" + simpleName + " " + injectionType.toString() + " was null in " + injectedClass.getName();
             if( simpleName.toLowerCase().contains( "service" )
                 && !isServiceInjectionProvider() )
             {

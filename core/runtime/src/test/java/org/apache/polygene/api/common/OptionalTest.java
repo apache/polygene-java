@@ -42,8 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Tests for @Optional
  */
-public class OptionalTest
-    extends AbstractPolygeneTest
+public class OptionalTest extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -98,6 +97,19 @@ public class OptionalTest
     public void givenMandatoryPropertyWhenMandatoryMissingThenException()
     {
         assertThrows( ConstraintViolationException.class, () -> transientBuilderFactory.newTransient( TestComposite2.class ) );
+    }
+
+    @Test
+    public void givenMandatoryPropertyWhenSettingPropertyToNullOnBuiltInstanceThenException()
+    {
+        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
+        builder.prototype().mandatoryProperty().set( "Hello" );
+        builder.prototype().optionalProperty().set( "World" );
+        TestComposite2 testComposite2 = builder.newInstance();
+        testComposite2.optionalProperty().set( null );
+        assertThrows( ConstraintViolationException.class, () -> {
+            testComposite2.mandatoryProperty().set( null );
+        } );
     }
 
     @Test
