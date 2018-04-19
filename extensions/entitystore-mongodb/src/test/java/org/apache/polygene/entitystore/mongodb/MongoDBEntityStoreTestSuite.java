@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Test the MongoDBEntityStoreService.
  */
-@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-mongo",
+@Docker( image = "mongo",
          ports = @Port( exposed = 8801, inner = 27017),
          waitFor = @WaitFor( value = "MongoDB starting", timeoutInMillis = 30000),
          newForEachCase = false

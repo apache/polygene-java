@@ -20,6 +20,7 @@
 package org.apache.polygene.entitystore.jclouds;
 
 import com.github.junit5docker.Docker;
+import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
@@ -27,9 +28,13 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 
-@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-s3server",
-         ports = @Port( exposed = 8801, inner = 8000),
-         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000),
+@Docker( image = "s3server",
+         ports = @Port( exposed = 8801, inner = 8000 ),
+         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000 ),
+         environments = {
+             @Environment( key = "SCALITY_ACCESS_KEY_ID", value = "dummyIdentifier" ),
+             @Environment( key = "SCALITY_SECRET_ACCESS_KEY", value = "dummyCredential" )
+         },
          newForEachCase = false
 )
 public class JCloudsS3TestSuite extends EntityStoreTestSuite
