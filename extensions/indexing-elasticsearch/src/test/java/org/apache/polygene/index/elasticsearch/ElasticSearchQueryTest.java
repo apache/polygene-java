@@ -28,36 +28,32 @@ import org.apache.polygene.index.elasticsearch.assembly.ESClientIndexQueryAssemb
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
+import org.apache.polygene.test.TestName;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
-import org.apache.polygene.test.util.NotYetImplemented;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
+@ExtendWith( { TemporaryFolder.class,
+               EmbeddedElasticSearchExtension.class,
+               TestName.class } )
 public class ElasticSearchQueryTest extends AbstractQueryTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
     }
 
-    @ClassRule
-    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
+    public static EmbeddedElasticSearchExtension ELASTIC_SEARCH;
 
-    @ClassRule
-    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+    public TestName testName;
 
-    @Rule
-    public final TestName testName = new TestName();
-
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    public TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -84,7 +80,7 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
             .assemble( module );
     }
 
-    @NotYetImplemented( reason = "IndexExporter service not implemented" )
+    @Disabled( "IndexExporter service not implemented" )
     @Test
     @Override
     public void showNetwork()
@@ -93,7 +89,7 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
         super.showNetwork();
     }
 
-    @NotYetImplemented( reason = "oneOf() Query Expression not implemented" )
+    @Disabled( "oneOf() Query Expression not implemented" )
     @Test
     @Override
     public void script23()
@@ -101,9 +97,8 @@ public class ElasticSearchQueryTest extends AbstractQueryTest
         super.script23();
     }
 
-    @NotYetImplemented(
-        reason = "ElasticSearch perform automatic TimeZone resolution when querying on dates, "
-                 + "this test assert that the underlying Index/Query engine do not."
+    @Disabled(
+        "ElasticSearch perform automatic TimeZone resolution when querying on dates, this test assert that the underlying Index/Query engine do not."
     )
     @Test
     @Override

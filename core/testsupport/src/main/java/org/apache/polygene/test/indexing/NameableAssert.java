@@ -32,10 +32,10 @@ import org.apache.polygene.api.entity.EntityReference;
 import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.test.model.Nameable;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NameableAssert
 {

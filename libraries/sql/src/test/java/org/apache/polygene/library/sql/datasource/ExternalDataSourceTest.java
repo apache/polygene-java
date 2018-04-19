@@ -29,7 +29,7 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.sql.assembly.ExternalDataSourceAssembler;
 import org.apache.polygene.library.sql.common.SQLUtil;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExternalDataSourceTest
     extends AbstractPolygeneTest

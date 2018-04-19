@@ -41,6 +41,7 @@ dependencies {
   testImplementation libraries.junit
 
   testRuntimeOnly libraries.logback
+  testRuntimeOnly libraries.junit_engine
 }
 
 // Do not run vhost tests on Java >= 9 because they use internal JDK apis

@@ -20,18 +20,21 @@
 
 package org.apache.polygene.runtime.entity.associations;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.property.Immutable;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test that associations can be marked as @Immutable
@@ -66,29 +69,31 @@ public class ImmutableAssociationTest
         }
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void givenEntityWithImmutableAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-            PersonEntity father = builder.instance();
-            father = builder.newInstance();
+        assertThrows( IllegalStateException.class, () -> {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+            {
+                EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                PersonEntity father = builder.instance();
+                father = builder.newInstance();
 
-            builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-            PersonEntity child = builder.instance();
-            child = builder.newInstance();
+                builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                PersonEntity child = builder.instance();
+                child = builder.newInstance();
 
-            child.father().set( father );
+                child.father().set( father );
 
-            unitOfWork.complete();
-        }
-        finally
-        {
-            unitOfWork.discard();
-        }
+                unitOfWork.complete();
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
+        } );
     }
 
     @Test
@@ -113,29 +118,31 @@ public class ImmutableAssociationTest
         }
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void givenEntityWithImmutableManyAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
-        try
-        {
-            EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-            PersonEntity person1 = builder.instance();
-            person1 = builder.newInstance();
+        assertThrows( IllegalStateException.class, () -> {
+            UnitOfWork unitOfWork = unitOfWorkFactory.newUnitOfWork();
+            try
+            {
+                EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                PersonEntity person1 = builder.instance();
+                person1 = builder.newInstance();
 
-            builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-            PersonEntity person2 = builder.instance();
-            person2 = builder.newInstance();
+                builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                PersonEntity person2 = builder.instance();
+                person2 = builder.newInstance();
 
-            person1.colleagues().add( 0, person2 );
+                person1.colleagues().add( 0, person2 );
 
-            unitOfWork.complete();
-        }
-        finally
-        {
-            unitOfWork.discard();
-        }
+                unitOfWork.complete();
+            }
+            finally
+            {
+                unitOfWork.discard();
+            }
+        } );
     }
 
     interface PersonEntity

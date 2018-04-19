@@ -19,14 +19,6 @@
  */
 package org.apache.polygene.library.shiro;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.PasswordService;
-import org.apache.shiro.subject.Subject;
-import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.injection.scope.Service;
@@ -34,6 +26,7 @@ import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfMemoryStoreAssembler;
@@ -45,11 +38,18 @@ import org.apache.polygene.library.shiro.domain.permissions.Role;
 import org.apache.polygene.library.shiro.domain.permissions.RoleAssignee;
 import org.apache.polygene.library.shiro.domain.permissions.RoleFactory;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.PasswordService;
+import org.apache.shiro.subject.Subject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PermissionsDomainTest
     extends AbstractPolygeneTest
@@ -123,7 +123,7 @@ public class PermissionsDomainTest
 
     private RoleFactory roleFactory;
 
-    @Before
+    @BeforeEach
     public void before_PermissionsDomainTest()
     {
         userFactory = serviceFinder.findService( UserFactory.class ).get();

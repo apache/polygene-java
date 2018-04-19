@@ -21,8 +21,6 @@ package org.apache.polygene.library.alarm;
 
 import java.util.List;
 import java.util.Locale;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -31,11 +29,16 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AlarmPointImplTest extends AbstractPolygeneTest
     implements AlarmListener
@@ -62,6 +65,8 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
     {
     }
 
+    @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -70,6 +75,7 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         if( unitOfWorkFactory.isUnitOfWorkActive() )
@@ -118,7 +124,7 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
         throws Exception
     {
         AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
-        assertEquals( "TestCase AlarmPoint", underTest.name() );
+        assertThat( underTest.name(), equalTo( "TestCase AlarmPoint" ) );
     }
 
     @Test
@@ -126,22 +132,22 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
         throws Exception
     {
         AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
-//        assertEquals( "This is a default Locale description of a testcase AlarmPoint.", underTest.description() );
+//        assertThat( underTest.description() , equalTo( "This is a default Locale description of a testcase AlarmPoint."));
 
         Locale swedish = new Locale( "sv" );
-        assertEquals( "Detta \u00E5r en svensk beskrivning av ett testlarm.", underTest.description( swedish ) );
+        assertThat( underTest.description( swedish ), equalTo( "Detta \u00E5r en svensk beskrivning av ett testlarm." ) );
 
         Locale english = Locale.UK;
-        assertEquals( "This is a UK Locale description of a testcase Alarm.", underTest.description( english ) );
+        assertThat( underTest.description( english ), equalTo( "This is a UK Locale description of a testcase Alarm." ) );
     }
 
     @Test
     public void testState()
     {
         AlarmPoint underTest = createAlarm( "testState" );
-        assertEquals( AlarmPoint.STATUS_NORMAL, underTest.currentStatus().name( null ) );
+        assertThat( underTest.currentStatus().name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
         boolean condition = underTest.currentCondition();
-        assertEquals( false, condition );
+        assertThat( condition, equalTo( false ) );
     }
 
     @Test
@@ -150,17 +156,17 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
         AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
 
         String alarmText = underTest.attribute( "text" );
-        assertNull( alarmText );
+        assertThat( alarmText, nullValue() );
 
         underTest.setAttribute( "text", "TestCase AlarmPoint" );
-        assertEquals( "TestCase AlarmPoint", underTest.attribute( "text" ) );
+        assertThat( underTest.attribute( "text" ), equalTo( "TestCase AlarmPoint" ) );
 
         List<String> names = underTest.attributeNames();
-        assertEquals( 1, names.size() );
+        assertThat( names.size(), equalTo( 1 ) );
 
         underTest.setAttribute( "text", null );
         names = underTest.attributeNames();
-        assertEquals( 0, names.size() );
+        assertThat( names.size(), equalTo( 0 ) );
     }
 
     @Test
@@ -186,7 +192,7 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
         AlarmPoint underTest = createAlarm( "TestCase AlarmPoint" );
         alarmSystem.addAlarmListener( this );
         underTest.deactivate();
-        assertEquals( 0, fired );
+        assertThat( fired, equalTo( 0 ) );
     }
 
     @Test
@@ -206,16 +212,16 @@ public class AlarmPointImplTest extends AbstractPolygeneTest
 
         alarmSystem.addAlarmListener( this );
         underTest.activate();
-        assertEquals( 1, fired );
+        assertThat( fired, equalTo( 1 ) );
         alarmSystem.addAlarmListener( this );
         underTest.deactivate();
-        assertEquals( 3, fired );
+        assertThat( fired, equalTo( 3 ) );
         alarmSystem.removeAlarmListener( this );
         underTest.activate();
-        assertEquals( 4, fired );
+        assertThat( fired, equalTo( 4 ) );
         alarmSystem.removeAlarmListener( this );
         underTest.deactivate();
-        assertEquals( 4, fired );
+        assertThat( fired, equalTo( 4 ) );
     }
 
     public void alarmFired( AlarmEvent event )

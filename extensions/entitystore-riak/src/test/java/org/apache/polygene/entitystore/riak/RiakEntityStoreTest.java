@@ -17,33 +17,38 @@
  */
 package org.apache.polygene.entitystore.riak;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-riak",
+         ports = @Port( exposed = 8801, inner = 8087),
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class RiakEntityStoreTest extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "riak","riak_auth_mods started on node");
-
     private RiakFixture riakFixture;
 
-    @Override
-    public void setUp() throws Exception
+    @BeforeEach
+    public void setupRiak()
+        throws Exception
     {
-        super.setUp();
         RiakEntityStoreService es = serviceFinder.findService( RiakEntityStoreService.class ).get();
         riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
         riakFixture.waitUntilReady();
     }
 
-    @Override
-    public void tearDown()
+    @AfterEach
+    public void cleanUpRiak()
     {
         riakFixture.deleteTestData();
         super.tearDown();
@@ -62,8 +67,8 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
         // END SNIPPET: assembly
         RiakEntityStoreConfiguration riakConfig = config.forMixin( RiakEntityStoreConfiguration.class )
                                                         .declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
+        String host = "localhost";
+        int port = 8801;
         riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
         // START SNIPPET: assembly
     }

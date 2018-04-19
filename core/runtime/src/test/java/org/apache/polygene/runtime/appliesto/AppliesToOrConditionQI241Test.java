@@ -39,9 +39,10 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class AppliesToOrConditionQI241Test
     extends AbstractPolygeneTest
@@ -68,7 +69,7 @@ public class AppliesToOrConditionQI241Test
                 SomeServiceCompositeWithFirstAnnotation.class );
             SomeServiceCompositeWithFirstAnnotation someWithFirst = refWithFirst.get();
             someWithFirst.doStuff();
-            assertTrue( "AppliesTo did not match with first annotation", someWithFirst.concernHasBeenPlayed() );
+            assertThat( "AppliesTo did not match with first annotation", someWithFirst.concernHasBeenPlayed(), is( true ) );
         }
         finally
         {
@@ -87,7 +88,7 @@ public class AppliesToOrConditionQI241Test
                 SomeServiceCompositeWithSecondAnnotation.class );
             SomeServiceCompositeWithSecondAnnotation someWithSecond = refWithSecond.get();
             someWithSecond.doStuff();
-            assertTrue( "AppliesTo did not match with second annotation", someWithSecond.concernHasBeenPlayed() );
+            assertThat( "AppliesTo did not match with second annotation", someWithSecond.concernHasBeenPlayed(), is( true ) );
         }
         finally
         {
@@ -106,7 +107,7 @@ public class AppliesToOrConditionQI241Test
                 SomeServiceCompositeWithTwoAnnotations.class );
             SomeServiceCompositeWithTwoAnnotations someWithTwo = refWithTwo.get();
             someWithTwo.doStuff();
-            assertTrue( "AppliesTo did not match with two annotations", someWithTwo.concernHasBeenPlayed() );
+            assertThat( "AppliesTo did not match with two annotations", someWithTwo.concernHasBeenPlayed(), is( true ) );
         }
         finally
         {

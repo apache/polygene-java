@@ -19,12 +19,14 @@
  */
 package org.apache.polygene.regression.qi65;
 
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -39,13 +41,15 @@ public class IssueTest
         module.transients( TestComposite.class );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void constraintOnMethodParameter()
         throws SecurityException, NoSuchMethodException
     {
-        TestComposite test = transientBuilderFactory.newTransient( TestComposite.class );
+        assertThrows( IllegalArgumentException.class, () -> {
+            TestComposite test = transientBuilderFactory.newTransient( TestComposite.class );
 
-        test.someMethod( null );
+            test.someMethod( null );
+        } );
     }
 
     @Mixins( TestMixin.class )

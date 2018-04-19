@@ -22,9 +22,6 @@ package org.apache.polygene.tools.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.polygene.tools.model.descriptor.ServiceDetailDescriptor;
-import org.apache.polygene.tools.model.descriptor.TransientDetailDescriptor;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.structure.Application;
@@ -38,10 +35,13 @@ import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.apache.polygene.tools.model.descriptor.ServiceDetailDescriptor;
+import org.apache.polygene.tools.model.descriptor.TransientDetailDescriptor;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.apache.polygene.tools.model.descriptor.ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Visitable Detail Test.

@@ -20,11 +20,12 @@
 package org.apache.polygene.api.annotation.scope;
 
 import java.lang.annotation.Annotation;
-import org.junit.Test;
 import org.apache.polygene.api.concern.internal.ConcernFor;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 /**
  * Tests public api exposed by Modified annotation.
@@ -38,9 +39,9 @@ public class ModifiesTest
         throws NoSuchFieldException
     {
         Annotation[] annotations = Annotated.class.getDeclaredField( "modified" ).getDeclaredAnnotations();
-        assertNotNull( "annotations should not be null", annotations );
-        assertEquals( "number of annotations", 1, annotations.length );
-        assertEquals( "annotation type", ConcernFor.class, annotations[ 0 ].annotationType() );
+        assertThat( "annotations should not be null", annotations, notNullValue() );
+        assertThat( "number of annotations", annotations.length, equalTo( 1 ) );
+        assertThat( "annotation type", annotations[ 0 ].annotationType(), equalTo( ConcernFor.class ) );
     }
 
     private static class Annotated

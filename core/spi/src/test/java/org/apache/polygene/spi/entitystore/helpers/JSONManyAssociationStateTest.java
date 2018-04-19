@@ -32,12 +32,11 @@ import org.apache.polygene.serialization.javaxjson.JavaxJsonFactories;
 import org.apache.polygene.spi.entity.EntityStatus;
 import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JSONManyAssociationStateTest extends AbstractPolygeneTest
 {
@@ -143,9 +142,6 @@ public class JSONManyAssociationStateTest extends AbstractPolygeneTest
             refList.add( ref.identity().toString() );
         }
         assertThat( refList.isEmpty(), is( false ) );
-        assertArrayEquals( new String[]
-                               {
-                                   "C", "B", "A", "0", "2", "1"
-                               }, refList.toArray() );
+        assertThat( refList.toArray(), equalTo( new String[]{ "C", "B", "A", "0", "2", "1" } ) );
     }
 }

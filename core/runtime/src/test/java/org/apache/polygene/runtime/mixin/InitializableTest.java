@@ -21,19 +21,18 @@
 package org.apache.polygene.runtime.mixin;
 
 import org.apache.polygene.api.injection.scope.This;
-import org.apache.polygene.api.unitofwork.UnitOfWork;
-import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.util.NotYetImplemented;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Initializable;
 import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test of Initializable interface
@@ -88,12 +87,13 @@ public class InitializableTest extends AbstractPolygeneTest
         assertThat( "object has been initialized", instance.ok(), equalTo( true ) );
     }
 
-    @NotYetImplemented( reason = "Mixin of types with no method are not scrutinized for Initializable implementation" )
+    // TODO: (niclas) This is part of the whole lifecycle mess, that needs to be worked out once and for all.
+    @Disabled( "Mixin of types with no method are not scrutinized for Initializable implementation" )
     @Test
     public void givenTypeWithNoMethodsAndInitializableMixinWhenInstantiatedThenInvokeInitialize()
     {
         NoMethod instance = transientBuilderFactory.newTransient( NoMethod.class );
-        assertThat( "mixin has been initialized", noMethodMixinOk, equalTo( true ) );
+        assertThat( "mixin has not been initialized", noMethodMixinOk, equalTo( true ) );
     }
 
     @Mixins( TestMixin.class )
@@ -199,7 +199,7 @@ public class InitializableTest extends AbstractPolygeneTest
 
     static boolean noMethodMixinOk;
 
-    @Before
+    @BeforeEach
     public void resetNoMethodMixinStaticState()
     {
         noMethodMixinOk = false;

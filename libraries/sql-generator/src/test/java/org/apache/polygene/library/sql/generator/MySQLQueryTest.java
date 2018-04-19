@@ -17,7 +17,7 @@ package org.apache.polygene.library.sql.generator;
 import org.apache.polygene.library.sql.generator.vendor.MySQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendorProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

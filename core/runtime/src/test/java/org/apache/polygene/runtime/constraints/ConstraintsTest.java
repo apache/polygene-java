@@ -23,23 +23,24 @@ import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.constraint.Constraint;
 import org.apache.polygene.api.constraint.ConstraintDeclaration;
-import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.constraint.Constraints;
 import org.apache.polygene.api.constraint.Name;
+import org.apache.polygene.api.constraint.ValueConstraintViolation;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConstraintsTest
     extends AbstractPolygeneTest
@@ -67,8 +68,8 @@ public class ConstraintsTest
         catch( ConstraintViolationException e )
         {
             Collection<ValueConstraintViolation> violations = e.constraintViolations();
-            assertEquals( 2, violations.size() );
-//            assertEquals( MyOne.class.getName(), e.mixinTypeName() );
+            assertThat( violations.size(), equalTo( 2 ) );
+//            assertThat( e.mixinTypeName() , equalTo( MyOne.class.getName()));
         }
     }
 
@@ -88,8 +89,8 @@ public class ConstraintsTest
         catch( ConstraintViolationException e )
         {
             Collection<ValueConstraintViolation> violations = e.constraintViolations();
-            assertEquals( 2, violations.size() );
-//            assertEquals( MyOne.class.getName(), e.mixinTypeName() );
+            assertThat( violations.size(), equalTo( 2 ) );
+//            assertThat( e.mixinTypeName() , equalTo( MyOne.class.getName()));
         }
     }
 

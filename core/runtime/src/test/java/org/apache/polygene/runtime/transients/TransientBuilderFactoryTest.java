@@ -21,8 +21,6 @@
 package org.apache.polygene.runtime.transients;
 
 import java.lang.reflect.Method;
-import org.hamcrest.core.IsEqual;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.composite.NoSuchTransientTypeException;
@@ -38,8 +36,11 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.library.constraints.annotation.MaxLength;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for CompositeBuilderFactory.
@@ -52,18 +53,20 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void newBuilderForUnregisteredComposite()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler()
             {
-            }
-        };
-        assembler.module().newTransientBuilder( AnyComposite.class );
+                public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+                {
+                }
+            };
+            assembler.module().newTransientBuilder( AnyComposite.class );
+        } );
     }
 
     /**
@@ -71,18 +74,20 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullPointerException.class )
+    @Test
     public void newBuilderForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        assertThrows( NullPointerException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler()
             {
-            }
-        };
-        assembler.module().newTransientBuilder( null );
+                public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+                {
+                }
+            };
+            assembler.module().newTransientBuilder( null );
+        } );
     }
 
     /**
@@ -90,18 +95,20 @@ public class TransientBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullPointerException.class )
+    @Test
     public void newInstanceForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        assertThrows( NullPointerException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler()
             {
-            }
-        };
-        assembler.module().newTransient( null );
+                public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+                {
+                }
+            };
+            assembler.module().newTransient( null );
+        } );
     }
 
     /**
@@ -140,25 +147,27 @@ public class TransientBuilderFactoryTest
         assembler.module().newTransientBuilder( AnyComposite.class );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testClassAsTransient()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
-        {
-            @Override
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        assertThrows( ConstraintViolationException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler()
             {
-                module.transients( AnyTransient.class );
-            }
-        };
+                @Override
+                public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+                {
+                    module.transients( AnyTransient.class );
+                }
+            };
 
-        AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
-        assertThat( anyTransient.hello( "me" ), new IsEqual<>( "Hello ME from Module 1" ) );
+            AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
+            assertThat( anyTransient.hello( "me" ), new IsEqual<>( "Hello ME from Module 1" ) );
 
-        assertThat( anyTransient.hello( "World" ), new IsEqual<>( "Hello WORLD from ME" ) );
-        anyTransient.hello( "Universe" );
+            assertThat( anyTransient.hello( "World" ), new IsEqual<>( "Hello WORLD from ME" ) );
+            anyTransient.hello( "Universe" );
+        } );
     }
 
     public interface AnyComposite

@@ -36,7 +36,7 @@ import org.apache.polygene.library.sql.common.SQLConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.performance.entitystore.AbstractEntityStorePerformanceTest;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import static org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY;
 
@@ -49,7 +49,7 @@ import static org.apache.polygene.entitystore.sqlkv.assembly.PostgreSQLEntitySto
  * To run it see PostgreSQLEntityStoreTest.
  * </p>
  */
-@Ignore( "WARN Tearing down this test is broken!" )
+@Disabled( "WARN Tearing down this test is broken!" )
 public class PostgreSQLEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
 {

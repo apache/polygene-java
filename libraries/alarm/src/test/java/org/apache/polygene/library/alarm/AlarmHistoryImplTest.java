@@ -20,8 +20,7 @@
 
 package org.apache.polygene.library.alarm;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import java.util.Map;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
@@ -29,11 +28,16 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-
-import java.util.Map;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class AlarmHistoryImplTest
     extends AbstractPolygeneTest
@@ -64,6 +68,7 @@ public class AlarmHistoryImplTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -72,6 +77,7 @@ public class AlarmHistoryImplTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         if ( unitOfWorkFactory.isUnitOfWorkActive())
@@ -90,9 +96,9 @@ public class AlarmHistoryImplTest
         AlarmHistory hist = underTest.history();
         AlarmEvent event1 = hist.firstEvent();
         AlarmEvent event2 = hist.lastEvent();
-        assertNull( event1 );
-        assertNull( event2 );
-        assertEquals( "Activate Counter", 0, hist.activateCounter() );
+        assertThat( event1, nullValue() );
+        assertThat( event2, nullValue() );
+        assertThat( "Activate Counter", hist.activateCounter(), equalTo( 0 ) );
     }
 
     @Test
@@ -105,9 +111,9 @@ public class AlarmHistoryImplTest
         AlarmHistory hist = underTest.history();
         AlarmEvent event1 = hist.firstEvent();
         AlarmEvent event2 = hist.lastEvent();
-        assertFalse( event1.equals( event2 ) );
-        assertEquals( AlarmPoint.STATUS_ACTIVATED, event1.newStatus().get().name(null) );
-        assertEquals( AlarmPoint.STATUS_NORMAL, event2.newStatus().get().name(null) );
+        assertThat( event1.equals( event2 ), is( false ) );
+        assertThat( event1.newStatus().get().name( null ), equalTo( AlarmPoint.STATUS_ACTIVATED ) );
+        assertThat( event2.newStatus().get().name( null ), equalTo( AlarmPoint.STATUS_NORMAL ) );
     }
 
     @Test
@@ -124,23 +130,23 @@ public class AlarmHistoryImplTest
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
 
-        assertEquals( 5, eventCounter );
-        assertEquals( 5, hist.allAlarmEvents().get().size() );
+        assertThat( eventCounter, equalTo( 5 ) );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 5 ) );
 
         AlarmEvent event = hist.eventAt( -1 );
-        assertNull( event );
+        assertThat( event, nullValue() );
         event = hist.eventAt( 5 );
-        assertNull( event );
+        assertThat( event, nullValue() );
         event = hist.eventAt( 0 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
         event = hist.eventAt( 1 );
-        assertEquals( "deactivation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "deactivation" ) );
         event = hist.eventAt( 2 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
         event = hist.eventAt( 3 );
-        assertEquals( "deactivation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "deactivation" ) );
         event = hist.eventAt( 4 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
     }
 
     @Test
@@ -157,23 +163,23 @@ public class AlarmHistoryImplTest
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
 
-        assertEquals( 5, eventCounter );
-        assertEquals( 5, hist.allAlarmEvents().get().size() );
+        assertThat( eventCounter, equalTo( 5 ) );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 5 ) );
 
         AlarmEvent event = hist.eventAtEnd( -1 );
-        assertNull( event );
+        assertThat( event, nullValue() );
         event = hist.eventAtEnd( 5 );
-        assertNull( event );
+        assertThat( event, nullValue() );
         event = hist.eventAtEnd( 4 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
         event = hist.eventAtEnd( 3 );
-        assertEquals( "deactivation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "deactivation" ) );
         event = hist.eventAtEnd( 2 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
         event = hist.eventAtEnd( 1 );
-        assertEquals( "deactivation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "deactivation" ) );
         event = hist.eventAtEnd( 0 );
-        assertEquals( "activation", event.systemName().get() );
+        assertThat( event.systemName().get(), equalTo( "activation" ) );
     }
 
     @Test
@@ -203,7 +209,7 @@ public class AlarmHistoryImplTest
         verifyCounters( counters, 3, 2 );
 
         int activateCounters = hist.activateCounter();
-        assertEquals( 3, activateCounters );
+        assertThat( activateCounters, equalTo( 3 ) );
 
         hist.resetActivateCounter();
         verifyCounters( counters, 0, 2 );
@@ -218,20 +224,20 @@ public class AlarmHistoryImplTest
         Number n2 = (Number) counters.get( AlarmPoint.TRIGGER_DEACTIVATE );
         if( n1 == null )
         {
-            assertEquals( 0, c1 );
+            assertThat( c1, equalTo( 0 ) );
         }
         else
         {
-            assertEquals( c1, n1 );
+            assertThat( n1, equalTo( c1 ) );
         }
 
         if( n2 == null )
         {
-            assertEquals( 0, c2 );
+            assertThat( c2, equalTo( 0 ) );
         }
         else
         {
-            assertEquals( c2, n2 );
+            assertThat( n2, equalTo( c2 ) );
         }
     }
 
@@ -242,39 +248,39 @@ public class AlarmHistoryImplTest
         AlarmPoint underTest = createAlarm( "testSetMaxSize" );
         alarmSystem.addAlarmListener( this );
         AlarmHistory hist = underTest.history();
-        assertEquals( 0, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 0 ) );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( 1, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 1 ) );
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( 2, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 2 ) );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( 3, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 3 ) );
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( 4, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 4 ) );
 
         int maxsize = hist.maxSize().get();
-        assertEquals( 30, maxsize );
+        assertThat( maxsize, equalTo( 30 ) );
 
         hist.maxSize().set( 3 );    // The Polygene version doesn't intercept the maxSize().set() method and purge the old
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE ); // so we do another event to purge.
-        assertEquals( 3, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 3 ) );
 
         hist.maxSize().set( 0 );
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE ); // so we do another event to purge.
-        assertEquals( 0, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 0 ) );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( 0, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 0 ) );
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( 0, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 0 ) );
         hist.maxSize().set( 2 );
-        assertEquals( 0, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 0 ) );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( 1, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 1 ) );
         underTest.trigger( AlarmPoint.TRIGGER_DEACTIVATE );
-        assertEquals( 2, hist.allAlarmEvents().get().size() );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 2 ) );
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE );
-        assertEquals( 2, hist.allAlarmEvents().get().size() );
-        assertEquals( 11, eventCounter );
+        assertThat( hist.allAlarmEvents().get().size(), equalTo( 2 ) );
+        assertThat( eventCounter, equalTo( 11 ) );
     }
 
     public void alarmFired( AlarmEvent event )

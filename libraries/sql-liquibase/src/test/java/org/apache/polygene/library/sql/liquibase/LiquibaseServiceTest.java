@@ -47,15 +47,14 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.ThreadLocalTransactionProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test DataSource and Liquibase services
@@ -129,7 +128,7 @@ public class LiquibaseServiceTest
             InsertValuesStep2 insert = jooq.insertInto( testTable )
                                            .columns( idColumn, fooColumn )
                                            .values( "someid", "bar" );
-            assertTrue( insert.execute() == 1 );
+            assertThat( insert.execute() == 1, is( true ) );
         } );
         jooq.transaction( conf -> {
             List<Record> records = jooq.selectFrom( testTable ).stream().collect( toList() );

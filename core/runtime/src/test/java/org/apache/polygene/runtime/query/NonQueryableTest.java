@@ -27,11 +27,11 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.query.QueryExpressions.eq;
 import static org.apache.polygene.api.query.QueryExpressions.templateFor;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NonQueryableTest
     extends AbstractPolygeneTest
@@ -51,7 +51,7 @@ public class NonQueryableTest
             QueryBuilder<Abc> builder = queryBuilderFactory.newQueryBuilder( Abc.class );
             Abc proto = templateFor( Abc.class );
             builder.where( eq( proto.isValid(), Boolean.TRUE ) );
-            Assert.fail( "Exception was expected." );
+            fail( "Exception was expected." );
         }
         catch( QueryException e )
         {
@@ -70,7 +70,7 @@ public class NonQueryableTest
         try
         {
             queryBuilderFactory.newQueryBuilder( Abc2.class );
-            Assert.fail( "Exception was expected." );
+            fail( "Exception was expected." );
         }
         catch( QueryException e )
         {

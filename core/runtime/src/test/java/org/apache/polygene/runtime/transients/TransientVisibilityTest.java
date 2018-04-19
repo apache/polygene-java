@@ -41,9 +41,11 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TransientVisibilityTest
 {
@@ -53,7 +55,7 @@ public class TransientVisibilityTest
     private Application app;
     private UnitOfWorkFactory uowf;
 
-    @Before
+    @BeforeEach
     public void setup()
         throws Exception
     {
@@ -88,7 +90,7 @@ public class TransientVisibilityTest
         uowf = module.unitOfWorkFactory();
     }
 
-    @After
+    @AfterEach
     public void tearDown()
         throws Exception
     {
@@ -130,11 +132,13 @@ public class TransientVisibilityTest
         service.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingBesideModuleVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.besideModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.besideModuleVisible();
+        } );
     }
 
     @Test
@@ -144,39 +148,49 @@ public class TransientVisibilityTest
         service.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingBelowLayerVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.belowLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.belowLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingBelowModuleVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.belowModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.belowModuleVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingAboveApplicationVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.aboveApplicationVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.aboveApplicationVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingAboveLayerVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.aboveLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.aboveLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromServiceWhenAccessingAboveModuleVisibleExpectException()
     {
-        FromService service = module.findService( FromService.class ).get();
-        service.aboveModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromService service = module.findService( FromService.class ).get();
+            service.aboveModuleVisible();
+        } );
     }
 
     @Test
@@ -269,22 +283,24 @@ public class TransientVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.besideModuleVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.besideModuleVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
     @Test
@@ -305,94 +321,104 @@ public class TransientVisibilityTest
         }
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.belowLayerVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.belowLayerVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.belowModuleVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.belowModuleVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.aboveApplicationVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.aboveApplicationVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.aboveLayerVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.aboveLayerVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = uowf.newUnitOfWork();
-        try
-        {
-            FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY);
-            entity.aboveModuleVisible();
-        }
-        finally
-        {
-            if( unitOfWork.isOpen() )
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            UnitOfWork unitOfWork = uowf.newUnitOfWork();
+            try
             {
-                unitOfWork.discard();
+                FromEntity entity = unitOfWork.newEntity( FromEntity.class, TEST_IDENTITY );
+                entity.aboveModuleVisible();
             }
-        }
+            finally
+            {
+                if( unitOfWork.isOpen() )
+                {
+                    unitOfWork.discard();
+                }
+            }
+        } );
     }
 
     @Test
@@ -430,11 +456,13 @@ public class TransientVisibilityTest
         value.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingBesideModuleVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.besideModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.besideModuleVisible();
+        } );
     }
 
     @Test
@@ -444,39 +472,49 @@ public class TransientVisibilityTest
         value.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingBelowLayerVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.belowLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.belowLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingBelowModuleVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.belowModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.belowModuleVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingAboveApplicationVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.aboveApplicationVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.aboveApplicationVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingAboveLayerVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.aboveLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.aboveLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromValueWhenAccessingAboveModuleVisibleExpectException()
     {
-        FromValue value = module.newValue( FromValue.class );
-        value.aboveModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromValue value = module.newValue( FromValue.class );
+            value.aboveModuleVisible();
+        } );
     }
 
     @Test
@@ -514,11 +552,13 @@ public class TransientVisibilityTest
         transientt.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingBesideModuleVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.besideModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.besideModuleVisible();
+        } );
     }
 
     @Test
@@ -528,39 +568,49 @@ public class TransientVisibilityTest
         transientt.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingBelowLayerVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.belowLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.belowLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingBelowModuleVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.belowModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.belowModuleVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingAboveApplicationVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.aboveApplicationVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.aboveApplicationVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingAboveLayerVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.aboveLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.aboveLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromTransientWhenAccessingAboveModuleVisibleExpectException()
     {
-        FromTransient transientt = module.newTransient( FromTransient.class );
-        transientt.aboveModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromTransient transientt = module.newTransient( FromTransient.class );
+            transientt.aboveModuleVisible();
+        } );
     }
 
     @Test
@@ -598,11 +648,13 @@ public class TransientVisibilityTest
         object.besideLayerVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingBesideModuleVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.besideModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.besideModuleVisible();
+        } );
     }
 
     @Test
@@ -612,39 +664,49 @@ public class TransientVisibilityTest
         object.belowApplicationVisible();
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingBelowLayerVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.belowLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.belowLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingBelowModuleVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.belowModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.belowModuleVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingAboveApplicationVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.aboveApplicationVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.aboveApplicationVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingAboveLayerVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.aboveLayerVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.aboveLayerVisible();
+        } );
     }
 
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void givenFromObjectWhenAccessingAboveModuleVisibleExpectException()
     {
-        FromObject object = module.newObject( FromObject.class );
-        object.aboveModuleVisible();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            FromObject object = module.newObject( FromObject.class );
+            object.aboveModuleVisible();
+        } );
     }
 
     private static class FromAssembler

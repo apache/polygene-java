@@ -19,26 +19,29 @@
  */
 package org.apache.polygene.entitystore.cassandra;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.cassandra.assembly.CassandraEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.apache.polygene.test.entity.CanRemoveAll;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the CassandraEntityStoreService.
- * <p>Installing Cassandra and starting it should suffice as the test use Cassandra defaults: 127.0.0.1:3000</p>
  */
+@Docker( image = "cassandra",
+         ports = @Port( exposed = 8801, inner = 9042),
+         waitFor = @WaitFor( value = "Starting listening for CQL clients", timeoutInMillis = 60000),
+         newForEachCase = false)
 public class CassandraEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "cassandra", "Starting listening for CQL clients" );
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -58,8 +61,8 @@ public class CassandraEntityStoreTest
         // END SNIPPET: assembly
 
         CassandraEntityStoreConfiguration cassandraDefaults = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "9042/tcp" );
+        String host = "localhost";
+        int port = 8801;
         System.out.println("Cassandra: " + host + ":" + port);
         cassandraDefaults.hostnames().set( host + ':' + port );
         cassandraDefaults.createIfMissing().set( true );
@@ -68,6 +71,7 @@ public class CassandraEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -75,6 +79,7 @@ public class CassandraEntityStoreTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         CanRemoveAll cleaner = serviceFinder.findService( CanRemoveAll.class ).get();

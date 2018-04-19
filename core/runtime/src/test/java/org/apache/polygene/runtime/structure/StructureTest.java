@@ -27,7 +27,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * JAVADOC

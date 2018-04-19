@@ -22,17 +22,15 @@ package org.apache.polygene.library.http;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractJettyTest
     extends AbstractPolygeneTest
@@ -49,14 +47,14 @@ public abstract class AbstractJettyTest
 
     };
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeJettyTestClass()
     {
         // Be sure that no test trigger a DNS cache, needed by VirtualHosts test plumbing
         Security.setProperty( "networkaddress.cache.ttl", "0" );
     }
 
-    @Before
+    @BeforeEach
     public void before()
         throws GeneralSecurityException, IOException
     {
@@ -64,7 +62,7 @@ public abstract class AbstractJettyTest
         defaultHttpClient = HttpClients.createDefault();
     }
 
-    @After
+    @AfterEach
     public void after()
         throws IOException
     {

@@ -23,7 +23,7 @@ import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.hazelcast.assembly.HazelcastEntityStoreAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public class HazelcastEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -37,7 +37,7 @@ public class HazelcastEntityStoreTestSuite extends EntityStoreTestSuite
             .assemble( module );
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown()
     {

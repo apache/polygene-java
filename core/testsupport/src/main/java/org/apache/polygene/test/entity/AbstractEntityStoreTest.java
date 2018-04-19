@@ -54,16 +54,16 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.spi.entity.EntityState;
 import org.apache.polygene.spi.entitystore.EntityStore;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Abstract satisfiedBy with tests for the EntityStore interface.
@@ -89,7 +89,7 @@ public abstract class AbstractEntityStoreTest
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown()
     {
         super.tearDown();
@@ -185,11 +185,11 @@ public abstract class AbstractEntityStoreTest
 
             assertThat( "property 'doubleValue' has incorrect value",
                         instance.doubleValue().get(),
-                        equalTo( 42D ) );
+                        equalTo( 42.0 ) );
 
             assertThat( "property 'floatValue' has incorrect value",
                         instance.floatValue().get(),
-                        equalTo( 42F ) );
+                        equalTo( 42f ) );
 
             assertThat( "property 'booleanValue' has incorrect value",
                         instance.booleanValue().get(),

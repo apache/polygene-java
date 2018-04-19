@@ -36,12 +36,12 @@ import org.apache.polygene.spi.module.ModuleSpi;
 import org.apache.polygene.spi.type.ValueTypeFactory;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 
 public class ValueTypeFactoryTest extends AbstractPolygeneTest
 {
@@ -64,7 +64,7 @@ public class ValueTypeFactoryTest extends AbstractPolygeneTest
         Property<Map<String, Integer>> map();
     }
 
-    @Before
+    @BeforeEach
     public void setup()
     {
         valueTypeFactory = ( (ModuleSpi) module.instance() ).valueTypeFactory();

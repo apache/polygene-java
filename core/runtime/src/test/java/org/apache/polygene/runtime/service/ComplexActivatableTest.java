@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.runtime.service;
 
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivatorAdapter;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Initializable;
@@ -30,15 +29,17 @@ import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ComplexActivatableTest
     extends AbstractPolygeneTest
 {
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( SuperType.class ).withActivators( TestActivator.class ).instantiateOnStartup();
     }
@@ -47,12 +48,12 @@ public class ComplexActivatableTest
     public void validateThatApplicationGotAssembled()
     {
         ServiceReference<SuperType> reference = serviceFinder.findService( SuperType.class );
-        assertEquals( "Hello, World", reference.get().sayHello() );
+        assertThat( reference.get().sayHello(), equalTo( "Hello, World" ) );
     }
 
     @Mixins( { DomainType.class, InitializationMixin.class } )
     public interface SuperType
-            extends ServiceComposite, Initializable
+        extends ServiceComposite, Initializable
     {
 
         String sayHello();
@@ -60,22 +61,20 @@ public class ComplexActivatableTest
         Property<String> greeting();
 
         Property<String> recepient();
-
     }
 
     public abstract static class DomainType
-            implements SuperType
+        implements SuperType
     {
 
         public String sayHello()
         {
             return greeting().get() + ", " + recepient().get();
         }
-
     }
 
     public static class InitializationMixin
-            implements Initializable
+        implements Initializable
     {
 
         @This
@@ -85,20 +84,17 @@ public class ComplexActivatableTest
         {
             me.greeting().set( "Hello" );
         }
-
     }
 
     public static class TestActivator
-            extends ActivatorAdapter<ServiceReference<SuperType>>
+        extends ActivatorAdapter<ServiceReference<SuperType>>
     {
 
         @Override
         public void afterActivation( ServiceReference<SuperType> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().recepient().set( "World" );
         }
-
     }
-
 }

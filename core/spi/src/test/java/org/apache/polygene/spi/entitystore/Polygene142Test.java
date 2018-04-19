@@ -30,7 +30,7 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Polygene142Test extends AbstractPolygeneTest
 {

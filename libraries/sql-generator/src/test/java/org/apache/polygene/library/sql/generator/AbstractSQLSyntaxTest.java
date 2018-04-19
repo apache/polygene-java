@@ -16,10 +16,12 @@ package org.apache.polygene.library.sql.generator;
 
 import org.apache.polygene.library.sql.generator.grammar.common.SQLStatement;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.LoggerFactory;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  */
@@ -33,19 +35,20 @@ public abstract class AbstractSQLSyntaxTest
         String stringStmt = vendor.toString( statement );
         LoggerFactory.getLogger( this.getClass().getName() ).info( statementType + ":" + "\n" + stringStmt + "\n" );
 
-        Assert.assertEquals(
-            "Strings must be same from both SQLVendor.toString(...) and statement.toString() methods.", stringStmt,
-            statement.toString() );
+        assertThat(
+            "Strings must be same from both SQLVendor.toString(...) and statement.toString() methods.",
+            statement.toString(),
+            equalTo( stringStmt ) );
     }
 
-    @Before
+    @BeforeEach
     public final void setUp()
         throws Exception
     {
         this._vendor = this.loadVendor();
     }
 
-    @After
+    @AfterEach
     public final void tearDown()
     {
         this._vendor = null;

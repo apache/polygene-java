@@ -26,11 +26,12 @@ import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.api.object.NoSuchObjectTypeException;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for ObjectBuilderFactory.
@@ -43,12 +44,15 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NoSuchObjectTypeException.class )
+    @Test
     public void newBuilderForUnregisteredObject()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
-        assembler.module().newObject( AnyObject.class );
+        assertThrows( NoSuchObjectTypeException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler( module -> {
+            } );
+            assembler.module().newObject( AnyObject.class );
+        } );
     }
 
     /**
@@ -56,12 +60,15 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullPointerException.class )
+    @Test
     public void newBuilderForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
-        assembler.module().newObject( null );
+        assertThrows( NullPointerException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler( module -> {
+            } );
+            assembler.module().newObject( null );
+        } );
     }
 
     /**
@@ -69,12 +76,15 @@ public class ObjectBuilderFactoryTest
      *
      * @throws Exception expected
      */
-    @Test( expected = NullPointerException.class )
+    @Test
     public void newObjectInstanceForNullType()
         throws Exception
     {
-        SingletonAssembler assembler = new SingletonAssembler( module -> {} );
-        assembler.module().newObject( null );
+        assertThrows( NullPointerException.class, () -> {
+            SingletonAssembler assembler = new SingletonAssembler( module -> {
+            } );
+            assembler.module().newObject( null );
+        } );
     }
 
     /**
@@ -95,12 +105,12 @@ public class ObjectBuilderFactoryTest
         SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( ManyConstructorObject.class ) );
 
         ManyConstructorObject object = assembler.module().newObject( ManyConstructorObject.class );
-        Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
+        assertThat( "ref is not null", object.anyObject, notNullValue() );
 
         object = assembler.module()
             .newObject( ManyConstructorObject.class, new AnyObject() );
 
-        Assert.assertThat( "ref is not null", object.anyObject, notNullValue() );
+        assertThat( "ref is not null", object.anyObject, notNullValue() );
     }
 
     @Test
@@ -109,7 +119,7 @@ public class ObjectBuilderFactoryTest
     {
         SingletonAssembler assembler = new SingletonAssembler( module -> module.objects( OuterClass.class ) );
 
-        Assert.assertThat( "inner class has been injected", assembler.module()
+        assertThat( "inner class has been injected", assembler.module()
             .newObject( OuterClass.class )
             .name(), equalTo( "Module 1" ) );
     }

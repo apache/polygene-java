@@ -53,48 +53,75 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.RecordType;
 import org.jooq.Result;
+import org.jooq.SQLDialect;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
+import static org.apache.polygene.entitystore.sql.MixinTable.INDEX_COLUMN_NAME;
+import static org.apache.polygene.entitystore.sql.MixinTable.NAME_COLUMN_NAME;
+import static org.apache.polygene.entitystore.sql.MixinTable.REFERENCE_COLUMN_NAME;
+import static org.apache.polygene.entitystore.sql.SqlType.makeField;
+
 /**
  * This class handles all the dealing with the main table, called the Entities Table.
  * <p>
- *     This is the table that holds the {@link BaseEntity} rows, and joins with the different so called
- *     {@link MixinTable}, which handles one table per Mixin type.
+ * This is the table that holds the {@link BaseEntity} rows, and joins with the different so called
+ * {@link MixinTable}, which handles one table per Mixin type.
  * </p>
  */
 @SuppressWarnings( "WeakerAccess" )
 public class EntitiesTable
-    implements TableFields
 {
+    private static final String VALUEID_COLUMN_NAME = "_value_id";
+    private static final String TYPE_COLUMN_NAME = "_type";
+    private static final String VERSION_COLUMN_NAME = "_version";
+    private static final String APPLICATIONVERSION_COLUMN_NAME = "_app_version";
+
     private static final Predicate<? super Class<?>> NOT_COMPOSITE = type -> !( type.equals( Composite.class ) || type.equals( EntityComposite.class ) );
     private static final Predicate<? super Class<?>> NOT_HASIDENTITY = type -> !( type.equals( HasIdentity.class ) );
+    private final SQLDialect dialect;
     private Map<EntityCompositeType, Set<Class<?>>> mixinTypeCache = new ConcurrentHashMap<>();
     private Map<Class<?>, MixinTable> mixinTablesCache = new ConcurrentHashMap<>();
 
     private final Table<Record> entitiesTable;
-    private JooqDslContext dsl;
+
+    private Field<String> valueIdentityColumn;
+    private Field<String> typeNameColumn;
+    private Field<String> versionColumn;
+    private Field<String> applicationVersionColumn;
+
+    private final JooqDslContext dsl;
     private final TypesTable types;
-    private String applicationVersion;
-    private Serialization serialization;
+    private final String applicationVersion;
+    private final Serialization serialization;
     private boolean replacementStrategy = false;  // Figure out later if we should support both and if so, how.
 
-    EntitiesTable( JooqDslContext dsl, TypesTable types, String applicationVersion, String entitiesTableName, Serialization serialization )
+    EntitiesTable( JooqDslContext dsl,
+                   SQLDialect dialect,
+                   TypesTable types,
+                   String applicationVersion,
+                   String entitiesTableName,
+                   Serialization serialization )
     {
         this.dsl = dsl;
+        this.dialect = dialect;
         this.types = types;
         this.applicationVersion = applicationVersion;
         this.serialization = serialization;
         entitiesTable = dsl.tableOf( entitiesTableName );
+        valueIdentityColumn = makeField( VALUEID_COLUMN_NAME, String.class, dialect );
+        typeNameColumn = makeField( TYPE_COLUMN_NAME, String.class, dialect );
+        versionColumn = makeField( VERSION_COLUMN_NAME, String.class, dialect );
+        applicationVersionColumn = makeField( APPLICATIONVERSION_COLUMN_NAME, String.class, dialect );
     }
 
     public BaseEntity fetchEntity( EntityReference reference, ModuleDescriptor module )
     {
         Result<Record> baseEntityResult = dsl
             .selectFrom( entitiesTable )
-            .where( identityColumn.eq( reference.identity().toString() ) )
+            .where( types.identityColumn().eq( reference.identity().toString() ) )
             .fetch();
 
         if( baseEntityResult.isEmpty() )
@@ -112,10 +139,10 @@ public class EntitiesTable
         result.type = findEntityDescriptor( typeName, module );
         result.version = row.field( versionColumn ).get( row );
         result.applicationVersion = row.field( applicationVersionColumn ).get( row );
-        result.identity = StringIdentity.identityOf( row.field( identityColumn ).get( row ) );
+        result.identity = StringIdentity.identityOf( row.field( types.identityColumn() ).get( row ) );
         result.currentValueIdentity = EntityReference.parseEntityReference( row.field( valueIdentityColumn ).get( row ) ).identity();
-        result.modifedAt = Instant.ofEpochMilli( row.field( modifiedColumn ).get( row ).getTime() );
-        result.createdAt = Instant.ofEpochMilli( row.field( createdColumn ).get( row ).getTime() );
+        result.modifedAt = Instant.ofEpochMilli( row.field( types.modifiedColumn() ).get( row ).getTime() );
+        result.createdAt = Instant.ofEpochMilli( row.field( types.createdColumn() ).get( row ).getTime() );
         return result;
     }
 
@@ -172,7 +199,7 @@ public class EntitiesTable
 
     private MixinTable findMixinTable( Class<?> type, EntityDescriptor entityDescriptor )
     {
-        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, types, type, entityDescriptor, serialization ) );
+        return mixinTablesCache.computeIfAbsent( type, t -> new MixinTable( dsl, dialect, types, type, entityDescriptor, serialization ) );
     }
 
     private Set<Class<?>> mixinsOf( Stream<? extends AssociationDescriptor> stream )
@@ -216,9 +243,9 @@ public class EntitiesTable
         String typeName = descriptor.primaryType().getName();
         Instant currentTime = uow.currentTime();
         dsl.insertInto( entitiesTable )
-           .set( identityColumn, reference.identity().toString() )
-           .set( createdColumn, new Timestamp( currentTime.toEpochMilli() ))
-           .set( modifiedColumn, new Timestamp( currentTime.toEpochMilli()) )
+           .set( types.identityColumn(), reference.identity().toString() )
+           .set( types.createdColumn(), new Timestamp( currentTime.toEpochMilli() ) )
+           .set( types.modifiedColumn(), new Timestamp( currentTime.toEpochMilli() ) )
            .set( valueIdentityColumn, valueIdentity )
            .set( typeNameColumn, typeName )
            .set( versionColumn, "1" )
@@ -243,11 +270,11 @@ public class EntitiesTable
             entity.currentValueIdentity = StringIdentity.identityOf( UUID.randomUUID().toString() );
         }
         dsl.update( entitiesTable )
-           .set( modifiedColumn, new Timestamp( uow.currentTime().toEpochMilli() ) )
+           .set( types.modifiedColumn(), new Timestamp( uow.currentTime().toEpochMilli() ) )
            .set( valueIdentityColumn, entity.currentValueIdentity.toString() )
            .set( versionColumn, entity.version )
            .set( applicationVersionColumn, applicationVersion )
-           .where( identityColumn.eq( entity.identity.toString() ) )
+           .where( types.identityColumn().eq( entity.identity.toString() ) )
            .execute();
     }
 
@@ -321,32 +348,32 @@ public class EntitiesTable
         SelectQuery<Record> query = from.where( identityColumnOf( entitiesTable ).eq( reference ) ).getQuery();
         Result<Record> result = query.fetch();
         RecordType<Record> recordType = result.recordType();
-        result.forEach( record ->
-                        {
-                            AssociationValue value = new AssociationValue();
-                            if( recordType.indexOf( referenceColumn ) >= 0 )
-                            {
-                                // some many-to-many association found.
-                                if( recordType.indexOf( nameColumn ) >= 0 )
-                                {
-                                    // NamedAssociations found.
-                                    value.name = QualifiedName.fromClass( entityDescriptor.primaryType(), record.getValue( nameColumn ) );
-                                }
-                                if( recordType.indexOf( indexColumn ) >= 0 )
-                                {
-                                    // ManyAssociations found.
-                                    value.position = record.getValue( indexColumn );
-                                }
-                                value.reference = record.getValue( referenceColumn );
-                            }
-                            consume.accept( value );
-                        } );
+        result.forEach( record -> {
+            AssociationValue value = new AssociationValue();
+            if( recordType.indexOf( MixinTable.REFERENCE_COLUMN_NAME ) >= 0 )
+            {
+                // some many-to-many association found.
+                if( recordType.indexOf( NAME_COLUMN_NAME ) >= 0 )
+                {
+                    // NamedAssociations found.
+                    value.name = QualifiedName.fromClass( entityDescriptor.primaryType(), (String) record.get( NAME_COLUMN_NAME ) );
+                    EntityCompositeType valueType = entityDescriptor.valueType();
+                }
+                if( recordType.indexOf( INDEX_COLUMN_NAME ) >= 0 )
+                {
+                    // ManyAssociations found.
+                    value.position = (String) record.get( INDEX_COLUMN_NAME );
+                }
+                value.reference = (String) record.get( REFERENCE_COLUMN_NAME );
+                consume.accept( value );
+            }
+        } );
     }
 
     private Field<String> identityColumnOf( Table<Record> joinedTable )
     {
         String name = joinedTable.getName();
-        String identity = identityColumn.getName();
+        String identity = types.identityColumn().getName();
         return DSL.field( DSL.name( name, identity ), String.class );
     }
 
@@ -394,5 +421,19 @@ public class EntitiesTable
             mixinTables.forEach( table -> dsl.delete( table ).where( identityColumnOf( table ).eq( valueId ) ).execute() );
             assocTables.forEach( table -> dsl.delete( table ).where( identityColumnOf( table ).eq( valueId ) ).execute() );
         }
+    }
+
+    void create()
+    {
+        dsl.createTableIfNotExists( entitiesTable )
+           .column( types.identityColumn() )
+           .column( types.createdColumn() )
+           .column( typeNameColumn )
+           .column( applicationVersionColumn )
+           .column( versionColumn )
+           .column( types.modifiedColumn() )
+           .column( valueIdentityColumn )
+           .constraint( DSL.primaryKey( types.identityColumn() ) )
+           .execute();
     }
 }

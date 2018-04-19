@@ -19,13 +19,13 @@
  */
 package org.apache.polygene.bootstrap.assembly;
 
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class LayeredApplicationAssemblerTest
 {

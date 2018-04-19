@@ -35,8 +35,10 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * TODO
@@ -77,7 +79,7 @@ public class OperatorsTest
             {
                 Predicate<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
                                                                           .foo(), "Bar" );
-                Assert.assertTrue( where.test( testEntity ) );
+                assertThat( where.test( testEntity ), is( true ) );
                 System.out.println( where );
             }
             {
@@ -85,10 +87,10 @@ public class OperatorsTest
                                                                           .value()
                                                                           .get()
                                                                           .bar(), "Xyz" );
-                Assert.assertTrue( where.test( testEntity ) );
+                assertThat( where.test( testEntity ), is( true ) );
                 System.out.println( where );
 
-                Assert.assertTrue( builder.where( where ).newQuery( entities ).find().equals( testEntity ) );
+                assertThat( builder.where( where ).newQuery( entities ).find().equals( testEntity ), is( true ) );
             }
         }
         finally

@@ -50,18 +50,18 @@ import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.spi.query.IndexExporter;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ExtendWith( TemporaryFolder.class )
 public class RDFPerformanceTest extends AbstractPolygeneTest
 {
     private static final Logger LOG = LoggerFactory.getLogger( RDFPerformanceTest.class );
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     public interface ExampleEntity extends EntityComposite
     {
@@ -235,28 +235,28 @@ public class RDFPerformanceTest extends AbstractPolygeneTest
         indexerExporter.exportReadableToStream( System.out );
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void performanceTest1000() throws Exception
     {
         this.performTest( 1000 );
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void performanceTest5000() throws Exception
     {
         this.performTest( 5000 );
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void performanceTest10000() throws Exception
     {
         this.performTest( 10000 );
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void performanceTest100000() throws Exception
     {

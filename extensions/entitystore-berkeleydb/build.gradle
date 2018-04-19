@@ -35,7 +35,7 @@ dependencies {
 
     runtimeOnly polygene.core.runtime
 
-    testImplementation polygene.internals.testsupport
+    testImplementation polygene.core.testsupport
 
     testRuntimeOnly libraries.logback
 }

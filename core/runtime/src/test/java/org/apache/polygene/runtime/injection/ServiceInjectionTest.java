@@ -43,13 +43,13 @@ import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.ServiceDeclaration;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.common.Visibility.application;
 import static org.apache.polygene.api.common.Visibility.layer;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test the @Service injection annotation
@@ -81,14 +81,14 @@ public class ServiceInjectionTest
         ObjectFactory factory = assembly.module();
         ServiceUser user = factory.newObject( ServiceUser.class );
 
-        assertEquals( "X", user.testSingle() );
+        assertThat( user.testSingle(), equalTo( "X" ) );
         assertThat( user.testIdentity(), equalTo( StringIdentity.identityOf( "Foo" ) ) );
-        assertEquals( "FooX", user.testServiceReference() );
-        assertEquals( "Bar", user.testQualifier() );
-        assertEquals( "A", user.testStringIterable() );
-        assertEquals( new Long( 1L ), user.testLongIterable() );
-        assertEquals( "FooXBarX", user.testIterableServiceReferences() );
-        assertEquals( "XX", user.testIterable() );
+        assertThat( user.testServiceReference(), equalTo( "FooX" ) );
+        assertThat( user.testQualifier(), equalTo( "Bar" ) );
+        assertThat( user.testStringIterable(), equalTo( "A" ) );
+        assertThat( user.testLongIterable(), equalTo( 1L ) );
+        assertThat( user.testIterableServiceReferences(), equalTo( "FooXBarX" ) );
+        assertThat( user.testIterable(), equalTo( "XX" ) );
     }
 
     @Test
@@ -142,13 +142,15 @@ public class ServiceInjectionTest
         testInjection( assembly );
     }
 
-    @Test( expected = ConstructionException.class )
+    @Test
     public void testMissingServiceDependency()
         throws ActivationException
     {
-        // No service fulfils the dependency injection -> fail to create application
-        new SingletonAssembler( module -> module.objects( ServiceUser.class ) )
-            .module().newObject( ServiceUser.class );
+        assertThrows( ConstructionException.class, () -> {
+            // No service fulfils the dependency injection -> fail to create application
+            new SingletonAssembler( module -> module.objects( ServiceUser.class ) )
+                .module().newObject( ServiceUser.class );
+        } );
     }
 
     @Mixins( MyServiceMixin.class )

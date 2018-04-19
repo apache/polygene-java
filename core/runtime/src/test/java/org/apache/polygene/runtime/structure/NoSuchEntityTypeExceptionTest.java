@@ -28,14 +28,13 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
 import org.apache.polygene.test.entity.model.AbstractPolygeneMultiLayeredTestWithModel;
 import org.apache.polygene.test.entity.model.monetary.CheckBookSlip;
-import org.apache.polygene.test.entity.model.monetary.Currency;
 import org.apache.polygene.test.entity.model.people.Person;
 import org.apache.polygene.test.entity.model.people.Rent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NoSuchEntityTypeExceptionTest extends AbstractPolygeneMultiLayeredTestWithModel
 {

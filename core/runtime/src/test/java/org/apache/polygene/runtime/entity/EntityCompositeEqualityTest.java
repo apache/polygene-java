@@ -19,10 +19,6 @@
  */
 package org.apache.polygene.runtime.entity;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -30,10 +26,14 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing of equality of entity composites.
@@ -44,8 +44,8 @@ public class EntityCompositeEqualityTest
     private UnitOfWork unitOfWork;
     private EntityBuilder<MyComposite> myCompositeBuilder;
 
-    @Before
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -54,7 +54,7 @@ public class EntityCompositeEqualityTest
         myCompositeBuilder = unitOfWork.newEntityBuilder( MyComposite.class );
     }
 
-    @After
+    @AfterEach
     public void completeUnitOfWork()
         throws Exception
     {

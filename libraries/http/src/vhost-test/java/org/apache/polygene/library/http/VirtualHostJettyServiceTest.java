@@ -26,14 +26,15 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.http.dns.LocalManagedDns;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.library.http.Servlets.addServlets;
 import static org.apache.polygene.library.http.Servlets.serve;
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class VirtualHostJettyServiceTest
     extends AbstractJettyTest
@@ -43,7 +44,7 @@ public class VirtualHostJettyServiceTest
 
     private final int httpPort = FreePortFinder.findFreePortOnLoopback();
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeVirtualHostsClass()
     {
         assumeNoIbmJdk();
@@ -51,7 +52,7 @@ public class VirtualHostJettyServiceTest
         LocalManagedDns.putName( HOST2, "127.0.0.1" );
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterVirtualHostsClass()
     {
         LocalManagedDns.removeName( HOST1 );
@@ -80,10 +81,10 @@ public class VirtualHostJettyServiceTest
         // Available on HOST1 and HOST2
         String output = defaultHttpClient.execute( new HttpGet( "http://" + HOST1 + ":" + httpPort + "/hello" ),
                                                    stringResponseHandler );
-        assertEquals( "Hello World", output );
+        assertThat( output, equalTo( "Hello World" ) );
 
         output = defaultHttpClient.execute( new HttpGet( "http://" + HOST2 + ":" + httpPort + "/hello" ),
                                             stringResponseHandler );
-        assertEquals( "Hello World", output );
+        assertThat( output, equalTo( "Hello World" ) );
     }
 }

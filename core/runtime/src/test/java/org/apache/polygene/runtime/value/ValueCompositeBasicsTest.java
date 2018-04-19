@@ -26,10 +26,11 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ValueCompositeBasicsTest
     extends AbstractPolygeneTest
@@ -48,13 +49,13 @@ public class ValueCompositeBasicsTest
     {
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
-        assertEquals("Niclas", builder.prototype().name());
+        assertThat( builder.prototype().name(), equalTo( "Niclas" ) );
         SomeValue value1 = builder.newInstance();
         SomeValue value2 = builder.newInstance();
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas2" );
         SomeValue value3 = builder.newInstance();
-        assertEquals( value1, value2 );
-        assertFalse( value1.equals( value3 ) );
+        assertThat( value1, equalTo( value2 ) );
+        assertThat( value1.equals( value3 ), is( false ) );
     }
 
     @Test
@@ -63,7 +64,7 @@ public class ValueCompositeBasicsTest
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
-        assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );
+        assertThat( underTest.toString(), equalTo( "{\"name\":\"Niclas\"}" ) );
     }
 
     @Test
@@ -72,7 +73,7 @@ public class ValueCompositeBasicsTest
         ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
-        assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );
+        assertThat( underTest.toString(), equalTo( "{\"name\":\"Niclas\"}" ) );
     }
 
     public abstract static class SomeMixin

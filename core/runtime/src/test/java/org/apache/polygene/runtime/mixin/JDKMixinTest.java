@@ -39,11 +39,11 @@ import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Assert that JDK classes are usable as Mixins.
@@ -106,7 +106,7 @@ public class JDKMixinTest extends AbstractPolygeneTest
         COMPOSE_IDENTITY );
     private static final List<String> CONCERN_RECORDS = new ArrayList<String>();
 
-    @Before
+    @BeforeEach
     public void beforeEachTest()
     {
         CONCERN_RECORDS.clear();

@@ -27,22 +27,23 @@ import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+
 /**
  * JAVADOC
  */
+@ExtendWith( TemporaryFolder.class )
 public class NativeRepositoryTest extends AbstractPolygeneTest
 {
-   @Rule
-   public final TemporaryFolder tmpDir = new TemporaryFolder();
+   private TemporaryFolder tmpDir;
 
    @Service
    Repository repository;
@@ -62,7 +63,7 @@ public class NativeRepositoryTest extends AbstractPolygeneTest
    public void testNativeRepository() throws RepositoryException
    {
       RepositoryConnection conn = repository.getConnection();
-      Assert.assertThat("repository is open", conn.isOpen(), CoreMatchers.equalTo(true));
+       assertThat( "repository is open", conn.isOpen(), equalTo( true ) );
       conn.close();
    }
 }

@@ -29,13 +29,13 @@ import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Test if the stacktrace is cleaned up properly.
@@ -45,7 +45,7 @@ import static org.junit.Assume.assumeTrue;
  */
 public class CleanStackTraceTest extends AbstractPolygeneTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass_IBMJDK()
     {
         assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
@@ -99,7 +99,7 @@ public class CleanStackTraceTest extends AbstractPolygeneTest
 
         String actual = actualTrace.toString();
         actual = actual.substring( 0, correctTrace.length() );
-        assertEquals( correctTrace, actual );
+        assertThat( actual, equalTo( correctTrace ) );
     }
 
     @Concerns( NillyWilly.class )

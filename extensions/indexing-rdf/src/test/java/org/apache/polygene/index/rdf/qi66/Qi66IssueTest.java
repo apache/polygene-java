@@ -32,10 +32,11 @@ import org.apache.polygene.library.rdf.entity.EntityTypeSerializer;
 import org.apache.polygene.library.rdf.repository.MemoryRepositoryService;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test for Qi-66
@@ -53,7 +54,7 @@ public class Qi66IssueTest
 
         UnitOfWork work = unitOfWorkFactory.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
-        assertNotNull( account );
+        assertThat( account, notNullValue() );
 
         try
         {

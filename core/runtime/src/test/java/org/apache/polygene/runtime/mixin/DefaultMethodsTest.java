@@ -23,19 +23,19 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.test.util.Assume.assumeJavaVersion;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Initial tests for interface default methods support.
  */
 public class DefaultMethodsTest extends AbstractPolygeneTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void assumeJavaVersionIs8() { assumeJavaVersion( 8 ); }
 
     @Override

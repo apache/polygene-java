@@ -19,7 +19,7 @@
  */
 package org.apache.polygene.library.alarm;
 
-import org.junit.Test;
+import java.util.List;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -28,11 +28,15 @@ import org.apache.polygene.api.value.ValueBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-
-import java.util.List;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AlarmServiceTest
     extends AbstractPolygeneTest
@@ -65,6 +69,7 @@ public class AlarmServiceTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -73,6 +78,7 @@ public class AlarmServiceTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         if ( unitOfWorkFactory.isUnitOfWorkActive())
@@ -88,8 +94,8 @@ public class AlarmServiceTest
     {
         AlarmSystem alarmService = serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
-        assertNotNull( models );
-        assertEquals( 2, models.size() );
+        assertThat( models, notNullValue() );
+        assertThat( models.size(), equalTo( 2 ) );
     }
 
     @Test
@@ -98,11 +104,11 @@ public class AlarmServiceTest
     {
         AlarmSystem alarmService = serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
-        assertNotNull( models );
-        assertEquals( 2, models.size() );
+        assertThat( models, notNullValue() );
+        assertThat( models.size(), equalTo( 2 ) );
 
         AlarmModel model = alarmService.defaultAlarmModel();
-        assertNotNull( model );
+        assertThat( model, notNullValue() );
     }
 
     @Test
@@ -127,7 +133,7 @@ public class AlarmServiceTest
         {
             // Expected. If an Error is thrown it should not be captured anywhere.
         }
-        assertEquals( 1, listener1.getCounter() );      // One time, because the second listener would not be called.
+        assertThat( listener1.getCounter(), equalTo( 1 ) );      // One time, because the second listener would not be called.
 
         alarmService.removeAlarmListener( listener3 );
         alarmService.removeAlarmListener( listener1 );
@@ -135,31 +141,31 @@ public class AlarmServiceTest
         alarmService.addAlarmListener( listener1 );   // We should now have, 'counting', 'exception', 'counting' in the list.
         alarm.deactivate();   // No Exception should be thrown. The fireAlarm() should swallow it and ensure that
         // all listeners are called and then return.
-        assertEquals( 3, listener1.getCounter() );
+        assertThat( listener1.getCounter(), equalTo( 3 ) );
 
         List listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 3, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 3 ) );
 
         alarmService.removeAlarmListener( listener1 );
         listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 2, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 2 ) );
 
         alarmService.removeAlarmListener( listener1 );
         listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 1, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 1 ) );
 
         alarmService.removeAlarmListener( listener1 );
         listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 1, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 1 ) );
 
         alarmService.removeAlarmListener( listener2 );
         listeners = alarmService.alarmListeners();
         System.out.println( listeners );
-        assertEquals( "Listeners registered.", 0, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 0 ) );
 
         alarmService.removeAlarmListener( listener2 );
         listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 0, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 0 ) );
 
         try
         {
@@ -171,7 +177,7 @@ public class AlarmServiceTest
             // expected
         }
         listeners = alarmService.alarmListeners();
-        assertEquals( "Listeners registered.", 0, listeners.size() );
+        assertThat( "Listeners registered.", listeners.size(), equalTo( 0 ) );
     }
 
     private AlarmCategory createCategory( String name )

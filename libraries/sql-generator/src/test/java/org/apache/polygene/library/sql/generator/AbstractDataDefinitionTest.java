@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.generator.grammar.factories.DataTypeFacto
 import org.apache.polygene.library.sql.generator.grammar.factories.DefinitionFactory;
 import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  */

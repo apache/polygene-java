@@ -28,14 +28,14 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
-import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
 public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();
@@ -75,9 +75,8 @@ public class SQLiteEntityStoreTest extends AbstractEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @Override
-    @After
-    public void tearDown()
+    @AfterEach
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
     }

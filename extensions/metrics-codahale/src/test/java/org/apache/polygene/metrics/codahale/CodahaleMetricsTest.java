@@ -18,6 +18,7 @@
 package org.apache.polygene.metrics.codahale;
 
 import com.codahale.metrics.MetricRegistry;
+import java.util.Collection;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.activation.PassivationException;
 import org.apache.polygene.api.structure.Module;
@@ -25,11 +26,8 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Assemblers;
 import org.apache.polygene.metrics.codahale.assembly.CodahaleMetricsAssembler;
 import org.apache.polygene.test.metrics.AbstractPolygeneMetricsTest;
-
 import org.apache.polygene.test.metrics.MetricValuesProvider;
-import org.junit.Test;
-
-import java.util.Collection;
+import org.junit.jupiter.api.Test;
 
 public class CodahaleMetricsTest extends AbstractPolygeneMetricsTest
 {

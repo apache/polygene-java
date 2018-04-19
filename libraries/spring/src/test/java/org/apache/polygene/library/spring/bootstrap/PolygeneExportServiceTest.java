@@ -19,17 +19,20 @@
  */
 package org.apache.polygene.library.spring.bootstrap;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.*;
 import static org.apache.polygene.library.spring.bootstrap.PolygeneTestBootstrap.COMMENT_SERVICE_ID;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith( SpringExtension.class)
 @ContextConfiguration
 public final class PolygeneExportServiceTest
 {
@@ -39,21 +42,21 @@ public final class PolygeneExportServiceTest
     @Test
     public final void testCommentService()
     {
-        assertTrue( appContext.containsBean( COMMENT_SERVICE_ID ) );
+        assertThat( appContext.containsBean( COMMENT_SERVICE_ID ), is( true ) );
 
         CommentService commentService = (CommentService) appContext.getBean( COMMENT_SERVICE_ID );
-        assertNotNull( commentService );
+        assertThat( commentService, notNullValue() );
 
         String beerComment = commentService.comment( "beer" );
-        assertEquals( "BEER IS GOOD.", beerComment );
+        assertThat( beerComment, equalTo( "BEER IS GOOD." ) );
 
         String colaComment = commentService.comment( "cola" );
-        assertEquals( "COLA IS GOOD.", colaComment );
+        assertThat( colaComment, equalTo( "COLA IS GOOD." ) );
 
         String colaBeerComment = commentService.comment( "cola+beer" );
-        assertEquals( "COLA+BEER IS BAAAD.", colaBeerComment );
+        assertThat( colaBeerComment, equalTo( "COLA+BEER IS BAAAD." ) );
 
         CommentServiceHolder holder = (CommentServiceHolder) appContext.getBean( "commentServiceHolder" );
-        assertTrue( commentService == holder.service() );
+        assertThat( commentService == holder.service(), is( true ) );
     }
 }

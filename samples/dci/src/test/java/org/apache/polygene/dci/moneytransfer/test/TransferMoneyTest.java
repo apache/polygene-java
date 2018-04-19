@@ -33,12 +33,13 @@ import org.apache.polygene.dci.moneytransfer.rolemap.CheckingAccountRolemap;
 import org.apache.polygene.dci.moneytransfer.rolemap.CreditorRolemap;
 import org.apache.polygene.dci.moneytransfer.rolemap.SavingsAccountRolemap;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test of TransferMoneyContext
@@ -49,7 +50,7 @@ public class TransferMoneyTest
     private static SingletonAssembler assembler;
     private static UnitOfWorkFactory uowf;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup()
         throws Exception
     {
@@ -67,7 +68,7 @@ public class TransferMoneyTest
         bootstrapData( assembler );
     }
 
-    @Before
+    @BeforeEach
     public void beforeBalances()
     {
         System.out.println( "Before enactment:" );
@@ -75,7 +76,7 @@ public class TransferMoneyTest
         System.out.println( "" );
     }
 
-    @After
+    @AfterEach
     public void afterBalances()
     {
         System.out.println( "After enactment:" );
@@ -158,32 +159,34 @@ public class TransferMoneyTest
         }
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void transferTwiceOfMoneyFromSavingsToChecking()
         throws Exception
     {
-        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        assertThrows( IllegalArgumentException.class, () -> {
+            UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
-        try
-        {
-            // Select source and destination
-            BalanceData source = uow.get( BalanceData.class, SAVINGS_ACCOUNT_ID );
-            BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
+            try
+            {
+                // Select source and destination
+                BalanceData source = uow.get( BalanceData.class, SAVINGS_ACCOUNT_ID );
+                BalanceData destination = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );
 
-            // Instantiate context and execute enactments with that context
-            TransferMoneyContext context = new TransferMoneyContext();
-            context.bind( source, destination );
+                // Instantiate context and execute enactments with that context
+                TransferMoneyContext context = new TransferMoneyContext();
+                context.bind( source, destination );
 
-            // Query for double the balance
-            final Integer amountToTransfer = context.availableFunds() * 2;
+                // Query for double the balance
+                final Integer amountToTransfer = context.availableFunds() * 2;
 
-            // Transfer from savings to checking
-            context.transfer( amountToTransfer );
-        }
-        finally
-        {
-            uow.discard();
-        }
+                // Transfer from savings to checking
+                context.transfer( amountToTransfer );
+            }
+            finally
+            {
+                uow.discard();
+            }
+        } );
     }
 
     @Test

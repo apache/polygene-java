@@ -23,17 +23,18 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
+@ExtendWith( TemporaryFolder.class )
 public class FileConfigurationTest
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Test
     public void testFileConfiguration()
@@ -48,11 +49,11 @@ public class FileConfigurationTest
         );
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
-        assertNotNull( config.configurationDirectory() );
-        assertNotNull( config.dataDirectory() );
-        assertNotNull( config.temporaryDirectory() );
-        assertNotNull( config.cacheDirectory() );
-        assertNotNull( config.logDirectory() );
+        assertThat( config.configurationDirectory(), notNullValue() );
+        assertThat( config.dataDirectory(), notNullValue() );
+        assertThat( config.temporaryDirectory(), notNullValue() );
+        assertThat( config.cacheDirectory(), notNullValue() );
+        assertThat( config.logDirectory(), notNullValue() );
         System.out.println( "FileConfiguration defaults:\n"
                             + "\tconfiguration: " + config.configurationDirectory().getAbsolutePath() + "\n"
                             + "\tdata:          " + config.configurationDirectory().getAbsolutePath() + "\n"
@@ -87,11 +88,11 @@ public class FileConfigurationTest
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
 
-        assertEquals( testFile.getAbsolutePath(), config.configurationDirectory().getAbsolutePath() );
-        assertEquals( testFile.getAbsolutePath(), config.dataDirectory().getAbsolutePath() );
-        assertEquals( testFile.getAbsolutePath(), config.temporaryDirectory().getAbsolutePath() );
-        assertEquals( testFile.getAbsolutePath(), config.cacheDirectory().getAbsolutePath() );
-        assertEquals( testFile.getAbsolutePath(), config.logDirectory().getAbsolutePath() );
+        assertThat( config.configurationDirectory().getAbsolutePath(), equalTo( testFile.getAbsolutePath() ) );
+        assertThat( config.dataDirectory().getAbsolutePath(), equalTo( testFile.getAbsolutePath() ) );
+        assertThat( config.temporaryDirectory().getAbsolutePath(), equalTo( testFile.getAbsolutePath() ) );
+        assertThat( config.cacheDirectory().getAbsolutePath(), equalTo( testFile.getAbsolutePath() ) );
+        assertThat( config.logDirectory().getAbsolutePath(), equalTo( testFile.getAbsolutePath() ) );
     }
 
     @Test
@@ -111,15 +112,10 @@ public class FileConfigurationTest
 
         FileConfiguration config = assembler.module().findService( FileConfiguration.class ).get();
 
-        assertEquals( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_CONFIGURATION ).getAbsolutePath(),
-                      config.configurationDirectory().getAbsolutePath() );
-        assertEquals( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_DATA ).getAbsolutePath(),
-                      config.dataDirectory().getAbsolutePath() );
-        assertEquals( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_TEMPORARY ).getAbsolutePath(),
-                      config.temporaryDirectory().getAbsolutePath() );
-        assertEquals( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_CACHE ).getAbsolutePath(),
-                      config.cacheDirectory().getAbsolutePath() );
-        assertEquals( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_LOG ).getAbsolutePath(),
-                      config.logDirectory().getAbsolutePath() );
+        assertThat( config.configurationDirectory(), equalTo( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_CONFIGURATION ) ) );
+        assertThat( config.dataDirectory(), equalTo( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_DATA ) ) );
+        assertThat( config.temporaryDirectory(), equalTo( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_TEMPORARY ) ) );
+        assertThat( config.cacheDirectory(), equalTo( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_CACHE ) ) );
+        assertThat( config.logDirectory(), equalTo( new File( rootDir, FileConfigurationOverride.CONVENTIONAL_LOG ) ) );
     }
 }

@@ -34,8 +34,8 @@ import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base class for Composite tests.
@@ -64,8 +64,8 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
     @Structure
     protected ModuleDescriptor module;
 
-    @Before
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -87,8 +87,8 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
         assemble( module );
     }
 
-    @After
     @Override
+    @AfterEach
     public void tearDown()
     {
         if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive() )

@@ -42,17 +42,19 @@ import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 // A test to verify that containsAll QueryExpression works properly.
+@ExtendWith( TemporaryFolder.class )
 public class ContainsAllTest
     extends AbstractPolygeneTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     public static final String TEST_STRING_1 = "TestString1";
     public static final String TEST_STRING_2 = "Some\\Weird\"$String/[]";
@@ -159,7 +161,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, TEST_STRING_2 )
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     @Test
@@ -171,7 +173,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 )
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     @Test
@@ -183,7 +185,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3, TEST_STRING_4 )
         );
 
-        Assert.assertTrue( "The entity must not have been found.", result == null );
+        assertThat( "The entity must not have been found.", result == null, is( true ) );
     }
 
     @Test
@@ -195,7 +197,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, null, TEST_STRING_2 )
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     @Test
@@ -207,7 +209,7 @@ public class ContainsAllTest
             setOf()
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     @Test
@@ -219,7 +221,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1 )
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     @Test
@@ -231,7 +233,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, TEST_STRING_2 )
         );
 
-        Assert.assertTrue( "The entity must have been found", result != null );
+        assertThat( "The entity must have been found", result != null, is( true ) );
     }
 
     @Test
@@ -243,7 +245,7 @@ public class ContainsAllTest
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 )
         );
 
-        Assert.assertTrue( "The entity must not have been found.", result == null );
+        assertThat( "The entity must not have been found.", result == null, is( true ) );
     }
 
     @Test
@@ -255,7 +257,7 @@ public class ContainsAllTest
             setOf()
         );
 
-        Assert.assertTrue( "The entity must have been found.", result != null );
+        assertThat( "The entity must have been found.", result != null, is( true ) );
     }
 
     private ExampleEntity findEntity( String... strings )

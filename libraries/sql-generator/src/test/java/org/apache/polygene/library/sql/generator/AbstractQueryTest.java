@@ -30,7 +30,7 @@ import org.apache.polygene.library.sql.generator.grammar.query.QueryExpression;
 import org.apache.polygene.library.sql.generator.grammar.query.QueryExpressionBody;
 import org.apache.polygene.library.sql.generator.grammar.query.joins.JoinType;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Contains the tests for various queries to test functionality of parser.

@@ -26,7 +26,7 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.jooq.SQLDialect;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
@@ -56,9 +56,8 @@ public class DerbySQLEntityStoreTestSuite extends EntityStoreTestSuite
             .assemble( module );
     }
 
-    @Override
-    @After
-    public void tearDown()
+    @AfterEach
+    public void cleanUpData()
     {
         TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.DERBY, super::tearDown );
     }

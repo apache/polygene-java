@@ -17,8 +17,10 @@
  */
 package org.apache.polygene.entitystore.sql;
 
+import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.common.UseDefaults;
 import org.apache.polygene.api.property.Property;
+import org.apache.polygene.library.constraints.annotation.MaxLength;
 import org.apache.polygene.library.sql.common.SQLConfiguration;
 
 /**
@@ -64,5 +66,25 @@ public interface SqlEntityStoreConfiguration
      */
     @UseDefaults( "" )
     Property<String> dialect();
+
+    /** Length of Identity strings.
+     *
+     * MariaDb and MySQL dialects will not allow unspecified VARCHAR lengths for storing Strings.
+     * <p/>
+     * Default: 100
+     */
+    @Optional
+    Property<Integer> identityLength();
+
+    /** Length of Identity strings.
+     *
+     * MariaDb and MySQL dialects will not allow unspecified VARCHAR lengths for storing Strings. This configuration
+     * value defines what value x in VARCHAR(x) should be used for each String property, unless otherwise specified
+     * as a {@link MaxLength} annotation on the property.
+     * <p/>
+     * Default: 1000
+     */
+    @Optional
+    Property<Integer> stringLength();
 }
 // END SNIPPET: config

@@ -34,18 +34,19 @@ import javax.net.ssl.TrustManagerFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Base class for SecureJettyMixin tests.
  *
  * Use HttpClient in order to easily use different {@link SSLContext}s between server and client.
  */
+@ExtendWith( TemporaryFolder.class )
 public abstract class AbstractSecureJettyTest
     extends AbstractJettyTest
 {
@@ -58,10 +59,9 @@ public abstract class AbstractSecureJettyTest
     protected CloseableHttpClient trustHttpClient;
     protected CloseableHttpClient mutualHttpClient;
 
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
-    @Before
+    @BeforeEach
     public void beforeSecure()
         throws GeneralSecurityException, IOException
     {
@@ -77,7 +77,7 @@ public abstract class AbstractSecureJettyTest
                                       .build();
     }
 
-    @After
+    @AfterEach
     public void afterSecure()
         throws IOException
     {
@@ -94,7 +94,7 @@ public abstract class AbstractSecureJettyTest
     private static HostnameVerifier defaultHostnameVerifier;
     private static javax.net.ssl.SSLSocketFactory defaultSSLSocketFactory;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeSecureClass()
         throws IOException, GeneralSecurityException
     {
@@ -104,7 +104,7 @@ public abstract class AbstractSecureJettyTest
         HttpsURLConnection.setDefaultSSLSocketFactory( buildTrustSSLContext().getSocketFactory() );
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterSecureClass()
     {
         HttpsURLConnection.setDefaultHostnameVerifier( defaultHostnameVerifier );

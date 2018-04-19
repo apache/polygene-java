@@ -19,13 +19,15 @@
  */
 package org.apache.polygene.tutorials.cargo.step2;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class Step2TestCase
     extends AbstractPolygeneTest
@@ -34,6 +36,7 @@ public class Step2TestCase
     private ShippingService shippingService;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -55,11 +58,11 @@ public class Step2TestCase
         Cargo cargo2 = newCargo( 40 );
         Cargo cargo3 = newCargo( 20 );
         int code = shippingService.makeBooking( cargo1, voyage );
-        assertEquals( 0, code );
+        assertThat( code, equalTo( 0 ) );
         code = shippingService.makeBooking( cargo2, voyage );
-        assertEquals( 1, code );
+        assertThat( code, equalTo( 1 ) );
         code = shippingService.makeBooking( cargo3, voyage );
-        assertEquals( 2, code );
+        assertThat( code, equalTo( 2 ) );
     }
 
     @Test
@@ -68,9 +71,9 @@ public class Step2TestCase
         Cargo cargo1 = newCargo( 100 );
         Cargo cargo2 = newCargo( 9 );
         int code = shippingService.makeBooking( cargo1, voyage );
-        assertEquals( 0, code );
+        assertThat( code, equalTo( 0 ) );
         code = shippingService.makeBooking( cargo2, voyage );
-        assertEquals( -1, code );
+        assertThat( code, equalTo( -1 ) );
     }
 
     @Test
@@ -80,11 +83,11 @@ public class Step2TestCase
         Cargo cargo2 = newCargo( 40 );
         Cargo cargo3 = newCargo( 31 );
         int code = shippingService.makeBooking( cargo1, voyage );
-        assertEquals( 0, code );
+        assertThat( code, equalTo( 0 ) );
         code = shippingService.makeBooking( cargo2, voyage );
-        assertEquals( 1, code );
+        assertThat( code, equalTo( 1 ) );
         code = shippingService.makeBooking( cargo3, voyage );
-        assertEquals( -1, code );
+        assertThat( code, equalTo( -1 ) );
     }
 
     @Override

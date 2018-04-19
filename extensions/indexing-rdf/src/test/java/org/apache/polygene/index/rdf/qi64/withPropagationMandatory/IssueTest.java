@@ -20,27 +20,28 @@
 package org.apache.polygene.index.rdf.qi64.withPropagationMandatory;
 
 import org.apache.polygene.api.identity.Identity;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.qi64.AbstractIssueTest;
 import org.apache.polygene.index.rdf.qi64.AccountComposite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class IssueTest
     extends AbstractIssueTest
 {
     private AccountService accountService;
 
-    @Before
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -49,17 +50,19 @@ public final class IssueTest
         accountService = serviceFinder.findService( AccountService.class ).get();
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public final void testUnitOfWorkWithUnitOfWorkNotInitialized()
         throws Throwable
     {
-        // Bootstrap the account
-        Identity id = newPolygeneAccount();
+        assertThrows( IllegalStateException.class, () -> {
+            // Bootstrap the account
+            Identity id = newPolygeneAccount();
 
-        // Make sure there's no unit of work
-        assertNull( unitOfWorkFactory.currentUnitOfWork() );
+            // Make sure there's no unit of work
+            assertThat( unitOfWorkFactory.currentUnitOfWork(), nullValue() );
 
-        accountService.getAccountById( id );
+            accountService.getAccountById( id );
+        } );
     }
 
     @Test
@@ -70,17 +73,17 @@ public final class IssueTest
         Identity id = newPolygeneAccount();
 
         // Make sure there's no unit of work
-        assertFalse( unitOfWorkFactory.isUnitOfWorkActive() );
+        assertThat( unitOfWorkFactory.isUnitOfWorkActive(), is( false ) );
 
         UnitOfWork parentUnitOfWork = unitOfWorkFactory.newUnitOfWork();
 
         AccountComposite account = accountService.getAccountById( id );
-        assertNotNull( account );
+        assertThat( account, notNullValue() );
 
         UnitOfWork currentUnitOfWork = unitOfWorkFactory.currentUnitOfWork();
-        assertEquals( parentUnitOfWork, currentUnitOfWork );
+        assertThat( currentUnitOfWork, equalTo( parentUnitOfWork ) );
 
-        assertTrue( currentUnitOfWork.isOpen() );
+        assertThat( currentUnitOfWork.isOpen(), is( true ) );
 
         // Close the parent unit of work
         parentUnitOfWork.complete();

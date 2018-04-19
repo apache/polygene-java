@@ -28,7 +28,7 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public class H2SQLEntityStoreTest
     extends AbstractEntityStoreTest
@@ -67,9 +67,8 @@ public class H2SQLEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @Override
-    @After
-    public void tearDown()
+    @AfterEach
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.H2, super::tearDown );
     }

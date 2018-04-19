@@ -20,12 +20,14 @@
 
 buildscript {
   repositories { maven { url "https://plugins.gradle.org/m2/" } }
-  dependencies { classpath "gradle.plugin.org.akhikhl.gretty:gretty:1.4.2" }
+  dependencies { classpath "gradle.plugin.org.akhikhl.gretty:gretty:2.0.0" }
 }
 
 apply plugin: 'polygene-sample'
 apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
+
+// TODO: PAUL!! This Plugin seems stale, and there are a dozen forks. How do we proceed?
+//apply plugin: 'org.akhikhl.gretty'
 
 description = "Sample of implementation of a Car Rental application."
 

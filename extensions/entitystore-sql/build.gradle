@@ -27,13 +27,15 @@ jar { manifest { name = "Apache Polygene™ Extension - EntityStore - ORM" } }
 dependencies {
   api polygene.core.bootstrap
   api polygene.library( 'sql' )
+  api polygene.library( 'constraints' )
   api libraries.jooq
 
   runtimeOnly polygene.core.runtime
 
-  testImplementation polygene.internals.testsupport
+  testImplementation polygene.core.testsupport
   testImplementation polygene.library( 'sql-dbcp' )
   testImplementation polygene.library( 'sql-bonecp' )
+
   testImplementation libraries.docker_junit
   testImplementation libraries.h2
 

@@ -19,36 +19,45 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.util.HashMap;
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Environment;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
+import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.jooq.SQLDialect;
-import org.junit.After;
-import org.junit.ClassRule;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 
-@Ignore( "Waiting response from JOOQ to fix SQL generation. VARCHAR instead of CHAR")
+@Docker( image = "mysql", ports = @Port( exposed = 8801, inner = 3306 ),
+         environments = {
+             @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
+             @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
+             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" )
+         },
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 40000 ),
+         newForEachCase = false
+)
 public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule(
-        "mysql",
-        new HashMap<String, String>()
-        {{
-            put( "MYSQL_ROOT_PASSWORD", "" );
-            put( "MYSQL_ALLOW_EMPTY_PASSWORD", "yes" );
-            put( "MYSQL_DATABASE", "jdbc_test_db" );
-            put( "MYSQL_ROOT_HOST", "172.17.0.1" );
-        }},
-        30000L
-//        , "mysqld: ready for connections"   TODO: add this after next release of tdomzal/junit-docker-rule
-    );
+    @BeforeAll
+    public static void waitForDockerToSettle()
+    {
+        try
+        {
+            Thread.sleep( 12000 );
+        }
+        catch( InterruptedException e )
+        {
+            throw new UndeclaredThrowableException( e );
+        }
+    }
 
     @Override
     protected void defineStorageModule( ModuleAssembly module )
@@ -75,17 +84,20 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
             .withConfig( configModule, Visibility.application )
             .assemble( module );
 
-        String mysqlHost = DOCKER.getDockerHost();
-        int mysqlPort = DOCKER.getExposedContainerPort( "3306/tcp" );
-        configModule.forMixin( DataSourceConfiguration.class ).declareDefaults()
-                    .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
-                                + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                                + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        String mysqlHost = "localhost";
+        int mysqlPort = 8801;
+        DataSourceConfiguration defaults = configModule.forMixin( DataSourceConfiguration.class ).declareDefaults();
+        defaults.url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
+                            + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
+                            + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+        defaults.driver().set( "com.mysql.jdbc.Driver" );
+        defaults.enabled().set( true );
+        defaults.username().set( "root" );
+        defaults.password().set( "" );
     }
 
-    @Override
-    @After
-    public void tearDown()
+    @AfterEach
+    public void cleanUpData()
     {
         TearDown.dropTables( application.findModule( INFRASTRUCTURE_LAYER, STORAGE_MODULE ), SQLDialect.MYSQL, super::tearDown );
     }

@@ -22,7 +22,6 @@ package org.apache.polygene.runtime.concerns;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
@@ -31,9 +30,10 @@ import org.apache.polygene.bootstrap.AssemblyVisitorAdapter;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.TransientDeclaration;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test of declaring concern in assembly

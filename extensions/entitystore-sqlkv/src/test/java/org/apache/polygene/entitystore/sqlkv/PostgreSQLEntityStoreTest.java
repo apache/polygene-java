@@ -19,6 +19,9 @@
  */
 package org.apache.polygene.entitystore.sqlkv;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -27,19 +30,17 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
-import org.junit.After;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
 
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres",
-                                                            5000L,
-                                                            "PostgreSQL init process complete; ready for start up." );
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -73,8 +74,8 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
             .withConfig( config, Visibility.layer )
             .assemble( module );
         // END SNIPPET: assembly
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        String host = "localhost";
+        int port = 8801;
         DataSourceConfiguration defaults = config.forMixin( DataSourceConfiguration.class ).declareDefaults();
         defaults.url().set( "jdbc:postgresql://" + host + ":" + port + "/jdbc_test_db" );
         // START SNIPPET: assembly
@@ -94,7 +95,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
     // END SNIPPET: assembly
 
     @Override
-    @After
+    @AfterEach
     public void tearDown()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.POSTGRES, super::tearDown );

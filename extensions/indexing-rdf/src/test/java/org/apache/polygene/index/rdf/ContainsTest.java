@@ -38,24 +38,27 @@ import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_1;
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_2;
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_3;
 import static org.apache.polygene.index.rdf.ContainsAllTest.TEST_STRING_4;
 import static org.apache.polygene.index.rdf.ContainsAllTest.setOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith( TemporaryFolder.class )
 public class ContainsTest extends AbstractPolygeneTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
@@ -63,7 +66,7 @@ public class ContainsTest extends AbstractPolygeneTest
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults()
-                  .dataDirectory().set( new File( tmpDir.getRoot(), "rdf-data" ).getAbsolutePath() );
+            .dataDirectory().set( new File( tmpDir.getRoot(), "rdf-data" ).getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );
@@ -77,56 +80,60 @@ public class ContainsTest extends AbstractPolygeneTest
     }
 
     @Test
-    public void simpleContainsSuccessTest() throws Exception
+    public void simpleContainsSuccessTest()
+        throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
             TEST_STRING_3
         );
 
-        Assert.assertTrue( "The entity must have been found", result != null );
+        assertThat( "The entity must have been found", result != null, is( true ) );
     }
 
     @Test
-    public void simpleContainsSuccessFailTest() throws Exception
+    public void simpleContainsSuccessFailTest()
+        throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
             TEST_STRING_4
         );
 
-        Assert.assertTrue( "The entity must not have been found", result == null );
+        assertThat( "The entity must not have been found", result == null, is( true ) );
     }
 
-    @Test( expected = NullPointerException.class )
-    public void simpleContainsNullTest() throws Exception
+    @Test
+    public void simpleContainsNullTest()
+        throws Exception
     {
-        this.performContainsStringTest(
-            setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
-            null
+        assertThrows( NullPointerException.class, () ->
+            this.performContainsStringTest( setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ), null )
         );
     }
 
     @Test
-    public void simpleContainsStringValueSuccessTest() throws Exception
+    public void simpleContainsStringValueSuccessTest()
+        throws Exception
     {
         ExampleEntity result = this.performContainsStringValueTest(
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
             TEST_STRING_3
         );
 
-        Assert.assertTrue( "The entity must have been found", result != null );
+        assertThat( "The entity must have been found", result != null, is( true ) );
     }
 
     @Test
-    public void simpleContainsStringValueFailTest() throws Exception
+    public void simpleContainsStringValueFailTest()
+        throws Exception
     {
         ExampleEntity result = this.performContainsStringTest(
             setOf( TEST_STRING_1, TEST_STRING_2, TEST_STRING_3 ),
             TEST_STRING_4
         );
 
-        Assert.assertTrue( "The entity must not have been found", result == null );
+        assertThat( "The entity must not have been found", result == null, is( true ) );
     }
 
     private ExampleEntity findEntity( String string )

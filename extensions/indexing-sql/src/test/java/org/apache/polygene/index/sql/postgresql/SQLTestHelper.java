@@ -21,10 +21,8 @@ package org.apache.polygene.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
-import org.apache.polygene.api.service.ServiceFinder;
-import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
-import org.junit.Assume;
 import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.service.ServiceFinder;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.reindexer.ReindexerConfiguration;
@@ -33,8 +31,10 @@ import org.apache.polygene.index.sql.support.common.RebuildingStrategy;
 import org.apache.polygene.index.sql.support.common.ReindexingStrategy;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.common.SQLUtil;
+import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.opentest4j.TestAbortedException;
 
 class SQLTestHelper
 {
@@ -56,24 +56,24 @@ class SQLTestHelper
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler().
-            identifiedBy( "postgres-datasource-service" ).
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( mainModule );
+                                                identifiedBy( "postgres-datasource-service" ).
+                                                visibleIn( Visibility.module ).
+                                                withConfig( config, Visibility.layer ).
+                                                assemble( mainModule );
 
         // DataSource
         new DataSourceAssembler().
-            withDataSourceServiceIdentity( "postgres-datasource-service" ).
-            identifiedBy( "postgres-datasource" ).
-            visibleIn( Visibility.module ).
-            withCircuitBreaker().
-            assemble( mainModule );
+                                     withDataSourceServiceIdentity( "postgres-datasource-service" ).
+                                     identifiedBy( "postgres-datasource" ).
+                                     visibleIn( Visibility.module ).
+                                     withCircuitBreaker().
+                                     assemble( mainModule );
 
         // SQL Index/Query
         new PostgreSQLIndexQueryAssembler().
-            visibleIn( Visibility.module ).
-            withConfig( config, Visibility.layer ).
-            assemble( mainModule );
+                                               visibleIn( Visibility.module ).
+                                               withConfig( config, Visibility.layer ).
+                                               assemble( mainModule );
         // END SNIPPET: assembly
 
         config.forMixin( DataSourceConfiguration.class ).declareDefaults()
@@ -83,12 +83,12 @@ class SQLTestHelper
         // various tests
         mainModule.services( RebuildingStrategy.class ).
             withMixins( RebuildingStrategy.AlwaysNeed.class ).
-            visibleIn( Visibility.module );
+                      visibleIn( Visibility.module );
 
         // Always re-index in test scenarios
         mainModule.services( ReindexingStrategy.class ).
             withMixins( ReindexingStrategy.AlwaysNeed.class ).
-            visibleIn( Visibility.module );
+                      visibleIn( Visibility.module );
         config.entities( ReindexerConfiguration.class ).
             visibleIn( Visibility.layer );
     }
@@ -101,21 +101,20 @@ class SQLTestHelper
 
             DataSource ds = serviceFinder.findService( DataSource.class ).get();
             connection = ds.getConnection();
-            Assume.assumeNotNull( connection );
-
+            if( connection == null )
+            {
+                throw new TestAbortedException( "Unable to establish a DataSource" );
+            }
         }
         catch( Throwable t )
         {
 
             t.printStackTrace();
-            Assume.assumeNoException( t );
-
+            throw new TestAbortedException( "Unable to establish a DataSource", t );
         }
         finally
         {
-
             SQLUtil.closeQuietly( connection );
-
         }
     }
 
@@ -123,4 +122,14 @@ class SQLTestHelper
     {
     }
 
+    static void sleep()
+    {
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch( InterruptedException e )
+        {
+        }
+    }
 }

@@ -21,11 +21,12 @@ package org.apache.polygene.bootstrap;
 
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.bootstrap.somepackage.Test2Value;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.bootstrap.ClassScanner.findClasses;
 import static org.apache.polygene.bootstrap.ClassScanner.matches;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Test and showcase of the ClassScanner assembly utility.
@@ -40,7 +41,7 @@ public class ClassScannerTest
             module -> {
                 // Find all classes starting from TestValue, but include only the ones that are named *Value
                 findClasses( TestValue.class ).filter( matches( ".*Value" ) )
-                                              .forEach( module::values );
+                    .forEach( module::values );
             }
         );
 
@@ -51,6 +52,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 185, findClasses( Test.class ).count() );
+        assertThat( findClasses( Test.class ).count(), equalTo( 89L ) );
     }
 }

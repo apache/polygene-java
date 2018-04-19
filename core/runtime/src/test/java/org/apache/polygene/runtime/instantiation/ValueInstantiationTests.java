@@ -25,10 +25,11 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ValueInstantiationTests
     extends AbstractPolygeneTest
@@ -85,7 +86,7 @@ public class ValueInstantiationTests
     {
         ValueBuilder<My> builder = valueBuilderFactory.newValueBuilder( My.class );
         My my = builder.newInstance();
-        Assert.assertEquals( "Niclas", my.doSomething() );
+        assertThat( my.doSomething(), equalTo( "Niclas" ) );
     }
 
     @Mixins( MyMixin.class )

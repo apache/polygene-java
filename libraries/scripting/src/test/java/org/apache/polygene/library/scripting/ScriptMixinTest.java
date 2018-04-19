@@ -34,12 +34,12 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
 
 public class ScriptMixinTest
     extends AbstractPolygeneTest
@@ -78,9 +78,9 @@ public class ScriptMixinTest
         domain2.inc();
         domain2.inc();
         domain3.inc();
-        assertThat(domain1.count(), equalTo(4.0D) );
-        assertThat(domain2.count(), equalTo(3.0D) );
-        assertThat(domain3.count(), equalTo(1.0D) );
+        assertThat(domain1.count(), equalTo(4.0) );
+        assertThat(domain2.count(), equalTo(3.0) );
+        assertThat(domain3.count(), equalTo(1.0) );
     }
 
     @Test

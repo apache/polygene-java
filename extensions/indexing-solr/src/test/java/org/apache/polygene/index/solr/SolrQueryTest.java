@@ -24,17 +24,17 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.solr.assembly.SolrIndexingAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@Ignore( "SOLR Index/Query is not working at all" )
+@Disabled( "SOLR Index/Query is not working at all" )
+@ExtendWith( TemporaryFolder.class )
 public class SolrQueryTest
     extends AbstractQueryTest
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

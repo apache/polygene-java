@@ -19,7 +19,7 @@
  */
 package org.apache.polygene.tutorials.services.step1;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LibraryTest
 {

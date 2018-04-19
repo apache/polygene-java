@@ -32,20 +32,20 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.constraints.annotation.NotEmpty;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.polygene.test.util.Assume.assumeJavaVersion;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Assert that interface default methods are mixed in composites.
  */
 public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void assumeJavaVersionIs8()
     {
         assumeJavaVersion( 8 );

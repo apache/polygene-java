@@ -22,9 +22,6 @@ package org.apache.polygene.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Properties;
-import org.apache.polygene.api.common.ConstructionException;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.common.AppliesToFilter;
 import org.apache.polygene.api.composite.NoSuchTransientTypeException;
@@ -33,8 +30,11 @@ import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CompositeFactoryImplTest
     extends AbstractPolygeneTest
@@ -47,13 +47,15 @@ public class CompositeFactoryImplTest
     }
 
     @SuppressWarnings( "unchecked" )
-    @Test( expected = NoSuchTransientTypeException.class )
+    @Test
     public void testNewInstanceNotExtendingComposite()
         throws Exception
     {
-        Class aClass = FirstComposite.class;
-        TransientBuilder builder = transientBuilderFactory.newTransientBuilder( aClass );
-        builder.newInstance();
+        assertThrows( NoSuchTransientTypeException.class, () -> {
+            Class aClass = FirstComposite.class;
+            TransientBuilder builder = transientBuilderFactory.newTransientBuilder( aClass );
+            builder.newInstance();
+        } );
     }
 
     @Test

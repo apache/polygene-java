@@ -21,9 +21,6 @@
 package org.apache.polygene.runtime.composite;
 
 import java.lang.reflect.Method;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.common.Optional;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.concern.ConcernOf;
@@ -35,6 +32,11 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * JAVADOC
@@ -54,7 +56,7 @@ public class AbstractMixinTest
     {
         TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
 
-        Assert.assertEquals( "Hello WorldHello World", instance.test( "Hello World" ) );
+        assertThat( instance.test( "Hello World" ), equalTo( "Hello WorldHello World" ) );
     }
 
     public interface TestComposite

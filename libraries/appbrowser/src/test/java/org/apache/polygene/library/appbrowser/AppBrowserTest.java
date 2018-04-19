@@ -20,7 +20,7 @@ package org.apache.polygene.library.appbrowser;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;

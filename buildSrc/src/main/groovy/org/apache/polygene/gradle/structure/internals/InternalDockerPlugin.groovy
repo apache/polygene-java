@@ -68,7 +68,7 @@ class InternalDockerPlugin implements Plugin<Project>
     }
   }
 
-  private void applyDockerSwitch( Project project )
+  private static void applyDockerSwitch( Project project )
   {
     project.tasks.create( TaskNames.CHECK_DOCKER_CONNECTIVITY, DockerVersion, { DockerVersion task ->
       task.onError = { ex ->
@@ -84,7 +84,9 @@ class InternalDockerPlugin implements Plugin<Project>
         }
         else
         {
-          project.logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ ( ( Exception ) ex ).message }"
+          def logger = project.logger
+          def mess = ex == null ? "" : ((Exception) ex).message
+          logger.lifecycle "Unable to connect to Docker, all Docker tasks will be SKIPPED\n  ${ mess }"
         }
       }
       task.onComplete = {
@@ -106,7 +108,7 @@ class InternalDockerPlugin implements Plugin<Project>
     dockers.eachDir { File dockerDir ->
       def dockerName = dockerDir.name
       def buildDockerfileTaskName = "build${ dockerName.capitalize() }Dockerfile"
-      def buildImageTaskName = "build${ dockerName.capitalize() }DockerImage"
+      String buildImageTaskName = "build${ dockerName.capitalize() }DockerImage"
       def tmpDir = project.file "${ project.buildDir }/tmp/docker/${ dockerName }"
       tmpDir.mkdirs()
       def buildDockerfileTask = project.tasks.create( buildDockerfileTaskName ) { Task task ->
@@ -131,9 +133,9 @@ class InternalDockerPlugin implements Plugin<Project>
       def buildImageTask = project.tasks.create( buildImageTaskName, DockerBuildImage, { DockerBuildImage task ->
         task.description = "Build $dockerName Docker image"
         task.inputDir = tmpDir
-        task.dockerFile = new File( tmpDir, 'Dockerfile' )
-        task.tag = "org.apache.polygene:${ PublishNaming.publishedNameFor ":internals:docker-$dockerName" }"
-      } as Action<DockerBuildImage> )
+        task.dockerFile = new File(tmpDir, 'Dockerfile')
+        task.tag = "org.apache.polygene:${PublishNaming.publishedNameFor ":internals:docker-$dockerName"}"
+      } as Action<DockerBuildImage>)
       [ buildDockerfileTask, buildImageTask ].each { Task task ->
         task.group = 'docker'
         task.dependsOn TaskNames.CHECK_DOCKER_CONNECTIVITY

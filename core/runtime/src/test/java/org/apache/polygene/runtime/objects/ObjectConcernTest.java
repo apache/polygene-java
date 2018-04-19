@@ -26,7 +26,7 @@ import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * JAVADOC

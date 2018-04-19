@@ -23,12 +23,12 @@ package org.apache.polygene.runtime.mixin;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 public class Qi228Test
     extends AbstractPolygeneTest

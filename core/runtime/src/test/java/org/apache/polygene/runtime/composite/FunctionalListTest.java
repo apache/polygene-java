@@ -22,7 +22,6 @@ package org.apache.polygene.runtime.composite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.injection.scope.This;
 import org.apache.polygene.api.mixin.Mixins;
@@ -30,9 +29,10 @@ import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FunctionalListTest extends AbstractPolygeneTest
 {

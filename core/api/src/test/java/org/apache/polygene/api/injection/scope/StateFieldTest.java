@@ -20,9 +20,6 @@
 
 package org.apache.polygene.api.injection.scope;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.association.ManyAssociation;
 import org.apache.polygene.api.common.Optional;
@@ -33,7 +30,13 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Define a field to be a Property
@@ -57,15 +60,15 @@ public class StateFieldTest
         {
             PersonEntity charles = unitOfWork.newEntity( PersonEntity.class );
             charles.changeName( "Charles" );
-            Assert.assertEquals( charles.getName(), "Charles" );
+            assertThat( "Charles", equalTo( charles.getName() ) );
 
             PersonEntity daniel = unitOfWork.newEntity( PersonEntity.class );
             daniel.changeName( "Daniel" );
-            Assert.assertEquals( daniel.getName(), "Daniel" );
+            assertThat( "Daniel", equalTo( daniel.getName() ) );
 
             PersonEntity lisa = unitOfWork.newEntity( PersonEntity.class );
             lisa.changeName( "Lisa" );
-            Assert.assertEquals( lisa.getName(), "Lisa" );
+            assertThat( "Lisa", equalTo( lisa.getName() ) );
 
             charles.befriend( daniel );
             charles.befriend( lisa );
@@ -77,7 +80,7 @@ public class StateFieldTest
 
             charles = unitOfWork.get( charles );
             daniel = unitOfWork.get( daniel );
-            Assert.assertTrue( charles.isFriend( daniel ) );
+            assertThat( charles.isFriend( daniel ), is( true ) );
 
             unitOfWork.complete();
         }

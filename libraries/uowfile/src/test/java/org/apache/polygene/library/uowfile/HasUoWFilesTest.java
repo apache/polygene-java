@@ -51,20 +51,20 @@ import org.apache.polygene.library.uowfile.plural.UoWFilesLocator;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.polygene.test.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
+@ExtendWith( TemporaryFolder.class )
 public class HasUoWFilesTest
     extends AbstractPolygeneTest
 {
@@ -72,8 +72,7 @@ public class HasUoWFilesTest
     private static final URL CREATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "creation.txt" );
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFilesTest.class.getResource( "modification.txt" );
 
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     // START SNIPPET: uowfile
     public enum MyEnum
@@ -214,7 +213,7 @@ public class HasUoWFilesTest
 
     private TestService testService;
 
-    @Before
+    @BeforeEach
     public void beforeTest()
     {
         testService = serviceFinder.findService( TestService.class ).get();
@@ -233,7 +232,7 @@ public class HasUoWFilesTest
             TestedEntity entity = createTestedOneEntityTwoFilesEntity( uow, "Testing Creation Rollback" );
             attachedFile = entity.attachedFile( MyEnum.fileOne );
         }
-        assertFalse( "File still exists after discarded creation UoW", attachedFile.exists() );
+        assertThat( "File still exists after discarded creation UoW", attachedFile.exists(), is( false ) );
 
         // Test completed creation
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -316,7 +315,7 @@ public class HasUoWFilesTest
             TestedEntity entity = uow.get( TestedEntity.class, entityId );
             uow.remove( entity );
         }
-        assertTrue( "File do not exists after discarded deletion", attachedFile.exists() );
+        assertThat( "File do not exists after discarded deletion", attachedFile.exists(), is( true ) );
 
         // Testing completed deletion
         try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
@@ -325,7 +324,7 @@ public class HasUoWFilesTest
             uow.remove( entity );
             uow.complete();
         }
-        assertFalse( "File still exists after deletion", attachedFile.exists() );
+        assertThat( "File still exists after deletion", attachedFile.exists(), is( false ) );
     }
 
     @Test
@@ -425,7 +424,7 @@ public class HasUoWFilesTest
             eachEx.printStackTrace();
         }
 
-        assertTrue( "There were errors during TestRetry", ex.isEmpty() );
+        assertThat( "There were errors during TestRetry", ex.isEmpty(), is( true ) );
         try( Stream<String> lines = Files.lines( attachedFile.toPath() ) )
         {
             assertThat("Modified file content was not the good one",

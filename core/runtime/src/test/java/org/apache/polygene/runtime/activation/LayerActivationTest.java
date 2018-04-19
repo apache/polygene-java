@@ -23,8 +23,10 @@ import org.apache.polygene.api.activation.Activator;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.Layer;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class LayerActivationTest
 {
@@ -34,7 +36,7 @@ public class LayerActivationTest
     private static int passivationLevel = 0;
 
     public static class TestedActivator
-            implements Activator<Layer>
+        implements Activator<Layer>
     {
 
         public void beforeActivation( Layer activating )
@@ -56,12 +58,11 @@ public class LayerActivationTest
         {
             passivationLevel++;
         }
-
     }
 
     @Test
     public void testLayersActivators()
-            throws Exception
+        throws Exception
     {
         SingletonAssembler assembly = new SingletonAssembler(
             module -> module.layer().withActivators( TestedActivator.class )
@@ -70,13 +71,12 @@ public class LayerActivationTest
         Application application = assembly.application();
 
         // Assert activated
-        Assert.assertEquals( "Activation Level", 2, activationLevel );
+        assertThat( "Activation Level", activationLevel, equalTo( 2 ) );
 
         // Passivate
         application.passivate();
 
         // Assert passivated
-        Assert.assertEquals( "Passivation Level", 2, passivationLevel );
+        assertThat( "Passivation Level", passivationLevel, equalTo( 2 ) );
     }
-
 }

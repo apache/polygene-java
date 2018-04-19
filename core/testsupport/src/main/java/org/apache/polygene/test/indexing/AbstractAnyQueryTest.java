@@ -37,12 +37,13 @@ import org.apache.polygene.test.model.Port;
 import org.apache.polygene.test.model.Protocol;
 import org.apache.polygene.test.model.QueryParam;
 import org.apache.polygene.test.model.URL;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.
  */
-public class AbstractAnyQueryTest
-    extends AbstractPolygeneTest
+public class AbstractAnyQueryTest extends AbstractPolygeneTest
 {
     protected UnitOfWork unitOfWork;
 
@@ -76,6 +77,7 @@ public class AbstractAnyQueryTest
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -87,6 +89,7 @@ public class AbstractAnyQueryTest
 
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         if( this.unitOfWork != null )

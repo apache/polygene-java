@@ -55,18 +55,17 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.polygene.api.usecase.UsecaseBuilder.newUsecase;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Assert that Serialization behaviour on ValueComposites is correct.
@@ -75,19 +74,17 @@ import static org.junit.Assert.assertThat;
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractPolygeneTest
 {
-    @Rule
-    public TestName testName = new TestName();
 
-    @Before
-    public void before()
+    @BeforeEach
+    public void before( TestInfo info )
     {
-        System.out.println( "# BEGIN " + testName.getMethodName() );
+        System.out.println( "# BEGIN " + info.getDisplayName() );
     }
 
-    @After
-    public void after()
+    @AfterEach
+    public void after( TestInfo info )
     {
-        System.out.println( "# END " + testName.getMethodName() );
+        System.out.println( "# END " + info.getDisplayName() );
     }
 
     @Override
@@ -248,7 +245,7 @@ public abstract class AbstractValueCompositeSerializationTest
     }
 
     @Test
-    @Ignore( "JSONEntityState cannot handle polymorphic deserialization" )
+    @Disabled( "JSONEntityState cannot handle polymorphic deserialization" )
     // TODO Entity == Identity + Value
     // JSONEntityState does not allow for polymorphic serialization
     public void valueAndEntityTypeEquality()

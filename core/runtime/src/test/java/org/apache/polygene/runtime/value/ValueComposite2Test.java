@@ -33,8 +33,11 @@ import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValueComposite2Test
 {
@@ -56,21 +59,23 @@ public class ValueComposite2Test
         Property<String> otherProperty = prototype.other();
         otherProperty.set( "Abc" );
         Some value = builder.newInstance();
-        Assert.assertEquals( value.other().get(), "Abc" );
+        assertThat( value.other().get(), equalTo( "Abc" ) );
     }
 
-    @Test( expected = AssemblyException.class )
+    @Test
     public void testUsesAnnotationIsNotAllowedInValueComposite()
         throws ActivationException, AssemblyException
     {
-        new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
+        assertThrows( AssemblyException.class, () ->
+            new SingletonAssembler()
             {
-                module.values( SomeValue2.class );
+                public void assemble( ModuleAssembly module )
+                    throws AssemblyException
+                {
+                    module.values( SomeValue2.class );
+                }
             }
-        };
+        );
     }
 
     public interface Some

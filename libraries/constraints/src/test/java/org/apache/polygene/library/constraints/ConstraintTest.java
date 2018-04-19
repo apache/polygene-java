@@ -27,9 +27,9 @@ import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConstraintTest extends AbstractPolygeneTest
 {
@@ -41,12 +41,13 @@ public class ConstraintTest extends AbstractPolygeneTest
         module.transients( TestCaseComposite.class );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testContainsFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().containsString().set( "bar" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().containsString().set( "bar" );
+        } );
     }
 
     @Test
@@ -58,12 +59,13 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().containsString().set( "xxxfooyyy" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testEmailFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().email().set( "foo.com" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().email().set( "foo.com" );
+        } );
     }
 
     @Test
@@ -74,11 +76,13 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().email().set( "rickard@gmail.com" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testURLFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-        cb.prototype().url().set( "this is no url" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().url().set( "this is no url" );
+        } );
     }
 
     @Test
@@ -88,11 +92,13 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().url().set( "http://polygene.apache.org/path?query=string#fragment" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testURIFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-        cb.prototype().uri().set( "" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().uri().set( "" );
+        } );
     }
 
     @Test
@@ -102,99 +108,99 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().uri().set( "http://polygene.apache.org/path?query=string#fragment" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testGreaterThanFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().greaterThan().set( 10 );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().greaterThan().set( 10 );
+        } );
     }
 
     @Test
     public void testGreaterThanOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().greaterThan().set( 11 );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testInstanceOfFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().instanceOf().set( new HashSet() );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().instanceOf().set( new HashSet() );
+        } );
     }
 
     @Test
     public void testInstanceOfOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().instanceOf().set( new ArrayList() );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testLessThanFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().lessThan().set( 10 );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().lessThan().set( 10 );
+        } );
     }
 
     @Test
     public void testLessThanOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().lessThan().set( 9 );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testMatchesFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().matches().set( "cba" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().matches().set( "cba" );
+        } );
     }
 
     @Test
     public void testMatchesOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().matches().set( "abbccc" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testMaxLengthFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().maxLength().set( "xxxxx" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().maxLength().set( "xxxxx" );
+        } );
     }
 
     @Test
     public void testMaxLengthOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().maxLength().set( "xxx" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testMinLengthFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().minLength().set( "xx" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().minLength().set( "xx" );
+        } );
     }
 
     @Test
     public void testMinLengthOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().minLength().set( "xxx" );
     }
 
@@ -202,32 +208,17 @@ public class ConstraintTest extends AbstractPolygeneTest
     public void testNotEmptyFail()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-        try
-        {
+        assertThrows( ConstraintViolationException.class, () -> {
             cb.prototype().notEmptyString().set( "" );
-            fail( "Should have thrown exception" );
-        }
-        catch( ConstraintViolationException e )
-        {
-        }
+        } );
 
-        try
-        {
+        assertThrows( ConstraintViolationException.class, () -> {
             cb.prototype().notEmptyCollection().set( new ArrayList() );
-            fail( "Should have thrown exception" );
-        }
-        catch( ConstraintViolationException e )
-        {
-        }
+        } );
 
-        try
-        {
+        assertThrows( ConstraintViolationException.class, () -> {
             cb.prototype().notEmptyList().set( new ArrayList() );
-            fail( "Should have thrown exception" );
-        }
-        catch( ConstraintViolationException e )
-        {
-        }
+        } );
     }
 
     @Test
@@ -239,12 +230,13 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().notEmptyList().set( Collections.singletonList( "X" ) );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testOneOfFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().oneOf().set( "Foo" );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().oneOf().set( "Foo" );
+        } );
     }
 
     @Test
@@ -255,19 +247,19 @@ public class ConstraintTest extends AbstractPolygeneTest
         cb.prototype().oneOf().set( "Bar" );
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void testRangeFail()
     {
-        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
-        cb.prototype().range().set( 101 );
+        assertThrows( ConstraintViolationException.class, () -> {
+            TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
+            cb.prototype().range().set( 101 );
+        } );
     }
 
     @Test
     public void testRangeOk()
     {
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
-
         cb.prototype().range().set( 0 );
         cb.prototype().range().set( 50 );
         cb.prototype().range().set( 100 );
@@ -279,5 +271,4 @@ public class ConstraintTest extends AbstractPolygeneTest
         TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().testParameters( 15 );
     }
-
 }

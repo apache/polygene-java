@@ -31,8 +31,8 @@ import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.spi.PolygeneSPI;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Base class for Polygene scenario tests. This will create one Polygene application per class instead of per test.
@@ -52,7 +52,7 @@ public abstract class AbstractPolygeneScenarioTest
     static protected Assembler assembler; // Initialize this in static block of subclass
     private static UnitOfWorkFactory uowf;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp()
         throws Exception
     {
@@ -111,7 +111,7 @@ public abstract class AbstractPolygeneScenarioTest
     {
     }
 
-    @AfterClass
+    @AfterAll
     public void tearDown()
         throws Exception
     {

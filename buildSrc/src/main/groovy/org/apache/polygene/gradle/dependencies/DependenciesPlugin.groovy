@@ -48,6 +48,7 @@ class DependenciesPlugin implements Plugin<Project>
 
   private static void applyRepositories( Project project, DependenciesDeclarationExtension declaration )
   {
+    project.repositories.jcenter()
     declaration.repositoriesUrls.each { name, url ->
       project.repositories.maven { MavenArtifactRepository repo ->
         repo.name = name

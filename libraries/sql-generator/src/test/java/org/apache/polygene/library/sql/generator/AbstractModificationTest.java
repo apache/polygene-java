@@ -20,7 +20,7 @@ import org.apache.polygene.library.sql.generator.grammar.factories.QueryFactory;
 import org.apache.polygene.library.sql.generator.grammar.factories.TableReferenceFactory;
 import org.apache.polygene.library.sql.generator.grammar.modification.InsertStatement;
 import org.apache.polygene.library.sql.generator.vendor.SQLVendor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractModificationTest extends AbstractSQLSyntaxTest
 {

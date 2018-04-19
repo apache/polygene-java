@@ -20,11 +20,9 @@
 
 package org.apache.polygene.runtime.value;
 
-import org.apache.polygene.api.identity.Identity;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
+import org.apache.polygene.api.identity.Identity;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.injection.scope.Structure;
 import org.apache.polygene.api.mixin.Mixins;
@@ -38,6 +36,11 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class ValueInjectionDeserializationTest
     extends AbstractPolygeneTest
@@ -73,9 +76,9 @@ public class ValueInjectionDeserializationTest
             uow = unitOfWorkFactory.newUnitOfWork();
             Niclas niclas2 = uow.get( Niclas.class, id );
             Some someValue = niclas2.value().get();
-            Assert.assertEquals( someValue.data().get(), "Niclas" );
-            Assert.assertNotNull( someValue.module() );
-            Assert.assertNotNull( someValue.service() );
+            assertThat( someValue.data().get(), equalTo( "Niclas" ) );
+            assertThat( someValue.module(), notNullValue() );
+            assertThat( someValue.service(), notNullValue() );
         }
         finally
         {

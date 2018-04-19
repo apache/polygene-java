@@ -19,18 +19,19 @@
  */
 package org.apache.polygene.library.uid.sequence;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.uid.sequence.assembly.PersistingSequencingAssembler;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-    
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+
 public class PersistingSequencingTest extends AbstractPolygeneTest
 {
     @Override
@@ -46,7 +47,7 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertEquals( 0, underTest.currentValue() );
+        assertThat( underTest.currentValue(), equalTo( 0L ) );
     }
 
     @Test
@@ -54,8 +55,8 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertEquals( 1, underTest.nextValue() );
-        assertEquals( 1, underTest.currentValue() );
+        assertThat( underTest.nextValue(), equalTo( 1L ) );
+        assertThat( underTest.currentValue(), equalTo( 1L ) );
     }
 
     @Test
@@ -63,12 +64,12 @@ public class PersistingSequencingTest extends AbstractPolygeneTest
         throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        for( int i = 1; i <= 100; i++ )
+        for( long i = 1; i <= 100; i++ )
         {
-            assertEquals( i, underTest.nextValue() );
-            assertEquals( i, underTest.currentValue() );
-            assertEquals( i, underTest.currentValue() );
-            assertEquals( i, underTest.currentValue() );
+            assertThat( underTest.nextValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
         }
     }
 

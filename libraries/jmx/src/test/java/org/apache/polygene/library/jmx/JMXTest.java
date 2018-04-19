@@ -37,7 +37,7 @@ import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.util.JmxFixture;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Start a simple server so that it can be accessed through JMX remotely.

@@ -33,11 +33,11 @@ import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.entitystore.memory.MemoryEntityStoreService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test of configuration for services that Constraints are respected.
@@ -61,22 +61,23 @@ public class ConfigurationConstraintTest
         service.get().test();
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenConstrainedConfigurationWhenIncorrectValueExpectConstraintViolationFailure()
         throws Exception
     {
-        SingletonAssembler underTest = new SingletonAssembler(
-            module ->
-            {
-                module.defaultServices();
-                module.services( MemoryEntityStoreService.class );
-                module.services( TestService.class ).identifiedBy( "TestService2" );
-                module.configurations( TestConfiguration.class );
-            }
-        );
-        ServiceReference<TestService> service = underTest.module().findService( TestService.class );
-        service.get().test();
-        fail( "Expected failure from constraint violation." );
+        assertThrows( ConstraintViolationException.class, () -> {
+            SingletonAssembler underTest = new SingletonAssembler(
+                module ->
+                {
+                    module.defaultServices();
+                    module.services( MemoryEntityStoreService.class );
+                    module.services( TestService.class ).identifiedBy( "TestService2" );
+                    module.configurations( TestConfiguration.class );
+                }
+            );
+            ServiceReference<TestService> service = underTest.module().findService( TestService.class );
+            service.get().test();
+        } );
     }
 
     @Mixins( TestMixin.class )

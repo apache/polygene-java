@@ -20,15 +20,17 @@
 
 package org.apache.polygene.runtime.structure;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.activation.ActivationException;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.bootstrap.SingletonAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ApplicationModeTest
     extends AbstractPolygeneTest
@@ -43,9 +45,7 @@ public class ApplicationModeTest
     public void testApplicationModeNotSet()
     {
         // mode is set to test in AbstractPolygeneTest
-        Assert.assertThat( "mode set to default",
-                           application.mode(),
-                           CoreMatchers.equalTo( Application.Mode.test ) );
+        assertThat( "mode set to default", application.mode(), equalTo( Application.Mode.test ) );
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ApplicationModeTest
             }
         }.application().mode();
 
-        Assert.assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.test ) );
+        assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.test ) );
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ApplicationModeTest
             }
         }.application().mode();
 
-        Assert.assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.staging ) );
+        assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.staging ) );
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ApplicationModeTest
             }
         }.application().mode();
 
-        Assert.assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.development ) );
+        assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.development ) );
     }
 
     @Test
@@ -109,6 +109,6 @@ public class ApplicationModeTest
             }
         }.application().mode();
 
-        Assert.assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.production ) );
+        assertThat( "mode set to given value", mode, CoreMatchers.equalTo( Application.Mode.production ) );
     }
 }

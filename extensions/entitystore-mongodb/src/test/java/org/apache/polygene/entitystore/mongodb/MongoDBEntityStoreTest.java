@@ -19,24 +19,28 @@
  */
 package org.apache.polygene.entitystore.mongodb;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import com.mongodb.Mongo;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.mongodb.assembly.MongoDBEntityStoreAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test the MongoDBEntityStoreService.
  */
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-mongo",
+         ports = @Port( exposed = 8801, inner = 27017),
+         newForEachCase = false
+)
 public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "mongo", 27017 );
-
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -56,8 +60,8 @@ public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
         mongoConfig.writeConcern().set( MongoDBEntityStoreConfiguration.WriteConcern.MAJORITY );
         mongoConfig.database().set( "polygene:test" );
         mongoConfig.collection().set( "polygene:test:entities" );
-        mongoConfig.hostname().set( DOCKER.getDockerHost() );
-        mongoConfig.port().set( DOCKER.getExposedContainerPort( "27017/tcp" ) );
+        mongoConfig.hostname().set( "localhost" );
+        mongoConfig.port().set( 8801 );
         // START SNIPPET: assembly
     }
 
@@ -66,6 +70,7 @@ public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
     private String dbName;
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -76,6 +81,7 @@ public class MongoDBEntityStoreTest extends AbstractEntityStoreTest
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         mongo.dropDatabase( dbName );

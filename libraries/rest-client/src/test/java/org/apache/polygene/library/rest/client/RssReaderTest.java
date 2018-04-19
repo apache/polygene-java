@@ -36,8 +36,8 @@ import org.apache.polygene.library.rest.client.api.HandlerCommand;
 import org.apache.polygene.library.rest.client.spi.ResultHandler;
 import org.apache.polygene.library.rest.common.ValueAssembler;
 import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.restlet.Client;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
@@ -58,7 +58,7 @@ public class RssReaderTest
     extends AbstractPolygeneTest
 {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeRssReaderTest()
     {
         assumeConnectivity( "github.com", 443 );

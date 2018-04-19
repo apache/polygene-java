@@ -31,9 +31,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class UnitOfWorkInjectionTest
     extends AbstractPolygeneTest
@@ -61,8 +62,8 @@ public class UnitOfWorkInjectionTest
             UnitOfWork uow2 = unitOfWorkFactory.newUnitOfWork( usecase );
             trial = uow.get( trial );
             trial.doSomething();
-            assertEquals( "123", ( (EntityComposite) trial ).identity().get().toString() );
-            assertEquals( "usecase1", trial.usecaseName() );
+            assertThat( ( (EntityComposite) trial ).identity().get().toString(), equalTo( "123" ) );
+            assertThat( trial.usecaseName(), equalTo( "usecase1" ) );
             uow2.discard();
         }
         catch( Throwable ex )

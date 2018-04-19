@@ -19,16 +19,6 @@
  */
 package org.apache.polygene.library.shiro;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordMatcher;
-import org.apache.shiro.authc.credential.PasswordService;
-import org.apache.shiro.realm.Realm;
-import org.apache.shiro.realm.SimpleAccountRealm;
-import org.apache.shiro.subject.Subject;
-import org.junit.Test;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceActivation;
@@ -37,9 +27,20 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.authc.credential.PasswordService;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.SimpleAccountRealm;
+import org.apache.shiro.subject.Subject;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class RealmServiceTest
     extends AbstractPolygeneTest
@@ -113,7 +114,7 @@ public class RealmServiceTest
         Subject currentUser = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken( "foo", "bar" );
         currentUser.login( token );
-        assertNotNull( "Unable to authenticate against MyRealmService", currentUser.getPrincipal() );
+        assertThat( "Unable to authenticate against MyRealmService", currentUser.getPrincipal(), notNullValue() );
     }
 
 }

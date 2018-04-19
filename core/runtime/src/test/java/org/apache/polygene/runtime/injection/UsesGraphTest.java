@@ -20,15 +20,15 @@
 
 package org.apache.polygene.runtime.injection;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test creation of object graph, where @Uses is used to refer to instances
@@ -48,16 +48,16 @@ public class UsesGraphTest
         D d = new D();
         A a = objectFactory.newObject( A.class, objectFactory.newObject( C.class, d ), d );
 
-        Assert.assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
-        Assert.assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );
+        assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
+        assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );
     }
 
     @Test
     public void givenGraphDependenciesWhenInstantiateUsingBuildersThenDontGetSameReferences()
     {
         A a = objectFactory.newObject( A.class );
-        Assert.assertThat( "Same reference not expected", a.c, not( equalTo( a.b.c ) ) );
-        Assert.assertThat( "Same reference not expected", a.d, not( equalTo( a.b.c.d ) ) );
+        assertThat( "Same reference not expected", a.c, not( equalTo( a.b.c ) ) );
+        assertThat( "Same reference not expected", a.d, not( equalTo( a.b.c.d ) ) );
     }
 
     static public class A

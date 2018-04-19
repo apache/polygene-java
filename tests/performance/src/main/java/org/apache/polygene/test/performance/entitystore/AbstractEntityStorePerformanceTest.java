@@ -34,8 +34,8 @@ import org.apache.polygene.api.unitofwork.UnitOfWorkFactory;
 import org.apache.polygene.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.Energy4Java;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public abstract class AbstractEntityStorePerformanceTest
         this.logger = LoggerFactory.getLogger( getClass().getPackage().getName() + "." + storeName );
     }
 
-    @Before
+    @BeforeEach
     public void warmup()
         throws Exception
     {

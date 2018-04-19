@@ -19,7 +19,6 @@
  */
 package org.apache.polygene.regression.qi94;
 
-import org.junit.Test;
 import org.apache.polygene.api.association.Association;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.entity.EntityComposite;
@@ -29,8 +28,10 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class IssueTest
     extends AbstractPolygeneTest
@@ -50,11 +51,13 @@ public class IssueTest
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );
-            assertEquals( ItemType.class, polygene.api()
-                .entityDescriptorFor( builder.instance() )
-                .state()
-                .getAssociationByName( "typeOfItem" )
-                .type() );
+            assertThat( polygene.api()
+                            .entityDescriptorFor( builder.instance() )
+                            .state()
+                            .getAssociationByName( "typeOfItem" )
+                            .type(),
+                        equalTo( ItemType.class )
+            );
         }
         finally
         {

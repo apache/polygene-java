@@ -25,8 +25,12 @@ import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ServiceActivationTest
 {
@@ -36,56 +40,61 @@ public class ServiceActivationTest
     private static int passivationLevel = 0;
 
     public static class TestedActivator
-            implements Activator<ServiceReference<TestedService>>
+        implements Activator<ServiceReference<TestedService>>
     {
 
         public void beforeActivation( ServiceReference<TestedService> activating )
         {
-            Assert.assertFalse( "Service should not be active before activation", activating.isActive() );
-            try {
+            assertThat( "Service should not be active before activation", activating.isActive(), is( false ) );
+            try
+            {
                 activating.get();
-                Assert.fail( "Service is not activated yet, the reference get method should throw IllegalStateException." );
-            } catch ( IllegalStateException expected ) {
+                fail( "Service is not activated yet, the reference get method should throw IllegalStateException." );
+            }
+            catch( IllegalStateException expected )
+            {
             }
             activationLevel++;
         }
 
         public void afterActivation( ServiceReference<TestedService> activated )
         {
-            Assert.assertTrue( "Service should be active after activation", activated.isActive() );
-            Assert.assertEquals( "After activation", "bar", activated.get().foo() );
+            assertThat( "Service should be active after activation", activated.isActive(), is( true ) );
+            assertThat( "After activation", activated.get().foo(), equalTo( "bar" ) );
             activationLevel++;
         }
 
         public void beforePassivation( ServiceReference<TestedService> passivating )
         {
-            Assert.assertTrue( "Service should be active before passivation", passivating.isActive() );
-            Assert.assertEquals( "Before passivation", "bar", passivating.get().foo() );
+            assertThat( "Service should be active before passivation", passivating.isActive(), is( true ) );
+            assertThat( "Before passivation", passivating.get().foo(), equalTo( "bar" ) );
             passivationLevel++;
         }
 
         public void afterPassivation( ServiceReference<TestedService> passivated )
         {
-            Assert.assertFalse( "Service should not be active after passivation", passivated.isActive() );
-            try {
+            assertThat( "Service should not be active after passivation", passivated.isActive(), is( false ) );
+            try
+            {
                 passivated.get();
-                Assert.fail( "Service is passivated, the reference get method should throw IllegalStateException." );
-            } catch ( IllegalStateException expected ) {
+                fail( "Service is passivated, the reference get method should throw IllegalStateException." );
+            }
+            catch( IllegalStateException expected )
+            {
             }
             passivationLevel++;
         }
-
     }
 
     @Mixins( TestedServiceMixin.class )
     public interface TestedServiceComposite
-            extends TestedService, ServiceComposite
+        extends TestedService, ServiceComposite
     {
     }
 
     @Mixins( TestedServiceMixin.class )
     public interface TestedServiceComposite2
-            extends TestedService, ServiceComposite
+        extends TestedService, ServiceComposite
     {
     }
 
@@ -93,45 +102,42 @@ public class ServiceActivationTest
     {
 
         String foo();
-
     }
 
     public static class TestedServiceMixin
-            implements TestedService
+        implements TestedService
     {
 
         public String foo()
         {
             return "bar";
         }
-
     }
 
     @Test
     public void testServicesActivators()
-            throws Exception
+        throws Exception
     {
         SingletonAssembler assembly = new SingletonAssembler(
             module -> {
                 module.addServices( TestedServiceComposite.class ).
                     withActivators( TestedActivator.class ).
-                          instantiateOnStartup();
+                    instantiateOnStartup();
                 module.addServices( TestedServiceComposite2.class ).
                     withActivators( TestedActivator.class ).
-                          instantiateOnStartup();
+                    instantiateOnStartup();
             }
         );
         // Activate
         Application application = assembly.application();
 
         // Assert activated
-        Assert.assertEquals( "Activation Level", 4, activationLevel );
+        assertThat( "Activation Level", activationLevel, equalTo( 4 ) );
 
         // Passivate
         application.passivate();
 
         // Assert passivated
-        Assert.assertEquals( "Passivation Level", 4, passivationLevel );
+        assertThat( "Passivation Level", passivationLevel, equalTo( 4 ) );
     }
-
 }

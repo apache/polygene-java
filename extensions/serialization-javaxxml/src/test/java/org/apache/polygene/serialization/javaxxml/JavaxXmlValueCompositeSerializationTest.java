@@ -24,12 +24,12 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxxml.assembly.JavaxXmlSerializationAssembler;
 import org.apache.polygene.spi.serialization.XmlSerialization;
 import org.apache.polygene.test.serialization.AbstractValueCompositeSerializationTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.ElementSelectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class JavaxXmlValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest

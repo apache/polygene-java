@@ -32,10 +32,11 @@ import org.apache.polygene.api.sideeffect.SideEffects;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test the @This annotation
@@ -56,7 +57,7 @@ public class ThisInjectionTest
      *
      * @throws Exception re-thrown
      */
-    @org.junit.Test
+    @Test
     public void givenCompositeWithThisInjectionsWhenInstantiatedThenCompositeIsInjected()
         throws Exception
     {
@@ -65,7 +66,7 @@ public class ThisInjectionTest
         assertThat( "Injection worked", testComposite.isInjected() && sideEffectInjected, is( equalTo( true ) ) );
     }
 
-    public interface Test
+    public interface TestType
     {
         boolean isInjected();
 
@@ -82,15 +83,15 @@ public class ThisInjectionTest
     @Concerns( TestConcern.class )
     @Mixins( TestMixin.class )
     public interface TestComposite
-        extends TransientComposite, Test
+        extends TransientComposite, TestType
     {
     }
 
     public static class TestMixin
-        implements Test
+        implements TestType
     {
         @This
-        Test test;
+        TestType test;
 
         @This
         TestPrivate testPrivate;
@@ -107,11 +108,11 @@ public class ThisInjectionTest
     }
 
     public static abstract class TestConcern
-        extends ConcernOf<Test>
-        implements Test
+        extends ConcernOf<TestType>
+        implements TestType
     {
         @This
-        Test test;
+        TestType test;
 
         @This
         TestPrivate testPrivate;
@@ -125,11 +126,11 @@ public class ThisInjectionTest
     }
 
     public static abstract class TestSideEffect
-        extends SideEffectOf<Test>
-        implements Test
+        extends SideEffectOf<TestType>
+        implements TestType
     {
         @This
-        Test test;
+        TestType test;
         @This
         TestPrivate testPrivate;
 

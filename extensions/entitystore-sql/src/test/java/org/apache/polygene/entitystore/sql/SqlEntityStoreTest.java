@@ -27,16 +27,16 @@ import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
 import org.apache.polygene.library.sql.datasource.DataSourceConfiguration;
 import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class SqlEntityStoreTest extends AbstractEntityStoreTest
 {
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     // START SNIPPET: assembly
@@ -87,9 +87,8 @@ public class SqlEntityStoreTest extends AbstractEntityStoreTest
     }
     // END SNIPPET: assembly
 
-    @Override
-    @After
-    public void tearDown()
+    @AfterEach
+    public void cleanUpData()
     {
         TearDown.dropTables( moduleInstance, SQLDialect.DERBY, super::tearDown );
     }

@@ -19,21 +19,23 @@
  */
 package org.apache.polygene.library.uid.sequence;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.injection.scope.Service;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.uid.sequence.assembly.TransientSequencingAssembler;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TransientSequencingTest extends AbstractPolygeneTest
 {
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         new TransientSequencingAssembler().assemble( module );
         module.transients( UnderTestComposite.class );
@@ -41,32 +43,29 @@ public class TransientSequencingTest extends AbstractPolygeneTest
 
     @Test
     public void whenTransientSequencingThenNumbersStartAtZero()
-        throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertEquals( 0, underTest.currentValue() );
+        assertThat( underTest.currentValue(), equalTo( 0L ) );
     }
 
     @Test
     public void whenTransientSequencingThenFirstNextValueIsOne()
-        throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        assertEquals( 1, underTest.nextValue() );
-        assertEquals( 1, underTest.currentValue() );
+        assertThat( underTest.nextValue(), equalTo( 1L ) );
+        assertThat( underTest.currentValue(), equalTo( 1L ) );
     }
 
     @Test
     public void whenTransientSequencingThenFirst100ValuesAreInSequence()
-        throws Exception
     {
         UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
-        for( int i = 1; i <= 100; i++ )
+        for( long i = 1; i <= 100; i++ )
         {
-            assertEquals( i, underTest.nextValue() );
-            assertEquals( i, underTest.currentValue() );
-            assertEquals( i, underTest.currentValue() );
-            assertEquals( i, underTest.currentValue() );
+            assertThat( underTest.nextValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
+            assertThat( underTest.currentValue(), equalTo( i ) );
         }
     }
 
@@ -85,7 +84,8 @@ public class TransientSequencingTest extends AbstractPolygeneTest
     public static class UnderTestMixin
         implements UnderTest
     {
-        @Service private Sequencing service;
+        @Service
+        private Sequencing service;
 
         public long nextValue()
         {

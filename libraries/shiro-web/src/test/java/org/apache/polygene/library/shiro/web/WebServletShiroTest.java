@@ -20,14 +20,17 @@
 package org.apache.polygene.library.shiro.web;
 
 import java.util.EnumSet;
+import org.apache.polygene.test.util.FreePortFinder;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.junit.Test;
-import org.apache.polygene.test.util.FreePortFinder;
+import org.junit.jupiter.api.Test;
 
-import static javax.servlet.DispatcherType.*;
+import static javax.servlet.DispatcherType.ERROR;
+import static javax.servlet.DispatcherType.FORWARD;
+import static javax.servlet.DispatcherType.INCLUDE;
+import static javax.servlet.DispatcherType.REQUEST;
 
 public class WebServletShiroTest
 {

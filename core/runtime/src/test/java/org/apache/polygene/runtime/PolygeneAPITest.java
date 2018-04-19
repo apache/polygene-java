@@ -20,7 +20,6 @@
 
 package org.apache.polygene.runtime;
 
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.entity.EntityComposite;
 import org.apache.polygene.api.service.ServiceComposite;
@@ -30,6 +29,7 @@ import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 
 /**
  * JAVADOC

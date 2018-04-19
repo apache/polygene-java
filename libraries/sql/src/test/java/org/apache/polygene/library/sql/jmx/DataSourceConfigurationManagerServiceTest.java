@@ -32,7 +32,7 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.library.sql.liquibase.LiquibaseAssembler;
 import org.apache.polygene.library.sql.liquibase.LiquibaseConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test of export of DataSources to JMX, and some other stuff

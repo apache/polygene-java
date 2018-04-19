@@ -20,9 +20,6 @@
 package org.apache.polygene.runtime.appliesto;
 
 import java.lang.reflect.Method;
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.common.AppliesTo;
 import org.apache.polygene.api.common.AppliesToFilter;
 import org.apache.polygene.api.composite.TransientComposite;
@@ -31,6 +28,11 @@ import org.apache.polygene.api.concern.GenericConcern;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Test of the AppliesToFilter
@@ -49,9 +51,9 @@ public class AppliesToFilterTest
         throws Exception
     {
         Some some = transientBuilderFactory.newTransient( Some.class );
-        Assert.assertEquals( ",", some.doStuff1() );
-        Assert.assertEquals( ",,..", some.doStuff2() );
-        Assert.assertEquals( ",,,", some.doStuff3() );
+        assertThat( some.doStuff1(), equalTo( "," ) );
+        assertThat( some.doStuff2(), equalTo( ",,.." ) );
+        assertThat( some.doStuff3(), equalTo( ",,," ) );
     }
 
     @Concerns( MyConcern.class )

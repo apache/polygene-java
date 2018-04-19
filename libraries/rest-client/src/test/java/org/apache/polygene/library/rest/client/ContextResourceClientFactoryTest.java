@@ -70,11 +70,9 @@ import org.apache.polygene.library.rest.server.restlet.NullCommandResult;
 import org.apache.polygene.library.rest.server.spi.CommandResult;
 import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.util.FreePortFinder;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -95,6 +93,8 @@ import static org.apache.polygene.bootstrap.ImportedServiceDeclaration.NEW_OBJEC
 import static org.apache.polygene.library.rest.client.api.HandlerCommand.command;
 import static org.apache.polygene.library.rest.client.api.HandlerCommand.query;
 import static org.apache.polygene.library.rest.client.api.HandlerCommand.refresh;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ContextResourceClientFactoryTest
     extends AbstractPolygeneTest
@@ -137,7 +137,7 @@ public class ContextResourceClientFactoryTest
     {
     }
 
-    @Before
+    @BeforeEach
     public void startWebServer()
         throws Exception
     {
@@ -198,7 +198,7 @@ public class ContextResourceClientFactoryTest
         //END SNIPPET: client-create3
     }
 
-    @After
+    @AfterEach
     public void stopWebServer()
         throws Exception
     {
@@ -223,15 +223,15 @@ public class ContextResourceClientFactoryTest
                 return query( "querywithoutvalue" );
             }
         } ).
-               onQuery( "querywithoutvalue", new ResultHandler<TestResult>()
-               {
-                   @Override
-                   public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
-                   {
-                       Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
-                       return null;
-                   }
-               } );
+            onQuery( "querywithoutvalue", new ResultHandler<TestResult>()
+            {
+                @Override
+                public HandlerCommand handleResult( TestResult result, ContextResourceClient client )
+                {
+                    assertThat( result.xyz().get(), equalTo( "bar" ) );
+                    return null;
+                }
+            } );
 
         crc.start();
         //END SNIPPET: query-without-value
@@ -364,11 +364,11 @@ public class ContextResourceClientFactoryTest
             @Override
             public HandlerCommand handleResult( Links result, ContextResourceClient client )
             {
-                Assert.assertEquals( result.links().get().size(), 3 );
+                assertThat( result.links().get().size(), equalTo( 3 ) );
                 return null;
             }
         } )
-           .start();
+            .start();
     }
 
     public interface TestQuery
@@ -442,9 +442,9 @@ public class ContextResourceClientFactoryTest
         public Links commandwithvalue()
         {
             return new LinksBuilder( module ).
-                                                 command( "commandwithvalue" ).
-                                                 addLink( "Command ABC", "right" ).
-                                                 addLink( "Command XYZ", "wrong" ).newLinks();
+                command( "commandwithvalue" ).
+                addLink( "Command ABC", "right" ).
+                addLink( "Command XYZ", "wrong" ).newLinks();
         }
 
         @Override

@@ -100,7 +100,7 @@ public class ClassScanner
                                             {
                                                 return seedClass.getClassLoader().loadClass( name );
                                             }
-                                            catch( ClassNotFoundException e )
+                                            catch( ClassNotFoundException | NoClassDefFoundError e )
                                             {
                                                 return null;
                                             }
@@ -175,7 +175,7 @@ public class ClassScanner
         @Override
         public boolean test( Class<?> item )
         {
-            return ( item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) )
+            return item != null && ( item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) )
                    && ( !item.isEnum() && !item.isAnonymousClass() );
         }
     }

@@ -27,10 +27,10 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.serialization.javaxjson.assembly.JavaxJsonSerializationAssembler;
 import org.apache.polygene.spi.serialization.JsonSerialization;
 import org.apache.polygene.test.serialization.AbstractValueCompositeSerializationTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JavaxJsonValueCompositeSerializationTest extends AbstractValueCompositeSerializationTest
 {

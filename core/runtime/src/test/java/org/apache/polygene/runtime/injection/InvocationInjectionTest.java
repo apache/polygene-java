@@ -29,11 +29,11 @@ import org.apache.polygene.api.concern.Concerns;
 import org.apache.polygene.api.injection.scope.Invocation;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Test the @Invocation annotation
@@ -62,21 +62,22 @@ public class InvocationInjectionTest
     {
         @Foo( "1" )
         void doStuff();
-// END SNIPPET: declaration
+
+        // END SNIPPET: declaration
         void doStuff2();
 
         @Foo( "X" )
         void doStuff3();
     }
 
-// START SNIPPET: use1
+    // START SNIPPET: use1
     public abstract static class MyConcern
         extends ConcernOf<MyComposite>
         implements MyComposite
     {
         @Invocation
         Foo foo;
-// END SNIPPET: use1
+        // END SNIPPET: use1
         @Invocation
         Method method;
 
@@ -85,28 +86,25 @@ public class InvocationInjectionTest
 
         public void doStuff()
         {
-            Assert.assertThat( "interface has been injected", foo.value(), CoreMatchers.equalTo( "1" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
-                .value(), CoreMatchers.equalTo( "1" ) );
-            Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff" ) );
+            assertThat( "interface has been injected", foo.value(), equalTo( "1" ) );
+            assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), equalTo( "1" ) );
+            assertThat( "Method has been injected", method.getName(), equalTo( "doStuff" ) );
             next.doStuff();
         }
 
         public void doStuff2()
         {
-            Assert.assertThat( "mixin has been injected", foo.value(), CoreMatchers.equalTo( "2" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
-                .value(), CoreMatchers.equalTo( "2" ) );
-            Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff2" ) );
+            assertThat( "mixin has been injected", foo.value(), equalTo( "2" ) );
+            assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), equalTo( "2" ) );
+            assertThat( "Method has been injected", method.getName(), equalTo( "doStuff2" ) );
             next.doStuff2();
         }
 
         public void doStuff3()
         {
-            Assert.assertThat( "mixin has overridden interface", foo.value(), CoreMatchers.equalTo( "3" ) );
-            Assert.assertThat( "annotations have been injected", ae.getAnnotation( Foo.class )
-                .value(), CoreMatchers.equalTo( "3" ) );
-            Assert.assertThat( "Method has been injected", method.getName(), CoreMatchers.equalTo( "doStuff3" ) );
+            assertThat( "mixin has overridden interface", foo.value(), equalTo( "3" ) );
+            assertThat( "annotations have been injected", ae.getAnnotation( Foo.class ).value(), equalTo( "3" ) );
+            assertThat( "Method has been injected", method.getName(), equalTo( "doStuff3" ) );
             next.doStuff3();
         }
     }
@@ -128,7 +126,8 @@ public class InvocationInjectionTest
         {
         }
     }
-// START SNIPPET: annotation
+
+    // START SNIPPET: annotation
     @Retention( RUNTIME )
     @interface Foo
     {

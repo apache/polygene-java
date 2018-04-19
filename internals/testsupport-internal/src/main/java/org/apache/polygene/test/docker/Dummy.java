@@ -14,26 +14,11 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ *
  */
-package org.apache.polygene.test.cache;
+package org.apache.polygene.test.docker;
 
-import org.apache.polygene.test.util.RetryRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class RetryRuleTest
+public class Dummy
 {
-    @Rule public RetryRule retry = new RetryRule( 3 );
-
-    static int count = 0;
-
-    @Test
-    public void test()
-    {
-        count++;
-        assertThat( count, is( 3 ) );
-    }
 }

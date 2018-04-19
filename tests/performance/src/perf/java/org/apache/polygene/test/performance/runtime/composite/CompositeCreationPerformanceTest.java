@@ -24,7 +24,7 @@ import org.apache.polygene.api.object.ObjectFactory;
 import org.apache.polygene.api.value.ValueBuilderFactory;
 import org.apache.polygene.api.value.ValueComposite;
 import org.apache.polygene.bootstrap.SingletonAssembler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests performance of new composite creation.

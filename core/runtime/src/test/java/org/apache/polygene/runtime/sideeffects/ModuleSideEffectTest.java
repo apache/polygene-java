@@ -22,15 +22,16 @@ package org.apache.polygene.runtime.sideeffects;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.composite.TransientComposite;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.sideeffect.GenericSideEffect;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * Test of declaring sideeffect in assembly
@@ -50,7 +51,7 @@ public class ModuleSideEffectTest
     public void testModuleSideEffect()
     {
         transientBuilderFactory.newTransient( Foo.class ).test( "Foo", 42 );
-        Assert.assertThat( "SideEffect has been called", ok, CoreMatchers.equalTo( true ) );
+        assertThat( "SideEffect has been called", ok, equalTo( true ) );
     }
 
     @Mixins( FooMixin.class )

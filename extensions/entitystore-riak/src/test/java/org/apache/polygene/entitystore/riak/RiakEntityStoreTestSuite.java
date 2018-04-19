@@ -17,20 +17,25 @@
  */
 package org.apache.polygene.entitystore.riak;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import java.util.Collections;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.riak.assembly.RiakEntityStoreAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-riak",
+         ports = @Port( exposed = 8801, inner = 8087),
+         waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class RiakEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "riak", "riak_auth_mods started on node" );
-
     private RiakFixture riakFixture;
 
     @Override
@@ -44,26 +49,25 @@ public class RiakEntityStoreTestSuite extends EntityStoreTestSuite
 
         RiakEntityStoreConfiguration riakConfig = configModule.forMixin( RiakEntityStoreConfiguration.class )
                                                               .declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "8087/tcp" );
+        String host = "localhost";
+        int port = 8801;
         riakConfig.hosts().set( Collections.singletonList( host + ':' + port ) );
     }
 
-    @Override
-    public void tearDown()
-    {
-        riakFixture.deleteTestData();
-        super.tearDown();
-    }
-
-    @Override
-    public void setUp()
+    @BeforeEach
+    public void initializeRiak()
         throws Exception
     {
-        super.setUp();
         Module storageModule = application.findModule( "Infrastructure Layer", "Storage Module" );
         RiakEntityStoreService es = storageModule.findService( RiakEntityStoreService.class ).get();
         riakFixture = new RiakFixture( es.riakClient(), es.riakNamespace() );
         riakFixture.waitUntilReady();
+    }
+
+    @AfterEach
+    public void cleanUpRiak()
+    {
+        riakFixture.deleteTestData();
+        super.tearDown();
     }
 }

@@ -17,23 +17,23 @@
  */
 package org.apache.polygene.test.util;
 
-import org.hamcrest.Matcher;
-import org.junit.Assert;
-
+import java.lang.management.ManagementFactory;
+import java.util.List;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
-import java.util.List;
+import org.hamcrest.Matcher;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * JMX Test Fixture.
  */
-public class JmxFixture extends Assert {
-
+public class JmxFixture
+{
     private final MBeanServer server;
     private final String prefix;
 

@@ -25,18 +25,17 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.polygene.library.rdf.repository.NativeConfiguration;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class RdfQueryTest
     extends AbstractQueryTest
 {
-
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -53,7 +52,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore( "oneOf() Query Expression not supported by RDF Indexing" )
+    @Disabled( "oneOf() Query Expression not supported by RDF Indexing" )
     @Override
     public void script23()
     {
@@ -61,7 +60,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore( "Deep queries in complex values are not supported by RDF Indexing" )
+    @Disabled( "Deep queries in complex values are not supported by RDF Indexing" )
     @Override
     public void script29()
     {
@@ -69,7 +68,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore( "NamedAssociation are not supported by RDF Indexing" )
+    @Disabled( "NamedAssociation are not supported by RDF Indexing" )
     @Override
     public void script35()
     {
@@ -77,7 +76,7 @@ public class RdfQueryTest
     }
 
     @Test
-    @Ignore( "NamedAssociation are not supported by RDF Indexing" )
+    @Disabled( "NamedAssociation are not supported by RDF Indexing" )
     @Override
     public void script36()
     {

@@ -19,7 +19,15 @@
  */
 package org.apache.polygene.library.shiro;
 
+import org.apache.polygene.api.common.Visibility;
+import org.apache.polygene.api.injection.scope.Service;
+import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
+import org.apache.polygene.library.shiro.ini.IniSecurityManagerService;
+import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -31,21 +39,14 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.Test;
-import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.api.injection.scope.Service;
-import org.apache.polygene.bootstrap.AssemblyException;
-import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.library.shiro.assembly.StandaloneShiroAssembler;
-import org.apache.polygene.library.shiro.ini.IniSecurityManagerService;
-import org.apache.polygene.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class StandaloneShiroTest
     extends AbstractPolygeneTest
@@ -114,7 +115,7 @@ public class StandaloneShiroTest
         Session session = currentUser.getSession();
         session.setAttribute( "someKey", "aValue" );
         String value = ( String ) session.getAttribute( "someKey" );
-        assertEquals( "aValue", value );
+        assertThat( value, equalTo( "aValue" ) );
         LOG.info( "Retrieved the correct value! [" + value + "]" );
 
         // let's login the current user so we can check against roles and permissions:
@@ -139,7 +140,7 @@ public class StandaloneShiroTest
 
         //say who they are:
         //print their identifying principal (in this case, a username):
-        assertNotNull( currentUser.getPrincipal() );
+        assertThat( currentUser.getPrincipal(), notNullValue() );
         LOG.info( "User [" + currentUser.getPrincipal() + "] logged in successfully." );
 
         //test a role:

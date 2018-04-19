@@ -20,13 +20,14 @@
 
 package org.apache.polygene.api.object;
 
-import org.junit.Test;
 import org.apache.polygene.api.injection.scope.Uses;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 /**
  * JAVADOC
@@ -44,10 +45,10 @@ public class ObjectBuilderTest
     public void testNotProvidedUses()
     {
         A a = objectFactory.newObject( A.class );
-        assertNotNull( a );
-        assertNotNull( a.b );
-        assertNotNull( a.b.c );
-        assertNotNull( a.b.c.d );
+        assertThat( a, notNullValue() );
+        assertThat( a.b, notNullValue() );
+        assertThat( a.b.c, notNullValue() );
+        assertThat( a.b.c.d, notNullValue() );
     }
 
     public static class A

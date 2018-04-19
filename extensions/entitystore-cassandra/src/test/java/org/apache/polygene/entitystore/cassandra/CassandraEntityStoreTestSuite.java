@@ -19,25 +19,28 @@
  */
 package org.apache.polygene.entitystore.cassandra;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.api.service.ServiceReference;
 import org.apache.polygene.api.structure.Module;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.cassandra.assembly.CassandraEntityStoreAssembler;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.entity.CanRemoveAll;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  * Test the CassandraEntityStoreService.
- * <p>Installing Cassandra and starting it should suffice as the test use Cassandra defaults: 127.0.0.1:3000</p>
  */
+@Docker( image = "cassandra",
+         ports = @Port( exposed = 8801, inner = 9042),
+         waitFor = @WaitFor( value = "Starting listening for CQL clients", timeoutInMillis = 60000),
+         newForEachCase = false
+)
 public class CassandraEntityStoreTestSuite extends EntityStoreTestSuite
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "cassandra", "Starting listening for CQL clients" );
-
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
@@ -54,14 +57,15 @@ public class CassandraEntityStoreTestSuite extends EntityStoreTestSuite
 
 
         CassandraEntityStoreConfiguration cassandraDefaults = configModule.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "9042/tcp" );
+        String host = "localhost";
+        int port = 8801;
         System.out.println("Cassandra: " + host + ":" + port);
         cassandraDefaults.hostnames().set( host + ':' + port );
         cassandraDefaults.createIfMissing().set( true );
     }
 
     @Override
+    @AfterEach
     public void tearDown()
     {
         Module module = application.findModule( "Infrastructure Layer", "Storage Module" );

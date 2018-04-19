@@ -17,7 +17,6 @@
  */
 package org.apache.polygene.entitystore.sql;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -25,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.common.QualifiedName;
 import org.apache.polygene.api.entity.EntityDescriptor;
-import org.apache.polygene.api.property.Property;
 import org.apache.polygene.api.property.PropertyDescriptor;
 import org.apache.polygene.api.util.Classes;
+import org.jooq.Constraint;
 import org.jooq.CreateTableColumnStep;
 import org.jooq.DataType;
 import org.jooq.Field;
@@ -40,11 +39,25 @@ import org.jooq.impl.DSL;
 /**
  * This class is effectively the manager of the {@link MixinTable} instances.
  */
-public class TypesTable
-    implements TableFields
+class TypesTable
 {
+    // Common in all tables
+    private static final String IDENTITY_COLUMN_NAME = "_identity";
+    private static final String CREATED_COLUMN_NAME = "_created_at";
+    private static final String LASTMODIFIED_COLUMN_NAME = "_modified_at";
+
+    // Types Table
+    private static final String TABLENAME_COLUMN_NAME = "_table_name";
+
+    // Common Fields
+    private Field<String> identityColumn;
+    private Field<Timestamp> createdColumn;
+    private Field<Timestamp> modifiedColumn;
+
+    // Types Table
+    private Field<String> tableNameColumn;
+
     private final Map<Class<?>, Table<Record>> mixinTablesCache = new ConcurrentHashMap<>();
-    private final Map<Class<?>, Table<Record>> mixinAssocsTablesCache = new ConcurrentHashMap<>();
 
     private final Table<Record> typesTable;
     private final SQLDialect dialect;
@@ -62,14 +75,14 @@ public class TypesTable
         this.config = config;
         typesTable = dsl.tableOf( typesTablesName );
         this.dsl = dsl;
+        Integer idMaxLength = config.identityLength().get();
+        identityColumn = SqlType.makeField( IDENTITY_COLUMN_NAME, String.class, dialect );
+        createdColumn = SqlType.makeField( CREATED_COLUMN_NAME, Timestamp.class, dialect );
+        modifiedColumn = SqlType.makeField( LASTMODIFIED_COLUMN_NAME, Timestamp.class, dialect );
+        tableNameColumn = SqlType.makeField( TABLENAME_COLUMN_NAME, String.class, dialect );
     }
 
-    static <T> Field<T> makeField( String columnName, Class<T> type )
-    {
-        return DSL.field( DSL.name( columnName ), type );
-    }
-
-    String tableNameOf( Class<?> mixinType )
+    private String tableNameOf( Class<?> mixinType )
     {
         Result<Record> typeInfo = fetchTypeInfoFromTable( mixinType );
         if( typeInfo.isEmpty() )
@@ -143,7 +156,7 @@ public class TypesTable
         String typeName = mixinType.getSimpleName();
         String postFix = "";
         int counter = 1;
-        boolean found = false;
+        boolean found;
         do
         {
             found = checkForTableNamed( typeName + postFix );
@@ -154,7 +167,7 @@ public class TypesTable
 
     private boolean checkForTableNamed( String tableName )
     {
-        if( tableName.equalsIgnoreCase( config.entitiesTableName().get() ) || tableName.equalsIgnoreCase( config.typesTableName().get() ))
+        if( tableName.equalsIgnoreCase( config.entitiesTableName().get() ) || tableName.equalsIgnoreCase( config.typesTableName().get() ) )
         {
             return true;
         }
@@ -162,11 +175,6 @@ public class TypesTable
                   .from( typesTable )
                   .where( tableNameColumn.eq( tableName ) )
                   .fetch().size() > 0;
-    }
-
-    private boolean isProperty( Method method )
-    {
-        return Property.class.isAssignableFrom( method.getReturnType() ) && method.getParameterCount() == 0;
     }
 
     Field<Object> fieldOf( PropertyDescriptor descriptor )
@@ -178,13 +186,52 @@ public class TypesTable
     Field<String> fieldOf( AssociationDescriptor descriptor )
     {
         String propertyName = descriptor.qualifiedName().name();
-        return DSL.field( DSL.name( propertyName ), DSL.getDataType( String.class ) );
+        return DSL.field( DSL.name( propertyName ), dataTypeOf( descriptor ) );
     }
 
     private <T> DataType<T> dataTypeOf( PropertyDescriptor property )
     {
         Type type = property.type();
-        Class<?> rawType = Classes.RAW_CLASS.apply( type );
-        return SqlType.getSqlDataTypeFor( rawType );
+
+        @SuppressWarnings( "unchecked" )
+        Class<T> rawType = (Class<T>) Classes.RAW_CLASS.apply( type );
+
+        return SqlType.getSqlDataTypeFor( dialect, rawType, false );
+    }
+
+    private <T> DataType<T> dataTypeOf( AssociationDescriptor property )
+    {
+        Type type = property.type();
+
+        @SuppressWarnings( "unchecked" )
+        Class<T> rawType = (Class<T>) Classes.RAW_CLASS.apply( type );
+
+        return SqlType.getSqlDataTypeFor( dialect, rawType, false );
+    }
+
+    Field<String> identityColumn()
+    {
+        return identityColumn;
+    }
+
+    Field<Timestamp> modifiedColumn()
+    {
+        return modifiedColumn;
+    }
+
+    Field<Timestamp> createdColumn()
+    {
+        return createdColumn;
+    }
+
+    void create()
+    {
+        dsl.createTableIfNotExists( typesTable )
+           .column( identityColumn )
+           .column( tableNameColumn )
+           .column( createdColumn )
+           .column( modifiedColumn )
+           .constraint( DSL.primaryKey( identityColumn ) )
+           .execute();
     }
 }

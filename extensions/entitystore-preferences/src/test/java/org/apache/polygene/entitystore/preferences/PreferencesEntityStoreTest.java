@@ -22,15 +22,15 @@ package org.apache.polygene.entitystore.preferences;
 import java.util.prefs.Preferences;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.TemporaryFolder;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith( TemporaryFolder.class )
 public class PreferencesEntityStoreTest
     extends AbstractEntityStoreTest
 {
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )

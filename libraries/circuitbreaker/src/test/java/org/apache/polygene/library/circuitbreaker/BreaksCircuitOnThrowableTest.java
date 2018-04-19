@@ -20,8 +20,6 @@
 package org.apache.polygene.library.circuitbreaker;
 
 import java.beans.PropertyVetoException;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.polygene.api.mixin.Mixins;
 import org.apache.polygene.api.service.ServiceComposite;
 import org.apache.polygene.api.service.ServiceReference;
@@ -30,6 +28,10 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.library.circuitbreaker.service.AbstractBreakOnThrowable;
 import org.apache.polygene.library.circuitbreaker.service.BreaksCircuitOnThrowable;
 import org.apache.polygene.test.AbstractPolygeneTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test @BreaksCircuitOnThrowable annotation
@@ -40,7 +42,7 @@ public class BreaksCircuitOnThrowableTest
 
     // START SNIPPET: service
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( TestService.class ).setMetaInfo( new CircuitBreaker() );
     }
@@ -60,37 +62,33 @@ public class BreaksCircuitOnThrowableTest
     {
         ServiceReference<TestService> serviceReference = serviceFinder.findService( TestService.class );
         TestService service = serviceReference.get();
-        try {
-            service.throwingMethod();
-            Assert.fail( "Service should have thrown exception" );
-        } catch ( Exception e ) {
-            // Ok
-        }
+        assertThrows( Exception.class, () -> service.throwingMethod(), "Service should have thrown exception" );
 
-        try {
-            service.successfulMethod();
-            Assert.fail( "Circuit breaker should have tripped" );
-        } catch ( Exception e ) {
-            // Ok
-        }
+        assertThrows( Exception.class, () -> service.successfulMethod(), "Circuit breaker should have tripped" );
 
-        try {
+        try
+        {
             serviceReference.metaInfo( CircuitBreaker.class ).turnOn();
-        } catch ( PropertyVetoException e ) {
-            Assert.fail( "Should have been possible to turn on circuit breaker" );
+        }
+        catch( PropertyVetoException e )
+        {
+            fail( "Should have been possible to turn on circuit breaker" );
         }
 
-        try {
+        try
+        {
             service.successfulMethod();
-        } catch ( Exception e ) {
-            Assert.fail( "Circuit breaker should have been turned on" );
+        }
+        catch( Exception e )
+        {
+            fail( "Circuit breaker should have been turned on" );
         }
     }
 
     @Mixins( TestService.Mixin.class )
     // START SNIPPET: service
     public interface TestService
-            extends AbstractBreakOnThrowable, ServiceComposite
+        extends AbstractBreakOnThrowable, ServiceComposite
     {
 
         @BreaksCircuitOnThrowable
@@ -101,7 +99,7 @@ public class BreaksCircuitOnThrowableTest
 
         // END SNIPPET: service
         abstract class Mixin
-                implements TestService
+            implements TestService
         {
 
             int count = 0;
@@ -115,11 +113,9 @@ public class BreaksCircuitOnThrowableTest
             {
                 return count++;
             }
-
         }
 
         // START SNIPPET: service
     }
     // END SNIPPET: service
-
 }

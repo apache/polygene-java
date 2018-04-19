@@ -24,31 +24,25 @@ import org.apache.polygene.index.elasticsearch.assembly.ESClientIndexQueryAssemb
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationOverride;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.apache.polygene.test.TemporaryFolder;
+import org.apache.polygene.test.TestName;
 import org.apache.polygene.test.indexing.AbstractEntityFinderTest;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.apache.polygene.test.util.Assume.assumeNoIbmJdk;
 
-public class ElasticSearchFinderTest
-    extends AbstractEntityFinderTest
+@SuppressWarnings( "unused" )
+@ExtendWith( { TemporaryFolder.class, EmbeddedElasticSearchExtension.class, TestName.class } )
+public class ElasticSearchFinderTest extends AbstractEntityFinderTest
 {
-    @ClassRule
-    public static final TemporaryFolder ELASTIC_SEARCH_DIR = new TemporaryFolder();
+    private static EmbeddedElasticSearchExtension ELASTIC_SEARCH;
 
-    @ClassRule
-    public static final ESEmbeddedRule ELASTIC_SEARCH = new ESEmbeddedRule( ELASTIC_SEARCH_DIR );
+    private TestName testName;
 
-    @Rule
-    public final TestName testName = new TestName();
+    private TemporaryFolder tmpDir;
 
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
-
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass_IBMJDK()
     {
         assumeNoIbmJdk();

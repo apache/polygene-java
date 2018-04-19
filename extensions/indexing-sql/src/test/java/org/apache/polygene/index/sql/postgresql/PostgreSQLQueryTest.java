@@ -19,38 +19,42 @@
  */
 package org.apache.polygene.index.sql.postgresql;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
+import com.github.junit5docker.WaitFor;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
-import org.apache.polygene.test.docker.DockerRule;
 import org.apache.polygene.test.indexing.AbstractQueryTest;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * PostgreSQL Query Tests.
  * <p>Many features are not supported.</p>
  */
 // See org.apache.polygene.index.sql.support.skeletons.SQLCompatEntityStateWrapper that filter out unsupported properties.
+@Docker( image = "org.apache.polygene:org.apache.polygene.internal.docker-postgres",
+         ports = @Port( exposed = 8801, inner = 5432),
+         waitFor = @WaitFor( value = "PostgreSQL init process complete; ready for start up.", timeoutInMillis = 30000),
+         newForEachCase = false
+)
 public class PostgreSQLQueryTest
     extends AbstractQueryTest
 {
-    @ClassRule
-    public static final DockerRule DOCKER = new DockerRule( "postgres",
-                                                            10000L,
-                                                            "PostgreSQL init process complete; ready for start up." );
-
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
     {
+        SQLTestHelper.sleep();
         super.assemble( mainModule );
-        String host = DOCKER.getDockerHost();
-        int port = DOCKER.getExposedContainerPort( "5432/tcp" );
+        String host = "localhost";
+        int port = 8801;
         SQLTestHelper.assembleWithMemoryEntityStore( mainModule, host, port );
     }
 
     @Override
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -73,7 +77,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script04_ne()
     {
@@ -81,7 +85,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script12_ne()
     {
@@ -89,7 +93,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NamedAssociation are not supported by SQL Indexing" )
+    @Disabled( "NamedAssociation are not supported by SQL Indexing" )
     @Override
     public void script35()
     {
@@ -97,7 +101,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NamedAssociation are not supported by SQL Indexing" )
+    @Disabled( "NamedAssociation are not supported by SQL Indexing" )
     @Override
     public void script36()
     {
@@ -105,7 +109,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "Queries on Enums are not supported by SQL Indexing" )
+    @Disabled( "Queries on Enums are not supported by SQL Indexing" )
     @Override
     public void script38()
     {
@@ -113,7 +117,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "Queries on Enums and NeSpecification are not supported by SQL Indexing" )
+    @Disabled( "Queries on Enums and NeSpecification are not supported by SQL Indexing" )
     @Override
     public void script39()
     {
@@ -121,7 +125,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "Date is not supported by SQL Indexing" )
+    @Disabled( "Date is not supported by SQL Indexing" )
     @Override
     public void script40_Date()
     {
@@ -129,7 +133,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "DateTime is not supported by SQL Indexing" )
+    @Disabled( "DateTime is not supported by SQL Indexing" )
     @Override
     public void script40_DateTime()
     {
@@ -137,7 +141,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "LocalDate is not supported by SQL Indexing" )
+    @Disabled( "LocalDate is not supported by SQL Indexing" )
     @Override
     public void script40_LocalDate()
     {
@@ -145,7 +149,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "LocalDateTime is not supported by SQL Indexing" )
+    @Disabled( "LocalDateTime is not supported by SQL Indexing" )
     @Override
     public void script40_LocalDateTime()
     {
@@ -153,7 +157,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script41_Instant()
     {
@@ -161,7 +165,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script41_DateTime()
     {
@@ -169,7 +173,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script41_LocalDate()
     {
@@ -177,7 +181,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script41_LocalDateTime()
     {
@@ -185,7 +189,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script42_Instant()
     {
@@ -193,7 +197,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script42_DateTime()
     {
@@ -201,7 +205,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script42_LocalDate()
     {
@@ -209,7 +213,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script42_LocalDateTime()
     {
@@ -217,7 +221,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "Date is not supported by SQL Indexing" )
+    @Disabled( "Date is not supported by SQL Indexing" )
     @Override
     public void script43_Date()
     {
@@ -225,7 +229,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "DateTime is not supported by SQL Indexing" )
+    @Disabled( "DateTime is not supported by SQL Indexing" )
     @Override
     public void script43_DateTime()
     {
@@ -233,7 +237,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "LocalDate is not supported by SQL Indexing" )
+    @Disabled( "LocalDate is not supported by SQL Indexing" )
     @Override
     public void script43_LocalDate()
     {
@@ -241,7 +245,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "LocalDateTime is not supported by SQL Indexing" )
+    @Disabled( "LocalDateTime is not supported by SQL Indexing" )
     @Override
     public void script43_LocalDateTime()
     {
@@ -249,7 +253,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script51_BigInteger()
     {
@@ -257,7 +261,7 @@ public class PostgreSQLQueryTest
     }
 
     @Test
-    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Disabled( "NeSpecification is not supported by SQL Indexing" )
     @Override
     public void script51_BigDecimal()
     {

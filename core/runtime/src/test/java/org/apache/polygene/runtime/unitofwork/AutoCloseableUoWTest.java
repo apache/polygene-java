@@ -19,9 +19,6 @@
  */
 package org.apache.polygene.runtime.unitofwork;
 
-import org.apache.polygene.test.AbstractPolygeneTest;
-import org.junit.After;
-import org.junit.Test;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
 import org.apache.polygene.api.entity.EntityBuilder;
 import org.apache.polygene.api.property.Property;
@@ -29,10 +26,14 @@ import org.apache.polygene.api.unitofwork.UnitOfWork;
 import org.apache.polygene.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
+import org.apache.polygene.test.AbstractPolygeneTest;
 import org.apache.polygene.test.EntityTestAssembler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Assert that Automatic Resource Management (ie. Java 7 try-with-resources) work on UoWs.
@@ -69,18 +70,20 @@ public class AutoCloseableUoWTest
         }
     }
 
-    @Test( expected = ConstraintViolationException.class )
+    @Test
     public void givenWrongAutoCloseableUoWWhenTryWithResourceExpectSuccess()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork uow = unitOfWorkFactory.newUnitOfWork() )
-        {
-            uow.newEntity( TestEntity.class );
-            uow.complete();
-        }
+        assertThrows( ConstraintViolationException.class, () -> {
+            try (UnitOfWork uow = unitOfWorkFactory.newUnitOfWork())
+            {
+                uow.newEntity( TestEntity.class );
+                uow.complete();
+            }
+        } );
     }
 
-    @After
+    @AfterEach
     public void afterEachTest()
     {
         assertThat( unitOfWorkFactory.isUnitOfWorkActive(), is( false ) );
