@@ -20,7 +20,10 @@
 package org.apache.polygene.library.constraints;
 
 import org.apache.polygene.api.common.Optional;
+import org.apache.polygene.api.composite.TransientBuilder;
 import org.apache.polygene.api.constraint.ConstraintViolationException;
+import org.apache.polygene.api.mixin.Mixins;
+import org.apache.polygene.api.mixin.NoopMixin;
 import org.apache.polygene.api.property.Property;
 import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
@@ -84,6 +87,27 @@ public class HostPortConstraintTest extends AbstractPolygeneTest
     }
 
     @Test
+    public void givenInvalidHostNameWhenConstructingExpectConstrainViolation()
+        throws Exception
+    {
+        TransientBuilder<SomeValue> builder = transientBuilderFactory.newTransientBuilder( SomeValue.class );
+        assertThrows( ConstraintViolationException.class, () -> {
+            builder.prototype().hostPort().set( "1:2:3_i:1234" );
+            builder.newInstance();
+        } );
+    }
+
+    @Test
+    public void givenInvalidHostNameWhenCallingServiceExpectConstrainViolation()
+        throws Exception
+    {
+        SomeService someService = serviceFinder.findService( SomeService.class ).get();
+        assertThrows( ConstraintViolationException.class, () -> {
+            someService.doSomething( "1:2:3_i:1234" );
+        } );
+    }
+
+    @Test
     public void givenInvalidPortNumberWhenSettingPropertyExpectConstrainViolation()
         throws Exception
     {
@@ -114,6 +138,7 @@ public class HostPortConstraintTest extends AbstractPolygeneTest
         throws AssemblyException
     {
         module.transients( SomeValue.class );
+        module.services( SomeService.class );
     }
 
     public interface SomeValue
@@ -121,5 +146,11 @@ public class HostPortConstraintTest extends AbstractPolygeneTest
         @HostPort
         @Optional
         Property<String> hostPort();
+    }
+
+    @Mixins( NoopMixin.class )
+    public interface SomeService
+    {
+        void doSomething(@HostPort String hostPort);
     }
 }
