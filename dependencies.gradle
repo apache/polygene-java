@@ -282,7 +282,6 @@ dependencies.dockerImagesVersions << [
         memcached: 'memcached:1.4.39-alpine',
         mariadb  : 'mariadb:10.1.21',
         mongo    : 'mongo:3.5.10',
-        mysql    : 'mysql:5.5.9',
         postgres : 'postgres:9.6.3-alpine',
         redis    : 'redis:4.0.0-alpine',
         riak     : 'basho/riak-kv:ubuntu-2.2.3',
