@@ -17,30 +17,21 @@
  *
  *
  */
-package org.apache.polygene.api.concern;
 
-import org.apache.polygene.api.concern.internal.ConcernFor;
+apply plugin: 'polygene-library'
 
-/**
- * Base class for Concerns. It introduces a typed "next" pointer
- * that Concerns can use to invoke the next Concern (or mixin) in
- * the chain.
- * <p>
- * Generic Concerns should subclass {@link GenericConcern} instead.
- * </p>
- * <p>
- * Concerns implementations must be thread-safe in their implementation,
- * as multiple threads may share instances.
- * </p>
- */
-public abstract class ConcernOf<T>
-{
-    /**
-     * The "next" pointer. This points to
-     * the next concern in the chain or the mixin
-     * to be invoked.
-     */
-    @SuppressWarnings( "ConstantConditions" )
-    @ConcernFor
-    protected final T next = null;
+description = "Apache Polygene™ Execution Library provides common set of execution primitives and services."
+
+jar { manifest { name = "Apache Polygene™ Library - Constraints"}}
+
+dependencies {
+  api polygene.core.bootstrap
+
+  api libraries.commons_validator
+
+  runtimeOnly polygene.core.runtime
+
+  testImplementation polygene.core.testsupport
+
+  testRuntimeOnly libraries.logback
 }

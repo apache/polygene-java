@@ -1,0 +1,68 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[library-execution,Execution Library]]
+= Execution =
+
+== @Retry ==
+Any method can be annotated with the @Retry annotation, which means that if there is an exception thrown, then
+the method should be called again, for a max number of times.
+
+The value() defines how many times the method will be called, if retry is triggered by the on() and unless()
+parameters.
+
+The backoff() parameter is available to slow down the retries, which is useful for network operations or
+external systems that may still need more time to become available. The default is no backoff is deployed and retries
+are executed as fast as possible.
+
+The on() parameter defines which Throwable and subclasses should be considered for retrying the method call. The
+default is all Throwables.
+
+The unless() parameter negates the on() parameter, and if a subclass of any Throwable listed in unless() is thrown
+then the retry operation(s) will not take effect.
+
+== ExecutionService ==
+The =ExecutionService= is the =java.util.concurrent.ExecutorService= provided simply as a flexible assembler for
+configuration of it.
+
+=== Configuration Parameters ===
+The Configuration parameters are available in the =ExecutionServiceAssembler= via a fluent API (DSL), with the
+following methods
+
+[snippet,java]
+----
+source=libraries/execution/src/main/java/org/apache/polygene/library/execution/assembly/ExecutionServiceAssembler.java
+tag=configuration
+----
+
+
+== ScheduledExecutionService ==
+The =ScheduledExecutionService= is the =java.util.concurrent.ScheduledExecutorService= provided simply as a flexible
+assembler for configuration of it.
+
+
+=== Configuration Parameters ===
+The Configuration parameters are available in the =ScheduledExecutionService= via a fluent API (DSL), with the
+following methods
+
+[snippet,java]
+----
+source=libraries/execution/src/main/java/org/apache/polygene/library/execution/assembly/ScheduledExecutionService.java
+tag=configuration
+----
