@@ -94,7 +94,7 @@ public class ZookeeperEntityStoreMixin
 
         int sessionTimeout = config.sessionTimeout().get();
 
-        zkClient = new ZooKeeper( hostPort, sessionTimeout, watcher == null ? new DummyWatcher() : watcher );
+        zkClient = new ZooKeeper( hostPort, sessionTimeout, watcher == null ? new EntityStoreWatcher() : watcher );
         createStorageNodeIfNotExists( config );
     }
 
@@ -324,9 +324,16 @@ public class ZookeeperEntityStoreMixin
         }
     }
 
-    private class DummyWatcher
+    private class EntityStoreWatcher
         implements Watcher
     {
+        // TODO: Invalidate cache?
+        // I (niclas) think that the only events that arrive here are create, delete, data changed and children changed
+        // So, the question is; Should we try to invalidate the cache (if present) for these changes? If so; How is that done?
+        //
+        // Additionally, that might raise the question of having cache invalidation interface in the EntityStore SPI, and
+        // by extension into the MapEntityStore SPI.
+
         @Override
         public void process( WatchedEvent event )
         {
