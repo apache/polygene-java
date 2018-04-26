@@ -282,7 +282,8 @@ public class RiakEntityStoreMixin implements ServiceActivation, MapEntityStore, 
                             {
                                 super.close();
                                 EntityReference reference = mapChange.reference();
-                                Location location = new Location( namespace, reference.identity().toString() );
+                                String identity = reference.identity().toString();
+                                Location location = new Location( namespace, identity );
                                 FetchValue fetch = new FetchValue.Builder( location ).build();
                                 FetchValue.Response response = riakClient.execute( fetch );
                                 if( response.isNotFound() )

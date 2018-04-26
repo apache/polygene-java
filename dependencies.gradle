@@ -83,6 +83,8 @@ def solrVersion = "1.4.1" // 4.x Fails to compile!
 def springVersion = '5.0.5.RELEASE'
 def spymemcachedVersion = '2.12.3'
 def velocityVersion = '1.7'
+def zookeeperVersion = '3.4.10'
+
 dependencies.libraries << [
         bdb_je            : "com.sleepycat:je:$bdbjeVersion",
         bonecp            : "com.jolbox:bonecp:$bonecpVersion",
@@ -171,6 +173,7 @@ dependencies.libraries << [
                              "org.springframework:spring-context:$springVersion"],
         spymemcached      : "net.spy:spymemcached:$spymemcachedVersion",
         velocity          : "org.apache.velocity:velocity:$velocityVersion",
+        zookeeper         : "org.apache.zookeeper:zookeeper:$zookeeperVersion"
 ]
 
 // Tools dependencies
