@@ -180,15 +180,29 @@ final class ModuleAssemblyImpl
     @Override
     public ServiceDeclaration defaultServices()
     {
+        Set<Throwable> problems = new HashSet<>();
         Class[] assembledServicesTypes = DEFAULT_ASSEMBLERS
             .entrySet()
             .stream()
             .filter(
                 entry -> serviceAssemblies.stream().noneMatch(
                     serviceAssembly -> serviceAssembly.hasType( entry.getKey() ) ) )
-            .peek( entry -> entry.getValue().assemble( this ) )
+            .peek( entry -> {
+                try
+                {
+                    entry.getValue().assemble( this );
+                }
+                catch( Exception e )
+                {
+                    problems.add( e );
+                }
+            } )
             .map( Map.Entry::getKey )
             .toArray( Class[]::new );
+        if( problems.size() > 0 )
+        {
+            throw new AssemblyReportException( problems );
+        }
         return services( assembledServicesTypes );
     }
 
@@ -693,13 +707,27 @@ final class ModuleAssemblyImpl
 
     private void addRequiredAssemblers()
     {
+        Set<Throwable> problems = new HashSet<>( );
         REQUIRED_ASSEMBLERS
             .entrySet()
             .stream()
             .filter(
                 entry -> serviceAssemblies.stream().noneMatch(
                     serviceAssembly -> serviceAssembly.hasType( entry.getKey() ) ) )
-            .forEach( entry -> entry.getValue().assemble( this ) );
+            .forEach( entry -> {
+                try
+                {
+                    entry.getValue().assemble( this );
+                }
+                catch( Exception e )
+                {
+                    problems.add( e );
+                }
+            } );
+        if( problems.size() > 0 )
+        {
+            throw new AssemblyReportException( problems );
+        }
     }
 
     private Identity generateId(Stream<Class<?>> serviceTypes)

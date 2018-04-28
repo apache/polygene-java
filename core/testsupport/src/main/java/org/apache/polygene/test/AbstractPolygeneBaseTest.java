@@ -19,12 +19,14 @@
  */
 package org.apache.polygene.test;
 
+import java.util.Collections;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.structure.Application;
 import org.apache.polygene.api.structure.ApplicationDescriptor;
 import org.apache.polygene.bootstrap.ApplicationAssembler;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.Energy4Java;
 import org.apache.polygene.spi.PolygeneSPI;
 import org.junit.jupiter.api.AfterEach;
@@ -56,15 +58,15 @@ public abstract class AbstractPolygeneBaseTest
         application.activate();
     }
 
-    /** Called by the superclass for the test to define the entire application, every layer, every module and all
+    /**
+     * Called by the superclass for the test to define the entire application, every layer, every module and all
      * the contents of each module.
      *
      * @param applicationAssembly the {@link org.apache.polygene.bootstrap.ApplicationAssembly} to be populated.
-     *
      * @throws AssemblyException on invalid assembly
      */
     protected abstract void defineApplication( ApplicationAssembly applicationAssembly )
-        throws AssemblyException;
+        throws Exception;
 
     protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
     {
@@ -78,7 +80,14 @@ public abstract class AbstractPolygeneBaseTest
         {
             ApplicationAssembly applicationAssembly = applicationFactory.newApplicationAssembly();
             applicationAssembly.setMode( Application.Mode.test );
-            defineApplication( applicationAssembly );
+            try
+            {
+                defineApplication( applicationAssembly );
+            }
+            catch( Exception e )
+            {
+                throw new AssemblyReportException( Collections.singleton( e ) );
+            }
             return applicationAssembly;
         };
 
@@ -98,8 +107,8 @@ public abstract class AbstractPolygeneBaseTest
      * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
      * </p>
-     * @param exception the exception thrown.
      *
+     * @param exception the exception thrown.
      * @throws org.apache.polygene.bootstrap.AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     protected void assemblyException( AssemblyException exception )
@@ -121,7 +130,8 @@ public abstract class AbstractPolygeneBaseTest
             try
             {
                 application.passivate();
-            } catch( Exception e )
+            }
+            catch( Exception e )
             {
                 throw new RuntimeException( "Unable to shut down test harness cleanly.", e );
             }

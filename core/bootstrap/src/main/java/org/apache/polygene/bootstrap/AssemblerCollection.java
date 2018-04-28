@@ -66,7 +66,7 @@ public final class AssemblerCollection
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         for( Assembler assembler : assemblers )
         {

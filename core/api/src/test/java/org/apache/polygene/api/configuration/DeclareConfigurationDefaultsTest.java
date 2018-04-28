@@ -65,7 +65,6 @@ public class DeclareConfigurationDefaultsTest
     }
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( FooServiceComposite.class ).identifiedBy( "bazar" );
         module.entities( FooConfigurationComposite.class );

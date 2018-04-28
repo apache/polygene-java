@@ -34,7 +34,7 @@ public class PreferencesEntityStoreTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         module.layer().application().setName( "PreferencesTest" );
 

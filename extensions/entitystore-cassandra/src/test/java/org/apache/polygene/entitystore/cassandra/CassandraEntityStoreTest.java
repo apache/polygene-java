@@ -45,7 +45,7 @@ public class CassandraEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -63,7 +63,8 @@ public class CassandraEntityStoreTest
         CassandraEntityStoreConfiguration cassandraDefaults = config.forMixin( CassandraEntityStoreConfiguration.class ).declareDefaults();
         String host = "localhost";
         int port = 8801;
-        System.out.println("Cassandra: " + host + ":" + port);
+        // TODO: Logging system output here.
+//        System.out.println("Cassandra: " + host + ":" + port);
         cassandraDefaults.hostnames().set( host + ':' + port );
         cassandraDefaults.createIfMissing().set( true );
         // START SNIPPET: assembly

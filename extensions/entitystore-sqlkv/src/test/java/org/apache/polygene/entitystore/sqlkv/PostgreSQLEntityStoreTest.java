@@ -44,7 +44,7 @@ public class PostgreSQLEntityStoreTest extends AbstractEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
         delay();

@@ -31,14 +31,13 @@ import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith( TemporaryFolder.class )
-public class JdbmEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class JdbmEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
     private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         super.assemble( module );
 

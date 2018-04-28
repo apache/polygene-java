@@ -82,6 +82,7 @@ public abstract class AbstractEntityStoreTest
 
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         module.entities( TestEntity.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );

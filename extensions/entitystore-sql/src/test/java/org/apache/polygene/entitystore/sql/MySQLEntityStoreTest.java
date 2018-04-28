@@ -65,7 +65,7 @@ public class MySQLEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
         super.assemble( module );

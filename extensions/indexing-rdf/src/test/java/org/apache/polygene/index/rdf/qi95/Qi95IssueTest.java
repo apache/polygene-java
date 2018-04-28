@@ -262,7 +262,18 @@ public class Qi95IssueTest
     private ModuleAssembly addModule( LayerAssembly layerAssembly, String name, Assembler assembler )
     {
         ModuleAssembly moduleAssembly = layerAssembly.module( name );
-        assembler.assemble( moduleAssembly );
+        try
+        {
+            assembler.assemble( moduleAssembly );
+        }
+        catch( RuntimeException e )
+        {
+            throw e;
+        }
+        catch( Exception e )
+        {
+            throw new AssemblyException( "Unable to assemble module " + name + " in layer " + layerAssembly.name() );
+        }
         return moduleAssembly;
     }
 

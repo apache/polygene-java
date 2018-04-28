@@ -24,12 +24,11 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 
-public class MemoryEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class MemoryEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         super.assemble( module );
         new MemoryEntityStoreAssembler().assemble( module );

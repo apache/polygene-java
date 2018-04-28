@@ -45,12 +45,12 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class InterfaceDefaultMethodsTest extends AbstractPolygeneTest
 {
-    @BeforeAll
-    public static void assumeJavaVersionIs8()
-    {
-        assumeJavaVersion( 8 );
-    }
-
+//    @BeforeAll
+//    public static void assumeJavaVersionIs8()
+//    {
+//        assumeJavaVersion( 8 );
+//    }
+//
     public interface DefaultMethods
     {
         @UseDefaults( "Hello" )

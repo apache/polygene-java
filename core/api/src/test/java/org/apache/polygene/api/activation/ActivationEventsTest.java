@@ -75,7 +75,6 @@ public class ActivationEventsTest
         {
             @Override
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
             {
                 module.services( TestServiceComposite.class ).instantiateOnStartup();
             }
@@ -124,7 +123,6 @@ public class ActivationEventsTest
         {
             @Override
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
             {
                 module.importedServices( TestService.class ).
                         setMetaInfo( new TestServiceInstance() ).
@@ -176,7 +174,6 @@ public class ActivationEventsTest
 
             @Override
             public void assemble( ModuleAssembly module )
-                    throws AssemblyException
             {
                 module.services( TestServiceComposite.class );
             }

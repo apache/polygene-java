@@ -20,9 +20,12 @@
 
 package org.apache.polygene.runtime.bootstrap;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.polygene.bootstrap.ApplicationAssembly;
 import org.apache.polygene.bootstrap.ApplicationAssemblyFactory;
 import org.apache.polygene.bootstrap.Assembler;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
@@ -45,6 +48,7 @@ public final class ApplicationAssemblyFactoryImpl
 
         // Build all layers bottom-up
         LayerAssembly below = null;
+        Set<Throwable> problems = new HashSet<>();
         for( int layer = assemblers.length - 1; layer >= 0; layer-- )
         {
             // Create Layer
@@ -56,7 +60,14 @@ public final class ApplicationAssemblyFactoryImpl
                 for( Assembler assembler : assemblers[ layer ][ module ] )
                 {
                     // Register Assembler
-                    assembler.assemble( moduleAssembly );
+                    try
+                    {
+                        assembler.assemble( moduleAssembly );
+                    }
+                    catch( Exception e )
+                    {
+                        problems.add( e );
+                    }
                 }
             }
             if( below != null )
@@ -64,6 +75,10 @@ public final class ApplicationAssemblyFactoryImpl
                 layerAssembly.uses( below ); // Link layers
             }
             below = layerAssembly;
+        }
+        if( problems.size() > 0 )
+        {
+            throw new AssemblyReportException( problems );
         }
         return applicationAssembly;
     }

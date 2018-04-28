@@ -20,7 +20,6 @@
 package org.apache.polygene.entitystore.leveldb;
 
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.leveldb.assembly.LevelDBEntityStoreAssembler;
 import org.apache.polygene.library.fileconfig.FileConfigurationAssembler;
@@ -31,26 +30,26 @@ import org.apache.polygene.test.cache.AbstractEntityStoreWithCacheTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith( TemporaryFolder.class )
-public class LevelDBEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class LevelDBEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
     private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+        new EntityTestAssembler()
+            .defaultServicesVisibleIn( Visibility.layer )
+            .assemble( config );
 
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
 
-        new LevelDBEntityStoreAssembler().
-                                             withConfig( config, Visibility.layer ).
-                                             identifiedBy( "java-leveldb-entitystore" ).
-                                             assemble( module );
+        new LevelDBEntityStoreAssembler().withConfig( config, Visibility.layer )
+                                         .identifiedBy( "java-leveldb-entitystore" )
+                                         .assemble( module );
     }
 }

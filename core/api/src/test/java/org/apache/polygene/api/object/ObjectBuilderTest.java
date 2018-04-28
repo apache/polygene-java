@@ -36,7 +36,6 @@ public class ObjectBuilderTest
     extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.objects( A.class, B.class, C.class, D.class );
     }

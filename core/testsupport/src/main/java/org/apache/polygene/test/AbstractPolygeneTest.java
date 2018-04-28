@@ -80,6 +80,7 @@ public abstract class AbstractPolygeneTest extends AbstractPolygeneBaseTest
 
     @Override
     protected void defineApplication( ApplicationAssembly applicationAssembly )
+        throws Exception
     {
         LayerAssembly layer = applicationAssembly.layer( "Layer 1" );
         ModuleAssembly module = layer.module( "Module 1" );

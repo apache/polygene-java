@@ -38,7 +38,6 @@ public class PropertyErrorTest
     extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
         module.entities( PersonEntity.class );

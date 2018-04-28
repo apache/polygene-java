@@ -31,13 +31,13 @@ import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith( TemporaryFolder.class )
-public class JCloudsFilesystemTest
-    extends AbstractEntityStoreTest
+public class JCloudsFilesystemTest extends AbstractEntityStoreTest
 {
     private TemporaryFolder tmpDir;
 
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );

@@ -39,10 +39,9 @@ public class FileEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
-        super.assemble( module );
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )
             .assemble( module );
@@ -50,6 +49,7 @@ public class FileEntityStoreTest
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         // START SNIPPET: assembly
         new FileEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
+        super.assemble( module );
     }
     // END SNIPPET: assembly
 }

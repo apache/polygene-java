@@ -47,5 +47,5 @@ public interface Assembler
      * @throws AssemblyException thrown if the assembler tries to do something illegal
      */
     void assemble( ModuleAssembly module )
-        throws AssemblyException;
+        throws Exception;
 }

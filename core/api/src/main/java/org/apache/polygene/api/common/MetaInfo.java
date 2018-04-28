@@ -50,7 +50,7 @@ import static org.apache.polygene.api.util.Classes.typesOf;
  * </p>
  * <pre><code>
  * public void assemble( ModuleAssembly module )
- *     throws AssemblyException
+ *     throws Exception
  * {
  *     Map&lt;String,String&gt; properties = ...;
  *     module.services( MyService.class ).setMetaInfo( properties );

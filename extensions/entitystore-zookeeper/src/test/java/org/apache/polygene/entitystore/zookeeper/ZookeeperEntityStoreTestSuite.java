@@ -19,6 +19,8 @@
  */
 package org.apache.polygene.entitystore.zookeeper;
 
+import com.github.junit5docker.Docker;
+import com.github.junit5docker.Port;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.zookeeper.assembly.ZookeeperEntityStoreAssembler;
@@ -30,7 +32,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static java.util.Collections.singletonList;
 import static org.apache.polygene.entitystore.zookeeper.ZookeeperEntityStoreTest.TEST_ZNODE_NAME;
 
-@ExtendWith( TemporaryFolder.class )
+@Docker( image = "zookeeper",
+         ports = @Port( exposed = 32181, inner = 2181),
+         newForEachCase = false
+)
 public class ZookeeperEntityStoreTestSuite
     extends EntityStoreTestSuite
 {
@@ -49,7 +54,7 @@ public class ZookeeperEntityStoreTestSuite
     {
         super.defineConfigModule( module );
         ZookeeperEntityStoreConfiguration defaults = module.forMixin( ZookeeperEntityStoreConfiguration.class ).declareDefaults();
-        defaults.hosts().set( singletonList( "localhost:2181" ) );
+        defaults.hosts().set( singletonList( "localhost:32181" ) );
         defaults.storageNode().set( TEST_ZNODE_NAME );
     }
 
@@ -57,6 +62,6 @@ public class ZookeeperEntityStoreTestSuite
     void cleanUp()
         throws Exception
     {
-        ZkUtil.cleanUp( "localhost:2181", TEST_ZNODE_NAME );
+        ZkUtil.cleanUp( "localhost:32181", TEST_ZNODE_NAME );
     }
 }

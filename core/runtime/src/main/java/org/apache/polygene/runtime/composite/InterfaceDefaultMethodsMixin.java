@@ -36,7 +36,7 @@ import static org.apache.polygene.api.util.AccessibleObjects.accessible;
 public class InterfaceDefaultMethodsMixin
     implements InvocationHandler
 {
-    // TODO (niclas): We have one instance of this class per mixin, so it seems a bit wasteful to have a ConcurrentHashMap. Maybe a small array 3 elements, which is changed to a Map is run out of space? Tricky concurrency on that, so leave it for later (a.k.a. will forget about it)
+    // TODO (niclas): We have one instance of this class per mixin, so it seems a bit wasteful to have a ConcurrentHashMap. Maybe a small array 3 elements, which is changed to a Map if run out of space? Tricky concurrency on that, so leave it for later (a.k.a. will forget about it)
     private final ConcurrentMap<Method, MethodCallHandler> methodHandleCache = new ConcurrentHashMap<>();
 
     @This

@@ -45,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class OptionalTest extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( TestComposite.class );
         module.transients( TestComposite2.class );

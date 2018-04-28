@@ -23,12 +23,12 @@ import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.memory.assembly.MemoryEntityStoreAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-public class MemoryEntityStoreTest
-    extends AbstractEntityStoreTest
+public class MemoryEntityStoreTest extends AbstractEntityStoreTest
 {
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         new MemoryEntityStoreAssembler().assemble( module );
         // END SNIPPET: assembly

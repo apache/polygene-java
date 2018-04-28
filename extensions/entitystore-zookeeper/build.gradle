@@ -29,6 +29,7 @@ dependencies {
 
   implementation polygene.library( 'locking' )
   implementation polygene.library( 'constraints' )
+  implementation polygene.library( 'execution' )
   implementation libraries.zookeeper
 
   runtimeOnly polygene.core.runtime

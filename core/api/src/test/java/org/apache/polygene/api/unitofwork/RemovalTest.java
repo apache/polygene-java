@@ -35,7 +35,6 @@ public class RemovalTest
     extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( TestEntity.class );
         module.entities( PidRegulator.class );
@@ -44,7 +43,6 @@ public class RemovalTest
 
     @Test
     public void givenEntityIsCreatedAndUnitOfWorkIsNotCompletedWhenEntityIsRemoveThenSuccessfulRemoval()
-        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         try
@@ -63,7 +61,6 @@ public class RemovalTest
 
     @Test
     public void givenStandardPidRegulatorWhenNoChangeInInputExpectOutputToGoTowardsMinimum()
-        throws Exception
     {
         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
         PidRegulator regulator = null;

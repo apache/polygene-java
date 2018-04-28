@@ -39,7 +39,7 @@ public class BdbJeEntityStoreTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         super.assemble( module );
 

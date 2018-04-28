@@ -35,7 +35,6 @@ public class DecoratorMixinTest extends AbstractPolygeneTest
     // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.transients( View1.class );
         module.transients( View2.class );

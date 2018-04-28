@@ -36,7 +36,6 @@ public class DocumentationSupport
     // START SNIPPET: instantiateOnStartup
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         ServiceDeclaration service = module.addServices( MyDemoService.class );
         // END SNIPPET: tag

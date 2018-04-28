@@ -40,6 +40,7 @@ public abstract class AbstractTimingCaptureTest extends AbstractPolygeneTest
 
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         module.layer().application().setName( "SomeApplication" );
         module.transients( Country1.class );

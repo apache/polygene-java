@@ -38,16 +38,13 @@ import org.junit.jupiter.api.BeforeEach;
          ports = @Port( exposed = 8801, inner = 27017),
          newForEachCase = false
 )
-public class MongoDBEntityStoreWithCacheTest
-    extends AbstractEntityStoreWithCacheTest
+public class MongoDBEntityStoreWithCacheTest extends AbstractEntityStoreWithCacheTest
 {
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
-        super.assemble( module );
-
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
 
@@ -59,6 +56,8 @@ public class MongoDBEntityStoreWithCacheTest
         mongoConfig.collection().set( "polygene:test:entities" );
         mongoConfig.hostname().set( "localhost" );
         mongoConfig.port().set( 8801 );
+
+        super.assemble( module );
     }
 
     private Mongo mongo;

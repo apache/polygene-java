@@ -38,7 +38,6 @@ public class ConfigurationTest extends AbstractPolygeneTest
 
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.services( MyService.class ).instantiateOnStartup();
         module.entities( MyConfig.class );

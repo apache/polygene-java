@@ -79,7 +79,7 @@ public class PassivationExceptionTest
 
     @Test
     public void testPassivationExceptionsAccrossStructure()
-        throws AssemblyException, ActivationException
+        throws ActivationException
     {
         ApplicationBuilder appBuilder = new ApplicationBuilder( "TestApplication" );
         appBuilder.withLayer( "Layer 1" ).withModule( "Module A" ).withAssembler(

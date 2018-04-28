@@ -41,7 +41,7 @@ public class SqlEntityStoreTest extends AbstractEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
         super.assemble( module );

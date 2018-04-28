@@ -72,7 +72,8 @@ public class RDFPerformanceTest extends AbstractPolygeneTest
     }
 
     @Override
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws Exception
     {
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )

@@ -147,7 +147,6 @@ public class DocumentationSupport
             // START SNIPPET: capture
             @Override
             public void assemble( ModuleAssembly module )
-                throws AssemblyException
             {
                 module.addServices( Router.class ).identifiedBy( "router1" ).withMixins( RouterAlgorithm1.class );
                 module.addServices( Router.class ).identifiedBy( "router2" ).withMixins( RouterAlgorithm2.class );

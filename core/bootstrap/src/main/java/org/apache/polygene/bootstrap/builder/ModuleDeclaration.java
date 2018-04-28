@@ -20,10 +20,13 @@
 package org.apache.polygene.bootstrap.builder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 import org.apache.polygene.bootstrap.Assembler;
 import org.apache.polygene.bootstrap.AssemblyException;
+import org.apache.polygene.bootstrap.AssemblyReportException;
 import org.apache.polygene.bootstrap.LayerAssembly;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 
@@ -46,6 +49,7 @@ public class ModuleDeclaration
 
     /**
      * Declare Assembler.
+     *
      * @param assembler Assembler instance
      * @return This Module declaration
      */
@@ -57,6 +61,7 @@ public class ModuleDeclaration
 
     /**
      * Declare Assembler.
+     *
      * @param classname Assembler class name
      * @return This Module declaration
      * @throws AssemblyException if unable to load class, not an Assembler or unable to instanciate
@@ -70,6 +75,7 @@ public class ModuleDeclaration
 
     /**
      * Declare Assembler.
+     *
      * @param assemblerClass Assembler class
      * @return This Module declaration
      * @throws AssemblyException not an Assembler or if unable to instanciate
@@ -86,6 +92,7 @@ public class ModuleDeclaration
      * Declare Assemblers.
      * <p>Declare several Assemblers from an Iterable of Class objects.</p>
      * <p>Typically used along {@link org.apache.polygene.bootstrap.ClassScanner}.</p>
+     *
      * @param assemblerClasses Assembler classes
      * @return This Module declaration
      * @throws AssemblyException if one of the Class is not an Assembler or unable to instantiate
@@ -117,9 +124,21 @@ public class ModuleDeclaration
 
     void initialize()
     {
+        Set<Throwable> problems = new HashSet<>();
         for( Assembler assembler : assemblers )
         {
-            assembler.assemble( module );
+            try
+            {
+                assembler.assemble( module );
+            }
+            catch( Exception e )
+            {
+                problems.add( e );
+            }
+        }
+        if( problems.size() > 0 )
+        {
+            throw new AssemblyReportException( problems );
         }
     }
 

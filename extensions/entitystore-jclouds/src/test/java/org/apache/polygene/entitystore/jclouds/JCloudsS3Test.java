@@ -29,9 +29,9 @@ import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-@Docker( image = "s3server",
-         ports = @Port( exposed = 8801, inner = 8000),
-         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000),
+@Docker( image = "scality/s3server",
+         ports = @Port( exposed = 8801, inner = 8000 ),
+         waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000 ),
          environments = {
              @Environment( key = "SCALITY_ACCESS_KEY_ID", value = "dummyIdentifier" ),
              @Environment( key = "SCALITY_SECRET_ACCESS_KEY", value = "dummyCredential" )
@@ -40,10 +40,14 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 )
 public class JCloudsS3Test extends AbstractEntityStoreTest
 {
+    static long time = 240000;
 
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
+        Thread.sleep( time );
+        time = 0;
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );

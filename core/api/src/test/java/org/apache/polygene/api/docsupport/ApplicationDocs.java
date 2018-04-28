@@ -90,7 +90,6 @@ public class ApplicationDocs
     {
         @Override
         public void assemble( ModuleAssembly module )
-            throws AssemblyException
         {
 
         }
@@ -108,7 +107,6 @@ public class ApplicationDocs
     }
 
     private static ApplicationAssembly createAssembly( ApplicationAssemblyFactory factory )
-        throws AssemblyException
     {
         String applicationName = "Example Application";
         ApplicationAssembly app = factory.newApplicationAssembly();
@@ -142,9 +140,7 @@ public class ApplicationDocs
         return layer;
     }
 
-    private static LayerAssembly createInfrastructureLayer(
-        ApplicationAssembly application
-    )
+    private static LayerAssembly createInfrastructureLayer( ApplicationAssembly application )
         throws AssemblyException
     {
         LayerAssembly layer = application.layer( "Infrastructure Layer" );
@@ -230,7 +226,6 @@ public class ApplicationDocs
 
         @Override
         public void assemble( ModuleAssembly module )
-            throws AssemblyException
         {
         }
     }
@@ -244,7 +239,6 @@ public class ApplicationDocs
 
         @Override
         public void assemble( ModuleAssembly module )
-            throws AssemblyException
         {
         }
     }

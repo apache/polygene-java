@@ -26,11 +26,11 @@ import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-public class JCloudsTransientTest
-        extends AbstractEntityStoreTest
+public class JCloudsTransientTest extends AbstractEntityStoreTest
 {
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );

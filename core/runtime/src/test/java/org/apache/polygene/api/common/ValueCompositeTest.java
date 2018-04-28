@@ -49,7 +49,6 @@ public class ValueCompositeTest
 {
 
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.values( SomeValue.class, AnotherValue.class );
         module.entities( SomeEntity.class );

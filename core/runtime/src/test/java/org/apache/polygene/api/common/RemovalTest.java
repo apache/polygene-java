@@ -36,7 +36,6 @@ public class RemovalTest
     extends AbstractPolygeneTest
 {
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
         module.entities( TestEntity.class );
         module.entities( PidRegulator.class );

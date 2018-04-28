@@ -180,6 +180,7 @@ public abstract class AbstractPolygeneMetricsTest extends AbstractPolygeneBaseTe
 
     @Override
     protected final void defineApplication( ApplicationAssembly app )
+        throws Exception
     {
         app.setName( "app" );
 

@@ -42,6 +42,7 @@ public abstract class AbstractEntityStoreWithCacheTest
 
     @Override
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         super.assemble( module );
         assembleCachePool( module );

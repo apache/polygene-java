@@ -57,6 +57,7 @@ public class RiakEntityStoreTest extends AbstractEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
+        throws Exception
     {
         // END SNIPPET: assembly
         super.assemble( module );

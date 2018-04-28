@@ -43,10 +43,9 @@ public class RedisEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
-        super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
         // START SNIPPET: assembly
@@ -56,6 +55,7 @@ public class RedisEntityStoreTest
                                                           .declareDefaults();
         redisConfig.host().set( "localhost" );
         redisConfig.port().set( 8801 );
+        super.assemble( module );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

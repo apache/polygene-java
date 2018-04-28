@@ -31,20 +31,22 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith( TemporaryFolder.class )
-public class JavaLevelDBEntityStoreTest
-    extends AbstractEntityStoreTest
+public class JavaLevelDBEntityStoreTest extends AbstractEntityStoreTest
 {
     private TemporaryFolder tmpDir;
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().defaultServicesVisibleIn( Visibility.layer ).assemble( config );
+
+        new EntityTestAssembler()
+            .defaultServicesVisibleIn( Visibility.layer )
+            .assemble( config );
 
         new FileConfigurationAssembler()
             .withOverride( new FileConfigurationOverride().withConventionalRoot( tmpDir.getRoot() ) )

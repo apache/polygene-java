@@ -41,7 +41,7 @@ public class RedisEntityStoreWithCacheTest
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
+        throws Exception
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );

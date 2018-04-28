@@ -85,6 +85,7 @@ public class PolygeneUnitExtension
         {
             @Override
             public void assemble( ModuleAssembly module )
+                throws Exception
             {
                 super.assemble( module );
                 module.objects( context.getRequiredTestClass() );
