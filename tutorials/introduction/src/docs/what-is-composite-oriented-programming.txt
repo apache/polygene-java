@@ -24,8 +24,8 @@ We found this very well written blog entry on the Internet, which very well desc
 Programming really is.
 
 The article uses C# and a "show by example" approach to explaining COP, and this shows clearly that COP is not
-Java specific, and although Polygene™ was (to our knowledge) first to introduce the name, it applies across languages and
-potentially deserves one or more languages on its own.
+Java specific, and although the founders of Qi4j (now Apache Polygene™) were (to our knowledge) the first to introduce
+the name, it applies across languages and potentially deserves one or more languages on its own.
 
 The article is re-published here, as allowed by the
 http://msdn.microsoft.com/en-us/windowsmobile/bb264332.aspx[Microsoft Permissive License]
