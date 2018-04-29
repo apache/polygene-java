@@ -34,7 +34,7 @@ import org.junit.jupiter.api.AfterEach;
 /**
  * Test the CassandraEntityStoreService.
  */
-@Docker( image = "cassandra",
+@Docker( image = "cassandra:3.10",
          ports = @Port( exposed = 8801, inner = 9042),
          waitFor = @WaitFor( value = "Starting listening for CQL clients", timeoutInMillis = 60000),
          newForEachCase = false

@@ -285,8 +285,10 @@ dependencies.dockerImagesVersions << [
         memcached: 'memcached:1.4.39-alpine',
         mariadb  : 'mariadb:10.1.21',
         mongo    : 'mongo:3.5.10',
+        mysql    : 'mysql:8.0.11',
         postgres : 'postgres:9.6.3-alpine',
         redis    : 'redis:4.0.0-alpine',
         riak     : 'basho/riak-kv:ubuntu-2.2.3',
-        s3server : 'scality/s3server:mem-bb2a38c0'
+        s3server : 'scality/s3server:mem-bb2a38c0',
+        zookeeper : 'zookeeper:3.4.11'
 ]

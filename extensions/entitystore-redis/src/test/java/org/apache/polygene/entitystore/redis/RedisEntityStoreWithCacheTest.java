@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-@Docker( image = "redis",
+@Docker( image = "redis:4.0.0-alpine",
          ports = @Port( exposed = 8801, inner = 6379),
          newForEachCase = false
 )

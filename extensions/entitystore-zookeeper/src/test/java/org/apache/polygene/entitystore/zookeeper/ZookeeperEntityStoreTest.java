@@ -35,7 +35,7 @@ import static java.lang.Thread.sleep;
 import static java.util.Collections.singletonList;
 
 
-@Docker( image = "zookeeper",
+@Docker( image = "zookeeper:3.4.11",
          ports = @Port( exposed = 32181, inner = 2181),
          newForEachCase = false
 )

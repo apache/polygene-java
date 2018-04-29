@@ -29,7 +29,7 @@ import org.apache.polygene.entitystore.jclouds.assembly.JCloudsEntityStoreAssemb
 import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 
-@Docker( image = "scality/s3server",
+@Docker( image = "scality/s3server:mem-bb2a38c0",
          ports = @Port( exposed = 8801, inner = 8000 ),
          waitFor = @WaitFor( value = "server started", timeoutInMillis = 30000 ),
          environments = {

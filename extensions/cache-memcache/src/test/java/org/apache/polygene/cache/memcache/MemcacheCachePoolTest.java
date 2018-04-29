@@ -31,7 +31,7 @@ import org.apache.polygene.test.cache.AbstractCachePoolTest;
 /**
  * Memcache CachePool Test.
  */
-@Docker( image = "memcached",
+@Docker( image = "memcached:1.4.39-alpine",
          ports = @Port( exposed = 11211, inner = 11211 ),
          newForEachCase = false )
 public class MemcacheCachePoolTest

@@ -35,7 +35,8 @@ import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
-@Docker( image = "mysql", ports = @Port( exposed = 8801, inner = 3306 ),
+@Docker( image = "mysql:8.0.11",
+         ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
              @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
              @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),

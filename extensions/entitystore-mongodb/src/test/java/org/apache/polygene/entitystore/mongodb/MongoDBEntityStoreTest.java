@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 /**
  * Test the MongoDBEntityStoreService.
  */
-@Docker( image = "mongo",
+@Docker( image = "mongo:3.5.10",
          ports = @Port( exposed = 8801, inner = 27017),
          newForEachCase = false
 )

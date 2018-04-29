@@ -29,7 +29,7 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@Docker( image = "riak",
+@Docker( image = "basho/riak-kv:ubuntu-2.2.3",
          ports = @Port( exposed = 8801, inner = 8087),
          waitFor = @WaitFor( value = "riak_auth_mods started on node", timeoutInMillis = 60000),
          newForEachCase = false

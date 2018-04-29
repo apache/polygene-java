@@ -34,7 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static java.util.Collections.singletonList;
 import static org.apache.polygene.entitystore.zookeeper.ZookeeperEntityStoreTest.TEST_ZNODE_NAME;
 
-@Docker( image = "zookeeper",
+@Docker( image = "zookeeper:3.4.11",
          ports = @Port( exposed = 32181, inner = 2181),
          newForEachCase = false
 )
