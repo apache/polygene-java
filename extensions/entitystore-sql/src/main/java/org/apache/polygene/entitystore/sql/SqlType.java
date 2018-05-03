@@ -181,7 +181,7 @@ class SqlType
         {
             if( reference )
             {
-                return SQLDataType.VARCHAR.length(1000).nullable(false);
+                return SQLDataType.VARCHAR.length(200).nullable(false);
             }
             else
             {
