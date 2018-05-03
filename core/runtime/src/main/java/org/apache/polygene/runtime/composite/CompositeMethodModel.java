@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.polygene.api.common.ConstructionException;
@@ -56,7 +57,7 @@ public final class CompositeMethodModel
 
     // Context
 //    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
-    private final AtomicInstancePool instancePool = new AtomicInstancePool();
+    private final ConcurrentLinkedQueue<CompositeMethodInstance> instancePool = new ConcurrentLinkedQueue<>();
     private final ConstraintsInstance constraintsInstance;
 
     public CompositeMethodModel( Method method,
@@ -111,13 +112,13 @@ public final class CompositeMethodModel
         }
         finally
         {
-            instancePool.releaseInstance( methodInstance );
+            instancePool.offer( methodInstance );
         }
     }
 
     private CompositeMethodInstance getInstance( ModuleDescriptor module )
     {
-        CompositeMethodInstance methodInstance = instancePool.obtainInstance();
+        CompositeMethodInstance methodInstance = instancePool.poll();
         if( methodInstance == null )
         {
             methodInstance = newCompositeMethodInstance( module );
