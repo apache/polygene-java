@@ -56,7 +56,6 @@ public final class CompositeMethodModel
     private final AnnotatedElement annotations;
 
     // Context
-//    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
     private final ConcurrentLinkedQueue<CompositeMethodInstance> instancePool = new ConcurrentLinkedQueue<>();
     private final ConstraintsInstance constraintsInstance;
 
@@ -74,7 +73,6 @@ public final class CompositeMethodModel
         constraints = constraintsModel;
         constraintsInstance = constraints.newInstance();
         annotations = new CompositeMethodAnnotatedElement();
-//        instancePool = new SynchronizedCompositeMethodInstancePool();
     }
 
     // Model
