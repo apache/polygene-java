@@ -204,11 +204,11 @@ public interface InitialData
         private void createCustomers( RentalShop shop )
         {
             customers.add( shop.createCustomer( "Niclas Hedhman", "344-28-2, Vista Damai", "Jalan Tun Razak", "50400", "Kuala Lumpur", "Malaysia" ) );
-            customers.add( shop.createCustomer( "Peter Neubauer", "Sovstaden 24", "", "21212", "Malm�", "Sweden" ) );
-            customers.add( shop.createCustomer( "Rickard �berg", "GpsFree 123", "Bukit Antarabangsa", "68000", "Ampang", "Malaysia" ) );
+            customers.add( shop.createCustomer( "Peter Neubauer", "Sovstaden 24", "", "21212", "Malmo", "Sweden" ) );
+            customers.add( shop.createCustomer( "Rickard Oberg", "GpsFree 123", "Bukit Antarabangsa", "68000", "Ampang", "Malaysia" ) );
             customers.add( shop.createCustomer( "Mickey Mouse", "Playhouse 1", "", "1234", "Disneyland", "USA" ) );
             customers.add( shop.createCustomer( "Michael Hunger", "Jederstrasse 1", "", "78787", "Dresden", "Germany" ) );
-            customers.add( shop.createCustomer( "Emil Eifrem", "Freeze Street 12", "WhereWindBlows", "23456", "Malm�", "Sweden" ) );
+            customers.add( shop.createCustomer( "Emil Eifrem", "Freeze Street 12", "WhereWindBlows", "23456", "Malmo", "Sweden" ) );
         }
     }
 }

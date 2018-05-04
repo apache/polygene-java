@@ -39,7 +39,7 @@ public class SignupResource
     {
         Form form = new Form();
         form.set( "name", "Rickard" );
-        form.set( "realName", "Rickard Öberg" );
+        form.set( "realName", "Rickard Oberg" );
         form.set( "password", "rickard" );
         form.set( "email", "rickard@polygene" );
         return form;
