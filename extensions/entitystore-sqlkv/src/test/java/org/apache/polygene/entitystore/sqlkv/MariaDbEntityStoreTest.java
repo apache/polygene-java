@@ -34,6 +34,7 @@ import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 
 @Docker( image = "mariadb:10.1.21",
          ports = @Port( exposed = 8801, inner = 3306 ),
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.BeforeAll;
          waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 120000 ),
          newForEachCase = false
 )
+@Disabled
 public class MariaDbEntityStoreTest extends AbstractEntityStoreTest
 {
     @BeforeAll

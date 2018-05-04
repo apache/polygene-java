@@ -33,6 +33,7 @@ import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 
 @Docker( image = "mariadb:10.1.21",
          ports = @Port( exposed = 8801, inner = 3306 ),
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.BeforeAll;
          waitFor = @WaitFor( value = "mariadb.org binary distribution", timeoutInMillis = 120000 ),
          newForEachCase = false
 )
+@Disabled
 public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @BeforeAll

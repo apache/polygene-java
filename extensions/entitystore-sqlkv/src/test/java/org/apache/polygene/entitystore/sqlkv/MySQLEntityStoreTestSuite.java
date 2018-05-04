@@ -45,6 +45,7 @@ import org.junit.jupiter.api.Disabled;
          waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 90000),
          newForEachCase = false
 )
+@Disabled
 public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @BeforeAll
