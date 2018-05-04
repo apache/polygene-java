@@ -32,6 +32,7 @@ import org.apache.polygene.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.polygene.test.entity.model.EntityStoreTestSuite;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 
 @Docker( image = "mariadb:10.1.21",
@@ -41,11 +42,18 @@ import org.junit.jupiter.api.Disabled;
              @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),
              @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000),
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 120000),
          newForEachCase = false
 )
 public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
+    @BeforeAll
+    static void waitForDockerToSettle()
+        throws Exception
+    {
+        Thread.sleep( 15000L );
+    }
+
     @Override
     protected void defineStorageModule( ModuleAssembly module )
     {
@@ -76,7 +84,7 @@ public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
         configModule.forMixin( DataSourceConfiguration.class ).declareDefaults()
                     .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
                                 + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                                + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                                + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL=false" );
     }
 
     @Override

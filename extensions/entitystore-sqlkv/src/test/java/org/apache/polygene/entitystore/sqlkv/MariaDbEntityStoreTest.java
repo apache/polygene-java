@@ -24,7 +24,6 @@ import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
 import org.apache.polygene.api.common.Visibility;
-import org.apache.polygene.bootstrap.AssemblyException;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sqlkv.assembly.MySQLEntityStoreAssembler;
 import org.apache.polygene.library.sql.assembly.DataSourceAssembler;
@@ -34,20 +33,27 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 
 @Docker( image = "mariadb:10.1.21",
-         ports = @Port( exposed = 8801, inner = 3306),
+         ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
-             @Environment( key = "MYSQL_ROOT_PASSWORD", value = ""),
-             @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),
-             @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
+             @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
+             @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
+             @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" ),
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections",timeoutInMillis = 30000),
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 120000 ),
          newForEachCase = false
 )
 public class MariaDbEntityStoreTest extends AbstractEntityStoreTest
 {
+    @BeforeAll
+    static void waitForDockerToSettle()
+        throws Exception
+    {
+        Thread.sleep( 15000L );
+    }
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -85,7 +91,7 @@ public class MariaDbEntityStoreTest extends AbstractEntityStoreTest
         config.forMixin( DataSourceConfiguration.class ).declareDefaults()
               .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
                           + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL=false" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

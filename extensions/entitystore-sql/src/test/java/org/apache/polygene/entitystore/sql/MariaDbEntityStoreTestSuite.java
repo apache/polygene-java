@@ -23,7 +23,6 @@ import com.github.junit5docker.Docker;
 import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
-import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
@@ -42,22 +41,16 @@ import org.junit.jupiter.api.BeforeAll;
              @Environment( key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes" ),
              @Environment( key = "MYSQL_DATABASE", value = "jdbc_test_db" )
          },
-         waitFor = @WaitFor( value = "mariadb.org binary distribution", timeoutInMillis = 30000 ),
+         waitFor = @WaitFor( value = "mariadb.org binary distribution", timeoutInMillis = 120000 ),
          newForEachCase = false
 )
 public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @BeforeAll
     static void waitForDockerToSettle()
+        throws Exception
     {
-        try
-        {
-            Thread.sleep( 5000 );
-        }
-        catch( InterruptedException e )
-        {
-            throw new UndeclaredThrowableException( e );
-        }
+        Thread.sleep( 15000 );
     }
 
     @Override
@@ -91,7 +84,7 @@ public class MariaDbEntityStoreTestSuite extends EntityStoreTestSuite
         defaults
             .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
                         + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                        + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                        + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL=false" );
         defaults.driver().set( "com.mysql.jdbc.Driver" );
         defaults.enabled().set( true );
         defaults.username().set( "root" );

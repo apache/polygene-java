@@ -23,7 +23,6 @@ import com.github.junit5docker.Docker;
 import com.github.junit5docker.Environment;
 import com.github.junit5docker.Port;
 import com.github.junit5docker.WaitFor;
-import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.polygene.api.common.Visibility;
 import org.apache.polygene.bootstrap.ModuleAssembly;
 import org.apache.polygene.entitystore.sql.assembly.MySQLEntityStoreAssembler;
@@ -35,7 +34,8 @@ import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
-@Docker( image = "mysql:8.0.11",
+// If upgrade to MySQL 8, then these tests will fail due to some new authentication requirements.
+@Docker( image = "mysql:5.7.22",
          ports = @Port( exposed = 8801, inner = 3306 ),
          environments = {
              @Environment( key = "MYSQL_ROOT_PASSWORD", value = "" ),
@@ -48,16 +48,10 @@ import org.junit.jupiter.api.BeforeAll;
 public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
 {
     @BeforeAll
-    public static void waitForDockerToSettle()
+    static void waitForDockerToSettle()
+        throws Exception
     {
-        try
-        {
-            Thread.sleep( 12000 );
-        }
-        catch( InterruptedException e )
-        {
-            throw new UndeclaredThrowableException( e );
-        }
+        Thread.sleep( 12000 );
     }
 
     @Override
@@ -90,7 +84,7 @@ public class MySQLEntityStoreTestSuite extends EntityStoreTestSuite
         DataSourceConfiguration defaults = configModule.forMixin( DataSourceConfiguration.class ).declareDefaults();
         defaults.url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
                             + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                            + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                            + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL=false" );
         defaults.driver().set( "com.mysql.jdbc.Driver" );
         defaults.enabled().set( true );
         defaults.username().set( "root" );

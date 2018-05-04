@@ -34,20 +34,28 @@ import org.apache.polygene.test.EntityTestAssembler;
 import org.apache.polygene.test.entity.AbstractEntityStoreTest;
 import org.jooq.SQLDialect;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 
-@Docker( image = "mysql:8.0.11",
+@Docker( image = "mysql:5.7.22",
          ports = @Port( exposed = 8801, inner = 3306),
          environments = {
              @Environment( key = "MYSQL_ROOT_PASSWORD", value = ""),
              @Environment(key = "MYSQL_ALLOW_EMPTY_PASSWORD", value = "yes"),
              @Environment(key = "MYSQL_DATABASE", value = "jdbc_test_db"),
          },
-         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 30000),
+         waitFor = @WaitFor( value = "mysqld: ready for connections", timeoutInMillis = 90000),
          newForEachCase = false
 )
 public class MySQLEntityStoreTest extends AbstractEntityStoreTest
 {
+    @BeforeAll
+    static void waitForDockerToSettle()
+        throws Exception
+    {
+        Thread.sleep( 15000 );
+    }
+
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
@@ -85,7 +93,7 @@ public class MySQLEntityStoreTest extends AbstractEntityStoreTest
         config.forMixin( DataSourceConfiguration.class ).declareDefaults()
               .url().set( "jdbc:mysql://" + mysqlHost + ":" + mysqlPort
                           + "/jdbc_test_db?profileSQL=false&useLegacyDatetimeCode=false&serverTimezone=UTC"
-                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true" );
+                          + "&nullCatalogMeansCurrent=true&nullNamePatternMatchesAll=true&useSSL=false" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
