@@ -17,11 +17,7 @@
  */
 package org.apache.polygene.serialization.javaxjson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -31,17 +27,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParsingException;
 import org.apache.polygene.api.association.AssociationDescriptor;
 import org.apache.polygene.api.composite.CompositeDescriptor;
 import org.apache.polygene.api.composite.StatefulAssociationCompositeDescriptor;
@@ -68,7 +62,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 import static org.apache.polygene.api.util.Collectors.toMapWithNullValues;
 import static org.apache.polygene.serialization.javaxjson.JavaxJson.asString;
@@ -92,94 +85,59 @@ public class JavaxJsonDeserializer extends AbstractTextDeserializer
     private ServiceDescriptor descriptor;
 
     private JavaxJsonSettings settings;
-    private JsonString emptyJsonString;
 
     @Override
     public void initialize() throws Exception
     {
         settings = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
-        emptyJsonString = jsonFactories.builderFactory().createObjectBuilder().add( "s", "" ).build()
-                                       .getJsonString( "s" );
     }
 
-    @Override
-    public <T> T deserialize( ModuleDescriptor module, ValueType valueType, Reader state )
+    @SuppressWarnings("unchecked")
+    public <T> T deserialize(ModuleDescriptor module, ValueType valueType, Reader state)
     {
-        // JSR-353 Does not allow reading "out of structure" values
-        // See https://www.jcp.org/en/jsr/detail?id=353
-        // And commented JsonReader#readValue() method in the javax.json API
-        // BUT, it will be part of the JsonReader contract in the next version
-        // See https://www.jcp.org/en/jsr/detail?id=374
-        // Implementation by provider is optional though, so we'll always need a default implementation here.
-        // Fortunately, JsonParser has new methods allowing to read structures while parsing so it will be easy to do.
-        // In the meantime, a poor man's implementation reading the json into memory will do.
-        // TODO Revisit values out of structure JSON deserialization when JSR-374 is out
-        String stateString;
-        try( BufferedReader buffer = new BufferedReader( state ) )
+        Converter<Object> converter = converters.converterFor(valueType);
+        if (converter != null)
         {
-            stateString = buffer.lines().collect( joining( "\n" ) );
-        }
-        catch( IOException ex )
-        {
-            throw new UncheckedIOException( ex );
-        }
-        // We want plain Strings, BigDecimals, BigIntegers to be deserialized even when unquoted
-        Function<String, T> plainValueFunction = string ->
-        {
-            String poorMans = "{\"value\":" + string + "}";
-            JsonObject poorMansJson = jsonFactories.readerFactory()
-                                                   .createReader( new StringReader( poorMans ) )
-                                                   .readObject();
-            JsonValue value = poorMansJson.get( "value" );
-            return fromJson( module, valueType, value );
-        };
-        Function<String, T> outOfStructureFunction = string ->
-        {
-            // Is this an unquoted plain value?
-            try
-            {
-                return plainValueFunction.apply( '"' + string + '"' );
-            }
-            catch( JsonParsingException ex )
-            {
-                return plainValueFunction.apply( string );
-            }
-        };
-        try( JsonParser parser = jsonFactories.parserFactory().createParser( new StringReader( stateString ) ) )
-        {
-            if( parser.hasNext() )
-            {
-                JsonParser.Event e = parser.next();
-                switch( e )
-                {
-                    case VALUE_NULL:
-                        return null;
-                    case START_ARRAY:
-                    case START_OBJECT:
-                        // JSON Structure
-                        try( JsonReader reader = jsonFactories.readerFactory()
-                                                              .createReader( new StringReader( stateString ) ) )
-                        {
-                            return fromJson( module, valueType, reader.read() );
-                        }
-                    default:
-                        // JSON Value out of structure
-                        return outOfStructureFunction.apply( stateString );
-                }
+            String stateString = readString(state);
+            if (isJsonNull(stateString)) {
+                return null;
+            } else {
+                return (T) converter.fromString(stateString);
             }
         }
-        catch( JsonParsingException ex )
-        {
-            return outOfStructureFunction.apply( stateString );
+
+        JavaxJsonAdapter<?> adapter = adapters.adapterFor(valueType);
+        if (adapter != null) {
+            return (T) adapter.deserialize(readJsonString(state), (jsonValue, type) -> doDeserialize(module, type, jsonValue));
         }
-        // Empty state string?
-        return fromJson( module, valueType, emptyJsonString );
+
+        try (JsonReader reader = jsonFactories.readerFactory().createReader(state)) {
+            return fromJson(module, valueType, reader.readValue());
+        }
     }
 
     @Override
     public <T> T fromJson( ModuleDescriptor module, ValueType valueType, JsonValue state )
     {
         return doDeserialize( module, valueType, state );
+    }
+
+    private JsonValue readJsonString(Reader reader) {
+        String str = readString(reader);
+        if (isJsonNull(str)) {
+            return JsonValue.NULL;
+        } else {
+            return jsonFactories.provider().createValue(str);
+        }
+    }
+
+    private boolean isJsonNull(String str) {
+        return "null".equals(str);
+    }
+
+    private String readString(Reader reader) {
+        Scanner scanner = new Scanner(reader).useDelimiter("\\A");
+        return scanner.hasNext() ? scanner.next() : "";
     }
 
     @SuppressWarnings( "unchecked" )

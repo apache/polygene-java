@@ -135,7 +135,13 @@ public interface JavaxJsonAdapters
             @Override
             public String deserialize( JsonValue json, BiFunction<JsonValue, ValueType, Object> deserialize )
             {
-                return JavaxJson.asString( json );
+                switch (json.getValueType()) {
+                    case NULL:
+                        return null;
+                    default:
+                        return JavaxJson.asString(json);
+                }
+
             }
         }
 
