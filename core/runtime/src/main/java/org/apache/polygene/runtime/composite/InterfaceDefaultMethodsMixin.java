@@ -30,6 +30,10 @@ import org.apache.polygene.api.composite.Composite;
 import org.apache.polygene.api.composite.DefaultMethodsFilter;
 import org.apache.polygene.api.injection.scope.This;
 
+import static java.lang.invoke.MethodHandles.Lookup.PACKAGE;
+import static java.lang.invoke.MethodHandles.Lookup.PRIVATE;
+import static java.lang.invoke.MethodHandles.Lookup.PROTECTED;
+import static java.lang.invoke.MethodHandles.Lookup.PUBLIC;
 import static org.apache.polygene.api.util.AccessibleObjects.accessible;
 
 @AppliesTo( { DefaultMethodsFilter.class } )
@@ -67,7 +71,7 @@ public class InterfaceDefaultMethodsMixin
         try
         {
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor( Class.class, int.class );
-            MethodHandles.Lookup lookup = accessible( constructor ).newInstance( declaringClass, MethodHandles.Lookup.PRIVATE );
+            MethodHandles.Lookup lookup = accessible( constructor ).newInstance( declaringClass, PRIVATE | PUBLIC | PROTECTED | PACKAGE);
             MethodHandle handle = lookup.unreflectSpecial( method, declaringClass );
             return ( proxy, args ) -> handle.bindTo( proxy ).invokeWithArguments( args );
         }
