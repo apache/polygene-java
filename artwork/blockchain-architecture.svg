@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="312.5412mm"
-   height="240.99234mm"
-   viewBox="0 0 312.5412 240.99234"
+   width="346.19766mm"
+   height="248.34555mm"
+   viewBox="0 0 346.19766 248.34555"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -198,8 +198,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="691.7754"
-     inkscape:cy="404.2937"
+     inkscape:cx="695.71015"
+     inkscape:cy="526.14851"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -228,63 +228,16 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(5.7260078,-83.734316)">
+     transform="translate(5.7555977,-83.734316)">
     <g
-       id="g7094">
-      <g
-         id="g7024">
-        <rect
-           y="153.30725"
-           x="219.87233"
-           height="14.724322"
-           width="54.610504"
-           id="rect938"
-           style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
-        <text
-           id="text942"
-           y="169.12054"
-           x="214.56691"
-           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
-           xml:space="preserve"
-           transform="scale(1.0373426,0.96400168)"><tspan
-             style="stroke-width:0.22213705"
-             y="169.12054"
-             x="214.56691"
-             id="tspan940"
-             sodipodi:role="line">Cache Imp</tspan></text>
-      </g>
-      <g
-         id="g7029">
-        <rect
-           style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
-           id="rect927"
-           width="54.609222"
-           height="12.939759"
-           x="219.87361"
-           y="140.36748" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
-           x="216.40927"
-           y="155.63318"
-           id="text931"
-           transform="scale(1.0373426,0.96400168)"><tspan
-             sodipodi:role="line"
-             id="tspan929"
-             x="216.40927"
-             y="155.63318"
-             style="stroke-width:0.22213705">Cache SPI</tspan></text>
-      </g>
-    </g>
-    <g
-       id="g7044">
+       id="g1074">
       <rect
-         y="125.735"
-         x="5.7343631"
-         height="14.631298"
-         width="268.74716"
+         y="125.76801"
+         x="5.7673745"
+         height="14.565275"
+         width="323.29272"
          id="rect916"
-         style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+         style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
       <text
          transform="scale(1.0373426,0.96400168)"
          xml:space="preserve"
@@ -298,44 +251,28 @@
            style="stroke-width:0.22213705"
            id="tspan918">UnitOfWorkImpl</tspan></text>
     </g>
-    <rect
-       y="153.39786"
-       x="5.7005534"
-       height="14.633711"
-       width="214.17178"
-       id="rect821"
-       style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
-       x="56.90591"
-       y="169.16753"
-       id="text847"
-       transform="scale(1.0373426,0.96400168)"><tspan
-         sodipodi:role="line"
-         x="56.90591"
+    <g
+       id="g1069">
+      <rect
+         style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         id="rect821"
+         width="214.17178"
+         height="14.633711"
+         x="5.7005534"
+         y="153.39786" />
+      <text
+         transform="scale(1.0373426,0.96400168)"
+         id="text847"
          y="169.16753"
-         style="stroke-width:0.22213705"
-         id="tspan851">Blockchain Entity Store</tspan></text>
-    <rect
-       style="opacity:1;fill:#a16400;fill-opacity:0.96078432;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
-       id="rect3673"
-       width="62.441643"
-       height="14.029976"
-       x="79.458122"
-       y="181.38333" />
-    <text
-       transform="scale(1.0373426,0.96400168)"
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
-       x="90.166733"
-       y="198.66805"
-       id="text3677"><tspan
-         sodipodi:role="line"
-         id="tspan3675"
-         x="90.166733"
-         y="198.66805"
-         style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none">IPFS ES</tspan></text>
+         x="56.90591"
+         style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+         xml:space="preserve"><tspan
+           id="tspan851"
+           style="stroke-width:0.22213705"
+           y="169.16753"
+           x="56.90591"
+           sodipodi:role="line">Blockchain Entity Store</tspan></text>
+    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:6.61458302px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -359,16 +296,16 @@
          id="tspan946"
          sodipodi:role="line" /></text>
     <g
-       id="g7049">
+       id="g1079">
       <rect
-         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect900"
-         width="202.73747"
-         height="12.918797"
-         x="71.719803"
-         y="112.80455" />
+         width="257.2919"
+         height="12.832847"
+         x="71.762779"
+         y="112.84753" />
       <text
-         transform="scale(1.0373426,0.9640017)"
+         transform="scale(1.0373426,0.96400169)"
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
          x="133.10106"
@@ -381,14 +318,15 @@
            style="stroke-width:0.22213705">UnitOfWork API</tspan></text>
     </g>
     <g
-       id="g7039">
+       id="g7039"
+       transform="matrix(1.001376,0,0,0.99996365,-0.00768328,0.00534018)">
       <rect
          y="140.45123"
          x="5.7540669"
          height="12.893109"
          width="213.83664"
          id="rect815"
-         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
       <text
          transform="scale(1.0373426,0.96400168)"
          id="text819"
@@ -402,67 +340,57 @@
            id="tspan817"
            sodipodi:role="line">EntityStore SPI</tspan></text>
     </g>
-    <rect
-       y="181.38333"
-       x="141.89977"
-       height="14.029976"
-       width="77.979988"
-       id="rect1021"
-       style="opacity:1;fill:#a16400;fill-opacity:0.96078432;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
-    <text
-       transform="scale(1.0349316,0.96624743)"
-       id="text1025"
-       y="198.28441"
-       x="148.05325"
-       style="font-style:normal;font-weight:normal;font-size:8.86538506px;line-height:5.5408659px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22163463"
-       xml:space="preserve"><tspan
-         style="stroke-width:0.22163463"
-         y="198.28441"
-         x="148.05325"
-         id="tspan1023"
-         sodipodi:role="line">User Impl**</tspan></text>
-    <rect
-       style="opacity:1;fill:#a16700;fill-opacity:0.96078432;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
-       id="rect869"
-       width="73.786118"
-       height="14.029976"
-       x="5.7013316"
-       y="181.38321" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.86538506px;line-height:5.5408659px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22163463"
-       x="14.357351"
-       y="198.28429"
-       id="text873"
-       transform="scale(1.0349316,0.96624743)"><tspan
-         sodipodi:role="line"
-         id="tspan871"
-         x="14.357351"
-         y="198.28429"
-         style="stroke-width:0.22163463">EOS Impl***</tspan></text>
-    <rect
-       y="168.03156"
-       x="5.7014647"
-       height="13.361889"
-       width="73.786598"
-       id="rect859"
-       style="opacity:1;fill:#00a110;fill-opacity:0.96078432;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
-       x="8.7734537"
-       y="184.54926"
-       id="text863"
-       transform="scale(1.0373426,0.96400169)"><tspan
-         sodipodi:role="line"
-         id="tspan861"
-         x="8.7734537"
-         y="184.54926"
-         style="stroke-width:0.22213705">Blockchain SPI</tspan></text>
+    <g
+       id="g1064">
+      <g
+         id="g1049">
+        <rect
+           style="opacity:1;fill:#a16700;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+           id="rect869"
+           width="73.786118"
+           height="14.029976"
+           x="5.7013316"
+           y="181.38321" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.86538506px;line-height:5.5408659px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22163463"
+           x="14.357351"
+           y="198.28429"
+           id="text873"
+           transform="scale(1.0349316,0.96624743)"><tspan
+             sodipodi:role="line"
+             id="tspan871"
+             x="14.357351"
+             y="198.28429"
+             style="stroke-width:0.22163463">EOS Impl***</tspan></text>
+      </g>
+      <g
+         id="g1054">
+        <rect
+           y="168.03156"
+           x="5.7014647"
+           height="13.361889"
+           width="73.786598"
+           id="rect859"
+           style="opacity:1;fill:#00a110;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+           x="8.7734537"
+           y="184.54926"
+           id="text863"
+           transform="scale(1.0373426,0.96400169)"><tspan
+             sodipodi:role="line"
+             id="tspan861"
+             x="8.7734537"
+             y="184.54926"
+             style="stroke-width:0.22213705">Blockchain SPI</tspan></text>
+      </g>
+    </g>
     <g
        id="g7054">
       <rect
-         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect1005"
          width="66.006752"
          height="12.985217"
@@ -481,25 +409,53 @@
            y="127.15469"
            style="stroke-width:0.22209287">Usecase</tspan></text>
     </g>
-    <rect
-       style="opacity:1;fill:#00a112;fill-opacity:0.96078432;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
-       id="rect832"
-       width="77.979988"
-       height="13.351756"
-       x="141.89977"
-       y="168.03157" />
-    <text
-       id="text836"
-       y="184.58159"
-       x="137.22231"
-       style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
-       xml:space="preserve"
-       transform="scale(1.0373426,0.96400168)"><tspan
-         style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
-         y="184.58159"
-         x="137.22231"
-         id="tspan834"
-         sodipodi:role="line">MessageSink SPI</tspan></text>
+    <g
+       id="g1034">
+      <g
+         id="g1009">
+        <rect
+           y="181.38333"
+           x="141.89977"
+           height="14.029976"
+           width="77.979988"
+           id="rect1021"
+           style="opacity:1;fill:#a16400;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+        <text
+           transform="scale(1.0349316,0.96624743)"
+           id="text1025"
+           y="198.28441"
+           x="148.05325"
+           style="font-style:normal;font-weight:normal;font-size:8.86538506px;line-height:5.5408659px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22163463"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.22163463"
+             y="198.28441"
+             x="148.05325"
+             id="tspan1023"
+             sodipodi:role="line">User Impl**</tspan></text>
+      </g>
+      <g
+         id="g1014">
+        <rect
+           style="opacity:1;fill:#00a112;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+           id="rect832"
+           width="77.979988"
+           height="13.351756"
+           x="141.89977"
+           y="168.03157" />
+        <text
+           id="text836"
+           y="184.58159"
+           x="137.22231"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
+           xml:space="preserve"
+           transform="scale(1.0373426,0.96400168)"><tspan
+             style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
+             y="184.58159"
+             x="137.22231"
+             id="tspan834"
+             sodipodi:role="line">MessageSink SPI</tspan></text>
+      </g>
+    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12.69999981px;line-height:6.61458302px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -521,7 +477,7 @@
          id="tspan1204"
          x="12.964583"
          y="215.25478"
-         style="font-size:5.64444447px;stroke-width:0.26458332"></tspan></text>
+         style="font-size:5.64444447px;stroke-width:0.26458332" /></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:12.69999981px;line-height:6.61458302px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -554,7 +510,7 @@
          style="font-size:5.64444447px;stroke-width:0.26458332"
          id="tspan7221">      from chain to chain.</tspan></text>
     <rect
-       style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+       style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
        id="rect1222"
        width="97.405632"
        height="15.913962"
@@ -584,7 +540,7 @@
     <g
        id="g7119">
       <rect
-         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
          id="rect2128"
          width="57.528679"
          height="15.989104"
@@ -611,7 +567,7 @@
          height="45.773663"
          width="88.636154"
          id="rect2187"
-         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
       <text
          transform="scale(1.0373426,0.96400168)"
          xml:space="preserve"
@@ -646,12 +602,12 @@
            id="tspan2193">  - Queue</tspan><tspan
            sodipodi:role="line"
            x="135.14246"
-           y="265.86032"
+           y="265.86029"
            style="stroke-width:0.22213705"
            id="tspan2195" /><tspan
            sodipodi:role="line"
            x="135.14246"
-           y="271.41376"
+           y="271.41373"
            style="stroke-width:0.22213705"
            id="tspan2197">  - Smoke Signals</tspan><tspan
            sodipodi:role="line"
@@ -671,7 +627,7 @@
            height="106"
            x="317"
            y="689.70081" /></flowRegion><flowPara
-         id="flowPara2899"></flowPara></flowRoot>    <g
+         id="flowPara2899" /></flowRoot>    <g
        id="g7129">
       <rect
          y="212.42325"
@@ -679,7 +635,7 @@
          height="16.121218"
          width="37.55246"
          id="rect3597"
-         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+         style="opacity:1;fill:#b7e1ff;fill-opacity:0.96078431;stroke:#004d83;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
       <text
          transform="scale(1.0373426,0.96400168)"
          xml:space="preserve"
@@ -693,25 +649,53 @@
            y="231.95174"
            style="stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none">IPFS</tspan></text>
     </g>
-    <rect
-       y="168.03157"
-       x="79.458122"
-       height="13.351756"
-       width="62.441643"
-       id="rect3667"
-       style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
-    <text
-       transform="scale(1.0373426,0.96400168)"
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
-       x="84.15992"
-       y="184.02121"
-       id="text3671"><tspan
-         sodipodi:role="line"
-         id="tspan3669"
-         x="84.15992"
-         y="184.02121"
-         style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none">ES(kv) SPI</tspan></text>
+    <g
+       id="g1044">
+      <g
+         id="g1024">
+        <rect
+           style="opacity:1;fill:#a16400;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+           id="rect3673"
+           width="62.441643"
+           height="14.029976"
+           x="79.458122"
+           y="181.38333" />
+        <text
+           transform="scale(1.0373426,0.96400168)"
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
+           x="90.166733"
+           y="198.66805"
+           id="text3677"><tspan
+             sodipodi:role="line"
+             id="tspan3675"
+             x="90.166733"
+             y="198.66805"
+             style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none">IPFS ES</tspan></text>
+      </g>
+      <g
+         id="g1019">
+        <rect
+           y="168.03157"
+           x="79.458122"
+           height="13.351756"
+           width="62.441643"
+           id="rect3667"
+           style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+        <text
+           transform="scale(1.0373426,0.96400168)"
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none"
+           x="84.15992"
+           y="184.02121"
+           id="text3671"><tspan
+             sodipodi:role="line"
+             id="tspan3669"
+             x="84.15992"
+             y="184.02121"
+             style="stroke-width:0.08395731;stroke-miterlimit:4;stroke-dasharray:none">ES(kv) SPI</tspan></text>
+      </g>
+    </g>
     <path
        inkscape:connector-curvature="0"
        id="path3685"
@@ -734,7 +718,7 @@
        inkscape:connector-curvature="0" />
     <g
        id="g7211"
-       transform="translate(2.6458333,93.927084)">
+       transform="translate(34.395833,100.80625)">
       <rect
          y="179.47041"
          x="242.45316"
@@ -814,6 +798,100 @@
          width="62.177082"
          id="rect7196"
          style="opacity:1;fill:none;fill-opacity:0.96078431;stroke:#000000;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       id="g1004">
+      <g
+         id="g989">
+        <rect
+           style="opacity:1;fill:#a16400;fill-opacity:0.96078432;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+           id="rect954"
+           width="54.610504"
+           height="14.724322"
+           x="274.48157"
+           y="153.30725" />
+        <text
+           transform="scale(1.0373426,0.96400168)"
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+           x="268.91104"
+           y="169.04245"
+           id="text958"><tspan
+             sodipodi:role="line"
+             id="tspan956"
+             x="268.91104"
+             y="169.04245"
+             style="stroke-width:0.22213705">Crypt Imp</tspan></text>
+      </g>
+      <g
+         id="g994">
+        <rect
+           y="140.36748"
+           x="274.48285"
+           height="12.939759"
+           width="54.609222"
+           id="rect962"
+           style="opacity:1;fill:#00a112;fill-opacity:0.96078432;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+        <text
+           transform="scale(1.0373426,0.96400168)"
+           id="text966"
+           y="154.69386"
+           x="268.03741"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+           xml:space="preserve"><tspan
+             style="stroke-width:0.22213705"
+             y="154.69386"
+             x="268.03741"
+             id="tspan964"
+             sodipodi:role="line">Crypto SPI</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g7094">
+      <g
+         id="g7024">
+        <rect
+           y="153.30725"
+           x="219.87233"
+           height="14.724322"
+           width="54.610504"
+           id="rect938"
+           style="opacity:1;fill:#ffe4b7;fill-opacity:0.96078431;stroke:#774b00;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431" />
+        <text
+           id="text942"
+           y="169.12054"
+           x="214.56691"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+           xml:space="preserve"
+           transform="scale(1.0373426,0.96400168)"><tspan
+             style="stroke-width:0.22213705"
+             y="169.12054"
+             x="214.56691"
+             id="tspan940"
+             sodipodi:role="line">Cache Imp</tspan></text>
+      </g>
+      <g
+         id="g7029">
+        <rect
+           style="opacity:1;fill:#b7ffbf;fill-opacity:0.96078431;stroke:#00770e;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.96078431"
+           id="rect927"
+           width="54.609222"
+           height="12.939759"
+           x="219.87361"
+           y="140.36748" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:8.88548279px;line-height:5.55342627px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.22213705"
+           x="216.40927"
+           y="155.63318"
+           id="text931"
+           transform="scale(1.0373426,0.96400168)"><tspan
+             sodipodi:role="line"
+             id="tspan929"
+             x="216.40927"
+             y="155.63318"
+             style="stroke-width:0.22213705">Cache SPI</tspan></text>
+      </g>
     </g>
   </g>
 </svg>
