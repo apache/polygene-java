@@ -32,15 +32,15 @@ import org.apache.polygene.api.injection.scope.This;
  */
 @AppliesTo( Cached.class )
 public class ReturnCachedValueConcern
-    extends ConcernOf<InvocationHandler>
-    implements InvocationHandler
+        extends ConcernOf<InvocationHandler>
+        implements InvocationHandler
 {
     @This @Optional
     private InvocationCache cache;
 
     @Override
     public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
+            throws Throwable
     {
         boolean voidReturnType = method.getReturnType().equals( Void.TYPE );
         if( cache != null || voidReturnType )
@@ -52,12 +52,16 @@ public class ReturnCachedValueConcern
                 cacheName += Arrays.asList( args );
             }
             Object result = cache.cachedValue( cacheName );
-            if( result != null )
+            if (result == null)
             {
-                return result;
+                // No cached value found
+                result = next.invoke(proxy, method, args);
+                // Update cache
+                cache.setCachedValue(cacheName, result);
             }
+            return result;
         }
-        // No cached value found or no InvocationCache defined - call method
+        // No InvocationCache defined - call method
         return next.invoke( proxy, method, args );
     }
 }
