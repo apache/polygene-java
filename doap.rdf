@@ -34,7 +34,7 @@
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache Polygene</name>
     <homepage rdf:resource="https://polygene.apache.org/" />
-    <asfext:pmc rdf:resource="https://polygene.apache.org" />
+    <asfext:pmc rdf:resource="https://attic.apache.org" />
     <shortdesc>Apache Polygene is a community based effort exploring Composite Oriented Programming for domain centric application development.</shortdesc>
     <description>Apache Polygene is a community based effort exploring Composite Oriented Programming for domain centric application development. This includes evolved concepts from Aspect Oriented Programming, Dependency Injection and Domain Driven Design. Composite Oriented Programming allows developers to work with 'fragments', smaller than classes, and 'compose' fragments into larger 'composites' which acts like the regular objects. Polygene also tackles the enforcement of application composition, i.e. composites are declared in modules, modules are contained in layers and access between layers are controlled/enforced. Apache Polygene™ (Java Edition), first Apache Polygene sub-project, is an implementation of Composite Oriented Programming, using the standard Java platform, without the use of any pre-processors or new language elements. Everything you know from Java still applies and you can leverage both your experience and toolkits to become more productive with Composite Oriented Programming today.</description>
     <bug-database rdf:resource="https://issues.apache.org/jira/browse/POLYGENE" />
@@ -46,6 +46,7 @@
     <programming-language>Groovy</programming-language>
     <programming-language>JavaScript</programming-language>
     <category rdf:resource="http://projects.apache.org/category/library" />
+    <category rdf:resource="http://projects.apache.org/category/retired" />
     <repository>
       <SVNRepository>
         <location rdf:resource="http://svn.apache.org/repos/asf/polygene/"/>
