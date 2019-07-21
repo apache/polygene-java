@@ -32,6 +32,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
 import org.apache.polygene.api.PolygeneAPI;
 import org.apache.polygene.api.association.AssociationStateHolder;
 import org.apache.polygene.api.common.Optional;
@@ -98,7 +99,9 @@ public class JavaxJsonSerializer extends AbstractTextSerializer
             }
             else
             {
-                writer.write( jsonValue.toString() );
+                try (JsonWriter w = jsonFactories.writerFactory().createWriter(writer)) {
+                    w.write(jsonValue);
+                }
             }
         }
         catch( IOException ex )

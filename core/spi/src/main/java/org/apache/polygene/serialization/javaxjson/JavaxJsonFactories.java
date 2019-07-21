@@ -50,6 +50,7 @@ public interface JavaxJsonFactories
 
     JsonWriterFactory writerFactory();
 
+    JsonProvider provider();
     /**
      * Creates a {@link JsonString} with the {@link Object#toString()} result on the given object.
      *
@@ -111,6 +112,7 @@ public interface JavaxJsonFactories
         private JsonGeneratorFactory generatorFactory;
         private JsonBuilderFactory builderFactory;
         private JsonWriterFactory writerFactory;
+        private JsonProvider jsonProvider;
 
         @Override
         public void initialize() throws Exception
@@ -118,7 +120,6 @@ public interface JavaxJsonFactories
             JavaxJsonSettings settings = JavaxJsonSettings.orDefault( descriptor.metaInfo( JavaxJsonSettings.class ) );
 
             String jsonProviderClassName = settings.getJsonProviderClassName();
-            JsonProvider jsonProvider;
             if( jsonProviderClassName == null )
             {
                 jsonProvider = JsonProvider.provider();
@@ -250,6 +251,11 @@ public interface JavaxJsonFactories
                 }
             }
             return job;
+        }
+
+        @Override
+        public JsonProvider provider() {
+            return jsonProvider;
         }
     }
 }
